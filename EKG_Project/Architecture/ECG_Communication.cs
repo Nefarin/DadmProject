@@ -13,11 +13,11 @@ namespace EKG_Project.Architecture
     #endregion
 
     #region enumDeclaration GUI_To_Analysis
-    public enum GUI_To_Analysis_Command {INIT, IDLE, STOP_ANALYSIS, TIMEOUT };
+    public enum GUI_To_Analysis_Command {INIT, IDLE, STOP_ANALYSIS, TIMEOUT, ADD_TEST, SUB_TEST };
     #endregion
 
     #region enumDeclaration Analysis_To_GUI
-    public enum Analysis_To_GUI_Command { ANALYSIS_ENDED, EXIT_ANALYSIS };
+    public enum Analysis_To_GUI_Command { ANALYSIS_ENDED, EXIT_ANALYSIS, TEST};
     #endregion
 
     #region GUI_To_Analysis_Item
@@ -121,7 +121,7 @@ namespace EKG_Project.Architecture
         }
         public GUI_To_Analysis_Item getGUIMessage(int timeout = 0)
         {
-            int counter = -1;
+            int counter = 0;
             while (counter <= timeout)
             {
                 if(_guiToAnalysis.Count != 0)

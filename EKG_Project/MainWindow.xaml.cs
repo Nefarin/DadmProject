@@ -26,9 +26,11 @@ namespace EKG_Project
     {
         private App parentApp;
         private TabContainer _tabContainer;
+        private SynchronizationContext _context;
 
         public MainWindow(App app)
         {
+            _context = SynchronizationContext.Current;
             _tabContainer = new TabContainer();
             parentApp = app;
 
@@ -84,7 +86,7 @@ namespace EKG_Project
             _tabContainer.CommunicationList.Insert(count - 1, communication);
 
 
-            UserControl analysisControl = new AnalysisControl(communication, this, tab);
+            UserControl analysisControl = new AnalysisControl(communication, this, tab, _context);
             _tabContainer.AnalysisControlList.Insert(count - 1, analysisControl);
             tab.Content = analysisControl;
 
