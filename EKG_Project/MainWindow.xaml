@@ -18,6 +18,7 @@
                 <MenuItem Header="New Analysis" Click="newAnalysis"></MenuItem>
                 <MenuItem Header="Save Analysis"></MenuItem>
                 <MenuItem Header="Load Analysis"></MenuItem>
+                <MenuItem Header="Close Analysis" Click="closeAnalysis"></MenuItem>
                 <Separator/>
                 <MenuItem Header="Exit" Click="exitClick"></MenuItem>
             </MenuItem>
