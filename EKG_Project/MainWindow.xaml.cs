@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using EKG_Project.GUI;
+using EKG_Project.Architecture;
 
 namespace EKG_Project
 {
@@ -67,8 +69,16 @@ namespace EKG_Project
             tab.Header = string.Format("Analysis {0}", count);
             tab.Name = string.Format("analysis{0}", count);
             tab.HeaderTemplate = analysisTabControl.FindResource("tabHeader") as DataTemplate;
-            UserControl analysisControl = new AnalysisControl();
+
+
+            ECG_Communication communication = new ECG_Communication();
+            UserControl analysisControl = new AnalysisControl(communication);
             tab.Content = analysisControl;
+
+            ECG_Analysis ecgAnalysis = new ECG_Analysis(communication);
+            Thread analysisThread = new Thread(ecgAnalysis.run);
+            analysisThread.Start();
+
 
             _tabItems.Insert(count - 1, tab);
             return tab;

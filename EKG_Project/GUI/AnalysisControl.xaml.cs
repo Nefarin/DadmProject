@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using EKG_Project.Architecture;
 
 namespace EKG_Project.GUI
 {
@@ -20,7 +21,7 @@ namespace EKG_Project.GUI
     /// </summary>
     public partial class AnalysisControl : UserControl
     {
-        public AnalysisControl()
+        public AnalysisControl(ECG_Communication e)
         {
             InitializeComponent();
         }
