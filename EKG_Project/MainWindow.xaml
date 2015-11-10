@@ -5,8 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EKG_Project"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="552" Width="815">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="759*"/>
+        </Grid.ColumnDefinitions>
+        <Menu x:Name="menu" Height="27" VerticalAlignment="Top" Grid.ColumnSpan="4">
+            <MenuItem Header="File">
+                <MenuItem Header="New Analysis" Click="newAnalysis"></MenuItem>
+                <MenuItem Header="Save Analysis"></MenuItem>
+                <MenuItem Header="Load Analysis"></MenuItem>
+                <Separator/>
+                <MenuItem Header="Exit" Click="exitClick"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Edit"></MenuItem>
+            <MenuItem Header="Options"></MenuItem>
+            <MenuItem Header="About"></MenuItem>
+        </Menu>
+        <TabControl x:Name="analysisTabControl" ItemsSource="{Binding}" SelectionChanged="analysisTabControl_SelectionChanged" Grid.Column="3" Margin="0,27,0,0">
+            <TabControl.Resources>
+                <DataTemplate x:Key="tabHeader" DataType="TabItem">
+                    <DockPanel>
+                        <Button Name="btnDelete" DockPanel.Dock="Right" Margin="5,0,0,0" Padding="0" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
+                        </Button>
+                        <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" />
+                    </DockPanel>
+                </DataTemplate>
+            </TabControl.Resources>
+        </TabControl>
     </Grid>
 </Window>
