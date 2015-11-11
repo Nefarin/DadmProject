@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EKG_Project</name>
+    </assembly>
+    <members>
+        <member name="T:EKG_Project.App">
+            <summary>
+            Interaction logic for App.xaml
+            </summary>
+            
+            <summary>
+            App
+            </summary>
+        </member>
+        <member name="M:EKG_Project.App.OnStartup(System.Windows.StartupEventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="startEvent"></param>
+            
+        </member>
+        <member name="M:EKG_Project.App.OnExit(System.Windows.ExitEventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="e"></param>
+            
+        </member>
+        <member name="M:EKG_Project.App.Main">
+            <summary>
+            Application Entry Point.
+            </summary>
+        </member>
+        <member name="T:EKG_Project.Architecture.ToGUIDelegate">
+            <summary>
+            TO DO
+            </summary>
+            <param name="sender"></param>
+            <param name="item"></param>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.ToGUIItem">
+            <summary>
+            Responosible for provide command with data to Analysis Control thread.
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ToGUIItem.#ctor(EKG_Project.Architecture.ToGUICommand,System.Object)">
+            <summary>
+            TO DO
+            </summary>
+            <param name="command"></param>
+            <param name="data"></param>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.ToGUIItem.Command">
+            <summary>
+            TO DO
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.ToGUIItem.Data">
+            <summary>
+            TO DO
+            </summary>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.ToProcessingItem">
+            <summary>
+            Responosible for provide command with data to processing thread.
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ToProcessingItem.#ctor(EKG_Project.Architecture.AnalysisState,System.Object)">
+            <summary>
+            TO DO
+            </summary>
+            <param name="command"></param>
+            <param name="data"></param>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.ToProcessingItem.Data">
+             <summary>
+             TO DO
+             </summary>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.ToProcessingItem.Command">
+            <summary>
+            TO DO
+            </summary>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.Processing">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.Processing.#ctor(EKG_Project.Architecture.ProcessSync)">
+            <summary>
+            
+            </summary>
+            <param name="communication"></param>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.Processing.run">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.ProcessSync">
+            <summary>
+            TODO
+            </summary>
+            
+        </member>
+        <member name="E:EKG_Project.Architecture.ProcessSync.ToGUIEvent">
+            <summary>
+            TODO
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ProcessSync.#ctor">
+            <summary>
+            TODO
+            </summary>
+        </member>
+        <member name="M:EKG_Project.Architecture.ProcessSync.sendGUIMessage(EKG_Project.Architecture.ToProcessingItem)">
+            <summary>
+            TODO
+            </summary>
+            <param name="item"></param>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ProcessSync.getGUIMessage(System.Int32)">
+            <summary>
+            TODO
+            </summary>
+            <param name="timeout"></param>
+            <returns></returns>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ProcessSync.SendProcessingEvent(EKG_Project.Architecture.ToGUIItem)">
+            <summary>
+            TODO
+            </summary>
+            <param name="item"></param>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.ToGUICommand">
+            <summary>
+            Enum responosible for GUI command handling
+            </summary>
+            
+        </member>
+        <member name="F:EKG_Project.Architecture.ToGUICommand.ANALYSIS_ENDED">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="F:EKG_Project.Architecture.ToGUICommand.EXIT_ANALYSIS">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="F:EKG_Project.Architecture.ToGUICommand.TEST">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.AnalysisState">
+            <summary>
+            Enum responsible for sending 
+            </summary>
+            
+        </member>
+        <member name="F:EKG_Project.Architecture.AnalysisState.INIT">
+            <summary>
+            Initialization
+            </summary>
+            
+        </member>
+        <member name="F:EKG_Project.Architecture.AnalysisState.IDLE">
+            <summary>
+            Idle state
+            </summary>
+            
+        </member>
+        <member name="F:EKG_Project.Architecture.AnalysisState.STOP_ANALYSIS">
+            <summary>
+            Stop Analysis
+            </summary>
+            
+        </member>
+        <member name="F:EKG_Project.Architecture.AnalysisState.TIMEOUT">
+            <summary>
+            Timeout
+            </summary>
+            
+        </member>
+        <member name="T:EKG_Project.GUI.AnalysisControl">
+            <summary>
+            Interaction logic for AnalysisControl.xaml - class for GUI developers
+            </summary>
+            
+            <summary>
+            AnalysisControl
+            </summary>
+        </member>
+        <member name="M:EKG_Project.GUI.AnalysisControl.analyzeEvent(EKG_Project.Architecture.ToGUIItem)">
+             <summary>
+             analyzeEvent - do not delete - just develop - will be used by both GUI and Architects
+             </summary>
+             <param name="item"></param>
+            
+        </member>
+        <member name="M:EKG_Project.GUI.AnalysisControl.#ctor(EKG_Project.Architecture.ProcessSync,EKG_Project.GUI.Window_ECG,System.Windows.Controls.TabItem,System.Threading.SynchronizationContext)">
+            <summary>
+            TO DO
+            </summary>
+            <param name="communication"></param>
+            <param name="parent"></param>
+            <param name="parentTab"></param>
+            <param name="context"></param>
+            
+        </member>
+        <member name="M:EKG_Project.GUI.AnalysisControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:EKG_Project.GUI.Window_ECG">
+            <summary>
+            Interaction logic for Window_ECG.xaml
+            </summary>
+            <summary>
+            Window_ECG
+            </summary>
+        </member>
+        <member name="M:EKG_Project.GUI.Window_ECG.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:EKG_Project.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:EKG_Project.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:EKG_Project.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+    </members>
+</doc>

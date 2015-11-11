@@ -1,0 +1,17 @@
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\EKG_Project.exe.config
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\EKG_Project.exe
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\EKG_Project.pdb
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\App.g.cs
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\EKG_Project_MarkupCompile.cache
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\EKG_Project_MarkupCompile.lref
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\EKG_Project.g.resources
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\EKG_Project.Properties.Resources.resources
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\EKG_Project.csproj.GenerateResource.Cache
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\EKG_Project.exe
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\EKG_Project.pdb
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\EKG_Project.csprojResolveAssemblyReference.cache
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\GUI\AnalysisControl.g.cs
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\GUI\AnalysisControl.baml
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\Documentation.XML
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\GUI\Window_ECG.g.cs
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\GUI\Window_ECG.baml
