@@ -40,6 +40,48 @@
             <param name="item"></param>
             
         </member>
+        <member name="T:EKG_Project.Architecture.TabContainer">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.TabContainer.#ctor">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.TabContainer.TabItems">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.TabContainer.CommunicationList">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.TabContainer.EcgAnalysisList">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.TabContainer.AnalysisControlList">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.TabContainer.ThreadList">
+            <summary>
+            
+            </summary>
+            
+        </member>
         <member name="T:EKG_Project.Architecture.ToGUIItem">
             <summary>
             Responosible for provide command with data to Analysis Control thread.
