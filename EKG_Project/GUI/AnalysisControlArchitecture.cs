@@ -21,7 +21,7 @@ namespace EKG_Project.GUI
         /// <param name="parentTab"></param>
         /// <param name="context"></param>
         /// 
-           #endregion 
+        #endregion 
         public AnalysisControl(ProcessSync communication, Window_ECG parent, TabItem parentTab, SynchronizationContext context)
         {
             _context = context;

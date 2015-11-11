@@ -281,9 +281,31 @@
             <summary>
             Interaction logic for Window_ECG.xaml
             </summary>
+            
             <summary>
             Window_ECG
             </summary>
+        </member>
+        <member name="M:EKG_Project.GUI.Window_ECG.#ctor(EKG_Project.App)">
+            <summary>
+            
+            </summary>
+            <param name="app"></param>
+            
+        </member>
+        <member name="M:EKG_Project.GUI.Window_ECG.OnClosing(System.ComponentModel.CancelEventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="closeArgs"></param>
+            
+        </member>
+        <member name="M:EKG_Project.GUI.Window_ECG.closeAnalysisTab(System.Windows.Controls.TabItem)">
+            <summary>
+            
+            </summary>
+            <param name="item"></param>
+            
         </member>
         <member name="M:EKG_Project.GUI.Window_ECG.InitializeComponent">
             <summary>
