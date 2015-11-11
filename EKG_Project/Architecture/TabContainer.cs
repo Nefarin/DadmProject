@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows.Controls;
 
+using System;
 namespace EKG_Project.Architecture
 {
     #region Documentation
