@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\App.xaml
-11151548125
+2-1159659355
 
-5-2017746502
+15-1866306217
 13738642453
-MainWindow.xaml;
+GUI\AnalysisControl.xaml;GUI\Window_ECG.xaml;
 
 False
 
