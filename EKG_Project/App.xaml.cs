@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using EKG_Project.GUI;
+using System;
 
 namespace EKG_Project
 {
