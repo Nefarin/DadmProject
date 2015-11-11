@@ -43,6 +43,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>EKG_Project.App</StartupObject>
@@ -72,23 +73,28 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="GUI\Window_ECG.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Architecture\ECG_Analysis.cs" />
-    <Compile Include="Architecture\ECG_Communication.cs" />
-    <Compile Include="Architecture\TestArchitecture.cs" />
+    <Compile Include="Architecture\Delegates.cs" />
+    <Compile Include="Architecture\TabContainer.cs" />
+    <Compile Include="Architecture\ToGUIItem.cs" />
+    <Compile Include="Architecture\ToProcessingItem.cs" />
+    <Compile Include="Architecture\Processing.cs" />
+    <Compile Include="Architecture\ProcessSync.cs" />
+    <Compile Include="Architecture\ToGUICommand.cs" />
+    <Compile Include="Architecture\AnalysisState.cs" />
     <Compile Include="GUI\AnalysisControl.xaml.cs">
       <DependentUpon>AnalysisControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <Compile Include="GUI\AnalysisControlArchitecture.cs" />
+    <Compile Include="GUI\Window_ECG.xaml.cs">
+      <DependentUpon>Window_ECG.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +128,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Architecture\README.TXT" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Modules\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

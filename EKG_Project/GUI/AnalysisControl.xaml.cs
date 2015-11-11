@@ -1,84 +1,58 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Threading;
 using EKG_Project.Architecture;
 
 namespace EKG_Project.GUI
 {
+    #region Documentation
     /// <summary>
-    /// Interaction logic for AnalysisControl.xaml
+    /// Interaction logic for AnalysisControl.xaml - class for GUI developers
     /// </summary>
+    /// 
+    #endregion
     public partial class AnalysisControl : UserControl
     {
-        private MainWindow _parent;
-        private TabItem _parentTab;
-        private ECG_Communication _communication;
-        private SynchronizationContext _context;
-        public Analysis_To_GUI _analysisEvent;
-        public AnalysisControl(ECG_Communication communication, MainWindow parent, TabItem parentTab, SynchronizationContext context)
+        private void addButton_Click(object sender, RoutedEventArgs e)
         {
-            _context = context;
-            _communication = communication;
-            _analysisEvent = new Analysis_To_GUI(analysisEventHandler);
-            _communication.Analysis_To_GUI_Event += _analysisEvent;
-            _parent = parent;
-            _parentTab = parentTab;
-            InitializeComponent();
+            _communication.sendGUIMessage(new ToProcessingItem(AnalysisState.ADD_TEST, null));
         }
 
-        private void analysisEventHandler(object sender, Analysis_To_GUI_Item item)
+        private void subButton_Click(object sender, RoutedEventArgs e)
         {
-            _context.Post(new SendOrPostCallback((o) => {
-                analyzeEvent(item);
-            }), null);
-
+            _communication.sendGUIMessage(new ToProcessingItem(AnalysisState.SUB_TEST, null));
         }
 
-        private void analyzeEvent(Analysis_To_GUI_Item item)
+        private void exitButton_Click(object sender, RoutedEventArgs e)
+        {
+            _communication.sendGUIMessage(new ToProcessingItem(AnalysisState.STOP_ANALYSIS, null));
+        }
+
+        #region Documentation
+        /// <summary>
+        /// analyzeEvent - do not delete - just develop - will be used by both GUI and Architects
+        /// </summary>
+        /// <param name="item"></param>
+        ///
+        #endregion
+        private void analyzeEvent(ToGUIItem item)
         {
             switch (item.Command)
             {
-                case Analysis_To_GUI_Command.ANALYSIS_ENDED:
+                case ToGUICommand.ANALYSIS_ENDED:
 
                     break;
-                case Analysis_To_GUI_Command.EXIT_ANALYSIS:
-                    _communication.Analysis_To_GUI_Event -= _analysisEvent;
+                case ToGUICommand.EXIT_ANALYSIS:
+                    _communication.ToGUIEvent -= _analysisEvent;
                     _parent.closeAnalysisTab(_parentTab);
                     break;
-                case Analysis_To_GUI_Command.TEST:
+                case ToGUICommand.TEST:
                     int value = Convert.ToInt32(item.Data);
                     progressBar.Value = value;
                     break;
                 default:
                     break;
             }
-        }
-
-        private void addButton_Click(object sender, RoutedEventArgs e)
-        {
-            _communication.sendGUIMessage(new GUI_To_Analysis_Item(GUI_To_Analysis_Command.ADD_TEST, null));
-        }
-
-        private void subButton_Click(object sender, RoutedEventArgs e)
-        {
-            _communication.sendGUIMessage(new GUI_To_Analysis_Item(GUI_To_Analysis_Command.SUB_TEST, null));
-        }
-
-        private void exitButton_Click(object sender, RoutedEventArgs e)
-        {
-            _communication.sendGUIMessage(new GUI_To_Analysis_Item(GUI_To_Analysis_Command.STOP_ANALYSIS, null));
         }
     }
 }
