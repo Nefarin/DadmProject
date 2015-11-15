@@ -73,6 +73,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\AnalysisControlTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\Window_ECG.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -93,6 +97,10 @@
       <DependentUpon>AnalysisControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\AnalysisControlArchitecture.cs" />
+    <Compile Include="GUI\AnalysisControlTest.xaml.cs">
+      <DependentUpon>AnalysisControlTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\AnalysisControlTestArchitecture.cs" />
     <Compile Include="GUI\Window_ECG.xaml.cs">
       <DependentUpon>Window_ECG.xaml</DependentUpon>
     </Compile>
