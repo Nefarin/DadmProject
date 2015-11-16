@@ -12,7 +12,7 @@ namespace EKG_Project.Modules
     /// </summary>
     /// 
     #endregion
-    public class TestModule : Module
+    public class TestModule : IModule
     {
         private bool _aborted;
         private bool _ended;
@@ -49,6 +49,21 @@ namespace EKG_Project.Modules
         public double Progress()
         {
             return (double)_numberOfProcessedSamples / (double)_numberOfSamples;
+        }
+
+        public void Init(ModuleParams parameters)
+        {
+            TestModule_Params paramss = (TestModule_Params) parameters;
+        }
+
+        public bool Runnable()
+        {
+            throw new NotImplementedException();
+        }
+
+        static void Main()
+        {
+
         }
     }
 }

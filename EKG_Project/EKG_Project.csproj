@@ -86,14 +86,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Architecture\Delegates.cs" />
+    <Compile Include="Architecture\GUIMessages\AnalysisEnded.cs" />
+    <Compile Include="Architecture\GUIMessages\IGUIMessage.cs" />
+    <Compile Include="Architecture\GUIMessages\TestMessage.cs" />
     <Compile Include="Architecture\Modules.cs" />
+    <Compile Include="Architecture\ProcessingStates\Abort.cs" />
+    <Compile Include="Architecture\ProcessingStates\Idle.cs" />
+    <Compile Include="Architecture\ProcessingStates\Init.cs" />
+    <Compile Include="Architecture\ProcessingStates\IProcessingState.cs" />
+    <Compile Include="Architecture\ProcessingStates\TestState.cs" />
     <Compile Include="Architecture\TabContainer.cs" />
-    <Compile Include="Architecture\ToGUIItem.cs" />
-    <Compile Include="Architecture\ToProcessingItem.cs" />
     <Compile Include="Architecture\Processing.cs" />
     <Compile Include="Architecture\ProcessSync.cs" />
-    <Compile Include="Architecture\ToGUICommand.cs" />
-    <Compile Include="Architecture\AnalysisState.cs" />
     <Compile Include="GUI\AnalysisControl.xaml.cs">
       <DependentUpon>AnalysisControl.xaml</DependentUpon>
     </Compile>
@@ -108,15 +112,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
-    <Compile Include="Modules\ECG_Baseline.cs" />
-    <Compile Include="Modules\ECG_Baseline_Params.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Alg.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Params.cs" />
     <Compile Include="Modules\IModule.cs" />
-    <Compile Include="Modules\Module.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
-    <Compile Include="Modules\R_Peaks.cs" />
-    <Compile Include="Modules\R_Peaks_Params.cs" />
-    <Compile Include="Modules\TestModule.cs" />
-    <Compile Include="Modules\TestModule_Params.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks_Alg.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks_Params.cs" />
+    <Compile Include="Modules\TestModule\TestModule.cs" />
+    <Compile Include="Modules\TestModule\TestModule_Params.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

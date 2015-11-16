@@ -4,10 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EKG_Project.Modules
+namespace EKG_Project.Modules.R_Peaks
 {
-    public class Module : IModule
+    public partial class R_Peaks : IModule
     {
+        public R_Peaks()
+        {
+
+        }
+
         public void Abort()
         {
             throw new NotImplementedException();

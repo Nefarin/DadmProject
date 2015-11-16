@@ -10,6 +10,6 @@
         <Button x:Name="exitButton" Content="Close" HorizontalAlignment="Left" Margin="195,83,0,0" VerticalAlignment="Top" Width="75" Click="exitButton_Click"/>
         <TextBlock x:Name="moduleName" TextAlignment="Center" HorizontalAlignment="Center" Margin="51,10,49,0" TextWrapping="Wrap" Text="Module Name" VerticalAlignment="Top" Width="180" Foreground="Black"/>
         <Button x:Name="abortButton" Content="Abort" HorizontalAlignment="Left" Margin="96,83,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button x:Name="runButton" Content="Run" HorizontalAlignment="Left" Margin="0,83,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="runButton" Content="Run" HorizontalAlignment="Left" Margin="0,83,0,0" VerticalAlignment="Top" Width="75" Click="runButton_Click"/>
     </Grid>
 </UserControl>

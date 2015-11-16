@@ -37,7 +37,130 @@
             TO DO
             </summary>
             <param name="sender"></param>
-            <param name="item"></param>
+            <param name="message"></param>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.GUIMessages.AnalysisEnded">
+             <summary>
+             
+             </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.GUIMessages.AnalysisEnded.Read(System.Windows.Controls.UserControl)">
+            <summary>
+            
+            </summary>
+            <param name="ctrl"></param>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.GUIMessages.IGUIMessage">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.GUIMessages.IGUIMessage.Read(System.Windows.Controls.UserControl)">
+            <summary>
+            
+            </summary>
+            <param name="control"></param>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.GUIMessages.TestMessage">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.GUIMessages.TestMessage.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="text"></param>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.GUIMessages.TestMessage.Read(System.Windows.Controls.UserControl)">
+            <summary>
+            
+            </summary>
+            <param name="control"></param>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.ProcessingStates.Abort">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ProcessingStates.Abort.Process(EKG_Project.Architecture.Processing,EKG_Project.Architecture.ProcessingStates.IProcessingState@)">
+            <summary>
+            
+            </summary>
+            <param name="process"></param>
+            <param name="timeoutState"></param>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.ProcessingStates.Idle">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ProcessingStates.Idle.#ctor(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="sleepTime"></param>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ProcessingStates.Idle.Process(EKG_Project.Architecture.Processing,EKG_Project.Architecture.ProcessingStates.IProcessingState@)">
+            <summary>
+            
+            </summary>
+            <param name="process"></param>
+            <param name="timeoutState"></param>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.ProcessingStates.Init">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ProcessingStates.Init.Process(EKG_Project.Architecture.Processing,EKG_Project.Architecture.ProcessingStates.IProcessingState@)">
+            <summary>
+            
+            </summary>
+            <param name="process"></param>
+            <param name="timeoutState"></param>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.ProcessingStates.IProcessingState">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ProcessingStates.IProcessingState.Process(EKG_Project.Architecture.Processing,EKG_Project.Architecture.ProcessingStates.IProcessingState@)">
+            <summary>
+            
+            </summary>
+            <param name="process"></param>
+            <param name="timeoutState"></param>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.ProcessingStates.TestState">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ProcessingStates.TestState.Process(EKG_Project.Architecture.Processing,EKG_Project.Architecture.ProcessingStates.IProcessingState@)">
+            <summary>
+            
+            </summary>
+            <param name="process"></param>
+            <param name="timeoutState"></param>
             
         </member>
         <member name="T:EKG_Project.Architecture.TabContainer">
@@ -82,58 +205,6 @@
             </summary>
             
         </member>
-        <member name="T:EKG_Project.Architecture.ToGUIItem">
-            <summary>
-            Responosible for provide command with data to Analysis Control thread.
-            </summary>
-            
-        </member>
-        <member name="M:EKG_Project.Architecture.ToGUIItem.#ctor(EKG_Project.Architecture.ToGUICommand,System.Object)">
-            <summary>
-            TO DO
-            </summary>
-            <param name="command"></param>
-            <param name="data"></param>
-            
-        </member>
-        <member name="P:EKG_Project.Architecture.ToGUIItem.Command">
-            <summary>
-            TO DO
-            </summary>
-            
-        </member>
-        <member name="P:EKG_Project.Architecture.ToGUIItem.Data">
-            <summary>
-            TO DO
-            </summary>
-            
-        </member>
-        <member name="T:EKG_Project.Architecture.ToProcessingItem">
-            <summary>
-            Responosible for provide command with data to processing thread.
-            </summary>
-            
-        </member>
-        <member name="M:EKG_Project.Architecture.ToProcessingItem.#ctor(EKG_Project.Architecture.AnalysisState,System.Object)">
-            <summary>
-            TO DO
-            </summary>
-            <param name="command"></param>
-            <param name="data"></param>
-            
-        </member>
-        <member name="P:EKG_Project.Architecture.ToProcessingItem.Data">
-             <summary>
-             TO DO
-             </summary>
-            
-        </member>
-        <member name="P:EKG_Project.Architecture.ToProcessingItem.Command">
-            <summary>
-            TO DO
-            </summary>
-            
-        </member>
         <member name="T:EKG_Project.Architecture.Processing">
             <summary>
             
@@ -170,14 +241,14 @@
             TODO
             </summary>
         </member>
-        <member name="M:EKG_Project.Architecture.ProcessSync.sendGUIMessage(EKG_Project.Architecture.ToProcessingItem)">
+        <member name="M:EKG_Project.Architecture.ProcessSync.SendGUIMessage(EKG_Project.Architecture.ProcessingStates.IProcessingState)">
             <summary>
             TODO
             </summary>
-            <param name="item"></param>
+            <param name="state"></param>
             
         </member>
-        <member name="M:EKG_Project.Architecture.ProcessSync.getGUIMessage(System.Int32)">
+        <member name="M:EKG_Project.Architecture.ProcessSync.GetGUIMessage(EKG_Project.Architecture.ProcessingStates.IProcessingState@,System.Int32)">
             <summary>
             TODO
             </summary>
@@ -185,65 +256,11 @@
             <returns></returns>
             
         </member>
-        <member name="M:EKG_Project.Architecture.ProcessSync.SendProcessingEvent(EKG_Project.Architecture.ToGUIItem)">
+        <member name="M:EKG_Project.Architecture.ProcessSync.SendProcessingEvent(EKG_Project.Architecture.GUIMessages.IGUIMessage)">
             <summary>
             TODO
             </summary>
-            <param name="item"></param>
-            
-        </member>
-        <member name="T:EKG_Project.Architecture.ToGUICommand">
-            <summary>
-            Enum responosible for GUI command handling
-            </summary>
-            
-        </member>
-        <member name="F:EKG_Project.Architecture.ToGUICommand.ANALYSIS_ENDED">
-            <summary>
-            
-            </summary>
-            
-        </member>
-        <member name="F:EKG_Project.Architecture.ToGUICommand.EXIT_ANALYSIS">
-            <summary>
-            
-            </summary>
-            
-        </member>
-        <member name="F:EKG_Project.Architecture.ToGUICommand.TEST">
-            <summary>
-            
-            </summary>
-            
-        </member>
-        <member name="T:EKG_Project.Architecture.AnalysisState">
-            <summary>
-            Enum responsible for sending 
-            </summary>
-            
-        </member>
-        <member name="F:EKG_Project.Architecture.AnalysisState.INIT">
-            <summary>
-            Initialization
-            </summary>
-            
-        </member>
-        <member name="F:EKG_Project.Architecture.AnalysisState.IDLE">
-            <summary>
-            Idle state
-            </summary>
-            
-        </member>
-        <member name="F:EKG_Project.Architecture.AnalysisState.STOP_ANALYSIS">
-            <summary>
-            Stop Analysis
-            </summary>
-            
-        </member>
-        <member name="F:EKG_Project.Architecture.AnalysisState.TIMEOUT">
-            <summary>
-            Timeout
-            </summary>
+            <param name="message"></param>
             
         </member>
         <member name="T:EKG_Project.GUI.AnalysisControl">
@@ -255,11 +272,11 @@
             AnalysisControl
             </summary>
         </member>
-        <member name="M:EKG_Project.GUI.AnalysisControl.analyzeEvent(EKG_Project.Architecture.ToGUIItem)">
+        <member name="M:EKG_Project.GUI.AnalysisControl.analyzeEvent(EKG_Project.Architecture.GUIMessages.IGUIMessage)">
              <summary>
              analyzeEvent - do not delete - just develop - will be used by both GUI and Architects
              </summary>
-             <param name="item"></param>
+             <param name="message"></param>
             
         </member>
         <member name="M:EKG_Project.GUI.AnalysisControl.#ctor(EKG_Project.Architecture.ProcessSync,EKG_Project.GUI.Window_ECG,System.Windows.Controls.TabItem,System.Threading.SynchronizationContext)">
@@ -286,7 +303,7 @@
             AnalysisControlTest
             </summary>
         </member>
-        <member name="M:EKG_Project.GUI.AnalysisControlTest.analyzeEvent(EKG_Project.Architecture.ToGUIItem)">
+        <member name="M:EKG_Project.GUI.AnalysisControlTest.analyzeEvent(EKG_Project.Architecture.GUIMessages.IGUIMessage)">
              <summary>
              analyzeEvent - do not delete - just develop - will be used by both GUI and Architects
              </summary>

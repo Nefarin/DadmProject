@@ -8,7 +8,7 @@ namespace EKG_Project.Modules
 {
     #region Documentation
     /// <summary>
-    /// Common interface for modules.
+    /// Common interface for modules (will be extended in future!)
     /// </summary>
     /// 
     #endregion
@@ -57,10 +57,13 @@ namespace EKG_Project.Modules
         #endregion
         void Abort();
 
+        #region Doocumentation
         /// <summary>
-        /// 
+        /// Check if module is runnable (if during parameters choosing its checkbox was filled)
         /// </summary>
         /// <returns></returns>
+        /// 
+        #endregion
         bool Runnable();
     }
 }

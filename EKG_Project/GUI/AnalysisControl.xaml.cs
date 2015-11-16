@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using EKG_Project.Architecture;
+using EKG_Project.Architecture.ProcessingStates;
+using EKG_Project.Architecture.GUIMessages;
 
 namespace EKG_Project.GUI
 {
@@ -15,31 +17,19 @@ namespace EKG_Project.GUI
     {
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
-            _communication.sendGUIMessage(new ToProcessingItem(AnalysisState.STOP_ANALYSIS, null));
+            _communication.SendGUIMessage(new Abort());
         }
 
         #region Documentation
         /// <summary>
         /// analyzeEvent - do not delete - just develop - will be used by both GUI and Architects
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="message"></param>
         ///
         #endregion
-        private void analyzeEvent(ToGUIItem item)
+        private void analyzeEvent(IGUIMessage message)
         {
-            switch (item.Command)
-            {
-                case ToGUICommand.ANALYSIS_ENDED:
-                    break;
-                case ToGUICommand.EXIT_ANALYSIS:
-                    _communication.ToGUIEvent -= _analysisEvent;
-                    _parent.closeAnalysisTab(_parentTab);
-                    break;
-                case ToGUICommand.TEST:
-                    break;
-                default:
-                    break;
-            }
+            message.Read(this);
         }
     }
 }
