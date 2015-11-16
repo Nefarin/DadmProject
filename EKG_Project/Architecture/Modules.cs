@@ -1,20 +1,37 @@
 ﻿using EKG_Project.Modules;
+using EKG_Project.Modules.Atrial_Fibr;
+using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.Flutter;
+using EKG_Project.Modules.Heart_Axis;
+using EKG_Project.Modules.Heart_Class;
+using EKG_Project.Modules.HRT;
+using EKG_Project.Modules.HRV1;
+using EKG_Project.Modules.HRV2;
+using EKG_Project.Modules.HRV_DFA;
+using EKG_Project.Modules.QT_Disp;
+using EKG_Project.Modules.R_Peaks;
+using EKG_Project.Modules.SIG_EDR;
+using EKG_Project.Modules.Sleep_Apnea;
+using EKG_Project.Modules.ST_Segment;
+using EKG_Project.Modules.T_Wave_Alt;
+using EKG_Project.Modules.Waves;
+
 using System.Collections.Generic;
 
 namespace EKG_Project.Architecture
 {
     public class Modules
     {
-        public List<Module> ECG_Modules;
+        public List<IModule> ECG_IModules;
 
-        public Modules(SortedList<Module, ModuleParams> modulesList)
+        public Modules(SortedList<IModule, ModuleParams> modulesList)
         {
-            foreach (KeyValuePair<Module, ModuleParams> modulesData in modulesList)
+            foreach (KeyValuePair<IModule, ModuleParams> modulesData in modulesList)
             {
-                Module module = modulesData.Key;
+                IModule module = modulesData.Key;
                 ModuleParams parameters = modulesData.Value;
                 module.Init(parameters);
-                ECG_Modules.Add(module);
+                ECG_IModules.Add(module);
             }
         }
 
@@ -22,7 +39,7 @@ namespace EKG_Project.Architecture
         {
             get
             {
-                return (ECG_Baseline) ECG_Modules[0];
+                return (ECG_Baseline) ECG_IModules[0];
             }
         }
 
@@ -30,15 +47,15 @@ namespace EKG_Project.Architecture
         {
             get
             {
-                return (R_Peaks) ECG_Modules[1];
+                return (R_Peaks) ECG_IModules[1];
             }
         }
 
-        public TestModule Get_TestModule
+        public TestModule Get_TestIModule
         {
             get
             {
-                return (TestModule) ECG_Modules[2];
+                return (TestModule) ECG_IModules[2];
             }
         }
     }

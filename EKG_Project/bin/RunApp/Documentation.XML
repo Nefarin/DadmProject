@@ -211,6 +211,30 @@
             </summary>
             
         </member>
+        <member name="P:EKG_Project.Architecture.Processing.Modules">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.Processing.Communication">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.Processing.TimeoutState">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.Architecture.Processing.Stop">
+            <summary>
+            
+            </summary>
+            
+        </member>
         <member name="M:EKG_Project.Architecture.Processing.#ctor(EKG_Project.Architecture.ProcessSync)">
             <summary>
             
@@ -253,6 +277,7 @@
             TODO
             </summary>
             <param name="timeout"></param>
+            <param name="state"></param>
             <returns></returns>
             
         </member>
@@ -277,6 +302,30 @@
              analyzeEvent - do not delete - just develop - will be used by both GUI and Architects
              </summary>
              <param name="message"></param>
+            
+        </member>
+        <member name="P:EKG_Project.GUI.AnalysisControl.Communication">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.GUI.AnalysisControl.Parent">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.GUI.AnalysisControl.ParentTab">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.GUI.AnalysisControl.AnalysisEvent">
+            <summary>
+            
+            </summary>
             
         </member>
         <member name="M:EKG_Project.GUI.AnalysisControl.#ctor(EKG_Project.Architecture.ProcessSync,EKG_Project.GUI.Window_ECG,System.Windows.Controls.TabItem,System.Threading.SynchronizationContext)">
@@ -307,7 +356,31 @@
              <summary>
              analyzeEvent - do not delete - just develop - will be used by both GUI and Architects
              </summary>
-             <param name="item"></param>
+             <param name="message"></param>
+            
+        </member>
+        <member name="P:EKG_Project.GUI.AnalysisControlTest.Communication">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.GUI.AnalysisControlTest.Parent">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.GUI.AnalysisControlTest.ParentTab">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="P:EKG_Project.GUI.AnalysisControlTest.AnalysisEvent">
+            <summary>
+            
+            </summary>
             
         </member>
         <member name="M:EKG_Project.GUI.AnalysisControlTest.#ctor(EKG_Project.Architecture.ProcessSync,EKG_Project.GUI.Window_ECG,System.Windows.Controls.TabItem,System.Threading.SynchronizationContext)">
@@ -362,7 +435,7 @@
         </member>
         <member name="T:EKG_Project.Modules.IModule">
             <summary>
-            Common interface for modules.
+            Common interface for modules (will be extended in future!)
             </summary>
             
         </member>
@@ -401,9 +474,16 @@
         </member>
         <member name="M:EKG_Project.Modules.IModule.Runnable">
             <summary>
-            
+            Check if module is runnable (if during parameters choosing its checkbox was filled)
             </summary>
             <returns></returns>
+            
+        </member>
+        <member name="T:EKG_Project.Modules.ModuleParams">
+            <summary>
+            Basic parameters will be provided to modules in successors to this class (for example if R_Peaks should be calculated by Hilbert Transform or something else)
+            </summary>
+            
         </member>
         <member name="T:EKG_Project.Modules.TestModule">
             <summary>

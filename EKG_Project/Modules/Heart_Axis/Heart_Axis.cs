@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.Heart_Axis
 {
-    public class Heart_Axis : IModule
+    public partial class Heart_Axis : IModule
     {
         public void Abort()
         {
