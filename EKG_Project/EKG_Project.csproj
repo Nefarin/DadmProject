@@ -112,9 +112,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Params.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Alg.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Params.cs" />
+    <Compile Include="Modules\Flutter\Flutter.cs" />
+    <Compile Include="Modules\Flutter\Flutter_Alg.cs" />
+    <Compile Include="Modules\Flutter\Flutter_Params.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis_Alg.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis_Params.cs" />
     <Compile Include="Modules\IModule.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks.cs" />
@@ -122,6 +131,9 @@
     <Compile Include="Modules\R_Peaks\R_Peaks_Params.cs" />
     <Compile Include="Modules\TestModule\TestModule.cs" />
     <Compile Include="Modules\TestModule\TestModule_Params.cs" />
+    <Compile Include="Modules\Waves\Waves.cs" />
+    <Compile Include="Modules\Waves\Waves_Alg.cs" />
+    <Compile Include="Modules\Waves\Waves_Params.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -155,6 +167,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="IO\" />
+    <Folder Include="Modules\Heart_Class\" />
+    <Folder Include="Modules\HRT\" />
+    <Folder Include="Modules\HRV1\" />
+    <Folder Include="Modules\HRV2\" />
+    <Folder Include="Modules\HRV_DFA\" />
+    <Folder Include="Modules\QT_Disp\" />
+    <Folder Include="Modules\SIG_EDR\" />
+    <Folder Include="Modules\Sleep_Apnea\" />
+    <Folder Include="Modules\ST_Segment\" />
+    <Folder Include="Modules\T_Wave_Alt\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
