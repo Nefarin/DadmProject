@@ -13,7 +13,7 @@ namespace EKG_Project.Architecture
     #endregion
     public class Processing
     {
-        private int _progressStatus;
+        private Modules _modules;
 
         private ProcessSync _communication;
         private AnalysisState _command;
@@ -27,7 +27,6 @@ namespace EKG_Project.Architecture
         #endregion
         public Processing(ProcessSync communication)
         {
-            _progressStatus = 0;
             _communication = communication;
             _timeoutCommand = AnalysisState.IDLE;
         }
@@ -63,14 +62,6 @@ namespace EKG_Project.Architecture
                     case (AnalysisState.STOP_ANALYSIS):
                         run = false;
                         _communication.SendProcessingEvent(new ToGUIItem(ToGUICommand.EXIT_ANALYSIS, null));
-                        break;
-                    case (AnalysisState.ADD_TEST):
-                        _progressStatus += 20;
-                        _communication.SendProcessingEvent(new ToGUIItem(ToGUICommand.TEST, _progressStatus));
-                        break;
-                    case (AnalysisState.SUB_TEST):
-                        _progressStatus -= 20;
-                        _communication.SendProcessingEvent(new ToGUIItem(ToGUICommand.TEST, _progressStatus));
                         break;
                     default:
                         _command = AnalysisState.STOP_ANALYSIS;

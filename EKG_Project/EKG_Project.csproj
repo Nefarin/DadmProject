@@ -86,6 +86,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Architecture\Delegates.cs" />
+    <Compile Include="Architecture\Modules.cs" />
     <Compile Include="Architecture\TabContainer.cs" />
     <Compile Include="Architecture\ToGUIItem.cs" />
     <Compile Include="Architecture\ToProcessingItem.cs" />
@@ -107,6 +108,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
+    <Compile Include="Modules\ECG_Baseline.cs" />
+    <Compile Include="Modules\ECG_Baseline_Params.cs" />
+    <Compile Include="Modules\IModule.cs" />
+    <Compile Include="Modules\Module.cs" />
+    <Compile Include="Modules\ModuleParams.cs" />
+    <Compile Include="Modules\R_Peaks.cs" />
+    <Compile Include="Modules\R_Peaks_Params.cs" />
+    <Compile Include="Modules\TestModule.cs" />
+    <Compile Include="Modules\TestModule_Params.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -139,7 +149,7 @@
     <Resource Include="Architecture\README.TXT" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Modules\" />
+    <Folder Include="IO\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

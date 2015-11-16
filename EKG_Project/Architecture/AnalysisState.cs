@@ -35,7 +35,5 @@
         /// 
         #endregion
         TIMEOUT,
-        ADD_TEST,
-        SUB_TEST
     };
 }

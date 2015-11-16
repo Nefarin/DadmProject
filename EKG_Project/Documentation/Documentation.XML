@@ -279,7 +279,7 @@
         </member>
         <member name="T:EKG_Project.GUI.AnalysisControlTest">
             <summary>
-            Interaction logic for AnalysisControl.xaml - class for GUI developers
+            Test class for architects for testing architecture concepts - GUI - do not use (use AnalysisControl instead).
             </summary>
             
             <summary>
@@ -342,6 +342,57 @@
             <summary>
             InitializeComponent
             </summary>
+        </member>
+        <member name="T:EKG_Project.Modules.IModule">
+            <summary>
+            Common interface for modules.
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Modules.IModule.Init(EKG_Project.Modules.ModuleParams)">
+            <summary>
+            Initializes module.
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Modules.IModule.ProcessData(System.Int32)">
+            <summary>
+            As name says.
+            </summary>
+            <param name="numberOfSamples"></param>
+            
+        </member>
+        <member name="M:EKG_Project.Modules.IModule.Progress">
+            <summary>
+            Returns current progress in percents.
+            </summary>
+            <returns></returns>
+            
+        </member>
+        <member name="M:EKG_Project.Modules.IModule.Ended">
+            <summary>
+            Check if module processed all data points.
+            </summary>
+            <returns></returns>
+            
+        </member>
+        <member name="M:EKG_Project.Modules.IModule.Abort">
+            <summary>
+            Aborts current module.
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Modules.IModule.Runnable">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:EKG_Project.Modules.TestModule">
+            <summary>
+            Test module class.
+            </summary>
+            
         </member>
         <member name="T:EKG_Project.Properties.Resources">
             <summary>

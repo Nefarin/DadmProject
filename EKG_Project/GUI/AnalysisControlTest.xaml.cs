@@ -13,16 +13,6 @@ namespace EKG_Project.GUI
     #endregion
     public partial class AnalysisControlTest : UserControl
     {
-        private void addButton_Click(object sender, RoutedEventArgs e)
-        {
-            _communication.sendGUIMessage(new ToProcessingItem(AnalysisState.ADD_TEST, null));
-        }
-
-        private void subButton_Click(object sender, RoutedEventArgs e)
-        {
-            _communication.sendGUIMessage(new ToProcessingItem(AnalysisState.SUB_TEST, null));
-        }
-
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
             _communication.sendGUIMessage(new ToProcessingItem(AnalysisState.STOP_ANALYSIS, null));
