@@ -124,13 +124,43 @@
     <Compile Include="Modules\Heart_Axis\Heart_Axis.cs" />
     <Compile Include="Modules\Heart_Axis\Heart_Axis_Alg.cs" />
     <Compile Include="Modules\Heart_Axis\Heart_Axis_Params.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class_Alg.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class_Params.cs" />
+    <Compile Include="Modules\HRT\HRT.cs" />
+    <Compile Include="Modules\HRT\HRT_Alg.cs" />
+    <Compile Include="Modules\HRT\HRT_Params.cs" />
+    <Compile Include="Modules\HRV1\HRV1.cs" />
+    <Compile Include="Modules\HRV1\HRV1_Alg.cs" />
+    <Compile Include="Modules\HRV1\HRV1_Params.cs" />
+    <Compile Include="Modules\HRV2\HRV2.cs" />
+    <Compile Include="Modules\HRV2\HRV2_Alg.cs" />
+    <Compile Include="Modules\HRV2\HRV2_Params.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA_Alg.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
     <Compile Include="Modules\IModule.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Params.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Alg.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Params.cs" />
+    <Compile Include="Modules\SIG_EDR\SIG_EDR.cs" />
+    <Compile Include="Modules\SIG_EDR\SIG_EDR_Alg.cs" />
+    <Compile Include="Modules\SIG_EDR\SIG_EDR_Params.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Alg.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Params.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment_Alg.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment_Params.cs" />
     <Compile Include="Modules\TestModule\TestModule.cs" />
     <Compile Include="Modules\TestModule\TestModule_Params.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Alg.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Params.cs" />
     <Compile Include="Modules\Waves\Waves.cs" />
     <Compile Include="Modules\Waves\Waves_Alg.cs" />
     <Compile Include="Modules\Waves\Waves_Params.cs" />
@@ -167,16 +197,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="IO\" />
-    <Folder Include="Modules\Heart_Class\" />
-    <Folder Include="Modules\HRT\" />
-    <Folder Include="Modules\HRV1\" />
-    <Folder Include="Modules\HRV2\" />
-    <Folder Include="Modules\HRV_DFA\" />
-    <Folder Include="Modules\QT_Disp\" />
-    <Folder Include="Modules\SIG_EDR\" />
-    <Folder Include="Modules\Sleep_Apnea\" />
-    <Folder Include="Modules\ST_Segment\" />
-    <Folder Include="Modules\T_Wave_Alt\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
