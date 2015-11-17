@@ -34,29 +34,5 @@ namespace EKG_Project.Architecture
                 ECG_IModules.Add(module);
             }
         }
-
-        public ECG_Baseline Get_ECG_Baseline
-        {
-            get
-            {
-                return (ECG_Baseline) ECG_IModules[0];
-            }
-        }
-
-        public R_Peaks Get_R_Peaks
-        {
-            get
-            {
-                return (R_Peaks) ECG_IModules[1];
-            }
-        }
-
-        public TestModule Get_TestIModule
-        {
-            get
-            {
-                return (TestModule) ECG_IModules[2];
-            }
-        }
     }
 }
