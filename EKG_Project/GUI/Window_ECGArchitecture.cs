@@ -3,6 +3,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using EKG_Project.Architecture;
+using EKG_Project.Architecture.GUIMessages;
+using EKG_Project.Architecture.ProcessingStates;
 
 namespace EKG_Project.GUI
 {
@@ -94,7 +96,7 @@ namespace EKG_Project.GUI
         {
             for (int i = 0; i < _tabContainer.ThreadList.Count; i++)
             {
-                _tabContainer.CommunicationList[i].sendGUIMessage(new ToProcessingItem(AnalysisState.STOP_ANALYSIS, null));
+                _tabContainer.CommunicationList[i].SendGUIMessage(new Abort());
             }
         }
 
@@ -111,7 +113,7 @@ namespace EKG_Project.GUI
             int currentTabIndex = analysisTabControl.SelectedIndex;
             if (currentTabIndex != -1)
             {
-                _tabContainer.CommunicationList[currentTabIndex].sendGUIMessage(new ToProcessingItem(AnalysisState.STOP_ANALYSIS, null));
+                _tabContainer.CommunicationList[currentTabIndex].SendGUIMessage(new Abort());
             }
 
         }
@@ -129,7 +131,7 @@ namespace EKG_Project.GUI
             _tabContainer.CommunicationList.Insert(count - 1, communication);
 
 
-            UserControl analysisControl = new AnalysisControl(communication, this, tab, _context);
+            UserControl analysisControl = new AnalysisControlTest(communication, this, tab, _context);
             _tabContainer.AnalysisControlList.Insert(count - 1, analysisControl);
             tab.Content = analysisControl;
 

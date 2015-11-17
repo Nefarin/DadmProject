@@ -32,3 +32,9 @@ C:\Users\Marek\Desktop\DadmProject\EKG_Project\obj\RunApp\GUI\Window_ECG.baml
 C:\Users\Marek\Desktop\DadmProject\EKG_Project\obj\RunApp\EKG_Project.g.resources
 C:\Users\Marek\Desktop\DadmProject\EKG_Project\obj\RunApp\EKG_Project.Properties.Resources.resources
 C:\Users\Marek\Desktop\DadmProject\EKG_Project\obj\RunApp\EKG_Project.csproj.GenerateResource.Cache
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\GUI\AnalysisControlTest.g.cs
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\GUI\AnalysisControlTest.baml
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\MathNet.Filtering.dll
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\MathNet.Numerics.dll
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\MathNet.Filtering.xml
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\MathNet.Numerics.xml

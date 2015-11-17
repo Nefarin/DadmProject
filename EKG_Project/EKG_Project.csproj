@@ -49,8 +49,17 @@
     <StartupObject>EKG_Project.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MathNet.Filtering.0.2.0-alpha\lib\net40\MathNet.Filtering.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MathNet.Numerics.3.8.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -73,6 +82,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\AnalysisControlTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\Window_ECG.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -82,23 +95,84 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Architecture\Delegates.cs" />
+    <Compile Include="Architecture\GUIMessages\AnalysisEnded.cs" />
+    <Compile Include="Architecture\GUIMessages\IGUIMessage.cs" />
+    <Compile Include="Architecture\GUIMessages\TestMessage.cs" />
+    <Compile Include="Architecture\Modules.cs" />
+    <Compile Include="Architecture\ProcessingStates\Abort.cs" />
+    <Compile Include="Architecture\ProcessingStates\Idle.cs" />
+    <Compile Include="Architecture\ProcessingStates\Init.cs" />
+    <Compile Include="Architecture\ProcessingStates\IProcessingState.cs" />
+    <Compile Include="Architecture\ProcessingStates\TestState.cs" />
     <Compile Include="Architecture\TabContainer.cs" />
-    <Compile Include="Architecture\ToGUIItem.cs" />
-    <Compile Include="Architecture\ToProcessingItem.cs" />
     <Compile Include="Architecture\Processing.cs" />
     <Compile Include="Architecture\ProcessSync.cs" />
-    <Compile Include="Architecture\ToGUICommand.cs" />
-    <Compile Include="Architecture\AnalysisState.cs" />
     <Compile Include="GUI\AnalysisControl.xaml.cs">
       <DependentUpon>AnalysisControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\AnalysisControlArchitecture.cs" />
+    <Compile Include="GUI\AnalysisControlTest.xaml.cs">
+      <DependentUpon>AnalysisControlTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\AnalysisControlTestArchitecture.cs" />
     <Compile Include="GUI\Window_ECG.xaml.cs">
       <DependentUpon>Window_ECG.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Params.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Alg.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Params.cs" />
+    <Compile Include="Modules\Flutter\Flutter.cs" />
+    <Compile Include="Modules\Flutter\Flutter_Alg.cs" />
+    <Compile Include="Modules\Flutter\Flutter_Params.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis_Alg.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis_Params.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class_Alg.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class_Params.cs" />
+    <Compile Include="Modules\HRT\HRT.cs" />
+    <Compile Include="Modules\HRT\HRT_Alg.cs" />
+    <Compile Include="Modules\HRT\HRT_Params.cs" />
+    <Compile Include="Modules\HRV1\HRV1.cs" />
+    <Compile Include="Modules\HRV1\HRV1_Alg.cs" />
+    <Compile Include="Modules\HRV1\HRV1_Params.cs" />
+    <Compile Include="Modules\HRV2\HRV2.cs" />
+    <Compile Include="Modules\HRV2\HRV2_Alg.cs" />
+    <Compile Include="Modules\HRV2\HRV2_Params.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA_Alg.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
+    <Compile Include="Modules\IModule.cs" />
+    <Compile Include="Modules\ModuleParams.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Params.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks_Alg.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks_Params.cs" />
+    <Compile Include="Modules\SIG_EDR\SIG_EDR.cs" />
+    <Compile Include="Modules\SIG_EDR\SIG_EDR_Alg.cs" />
+    <Compile Include="Modules\SIG_EDR\SIG_EDR_Params.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Alg.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Params.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment_Alg.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment_Params.cs" />
+    <Compile Include="Modules\TestModule\TestModule.cs" />
+    <Compile Include="Modules\TestModule\TestModule_Params.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Alg.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Params.cs" />
+    <Compile Include="Modules\Waves\Waves.cs" />
+    <Compile Include="Modules\Waves\Waves_Alg.cs" />
+    <Compile Include="Modules\Waves\Waves_Params.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -116,6 +190,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -131,7 +206,7 @@
     <Resource Include="Architecture\README.TXT" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Modules\" />
+    <Folder Include="IO\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
