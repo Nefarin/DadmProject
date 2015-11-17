@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\Marek\Desktop\DadmProject\EKG_Project\obj\RunApp\
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\obj\RunApp\
 EKG_Project
 none
 false
 DEBUG;TRACE
-C:\Users\Marek\Desktop\DadmProject\EKG_Project\App.xaml
-2-1159659355
+C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\App.xaml
+3-2046539132
 
-15-1866306217
-13738642453
-GUI\AnalysisControl.xaml;GUI\Window_ECG.xaml;
+75-519664605
+161532461968
+GUI\AnalysisControl.xaml;GUI\AnalysisControlTest.xaml;GUI\Window_ECG.xaml;
 
 False
 
