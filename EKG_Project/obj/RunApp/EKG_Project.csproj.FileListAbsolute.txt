@@ -38,3 +38,9 @@ C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\MathNet.F
 C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\MathNet.Numerics.dll
 C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\MathNet.Filtering.xml
 C:\Users\Marek\Desktop\DADM_Project\EKG_Project\EKG_Project\bin\RunApp\MathNet.Numerics.xml
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\MathNet.Filtering.dll
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\MathNet.Numerics.dll
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\MathNet.Filtering.xml
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\MathNet.Numerics.xml
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\obj\RunApp\GUI\AnalysisControlTest.g.cs
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\obj\RunApp\GUI\AnalysisControlTest.baml
