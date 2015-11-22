@@ -165,6 +165,9 @@
     <Compile Include="Modules\ST_Segment\ST_Segment.cs" />
     <Compile Include="Modules\ST_Segment\ST_Segment_Alg.cs" />
     <Compile Include="Modules\ST_Segment\ST_Segment_Params.cs" />
+    <Compile Include="Modules\TestModule2\Test_Module2_Alg.cs" />
+    <Compile Include="Modules\TestModule2\Test_Module2.cs" />
+    <Compile Include="Modules\TestModule2\Test_Module2_Param.cs" />
     <Compile Include="Modules\TestModule\TestModule.cs" />
     <Compile Include="Modules\TestModule\TestModule_Params.cs" />
     <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt.cs" />
