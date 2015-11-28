@@ -44,3 +44,6 @@ C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\MathNet.Filtering.xml
 C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\MathNet.Numerics.xml
 C:\Users\Marek\Desktop\DadmProject\EKG_Project\obj\RunApp\GUI\AnalysisControlTest.g.cs
 C:\Users\Marek\Desktop\DadmProject\EKG_Project\obj\RunApp\GUI\AnalysisControlTest.baml
+E:\GitHub\DadmProject\EKG_Project\bin\RunApp\EKG_Project.exe.config
+E:\GitHub\DadmProject\EKG_Project\obj\RunApp\EKG_Project.exe
+E:\GitHub\DadmProject\EKG_Project\obj\RunApp\EKG_Project.pdb

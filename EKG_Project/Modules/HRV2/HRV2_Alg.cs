@@ -8,5 +8,6 @@ namespace EKG_Project.Modules.HRV2
 {
     public partial class HRV2 : IModule
     {
+        //alala
     }
 }
