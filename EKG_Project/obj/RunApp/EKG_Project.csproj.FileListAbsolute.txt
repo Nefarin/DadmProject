@@ -79,3 +79,4 @@ C:\Users\Marek\Desktop\Dadm_Project\EKG_Project\DadmProject\EKG_Project\obj\RunA
 C:\Users\Marek\Desktop\Dadm_Project\EKG_Project\DadmProject\EKG_Project\obj\RunApp\EKG_Project.g.resources
 C:\Users\Marek\Desktop\Dadm_Project\EKG_Project\DadmProject\EKG_Project\obj\RunApp\EKG_Project.Properties.Resources.resources
 C:\Users\Marek\Desktop\Dadm_Project\EKG_Project\DadmProject\EKG_Project\obj\RunApp\EKG_Project.csproj.GenerateResource.Cache
+C:\Users\Marek\Desktop\Dadm_Project\EKG_Project\DadmProject\EKG_Project\obj\RunApp\EKG_Project_Content.g.cs

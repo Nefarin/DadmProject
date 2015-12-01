@@ -134,6 +134,7 @@
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
     <Compile Include="IO\TempInput.cs" />
+    <Compile Include="IO\WFDBTest.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Params.cs" />
@@ -221,7 +222,11 @@
   <ItemGroup>
     <Resource Include="Architecture\README.TXT" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="DLL\Placeholder.txt" />
+    <Content Include="DLL\WfdbCsharpLib.dll" />
+    <Content Include="DLL\WfdbCsharpLib.pdb" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Matlab\placeholder.txt" />
   </ItemGroup>
