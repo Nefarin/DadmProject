@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EKG_Project.GUI"
+             xmlns:oxy="http://oxyplot.org/wpf"
              mc:Ignorable="d" d:DesignWidth="300" Height="144.915">
     <Grid DockPanel.Dock="Top" Height="Auto" Margin="10,10,10,20" HorizontalAlignment="Center" VerticalAlignment="Center">
         <ProgressBar x:Name="progressBar" HorizontalAlignment="Left" Height="36" Margin="10,31,0,0" VerticalAlignment="Top" Width="260"/>
@@ -11,5 +12,10 @@
         <TextBlock x:Name="moduleName" TextAlignment="Center" HorizontalAlignment="Center" Margin="51,10,49,0" TextWrapping="Wrap" Text="Module Name" VerticalAlignment="Top" Width="180" Foreground="Black"/>
         <Button x:Name="abortButton" Content="Abort" HorizontalAlignment="Left" Margin="96,83,0,0" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="runButton" Content="Run" HorizontalAlignment="Left" Margin="0,83,0,0" VerticalAlignment="Top" Width="75" Click="runButton_Click"/>
+        <oxy:Plot Name="TestPlot" Title="{Binding PlotTitle}" Margin="-105,110,-84,-199">
+            <oxy:Plot.Series>
+                <oxy:LineSeries ItemsSource="{Binding PlotPoints}"/>
+            </oxy:Plot.Series>
+        </oxy:Plot>
     </Grid>
 </UserControl>
