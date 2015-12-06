@@ -11,22 +11,19 @@
 *.userprefs
 
 # Build results
-EKG_Project/[Dd]ebug/
-EKG_Project/[Dd]ebugPublic/
-EKG_Project/[Rr]elease/
-EKG_Project/[Rr]eleases/
-EKG_Project/[Rr]unApp/
-EKG_Project/x64/
-EKG_Project/x86/
-EKG_Project/build/
-EKG_Project/bld/
-EKG_Project/[Bb]in/
-EKG_Project/[Oo]bj/
-EKG_Project/[Oo]bj/[Rr]unApp/
-EKG_Project/Documentation
-EKG_Project\Documentation
-EKG_Project\[Oo]bj\[Rr]unApp/
-EKG_Project\[Bb]in\[Rr]unApp/
+EKG_Project/[Dd]ebug/**
+EKG_Project/[Dd]ebugPublic/**
+EKG_Project/[Rr]elease/**
+EKG_Project/[Rr]eleases/**
+EKG_Project/[Rr]unApp/**
+EKG_Project/x64/**
+EKG_Project/x86/**
+EKG_Project/build/**
+EKG_Project/bld/**
+EKG_Project/[Bb]in/**
+EKG_Project/[Oo]bj/**
+EKG_Project/[Oo]bj/[Rr]unApp/**
+EKG_Project/Documentation/**
 
 # Visual Studio 2015 cache/options directory
 .vs/
