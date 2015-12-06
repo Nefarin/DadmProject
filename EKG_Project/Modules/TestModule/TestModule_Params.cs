@@ -1,6 +1,4 @@
-﻿using System;
-
-
+﻿
 namespace EKG_Project.Modules
 {
     public class TestModule_Params : ModuleParams
