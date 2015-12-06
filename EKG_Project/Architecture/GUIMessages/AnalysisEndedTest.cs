@@ -9,7 +9,7 @@ namespace EKG_Project.Architecture.GUIMessages
     /// </summary>
     ///
     #endregion
-    public class AnalysisEnded : IGUIMessage
+    public class AnalysisEndedTest : IGUIMessage
     {
         #region Documentation
         /// <summary>
@@ -20,7 +20,7 @@ namespace EKG_Project.Architecture.GUIMessages
         #endregion
         public void Read(UserControl ctrl)
         {
-            AnalysisControl control = (AnalysisControl) ctrl;
+            AnalysisControlTest control = (AnalysisControlTest)ctrl;
             control.Communication.ToGUIEvent -= control.AnalysisEvent;
             control.Parent.closeAnalysisTab(control.ParentTab);
         }

@@ -53,6 +53,19 @@
             <param name="ctrl"></param>
             
         </member>
+        <member name="T:EKG_Project.Architecture.GUIMessages.AnalysisEndedTest">
+             <summary>
+             
+             </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.GUIMessages.AnalysisEndedTest.Read(System.Windows.Controls.UserControl)">
+            <summary>
+            
+            </summary>
+            <param name="ctrl"></param>
+            
+        </member>
         <member name="T:EKG_Project.Architecture.GUIMessages.IGUIMessage">
             <summary>
             
@@ -93,6 +106,20 @@
             
         </member>
         <member name="M:EKG_Project.Architecture.ProcessingStates.Abort.Process(EKG_Project.Architecture.Processing,EKG_Project.Architecture.ProcessingStates.IProcessingState@)">
+            <summary>
+            
+            </summary>
+            <param name="process"></param>
+            <param name="timeoutState"></param>
+            
+        </member>
+        <member name="T:EKG_Project.Architecture.ProcessingStates.AbortTest">
+            <summary>
+            
+            </summary>
+            
+        </member>
+        <member name="M:EKG_Project.Architecture.ProcessingStates.AbortTest.Process(EKG_Project.Architecture.Processing,EKG_Project.Architecture.ProcessingStates.IProcessingState@)">
             <summary>
             
             </summary>

@@ -80,3 +80,13 @@ C:\Users\Marek\Desktop\Dadm_Project\EKG_Project\DadmProject\EKG_Project\obj\RunA
 C:\Users\Marek\Desktop\Dadm_Project\EKG_Project\DadmProject\EKG_Project\obj\RunApp\EKG_Project.Properties.Resources.resources
 C:\Users\Marek\Desktop\Dadm_Project\EKG_Project\DadmProject\EKG_Project\obj\RunApp\EKG_Project.csproj.GenerateResource.Cache
 C:\Users\Marek\Desktop\Dadm_Project\EKG_Project\DadmProject\EKG_Project\obj\RunApp\EKG_Project_Content.g.cs
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\OxyPlot.dll
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\OxyPlot.Wpf.dll
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\OxyPlot.Xps.dll
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\OxyPlot.pdb
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\OxyPlot.xml
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\OxyPlot.Wpf.pdb
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\OxyPlot.Wpf.xml
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\OxyPlot.Xps.pdb
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\bin\RunApp\OxyPlot.Xps.xml
+C:\Users\Marek\Desktop\DadmProject\EKG_Project\obj\RunApp\EKG_Project_Content.g.cs

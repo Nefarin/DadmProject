@@ -108,10 +108,12 @@
     </Compile>
     <Compile Include="Architecture\Delegates.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEnded.cs" />
+    <Compile Include="Architecture\GUIMessages\AnalysisEndedTest.cs" />
     <Compile Include="Architecture\GUIMessages\IGUIMessage.cs" />
     <Compile Include="Architecture\GUIMessages\TestMessage.cs" />
     <Compile Include="Architecture\Modules.cs" />
     <Compile Include="Architecture\ProcessingStates\Abort.cs" />
+    <Compile Include="Architecture\ProcessingStates\AbortTest.cs" />
     <Compile Include="Architecture\ProcessingStates\Idle.cs" />
     <Compile Include="Architecture\ProcessingStates\Init.cs" />
     <Compile Include="Architecture\ProcessingStates\IProcessingState.cs" />

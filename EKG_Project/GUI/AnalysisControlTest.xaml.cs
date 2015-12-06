@@ -65,7 +65,7 @@ namespace EKG_Project.GUI
 
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
-            _communication.SendGUIMessage(new Abort());
+            _communication.SendGUIMessage(new AbortTest());
         }
 
         #region Documentation

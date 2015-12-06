@@ -131,7 +131,7 @@ namespace EKG_Project.GUI
             _tabContainer.CommunicationList.Insert(count - 1, communication);
 
 
-            UserControl analysisControl = new AnalysisControlTest(communication, this, tab, _context);
+            UserControl analysisControl = new AnalysisControl(communication, this, tab, _context);
             _tabContainer.AnalysisControlList.Insert(count - 1, analysisControl);
             tab.Content = analysisControl;
 
