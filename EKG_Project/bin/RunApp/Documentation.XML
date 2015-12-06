@@ -433,6 +433,14 @@
             InitializeComponent
             </summary>
         </member>
+        <member name="F:EKG_Project.IO.TempInput.pathIn">
+            <summary>
+            TO DO
+            </summary>
+            <param name="pathIn"></param>
+            <param name="pathOut"></param>
+            
+        </member>
         <member name="T:EKG_Project.Modules.IModule">
             <summary>
             Common interface for modules (will be extended in future!)
