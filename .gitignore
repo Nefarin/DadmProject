@@ -11,34 +11,34 @@
 *.userprefs
 
 # Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-[Rr]unApp/
-x64/
-x86/
-build/
-bld/
-[Bb]in/
-[Oo]bj/
-[Oo]bj/[Rr]unApp/
-[Oo]bj/[Rr]unApp
+EKG_Project/[Dd]ebug/
+EKG_Project/[Dd]ebugPublic/
+EKG_Project/[Rr]elease/
+EKG_Project/[Rr]eleases/
+EKG_Project/[Rr]unApp/
+EKG_Project/x64/
+EKG_Project/x86/
+EKG_Project/build/
+EKG_Project/bld/
+EKG_Project/[Bb]in/
+EKG_Project/[Oo]bj/
+EKG_Project/[Oo]bj/[Rr]unApp/
+EKG_Project/Documentation
 
 # Visual Studio 2015 cache/options directory
 .vs/
 
 # MSTest test Results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
+EKG_Project/[Tt]est[Rr]esult*/
+EKG_Project/[Bb]uild[Ll]og.*
 
 # NUNIT
 *.VisualState.xml
 TestResult.xml
 
 # Build Results of an ATL Project
-[Dd]ebugPS/
-[Rr]eleasePS/
+EKG_Project/[Dd]ebugPS/
+EKG_Project/[Rr]eleasePS/
 dlldata.c
 
 # DNX
