@@ -1,0 +1,278 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EFE339A0-2E66-496C-8A74-F84B670D3DA9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EKG_Project</RootNamespace>
+    <AssemblyName>EKG_Project</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RunApp|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\RunApp\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+    <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>EKG_Project.App</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MathNet.Filtering.0.2.0-alpha\lib\net40\MathNet.Filtering.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MathNet.Numerics.3.8.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>packages\OxyPlot.Core.1.0.0-unstable1886\lib\net45\OxyPlot.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <HintPath>packages\OxyPlot.Wpf.1.0.0-unstable1886\lib\net45\OxyPlot.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OxyPlot.Xps, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\OxyPlot.Wpf.1.0.0-unstable1886\lib\net45\OxyPlot.Xps.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="GUI\AnalysisControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\AnalysisControlTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ChooseModule.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\ECG_BASELINE.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\Flutter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\R_peaks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\SaveButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\Window_ECG.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Architecture\Delegates.cs" />
+    <Compile Include="Architecture\GUIMessages\AnalysisEnded.cs" />
+    <Compile Include="Architecture\GUIMessages\AnalysisEndedTest.cs" />
+    <Compile Include="Architecture\GUIMessages\IGUIMessage.cs" />
+    <Compile Include="Architecture\GUIMessages\TestMessage.cs" />
+    <Compile Include="Architecture\Modules.cs" />
+    <Compile Include="Architecture\ProcessingStates\Abort.cs" />
+    <Compile Include="Architecture\ProcessingStates\AbortTest.cs" />
+    <Compile Include="Architecture\ProcessingStates\Idle.cs" />
+    <Compile Include="Architecture\ProcessingStates\Init.cs" />
+    <Compile Include="Architecture\ProcessingStates\IProcessingState.cs" />
+    <Compile Include="Architecture\ProcessingStates\TestState.cs" />
+    <Compile Include="Architecture\TabContainer.cs" />
+    <Compile Include="Architecture\Processing.cs" />
+    <Compile Include="Architecture\ProcessSync.cs" />
+    <Compile Include="GUI\AnalysisControl.xaml.cs">
+      <DependentUpon>AnalysisControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\AnalysisControlArchitecture.cs" />
+    <Compile Include="GUI\AnalysisControlTest.xaml.cs">
+      <DependentUpon>AnalysisControlTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\AnalysisControlTestArchitecture.cs" />
+    <Compile Include="GUI\ChooseModule.xaml.cs">
+      <DependentUpon>ChooseModule.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ECGPlot.cs" />
+    <Compile Include="GUI\ECG_BASELINE.xaml.cs">
+      <DependentUpon>ECG_BASELINE.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Flutter.xaml.cs">
+      <DependentUpon>Flutter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\R_peaks.xaml.cs">
+      <DependentUpon>R_peaks.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\SaveButton.xaml.cs">
+      <DependentUpon>SaveButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Window_ECG.xaml.cs">
+      <DependentUpon>Window_ECG.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GUI\Window_ECGArchitecture.cs" />
+    <Compile Include="IO\TempInput.cs" />
+    <Compile Include="IO\WFDBTest.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Params.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Alg.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Params.cs" />
+    <Compile Include="Modules\Flutter\Flutter.cs" />
+    <Compile Include="Modules\Flutter\Flutter_Alg.cs" />
+    <Compile Include="Modules\Flutter\Flutter_Params.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis_Alg.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis_Params.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class_Alg.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class_Params.cs" />
+    <Compile Include="Modules\HRT\HRT.cs" />
+    <Compile Include="Modules\HRT\HRT_Alg.cs" />
+    <Compile Include="Modules\HRT\HRT_Params.cs" />
+    <Compile Include="Modules\HRV1\HRV1.cs" />
+    <Compile Include="Modules\HRV1\HRV1_Alg.cs" />
+    <Compile Include="Modules\HRV1\HRV1_Params.cs" />
+    <Compile Include="Modules\HRV2\HRV2.cs" />
+    <Compile Include="Modules\HRV2\HRV2_Alg.cs" />
+    <Compile Include="Modules\HRV2\HRV2_Params.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA_Alg.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
+    <Compile Include="Modules\IModule.cs" />
+    <Compile Include="Modules\ModuleParams.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Params.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks_Alg.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks_Params.cs" />
+    <Compile Include="Modules\SIG_EDR\SIG_EDR.cs" />
+    <Compile Include="Modules\SIG_EDR\SIG_EDR_Alg.cs" />
+    <Compile Include="Modules\SIG_EDR\SIG_EDR_Params.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Alg.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Params.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment_Alg.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment_Params.cs" />
+    <Compile Include="Modules\TestModule2\Test_Module2_Alg.cs" />
+    <Compile Include="Modules\TestModule2\Test_Module2.cs" />
+    <Compile Include="Modules\TestModule2\Test_Module2_Param.cs" />
+    <Compile Include="Modules\TestModule\TestModule.cs" />
+    <Compile Include="Modules\TestModule\TestModule_Params.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Alg.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Params.cs" />
+    <Compile Include="Modules\Waves\Waves.cs" />
+    <Compile Include="Modules\Waves\Waves_Alg.cs" />
+    <Compile Include="Modules\Waves\Waves_Params.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Architecture\README.TXT" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DLL\Placeholder.txt" />
+    <Content Include="DLL\WfdbCsharpLib.dll" />
+    <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="Matlab\TextFile1.txt" />
+    <Resource Include="Resources\TextFile1.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
