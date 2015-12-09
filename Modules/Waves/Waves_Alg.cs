@@ -18,7 +18,7 @@ namespace EKG_Project.Modules.Waves
 
         static public Vector<double> HaarDWT(Vector<double> signal, int n)
         {
-            //Work just like wavedec but use only haar wavelet
+           
             // http://www.mathworks.com/help/wavelet/ref/wavedec.html
             int decompSize = signal.Count();
             double sqrt2 = Math.Sqrt(2);
