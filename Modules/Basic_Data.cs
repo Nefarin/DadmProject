@@ -13,6 +13,8 @@ namespace EKG_Project.IO
         private uint _sampleAmount;
         private List<Tuple<string, Vector<double>>> _signals;
 
+        public  Basic_Data() {}
+
         public uint Frequency
         {
             get
