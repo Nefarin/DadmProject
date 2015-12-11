@@ -17,7 +17,7 @@ namespace EKG_Project.Modules.ECG_Baseline
 
                 for (int i = 0; i < signal_extension.Count; i++)
                 {
-                    signal_extended[i] = signal_extension[i];                   // powielenie piewszej próbki sygnału wejściowego
+                    signal_extended[i] = signal_extension[i];                   //powielenie piewszej próbki sygnału wejściowego
                 }
 
                 for (int i = 0; i < signal_size; i++)
