@@ -148,8 +148,8 @@ namespace EKG_Project.IO
         public uint getSampleAmount(Vector<double> signal)
         {
             uint sampleAmount = 0;
-            if(signal != null)
-                sampleAmount = (uint) signal.Count;
+            if (signal != null)
+                sampleAmount = (uint)signal.Count;
             return sampleAmount;
 
         }

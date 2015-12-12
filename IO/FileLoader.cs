@@ -8,5 +8,6 @@ namespace EKG_Project.IO
 {
     class FileLoader : IECGConverter
     {
+        public FileLoader() { }
     }
 }
