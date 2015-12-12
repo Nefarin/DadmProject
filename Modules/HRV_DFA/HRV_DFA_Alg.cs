@@ -14,7 +14,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main(string[] args)             
         {
-            //Test Main
+            //Test Main 2
 
         }
     }
