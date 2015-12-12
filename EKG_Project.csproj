@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.App</StartupObject>
+    <StartupObject>EKG_Project.IO.FileLoader</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -175,8 +175,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
+    <Compile Include="IO\FileLoader.cs" />
+    <Compile Include="IO\IECGConverter.cs" />
     <Compile Include="IO\TempInput.cs" />
     <Compile Include="IO\WFDBTest.cs" />
+    <Compile Include="IO\XMLConverter.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Data.cs" />
