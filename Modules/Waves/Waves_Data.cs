@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.Waves
 {
-    class Waves_Data : IO.ECG_Data
+    class Waves_Data : ECG_Data
     {
     }
 }

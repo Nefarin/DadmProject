@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.Atrial_Fibr
 {
-    class Atrial_Fibr_Data : IO.ECG_Data
+    class Atrial_Fibr_Data : ECG_Data
     {
     }
 }

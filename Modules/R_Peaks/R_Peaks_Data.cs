@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.R_Peaks
 {
-    class R_Peaks_Data : IO.ECG_Data
+    class R_Peaks_Data : ECG_Data
     {
     }
 }

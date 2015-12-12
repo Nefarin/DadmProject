@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.HRT
 {
-    class HRT_Data : IO.ECG_Data
+    class HRT_Data : ECG_Data
     {
     }
 }

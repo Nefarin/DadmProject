@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.T_Wave_Alt
 {
-    class T_Wave_Alt_Data : IO.ECG_Data
+    class T_Wave_Alt_Data : ECG_Data
     {
     }
 }

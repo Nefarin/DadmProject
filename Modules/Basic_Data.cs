@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace EKG_Project.IO
+namespace EKG_Project.Modules
 {
-    class Basic_Data : ECG_Data
+    public class Basic_Data : ECG_Data
     {
         private uint _frequency;
         private uint _sampleAmount;
         private List<Tuple<string, Vector<double>>> _signals;
 
-        public  Basic_Data() {}
+        public Basic_Data() {}
 
         public uint Frequency
         {

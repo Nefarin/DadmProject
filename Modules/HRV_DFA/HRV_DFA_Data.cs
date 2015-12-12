@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
-    class HRV_DFA_Data : IO.ECG_Data
+    class HRV_DFA_Data : ECG_Data
     {
     }
 }
