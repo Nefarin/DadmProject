@@ -9,11 +9,11 @@
         <TreeView x:Name="treeViewModules" Width="310" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:ModuleOption}" ItemsSource="{Binding Path=Suboptions}">
-                    <StackPanel Orientation="Horizontal" Margin="4">
-                        <CheckBox Name="chk" Margin="2" Tag="{Binding Path=Name}" IsChecked="{Binding Path=Set, Mode=TwoWay}" IsEnabled="{Binding Path=Parent.Set}"/>
-                            <Label Name="txt" Content="{Binding Path=Name}"></Label>
-                        <Button Name="btn" IsEnabled="{Binding Path=Set}" Click="btn_Click">Options</Button>
-                    </StackPanel>
+                    <DockPanel LastChildFill="True" Width="150">
+                        <CheckBox Name="chk" Margin="2,6,2,2" DockPanel.Dock="Left" Tag="{Binding Path=Name}" IsChecked="{Binding Path=Set, Mode=TwoWay}" IsEnabled="{Binding Path=Parent.Set}"/>
+                        <Label Name="txt" Content="{Binding Path=Name}"/>
+                        <Button Name="btn" IsEnabled="{Binding Path=Set}" Click="btn_Click" HorizontalAlignment="Right" Margin="0,2">Options</Button>
+                    </DockPanel>
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
         </TreeView>
