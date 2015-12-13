@@ -30,8 +30,8 @@
             <TabControl.Resources>
                 <DataTemplate x:Key="tabHeader" DataType="TabItem">
                     <DockPanel>
-                        <Button Name="btnDelete" DockPanel.Dock="Right" Margin="5,0,0,0" Padding="0" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
-                        </Button>
+                        <!--<Button Name="btnDelete" DockPanel.Dock="Right" Margin="5,0,0,0" Padding="0" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}" Click="btnDelete_Click">
+                        </Button>-->
                         <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" />
                     </DockPanel>
                 </DataTemplate>

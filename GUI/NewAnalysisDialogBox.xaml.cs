@@ -19,16 +19,9 @@ namespace EKG_Project.GUI
     /// </summary>
     public partial class NewAnalysisDialogBox : Window
     {
-        bool cancelled = false;
-
         public string Answer
         {
             get { return txtAnswer.Text; }
-        }
-
-        public bool Cancelled
-        {
-            get { return this.cancelled; }
         }
 
         public NewAnalysisDialogBox(string defaultAnswer = "")
@@ -46,11 +39,6 @@ namespace EKG_Project.GUI
         {
             txtAnswer.SelectAll();
             txtAnswer.Focus();
-        }
-
-        private void btnDialogCancel_Click(object sender, RoutedEventArgs e)
-        {
-            this.cancelled = true;
         }
     }
 }
