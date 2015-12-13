@@ -15,6 +15,7 @@ namespace EKG_Project.GUI
         private App _parentApp;
         private TabContainer _tabContainer;
         private SynchronizationContext _context;
+        private bool addSelected = true;
 
         #region Documentation
         /// <summary>
@@ -102,10 +103,15 @@ namespace EKG_Project.GUI
 
         private void newAnalysis(object sender, RoutedEventArgs e)
         {
-            analysisTabControl.DataContext = null;
-            addTabItem();
-            analysisTabControl.DataContext = _tabContainer.TabItems;
-            analysisTabControl.SelectedIndex = _tabContainer.TabItems.Count - 2;
+            if (addSelected)
+            {
+                addSelected = false;
+                addTabItem();
+                analysisTabControl.DataContext = null;
+                analysisTabControl.DataContext = _tabContainer.TabItems;
+                analysisTabControl.SelectedIndex = _tabContainer.TabItems.Count - 2;
+            }
+            addSelected = true;
         }
 
         private void closeAnalysis(object sender, RoutedEventArgs e)
@@ -144,20 +150,20 @@ namespace EKG_Project.GUI
 
             _tabContainer.TabItems.Insert(count - 1, tab);
             return tab;
+
         }
 
         private void analysisTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             TabItem tab = analysisTabControl.SelectedItem as TabItem;
-
+            
             if (tab != null && tab.Header != null)
             {
+                addSelected = false;
                 if (tab.Header.Equals("+"))
                 {
-                    analysisTabControl.DataContext = null;
-                    addTabItem();
-                    analysisTabControl.DataContext = _tabContainer.TabItems;
-                    analysisTabControl.SelectedIndex = _tabContainer.TabItems.Count - 2;
+                    addSelected = true;
+                    newAnalysis(null, null);              
                 }
             }
         }
