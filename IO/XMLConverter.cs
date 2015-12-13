@@ -6,23 +6,54 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
+using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
-    class XMLConverter : FileLoader
+    class XMLConverter : IECGConverter
     {
-        string pathIn;
+        string analysisName;
         XmlNodeList sequences;
+        uint sampleAmount;
 
-        public XMLConverter(string XMLPath) 
+        public XMLConverter(string XMLAnalysisName) 
         {
-            pathIn = XMLPath;
+            analysisName = XMLAnalysisName;
+        }
+
+        public Basic_Data SaveResult()
+        {
+            Basic_Data data = new Basic_Data();
+            return data;
+        }
+
+        public void ConvertFile(string path)
+        {
+            loadXMLFile(path);
+            Basic_Data data = new Basic_Data();
+            data.Frequency = getFrequency();
+            data.Signals = getSignals();
+            data.SampleAmount = sampleAmount;
+            
+            foreach(var property in data.GetType().GetProperties()) 
+            {
+
+                if (property.GetValue(data, null) == null)
+                {
+                    //throw new Exception(); // < - robić coś takiego?
+                    //Console.WriteLine("Właściwość jest pusta");
+
+                }
+                //else
+                    //Console.WriteLine("Właściwość jest wypełniona");
+            }
+
         }
         
-        public void loadXMLFile(string pathIn)
+        public void loadXMLFile(string path)
         {
             XmlDocument XMLFile = new XmlDocument();
-            XMLFile.Load(pathIn);
+            XMLFile.Load(path);
 
             XmlNamespaceManager manager = new XmlNamespaceManager(XMLFile.NameTable);
             manager.AddNamespace("hl7", "urn:hl7-org:v3");
@@ -90,9 +121,9 @@ namespace EKG_Project.IO
             return readedScale;
         }
 
-        public List<Tuple<string, Vector<double>>> getSignal()
+        public List<Tuple<string, Vector<double>>> getSignals()
         {
-            List<Tuple<string, Vector<double>>> Signals = new List<Tuple<string,Vector<double>>>();
+            List<Tuple<string, Vector<double>>> Signals = new List<Tuple<string, Vector<double>>>();
 
             foreach (XmlNode sequence in sequences)
             {
@@ -113,6 +144,7 @@ namespace EKG_Project.IO
                     string digits = value["digits"].InnerText;
                     readedDigits = stringToVector(digits);
                     readedDigits = normalizeSignal(readedDigits);
+                    sampleAmount = getSampleAmount(readedDigits);
                 }
 
                 Tuple<string, Vector<double>> readedSignal = Tuple.Create(readedCode, readedDigits);
@@ -147,32 +179,35 @@ namespace EKG_Project.IO
 
         public uint getSampleAmount(Vector<double> signal)
         {
-            uint sampleAmount = 0;
             if (signal != null)
                 sampleAmount = (uint)signal.Count;
             return sampleAmount;
 
         }
 
-        /*
+        
         static void Main()
         {
-            XMLConverter xml = new XMLConverter(@"C:\temp\2.xml");
-            xml.loadXMLFile(xml.pathIn);
+            
+            XMLConverter xml = new XMLConverter("Analysis1");
+            xml.ConvertFile(@"C:\temp\2.xml");
+            /*
+            xml.loadXMLFile(@"C:\temp\2.xml");
             uint f = xml.getFrequency();
             Console.WriteLine("Frequency: " + f + " Hz");
 
-            List<Tuple<string, Vector<double>>> signals = xml.getSignal();
+            List<Tuple<string, Vector<double>>> signals = xml.getSignals();
             foreach (var tuple in signals)
             {
                 Console.WriteLine("Lead name: " + tuple.Item1);
                 Console.WriteLine("Signal Vector in uV: " + tuple.Item2);
-                uint sampleAmount = xml.getSampleAmount(tuple.Item2);
-                Console.WriteLine("Sample amount: " + sampleAmount.ToString());
+                uint samples = xml.sampleAmount;
+                Console.WriteLine("Sample amount: " + samples.ToString());
                 Console.WriteLine();
 
-            }
+            }*/
+            
             Console.Read();
-        }*/
+        }
     }
 }

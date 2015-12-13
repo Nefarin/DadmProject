@@ -4,39 +4,72 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
-using EKG_Project.Modules;
+
 
 namespace EKG_Project.IO
 {
-    class FileLoader : IECGConverter
+    class FileLoader
     {
+        IECGConverter converter;
+        string extension;
+        string analysisName;
+
         public FileLoader() { }
 
         void Load(string path)
         {
-            string extension = Path.GetExtension(path);
-            Console.WriteLine("GetExtension('{0}') returns '{1}'",
-                path, extension);
+            switch (extension)
+            {
+                case ".xml":
+                    converter = new XMLConverter(analysisName);
+                    break;
+                case ".txt":
+                    converter = new ASCIIConverter(analysisName);
+                    break;
+                case ".dat":
+                    converter = new MITBIHConverter(analysisName);
+                    break;
+            }
+
+            converter.ConvertFile(path);
+            converter.SaveResult();
+
+
         }
 
-        public Basic_Data SaveResult() 
+        void Validate(string path)
         {
-            Basic_Data data = new Basic_Data();
-            return data;
+            try
+            {
+                Directory.Exists(Path.GetDirectoryName(path));
+                
+                    if (File.Exists(path))
+                    {
+                        extension = Path.GetExtension(path);
+                    }
+                    /*
+                    else
+                    {
+                        throw new FileNotFoundException(); // < - robić coś takiego?
+                    }
+                     */
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+                
         }
 
-        public void ConvertFile(string path)
-        {
-
-        }
-
-
-        
+        /*
         static void Main()
         {
             FileLoader fl = new FileLoader();
+            fl.Validate(@"C:\temp\2.xml");
+            Console.WriteLine("Rozszerzenie: " + fl.extension);
             fl.Load(@"C:\temp\2.xml");
+            Console.WriteLine("Konwerter: " + fl.converter.GetType().Name);
             Console.Read();
-        }
+        }*/
     }
 }
