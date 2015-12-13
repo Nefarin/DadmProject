@@ -24,5 +24,7 @@ namespace EKG_Project.GUI
         {
             InitializeComponent();
         }
+
     }
+
 }
