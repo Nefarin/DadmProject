@@ -122,8 +122,11 @@ namespace EKG_Project.GUI
         {
             int count = _tabContainer.TabItems.Count;
 
-            TabItem tab = new TabItem();
-            tab.Header = string.Format("Analysis {0}", count);
+            NewAnalysisDialogBox analysisNameDialogBox = new NewAnalysisDialogBox(string.Format("Analysis {0}", count));
+            analysisNameDialogBox.ShowDialog();
+
+            TabItem tab = tab = new TabItem();
+            tab.Header = analysisNameDialogBox.Answer;
             tab.Name = string.Format("analysis{0}", count);
             tab.HeaderTemplate = analysisTabControl.FindResource("tabHeader") as DataTemplate;
 
@@ -138,7 +141,6 @@ namespace EKG_Project.GUI
             Thread analysisThread = new Thread(ecgAnalysis.run);
             _tabContainer.ThreadList.Insert(count - 1, analysisThread);
             analysisThread.Start();
-
 
             _tabContainer.TabItems.Insert(count - 1, tab);
             return tab;
