@@ -114,6 +114,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="GUI\ModulePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\NewAnalysisDialogBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\R_peaks.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -162,6 +170,13 @@
     </Compile>
     <Compile Include="GUI\Flutter.xaml.cs">
       <DependentUpon>Flutter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ModuleOption.cs" />
+    <Compile Include="GUI\ModulePanel.xaml.cs">
+      <DependentUpon>ModulePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\NewAnalysisDialogBox.xaml.cs">
+      <DependentUpon>NewAnalysisDialogBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\R_peaks.xaml.cs">
       <DependentUpon>R_peaks.xaml</DependentUpon>
@@ -287,6 +302,7 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="GUI\images\addNewAnalysis.png" />
     <Resource Include="Matlab\TextFile1.txt" />
     <Resource Include="Resources\TextFile1.txt" />
   </ItemGroup>

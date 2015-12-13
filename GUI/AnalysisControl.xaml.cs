@@ -32,9 +32,5 @@ namespace EKG_Project.GUI
             message.Read(this);
         }
 
-        private void ChooseModule_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
