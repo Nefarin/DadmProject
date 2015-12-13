@@ -106,6 +106,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="GUI\CloseButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\ECG_BASELINE.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -119,6 +123,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\NewAnalysisDialogBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\PdfButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\PlayButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -164,6 +176,9 @@
     <Compile Include="GUI\ChooseModule.xaml.cs">
       <DependentUpon>ChooseModule.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\CloseButton.xaml.cs">
+      <DependentUpon>CloseButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\ECGPlot.cs" />
     <Compile Include="GUI\ECG_BASELINE.xaml.cs">
       <DependentUpon>ECG_BASELINE.xaml</DependentUpon>
@@ -177,6 +192,12 @@
     </Compile>
     <Compile Include="GUI\NewAnalysisDialogBox.xaml.cs">
       <DependentUpon>NewAnalysisDialogBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\PdfButton.xaml.cs">
+      <DependentUpon>PdfButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\PlayButton.xaml.cs">
+      <DependentUpon>PlayButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\R_peaks.xaml.cs">
       <DependentUpon>R_peaks.xaml</DependentUpon>
@@ -302,6 +323,10 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="GUI\images\close.png" />
+    <Resource Include="GUI\images\save.png" />
+    <Resource Include="GUI\images\Play.png" />
+    <Resource Include="GUI\images\pdf.png" />
     <Resource Include="GUI\images\addNewAnalysis.png" />
     <Resource Include="Matlab\TextFile1.txt" />
     <Resource Include="Resources\TextFile1.txt" />

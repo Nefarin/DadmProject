@@ -16,6 +16,11 @@
         </Grid.RowDefinitions>
 
         <local:ModulePanel Grid.Column="0" Grid.Row="0" Margin="0,0,0,0"/>
+        <WrapPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <local:PlayButton/>
+            <local:PdfButton/>
+            <local:CloseButton />
+        </WrapPanel>
         <Button x:Name="exitButton" Grid.Column="1" Grid.Row="1" Content="Close" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Click="exitButton_Click"/>
     </Grid>
 </UserControl>
