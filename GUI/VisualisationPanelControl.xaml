@@ -8,8 +8,5 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <TabControl Name="EcgDynamicTab" ItemsSource="{Binding}" TabStripPlacement="Left"/>
-
-
-
     </Grid>
 </UserControl>

@@ -143,6 +143,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\VisualisationPlotControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\Window_ECG.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -205,6 +209,9 @@
     </Compile>
     <Compile Include="GUI\VisualisationPanelControl.xaml.cs">
       <DependentUpon>VisualisationPanelControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\VisualisationPlotControl.xaml.cs">
+      <DependentUpon>VisualisationPlotControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\Window_ECG.xaml.cs">
       <DependentUpon>Window_ECG.xaml</DependentUpon>
@@ -324,6 +331,8 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="GUI\images\forward.png" />
+    <Resource Include="GUI\images\backward.png" />
     <Resource Include="GUI\images\loadfile.png" />
     <Resource Include="GUI\images\close.png" />
     <Resource Include="GUI\images\save.png" />

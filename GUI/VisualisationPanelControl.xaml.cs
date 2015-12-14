@@ -27,10 +27,14 @@ namespace EKG_Project.GUI
         public VisualisationPanelControl()
         {
             InitializeComponent();
+
+            VisualisationPlotControl ecgVPControl = new VisualisationPlotControl();
+
             visulisationTabsList = new List<TabItem>();
 
             TabItem ecgBaselineTab = new TabItem();
             ecgBaselineTab.Header = "ECGBaseline";
+            ecgBaselineTab.Content = ecgVPControl;
             visulisationTabsList.Add(ecgBaselineTab);
 
             TabItem r_peaksTab = new TabItem();
