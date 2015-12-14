@@ -41,6 +41,11 @@ namespace EKG_Project.GUI
             txtPdfPath.Focus();
         }
 
+        private void ChangePdfPath (string filepath)
+        {
+            txtPdfPath.Text = filepath;
+        }
+
         private void browse_Click(object sender, RoutedEventArgs e)
         {
             var fileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -49,6 +54,7 @@ namespace EKG_Project.GUI
             {
                 case System.Windows.Forms.DialogResult.OK:
                     var file = fileDialog.FileName;
+                    ChangePdfPath(file);
                     break;
                 case System.Windows.Forms.DialogResult.Cancel:
                 default:
