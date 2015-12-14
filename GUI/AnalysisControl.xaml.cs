@@ -27,6 +27,17 @@ namespace EKG_Project.GUI
 
         }
 
+        
+
+        private void startAnalyseButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            MessageBox.Show("Starting Analyses");
+            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
+            //VisualisationPanelUserControl.UpdateLayout();
+
+        }
+
         private void pdfButton_Click(object sender, RoutedEventArgs e)
         {
             PdfPathDialogBox pdfPathDialogBox = new PdfPathDialogBox();

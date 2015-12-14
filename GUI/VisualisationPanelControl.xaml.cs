@@ -22,8 +22,6 @@ namespace EKG_Project.GUI
     {
         private List<TabItem> visulisationTabsList;
         
-
-
         public VisualisationPanelControl()
         {
             InitializeComponent();
