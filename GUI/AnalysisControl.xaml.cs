@@ -27,6 +27,13 @@ namespace EKG_Project.GUI
 
         }
 
+        private void pdfButton_Click(object sender, RoutedEventArgs e)
+        {
+            PdfPathDialogBox pdfPathDialogBox = new PdfPathDialogBox();
+            pdfPathDialogBox.ShowDialog();
+
+        }
+
         #region Documentation
         /// <summary>
         /// analyzeEvent - do not delete - just develop - will be used by both GUI and Architects

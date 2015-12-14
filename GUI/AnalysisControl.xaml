@@ -29,7 +29,7 @@
                     <Label Padding="0">Load file</Label>
                 </StackPanel>
             </Button>
-            <Button>
+            <Button x:Name="pdfButton" Click="pdfButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="images/pdf.png"/>
                     <Label Padding="0">Get pdf</Label>
