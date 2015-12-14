@@ -302,6 +302,7 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="GUI\images\loadfile.png" />
     <Resource Include="GUI\images\close.png" />
     <Resource Include="GUI\images\save.png" />
     <Resource Include="GUI\images\Play.png" />
