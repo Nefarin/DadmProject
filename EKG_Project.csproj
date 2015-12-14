@@ -138,6 +138,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="GUI\VisualisationPanelControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\Window_ECG.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -197,6 +201,9 @@
     </Compile>
     <Compile Include="GUI\SaveButton.xaml.cs">
       <DependentUpon>SaveButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\VisualisationPanelControl.xaml.cs">
+      <DependentUpon>VisualisationPanelControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\Window_ECG.xaml.cs">
       <DependentUpon>Window_ECG.xaml</DependentUpon>
