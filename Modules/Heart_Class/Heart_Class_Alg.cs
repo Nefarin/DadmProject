@@ -26,15 +26,20 @@ namespace EKG_Project.Modules.Heart_Class
             TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
             Vector<double> qrsEnd = TempInput.getSignal();
 
-            
+            TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt"); // uwaga tu mam pozniej wrzucic plik qrsR.txt
+            Vector<double> qrsR = TempInput.getSignal();
+
+
             QrsVectors newQrsVectors = new QrsVectors();
 
-            newQrsVectors.SetSignal(sig);
-            newQrsVectors.SetQrsOnset(qrsOnset);
-            newQrsVectors.SetQrsEnd(qrsEnd);
+            newQrsVectors.Signal = sig;
+            newQrsVectors.QrsOnset = qrsOnset;
+            newQrsVectors.QrsEnd = qrsEnd;
+            newQrsVectors.QrsR = qrsR;
             newQrsVectors.SetQrsComplex();
+            
 
-            Matrix<double> qrsMatrix = newQrsVectors.GetQrsComplex();
+           
 
 
    
@@ -51,28 +56,41 @@ namespace EKG_Project.Modules.Heart_Class
         public class QrsVectors
         {
             private Vector<double> _signal;
-            private static Vector<double> _qrsOnset; // docelowo int
+            private Vector<double> _qrsOnset; // docelowo int
             private Vector<double> _qrsEnd;   // docelowo int
             private int _qrsNumber;
-            private Matrix<double> _QrsComplex;
-            private Vector<double> _singleQrs;
+            private Vector<double> _qrsR;   // docelowo int
 
+            private Vector<double> _singleQrs = Vector<double>.Build.Dense(1);
+            private List<Tuple<int, Vector<double>>> _QrsComplex = new List<Tuple<int, Vector<double>>>();
 
-            public void SetSignal(Vector<double> data)
+            public Vector<double> Signal
             {
-                _signal = data;
+                get { return _signal; }
+                set { _signal = value; }
             }
 
-            public void SetQrsOnset(Vector<double> data)
+            public Vector<double> QrsOnset
             {
-                //powinien byc typ int! ale to pozniej, bo klasa TempInut nie wczytuje int
-                _qrsOnset = data;
-                _qrsNumber = _qrsOnset.Count();
+                get { return _qrsOnset; }
+                set
+                {
+                    //powinien byc typ int! ale to pozniej, bo klasa TempInut nie wczytuje int
+                    _qrsOnset = value;
+                    _qrsNumber = _qrsOnset.Count();
+                }
             }
 
-            public void SetQrsEnd(Vector<double> data)
+            public Vector<double> QrsEnd
             {
-                _qrsEnd = data;
+                get { return _qrsEnd; }
+                set { _qrsEnd = value; }
+            }
+
+            public Vector<double> QrsR
+            {
+                get { return _qrsR; }
+                set { _qrsR = value; }
             }
 
             public void SetQrsComplex()
@@ -84,18 +102,17 @@ namespace EKG_Project.Modules.Heart_Class
                     double singleQrsOnset = _qrsOnset.At(i);
                     double signleQrsEnd = _qrsEnd.At(i);
                     int qrsLength = (int)(signleQrsEnd - singleQrsOnset+1);
+                    _singleQrs = Vector<double>.Build.Dense(qrsLength);
+                    int singleQrsR = (int) _qrsR.At(i);
 
                     _signal.CopySubVectorTo(_singleQrs, sourceIndex: (int)singleQrsOnset, targetIndex: 0, count: qrsLength);
+                    Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>(singleQrsR, _singleQrs);
+                    _QrsComplex.Add(a);
 
-                    _QrsComplex.SetColumn(i, _singleQrs);
                 }
             } 
 
-            //Uwaga - kolejne zespoły QRS sa w kolumnach
-            public Matrix<double> GetQrsComplex()
-            {
-                return _QrsComplex;
-            }
+            // TODO get QrsComplex
         }
 
 
@@ -103,14 +120,14 @@ namespace EKG_Project.Modules.Heart_Class
         public class QrsComplex
         {
             static Vector<double> qrssignal;
-            static double malinowskaCoefficient;
-            static double pnRatio;
-            static double speedAmpltudeRatio;
-            static double fastSample;
-            static double qRSTime;
-            static int qrsLength = qrssignal.Count();
+            double malinowskaCoefficient;
+            double pnRatio;
+            double speedAmpltudeRatio;
+            double fastSample;
+            double qRSTime;
+            int qrsLength = qrssignal.Count();
 
-            static void CountMalinowskaFactor(Vector<double> qrssignal, uint fs)
+            void CountMalinowskaFactor(Vector<double> qrssignal, uint fs)
             {
                 double surface = Integrate(qrssignal);
                 double perimeter = Perimeter(qrssignal, fs);
@@ -122,7 +139,7 @@ namespace EKG_Project.Modules.Heart_Class
                 else malinowskaCoefficient = 0;
             }
 
-            static double Integrate(Vector<double> qrssignal)
+            double Integrate(Vector<double> qrssignal)
             {
 
                 double result = 0;
@@ -137,7 +154,7 @@ namespace EKG_Project.Modules.Heart_Class
                 return result;
             }
 
-            static double Perimeter(Vector<double> qrssignal, uint fs)
+            double Perimeter(Vector<double> qrssignal, uint fs)
             {
                 double timeBtw2points = 1 / fs;
                 double result = 0;
@@ -152,7 +169,7 @@ namespace EKG_Project.Modules.Heart_Class
                 return result;
             }
 
-            static double PnRatio(Vector<double> qrssignal)
+            double PnRatio(Vector<double> qrssignal)
             {
                 double result = 0;
                 double positiveAmplitude = 0;
@@ -173,7 +190,7 @@ namespace EKG_Project.Modules.Heart_Class
                 return result;
             }
 
-            static double SpeedAmpRatio(Vector<double> qrssignal)
+            double SpeedAmpRatio(Vector<double> qrssignal)
             {
                 double[] speed;
                 speed = new double[qrsLength - 2];
@@ -189,7 +206,7 @@ namespace EKG_Project.Modules.Heart_Class
                 return maxSpeed / maxAmp;
             }
 
-            static double FastSampleCount(Vector<double> qrssignal)
+            double FastSampleCount(Vector<double> qrssignal)
             {
                 double[] speed;
                 speed = new double[qrsLength - 1];
@@ -213,7 +230,7 @@ namespace EKG_Project.Modules.Heart_Class
                 return counter / speedLength;
             }
 
-            static double QrsDuration(Vector<double> qrssignal, uint fs)
+            double QrsDuration(Vector<double> qrssignal, uint fs)
             {
                 double samplingInterval = 1 / fs;
                 return qrsLength * samplingInterval;
