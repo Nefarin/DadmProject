@@ -20,6 +20,13 @@ namespace EKG_Project.GUI
             _communication.SendGUIMessage(new Abort());
         }
 
+        private void loadFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadFileDialogBox loadFileDialogBox = new LoadFileDialogBox();
+            loadFileDialogBox.ShowDialog();
+
+        }
+
         #region Documentation
         /// <summary>
         /// analyzeEvent - do not delete - just develop - will be used by both GUI and Architects

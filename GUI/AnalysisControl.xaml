@@ -23,7 +23,7 @@
                     <Label Padding="0">Play</Label>
                 </StackPanel>
             </Button>
-            <Button>
+            <Button x:Name="loadFileButton" Click="loadFileButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="images/loadfile.png"/>
                     <Label Padding="0">Load file</Label>
