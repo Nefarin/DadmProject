@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.Modules.Heart_Class;
+//using EKG_Project.Modules.Heart_Class;
 using EKG_Project.IO;
 
 namespace EKG_Project.Modules.Heart_Class
@@ -42,7 +42,7 @@ namespace EKG_Project.Modules.Heart_Class
             TempInput.writeFile(fs, sig);
             TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_on.txt");
             TempInput.writeFile(fs, qrsOnset);
-            TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\matrix.txt");
+            //TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\matrix.txt");
             //TempInput.writeFileM(fs, qrsMatrix);
 
         }
@@ -50,53 +50,51 @@ namespace EKG_Project.Modules.Heart_Class
 
         public class QrsVectors
         {
-            private Vector<double> signal;
-            private static Vector<double> qrsOnset; // docelowo int
-            private Vector<double> qrsEnd;   // docelowo int
-            private int qrsNumber;
-            private Matrix<double> QrsComplex; 
-            private Vector<double> singleQrs;
+            private Vector<double> _signal;
+            private static Vector<double> _qrsOnset; // docelowo int
+            private Vector<double> _qrsEnd;   // docelowo int
+            private int _qrsNumber;
+            private Matrix<double> _QrsComplex;
+            private Vector<double> _singleQrs;
 
-            public QrsVectors() { }
 
             public void SetSignal(Vector<double> data)
             {
-                signal = data;
+                _signal = data;
             }
 
             public void SetQrsOnset(Vector<double> data)
             {
                 //powinien byc typ int! ale to pozniej, bo klasa TempInut nie wczytuje int
-                qrsOnset = data;
-                qrsNumber = qrsOnset.Count();
+                _qrsOnset = data;
+                _qrsNumber = _qrsOnset.Count();
             }
 
             public void SetQrsEnd(Vector<double> data)
             {
-                qrsEnd = data;
+                _qrsEnd = data;
             }
 
             public void SetQrsComplex()
             {
                 
-                for (int i = 0; i < qrsNumber; i++)
+                for (int i = 0; i < _qrsNumber; i++)
                 {
                     
-                    double singleQrsOnset = qrsOnset.At(i);
-                    double signleQrsEnd = qrsEnd.At(i);
+                    double singleQrsOnset = _qrsOnset.At(i);
+                    double signleQrsEnd = _qrsEnd.At(i);
                     int qrsLength = (int)(signleQrsEnd - singleQrsOnset+1);
 
+                    _signal.CopySubVectorTo(_singleQrs, sourceIndex: (int)singleQrsOnset, targetIndex: 0, count: qrsLength);
 
-                    signal.CopySubVectorTo(singleQrs, (int)singleQrsOnset, (int)signleQrsEnd, qrsLength);
-
-                    QrsComplex.SetColumn(i, singleQrs);
+                    _QrsComplex.SetColumn(i, _singleQrs);
                 }
             } 
 
             //Uwaga - kolejne zespoły QRS sa w kolumnach
             public Matrix<double> GetQrsComplex()
             {
-                return QrsComplex;
+                return _QrsComplex;
             }
         }
 
