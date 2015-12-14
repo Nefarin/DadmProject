@@ -9,6 +9,7 @@ namespace EKG_Project.Modules.R_Peaks
 {
     public partial class R_Peaks : IModule
     {
+        //TO DO: parts of signal reading
         //TO DO: swap ForLoops; documentation!
 
         static void Main(string[] args)
