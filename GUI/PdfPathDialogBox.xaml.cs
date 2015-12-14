@@ -40,5 +40,20 @@ namespace EKG_Project.GUI
             txtPdfPath.SelectAll();
             txtPdfPath.Focus();
         }
+
+        private void browse_Click(object sender, RoutedEventArgs e)
+        {
+            var fileDialog = new System.Windows.Forms.OpenFileDialog();
+            var result = fileDialog.ShowDialog();
+            switch (result)
+            {
+                case System.Windows.Forms.DialogResult.OK:
+                    var file = fileDialog.FileName;
+                    break;
+                case System.Windows.Forms.DialogResult.Cancel:
+                default:
+                    break;
+            }
+        }
     }
 }
