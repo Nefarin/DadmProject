@@ -25,8 +25,9 @@
             <Button IsDefault="True" x:Name="btnDialogBrowse" Click="browse_Click" MinWidth="60" Margin="0,0,0,0" Content="_Browse Files..."/>
         </WrapPanel>
 
-        <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,15,0,0">
-            <Button IsDefault="True" x:Name="btnDialogOk" Click="btnDialogOk_Click" MinWidth="60" Margin="0,0,10,0" Content="_OK"/>
+        <WrapPanel Grid.Row="2" Grid.ColumnSpan="2"  Margin="0,15,0,0">
+            <Button IsDefault="True" x:Name="btnDialogOk" Click="btnDialogOk_Click" MinWidth="60" Margin="0,0,0,0" Content="_OK"/>
+            <Button IsDefault="False" x:Name="btnDialogCancel" Click="btnDialogCancel_Click" MinWidth="60" Margin="220,0,10,0" Content="_Cancel"/>
         </WrapPanel>
     </Grid>
 </Window>
