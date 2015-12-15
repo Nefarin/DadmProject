@@ -108,7 +108,7 @@ namespace EKG_Project.Modules.ECG_Baseline
          
             Vector<double> signal = Vector<double>.Build.DenseOfArray(input_signal);
             int signal_size = signal.Count;
-            int window_size = 4;
+            int window_size = 7;
             Vector<double> signal_filtered = Vector<double>.Build.Dense(signal_size, 0);
 
             Filter newFilter = new Filter();
