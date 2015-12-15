@@ -194,9 +194,11 @@
     <Compile Include="Modules\HRV1\HRV1.cs" />
     <Compile Include="Modules\HRV1\HRV1_Alg.cs" />
     <Compile Include="Modules\HRV1\HRV1_Params.cs" />
+    <Compile Include="Modules\HRV2\Converters.cs" />
     <Compile Include="Modules\HRV2\HRV2.cs" />
     <Compile Include="Modules\HRV2\HRV2_Alg.cs" />
     <Compile Include="Modules\HRV2\HRV2_Params.cs" />
+    <Compile Include="Modules\HRV2\SampleDataSource.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Alg.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
@@ -264,6 +266,7 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="Modules\HRV2\nsr001.txt" />
     <Resource Include="Matlab\TextFile1.txt" />
     <Resource Include="Resources\TextFile1.txt" />
   </ItemGroup>
