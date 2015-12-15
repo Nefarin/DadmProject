@@ -78,11 +78,10 @@ namespace EKG_Project.Modules.HRV_DFA
             {
                 signal_integrated[0] = 0;
                 signal_integrated[i+1] = signal_rr[i] - rr_avg;  
-                signal_integrated[i+1] = Math.Abs(signal_integrated[i+1]);
                 signal_integrated[i + 1] += signal_integrated[i];
-
+                signal_integrated[i+1] = Math.Abs(signal_integrated[i+1]);
             }
-            
+
             return signal_integrated;
         }
     }
