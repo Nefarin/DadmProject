@@ -8,5 +8,19 @@ namespace EKG_Project.Modules.Atrial_Fibr
 {
     class Atrial_Fibr_Data : IO.ECG_Data
     {
+        private List<Tuple<bool, int[],string, string>> _afDetection;   
+        public Atrial_Fibr_Data() { }
+
+        public List<Tuple<bool, int[], string, string>> AfDetection
+        {
+            get
+            {
+                return _afDetection;
+            }
+            set
+            {
+                _afDetection = value;
+            }
+        }
     }
 }
