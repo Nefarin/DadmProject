@@ -9,11 +9,11 @@ namespace EKG_Project.Modules.R_Peaks
 {
     class R_Peaks_Data : IO.ECG_Data
     {
-        private List<Tuple<string, Vector<double>>> _rPeaks; 
+        private List<Tuple<string, Vector<int>>> _rPeaks; 
 
         public R_Peaks_Data() {}
 
-        public List<Tuple<string, Vector<double>>> RPeaks
+        public List<Tuple<string, Vector<int>>> RPeaks
         {
             get
             {
