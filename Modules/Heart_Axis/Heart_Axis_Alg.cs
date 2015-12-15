@@ -16,9 +16,9 @@ namespace EKG_Project.Modules.Heart_Axis
             pseudo_tab = new double[Q - S + 1];
             for (uint i = Q; i < S; i++)
             {
-                pseudo_tab[j] = Math.Sqrt(Math.Pow(i,2)+Math.Pow(i,2));
+                pseudo_tab[j] = Math.Sqrt(Math.Pow(i, 2) + Math.Pow(i, 2));
                 j++;
-               // return pseudo_tab;
+                // return pseudo_tab;
             }
         }
 
@@ -26,7 +26,7 @@ namespace EKG_Project.Modules.Heart_Axis
         private uint Max(uint Q, uint S, double[] pseudo_tab, double[] signal)
         {
             uint max = Q;
-            for(uint i = Q; i < S; i++)
+            for (uint i = Q; i < S; i++)
             {
                 if (signal[Q] < signal[i])
                 {
@@ -42,8 +42,13 @@ namespace EKG_Project.Modules.Heart_Axis
 
         //odczytanie polozen
 
-        //rownania trygonometryczne
-        // atan((2*(ODPR2-ODPR1))/(sqrt(3)*ODPR1));
+
+        /* Trigonometrical formula - between I and II */
+        private double IandII(double I, double II)
+        {
+            double angle = Math.Atan((2 * (II - I)) / (Math.Sqrt(3) * I));
+            return angle;   // an angle in radians
+        }
 
     }
 }
