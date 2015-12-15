@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
@@ -21,22 +22,19 @@ namespace EKG_Project.Modules.HRV_DFA
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
 
-            HRV_DFA hd = new HRV_DFA();
+            HRV_DFA dfa = new HRV_DFA();
 
             // Samples to time convertion [ms]
-            Vector<double> tacho_rr = hd.TimeConvert(fs, sig.ToArray());
+            Vector<double> tacho_rr = dfa.TimeConvert(fs, sig.ToArray());
 
             // samplesOrder obtaining
-            Vector<double> samplesOrder = hd.Ordering(tacho_rr);
-
-            
+            Vector<double> samplesOrder = dfa.Ordering(tacho_rr);
 
             // Signal integration
+            Vector<double> sig_integrated = dfa.Integrate(tacho_rr);
 
-
-            Console.WriteLine(sig);
             Console.WriteLine(fs);
-            Console.WriteLine(rr_avg);
+            Console.WriteLine(sig_integrated);
             Console.ReadKey();
 
         }
@@ -71,10 +69,20 @@ namespace EKG_Project.Modules.HRV_DFA
         //function that integrates signal
         public Vector<double> Integrate(Vector<double> signal_rr)
         {
+            Vector<double> signal_integrated = Vector<double>.Build.Dense(signal_rr.Count(),0);
+
             //Average
-            double rr_avg = signal_rr.Average();
+            double rr_avg = signal_rr.Sum()/signal_rr.Count;
 
+            for (int i = 0; i < signal_rr.Count - 1; i++)
+            {
+                signal_integrated[0] = 0;
+                signal_integrated[i+1] = signal_rr[i] - rr_avg;  
+                signal_integrated[i+1] = Math.Abs(signal_integrated[i+1]);
+                signal_integrated[i + 1] += signal_integrated[i];
 
+            }
+            
             return signal_integrated;
         }
     }
