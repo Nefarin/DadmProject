@@ -14,6 +14,9 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main(string[] args)             
         {
+            //NEEDED: PREP: numberOfSamples, average, 
+            //NEEDED: MAIN: integrate, lengthN_min, lengthN_max, localTrend, fluctFn, alpha, get_n, get_Fn, get_alphas
+
             //read data from file
             TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\DADM\R_100.txt");
             uint fs = TempInput.getFrequency();
@@ -24,6 +27,7 @@ namespace EKG_Project.Modules.HRV_DFA
             //samples to time convertion [ms]
             Vector<double> tacho_rr = hd.TimeConvert(fs, sig.ToArray());  
            
+           // numberOfSamples obtaining
 
             Console.WriteLine(sig);
             Console.WriteLine(fs);
