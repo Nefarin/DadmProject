@@ -7,8 +7,8 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Automation.Peers;
+using System.Windows.Ink;
 using MathNet.Numerics.LinearAlgebra;
-//using EKG_Project.Modules.Heart_Class;
 using EKG_Project.IO;
 
 namespace EKG_Project.Modules.Heart_Class
@@ -22,8 +22,9 @@ namespace EKG_Project.Modules.Heart_Class
         double fastSample;
         double qRSTime;
         uint fs;
-        int qrsLength; // jak zrobie konstruktor klasy to musze to dodac: qrsLength = qrssignal.Count();
+        int qrsLength; 
         private Heart_Class_Data HeartClassData;
+        
 
         public Heart_Class()
         {
@@ -35,7 +36,9 @@ namespace EKG_Project.Modules.Heart_Class
             qRSTime = new double();
             fs = new uint();
             qrsLength = _qrssignal.Count();
+            //_qrsCoefficients = new List<Tuple<int, Vector<double>>> ();
             HeartClassData = new Heart_Class_Data();
+
         }
 
 
@@ -59,13 +62,13 @@ namespace EKG_Project.Modules.Heart_Class
             // uwaga tu mam pozniej wrzucic plik qrsR.txt !!!!
             HeartClass.HeartClassData.QrsR = TempInput.getSignal();
             HeartClass.SetQrsComplex(); // to nie powinna być osobna klasa ale metoda w klasie Heart_Class
+            HeartClass.HeartClassData.QrsCoefficients = HeartClass.CountCoeff(HeartClass.GetQrsComplex(), fs);
 
             TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_sig.txt");
             TempInput.writeFile(fs, HeartClass.HeartClassData.Signal);
             TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_on.txt");
             TempInput.writeFile(fs, HeartClass.HeartClassData.QrsOnset);
-            //TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\matrix.txt");
-            //TempInput.writeFileM(fs, qrsMatrix);
+
 
 
 
@@ -94,9 +97,23 @@ namespace EKG_Project.Modules.Heart_Class
                 HeartClassData.QrsComplex.Add(a);
             }
         }
-        // TODO get QrsComplex
 
-        void CountMalinowskaFactor(Vector<double> _qrssignal, uint fs)
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        public List<Tuple<int, Vector<double>>> GetQrsComplex()
+        {
+            return HeartClassData.QrsComplex;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        double CountMalinowskaFactor(Vector<double> _qrssignal, uint fs)
         {
             double surface = Integrate(_qrssignal);
             double perimeter = Perimeter(_qrssignal, fs);
@@ -106,8 +123,14 @@ namespace EKG_Project.Modules.Heart_Class
                 malinowskaCoefficient = surface / perimeter;
             }
             else malinowskaCoefficient = 0;
+            return malinowskaCoefficient;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
         double Integrate(Vector<double> _qrssignal)
         {
 
@@ -122,8 +145,14 @@ namespace EKG_Project.Modules.Heart_Class
             return result;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
         double Perimeter(Vector<double> _qrssignal, uint fs)
         {
+            qrsLength = _qrssignal.Count();
             double timeBtw2points = 1 / fs;
             double result = 0;
             double a, b;
@@ -137,6 +166,11 @@ namespace EKG_Project.Modules.Heart_Class
             return result;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
         double PnRatio(Vector<double> _qrssignal)
         {
             double result = 0;
@@ -158,10 +192,15 @@ namespace EKG_Project.Modules.Heart_Class
             return result;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
         double SpeedAmpRatio(Vector<double> _qrssignal)
         {
-            double[] speed;
-            speed = new double[qrsLength - 2];
+            qrsLength = _qrssignal.Count();
+            double[] speed = new double[qrsLength-2];
             double maxSpeed;
             double maxAmp;
 
@@ -173,11 +212,16 @@ namespace EKG_Project.Modules.Heart_Class
             maxAmp = Math.Abs(_qrssignal.Maximum() - _qrssignal.Minimum());
             return maxSpeed / maxAmp;
         }
-
+        
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
         double FastSampleCount(Vector<double> _qrssignal)
         {
-            double[] speed;
-            speed = new double[qrsLength - 1];
+            qrsLength = _qrssignal.Count();
+            double[] speed = new double[qrsLength - 1];
             double threshold;
             int counter = 0;
             int speedLength;
@@ -198,11 +242,53 @@ namespace EKG_Project.Modules.Heart_Class
             return counter / speedLength;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
         double QrsDuration(Vector<double> _qrssignal, uint fs)
         {
+            qrsLength = _qrssignal.Count();
             double samplingInterval = 1 / fs;
             return qrsLength * samplingInterval;
 
+        }
+
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        List<Tuple<int, Vector<double>>> CountCoeff(List<Tuple<int, Vector<double>>> _QrsComplex, uint fs)
+        {
+            Vector<double> _singleCoeffVect; //bedzie wektorem cech dla 1 zespołu
+            _singleCoeffVect = Vector<double>.Build.Dense(5);
+            int singleQrsR;
+            Tuple<int, Vector<double>> coeffTuple;
+            List<Tuple<int, Vector<double>>> result;
+            result = new List<Tuple<int, Vector<double>>>();
+
+            foreach (Tuple<int, Vector<double>> data in _QrsComplex)
+            {
+                _singleCoeffVect[0] = 0;
+                _singleCoeffVect[1] = 0;
+                _singleCoeffVect[2] = 0;
+                _singleCoeffVect[3] = 0;
+                _singleCoeffVect[4] = 0;
+                singleQrsR = data.Item1;
+                _singleCoeffVect[0] = CountMalinowskaFactor(data.Item2, fs);
+                _singleCoeffVect[1] = PnRatio(data.Item2);
+                _singleCoeffVect[2] = SpeedAmpRatio(data.Item2);
+                _singleCoeffVect[3] = FastSampleCount(data.Item2);
+                _singleCoeffVect[4] = QrsDuration(data.Item2, fs);
+
+
+                coeffTuple = new Tuple<int, Vector<double>>(singleQrsR, _singleCoeffVect);
+                result.Add(coeffTuple);
+            }
+            return result;
         }
 
     }

@@ -17,6 +17,7 @@ namespace EKG_Project.Modules.Heart_Class
         private Vector<double> _qrsR;            // inicjalizacja przez wczytanie Vector z pliku
         private Vector<double> _singleQrs;       // inicjalizacja w konstruktorze
         private List<Tuple<int, Vector<double>>> _QrsComplex; // inicjalizacja w kontruktorze
+        private List<Tuple<int, Vector<double>>> _qrsCoefficients;
 
         #region Documentation
         /// <summary>
@@ -102,6 +103,17 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        public List<Tuple<int, Vector<double>>> QrsCoefficients
+        {
+            get { return _qrsCoefficients; }
+            set { _qrsCoefficients = value; }
+        }
+
+        #region Documentation
+        /// <summary>
         /// Not parameterized constructor of Heart_Class_Data.cs data class
         /// </summary>
         #endregion
@@ -114,6 +126,7 @@ namespace EKG_Project.Modules.Heart_Class
             _qrsR = Vector<double>.Build.Dense(1);           
             _singleQrs = Vector<double>.Build.Dense(1);       
             _QrsComplex = new List<Tuple<int, Vector<double>>>();
+            _qrsCoefficients = new List<Tuple<int, Vector<double>>>();
             _singleQrs = Vector<double>.Build.Dense(1);
         }
     }
