@@ -7,8 +7,7 @@ using System.Globalization;
 
 namespace EKG_Project.Modules.Atrial_Fibr
 {
-    //TODO: -ustalić czy zostawiamy 128 w statystycznym, czy robimy usuwanie wartości skrajnych
-    //-cały algorym statystyczny
+    //TODO: 
     //-cały alorytm poincare, k-średnie, wartość dopasowania
     //-testy
     //-komentarze
@@ -99,7 +98,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             int dividingFactor;
             if (_method.Method== Detect_Method.STATISTIC)
             {
-                dividingFactor = 128;
+                dividingFactor = 32;
             }
             else
             {
@@ -169,7 +168,90 @@ namespace EKG_Project.Modules.Atrial_Fibr
         }
         bool detectAFStat(int[] RR, double fs )
         {
-            bool AF = false;
+            bool AF;
+            bool tprD;
+            bool seD;
+            bool rmssdD;
+
+            //Turning Punct Ratio
+            int turningPoints = 0;
+            for (int i = 1; i < (RR.Length - 1); i++)
+            {
+                if( ((RR[i - 1] < RR[i])&& (RR[i + 1] < RR[i]))|| ((RR[i - 1] > RR[i]) && (RR[i + 1] > RR[i])))
+                {
+                    turningPoints++;
+                }
+            }
+            double tpr = turningPoints / ((2 * 30- 4) / 3);
+            if (tpr < 0.77 && tpr > 0.54)
+            {
+                tprD = false;
+            }
+            else
+            {
+                tprD = true;
+            }
+
+            //Shannon Entrophy
+            int[] histogram = new int[8];
+            int maxRr = RR.Max();
+            int minRr = RR.Min();
+            double width = (maxRr - minRr) / 8;
+            double tmp = minRr;
+            for (int i=0; i < 8; i++)
+            {
+                if (i < 7)
+                {
+                    int[] elements = Array.FindAll(RR, element => (element >= tmp && element < (tmp + width)));
+                    histogram[i] = elements.Length / (32 - 8);
+                }
+                else
+                {
+                    int[] elements = Array.FindAll(RR, element => (element >= tmp && element <= (tmp + width)));
+                    histogram[i] = elements.Length / (32 - 8);
+                }
+                tmp += width;
+            }
+            double se = 0;
+            foreach (int a in histogram)
+            {
+                se -= a * Math.Log10(a) / Math.Log10(0.125);
+            }
+
+            if (se > 0.7)
+            {
+                seD = true;
+            }
+            else
+            {
+                seD = false;
+            }
+
+            //RMSSD
+            double rmssd=0;
+            for (int i=0; i < (RR.Length - 1); i++)
+            {
+                rmssd += Math.Pow((RR[i + 1] - RR[i]), 2);
+            }
+            rmssd /= (32 - 1);
+            rmssd = Math.Sqrt(rmssd);
+            rmssd /= RR.Average();
+            if (rmssd > 0.1)
+            {
+                rmssdD = true;
+            }
+            else
+            {
+                rmssdD = false;
+            }
+            if (tprD && seD && rmssdD)
+            {
+                AF = true;
+            }
+            else
+            {
+                AF = false;
+            }
             return AF;
             
         }
