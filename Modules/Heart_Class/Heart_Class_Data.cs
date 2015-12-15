@@ -4,6 +4,7 @@ using MathNet.Numerics.LinearAlgebra;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EKG_Project.Modules.Heart_Class
 {
@@ -14,7 +15,7 @@ namespace EKG_Project.Modules.Heart_Class
         private Vector<double> _qrsEnd;          // inicjalizacja przez wczytanie Vector z pliku
         private int _qrsNumber;                  // inicjalizacja przez zliczenie elementów _qrsOnset
         private Vector<double> _qrsR;            // inicjalizacja przez wczytanie Vector z pliku
-        private Vector<double> _singleQrs;       // inicjalizacja w kontruktorze
+        private Vector<double> _singleQrs;       // inicjalizacja w konstruktorze
         private List<Tuple<int, Vector<double>>> _QrsComplex; // inicjalizacja w kontruktorze
 
         #region Documentation
@@ -106,6 +107,12 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         public Heart_Class_Data()
         {
+            _signal = Vector<double>.Build.Dense(1);
+            _qrsOnset = Vector<double>.Build.Dense(1);        
+            _qrsEnd = Vector<double>.Build.Dense(1);          
+            _qrsNumber = new int();                 
+            _qrsR = Vector<double>.Build.Dense(1);           
+            _singleQrs = Vector<double>.Build.Dense(1);       
             _QrsComplex = new List<Tuple<int, Vector<double>>>();
             _singleQrs = Vector<double>.Build.Dense(1);
         }
