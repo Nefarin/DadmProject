@@ -14,7 +14,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main(string[] args)             
         {
-            //NEEDED: PREP: numberOfSamples, average, 
+            //NEEDED: PREP: average, 
             //NEEDED: MAIN: integrate, lengthN_min, lengthN_max, localTrend, fluctFn, alpha, get_n, get_Fn, get_alphas
 
             //read data from file
@@ -25,13 +25,16 @@ namespace EKG_Project.Modules.HRV_DFA
             HRV_DFA hd = new HRV_DFA();
 
             //samples to time convertion [ms]
-            Vector<double> tacho_rr = hd.TimeConvert(fs, sig.ToArray());  
-           
-           // numberOfSamples obtaining
+            Vector<double> tacho_rr = hd.TimeConvert(fs, sig.ToArray());
+
+            // samplesOrder obtaining
+            Vector<double> samplesOrder = hd.Ordering(tacho_rr);
+
+
 
             Console.WriteLine(sig);
             Console.WriteLine(fs);
-            Console.WriteLine(tacho_rr);
+            Console.WriteLine(samplesOrder);
             Console.ReadKey();
 
         }
@@ -49,6 +52,18 @@ namespace EKG_Project.Modules.HRV_DFA
             }
 
             return tachos_r;
+        }
+
+        //function for samples ordering
+        public Vector<double> Ordering(Vector<double> signal_rr)
+        {
+            // samplesOrder obtaining
+            Vector<double> samplesOrder = Vector<double>.Build.Dense(signal_rr.Count(), 0);
+            for (int i = 0; i < samplesOrder.Count; i++)
+            {
+                samplesOrder[i] = i;
+            }
+            return samplesOrder;
         }
 
     }
