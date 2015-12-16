@@ -8,5 +8,6 @@ namespace EKG_Project.IO
 {
     class ECG_Data
     {
+        public ECG_Data () {}
     }
 }
