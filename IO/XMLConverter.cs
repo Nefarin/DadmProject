@@ -147,8 +147,11 @@ namespace EKG_Project.IO
                     sampleAmount = getSampleAmount(readedDigits);
                 }
 
-                Tuple<string, Vector<double>> readedSignal = Tuple.Create(readedCode, readedDigits);
-                Signals.Add(readedSignal);
+                if (readedCode != null && readedDigits != null)
+                {
+                    Tuple<string, Vector<double>> readedSignal = Tuple.Create(readedCode, readedDigits);
+                    Signals.Add(readedSignal);
+                }
             }
             return Signals;
         }
@@ -191,22 +194,24 @@ namespace EKG_Project.IO
             
             XMLConverter xml = new XMLConverter("Analysis1");
             xml.ConvertFile(@"C:\temp\2.xml");
-            /*
+            
             xml.loadXMLFile(@"C:\temp\2.xml");
             uint f = xml.getFrequency();
             Console.WriteLine("Frequency: " + f + " Hz");
+
+            uint samples = xml.sampleAmount;
+            Console.WriteLine("Sample amount: " + samples.ToString());
+            Console.WriteLine();
 
             List<Tuple<string, Vector<double>>> signals = xml.getSignals();
             foreach (var tuple in signals)
             {
                 Console.WriteLine("Lead name: " + tuple.Item1);
                 Console.WriteLine("Signal Vector in uV: " + tuple.Item2);
-                uint samples = xml.sampleAmount;
-                Console.WriteLine("Sample amount: " + samples.ToString());
                 Console.WriteLine();
 
-            }*/
-            
+            }
+
             Console.Read();
         }
     }
