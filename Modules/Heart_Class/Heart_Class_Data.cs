@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace EKG_Project.Modules.Heart_Class
 {
-    class Heart_Class_Data : IO.ECG_Data
+    class Heart_Class_Data : ECG_Data
     {
         private Vector<double> _signal;          // inicjalizacja przez wczytanie Vector z pliku
         private Vector<double> _qrsOnset;        // inicjalizacja przez wczytanie Vector z pliku

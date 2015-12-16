@@ -219,10 +219,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
+    <Compile Include="IO\ASCIIConverter.cs" />
+    <Compile Include="IO\FileLoader.cs" />
+    <Compile Include="IO\IECGConverter.cs" />
+    <Compile Include="IO\MITBIHConverter.cs" />
     <Compile Include="IO\TempInput.cs" />
-    <Compile Include="IO\WFDBInput.cs" />
     <Compile Include="IO\WFDBTest.cs" />
-    <Compile Include="IO\XMLInput.cs" />
+    <Compile Include="IO\XMLConverter.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Data.cs" />
