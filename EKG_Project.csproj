@@ -139,11 +139,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="GUI\VisualisationDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\VisualisationPanelControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\VisualisationPlotControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\VisualisationTableControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -207,11 +215,17 @@
     <Compile Include="GUI\SaveButton.xaml.cs">
       <DependentUpon>SaveButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\VisualisationDataControl.xaml.cs">
+      <DependentUpon>VisualisationDataControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\VisualisationPanelControl.xaml.cs">
       <DependentUpon>VisualisationPanelControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\VisualisationPlotControl.xaml.cs">
       <DependentUpon>VisualisationPlotControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\VisualisationTableControl.xaml.cs">
+      <DependentUpon>VisualisationTableControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\Window_ECG.xaml.cs">
       <DependentUpon>Window_ECG.xaml</DependentUpon>
