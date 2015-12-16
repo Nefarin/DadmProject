@@ -16,6 +16,7 @@
         <ComboBox Grid.Row="0" Grid.Column="0" x:Name="comboChooseModule" Margin="0,0,0,0" VerticalAlignment="Top" SelectionChanged="comboChooseModule_SelectionChanged" HorizontalAlignment="Left" Width="121">
             <ComboBoxItem>ECG_Baseline</ComboBoxItem>
             <ComboBoxItem>R_Peaks</ComboBoxItem>
+            <ComboBoxItem>ModulePanel</ComboBoxItem>
             <ComboBoxItem>HRT</ComboBoxItem>
             <ComboBoxItem>Flutter</ComboBoxItem>
             <ComboBoxItem>HeartAxis</ComboBoxItem>
