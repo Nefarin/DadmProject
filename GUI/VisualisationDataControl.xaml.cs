@@ -28,6 +28,7 @@ namespace EKG_Project.GUI
 
             VisualisationPlotControl ecgVPControl = new VisualisationPlotControl();
             VisualisationTableControl ecgVTControl = new VisualisationTableControl();
+            VisualisationHistogramControl ecgVHControl = new VisualisationHistogramControl();
 
             visulisationDataTabsList = new List<TabItem>();
 
@@ -40,6 +41,11 @@ namespace EKG_Project.GUI
             tableControl.Header = "Table";
             tableControl.Content = ecgVTControl;
             visulisationDataTabsList.Add(tableControl);
+
+            TabItem histogramControl = new TabItem();
+            histogramControl.Header = "Histogram";
+            histogramControl.Content = ecgVHControl;
+            visulisationDataTabsList.Add(histogramControl);
 
             this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
         }

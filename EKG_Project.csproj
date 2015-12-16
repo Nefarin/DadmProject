@@ -143,6 +143,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\VisualisationHistogramControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\VisualisationPanelControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -217,6 +221,9 @@
     </Compile>
     <Compile Include="GUI\VisualisationDataControl.xaml.cs">
       <DependentUpon>VisualisationDataControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\VisualisationHistogramControl.xaml.cs">
+      <DependentUpon>VisualisationHistogramControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\VisualisationPanelControl.xaml.cs">
       <DependentUpon>VisualisationPanelControl.xaml</DependentUpon>
