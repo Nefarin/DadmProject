@@ -11,5 +11,7 @@ namespace EKG_Project.IO
     {
         Basic_Data SaveResult();
         void ConvertFile(string path);
+
+        
     }
 }
