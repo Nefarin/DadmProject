@@ -8,7 +8,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.R_Peaks
 {
-    class R_Peaks_Data : IO.ECG_Data
+    class R_Peaks_Data : ECG_Data
     {
         private List<Tuple<string, Vector<double>>> _rPeaks; 
 
