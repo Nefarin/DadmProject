@@ -93,7 +93,7 @@ namespace EKG_Project.IO
                     XmlNode origin = value["origin"];
 
                     string originValue = origin.Attributes["value"].Value;
-                    readedOrigin = Convert.ToDouble(originValue);
+                    readedOrigin = Convert.ToDouble(originValue, new System.Globalization.NumberFormatInfo());
 
                     string originUnit = origin.Attributes["unit"].Value; //zwykle uV
 
@@ -114,7 +114,7 @@ namespace EKG_Project.IO
                     XmlNode scale = value["scale"];
 
                     string scaleValue = scale.Attributes["value"].Value;
-                    readedScale = Convert.ToDouble(scaleValue);
+                    readedScale = Convert.ToDouble(scaleValue, new System.Globalization.NumberFormatInfo());
                     string scaleUnit = scale.Attributes["unit"].Value; //uV
                 }
             }
@@ -144,7 +144,7 @@ namespace EKG_Project.IO
                     string digits = value["digits"].InnerText;
                     readedDigits = stringToVector(digits);
                     readedDigits = normalizeSignal(readedDigits);
-                    sampleAmount = getSampleAmount(readedDigits);
+                    getSampleAmount(readedDigits);
                 }
 
                 if (readedCode != null && readedDigits != null)
@@ -185,7 +185,6 @@ namespace EKG_Project.IO
             if (signal != null)
                 sampleAmount = (uint)signal.Count;
             return sampleAmount;
-
         }
 
         
@@ -193,9 +192,10 @@ namespace EKG_Project.IO
         {
             
             XMLConverter xml = new XMLConverter("Analysis1");
-            xml.ConvertFile(@"C:\temp\2.xml");
+            xml.ConvertFile(@"C:\temp\6.xml");
             
-            xml.loadXMLFile(@"C:\temp\2.xml");
+            xml.loadXMLFile(@"C:\temp\6.xml");
+
             uint f = xml.getFrequency();
             Console.WriteLine("Frequency: " + f + " Hz");
 
