@@ -44,6 +44,7 @@ namespace EKG_Project.Modules.R_Peaks
             {
                 return _fs;
             }
+            //set?
         }
 
 

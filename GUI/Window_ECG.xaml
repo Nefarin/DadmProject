@@ -37,6 +37,5 @@
                 </DataTemplate>
             </TabControl.Resources>
         </TabControl>
-
     </Grid>
 </Window>

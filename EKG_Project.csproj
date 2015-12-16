@@ -14,21 +14,6 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -61,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.IO.XMLConverter</StartupObject>
+    <StartupObject>EKG_Project.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -87,6 +72,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -129,15 +115,35 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="GUI\NewAnalysisDialogBox.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="GUI\LoadFileDialogBox.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\ModulePanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\NewAnalysisDialogBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\PdfPathDialogBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\R_peaks.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\SaveButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\VisualisationPanelControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\VisualisationPlotControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -182,8 +188,18 @@
     <Compile Include="GUI\Flutter.xaml.cs">
       <DependentUpon>Flutter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\LoadFileDialogBox.xaml.cs">
+      <DependentUpon>LoadFileDialogBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ModuleOption.cs" />
+    <Compile Include="GUI\ModulePanel.xaml.cs">
+      <DependentUpon>ModulePanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\NewAnalysisDialogBox.xaml.cs">
       <DependentUpon>NewAnalysisDialogBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\PdfPathDialogBox.xaml.cs">
+      <DependentUpon>PdfPathDialogBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\R_peaks.xaml.cs">
       <DependentUpon>R_peaks.xaml</DependentUpon>
@@ -191,22 +207,22 @@
     <Compile Include="GUI\SaveButton.xaml.cs">
       <DependentUpon>SaveButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\VisualisationPanelControl.xaml.cs">
+      <DependentUpon>VisualisationPanelControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\VisualisationPlotControl.xaml.cs">
+      <DependentUpon>VisualisationPlotControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Window_ECG.xaml.cs">
       <DependentUpon>Window_ECG.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
-    <Compile Include="IO\ASCIIConverter.cs" />
-    <Compile Include="IO\Basic_Data_Worker.cs" />
-    <Compile Include="IO\ECG_Worker.cs" />
-    <Compile Include="IO\FileLoader.cs" />
-    <Compile Include="IO\IECGConverter.cs" />
-    <Compile Include="IO\IECG_Worker.cs" />
-    <Compile Include="IO\MITBIHConverter.cs" />
     <Compile Include="IO\TempInput.cs" />
+    <Compile Include="IO\WFDBInput.cs" />
     <Compile Include="IO\WFDBTest.cs" />
-    <Compile Include="IO\XMLConverter.cs" />
+    <Compile Include="IO\XMLInput.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Data.cs" />
@@ -238,20 +254,25 @@
     <Compile Include="Modules\HRV1\HRV1_Alg.cs" />
     <Compile Include="Modules\HRV1\HRV1_Data.cs" />
     <Compile Include="Modules\HRV1\HRV1_Params.cs" />
+    <Compile Include="Modules\HRV2\Converters.cs" />
     <Compile Include="Modules\HRV2\HRV2.cs" />
     <Compile Include="Modules\HRV2\HRV2_Alg.cs" />
     <Compile Include="Modules\HRV2\HRV2_Data.cs" />
     <Compile Include="Modules\HRV2\HRV2_Params.cs" />
+    <Compile Include="Modules\HRV2\SampleDataSource.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Alg.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Data.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
     <Compile Include="Modules\IModule.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
+    <Compile Include="Modules\QT_Disp\QTCalculation.cs" />
+    <Compile Include="Modules\QT_Disp\QTIntervalStatistics.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Data.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Params.cs" />
+    <Compile Include="Modules\QT_Disp\TWave.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Alg.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Data.cs" />
@@ -298,6 +319,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="IO\data\100.atr" />
+    <None Include="IO\data\100.dat" />
+    <None Include="IO\data\100.hea" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -317,21 +341,23 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="Modules\HRV2\nsr001.txt" />
+    <Resource Include="IO\data\2.xml" />
+    <Resource Include="IO\data\3.xml" />
+    <Resource Include="IO\data\5.xml" />
+    <Resource Include="IO\data\6.xml" />
+    <Resource Include="IO\data\8.xml" />
+    <Resource Include="GUI\baseline.png" />
     <Resource Include="GUI\images\addNewAnalysis.png" />
+    <Resource Include="GUI\images\backward.png" />
+    <Resource Include="GUI\images\close.png" />
+    <Resource Include="GUI\images\forward.png" />
+    <Resource Include="GUI\images\loadfile.png" />
+    <Resource Include="GUI\images\pdf.png" />
+    <Resource Include="GUI\images\Play.png" />
+    <Resource Include="GUI\images\save.png" />
     <Resource Include="Matlab\TextFile1.txt" />
     <Resource Include="Resources\TextFile1.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
