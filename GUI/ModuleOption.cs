@@ -22,7 +22,12 @@ namespace EKG_Project.GUI
             set
             {
                 this._set = value;
-                if (!this._set)
+                if (this._set)
+                {
+                    if (this.Parent != null)
+                        this.Parent.Set = true;
+                }
+                else
                 {
                     foreach (ModuleOption option in this.Suboptions)
                         option.Set = false;
