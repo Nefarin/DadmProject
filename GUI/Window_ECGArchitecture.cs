@@ -15,6 +15,7 @@ namespace EKG_Project.GUI
         private App _parentApp;
         private TabContainer _tabContainer;
         private SynchronizationContext _context;
+        private bool addSelected = true;
 
         #region Documentation
         /// <summary>
@@ -102,10 +103,15 @@ namespace EKG_Project.GUI
 
         private void newAnalysis(object sender, RoutedEventArgs e)
         {
-            analysisTabControl.DataContext = null;
-            addTabItem();
-            analysisTabControl.DataContext = _tabContainer.TabItems;
-            analysisTabControl.SelectedIndex = _tabContainer.TabItems.Count - 2;
+            if (addSelected)
+            {
+                addSelected = false;
+                addTabItem();
+                analysisTabControl.DataContext = null;
+                analysisTabControl.DataContext = _tabContainer.TabItems;
+                analysisTabControl.SelectedIndex = _tabContainer.TabItems.Count - 2;
+            }
+            addSelected = true;
         }
 
         private void closeAnalysis(object sender, RoutedEventArgs e)
@@ -122,8 +128,11 @@ namespace EKG_Project.GUI
         {
             int count = _tabContainer.TabItems.Count;
 
-            TabItem tab = new TabItem();
-            tab.Header = string.Format("Analysis {0}", count);
+            NewAnalysisDialogBox analysisNameDialogBox = new NewAnalysisDialogBox(string.Format("Analysis {0}", count));
+            analysisNameDialogBox.ShowDialog();
+
+            TabItem tab = tab = new TabItem();
+            tab.Header = analysisNameDialogBox.Answer;
             tab.Name = string.Format("analysis{0}", count);
             tab.HeaderTemplate = analysisTabControl.FindResource("tabHeader") as DataTemplate;
 
@@ -139,23 +148,22 @@ namespace EKG_Project.GUI
             _tabContainer.ThreadList.Insert(count - 1, analysisThread);
             analysisThread.Start();
 
-
             _tabContainer.TabItems.Insert(count - 1, tab);
             return tab;
+
         }
 
         private void analysisTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             TabItem tab = analysisTabControl.SelectedItem as TabItem;
-
+            
             if (tab != null && tab.Header != null)
             {
+                addSelected = false;
                 if (tab.Header.Equals("+"))
                 {
-                    analysisTabControl.DataContext = null;
-                    addTabItem();
-                    analysisTabControl.DataContext = _tabContainer.TabItems;
-                    analysisTabControl.SelectedIndex = _tabContainer.TabItems.Count - 2;
+                    addSelected = true;
+                    newAnalysis(null, null);              
                 }
             }
         }

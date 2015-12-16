@@ -22,12 +22,14 @@ namespace EKG_Project.GUI
     {
         ECG_BASELINE ecgBaseline;
         R_peaks rpeaks;
+        ModulePanel modulePanel;
 
         public ChooseModule()
         {
             InitializeComponent();
             this.ecgBaseline = new ECG_BASELINE(null);
             this.rpeaks = new R_peaks();
+            this.modulePanel = new ModulePanel();
 ;        }
 
         private void comboChooseModule_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -42,6 +44,10 @@ namespace EKG_Project.GUI
                 case "R_Peaks":
                     this.stackParameters.Children.RemoveRange(0, this.stackParameters.Children.Count);
                     this.stackParameters.Children.Add(this.rpeaks);
+                    break;
+                case "ModulePanel":
+                    this.stackParameters.Children.RemoveRange(0, this.stackParameters.Children.Count);
+                    this.stackParameters.Children.Add(this.modulePanel);
                     break;
                 default:
                     this.stackParameters.Children.RemoveRange(0, this.stackParameters.Children.Count);
