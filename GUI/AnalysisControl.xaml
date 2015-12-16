@@ -15,7 +15,34 @@
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
 
+        <!--<local:VisualisationPanelControl Grid.Column="1" Grid.Row="0" Margin="0,0,0,0"/>-->
+        <UserControl Name="VisualisationPanelUserControl" Content="{Binding}" Grid.Column="1" Grid.Row="0" Margin="0,0,0,0"/>
         <local:ModulePanel Grid.Column="0" Grid.Row="0" Margin="0,0,0,0"/>
-        <Button x:Name="exitButton" Grid.Column="1" Grid.Row="1" Content="Close" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Click="exitButton_Click"/>
+        <UniformGrid Grid.Row="1" Grid.Column="0" Rows="1" Columns="4" Margin="5,0,5,0">
+            <Button x:Name="startAnalyseButton" Click="startAnalyseButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="images/play.png"/>
+                    <Label Padding="0">Play</Label>
+                </StackPanel>
+            </Button>
+            <Button x:Name="loadFileButton" Click="loadFileButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="images/loadfile.png"/>
+                    <Label Padding="0">Load file</Label>
+                </StackPanel>
+            </Button>
+            <Button x:Name="pdfButton" Click="pdfButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="images/pdf.png"/>
+                    <Label Padding="0">Get pdf</Label>
+                </StackPanel>
+            </Button>
+            <Button x:Name="exitButton" Click="exitButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="images/close.png"/>
+                    <Label Padding="0">Close</Label>
+                </StackPanel>
+            </Button>
+        </UniformGrid>
     </Grid>
 </UserControl>
