@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.QT_Disp
 {
-    class QT_Disp_Data : IO.ECG_Data
+    class QT_Disp_Data : ECG_Data
     {
     }
 }
