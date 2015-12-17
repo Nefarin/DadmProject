@@ -12,6 +12,8 @@ namespace EKG_Project.Modules.HRV1
 
         private List<Tuple<string, Vector<double>>> _timeBasedParams;
         private List<Tuple<string, Vector<double>>> _freqBasedParams;
+        private List<Tuple<string, Vector<double>>> _rInstants;
+        private List<Tuple<string, Vector<double>>> _rrIntervals;
 
 
         public List<Tuple<string, Vector<double>>> TimeBasedParams
@@ -35,6 +37,30 @@ namespace EKG_Project.Modules.HRV1
             set
             {
                 _freqBasedParams = value;
+            }
+        }
+
+        public List<Tuple<string, Vector<double>>> RInstants
+        {
+            get
+            {
+                return _rInstants;
+            }
+            set
+            {
+                _rInstants = value;
+            }
+        }
+
+        public List<Tuple<string, Vector<double>>> RRIntervals
+        {
+            get
+            {
+                return _rrIntervals;
+            }
+            set
+            {
+                _rrIntervals = value;
             }
         }
     }
