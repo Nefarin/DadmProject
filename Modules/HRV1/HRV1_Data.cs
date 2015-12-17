@@ -8,5 +8,6 @@ namespace EKG_Project.Modules.HRV1
 {
     class HRV1_Data : ECG_Data
     {
+        // lol xD
     }
 }
