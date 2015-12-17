@@ -9,6 +9,12 @@ namespace EKG_Project.Modules.HRV2
     class HRV2_Data : IO.ECG_Data
     {
         private double _tinn;
+        private double _triangleIndex;
+        private double _sd1;
+        private double _sd2;
+        private List<double> _histogramData; //nie do konca wiemy czy to bd lista double
+        private List<double> _poincarePlotData; //nie do konca wiemy czy to bd lista double
+
         public double Tinn
         {
             get
@@ -22,7 +28,6 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
-        private double _triangleIndex;
         public double TriangleIndex
         {
             get
@@ -36,7 +41,6 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
-        private double _sd1;
         public double SD1
         {
             get
@@ -50,7 +54,6 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
-        private double _sd2;
         public double SD2
         {
             get
@@ -64,7 +67,6 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
-        private List<double> _histogramData;
         public List<double> HistogramData
         {
             get
@@ -78,7 +80,6 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
-        private List<double> _poincarePlotData;
         public List<double> PoincarePlotData
         {
             get
