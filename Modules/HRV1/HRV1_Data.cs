@@ -8,6 +8,20 @@ namespace EKG_Project.Modules.HRV1
 {
     class HRV1_Data : ECG_Data
     {
-        // lol xD
+
+        private List<Tuple<string, Vector<double>>> _rSamples;   
+
+        public List<Tuple<string, Vector<double>>> RSamples
+        {
+            get
+            {
+                return _rSamples;
+            }
+            set
+            {
+                _rSamples = value;
+            }
+        }
+
     }
 }
