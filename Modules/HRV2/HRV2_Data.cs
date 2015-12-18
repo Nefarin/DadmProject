@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -15,6 +11,13 @@ namespace EKG_Project.Modules.HRV2
         private List<double> _histogramData; //nie do konca wiemy czy to bd lista double
         private List<double> _poincarePlotData; //nie do konca wiemy czy to bd lista double
 
+        #region Properties
+        #region Documentation
+        /// <summary>
+        /// TODO - uzupełnić dokumentację
+        /// </summary>
+        /// 
+        #endregion
         public double Tinn
         {
             get
@@ -28,6 +31,12 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO - uzupełnić dokumentację
+        /// </summary>
+        /// 
+        #endregion
         public double TriangleIndex
         {
             get
@@ -41,6 +50,12 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO - uzupełnić dokumentację
+        /// </summary>
+        /// 
+        #endregion
         public double SD1
         {
             get
@@ -54,6 +69,12 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO - uzupełnić dokumentację
+        /// </summary>
+        /// 
+        #endregion
         public double SD2
         {
             get
@@ -67,6 +88,12 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO - uzupełnić dokumentację
+        /// </summary>
+        /// 
+        #endregion
         public List<double> HistogramData
         {
             get
@@ -80,6 +107,12 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO - uzupełnić dokumentację
+        /// </summary>
+        /// 
+        #endregion
         public List<double> PoincarePlotData
         {
             get
@@ -92,5 +125,20 @@ namespace EKG_Project.Modules.HRV2
                 _poincarePlotData = value;
             }
         }
+        #endregion
+
+        #region Documentation
+        /// <summary>
+        /// TODO - uzupełnić dokumentację konstruktora
+        /// </summary>
+        /// 
+        #endregion
+        public HRV2_Data()
+        {
+            HistogramData = new List<double>(); // Dzięki inicjalizacji, nawet pustej, nie będzie NullPointerException
+            PoincarePlotData = new List<double>(); // Dzięki inicjalizacji, nawet pustej, nie będzie NullPointerException
+        }
+
+        // TODO Pewnie będzie trzeba zrobić więcej konstruktorów - kilku elementowych, etc.
     }
 }
