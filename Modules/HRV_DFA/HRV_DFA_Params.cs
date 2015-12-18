@@ -6,23 +6,28 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
+
     public class HRV_DFA_Params : ModuleParams
     {
-        //HRV_DFA Module output parameters
-        private int _paramAlpha;
-        private uint _dfaNumberN;
-        private uint _dfaValueFn;
+        //HRV_DFA parameters
+        private double _breakpoint;
+        private int _boxStart;
+        private int _boxEnd;
+        private int _stepSize;
 
-        public int ParamAlpha { get; set; }
-        public uint DfaNumberN { get; set; }
-        public uint DfaValueFn { get; set; }
-
-        public HRV_DFA_Params( int paramAlpha, uint dfaNumberN, uint dfaValueFn)
+        public HRV_DFA_Params(double breakpoint, int boxStart, int boxEnd, int stepSize)
         {
-            _paramAlpha = paramAlpha;
-            _dfaNumberN = dfaNumberN;
-            _dfaValueFn = dfaValueFn;
+            _breakpoint = breakpoint;
+            _boxStart = boxStart;
+            _boxEnd = boxEnd;
+            _stepSize = stepSize;
         }
+
+        public double Breakpoint { get; set; }
+        public int BoxStart { get; set; }
+        public int BoxEnd { get; set; }
+        public int StepSize { get; set; }
+
        
     }
 }
