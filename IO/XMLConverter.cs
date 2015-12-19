@@ -75,8 +75,8 @@ namespace EKG_Project.IO
                     XmlNode increment = value["increment"];
 
                     string incrementValue = increment.Attributes["value"].Value;
-                    double readedIncrement = Convert.ToDouble(incrementValue, new System.Globalization.NumberFormatInfo());
-                    frequency = (uint) (1 / readedIncrement); //Hz
+                    double readIncrement = Convert.ToDouble(incrementValue, new System.Globalization.NumberFormatInfo());
+                    frequency = (uint) (1 / readIncrement); //Hz
 
                     string incrementUnit = increment.Attributes["unit"].Value; //s
                 }
@@ -86,7 +86,7 @@ namespace EKG_Project.IO
 
         double getOrigin()
         {
-            double readedOrigin = 0;
+            double readOrigin = 0;
             foreach (XmlNode sequence in sequences)
             {
                 XmlNode value = sequence["value"];
@@ -95,18 +95,18 @@ namespace EKG_Project.IO
                     XmlNode origin = value["origin"];
 
                     string originValue = origin.Attributes["value"].Value;
-                    readedOrigin = Convert.ToDouble(originValue, new System.Globalization.NumberFormatInfo());
+                    readOrigin = Convert.ToDouble(originValue, new System.Globalization.NumberFormatInfo());
 
                     string originUnit = origin.Attributes["unit"].Value; //zwykle uV
 
                 }
             }
-            return readedOrigin;
+            return readOrigin;
         }
 
         double getScale()
         {
-            double readedScale = 0;
+            double readScale = 0;
             foreach (XmlNode sequence in sequences)
             {
                 XmlNode value = sequence["value"];
@@ -116,11 +116,11 @@ namespace EKG_Project.IO
                     XmlNode scale = value["scale"];
 
                     string scaleValue = scale.Attributes["value"].Value;
-                    readedScale = Convert.ToDouble(scaleValue, new System.Globalization.NumberFormatInfo());
+                    readScale = Convert.ToDouble(scaleValue, new System.Globalization.NumberFormatInfo());
                     string scaleUnit = scale.Attributes["unit"].Value; //uV
                 }
             }
-            return readedScale;
+            return readScale;
         }
 
         public List<Tuple<string, Vector<double>>> getSignals()
@@ -130,35 +130,35 @@ namespace EKG_Project.IO
             foreach (XmlNode sequence in sequences)
             {
                 XmlNode code = sequence["code"];
-                string readedCode = null;
+                string readCode = null;
 
                 if (code.Attributes["codeSystemName"].Value == "MDC")
                 {
-                    readedCode = code.Attributes["code"].Value;
-                    readedCode = readedCode.Replace("MDC_ECG_LEAD_", ""); //usunięcie z nazwy odprowadzenia dodatkowego kodu standardu HL7 aECG
+                    readCode = code.Attributes["code"].Value;
+                    readCode = readCode.Replace("MDC_ECG_LEAD_", ""); //usunięcie z nazwy odprowadzenia dodatkowego kodu standardu HL7 aECG
                 }
 
                 XmlNode value = sequence["value"];
-                Vector<double> readedDigits = null;
+                Vector<double> readDigits = null;
 
                 if (value.Attributes["xsi:type"].Value == "SLIST_PQ")
                 {
                     string digits = value["digits"].InnerText;
-                    readedDigits = stringToVector(digits);
-                    readedDigits = normalizeSignal(readedDigits);
-                    getSampleAmount(readedDigits);
+                    readDigits = stringToVector(digits);
+                    readDigits = normalizeSignal(readDigits);
+                    getSampleAmount(readDigits);
                 }
 
-                if (readedCode != null && readedDigits != null)
+                if (readCode != null && readDigits != null)
                 {
-                    Tuple<string, Vector<double>> readedSignal = Tuple.Create(readedCode, readedDigits);
-                    Signals.Add(readedSignal);
+                    Tuple<string, Vector<double>> readSignal = Tuple.Create(readCode, readDigits);
+                    Signals.Add(readSignal);
                 }
             }
             return Signals;
         }
 
-        Vector<double> stringToVector(string input)
+        public Vector<double> stringToVector(string input)
         {
             double[] digits = input
                               .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)

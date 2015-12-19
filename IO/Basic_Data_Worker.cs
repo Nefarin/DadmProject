@@ -12,6 +12,10 @@ namespace EKG_Project.IO
 {
     public class Basic_Data_Worker : IECG_Worker
     {
+        string directory = @"C:\temp\";
+        string analysisName = "Analysis2";
+        
+
         public Basic_Data_Worker() { }
 
         public void Save(ECG_Data data)
@@ -67,8 +71,6 @@ namespace EKG_Project.IO
 
                 ew.InternalXMLFile = file;
 
-                string directory = @"C:\temp\";
-                string analysisName = "Analysis5";
                 string fileName = analysisName + "_Data.xml";
                 file.Save(directory + fileName);
 
@@ -77,12 +79,49 @@ namespace EKG_Project.IO
         }
         public void Load()
         {
+            Basic_Data basicData = new Basic_Data();
+            XMLConverter converter = new XMLConverter(analysisName);
 
+            XmlDocument file = new XmlDocument();
+            string fileName = analysisName + "_Data.xml";
+            file.Load(directory + fileName);
+
+            XmlNodeList modules = file.SelectNodes("EKG/module");
+
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+
+            foreach (XmlNode module in modules)
+            {
+                if (module.Attributes["name"].Value == moduleName)
+                {
+                    XmlNode frequency = module["frequency"];
+                    basicData.Frequency = Convert.ToUInt32(frequency.InnerText, new System.Globalization.NumberFormatInfo());
+
+                    XmlNode sampleAmount = module["sampleAmount"];
+                    basicData.SampleAmount = Convert.ToUInt32(sampleAmount.InnerText, new System.Globalization.NumberFormatInfo());
+
+                    List<Tuple<string, Vector<double>>> Signals = new List<Tuple<string, Vector<double>>>();
+                    XmlNodeList signals = module.SelectNodes("signal");
+                    foreach (XmlNode signal in signals)
+                    {
+                        XmlNode lead = signal["lead"];
+                        string readLead = lead.InnerText;
+
+                        XmlNode smaples = signal["samples"];
+                        string readSamples = signal["samples"].InnerText;
+                        Vector<double> readDigits = converter.stringToVector(readSamples);
+
+                        Tuple<string, Vector<double>> readSignal = Tuple.Create(readLead, readDigits);
+                        Signals.Add(readSignal);
+                    }
+                    basicData.Signals = Signals;
+                }
+            }
         }
 
         static void Main()
         {
-            
             
         }
     }
