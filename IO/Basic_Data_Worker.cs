@@ -13,7 +13,7 @@ namespace EKG_Project.IO
     public class Basic_Data_Worker : IECG_Worker
     {
         string directory = @"C:\temp\";
-        string analysisName = "Analysis2";
+        string analysisName = "Analysis6";
         
 
         public Basic_Data_Worker() { }
@@ -108,8 +108,8 @@ namespace EKG_Project.IO
                         XmlNode lead = signal["lead"];
                         string readLead = lead.InnerText;
 
-                        XmlNode smaples = signal["samples"];
-                        string readSamples = signal["samples"].InnerText;
+                        XmlNode samples = signal["samples"];
+                        string readSamples = samples.InnerText;
                         Vector<double> readDigits = converter.stringToVector(readSamples);
 
                         Tuple<string, Vector<double>> readSignal = Tuple.Create(readLead, readDigits);
