@@ -21,7 +21,7 @@ namespace EKG_Project.IO
             analysisName = XMLAnalysisName;
         }
 
-        public Basic_Data SaveResult()
+        public Basic_Data SaveResult() //co ta metoda ma robić...?
         {
             Basic_Data data = new Basic_Data();
             return data;
@@ -40,12 +40,14 @@ namespace EKG_Project.IO
 
                 if (property.GetValue(data, null) == null)
                 {
-                    //throw new Exception(); // < - robić coś takiego?
-                    //Console.WriteLine("Właściwość jest pusta");
+                    throw new Exception(); // < - robić coś takiego?
 
                 }
-                //else
-                    //Console.WriteLine("Właściwość jest wypełniona");
+                else
+                {
+                    Basic_Data_Worker dataWorker = new Basic_Data_Worker();
+                    dataWorker.Save(data);
+                }
             }
 
         }

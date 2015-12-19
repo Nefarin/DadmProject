@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Globalization;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules;
 
@@ -30,6 +31,25 @@ namespace EKG_Project.IO
         public void ConvertFile(string path)
         {
             loadASCIIFile(path);
+            Basic_Data data = new Basic_Data();
+            data.Frequency = getFrequency();
+            data.Signals = getSignals();
+            data.SampleAmount = sampleAmount;
+
+            foreach (var property in data.GetType().GetProperties())
+            {
+
+                if (property.GetValue(data, null) == null)
+                {
+                    throw new Exception(); // < - robić coś takiego?
+
+                }
+                else
+                {
+                    Basic_Data_Worker dataWorker = new Basic_Data_Worker();
+                    dataWorker.Save(data);
+                }
+            }
         }
 
         public void loadASCIIFile(string path)
@@ -100,11 +120,12 @@ namespace EKG_Project.IO
 
         static void Main()
         {
+            
                 ASCIIConverter ascii = new ASCIIConverter("Analysis1");
                 ascii.ConvertFile(@"C:\temp\234.txt");
 
                 ascii.loadASCIIFile(@"C:\temp\234.txt");
-
+            /*
                 Console.WriteLine("File name: 234.txt");
                 Console.WriteLine();
 
@@ -124,6 +145,11 @@ namespace EKG_Project.IO
                     Console.WriteLine();
 
                 }
+             * */
+
+                TimeSpan dateTime = TimeSpan.ParseExact("16:23:01", "HH:mm:ss",
+                                        CultureInfo.InvariantCulture);
+                Console.WriteLine("DateTime: " + dateTime);
             
             Console.Read();
         }
