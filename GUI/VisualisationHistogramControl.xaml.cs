@@ -28,7 +28,7 @@ namespace EKG_Project.GUI
 
             ecgHistogramPlot = new ECGPlot("ECG_HISTOGRAM");
             DataContext = ecgHistogramPlot;
-            ecgHistogramPlot.DisplayAnything();
+            ecgHistogramPlot.DisplayHistogram();
         }
     }
 }
