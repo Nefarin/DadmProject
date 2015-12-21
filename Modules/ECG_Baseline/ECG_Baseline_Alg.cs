@@ -11,7 +11,39 @@ namespace EKG_Project.Modules.ECG_Baseline
 
         public class Filter
         {
+            public Vector<double> lms(Vector<double> signal, Vector<double> filtered_signal, int window_size)
+            {
+                int signal_size = signal.Count;
 
+                double mi = 0.07; //Współczynnik szybkości adaptacji
+
+                Vector<double> coeff = Vector<double>.Build.Dense(window_size, 0); //Wektor z wagami filtru
+                Vector<double> bufor = Vector<double>.Build.Dense(window_size, 0); //Inicjalizacja bufora sygnału wejściowego
+                Vector<double> out_signal = Vector<double>.Build.Dense(signal_size, 0);
+
+                double dest;
+                double err;
+
+                for(int i = 0; i<signal_size; i++)
+                {
+
+                    bufor.CopySubVectorTo(bufor, 0, 1, window_size - 1);
+                    bufor[0] = signal[i];
+
+                    dest = coeff * bufor;
+                    err = filtered_signal[i] - dest;
+ 
+                    coeff.Add(2 * mi * err * bufor,coeff);
+
+                    //coeff = coeff + (2 * mi * err * bufor);
+
+                    out_signal[i] = dest;
+
+                }
+
+                return out_signal;
+
+            }
             public Vector<double> savitzky_golay(Vector<double> signal, int window_size, int type)
             {
 
@@ -110,11 +142,16 @@ namespace EKG_Project.Modules.ECG_Baseline
             int signal_size = signal.Count;
             int window_size = 7;
             Vector<double> signal_filtered = Vector<double>.Build.Dense(signal_size, 0);
+            Vector<double> signal_filtered2 = Vector<double>.Build.Dense(signal_size, 0);
 
             Filter newFilter = new Filter();
-            signal_filtered = newFilter.savitzky_golay(signal, window_size, 1);
+            signal_filtered = newFilter.savitzky_golay(signal, window_size, 0);
+
+            Filter newFilter2 = new Filter();
+            signal_filtered2 = newFilter2.lms(signal, signal_filtered, 50);
 
             System.Console.WriteLine(signal_filtered.ToString());
+            System.Console.WriteLine(signal_filtered2.ToString()); 
             System.Console.WriteLine("Press any key to exit.");
             System.Console.ReadKey();
         }
