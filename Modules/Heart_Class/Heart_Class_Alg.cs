@@ -220,17 +220,20 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         double FastSampleCount(Vector<double> _qrssignal)
         {
-            qrsLength = _qrssignal.Count();
+            // qrsLength = _qrssignal.Count();
+            // double[] speed = new double[qrsLength - 1];
+            int qrsLength = _qrssignal.Count();
             double[] speed = new double[qrsLength - 1];
             double threshold;
             int counter = 0;
             int speedLength;
+            double constant = 0.4;
 
             for (int i = 0; i < (qrsLength - 1); i++)
             {
-                speed[i] = _qrssignal.At(i + 1) - _qrssignal.At(i);
+                speed[i] = Math.Abs(_qrssignal.At(i + 1) - _qrssignal.At(i));
             }
-            threshold = 0.4 * speed.Max();
+            threshold = constant * speed.Max();
 
             foreach (double value in speed)
             {
@@ -238,8 +241,8 @@ namespace EKG_Project.Modules.Heart_Class
                     counter = counter + 1;
             }
 
-            speedLength = speed.GetLength(0);
-            return counter / speedLength;
+            speedLength = speed.Length;
+            return (double)counter / (double)speedLength;
         }
 
         #region Documentation
@@ -250,9 +253,8 @@ namespace EKG_Project.Modules.Heart_Class
         double QrsDuration(Vector<double> _qrssignal, uint fs)
         {
             qrsLength = _qrssignal.Count();
-            double samplingInterval = 1 / fs;
-            return qrsLength * samplingInterval;
-
+            double samplingInterval = 1 / (double)fs;
+            return (double)qrsLength * samplingInterval;
         }
 
 
@@ -269,14 +271,15 @@ namespace EKG_Project.Modules.Heart_Class
             Tuple<int, Vector<double>> coeffTuple;
             List<Tuple<int, Vector<double>>> result;
             result = new List<Tuple<int, Vector<double>>>();
+            //coeffTuple = new Tuple<int, Vector<double>>(0, _singleCoeffVect);
 
             foreach (Tuple<int, Vector<double>> data in _QrsComplex)
             {
-                _singleCoeffVect[0] = 0;
-                _singleCoeffVect[1] = 0;
-                _singleCoeffVect[2] = 0;
-                _singleCoeffVect[3] = 0;
-                _singleCoeffVect[4] = 0;
+               // _singleCoeffVect[0] = 0;
+              //  _singleCoeffVect[1] = 0;
+               // _singleCoeffVect[2] = 0;
+               // _singleCoeffVect[3] = 0;
+                //_singleCoeffVect[4] = 0;
                 singleQrsR = data.Item1;
                 _singleCoeffVect[0] = CountMalinowskaFactor(data.Item2, fs);
                 _singleCoeffVect[1] = PnRatio(data.Item2);
