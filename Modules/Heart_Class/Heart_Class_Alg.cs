@@ -265,31 +265,27 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         List<Tuple<int, Vector<double>>> CountCoeff(List<Tuple<int, Vector<double>>> _QrsComplex, uint fs)
         {
-            Vector<double> _singleCoeffVect; //bedzie wektorem cech dla 1 zespołu
-            _singleCoeffVect = Vector<double>.Build.Dense(5);
+            Vector<double> singleCoeffVect; //bedzie wektorem cech dla 1 zespołu
+            singleCoeffVect = Vector<double>.Build.Dense(5);
             int singleQrsR;
             Tuple<int, Vector<double>> coeffTuple;
             List<Tuple<int, Vector<double>>> result;
             result = new List<Tuple<int, Vector<double>>>();
-            //coeffTuple = new Tuple<int, Vector<double>>(0, _singleCoeffVect);
+ 
 
             foreach (Tuple<int, Vector<double>> data in _QrsComplex)
             {
-               // _singleCoeffVect[0] = 0;
-              //  _singleCoeffVect[1] = 0;
-               // _singleCoeffVect[2] = 0;
-               // _singleCoeffVect[3] = 0;
-                //_singleCoeffVect[4] = 0;
                 singleQrsR = data.Item1;
-                _singleCoeffVect[0] = CountMalinowskaFactor(data.Item2, fs);
-                _singleCoeffVect[1] = PnRatio(data.Item2);
-                _singleCoeffVect[2] = SpeedAmpRatio(data.Item2);
-                _singleCoeffVect[3] = FastSampleCount(data.Item2);
-                _singleCoeffVect[4] = QrsDuration(data.Item2, fs);
-
-
-                coeffTuple = new Tuple<int, Vector<double>>(singleQrsR, _singleCoeffVect);
+                singleCoeffVect[0] = CountMalinowskaFactor(data.Item2, fs);
+                singleCoeffVect[1] = PnRatio(data.Item2);
+                singleCoeffVect[2] = SpeedAmpRatio(data.Item2);
+                singleCoeffVect[3] = FastSampleCount(data.Item2);
+                singleCoeffVect[4] = QrsDuration(data.Item2, fs);
+                
+                coeffTuple = new Tuple<int, Vector<double>>(singleQrsR, singleCoeffVect.Clone());
+                
                 result.Add(coeffTuple);
+                
             }
             return result;
         }
