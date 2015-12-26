@@ -135,8 +135,11 @@ namespace EKG_Project.Modules.Waves
         static public int FindQRSEnd( int middleR, int leftEnd, Vector<double> dwt, int decompLevel)
         {
             int sectionEnd = (leftEnd >> decompLevel) + 1;
-            int qrsEndInd = dwt.SubVector( (middleR >> decompLevel), (leftEnd >> decompLevel)-( middleR >> decompLevel )+1 ).MaximumIndex() + (middleR >> decompLevel);
-            double treshold = Math.Abs(dwt[qrsEndInd]) * 0.05; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
+            int qrsEndInd = (middleR >> decompLevel);
+                
+            double treshold = Math.Abs(dwt.SubVector(qrsEndInd, (leftEnd >> decompLevel) - qrsEndInd + 1).Minimum()) * 0.03; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
+            while (dwt[qrsEndInd] > dwt[qrsEndInd + 1] && qrsEndInd < sectionEnd)
+                qrsEndInd++;
             while (Math.Abs(dwt[qrsEndInd]) > treshold && qrsEndInd < sectionEnd)
                 qrsEndInd++;
 
