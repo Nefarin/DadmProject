@@ -119,21 +119,31 @@ namespace EKG_Project.Modules.Waves
 
         static public int FindQRSOnset( int rightEnd, int middleR, Vector<double> dwt, int decompLevel)
         {
-            int qrsOnsetInd = dwt.SubVector( (rightEnd >> decompLevel), (middleR >> decompLevel) - (rightEnd>> decompLevel)+1).MinimumIndex() + (rightEnd>> decompLevel);
+            int sectionStart = (rightEnd >> decompLevel);
+            int qrsOnsetInd = dwt.SubVector(sectionStart, (middleR >> decompLevel) - (rightEnd>> decompLevel)+1).MinimumIndex() + sectionStart;
             double treshold = Math.Abs(dwt[qrsOnsetInd])*0.05; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
 
-            while (Math.Abs(dwt[qrsOnsetInd]) > treshold && qrsOnsetInd > 1)
+            while (Math.Abs(dwt[qrsOnsetInd]) > treshold && qrsOnsetInd > sectionStart)
                 qrsOnsetInd--;
-            return (qrsOnsetInd << decompLevel);
+
+            if (qrsOnsetInd == sectionStart)
+                return -1;
+            else
+                return (qrsOnsetInd << decompLevel);
         }
 
         static public int FindQRSEnd( int middleR, int leftEnd, Vector<double> dwt, int decompLevel)
         {
+            int sectionEnd = (leftEnd >> decompLevel) + 1;
             int qrsEndInd = dwt.SubVector( (middleR >> decompLevel), (leftEnd >> decompLevel)-( middleR >> decompLevel )+1 ).MaximumIndex() + (middleR >> decompLevel);
             double treshold = Math.Abs(dwt[qrsEndInd]) * 0.05; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
-            while (Math.Abs(dwt[qrsEndInd]) > treshold)
+            while (Math.Abs(dwt[qrsEndInd]) > treshold && qrsEndInd < sectionEnd)
                 qrsEndInd++;
-            return (qrsEndInd << decompLevel);
+
+            if (qrsEndInd == sectionEnd)
+                return -1;
+            else
+                return (qrsEndInd << decompLevel);
         }
 
     }
