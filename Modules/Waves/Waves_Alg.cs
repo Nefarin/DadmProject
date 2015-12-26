@@ -25,7 +25,7 @@ namespace EKG_Project.Modules.Waves
             TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
             TempInput.getFrequency();
             _ecg = TempInput.getSignal();
-            Vector<double> dwt = HaarDWT(_ecg, 3);
+            Vector<double> dwt = ListHaarDWT(_ecg, 3)[1];
             Vector<double> temp = Vector<double>.Build.Dense(2);
             _Rpeaks = new List<int>();
             _QRSends = new List<int>();
@@ -37,16 +37,13 @@ namespace EKG_Project.Modules.Waves
                 _Rpeaks.Add((int)singlePeak);
             }
             DetectQRS();
-            Vector<double> onsets = Vector<double>.Build.Dense(_QRSonsets.Count);
-            for( int i=0; i< _QRSonsets.Count; i++)
+            Vector<double> onsets = Vector<double>.Build.Dense(_QRSends.Count);
+            for( int i=0; i< _QRSends.Count; i++)
             {
-                onsets[i]=(double)_QRSonsets[i];
+                onsets[i]=(double)_QRSends[i];
                 
             }
-            foreach(double chuj in onsets)
-            {
-               // Console.WriteLine(chuj);
-            }
+
             TempInput.writeFile(360, onsets);
             TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\d2ekg.txt");
             TempInput.writeFile(360, dwt);
@@ -79,6 +76,7 @@ namespace EKG_Project.Modules.Waves
         {
             //Work just like wavedec but use only haar wavelet
             // http://www.mathworks.com/help/wavelet/ref/wavedec.html
+            // [0]  -> d1, [1]  -> d2, ...
             int decompSize = signal.Count();
             double sqrt2 = Math.Sqrt(2);
             Vector<double> outVec = Vector<double>.Build.Dense(decompSize);
@@ -103,42 +101,42 @@ namespace EKG_Project.Modules.Waves
         {
             _QRSonsets.Clear();
             List<Vector<double>> dwt =new List< Vector<double>>();
-            dwt = ListHaarDWT(_ecg, 3);
-            int d2size = dwt[1].Count();
-            Console.WriteLine(d2size);
+            int decompLevel = 2;
+            dwt = ListHaarDWT(_ecg, decompLevel);
+            
+            int d2size = dwt[ decompLevel - 1].Count();
             int rSize = _Rpeaks.Count();
 
-            _QRSonsets.Add(FindQRSOnset(0, _Rpeaks[0], dwt[1]));
-            Console.WriteLine(rSize);
+            _QRSonsets.Add(FindQRSOnset(0, _Rpeaks[0], dwt[1], decompLevel));
             for (int middleR = 1; middleR < rSize - 1; middleR++ )
             {
-                _QRSonsets.Add(FindQRSOnset(_Rpeaks[middleR-1], _Rpeaks[middleR], dwt[1]));
-               // _QRSends.Add(FindQRSEnd(_Rpeaks[middleR], _Rpeaks[middleR + 1], dwt[1]));
+                _QRSonsets.Add(FindQRSOnset(_Rpeaks[middleR-1], _Rpeaks[middleR], dwt[1], decompLevel));
+                _QRSends.Add(FindQRSEnd(_Rpeaks[middleR], _Rpeaks[middleR + 1], dwt[1], decompLevel));
             }
-            //_QRSends.Add(FindQRSEnd(_Rpeaks[rSize - 1], rSize - 1, dwt[1]));
+            _QRSends.Add(FindQRSEnd(_Rpeaks[rSize - 1], _ecg.Count - 1, dwt[1], decompLevel));
 
         }
 
-        static public int FindQRSOnset( int rightEnd, int middleR, Vector<double> dwtD2)
+        static public int FindQRSOnset( int rightEnd, int middleR, Vector<double> dwt, int decompLevel)
         {
-            int divider = 4;
-            int qrsOnsetInd = dwtD2.SubVector( rightEnd/ divider, (middleR-rightEnd)/ divider + divider).AbsoluteMinimumIndex() + rightEnd/ divider;
-            double treshold = 100;
-            while (Math.Abs(dwtD2[qrsOnsetInd]) > treshold && qrsOnsetInd > 1)
+            int qrsOnsetInd = dwt.SubVector( (rightEnd >> decompLevel), (middleR >> decompLevel) - (rightEnd>> decompLevel)+1).MinimumIndex() + (rightEnd>> decompLevel);
+            double treshold = Math.Abs(dwt[qrsOnsetInd])*0.05; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
+
+            while (Math.Abs(dwt[qrsOnsetInd]) > treshold && qrsOnsetInd > 1)
                 qrsOnsetInd--;
-            return divider * qrsOnsetInd;
+            return (qrsOnsetInd << decompLevel);
         }
 
-        static public int FindQRSEnd(int leftEnd, int middleR, Vector<double> dwtD2)
+        static public int FindQRSEnd( int middleR, int leftEnd, Vector<double> dwt, int decompLevel)
         {
-            int divider = 4;
-            Console.WriteLine((leftEnd - middleR) / divider + divider);
-            
-            int qrsEndInd = dwtD2.SubVector( middleR / divider, (middleR-leftEnd)/ divider + divider).AbsoluteMaximumIndex() + middleR / divider;
-            double treshold = 5;
-            while (Math.Abs(dwtD2[qrsEndInd]) > treshold)
+            int qrsEndInd = dwt.SubVector( (middleR >> decompLevel), (leftEnd >> decompLevel)-( middleR >> decompLevel )+1 ).MaximumIndex() + (middleR >> decompLevel);
+            double treshold = Math.Abs(dwt[qrsEndInd]) * 0.05; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
+            while (Math.Abs(dwt[qrsEndInd]) > treshold)
                 qrsEndInd++;
-            return divider*qrsEndInd;
+            return (qrsEndInd << decompLevel);
         }
+
     }
+
+
 }
