@@ -32,13 +32,13 @@ namespace Histogram.Data
 
     public class DataSource
     {
-        public List<Tuple<string, Vector<double>>> RRInterval;
+       Vector<double> _RRInterval;
         private double _binLength;
         private ObservableCollection<Sample> _samples;
 
-        public DataSource(double binLength, List<Tuple<string, Vector<double>>> _RRInterval ) //chialam wziac dane z R_Peaks ale nie potrafie
+        public DataSource(double binLength, List<Tuple<string, Vector<double>>> RRInterval ) //chialam wziac dane z R_Peaks ale nie potrafie
         {
-            _RRInterval = RRInterval;
+            _RRInterval = RRInterval.Item2;
             _binLength = binLength;
             _samples = new ObservableCollection<Sample>();
         }
