@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Histogram.Data
@@ -32,13 +33,14 @@ namespace Histogram.Data
 
     public class DataSource
     {
-       Vector<double> _RRInterval;
+        Vector<double> _RRInterval;
         private double _binLength;
         private ObservableCollection<Sample> _samples;
 
         public DataSource(double binLength, List<Tuple<string, Vector<double>>> RRInterval ) //chialam wziac dane z R_Peaks ale nie potrafie
         {
-            _RRInterval = RRInterval.Item2;
+            Tuple<string, Vector<double>> RRIntervalTuple = RRInterval.First();
+            _RRInterval = RRIntervalTuple.Item2;
             _binLength = binLength;
             _samples = new ObservableCollection<Sample>();
         }
