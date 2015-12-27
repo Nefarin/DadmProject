@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace Histogram.Data
 {
@@ -29,15 +30,15 @@ namespace Histogram.Data
         }
     }
 
-    public class SampleDataSource
+    public class DataSource
     {
-        private string FILENAME;
+        public List<Tuple<string, Vector<double>>> RRInterval;
         private double _binLength;
         private ObservableCollection<Sample> _samples;
 
-        public SampleDataSource(double binLength, string fileName = null)
+        public DataSource(double binLength, List<Tuple<string, Vector<double>>> _RRInterval ) //chialam wziac dane z R_Peaks ale nie potrafie
         {
-            this.FILENAME = fileName;
+            _RRInterval = RRInterval;
             _binLength = binLength;
             _samples = new ObservableCollection<Sample>();
         }
@@ -66,31 +67,6 @@ namespace Histogram.Data
         {
             if (_samples.Count != 0)
                 return;
-
-            try
-            {
-                string[] lines = System.IO.File.ReadAllLines(FILENAME);
-                retrieveSamples(lines);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-        }
-
-        private void retrieveSamples(string[] table)
-        {
-            try
-            {
-                List<Double> samples;
-                Converters.StringArrayToDoubleList(table, out samples);
-                samples.Sort();
-                groupSamples(samples);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
         }
 
         private void groupSamples(List<Double> samples)
@@ -153,7 +129,7 @@ namespace Histogram.Data
 
             if (sum != sampleList.Count)
             {
-                throw new System.Exception("Zadzwoń do mnie, coś jest nie tak");
+                throw new System.Exception("Klops");
             }
        }
 

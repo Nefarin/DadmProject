@@ -14,7 +14,7 @@ namespace EKG_Project.Modules.HRV2
         #region Properties
         #region Documentation
         /// <summary>
-        /// TODO - uzupełnić dokumentację
+        /// Współczynnik TINN
         /// </summary>
         /// 
         #endregion
@@ -33,7 +33,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// TODO - uzupełnić dokumentację
+        /// Indeks trójkątny
         /// </summary>
         /// 
         #endregion
@@ -52,7 +52,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// TODO - uzupełnić dokumentację
+        /// Współczynnik SD1, krótsza przekątna dopasowanej elipsy do wykresu Poincare, zmienność krótko-terminowa
         /// </summary>
         /// 
         #endregion
@@ -71,7 +71,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// TODO - uzupełnić dokumentację
+        /// Współczynnik SD2,dłuższa przekątna dopasowanej elipsy do wykresu Poincare, zmienność długo-terminowa
         /// </summary>
         /// 
         #endregion
@@ -90,7 +90,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// TODO - uzupełnić dokumentację
+        /// Histogram długości interwałów RR
         /// </summary>
         /// 
         #endregion
@@ -109,7 +109,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// TODO - uzupełnić dokumentację
+        /// Wykres Poincare
         /// </summary>
         /// 
         #endregion
@@ -129,7 +129,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// TODO - uzupełnić dokumentację konstruktora
+        /// Konstruktor z histogramem i wykresem Poincare
         /// </summary>
         /// 
         #endregion

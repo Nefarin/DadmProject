@@ -15,14 +15,14 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// TODO - uzupełnić dokumentację metody Main w HRV2 (jako metody testowej dla modułu)
+        /// metoda testowa dla modułu
         /// </summary>
         /// <param name="args"></param>
         /// 
         #endregion
         static void Main(string[] args)
         {
-            SampleDataSource data = new SampleDataSource(.1f, "nsr001.txt");
+            DataSource data = new DataSource(0.0078125, _RRInterval); //nie wiem jak :(
             ObservableCollection<Sample> samples = data.Samples;
 
             foreach (Sample s in samples)
