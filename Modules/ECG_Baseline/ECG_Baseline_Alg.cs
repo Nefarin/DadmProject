@@ -2,15 +2,66 @@
 using System;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearRegression;
+using MathNet.Numerics.IntegralTransforms;
+using System.Numerics;
 
 namespace EKG_Project.Modules.ECG_Baseline
 {
     public partial class ECG_Baseline : IModule
     {
-
-
         public class Filter
         {
+            public Vector<double> butterworth(Vector<double> signal, double fs, double fc, int order, int type)
+            {
+
+                //TODO: Comments
+
+                int L = signal.Count;
+                int DCGain = 1;
+
+                double[] DoubleArray = new double[L];
+                DoubleArray = signal.ToArray();
+
+                Complex[] ComplexArray = new Complex[L];
+
+                for (int i = 0; i < L; i++)
+                {
+                    ComplexArray[i] = new Complex(DoubleArray[i], 0);
+                }
+
+                Fourier.Forward(ComplexArray, FourierOptions.Matlab);
+
+                double binWidth, binFreq, gain;
+
+                if (fc > 0)
+                {
+                    binWidth = fs / L;
+
+                    for(int i = 0; i < (L/2); i++)
+                    {
+                        binFreq = binWidth * (i+1);
+                        gain = DCGain / Math.Sqrt(1 + Math.Pow(binFreq/fc, 2.0 * order));
+                        if (type == 2)
+                        {
+                            gain = 1 - gain;
+                        }
+                        ComplexArray[i] *= gain;
+                        ComplexArray[L - 1 - i] *= gain;
+                    }
+                }
+
+                Fourier.Inverse(ComplexArray, FourierOptions.Matlab);
+
+                for (int i = 0; i < L; i++)
+                {
+                    DoubleArray[i] = ComplexArray[i].Real;
+                }
+
+                Vector<double> output_signal = Vector<double>.Build.DenseOfArray(DoubleArray);
+                return output_signal;
+
+            }
+
             public Vector<double> lms(Vector<double> signal, Vector<double> filtered_signal, int window_size)
             {
                 int signal_size = signal.Count;
@@ -143,6 +194,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             int window_size = 7;
             Vector<double> signal_filtered = Vector<double>.Build.Dense(signal_size, 0);
             Vector<double> signal_filtered2 = Vector<double>.Build.Dense(signal_size, 0);
+            Vector<double> signal_filtered3 = Vector<double>.Build.Dense(signal_size, 0);
 
             Filter newFilter = new Filter();
             signal_filtered = newFilter.savitzky_golay(signal, window_size, 0);
@@ -150,8 +202,12 @@ namespace EKG_Project.Modules.ECG_Baseline
             Filter newFilter2 = new Filter();
             signal_filtered2 = newFilter2.lms(signal, signal_filtered, 50);
 
+            Filter newFilter3 = new Filter();
+            signal_filtered3 = newFilter3.butterworth(signal, 20, 1, 3, 1);
+
             System.Console.WriteLine(signal_filtered.ToString());
-            System.Console.WriteLine(signal_filtered2.ToString()); 
+            System.Console.WriteLine(signal_filtered2.ToString());
+            System.Console.WriteLine(signal_filtered3.ToString());
             System.Console.WriteLine("Press any key to exit.");
             System.Console.ReadKey();
         }
