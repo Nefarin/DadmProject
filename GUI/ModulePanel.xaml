@@ -10,7 +10,7 @@
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:ModuleOption}" ItemsSource="{Binding Path=Suboptions}">
                     <DockPanel LastChildFill="True" Width="150">
-                        <CheckBox Name="chk" Margin="2,6,2,2" DockPanel.Dock="Left" Tag="{Binding Path=Name}" IsChecked="{Binding Path=Set, Mode=TwoWay}" IsEnabled="{Binding Path=Parent.Set}"/>
+                        <CheckBox Name="chk" Margin="2,6,2,2" DockPanel.Dock="Left" Tag="{Binding Path=Name}" IsChecked="{Binding Path=Set, Mode=TwoWay}"/>
                         <Label Name="txt" Content="{Binding Path=Name}"/>
                         <Button Name="btn" IsEnabled="{Binding Path=Set}" Click="btn_Click" HorizontalAlignment="Right" Margin="0,2">Options</Button>
                     </DockPanel>
