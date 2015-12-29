@@ -80,7 +80,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// 
         /// </summary>
         #endregion
         private void SetQrsComplex()
@@ -100,8 +100,9 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// 
         /// </summary>
+        /// <returns></returns>
         #endregion
         public List<Tuple<int, Vector<double>>> GetQrsComplex()
         {
@@ -110,8 +111,11 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// 
         /// </summary>
+        /// <param name="_qrssignal"></param>
+        /// <param name="fs"></param>
+        /// <returns></returns>
         #endregion
         double CountMalinowskaFactor(Vector<double> _qrssignal, uint fs)
         {
@@ -128,8 +132,10 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// 
         /// </summary>
+        /// <param name="_qrssignal"></param>
+        /// <returns></returns>
         #endregion
         double Integrate(Vector<double> _qrssignal)
         {
@@ -147,8 +153,11 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// 
         /// </summary>
+        /// <param name="_qrssignal"></param>
+        /// <param name="fs"></param>
+        /// <returns></returns>
         #endregion
         double Perimeter(Vector<double> _qrssignal, uint fs)
         {
@@ -168,8 +177,10 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// 
         /// </summary>
+        /// <param name="_qrssignal"></param>
+        /// <returns></returns>
         #endregion
         double PnRatio(Vector<double> _qrssignal)
         {
@@ -194,8 +205,10 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// 
         /// </summary>
+        /// <param name="_qrssignal"></param>
+        /// <returns></returns>
         #endregion
         double SpeedAmpRatio(Vector<double> _qrssignal)
         {
@@ -215,8 +228,10 @@ namespace EKG_Project.Modules.Heart_Class
         
         #region Documentation
         /// <summary>
-        /// TODO
+        /// 
         /// </summary>
+        /// <param name="_qrssignal"></param>
+        /// <returns></returns>
         #endregion
         double FastSampleCount(Vector<double> _qrssignal)
         {
@@ -247,8 +262,11 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// 
         /// </summary>
+        /// <param name="_qrssignal"></param>
+        /// <param name="fs"></param>
+        /// <returns></returns>
         #endregion
         double QrsDuration(Vector<double> _qrssignal, uint fs)
         {
@@ -260,8 +278,11 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// 
         /// </summary>
+        /// <param name="_QrsComplex"></param>
+        /// <param name="fs"></param>
+        /// <returns></returns>
         #endregion
         List<Tuple<int, Vector<double>>> CountCoeff(List<Tuple<int, Vector<double>>> _QrsComplex, uint fs)
         {
@@ -289,6 +310,77 @@ namespace EKG_Project.Modules.Heart_Class
             }
             return result;
         }
+
+        #region Documentation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trainSamples"></param>
+        /// <param name="testSamples"></param>
+        /// <param name="trainClasses"></param>
+        /// <param name="K"></param>
+        /// <returns></returns>
+        #endregion
+        List<Tuple<int, int>> TestKnnCase(List<Vector<double>> trainSamples, List<Tuple<int, Vector<double>>> testSamples,
+            List<int> trainClasses, int K)
+        {
+            var testResults = new List<Tuple<int, int>>();
+            var testNumber = testSamples.Count();
+            var trainNumber = trainSamples.Count();
+
+            var distances = new double[trainNumber][];
+            for (var i = 0; i < trainNumber; i++)
+            {
+                distances[i] = new double[2]; // Will store both distance and index in here
+            }
+
+
+            // Performing KNN ...
+            for (var tst = 0; tst < testNumber; tst++)
+            {
+                // For every test sample, calculate distance from every training sample
+
+                for (var trn = 0; trn < trainNumber; trn++)
+                {
+                    var dist = GetDistance(testSamples[tst].Item2, trainSamples[trn]);
+                    distances[trn][0] = dist;
+                    distances[trn][1] = trn;
+                }
+
+
+            // dopisać resztę...
+            }
+
+
+            return testResults;
+
+        }
+
+        // Calculates and returns square of Euclidean distance between two vectors:
+        #region Documentation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sample1"></param>
+        /// <param name="sample2"></param>
+        /// <returns></returns>
+        #endregion
+        double GetDistance(Vector<double> sample1, Vector<double> sample2)
+        {
+            var distance = 0.0;
+            // assume sample1 and sample2 are valid i.e. same length 
+
+            for (var i = 0; i < sample1.Count; i++)
+            {
+                var temp = sample1.At(i) - sample2.At(i);
+                distance += temp * temp;
+            }
+            //return distance; ??? bez pierwiastka? - zapytać mądrych ludzi
+            return Math.Sqrt(distance);
+        }
+
+
+
 
     }
 
