@@ -57,11 +57,13 @@ namespace EKG_Project.Modules.Heart_Class
             HeartClass.HeartClassData.QrsOnset = TempInput.getSignal();
             TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
             HeartClass.HeartClassData.QrsEnd = TempInput.getSignal();
-            TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
 
             // uwaga tu mam pozniej wrzucic plik qrsR.txt !!!!
+            TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
             HeartClass.HeartClassData.QrsR = TempInput.getSignal();
-            HeartClass.SetQrsComplex(); // to nie powinna być osobna klasa ale metoda w klasie Heart_Class
+
+
+            HeartClass.SetQrsComplex(); 
             HeartClass.HeartClassData.QrsCoefficients = HeartClass.CountCoeff(HeartClass.GetQrsComplex(), fs);
 
             TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_sig.txt");
@@ -170,7 +172,7 @@ namespace EKG_Project.Modules.Heart_Class
             {
                 a = _qrssignal.At(i);
                 b = _qrssignal.At(i + 1);
-                result = result + Math.Sqrt((timeBtw2points * timeBtw2points) + ((b - a) * (b - a)));
+                result = result + Math.Sqrt(timeBtw2points * timeBtw2points + (b - a) * (b - a));
             }
             return result;
         }
@@ -325,17 +327,20 @@ namespace EKG_Project.Modules.Heart_Class
             List<int> trainClasses, int K)
         {
             var testResults = new List<Tuple<int, int>>();
+            int classResult;
             var testNumber = testSamples.Count();
             var trainNumber = trainSamples.Count();
+            Tuple<int, int> resultTuple;
+            int singleQrsR;
 
-            var distances = new double[trainNumber][];
+           var distances = new double[trainNumber][];
             for (var i = 0; i < trainNumber; i++)
             {
                 distances[i] = new double[2]; // Will store both distance and index in here
             }
 
 
-            // Performing KNN ...
+            // Performing KNN 
             for (var tst = 0; tst < testNumber; tst++)
             {
                 // For every test sample, calculate distance from every training sample
@@ -346,9 +351,30 @@ namespace EKG_Project.Modules.Heart_Class
                     distances[trn][0] = dist;
                     distances[trn][1] = trn;
                 }
+                
+                // Sort distances and take top K 
+                var votingDistances = distances.OrderBy(t => t[0]).Take(K);
 
+                // Do a 'majority vote' to classify test sample
+                var yes = 0.0;
+                var no = 0.0;
 
-            // dopisać resztę...
+                foreach (var voter in votingDistances)
+                {
+                    if (trainClasses[(int)voter[1]] == 1)
+                        yes++;
+                    else
+                        no++;
+                }
+                if (yes > no)
+                    classResult = 1;
+                else
+                    classResult = 0;
+
+                singleQrsR = testSamples[tst].Item1;
+                resultTuple = new Tuple<int, int>(singleQrsR, classResult);
+
+                testResults.Add(resultTuple);
             }
 
 
@@ -378,10 +404,6 @@ namespace EKG_Project.Modules.Heart_Class
             //return distance; ??? bez pierwiastka? - zapytać mądrych ludzi
             return Math.Sqrt(distance);
         }
-
-
-
-
     }
 
 }

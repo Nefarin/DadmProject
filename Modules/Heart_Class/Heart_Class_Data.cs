@@ -20,7 +20,8 @@ namespace EKG_Project.Modules.Heart_Class
         private List<Tuple<int, Vector<double>>> _qrsCoefficients;
 
         //output:
-        private Vector<int> _qrsComplexLabel;
+        //private Vector<int> _qrsComplexLabel;
+        private List<Tuple<int, int>> _qrsComplexLabel;
         private uint _totalNumberOfQrsComplex;
         private uint _numberOfClass;
         private double _percentOfNormalComplex;
@@ -119,12 +120,6 @@ namespace EKG_Project.Modules.Heart_Class
             set { _qrsCoefficients = value; }
         }
 
-        public Vector<int> QrsComplexLabel
-        {
-            get { return _qrsComplexLabel; }
-            set { _qrsComplexLabel = value; }
-        }
-
         public uint TotalNumberOfQrsComplex
         {
             get { return _totalNumberOfQrsComplex; }
@@ -141,6 +136,12 @@ namespace EKG_Project.Modules.Heart_Class
         {
             get { return _percentOfNormalComplex; }
             set { _percentOfNormalComplex = value; }
+        }
+
+        public List<Tuple<int, int>> QrsComplexLabel
+        {
+            get { return _qrsComplexLabel; }
+            set { _qrsComplexLabel = value; }
         }
 
         public class Qrs_Class
