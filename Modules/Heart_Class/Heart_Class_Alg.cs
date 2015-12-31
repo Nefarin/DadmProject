@@ -10,6 +10,7 @@ using System.Windows.Automation.Peers;
 using System.Windows.Ink;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.IO;
+using System.Globalization;
 
 namespace EKG_Project.Modules.Heart_Class
 {
@@ -24,7 +25,8 @@ namespace EKG_Project.Modules.Heart_Class
         uint fs;
         int qrsLength; 
         private Heart_Class_Data HeartClassData;
-        
+        public List<Vector<double>> coefficients; //lista współczynników kształtu dla zbioru treningowego
+
 
         public Heart_Class()
         {
@@ -38,6 +40,7 @@ namespace EKG_Project.Modules.Heart_Class
             qrsLength = _qrssignal.Count();
             //_qrsCoefficients = new List<Tuple<int, Vector<double>>> ();
             HeartClassData = new Heart_Class_Data();
+            List<Vector<double>> coefficients = new List<Vector<double>>();
 
         }
 
@@ -66,10 +69,22 @@ namespace EKG_Project.Modules.Heart_Class
             HeartClass.SetQrsComplex(); 
             HeartClass.HeartClassData.QrsCoefficients = HeartClass.CountCoeff(HeartClass.GetQrsComplex(), fs);
 
+
+
             TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_sig.txt");
             TempInput.writeFile(fs, HeartClass.HeartClassData.Signal);
             TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_on.txt");
             TempInput.writeFile(fs, HeartClass.HeartClassData.QrsOnset);
+
+            
+            List<Vector<double>> trainDataList = HeartClass.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d.txt");
+            foreach (var item in trainDataList)
+                Console.WriteLine(item);
+
+            List<Vector<double>> testDataList = HeartClass.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\test_d.txt");
+            foreach (var item in testDataList)
+                Console.WriteLine(item);
+            Console.Read();
 
 
 
@@ -404,6 +419,56 @@ namespace EKG_Project.Modules.Heart_Class
             //return distance; ??? bez pierwiastka? - zapytać mądrych ludzi
             return Math.Sqrt(distance);
         }
+
+
+
+        // Metody wczytujące zbior treningowy i testowy od Ani Metz:
+        #region Documentation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        #endregion
+        public List<Vector<double>> loadFile(string path)
+        {
+            //List<Vector<double>> coefficients = new List<Vector<double>>(); //inicjalizacja listy wektorów z jednego pliku
+            using (StreamReader sr = new StreamReader(path))
+            {
+                string fileData = sr.ReadToEnd(); //wczytanie całego pliku
+                string[] fileLines = fileData.Split('\n'); //rozdzielenie linii
+                for (int i = 0; i < fileLines.Length - 1; i++) //fileLines.Length-1 -> ostatnia linia pliku jest pusta dlatego "- 1"
+                {
+                    string readCoefficients = fileLines[i]; // dane z jednego wiersza w postaci string
+                    Vector<double> vectorCoefficients = stringToVector(readCoefficients); // zmiana na wektor
+                    coefficients.Add(vectorCoefficients); // wpisanie do listy
+                }
+            }
+
+            return coefficients;
+
+        }
+
+        #region Documentation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        #endregion
+        public static Vector<double> stringToVector(string input)
+        {
+            double[] digits = input //string z jednego wiersza
+                              .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries) // wczytanie liczb rozdzielonych przecinkiem
+                              .Select(digit => Convert.ToDouble(digit, new System.Globalization.NumberFormatInfo())) // konwersja na double
+                              .ToArray(); // zamiana stringa w tablicę
+            Vector<double> vector = Vector<double>.Build.Dense(digits.Length); // inicjalizacja wektora
+            vector.SetValues(digits); // zapisanie do wektora tablicy typu double
+            return vector;
+
+        }
+
+
     }
 
 }
