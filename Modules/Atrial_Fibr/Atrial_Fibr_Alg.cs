@@ -10,7 +10,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
     //TODO: 
     //-cały alorytm poincare, k-średnie, wartość dopasowania
     //-testy
-    //-komentarze
+    //-komentarze zgodnie z dokumentacją
     public partial class Atrial_Fibr : IModule
     {
         //public class detectedAF
