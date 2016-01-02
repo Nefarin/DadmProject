@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Histogram.Data;
 using Histogram.HelperClasses;
 using System.Collections.ObjectModel;
+using EKG_Project.Modules.R_Peaks;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -22,7 +23,7 @@ namespace EKG_Project.Modules.HRV2
         #endregion
         static void Main(string[] args)
         {
-            DataSource data = new DataSource(0.0078125, _RRInterval); //nie wiem jak :(
+            DataSource data = new DataSource(0.0078125, RRInterval); //nie wiem jak :(
             ObservableCollection<Sample> samples = data.Samples;
 
             foreach (Sample s in samples)
