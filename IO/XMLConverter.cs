@@ -192,11 +192,11 @@ namespace EKG_Project.IO
         
         static void Main()
         {
-            
+            IECGPath pathBuilder = new DebugECGPath();
             XMLConverter xml = new XMLConverter("Analysis1");
-            xml.ConvertFile(@"C:\temp\6.xml");
-            
-            xml.loadXMLFile(@"C:\temp\6.xml");
+            xml.ConvertFile(System.IO.Path.Combine(pathBuilder.getDataPath(), "6.xml"));
+
+            //xml.loadXMLFile(@"C:\temp\6.xml");
 
             uint f = xml.getFrequency();
             Console.WriteLine("Frequency: " + f + " Hz");
@@ -211,7 +211,7 @@ namespace EKG_Project.IO
                 Console.WriteLine("Lead name: " + tuple.Item1);
                 Console.WriteLine("Signal Vector in uV: " + tuple.Item2);
                 Console.WriteLine();
-
+           
             }
 
             Console.Read();

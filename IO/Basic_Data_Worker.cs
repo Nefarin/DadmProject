@@ -12,11 +12,19 @@ namespace EKG_Project.IO
 {
     public class Basic_Data_Worker : IECG_Worker
     {
-        string directory = @"C:\temp\";
+        string directory;
         string analysisName = "Analysis6";
         
 
-        public Basic_Data_Worker() { }
+        public Basic_Data_Worker() {
+            IECGPath pathBuilder = new DebugECGPath();
+            directory = pathBuilder.getTempPath();
+        }
+
+        public Basic_Data_Worker(String analysisName) : this()
+        {
+            this.analysisName = analysisName;
+        }
 
         public void Save(ECG_Data data)
         {
@@ -72,7 +80,8 @@ namespace EKG_Project.IO
                 ew.InternalXMLFile = file;
 
                 string fileName = analysisName + "_Data.xml";
-                file.Save(directory + fileName);
+                //Console.WriteLine(System.IO.Path.Combine(directory, fileName));
+                file.Save(System.IO.Path.Combine(directory, fileName));
 
             }
 
@@ -120,7 +129,7 @@ namespace EKG_Project.IO
             }
         }
 
-        static void Main()
+        public static void Main()
         {
             
         }

@@ -241,10 +241,13 @@
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
     <Compile Include="IO\ASCIIConverter.cs" />
+    <Compile Include="IO\Basic_Data_Worker.cs" />
     <Compile Include="IO\DebugECGPath.cs" />
+    <Compile Include="IO\ECG_Worker.cs" />
     <Compile Include="IO\FileLoader.cs" />
     <Compile Include="IO\IECGConverter.cs" />
     <Compile Include="IO\IECGPath.cs" />
+    <Compile Include="IO\IECG_Worker.cs" />
     <Compile Include="IO\MITBIHConverter.cs" />
     <Compile Include="IO\ReleaseECGPath.cs" />
     <Compile Include="IO\TempInput.cs" />
