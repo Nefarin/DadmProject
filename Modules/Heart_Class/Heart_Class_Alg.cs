@@ -25,7 +25,8 @@ namespace EKG_Project.Modules.Heart_Class
         uint fs;
         int qrsLength; 
         private Heart_Class_Data HeartClassData;
-        public List<Vector<double>> coefficients; //lista współczynników kształtu dla zbioru treningowego
+        List<Vector<double>> coefficients; //lista współczynników kształtu dla zbioru treningowego
+        List<Tuple<int, int>> classificationResult; // pierwszy int - nr zespołu (nr R), drugi int - klasa zespołu
 
 
         public Heart_Class()
@@ -40,8 +41,9 @@ namespace EKG_Project.Modules.Heart_Class
             qrsLength = _qrssignal.Count();
             //_qrsCoefficients = new List<Tuple<int, Vector<double>>> ();
             HeartClassData = new Heart_Class_Data();
+            // nie wiem czemu ale poniższe wywołanie obiektu nie działa, musi byc w metodzie loadFile ;/
             List<Vector<double>> coefficients = new List<Vector<double>>();
-
+            classificationResult = new List<Tuple<int, int>>();
         }
 
 
@@ -65,32 +67,56 @@ namespace EKG_Project.Modules.Heart_Class
             TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
             HeartClass.HeartClassData.QrsR = TempInput.getSignal();
 
-
+            //WCZYTANIE ZESPOŁÓW QRS NA PODSTAWIE QRSonsets i QRSends
             HeartClass.SetQrsComplex(); 
+
+            //LICZENIE WSPÓŁCZYNNIKÓW KSZTAŁTU
             HeartClass.HeartClassData.QrsCoefficients = HeartClass.CountCoeff(HeartClass.GetQrsComplex(), fs);
 
-
-
+            
             TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_sig.txt");
             TempInput.writeFile(fs, HeartClass.HeartClassData.Signal);
             TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_on.txt");
             TempInput.writeFile(fs, HeartClass.HeartClassData.QrsOnset);
 
-            
+            //WCZYTANIE ZBIORU TRENINGOWEGO
             List<Vector<double>> trainDataList = HeartClass.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d.txt");
-            foreach (var item in trainDataList)
-                Console.WriteLine(item);
+            //foreach (var item in trainDataList)
+            //    Console.WriteLine(item);
+            // Console.Read();
+
+            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-NV
+            List<Vector<double>> trainClassList = HeartClass.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d_label.txt");
+            // konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
+                    int oneClassElement;
+                    List<int> trainClass;
+                    trainClass = new List<int>();
+                    foreach (var item in trainClassList)
+                    {
+                        foreach (var element in item)
+                        {
+                            oneClassElement = (int)element;
+                            trainClass.Add(oneClassElement);
+                        }
+
+                    }
+
 
             List<Vector<double>> testDataList = HeartClass.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\test_d.txt");
-            foreach (var item in testDataList)
-                Console.WriteLine(item);
-            Console.Read();
+            // Tworzenie listy tupli zbioru testowego - w celach testowych (zbior treningowy i testowy wczytywany jest z pliku). 
+            //w ostatecznej  wresji testDataList będzie obliczane w programie w formie:  List<Tuple<int, Vector<double>>>: 
+                    List<Tuple<int, Vector<double>>> testSamples;
+                    testSamples = new List<Tuple<int, Vector<double>>>();
+                    Tuple<int, Vector<double>> oneElement;
+                    int R = 1; 
+                    foreach (var item in testDataList)
+                    {
+                        oneElement = new Tuple<int, Vector<double>>(R, item.Clone());
+                        testSamples.Add(oneElement);
+                    }
 
-
-
-
-
-
+            //KLASYFIKACJA
+            HeartClass.classificationResult = HeartClass.TestKnnCase(trainDataList, testSamples, trainClass, 1);
 
 
         }
@@ -304,7 +330,7 @@ namespace EKG_Project.Modules.Heart_Class
         List<Tuple<int, Vector<double>>> CountCoeff(List<Tuple<int, Vector<double>>> _QrsComplex, uint fs)
         {
             Vector<double> singleCoeffVect; //bedzie wektorem cech dla 1 zespołu
-            singleCoeffVect = Vector<double>.Build.Dense(5);
+            singleCoeffVect = Vector<double>.Build.Dense(4); // (5) jeśli dodamy czas trwania zespołu
             int singleQrsR;
             Tuple<int, Vector<double>> coeffTuple;
             List<Tuple<int, Vector<double>>> result;
@@ -318,7 +344,7 @@ namespace EKG_Project.Modules.Heart_Class
                 singleCoeffVect[1] = PnRatio(data.Item2);
                 singleCoeffVect[2] = SpeedAmpRatio(data.Item2);
                 singleCoeffVect[3] = FastSampleCount(data.Item2);
-                singleCoeffVect[4] = QrsDuration(data.Item2, fs);
+                //singleCoeffVect[4] = QrsDuration(data.Item2, fs);
                 
                 coeffTuple = new Tuple<int, Vector<double>>(singleQrsR, singleCoeffVect.Clone());
                 
@@ -430,9 +456,9 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="path"></param>
         /// <returns></returns>
         #endregion
-        public List<Vector<double>> loadFile(string path)
+        List<Vector<double>> loadFile(string path)
         {
-            //List<Vector<double>> coefficients = new List<Vector<double>>(); //inicjalizacja listy wektorów z jednego pliku
+            List<Vector<double>> coefficients = new List<Vector<double>>(); //inicjalizacja listy wektorów z jednego pliku
             using (StreamReader sr = new StreamReader(path))
             {
                 string fileData = sr.ReadToEnd(); //wczytanie całego pliku
