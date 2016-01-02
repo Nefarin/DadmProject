@@ -188,9 +188,11 @@ namespace EKG_Project.IO
         
         static void Main()
         {
-            
+            IECGPath pathBuilder = new DebugECGPath();
+            Console.Out.WriteLine(pathBuilder.getDataPath());
             XMLConverter xml = new XMLConverter("Analysis1");
-            xml.ConvertFile(@"C:\temp\2.xml");
+
+            //xml.ConvertFile(@"C:\temp\2.xml");
             /*
             xml.loadXMLFile(@"C:\temp\2.xml");
             uint f = xml.getFrequency();

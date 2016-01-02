@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.App</StartupObject>
+    <StartupObject>EKG_Project.IO.XMLConverter</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -241,9 +241,12 @@
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
     <Compile Include="IO\ASCIIConverter.cs" />
+    <Compile Include="IO\DebugECGPath.cs" />
     <Compile Include="IO\FileLoader.cs" />
     <Compile Include="IO\IECGConverter.cs" />
+    <Compile Include="IO\IECGPath.cs" />
     <Compile Include="IO\MITBIHConverter.cs" />
+    <Compile Include="IO\ReleaseECGPath.cs" />
     <Compile Include="IO\TempInput.cs" />
     <Compile Include="IO\WFDBTest.cs" />
     <Compile Include="IO\XMLConverter.cs" />
@@ -382,6 +385,9 @@
     <Resource Include="GUI\images\save.png" />
     <Resource Include="Matlab\TextFile1.txt" />
     <Resource Include="Resources\TextFile1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="IO\temp\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
