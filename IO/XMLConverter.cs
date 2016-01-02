@@ -10,7 +10,7 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
-    class XMLConverter : IECGConverter
+    public class XMLConverter : IECGConverter
     {
         string analysisName;
         XmlNodeList sequences;
@@ -84,7 +84,7 @@ namespace EKG_Project.IO
             return frequency;
         }
 
-        double getOrigin()
+        public double getOrigin()
         {
             double readOrigin = 0;
             foreach (XmlNode sequence in sequences)
@@ -104,7 +104,7 @@ namespace EKG_Project.IO
             return readOrigin;
         }
 
-        double getScale()
+        public double getScale()
         {
             double readScale = 0;
             foreach (XmlNode sequence in sequences)
