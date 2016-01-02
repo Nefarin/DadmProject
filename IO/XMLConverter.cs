@@ -190,7 +190,7 @@ namespace EKG_Project.IO
         }
 
         
-        static void Main()
+        public static void Main()
         {
             IECGPath pathBuilder = new DebugECGPath();
             XMLConverter xml = new XMLConverter("Analysis1");

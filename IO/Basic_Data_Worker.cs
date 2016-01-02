@@ -14,13 +14,25 @@ namespace EKG_Project.IO
     {
         string directory;
         string analysisName = "Analysis6";
-        Basic_Data basicData;
-        
+        private Basic_Data basicData;
+
+        public Basic_Data BasicData
+        {
+            get
+            {
+                return basicData;
+            }
+
+            set
+            {
+                basicData = value;
+            }
+        }
 
         public Basic_Data_Worker() {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
-            basicData = null;
+            BasicData = null;
         }
 
         public Basic_Data_Worker(String analysisName) : this()
@@ -129,14 +141,14 @@ namespace EKG_Project.IO
                     basicData.Signals = Signals;
                 }
             }
-            this.basicData = basicData;
+            this.BasicData = basicData;
         }
 
         public static void Main()
         {
             Basic_Data_Worker worker = new Basic_Data_Worker();
             worker.Load();
-            Console.WriteLine(worker.basicData.ToString());
+            Console.WriteLine(worker.BasicData.ToString());
 
 
             Console.Read();
