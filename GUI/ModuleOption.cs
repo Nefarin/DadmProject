@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EKG_Project.Modules;
+using EKG_Project.Modules.ECG_Baseline;
 
 namespace EKG_Project.GUI
 {
@@ -12,7 +13,6 @@ namespace EKG_Project.GUI
     {
         private bool _set = false;
         private List<ModuleOption> _suboptions = null;
-        private ModuleParams moduleParams = null;
         public string Name { get; set; }
         public AvailableOptions Code { get; set; }
         public bool Set
@@ -48,18 +48,7 @@ namespace EKG_Project.GUI
             }
         }
 
-        public ModuleParams ModuleParam
-        {
-            get
-            {
-                return moduleParams;
-            }
-
-            set
-            {
-                moduleParams = value;
-            }
-        }
+        public ModuleParams ModuleParam { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -69,6 +58,16 @@ namespace EKG_Project.GUI
             this.Name = code.ToString();
             this.Set = false;
             this.Parent = parent;
+
+            switch (this.Code)
+            {
+                case AvailableOptions.ECG_BASELINE:
+                    this.ModuleParam = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS);
+                    break;
+                default:
+                    break;
+            }
+                
         }
 
         public ModuleOption AddSuboption(AvailableOptions code)
