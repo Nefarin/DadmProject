@@ -1,14 +1,11 @@
-﻿
+﻿using EKG_Project.Architecture;
+using EKG_Project.Modules;
+
 namespace EKG_Project.Architecture.ProcessingStates
 {
-    #region Documentation
-    /// <summary>
-    /// 
-    /// </summary>
-    /// 
-    #endregion
-    public class Init : IProcessingState
+    public class ProcessAnalysis : IProcessingState
     {
+
         #region Documentation
         /// <summary>
         /// 
@@ -19,8 +16,8 @@ namespace EKG_Project.Architecture.ProcessingStates
         #endregion
         public void Process(Processing process, out IProcessingState timeoutState)
         {
+
             timeoutState = new Idle(5);
         }
-
     }
 }
