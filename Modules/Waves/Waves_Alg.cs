@@ -15,14 +15,19 @@ namespace EKG_Project.Modules.Waves
 
         static List<int> _QRSonsets;
         static List<int> _QRSends;
+        static List<int> _Ponsets;
+        static List<int> _Pends;
+        static List<int> _Tends;
         static void Main()
         {
             /*Vector<double> signal = Vector<double>.Build.Random(10);
             Vector<double> dwt = Vector<double>.Build.Random(10);
             dwt = HaarDWT(signal, 1);*/
-            
-            TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
-            TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
+
+            /*TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
+            TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");*/
+            TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG.txt");
+            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSonsets.txt");
             TempInput.getFrequency();
             _ecg = TempInput.getSignal();
             Vector<double> dwt = ListHaarDWT(_ecg, 3)[1];
@@ -30,22 +35,61 @@ namespace EKG_Project.Modules.Waves
             _Rpeaks = new List<int>();
             _QRSends = new List<int>();
             _QRSonsets = new List<int>();
-            TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");
+            _Ponsets = new List<int>();
+            _Pends = new List<int>();
+            _Tends = new List<int>();
+            /*TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");*/
+            TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG3Rpeaks.txt");
             Vector<double> rpeaks = TempInput.getSignal();
             foreach( double singlePeak in rpeaks)
             {
                 _Rpeaks.Add((int)singlePeak);
             }
             DetectQRS();
-            Vector<double> onsets = Vector<double>.Build.Dense(_QRSends.Count);
-            for( int i=0; i< _QRSends.Count; i++)
+            Vector<double> onsets = Vector<double>.Build.Dense(_QRSonsets.Count);
+            for( int i=0; i< _QRSonsets.Count; i++)
             {
-                onsets[i]=(double)_QRSends[i];
+                onsets[i]=(double)_QRSonsets[i];
                 
+            }
+            Vector<double> ends = Vector<double>.Build.Dense(_QRSends.Count);
+            for (int i = 0; i < _QRSends.Count; i++)
+            {
+                ends[i] = (double)_QRSends[i];
+
+            }
+            FindP(onsets, _ecg, 360);
+            Vector<double> ponset = Vector<double>.Build.Dense(_Ponsets.Count);
+            for (int i = 0; i < _Ponsets.Count; i++)
+            {
+                ponset[i] = (double)_Ponsets[i];
+
+            }
+            Vector<double> pends = Vector<double>.Build.Dense(_Pends.Count);
+            for (int i = 0; i < _Pends.Count; i++)
+            {
+                pends[i] = (double)_Pends[i];
+
+            }
+            FindT(ends, _ecg, 360);
+            Vector<double> tends = Vector<double>.Build.Dense(_Tends.Count);
+            for (int i = 0; i < _Tends.Count; i++)
+            {
+                tends[i] = (double)_Tends[i];
+
             }
 
             TempInput.writeFile(360, onsets);
-            TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\d2ekg.txt");
+            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSends.txt");
+            TempInput.writeFile(360, ends);
+            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGPonsets.txt");
+            TempInput.writeFile(360, ponset);
+            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGPends.txt");
+            TempInput.writeFile(360, pends);
+            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGTends.txt");
+            TempInput.writeFile(360, tends);
+            /*TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\d2ekg.txt");*/
+            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\d2ekg.txt");
             TempInput.writeFile(360, dwt);
             Console.Read();
         }
@@ -136,7 +180,7 @@ namespace EKG_Project.Modules.Waves
         {
             int sectionEnd = (leftEnd >> decompLevel) + 1;
             int qrsEndInd = (middleR >> decompLevel);
-                
+
             double treshold = Math.Abs(dwt.SubVector(qrsEndInd, (leftEnd >> decompLevel) - qrsEndInd + 1).Minimum()) * 0.03; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
             while (dwt[qrsEndInd] > dwt[qrsEndInd + 1] && qrsEndInd < sectionEnd)
                 qrsEndInd++;
@@ -149,6 +193,95 @@ namespace EKG_Project.Modules.Waves
                 return (qrsEndInd << decompLevel);
         }
 
+        static public void FindMaxValue(Vector<double> signal, double begin_loc, double end_loc, out int pmax_loc, out double pmax_val)
+        {
+
+            if (signal.Count == 0)
+            {
+                throw new InvalidOperationException("Empty vector");
+            }
+            int begin = Convert.ToInt32(begin_loc);
+            int end = Convert.ToInt32(end_loc);
+            int loc;
+            
+            pmax_val = double.MinValue;
+            pmax_loc = 0;
+
+            for (loc = begin; loc <= end ; loc++)
+            {
+                if (pmax_val < signal[loc])
+                {
+                    pmax_val = signal[loc];
+                    pmax_loc = loc;
+                }
+            }
+        }
+
+        static public void FindP(Vector<double> onsets, Vector<double> signal, int fs)
+        {
+            double window,pmax_val;
+            int pmax_loc,ponset,pend;
+
+            window = (Math.Round(0.25 * fs));
+
+            foreach(double onset_loc in onsets)
+            {
+                if ((onset_loc - (window)) >= 1 && onset_loc != -1)
+                {
+                    FindMaxValue(_ecg, onset_loc - window, onset_loc, out pmax_loc, out pmax_val);
+                }
+                else
+                {
+                    continue;
+                }
+
+                ponset = pmax_loc;
+                while(signal[ponset] > signal[ponset-1] || (pmax_val-signal[ponset] < 70))
+                {
+                    ponset--;
+                }
+                _Ponsets.Add(ponset);
+
+                pend = pmax_loc;
+                while (signal[pend] > signal[pend+1] || (pmax_val - signal[pend] < 110))
+                {
+                    pend++;
+                }
+                _Pends.Add(pend);
+            }
+        }
+
+        static public void FindT(Vector<double> ends, Vector<double> signal, int fs)
+        {
+            double window, tmax_val;
+            int tmax_loc, tend;
+
+
+            window = (Math.Round(0.22 * fs));
+
+            foreach (double ends_loc in ends)
+            {
+                if (((ends_loc + (window)) < signal.Count) && ends_loc != -1)
+                {
+                    FindMaxValue(_ecg, ends_loc, ends_loc + window, out tmax_loc, out tmax_val);
+                }
+                else
+                {
+                    continue;
+                }
+
+                tend = tmax_loc;
+                while (signal[tend] > signal[tend + 1] || (tmax_val - signal[tend] < 20))
+                {
+                    tend++;
+                    if(tend == signal.Count-1)
+                    {
+                        break;
+                    }
+                }
+                _Tends.Add(tend);
+            }
+        }
     }
 
 
