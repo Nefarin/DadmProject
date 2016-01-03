@@ -7,7 +7,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Waves
 {
-    class Waves_Data : IO.ECG_Data
+    class Waves_Data : ECG_Data
     {
         private Vector<uint> _QRSonsets;
         private Vector<uint> _QRSends;

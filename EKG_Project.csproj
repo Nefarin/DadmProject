@@ -175,9 +175,12 @@
     <Compile Include="Architecture\Modules.cs" />
     <Compile Include="Architecture\ProcessingStates\Abort.cs" />
     <Compile Include="Architecture\ProcessingStates\AbortTest.cs" />
+    <Compile Include="Architecture\ProcessingStates\BeginAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\Idle.cs" />
     <Compile Include="Architecture\ProcessingStates\Init.cs" />
     <Compile Include="Architecture\ProcessingStates\IProcessingState.cs" />
+    <Compile Include="Architecture\ProcessingStates\NextAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\ProcessAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\TestState.cs" />
     <Compile Include="Architecture\TabContainer.cs" />
     <Compile Include="Architecture\Processing.cs" />
@@ -240,16 +243,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
+    <Compile Include="IO\ASCIIConverter.cs" />
+    <Compile Include="IO\Basic_Data_Worker.cs" />
+    <Compile Include="IO\DebugECGPath.cs" />
+    <Compile Include="IO\ECG_Worker.cs" />
+    <Compile Include="IO\FileLoader.cs" />
+    <Compile Include="IO\IECGConverter.cs" />
+    <Compile Include="IO\IECGPath.cs" />
+    <Compile Include="IO\IECG_Worker.cs" />
+    <Compile Include="IO\MITBIHConverter.cs" />
+    <Compile Include="IO\ReleaseECGPath.cs" />
     <Compile Include="IO\TempInput.cs" />
-    <Compile Include="IO\WFDBInput.cs" />
+    <Compile Include="IO\TestModule3_Data_Worker.cs" />
     <Compile Include="IO\WFDBTest.cs" />
-    <Compile Include="IO\XMLInput.cs" />
+    <Compile Include="IO\XMLConverter.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Data.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Params.cs" />
     <Compile Include="Modules\Basic_Data.cs" />
-    <Compile Include="Modules\Class1.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Alg.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Data.cs" />
@@ -313,6 +325,10 @@
     <Compile Include="Modules\TestModule2\Test_Module2_Alg.cs" />
     <Compile Include="Modules\TestModule2\Test_Module2.cs" />
     <Compile Include="Modules\TestModule2\Test_Module2_Param.cs" />
+    <Compile Include="Modules\TestModule3\TestModule3.cs" />
+    <Compile Include="Modules\TestModule3\TestModule3_Alg.cs" />
+    <Compile Include="Modules\TestModule3\TestModule3_Data.cs" />
+    <Compile Include="Modules\TestModule3\TestModule3_Params.cs" />
     <Compile Include="Modules\TestModule\TestModule.cs" />
     <Compile Include="Modules\TestModule\TestModule_Params.cs" />
     <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt.cs" />
@@ -362,6 +378,8 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\temp\Analysis6_TestModule3.xml" />
+    <Resource Include="IO\temp\Analysis6_Data.xml" />
     <Resource Include="Modules\HRV2\nsr001.txt" />
     <Resource Include="IO\data\2.xml" />
     <Resource Include="IO\data\3.xml" />
@@ -380,6 +398,7 @@
     <Resource Include="Matlab\TextFile1.txt" />
     <Resource Include="Resources\TextFile1.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

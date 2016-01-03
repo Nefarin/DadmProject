@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EKG_Project.Modules;
 
 namespace EKG_Project.GUI
 {
@@ -11,6 +12,7 @@ namespace EKG_Project.GUI
     {
         private bool _set = false;
         private List<ModuleOption> _suboptions = null;
+        private ModuleParams moduleParams = null;
         public string Name { get; set; }
         public AvailableOptions Code { get; set; }
         public bool Set
@@ -43,6 +45,19 @@ namespace EKG_Project.GUI
                 if (this._suboptions == null)
                     this._suboptions = new List<ModuleOption>();
                 return this._suboptions;
+            }
+        }
+
+        public ModuleParams ModuleParam
+        {
+            get
+            {
+                return moduleParams;
+            }
+
+            set
+            {
+                moduleParams = value;
             }
         }
 
@@ -101,6 +116,7 @@ namespace EKG_Project.GUI
         FLUTTER,
         HRT,
         ECTOPIC_BEAT,
-        HEART_AXIS
+        HEART_AXIS,
+        TEST_MODULE
     }
 }
