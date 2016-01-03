@@ -14,7 +14,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             public Vector<double> butterworth(Vector<double> signal, double fs, double fc, int order, int type)
             {
 
-                //TODO: Comments
+                //TODO: Comments kkk
 
                 int L = signal.Count;
                 int DCGain = 1;
