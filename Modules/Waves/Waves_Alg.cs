@@ -196,42 +196,41 @@ namespace EKG_Project.Modules.Waves
                 return (qrsEndInd << decompLevel);
         }
 
-        static public void FindMaxValue(Vector<double> signal, double begin_loc, double end_loc, out int pmax_loc, out double pmax_val)
+        static public void FindMaxValue(int begin_loc, int end_loc, out int pmax_loc, out double pmax_val)
         {
 
-            if (signal.Count == 0)
+            if (_ecg.Count == 0)
             {
                 throw new InvalidOperationException("Empty vector");
             }
-            int begin = Convert.ToInt32(begin_loc);
-            int end = Convert.ToInt32(end_loc);
-            int loc;
-            
+            int loc_index;
+
             pmax_val = double.MinValue;
             pmax_loc = 0;
 
-            for (loc = begin; loc <= end ; loc++)
+            for (loc_index = begin_loc; loc_index <= end_loc; loc_index++)
             {
-                if (pmax_val < signal[loc])
+                if (pmax_val < _ecg[loc_index])
                 {
-                    pmax_val = signal[loc];
-                    pmax_loc = loc;
+                    pmax_val = _ecg[loc_index];
+                    pmax_loc = loc_index;
                 }
             }
+
         }
 
         static public void FindP()
         {
-            double window,pmax_val;
-            int pmax_loc,ponset,pend;
+            double pmax_val;
+            int window,pmax_loc,ponset,pend;
 
-            window = (Math.Round(0.25 * fs));
+            window = Convert.ToInt32(fs*0.25);
 
-            foreach(int onset_loc in _QRSonsets)
+            foreach (int onset_loc in _QRSonsets)
             {
                 if ((onset_loc - (window)) >= 1 && onset_loc != -1)
                 {
-                    FindMaxValue(_ecg, onset_loc - window, onset_loc, out pmax_loc, out pmax_val);
+                    FindMaxValue(onset_loc - window, onset_loc, out pmax_loc, out pmax_val);
                 }
                 else
                 {
@@ -256,17 +255,17 @@ namespace EKG_Project.Modules.Waves
 
         static public void FindT()
         {
-            double window, tmax_val;
-            int tmax_loc, tend;
+            double tmax_val;
+            int window,tmax_loc, tend;
 
 
-            window = (Math.Round(0.22 * fs));
+            window = Convert.ToInt32(fs*0.22);
 
-            foreach (double ends_loc in _QRSends)
+            foreach (int ends_loc in _QRSends)
             {
                 if (((ends_loc + (window)) < _ecg.Count) && ends_loc != -1)
                 {
-                    FindMaxValue(_ecg, ends_loc, ends_loc + window, out tmax_loc, out tmax_val);
+                    FindMaxValue(ends_loc, ends_loc + window, out tmax_loc, out tmax_val);
                 }
                 else
                 {
