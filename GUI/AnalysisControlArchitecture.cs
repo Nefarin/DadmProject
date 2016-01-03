@@ -2,6 +2,8 @@
 using System.Threading;
 using EKG_Project.Architecture;
 using EKG_Project.Architecture.GUIMessages;
+using System.Collections.Generic;
+using EKG_Project.Modules;
 
 namespace EKG_Project.GUI
 {
@@ -13,6 +15,9 @@ namespace EKG_Project.GUI
         private ProcessSync _communication;
         private SynchronizationContext _context;
         private ToGUIDelegate _analysisEvent;
+        private string _analysisName;
+        private Dictionary<AvailableOptions, ModuleParams> moduleParams;
+        private Dictionary<AvailableOptions, bool> isComputed;
 
         #region Properties
 
@@ -77,6 +82,19 @@ namespace EKG_Project.GUI
             }
         }
 
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+
+            set
+            {
+                _analysisName = value;
+            }
+        }
+
         #endregion
 
         #region Documentation
@@ -98,6 +116,12 @@ namespace EKG_Project.GUI
             _parent = parent;
             _parentTab = parentTab;
             InitializeComponent();
+        }
+
+        public AnalysisControl(ProcessSync communication, Window_ECG parent, TabItem parentTab, SynchronizationContext context, string analysisName)
+            : this(communication, parent, parentTab, context)
+        {
+            this.AnalysisName = analysisName;
         }
 
         private void analysisEventHandler(object sender, IGUIMessage message)

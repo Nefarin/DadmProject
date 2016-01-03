@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.ST_Segment
 {
-    class ST_Segment_Data : IO.ECG_Data
+    class ST_Segment_Data : ECG_Data
     {
+        //hhh
     }
 }

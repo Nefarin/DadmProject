@@ -48,7 +48,9 @@ namespace EKG_Project.GUI
                     AddSuboptionAndMoveUp(AvailableOptions.SIG_EDR).
                 AddSuboption(AvailableOptions.VCG_T_LOOP);
 
+            var testModule = new ModuleOption(AvailableOptions.TEST_MODULE, null);
             Options.Add(ecgBaseline);
+            Options.Add(testModule);
             this.treeViewModules.ItemsSource = this.Options;
         }
 

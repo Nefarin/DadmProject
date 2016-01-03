@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.Heart_Axis
 {
-    class Heart_Axis_Data : IO.ECG_Data
+    class Heart_Axis_Data : ECG_Data
     {
     }
 }
