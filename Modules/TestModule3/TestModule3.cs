@@ -1,5 +1,7 @@
 ﻿using System;
 using EKG_Project.IO;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics;
 
 
 namespace EKG_Project.Modules.TestModule3
@@ -21,6 +23,8 @@ namespace EKG_Project.Modules.TestModule3
         private Basic_Data _inputData;
         private TestModule3_Params _params;
 
+        private Vector<Double> _currentVector;
+
         public void Abort()
         {
             Aborted = true;
@@ -36,7 +40,7 @@ namespace EKG_Project.Modules.TestModule3
         {
             Params = parameters as TestModule3_Params;
             Aborted = false;
-            if (Runnable()) _ended = true;
+            if (!Runnable()) _ended = true;
             else
             {
                 _ended = false;
@@ -52,6 +56,8 @@ namespace EKG_Project.Modules.TestModule3
                 _samplesProcessed = 0;
                 NumberOfChannels = InputData.Signals.Count;
                 _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+                _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+
             }
 
         }
@@ -64,12 +70,12 @@ namespace EKG_Project.Modules.TestModule3
 
         public double Progress()
         {
-            return ((double) _currentChannelIndex * ((_samplesProcessed + 1.0)/(_currentChannelLength + 1.0))) / ((double)NumberOfChannels + 1.0);
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0/NumberOfChannels) * ((double) _samplesProcessed / (double) _currentChannelLength));
         }
 
         public bool Runnable()
         {
-            return Params == null;
+            return Params != null;
         }
 
         private void processData()
@@ -82,10 +88,17 @@ namespace EKG_Project.Modules.TestModule3
             {
                 if (startIndex + step > _currentChannelLength)
                 {
-                    scaleSamples(channel, startIndex, _currentChannelLength - startIndex - 1);
+                    scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
+                    OutputData.Output.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
                     _currentChannelIndex++;
-                    _samplesProcessed = 0;
-                    _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+                    if (_currentChannelIndex < NumberOfChannels)
+                    {
+                        _samplesProcessed = 0;
+                        _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+                        _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                    }
+
+
                 }
                 else
                 {
@@ -191,6 +204,22 @@ namespace EKG_Project.Modules.TestModule3
             set
             {
                 _outputWorker = value;
+            }
+        }
+
+        public static void Main()
+        {
+            TestModule3_Params param = new TestModule3_Params(-2, 5000, "Analysis6");
+            //TestModule3_Params param = null;
+            TestModule3 testModule = new TestModule3();
+            testModule.Init(param);
+            while (true)
+            {
+                //Console.WriteLine("Press key to continue.");
+                //Console.Read();
+                if (testModule.Ended()) break;
+                Console.WriteLine(testModule.Progress());
+                testModule.ProcessData();
             }
         }
     }
