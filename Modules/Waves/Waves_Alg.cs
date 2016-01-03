@@ -18,6 +18,9 @@ namespace EKG_Project.Modules.Waves
         static List<int> _Ponsets;
         static List<int> _Pends;
         static List<int> _Tends;
+
+        static uint fs;
+
         static void Main()
         {
             /*Vector<double> signal = Vector<double>.Build.Random(10);
@@ -28,7 +31,7 @@ namespace EKG_Project.Modules.Waves
             TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");*/
             TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG.txt");
             TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSonsets.txt");
-            TempInput.getFrequency();
+            fs = TempInput.getFrequency();
             _ecg = TempInput.getSignal();
             Vector<double> dwt = ListHaarDWT(_ecg, 3)[1];
             Vector<double> temp = Vector<double>.Build.Dense(2);
@@ -58,7 +61,7 @@ namespace EKG_Project.Modules.Waves
                 ends[i] = (double)_QRSends[i];
 
             }
-            FindP(onsets, _ecg, 360);
+            FindP();
             Vector<double> ponset = Vector<double>.Build.Dense(_Ponsets.Count);
             for (int i = 0; i < _Ponsets.Count; i++)
             {
@@ -71,7 +74,7 @@ namespace EKG_Project.Modules.Waves
                 pends[i] = (double)_Pends[i];
 
             }
-            FindT(ends, _ecg, 360);
+            FindT();
             Vector<double> tends = Vector<double>.Build.Dense(_Tends.Count);
             for (int i = 0; i < _Tends.Count; i++)
             {
@@ -217,14 +220,14 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        static public void FindP(Vector<double> onsets, Vector<double> signal, int fs)
+        static public void FindP()
         {
             double window,pmax_val;
             int pmax_loc,ponset,pend;
 
             window = (Math.Round(0.25 * fs));
 
-            foreach(double onset_loc in onsets)
+            foreach(int onset_loc in _QRSonsets)
             {
                 if ((onset_loc - (window)) >= 1 && onset_loc != -1)
                 {
@@ -236,14 +239,14 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 ponset = pmax_loc;
-                while(signal[ponset] > signal[ponset-1] || (pmax_val-signal[ponset] < 70))
+                while(_ecg[ponset] > _ecg[ponset-1] || (pmax_val-_ecg[ponset] < 70))
                 {
                     ponset--;
                 }
                 _Ponsets.Add(ponset);
 
                 pend = pmax_loc;
-                while (signal[pend] > signal[pend+1] || (pmax_val - signal[pend] < 110))
+                while (_ecg[pend] > _ecg[pend+1] || (pmax_val - _ecg[pend] < 110))
                 {
                     pend++;
                 }
@@ -251,7 +254,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        static public void FindT(Vector<double> ends, Vector<double> signal, int fs)
+        static public void FindT()
         {
             double window, tmax_val;
             int tmax_loc, tend;
@@ -259,9 +262,9 @@ namespace EKG_Project.Modules.Waves
 
             window = (Math.Round(0.22 * fs));
 
-            foreach (double ends_loc in ends)
+            foreach (double ends_loc in _QRSends)
             {
-                if (((ends_loc + (window)) < signal.Count) && ends_loc != -1)
+                if (((ends_loc + (window)) < _ecg.Count) && ends_loc != -1)
                 {
                     FindMaxValue(_ecg, ends_loc, ends_loc + window, out tmax_loc, out tmax_val);
                 }
@@ -271,10 +274,10 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 tend = tmax_loc;
-                while (signal[tend] > signal[tend + 1] || (tmax_val - signal[tend] < 20))
+                while (_ecg[tend] > _ecg[tend + 1] || (tmax_val - _ecg[tend] < 20))
                 {
                     tend++;
-                    if(tend == signal.Count-1)
+                    if(tend == _ecg.Count-1)
                     {
                         break;
                     }
