@@ -254,6 +254,7 @@
     <Compile Include="IO\MITBIHConverter.cs" />
     <Compile Include="IO\ReleaseECGPath.cs" />
     <Compile Include="IO\TempInput.cs" />
+    <Compile Include="IO\TestModule3_Data_Worker.cs" />
     <Compile Include="IO\WFDBTest.cs" />
     <Compile Include="IO\XMLConverter.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
@@ -261,7 +262,6 @@
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Data.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Params.cs" />
     <Compile Include="Modules\Basic_Data.cs" />
-    <Compile Include="Modules\Class1.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Alg.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Data.cs" />
