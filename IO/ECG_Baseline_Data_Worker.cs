@@ -6,49 +6,52 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
+using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
-    public class Basic_Data_Worker : IECG_Worker
+    class ECG_Baseline_Data_Worker
     {
         string directory;
         string analysisName = "Analysis6";
-        private Basic_Data basicData;
+        private ECG_Baseline_Data _data;
 
-        public Basic_Data BasicData
+        public ECG_Baseline_Data Data
         {
             get
             {
-                return basicData;
+                return _data;
             }
 
             set
             {
-                basicData = value;
+                _data = value;
             }
         }
 
-        public Basic_Data_Worker() {
+        public ECG_Baseline_Data_Worker()
+        {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
-            BasicData = null;
+            Data = null;
         }
 
-        public Basic_Data_Worker(String analysisName) : this()
+        public ECG_Baseline_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
 
         public void Save(ECG_Data data)
         {
-            if (data is Basic_Data)
+            if (data is ECG_Baseline_Data)
             {
-                Basic_Data basicData = data as Basic_Data;
+                ECG_Baseline_Data basicData = data as ECG_Baseline_Data;
 
                 ECG_Worker ew = new ECG_Worker();
-                ew.CreateFile();
-                XmlDocument file = ew.InternalXMLFile;
+                XmlDocument file = new XmlDocument();
+                string fileName = analysisName + "_Data.xml";
+                file.Load(System.IO.Path.Combine(directory, fileName));
                 XmlNode root = file.SelectSingleNode("EKG");
 
                 XmlElement module = file.CreateElement(string.Empty, "module", string.Empty);
@@ -57,26 +60,16 @@ namespace EKG_Project.IO
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
 
-                XmlElement frequency = file.CreateElement(string.Empty, "frequency", string.Empty);
-                XmlText frequencyValue = file.CreateTextNode(basicData.Frequency.ToString());
-                frequency.AppendChild(frequencyValue);
-                module.AppendChild(frequency);
-
-                XmlElement sampleAmount = file.CreateElement(string.Empty, "sampleAmount", string.Empty);
-                XmlText sampleAmountValue = file.CreateTextNode(basicData.SampleAmount.ToString());
-                sampleAmount.AppendChild(sampleAmountValue);
-                module.AppendChild(sampleAmount);
-
-                List<Tuple<string, Vector<double>>> signals = basicData.Signals;
-                foreach (var tuple in signals)
+                List<Tuple<string, Vector<double>>> signalsFiltered = basicData.SignalsFiltered;
+                foreach (var tuple in signalsFiltered)
                 {
-                    XmlElement signal = file.CreateElement(string.Empty, "signal", string.Empty);
-                    module.AppendChild(signal);
+                    XmlElement signalFiltered = file.CreateElement(string.Empty, "signalFiltered", string.Empty);
+                    module.AppendChild(signalFiltered);
 
                     XmlElement lead = file.CreateElement(string.Empty, "lead", string.Empty);
-                    XmlText leadValue = file.CreateTextNode(tuple.Item1.ToString());
+                    XmlText leadValue = file.CreateTextNode(tuple.Item1);
                     lead.AppendChild(leadValue);
-                    signal.AppendChild(lead);
+                    signalFiltered.AppendChild(lead);
 
                     XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
                     string samplesText = null;
@@ -87,22 +80,19 @@ namespace EKG_Project.IO
 
                     XmlText samplesValue = file.CreateTextNode(samplesText);
                     samples.AppendChild(samplesValue);
-                    signal.AppendChild(samples);
-
+                    signalFiltered.AppendChild(samples);
                 }
 
                 ew.InternalXMLFile = file;
 
-                string fileName = analysisName + "_Data.xml";
-                //Console.WriteLine(System.IO.Path.Combine(directory, fileName));
                 file.Save(System.IO.Path.Combine(directory, fileName));
 
             }
-
         }
+
         public void Load()
         {
-            Basic_Data basicData = new Basic_Data();
+            ECG_Baseline_Data basicData = new ECG_Baseline_Data();
             XMLConverter converter = new XMLConverter(analysisName);
 
             XmlDocument file = new XmlDocument();
@@ -118,14 +108,8 @@ namespace EKG_Project.IO
             {
                 if (module.Attributes["name"].Value == moduleName)
                 {
-                    XmlNode frequency = module["frequency"];
-                    basicData.Frequency = Convert.ToUInt32(frequency.InnerText, new System.Globalization.NumberFormatInfo());
-
-                    XmlNode sampleAmount = module["sampleAmount"];
-                    basicData.SampleAmount = Convert.ToUInt32(sampleAmount.InnerText, new System.Globalization.NumberFormatInfo());
-
-                    List<Tuple<string, Vector<double>>> Signals = new List<Tuple<string, Vector<double>>>();
-                    XmlNodeList signals = module.SelectNodes("signal");
+                    List<Tuple<string, Vector<double>>> SignalsFiltered = new List<Tuple<string, Vector<double>>>();
+                    XmlNodeList signals = module.SelectNodes("signalFiltered");
                     foreach (XmlNode signal in signals)
                     {
                         XmlNode lead = signal["lead"];
@@ -136,23 +120,30 @@ namespace EKG_Project.IO
                         Vector<double> readDigits = converter.stringToVector(readSamples);
 
                         Tuple<string, Vector<double>> readSignal = Tuple.Create(readLead, readDigits);
-                        Signals.Add(readSignal);
+                        SignalsFiltered.Add(readSignal);
                     }
-                    basicData.Signals = Signals;
+                    basicData.SignalsFiltered = SignalsFiltered;
                 }
             }
-            this.BasicData = basicData;
+            this.Data = basicData;
         }
 
         public static void Main()
         {
-            Basic_Data_Worker worker = new Basic_Data_Worker();
+            ECG_Baseline_Data data = new ECG_Baseline_Data();
+            string a = "nazwa odprowadzenia";
+            double[] b = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            Vector<double> vector = Vector<double>.Build.Dense(b.Length);
+            vector.SetValues(b);
+            Tuple<string, Vector<double>> ab = Tuple.Create(a, vector);
+            List<Tuple<string, Vector<double>>> list = new List<Tuple<string, Vector<double>>>();
+            list.Add(ab);
+            data.SignalsFiltered = list;
+
+            ECG_Baseline_Data_Worker worker = new ECG_Baseline_Data_Worker();
+            //worker.Save(data);
             worker.Load();
-            Console.WriteLine(worker.BasicData.ToString());
-
-
             Console.Read();
-
         }
     }
 }
