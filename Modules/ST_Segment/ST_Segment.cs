@@ -23,7 +23,7 @@ namespace EKG_Project.Modules.ST_Segment
             throw new NotImplementedException();
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
             throw new NotImplementedException();
         }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EKG_Project.Modules.Flutter
+namespace EKG_Project.Modules.TestModule3
 {
-    public partial class Flutter : IModule
+    public partial class TestModule3 : IModule
     {
         public void Abort()
         {
