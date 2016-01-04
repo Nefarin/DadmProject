@@ -102,4 +102,24 @@
       <samples>1 2 3 4 5 6 7 8 9 </samples>
     </ParamAlpha>
   </module>
+  <module name="Flutter">
+    <FlutterAnnotations>
+      <onset>1</onset>
+      <end>3</end>
+    </FlutterAnnotations>
+    <FlutterAnnotations>
+      <onset>4</onset>
+      <end>5</end>
+    </FlutterAnnotations>
+  </module>
+  <module name="Flutter">
+    <FlutterAnnotations>
+      <onset>1</onset>
+      <end>3</end>
+    </FlutterAnnotations>
+    <FlutterAnnotations>
+      <onset>4</onset>
+      <end>5</end>
+    </FlutterAnnotations>
+  </module>
 </EKG>
