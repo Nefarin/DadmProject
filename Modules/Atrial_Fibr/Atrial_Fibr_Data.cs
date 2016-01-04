@@ -4,7 +4,7 @@ using EKG_Project.IO;
 
 namespace EKG_Project.Modules.Atrial_Fibr
 {
-   class Atrial_Fibr_Data : ECG_Data
+   public class Atrial_Fibr_Data : ECG_Data
     {
         private List<Tuple<bool, int[],string, string>> _afDetection;   
 

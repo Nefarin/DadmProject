@@ -70,45 +70,45 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return Method == null;
         }
 
-//        private void processData()
-//        {
-//            int channel = _currentChannelIndex;
-//            int startIndex = _samplesProcessed;
-            //int step = Params.Step;
+        //private void processData()
+        //{
+        //    int channel = _currentChannelIndex;
+        //    int startIndex = _samplesProcessed;
+        //    int step = Params.Step;
 
-//            if (channel < NumberOfChannels)
-//          {
-//                if (startIndex + step > _currentChannelLength)
-//                {
-//                    scaleSamples(channel, startIndex, _currentChannelLength - startIndex - 1);
-//                    _currentChannelIndex++;
-//                    _samplesProcessed = 0;
-//                    _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-//                }
-//               else
-//                {
-//                    scaleSamples(channel, startIndex, step);
-//                    _samplesProcessed = startIndex + step;
-//                }
-//           }
-//            else
-//            {
-//               OutputWorker.Save(AfDetection);
-//                _ended = true;
-//            }
-        
-//        public Atrial_Fibr_Data AfDetection
-//        {
-//            get
-//            {
-//                return _afDetection;
-//            }
-//
-//            set
-//            {
-//                _afDetection = value;
-//           }
-//        }
+        //    if (channel < NumberOfChannels)
+        //    {
+        //        if (startIndex + step > _currentChannelLength)
+        //        {
+        //            scaleSamples(channel, startIndex, _currentChannelLength - startIndex - 1);
+        //            _currentChannelIndex++;
+        //            _samplesProcessed = 0;
+        //            _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+        //        }
+        //        else
+        //        {
+        //            scaleSamples(channel, startIndex, step);
+        //            _samplesProcessed = startIndex + step;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        OutputWorker.Save(AfDetection);
+        //        _ended = true;
+        //    }
+
+        public Atrial_Fibr_Data AfDetection
+        {
+            get
+            {
+                return _afDetection;
+            }
+
+            set
+            {
+                _afDetection = value;
+            }
+        }
 
         public Atrial_Fibr_Params Method
         {
