@@ -19,6 +19,14 @@ namespace EKG_Project.Modules.Heart_Class
         private List<Tuple<int, Vector<double>>> _QrsComplex; // inicjalizacja w kontruktorze
         private List<Tuple<int, Vector<double>>> _qrsCoefficients;
 
+        //output:
+        //private Vector<int> _qrsComplexLabel;
+        private List<Tuple<int, int>> _qrsComplexLabel;
+        private uint _totalNumberOfQrsComplex;
+        private uint _numberOfClass;
+        private double _percentOfNormalComplex;
+        private Qrs_Class _cluster;
+
         #region Documentation
         /// <summary>
         /// TODO
@@ -112,6 +120,53 @@ namespace EKG_Project.Modules.Heart_Class
             set { _qrsCoefficients = value; }
         }
 
+        public uint TotalNumberOfQrsComplex
+        {
+            get { return _totalNumberOfQrsComplex; }
+            set { _totalNumberOfQrsComplex = value; }
+        }
+
+        public uint NumberOfClass
+        {
+            get { return _numberOfClass; }
+            set { _numberOfClass = value; }
+        }
+
+        public double PercentOfNormalComplex
+        {
+            get { return _percentOfNormalComplex; }
+            set { _percentOfNormalComplex = value; }
+        }
+
+        public List<Tuple<int, int>> QrsComplexLabel
+        {
+            get { return _qrsComplexLabel; }
+            set { _qrsComplexLabel = value; }
+        }
+
+        public class Qrs_Class
+        {
+            private int _indexOfClass;
+            private int _numberOfQrsComplex;
+            private int _indexOfRepresentative;
+
+            public int IndexOfClass
+            {
+                get { return _indexOfClass; }
+
+            }
+
+            public int NumberOfQrsComplex
+            {
+                get{ return _numberOfQrsComplex; }
+            }
+
+            public int IndexOfRepresentative
+            {
+                get  { return _indexOfRepresentative; }
+            }
+
+        }
         #region Documentation
         /// <summary>
         /// Not parameterized constructor of Heart_Class_Data.cs data class

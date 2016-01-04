@@ -17,7 +17,7 @@ namespace EKG_Project.Modules.Heart_Class
 
 
 
-        //HEART_CLASS Module output parameters
+        /*HEART_CLASS Module output parameters
         private Vector<int> _qrsComplexLabel;
         private uint _totalNumberOfQrsComplex;
         private uint _numberOfClass;
@@ -91,7 +91,7 @@ namespace EKG_Project.Modules.Heart_Class
             }
 
         }
-        */
+        
 
         public Vector<int> QrsComplexLabel
         {
@@ -134,7 +134,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         }
 
-
+    */
 
 
     }
