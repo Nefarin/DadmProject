@@ -81,9 +81,7 @@ namespace EKG_Project.Modules.Heart_Class
 
             //WCZYTANIE ZBIORU TRENINGOWEGO
             List<Vector<double>> trainDataList = HeartClass.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d.txt");
-            //foreach (var item in trainDataList)
-            //    Console.WriteLine(item);
-            // Console.Read();
+
 
             //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-NV
             List<Vector<double>> trainClassList = HeartClass.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d_label.txt");
@@ -116,14 +114,15 @@ namespace EKG_Project.Modules.Heart_Class
                     }
 
             //KLASYFIKACJA
-            HeartClass.classificationResult = HeartClass.TestKnnCase(trainDataList, testSamples, trainClass, 1);
+            HeartClass.classificationResult = HeartClass.TestKnnCase(trainDataList, HeartClass.HeartClassData.QrsCoefficients, trainClass, 1); // klasyfikacja sygnału testowego signal
+            //HeartClass.classificationResult = HeartClass.TestKnnCase(trainDataList, testSamples, trainClass, 1); // jeśli chcemy prztestować zbiór testowy (z matlaba)
 
 
         }
 
         #region Documentation
         /// <summary>
-        /// 
+        /// This method uses data from WAVES module (Qrs_onset and Qrs_end) and extracts single QRS complexes, creating list of Tuple. Each tuple contains int value - number of R peaks corresponding to the QRS complex, and vector - containing following signal samples. 
         /// </summary>
         #endregion
         private void SetQrsComplex()
@@ -143,7 +142,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// 
+        /// This method returns QRS complexes, which were set in SetQrsComplex()
         /// </summary>
         /// <returns></returns>
         #endregion
@@ -154,7 +153,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// 
+        /// This method calculates Malinowska's factor as one of shape coefficients using a single QRS complex (_qrssignal) and sampling frequency (fs).
         /// </summary>
         /// <param name="_qrssignal"></param>
         /// <param name="fs"></param>
@@ -175,7 +174,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// 
+        /// This method is a sub method used in CountMalinowskaFactor(). It integrates the signal.
         /// </summary>
         /// <param name="_qrssignal"></param>
         /// <returns></returns>
@@ -196,7 +195,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// 
+        /// This method is a sub method used in CountMalinowskaFactor(). It calculates the perimeter of the signal.
         /// </summary>
         /// <param name="_qrssignal"></param>
         /// <param name="fs"></param>
