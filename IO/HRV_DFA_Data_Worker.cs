@@ -37,8 +37,7 @@ namespace EKG_Project.IO
             Data = null;
         }
 
-        public HRV_DFA_Data_Worker(String analysisName)
-            : this()
+        public HRV_DFA_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }

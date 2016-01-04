@@ -127,23 +127,5 @@ namespace EKG_Project.IO
             }
             this.Data = basicData;
         }
-
-        public static void Main()
-        {
-            ECG_Baseline_Data data = new ECG_Baseline_Data();
-            string a = "nazwa odprowadzenia";
-            double[] b = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            Vector<double> vector = Vector<double>.Build.Dense(b.Length);
-            vector.SetValues(b);
-            Tuple<string, Vector<double>> ab = Tuple.Create(a, vector);
-            List<Tuple<string, Vector<double>>> list = new List<Tuple<string, Vector<double>>>();
-            list.Add(ab);
-            data.SignalsFiltered = list;
-
-            ECG_Baseline_Data_Worker worker = new ECG_Baseline_Data_Worker();
-            //worker.Save(data);
-            worker.Load();
-            Console.Read();
-        }
     }
 }

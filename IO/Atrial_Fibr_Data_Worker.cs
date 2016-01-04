@@ -148,12 +148,5 @@ namespace EKG_Project.IO
             }
             this.Data = basicData;
         }
-
-        public static void Main()
-        {
-            Atrial_Fibr_Data_Worker worker = new Atrial_Fibr_Data_Worker();
-            worker.Load();
-            Console.Read();
-        }
     }
 }
