@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.Modules.HRV1.HRV1</StartupObject>
+    <StartupObject>EKG_Project.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -301,12 +301,13 @@
     <Compile Include="Modules\HRV1\HRV1_Alg.cs" />
     <Compile Include="Modules\HRV1\HRV1_Data.cs" />
     <Compile Include="Modules\HRV1\HRV1_Params.cs" />
-    <Compile Include="Modules\HRV2\Converters.cs" />
     <Compile Include="Modules\HRV2\HRV2.cs" />
     <Compile Include="Modules\HRV2\HRV2_Alg.cs" />
     <Compile Include="Modules\HRV2\HRV2_Data.cs" />
     <Compile Include="Modules\HRV2\HRV2_Params.cs" />
     <Compile Include="Modules\HRV2\SampleDataSource.cs" />
+    <Compile Include="Modules\HRV2\Tinn.cs" />
+    <Compile Include="Modules\HRV2\TriangleIndex.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Alg.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Data.cs" />
@@ -394,7 +395,6 @@
     <Content Include="DLL\WfdbCsharpLib.pdb" />
     <Resource Include="IO\temp\Analysis6_TestModule3.xml" />
     <Resource Include="IO\temp\Analysis6_Data.xml" />
-    <Resource Include="Modules\HRV2\nsr001.txt" />
     <Resource Include="IO\data\2.xml" />
     <Resource Include="IO\data\3.xml" />
     <Resource Include="IO\data\5.xml" />
