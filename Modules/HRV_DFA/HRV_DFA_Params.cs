@@ -15,18 +15,66 @@ namespace EKG_Project.Modules.HRV_DFA
         private int _boxEnd;
         private int _stepSize;
 
-        public HRV_DFA_Params(double breakpoint, int boxStart, int boxEnd, int stepSize)
+        public double Breakpoint
         {
-            _breakpoint = breakpoint;
-            _boxStart = boxStart;
-            _boxEnd = boxEnd;
-            _stepSize = stepSize;
+            get
+            {
+                return _breakpoint;
+            }
+
+            set
+            {
+                _breakpoint = value;
+            }
         }
 
-        public double Breakpoint { get; set; }
-        public int BoxStart { get; set; }
-        public int BoxEnd { get; set; }
-        public int StepSize { get; set; }
+        public int BoxStart
+        {
+            get
+            {
+                return _boxStart;
+            }
+
+            set
+            {
+                _boxStart = value;
+            }
+        }
+
+        public int BoxEnd
+        {
+            get
+            {
+                return _boxEnd;
+            }
+
+            set
+            {
+                _boxEnd = value;
+            }
+        }
+
+        public int StepSize
+        {
+            get
+            {
+                return _stepSize;
+            }
+
+            set
+            {
+                _stepSize = value;
+            }
+        }
+
+        public HRV_DFA_Params(double breakpoint, int boxStart, int boxEnd, int stepSize)
+          {
+              Breakpoint = breakpoint;
+              BoxStart = boxStart;
+              BoxEnd = boxEnd;
+              StepSize = stepSize;
+
+          }
 
        
     }
