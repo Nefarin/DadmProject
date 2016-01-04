@@ -182,9 +182,10 @@ namespace EKG_Project.Modules.Waves
         public void FindP()
         {
             double pmax_val;
-            int window,pmax_loc,ponset,pend;
+            int window,break_window,pmax_loc,ponset,pend;
 
             window = Convert.ToInt32(_data.Fs*0.25);
+            break_window = Convert.ToInt32(_data.Fs * 0.3);
 
             foreach (int onset_loc in _data.QRSOnsets)
             {
@@ -201,6 +202,11 @@ namespace EKG_Project.Modules.Waves
                 while(_data.ECG[ponset] > _data.ECG[ponset-1] || (pmax_val-_data.ECG[ponset] < 70))
                 {
                     ponset--;
+                    if (ponset < onset_loc - break_window)
+                    {
+                        ponset = -1;
+                        break;
+                    }
                 }
                 _data.POnsets.Add(ponset);
 
@@ -208,6 +214,11 @@ namespace EKG_Project.Modules.Waves
                 while (_data.ECG[pend] > _data.ECG[pend+1] || (pmax_val - _data.ECG[pend] < 110))
                 {
                     pend++;
+                    if (pend > onset_loc)
+                    {
+                        pend = -1;
+                        break;
+                    }
                 }
                 _data.PEnds.Add(pend);
             }
@@ -216,10 +227,11 @@ namespace EKG_Project.Modules.Waves
         public void FindT()
         {
             double tmax_val;
-            int window,tmax_loc, tend;
+            int window,break_window,tmax_loc, tend;
 
 
             window = Convert.ToInt32(_data.Fs*0.22);
+            break_window = Convert.ToInt32(_data.Fs * 0.35);
 
             foreach (int ends_loc in _data.QRSEnds)
             {
@@ -236,8 +248,9 @@ namespace EKG_Project.Modules.Waves
                 while (_data.ECG[tend] > _data.ECG[tend + 1] || (tmax_val - _data.ECG[tend] < 20))
                 {
                     tend++;
-                    if(tend == _data.ECG.Count-1)
+                    if(tend > ends_loc+break_window)
                     {
+                        tend = -1;
                         break;
                     }
                 }
