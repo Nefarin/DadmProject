@@ -16,6 +16,7 @@ namespace EKG_Project.Modules.Heart_Class
         private int _samplesProcessed;
         private int _numberOfChannels;
 
+
         private Basic_Data_Worker _inputWorker;
         private Heart_Class_Data_Worker _outputWorker;
 
