@@ -14,6 +14,7 @@ using System.Globalization;
 
 namespace EKG_Project.Modules.Heart_Class
 {
+    /*
     public partial class Heart_Class : IModule
     {
         private Vector<double> _qrssignal;
@@ -495,5 +496,5 @@ namespace EKG_Project.Modules.Heart_Class
 
 
     }
-
+    **/
 }

@@ -179,7 +179,6 @@ namespace EKG_Project.IO
                         RRIntervals.Add(read);
                     }
                     basicData.RRIntervals = RRIntervals;
-                    Console.WriteLine(basicData.RRIntervals.ToString());
                 }
             }
             this.Data = basicData;

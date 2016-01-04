@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.IO.HRV1_Data_Worker</StartupObject>
+    <StartupObject>EKG_Project.IO.Heart_Class_Data_Worker</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -265,6 +265,7 @@
     <Compile Include="IO\ECG_Worker.cs" />
     <Compile Include="IO\FileLoader.cs" />
     <Compile Include="IO\Flutter_Data_Worker.cs" />
+    <Compile Include="IO\Heart_Class_Data_Worker.cs" />
     <Compile Include="IO\HRV1_Data_Worker.cs" />
     <Compile Include="IO\HRV_DFA_Data_Worker.cs" />
     <Compile Include="IO\IECGConverter.cs" />

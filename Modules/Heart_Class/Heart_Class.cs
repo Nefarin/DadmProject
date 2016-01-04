@@ -4,14 +4,10 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
 using System.Collections.Generic;
 
-namespace EKG_Project.Modules.Heart_Class
-{
-    public partial class Heart_Class : IModule
-    {
-using System.Collections.Generic;
 
 namespace EKG_Project.Modules.Heart_Class
 {
+    /*
     public partial class Heart_Class : IModule
     {
         private bool _ended;
@@ -129,4 +125,5 @@ namespace EKG_Project.Modules.Heart_Class
         }
 
     }
+     * */
 }
