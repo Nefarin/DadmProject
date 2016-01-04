@@ -131,7 +131,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 }
             }
             int[] pointsDetected;
-            string afDetectedS;
+            string afDetectedS; //nieuzywane
             string afDetectionDescription="";
             if (afDetected)
             {
@@ -258,6 +258,89 @@ namespace EKG_Project.Modules.Atrial_Fibr
         bool detectAFPoin(int[] RR, double fs)
         {
             bool AF = false;
+            int length = RR.Length;
+            int[] Ii;
+            int[] Ii1;
+            if (length % 2 == 0)
+            {
+                int tmp = length / 2;
+                Ii = new int[tmp];
+                Ii1 = new int[tmp];
+                int j = 0;
+
+                for (int i = 0; i < tmp; i = i + 2)
+                {
+                    Ii[j] = RR[i];
+                    Ii1[j] = RR[i+1];
+                    j++;
+                }
+            }
+            else
+            {
+                double tmp = length / 2;
+                int size = Convert.ToInt32(Math.Ceiling(tmp));
+                Ii = new int[size];
+                Ii1 = new int[size];
+                int j = 0;
+
+                for (int i = 0; i < size; i = i + 2)
+                {
+                    Ii[j] = RR[i];
+                    j++;
+                }
+
+                for (int i = 1; i < (size-1); i = i + 2)
+                {
+                    Ii1[j] = RR[i];
+                    j++;
+                }
+            }
+            double[] A1 = new double[Ii.Length];
+            for (int i = 0; i < Ii.Length;i++)
+            {
+                A1[i] = Ii[i] - Ii1[i];
+            }
+            double[] A2 = new double[A1.Length];
+
+            for(int i=0;i<A1.Length;i++)
+            {
+                A2[i] = Math.Pow(A1[i],2);
+            }
+
+            double suma = 0;
+            for(int i = 0; i < A2.Length; i++)
+            {
+                suma += A2[i];
+            }
+
+            double[] A3 = new double [A1.Length];
+            for (int i = 0; i < A1.Length; i++)
+            {
+                A3[i] = Math.Abs(A1[i]);
+            }
+
+            double suma_modul = 0;
+            for (int i = 0; i < A3.Length; i++)
+            {
+                suma_modul += A3[i];
+            }
+
+            double C,D,E,F,G,H,d;
+            C = suma / (2 * length - 2);
+            D = suma_modul / ((length - 1) * Math.Sqrt(2));
+            E = Math.Pow(D, 2);
+            F = Math.Sqrt(C - E);
+
+            int sum = 0;
+            for(int i = 0; i < Ii.Length; i++)
+            {
+                sum += Ii[i];
+            }
+
+            G = (-RR[1] - RR[RR.Length - 1] + 2 * sum) / (2 * length - 2);
+            d = F / G;
+
+            //cdn...
             return AF;
         }
 
