@@ -11,11 +11,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
     {
         private Detect_Method _method;                 //metoda detekcji
 
-        public Atrial_Fibr_Params(Detect_Method method)
-        {
-            _method = method;
-        }
-
         public Detect_Method Method
         {
             get
@@ -26,6 +21,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
             {
                 _method = value;
             }
+        }
+
+        public Atrial_Fibr_Params(Detect_Method method)
+        {
+            this.Method = method;
         }
     }
 }
