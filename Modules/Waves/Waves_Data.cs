@@ -7,15 +7,60 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Waves
 {
-    class Waves_Data : ECG_Data
+    public class Waves_Data : ECG_Data
     {
+        private Vector<double> _ecg;
+        private List<int> _Rpeaks;
+
         private List<int> _QRSonsets;
         private List<int> _QRSends;
         private List<int> _Ponsets;
         private List<int> _Pends;
         private List<int> _Tends;
 
-        public Waves_Data() { }
+        private uint _fs;
+
+        public Waves_Data() {
+            _ecg = Vector<double>.Build.Dense(1);
+
+            _Rpeaks = new List<int>();
+            _QRSends = new List<int>();
+            _QRSonsets = new List<int>();
+            _Pends = new List<int>();
+            _Ponsets = new List<int>();
+            _Tends = new List<int>();
+        }
+
+        public Waves_Data( Vector<double> ecg, List<int> RpeaksIn, uint fs):this()
+        {
+            ECG = ecg;
+            Rpeaks = RpeaksIn;
+            Fs = fs;
+        }
+
+        public Vector<double> ECG
+        {
+            get
+            {
+                return _ecg;
+            }
+            set
+            {
+                _ecg = value;
+            }
+        }
+
+        public List<int> Rpeaks
+        {
+            get
+            {
+                return _Rpeaks;
+            }
+            set
+            {
+                _Rpeaks = value;
+            }
+        }
 
         public List<int> QRSOnsets
         {
@@ -78,5 +123,17 @@ namespace EKG_Project.Modules.Waves
                 _Tends = value;
             }
         }
+        public uint Fs
+        {
+            get
+            {
+                return _fs;
+            }
+            set
+            {
+                _fs = value;
+            }
+        }
+
     }
 }
