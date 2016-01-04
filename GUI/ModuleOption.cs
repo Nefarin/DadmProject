@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EKG_Project.Modules;
+using EKG_Project.Modules.ECG_Baseline;
 
 namespace EKG_Project.GUI
 {
@@ -46,6 +48,8 @@ namespace EKG_Project.GUI
             }
         }
 
+        public ModuleParams ModuleParam { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ModuleOption(AvailableOptions code, ModuleOption parent = null)
@@ -54,6 +58,16 @@ namespace EKG_Project.GUI
             this.Name = code.ToString();
             this.Set = false;
             this.Parent = parent;
+
+            switch (this.Code)
+            {
+                case AvailableOptions.ECG_BASELINE:
+                    this.ModuleParam = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS);
+                    break;
+                default:
+                    break;
+            }
+                
         }
 
         public ModuleOption AddSuboption(AvailableOptions code)
@@ -101,6 +115,7 @@ namespace EKG_Project.GUI
         FLUTTER,
         HRT,
         ECTOPIC_BEAT,
-        HEART_AXIS
+        HEART_AXIS,
+        TEST_MODULE
     }
 }

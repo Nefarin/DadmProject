@@ -38,6 +38,16 @@ namespace EKG_Project.Modules.ECG_Baseline
             _type = type;
         }
 
+        public void CopyParametersFrom(ECG_Baseline_Params parameters)
+        {
+            this.Method = parameters.Method;
+            this.Type = parameters.Type;
+            this.Fc = parameters.Fc;
+            this.Fs = parameters.Fs;
+            this.Order = parameters.Order;
+            this.WindowSize = parameters.WindowSize;
+        }
+
         public Filtr_Method Method
         {
             get

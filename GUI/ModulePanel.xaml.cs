@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EKG_Project.GUI.ModuleOptionDialogues;
+using EKG_Project.Modules.ECG_Baseline;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -48,7 +50,9 @@ namespace EKG_Project.GUI
                     AddSuboptionAndMoveUp(AvailableOptions.SIG_EDR).
                 AddSuboption(AvailableOptions.VCG_T_LOOP);
 
+            var testModule = new ModuleOption(AvailableOptions.TEST_MODULE, null);
             Options.Add(ecgBaseline);
+            Options.Add(testModule);
             this.treeViewModules.ItemsSource = this.Options;
         }
 
@@ -58,6 +62,8 @@ namespace EKG_Project.GUI
             switch (option.Code)
             {
                 case AvailableOptions.ECG_BASELINE:
+                    var dialogue = new Dialogue_ECG_Baseline_Options((ECG_Baseline_Params)option.ModuleParam);
+                    dialogue.ShowDialog();
                     break;
                 case AvailableOptions.R_PEAKS:
                     break;
