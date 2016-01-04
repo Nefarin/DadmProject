@@ -8,11 +8,13 @@ using EKG_Project.IO;
 
 namespace EKG_Project.Modules.Waves
 {
+    
     public partial class Waves : IModule
     {
+        
         static Vector<double> _ecg;
         static List<int> _Rpeaks;
-
+        
         static List<int> _QRSonsets;
         static List<int> _QRSends;
         static List<int> _Ponsets;
@@ -27,13 +29,13 @@ namespace EKG_Project.Modules.Waves
             Vector<double> dwt = Vector<double>.Build.Random(10);
             dwt = HaarDWT(signal, 1);*/
 
-            /*TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
-            TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");*/
-            TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG.txt");
-            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSonsets.txt");
+            TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
+            TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
+            /*TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG.txt");
+            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSonsets.txt");*/
             fs = TempInput.getFrequency();
             _ecg = TempInput.getSignal();
-            Vector<double> dwt = ListHaarDWT(_ecg, 3)[1];
+            Vector<double> dwt = ListDWT(_ecg, 3, Wavelet_Type.db2)[1];
             Vector<double> temp = Vector<double>.Build.Dense(2);
             _Rpeaks = new List<int>();
             _QRSends = new List<int>();
@@ -41,8 +43,8 @@ namespace EKG_Project.Modules.Waves
             _Ponsets = new List<int>();
             _Pends = new List<int>();
             _Tends = new List<int>();
-            /*TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");*/
-            TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG3Rpeaks.txt");
+            TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");
+            //TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG3Rpeaks.txt");
             Vector<double> rpeaks = TempInput.getSignal();
             foreach( double singlePeak in rpeaks)
             {
@@ -82,17 +84,17 @@ namespace EKG_Project.Modules.Waves
 
             }
 
-            TempInput.writeFile(360, onsets);
-            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSends.txt");
-            TempInput.writeFile(360, ends);
-            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGPonsets.txt");
-            TempInput.writeFile(360, ponset);
-            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGPends.txt");
-            TempInput.writeFile(360, pends);
-            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGTends.txt");
-            TempInput.writeFile(360, tends);
-            /*TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\d2ekg.txt");*/
-            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\d2ekg.txt");
+            //TempInput.writeFile(360, onsets);
+            //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSends.txt");
+            //TempInput.writeFile(360, ends);
+            //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGPonsets.txt");
+            //TempInput.writeFile(360, ponset);
+            //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGPends.txt");
+            //TempInput.writeFile(360, pends);
+            //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGTends.txt");
+            //TempInput.writeFile(360, tends);
+            TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\d2ekg.txt");
+            //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\d2ekg.txt");
             TempInput.writeFile(360, dwt);
             Console.Read();
         }
@@ -144,12 +146,60 @@ namespace EKG_Project.Modules.Waves
             
         }
 
+        static public List<Vector<double>> ListDWT(Vector<double> signal, int n, Wavelet_Type waveType)
+        {
+            double[] Hfilter =  { 0 };
+            double[] Lfilter = { 0 };
+            int filterSize = 0;
+                //generated from wfilters Matlab function
+                switch (waveType)
+                {
+                case Wavelet_Type.haar:
+                    return ListHaarDWT(signal, n);
+
+                case Wavelet_Type.db2:
+                    Hfilter = new double []{ -0.482962913144690 ,    0.836516303737469, -0.224143868041857 ,-0.129409522550921};
+                    Lfilter = new double[] { -0.129409522550921, 0.224143868041857, 0.836516303737469, 0.482962913144690 };
+                    filterSize = 4;
+                    break;
+
+                case Wavelet_Type.db3:
+                    Hfilter = new double[] { -0.332670552950957,  0.806891509313339, - 0.459877502119331, - 0.135011020010391,  0.0854412738822415,  0.0352262918821007 };
+                    Lfilter = new double[] { 0.0352262918821007, - 0.0854412738822415, - 0.135011020010391,  0.459877502119331,   0.806891509313339,   0.332670552950957 };
+                    filterSize = 6;
+                    break;
+                }
+                int decompSize = signal.Count();
+                Vector<double> outVec = Vector<double>.Build.Dense(decompSize);
+                Vector<double> signalTemp = signal;
+                List<Vector<double>> listOut = new List<Vector<double>>();
+                for (int i = 0; i < n; i++)
+                {
+                    decompSize /= 2;
+                    for (int dataInd = 0; dataInd < decompSize; dataInd++)
+                    {
+                        outVec[dataInd] = 0;
+                        outVec[decompSize + dataInd] = 0;
+                        for( int filtIt = 0; filtIt < filterSize && (2*dataInd + filtIt) < signalTemp.Count ; filtIt++)
+                        {
+                            outVec[dataInd] += signalTemp[2 * dataInd + filtIt]*Lfilter[filterSize - filtIt - 1] ;
+                            outVec[decompSize + dataInd] += signalTemp[2 * dataInd + filtIt]* Hfilter[filterSize - filtIt - 1];
+                        }
+                        
+                    }
+                    signalTemp = outVec.SubVector(0, decompSize);
+                    listOut.Add(outVec.SubVector(decompSize, decompSize));
+                }
+                return listOut;
+
+        }
+
         static public void DetectQRS()
         {
             _QRSonsets.Clear();
             List<Vector<double>> dwt =new List< Vector<double>>();
             int decompLevel = 2;
-            dwt = ListHaarDWT(_ecg, decompLevel);
+            dwt = ListDWT(_ecg, decompLevel, Wavelet_Type.db2);
             
             int d2size = dwt[ decompLevel - 1].Count();
             int rSize = _Rpeaks.Count();

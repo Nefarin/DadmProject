@@ -8,14 +8,26 @@ namespace EKG_Project.Modules.Waves
 {
     public partial class Waves : IModule
     {
+        private bool _ended;
+        private bool _aborted;
+
+        private int _currentChannelIndex;
+        private int _currentChannelLength;
+        private int _samplesProcessed;
+        private int _numberOfChannels;
+
+        private Basic_Data _inputData;
+        private Waves_Params _params;
+
         public void Abort()
         {
-            throw new NotImplementedException();
+            Aborted = true;
+            _ended = true;
         }
 
         public bool Ended()
         {
-            throw new NotImplementedException();
+            return _ended;
         }
 
         public void Init(ModuleParams parameters)
@@ -36,6 +48,58 @@ namespace EKG_Project.Modules.Waves
         public bool Runnable()
         {
             throw new NotImplementedException();
+        }
+
+        public Basic_Data InputData
+        {
+            get
+            {
+                return _inputData;
+            }
+
+            set
+            {
+                _inputData = value;
+            }
+        }
+
+        public int NumberOfChannels
+        {
+            get
+            {
+                return _numberOfChannels;
+            }
+
+            set
+            {
+                _numberOfChannels = value;
+            }
+        }
+
+        public bool Aborted
+        {
+            get
+            {
+                return _aborted;
+            }
+
+            set
+            {
+                _aborted = value;
+            }
+        }
+
+        public Waves_Params Params
+        {
+            get
+            {
+                return _params;
+            }
+
+            set
+            {
+                _params = value;
+            }
         }
     }
 }

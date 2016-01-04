@@ -7,33 +7,39 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Waves
 {
-    public enum Waves_Method { DWT, MORLET };
+    public enum Wavelet_Type { haar, db2, db3 };
 
     public class Waves_Params : ModuleParams
     {
- 
-        private Waves_Method _method;
+        private Wavelet_Type _waveType;
+        private int _decompositionLevel;
 
-
-        public Waves_Params(Waves_Method method)
-        {
-            _method = method;
+        public Wavelet_Type WaveType {
+            get
+            {
+                return _waveType;
+            }
+            set
+            {
+                _waveType = value;
+            }
         }
-
-
-
-        public Waves_Method Method
+        public int DecompositionLevel
         {
             get
             {
-                return _method;
+                return _decompositionLevel;
             }
-
             set
             {
-                _method = value;
+                _decompositionLevel = value;
             }
         }
 
+        public Waves_Params( Wavelet_Type waveType, int decompositionLevel)
+        {
+            this.WaveType = waveType;
+            this.DecompositionLevel = decompositionLevel;
+        }
     }
 }
