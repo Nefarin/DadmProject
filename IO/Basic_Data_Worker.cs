@@ -107,7 +107,8 @@ namespace EKG_Project.IO
 
             XmlDocument file = new XmlDocument();
             string fileName = analysisName + "_Data.xml";
-            file.Load(directory + fileName);
+            //file.Load(directory + fileName); Marek kazał zamienić na:
+            file.Load(System.IO.Path.Combine(directory, fileName)));
 
             XmlNodeList modules = file.SelectNodes("EKG/module");
 

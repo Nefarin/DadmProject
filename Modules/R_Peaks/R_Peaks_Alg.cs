@@ -19,7 +19,7 @@ namespace EKG_Project.Modules.R_Peaks
         //TO DO: parts of signal reading
 
 
-        static void Main(string[] args)
+        /*static void Main(string[] args)
         {
             #region readData
             //read data from ecg_baseline (TO DO!)
@@ -38,6 +38,7 @@ namespace EKG_Project.Modules.R_Peaks
             R_Peaks pt = new R_Peaks();
             R_Peaks h = new R_Peaks();
             double[] arr_sig = sig.ToArray();
+            //Vector<double> locsR = h.Hilbert(sig, fs);
 
 
 
@@ -63,9 +64,9 @@ namespace EKG_Project.Modules.R_Peaks
             Console.WriteLine(h.Delay);
             Console.WriteLine(1 / (samplingFreq / 2));
             Console.WriteLine();
-            //foreach (double sth in sig) { Console.WriteLine(sth); }
+            //foreach (double sth in locsR) { Console.WriteLine(sth); }
             Console.ReadKey();
-        }
+        }*/
 
         //FIELDS
         #region 
