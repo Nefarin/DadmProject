@@ -96,15 +96,7 @@ namespace EKG_Project.GUI
 
         private void checkPlayButton()
         {
-            
-            if ( File.Exists(inputFilePath) && Directory.Exists(Path.GetDirectoryName(outputPdfPath)) )
-            {
-                startAnalyseButton.IsEnabled = true;
-            }
-            else
-            {
-                startAnalyseButton.IsEnabled = false;
-            }
+           startAnalyseButton.IsEnabled = File.Exists(inputFilePath) && Directory.Exists(Path.GetDirectoryName(outputPdfPath));
         }
 
 
