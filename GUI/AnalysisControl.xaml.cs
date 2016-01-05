@@ -20,6 +20,7 @@ namespace EKG_Project.GUI
     public partial class AnalysisControl : UserControl
     {
         public string outputPdfPath;
+        public string inputFilePath;
 
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
@@ -28,8 +29,15 @@ namespace EKG_Project.GUI
 
         private void loadFileButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadFileDialogBox loadFileDialogBox = new LoadFileDialogBox();
-            loadFileDialogBox.ShowDialog();
+            System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
+            fileDialog.Title = "Specify input file";
+            fileDialog.RestoreDirectory = true;
+            fileDialog.FileName = inputFilePath;
+
+            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                inputFilePath = fileDialog.FileName;
+            }
 
         }
         
