@@ -2,6 +2,8 @@
 using System.Threading;
 using EKG_Project.Architecture;
 using EKG_Project.Architecture.GUIMessages;
+using System.Collections.Generic;
+using EKG_Project.Modules;
 
 namespace EKG_Project.GUI
 {
@@ -14,6 +16,8 @@ namespace EKG_Project.GUI
         private SynchronizationContext _context;
         private ToGUIDelegate _analysisEvent;
         private string _analysisName;
+        private Dictionary<AvailableOptions, ModuleParams> moduleParams;
+        private Dictionary<AvailableOptions, bool> isComputed;
 
         #region Properties
 

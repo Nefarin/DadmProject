@@ -119,6 +119,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ModuleOptionDialogues\NumericTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\ModulePanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -207,6 +215,12 @@
       <DependentUpon>LoadFileDialogBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ModuleOption.cs" />
+    <Compile Include="GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml.cs">
+      <DependentUpon>Dialogue_ECG_Baseline_Options.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ModuleOptionDialogues\NumericTextBox.xaml.cs">
+      <DependentUpon>NumericTextBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\ModulePanel.xaml.cs">
       <DependentUpon>ModulePanel.xaml</DependentUpon>
     </Compile>
@@ -287,25 +301,23 @@
     <Compile Include="Modules\HRV1\HRV1_Alg.cs" />
     <Compile Include="Modules\HRV1\HRV1_Data.cs" />
     <Compile Include="Modules\HRV1\HRV1_Params.cs" />
-    <Compile Include="Modules\HRV2\Converters.cs" />
     <Compile Include="Modules\HRV2\HRV2.cs" />
     <Compile Include="Modules\HRV2\HRV2_Alg.cs" />
     <Compile Include="Modules\HRV2\HRV2_Data.cs" />
     <Compile Include="Modules\HRV2\HRV2_Params.cs" />
     <Compile Include="Modules\HRV2\SampleDataSource.cs" />
+    <Compile Include="Modules\HRV2\Tinn.cs" />
+    <Compile Include="Modules\HRV2\TriangleIndex.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Alg.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Data.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
     <Compile Include="Modules\IModule.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
-    <Compile Include="Modules\QT_Disp\QTCalculation.cs" />
-    <Compile Include="Modules\QT_Disp\QTIntervalStatistics.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Data.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Params.cs" />
-    <Compile Include="Modules\QT_Disp\TWave.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Alg.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Data.cs" />
@@ -380,21 +392,20 @@
     <Content Include="DLL\WfdbCsharpLib.pdb" />
     <Resource Include="IO\temp\Analysis6_TestModule3.xml" />
     <Resource Include="IO\temp\Analysis6_Data.xml" />
-    <Resource Include="Modules\HRV2\nsr001.txt" />
     <Resource Include="IO\data\2.xml" />
     <Resource Include="IO\data\3.xml" />
     <Resource Include="IO\data\5.xml" />
     <Resource Include="IO\data\6.xml" />
     <Resource Include="IO\data\8.xml" />
     <Resource Include="GUI\baseline.png" />
-    <Resource Include="GUI\images\addNewAnalysis.png" />
-    <Resource Include="GUI\images\backward.png" />
-    <Resource Include="GUI\images\close.png" />
-    <Resource Include="GUI\images\forward.png" />
-    <Resource Include="GUI\images\loadfile.png" />
-    <Resource Include="GUI\images\pdf.png" />
-    <Resource Include="GUI\images\Play.png" />
-    <Resource Include="GUI\images\save.png" />
+    <Resource Include="GUI\Images\addNewAnalysis.png" />
+    <Resource Include="GUI\Images\backward.png" />
+    <Resource Include="GUI\Images\close.png" />
+    <Resource Include="GUI\Images\forward.png" />
+    <Resource Include="GUI\Images\loadfile.png" />
+    <Resource Include="GUI\Images\pdf.png" />
+    <Resource Include="GUI\Images\Play.png" />
+    <Resource Include="GUI\Images\save.png" />
     <Resource Include="Matlab\TextFile1.txt" />
     <Resource Include="Resources\TextFile1.txt" />
   </ItemGroup>
