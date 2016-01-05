@@ -11,7 +11,7 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
-    class HRV1_Data_Worker
+    public class HRV1_Data_Worker
     {
         string directory;
         string analysisName = "Analysis6";

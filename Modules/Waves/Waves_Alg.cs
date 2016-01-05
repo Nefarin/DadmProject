@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Waves
 {
-    
+    /*
     public partial class Waves : IModule
     {
         public Vector<double> HaarDWT(Vector<double> signal, int n)
@@ -258,6 +258,6 @@ namespace EKG_Project.Modules.Waves
             }
         }
     }
-
+    **/
 
 }

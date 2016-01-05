@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.Flutter
 {
-    class Flutter_Data : ECG_Data
+    public class Flutter_Data : ECG_Data
     {
         /// <summary>
         /// Lista krotek wskazujących trzepotanie przedsionków,

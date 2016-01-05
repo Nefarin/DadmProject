@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace EKG_Project.Modules.Waves
 {
+    /*
     public partial class Waves : IModule
     {
         private bool _ended;
@@ -166,11 +167,11 @@ namespace EKG_Project.Modules.Waves
         {
             
             //POKI CO BIERZEMY DANE Z NASZYCH GOWNIANYCH PLIKOW
-
+        
             TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
             TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
             /*TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG.txt");
-            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSonsets.txt");*/
+            TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSonsets.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> ecg = TempInput.getSignal();
             //Vector<double> dwt = ListDWT(_ecg, 3, Wavelet_Type.db2)[1];
@@ -246,5 +247,7 @@ namespace EKG_Project.Modules.Waves
             //TempInput.writeFile(360, dwt);
             Console.Read();
         }
+
     }
+     * */
 }
