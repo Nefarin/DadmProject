@@ -13,78 +13,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
     //-komentarze zgodnie z dokumentacją
     public partial class Atrial_Fibr : IModule
     {
-        //public class detectedAF
-        //{
-        //    private bool _detected;
-        //    private int[] _detectedPoints;
-        //    private string _detectedS;
-        //    private string _timeofAF;
-
-        //    public bool Detected
-        //    {
-        //        get
-        //        {
-        //            return _detected;
-        //        }
-        //        set
-        //        {
-        //            _detected = value;
-        //        }
-        //    }
-
-        //    public int[] DetectedPoint
-        //    {
-        //        get
-        //        {
-        //            return _detectedPoints;
-        //        }
-        //        set
-        //        {
-        //            _detectedPoints = value;
-        //        }
-        //    }
-
-        //    public string DetectedS
-        //    {
-        //        get
-        //        {
-        //            return _detectedS;
-        //        }
-        //        set
-        //        {
-        //            _detectedS = value;
-        //        }
-        //    }
-
-        //    public string TimeofAF
-        //    {
-        //        get
-        //        {
-        //            return _timeofAF;
-        //        }
-        //        set
-        //        {
-        //            _timeofAF = value;
-        //        }
-        //    }
-
-        //    public detectedAF(bool detected, int[] detectedPoints, string detectedS, string timeofAF)
-        //    {
-        //        this.Detected = detected;
-        //        this.DetectedPoint = detectedPoints;
-        //        this.DetectedS = detectedS;
-        //        this.TimeofAF = timeofAF;
-        //    }
-        //    public detectedAF()
-        //    {
-        //        this.Detected = false;
-        //        int[] tmp = { 0 };
-        //        this.DetectedPoint =tmp;
-        //        this.DetectedS = "Nie wykryto migotania przedsionków";
-        //        this.TimeofAF = "";
-        //    }
-
-        //}
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
         private void detectAF (int[] RR, double fs)
         {
             int[] rrIntervals = new int[(RR.Length - 1)];
@@ -166,6 +99,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
 
         }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+
         bool detectAFStat(int[] RR, double fs )
         {
             bool AF;
@@ -255,6 +195,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return AF;
             
         }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+           
         bool detectAFPoin(int[] RR, double fs)
         {
             bool AF = false;
@@ -350,6 +297,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return AF;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+
         public class DataPoint
         {
             public double A { get; set; }
@@ -357,19 +310,29 @@ namespace EKG_Project.Modules.Atrial_Fibr
             public int Cluster { get; set; }
             public DataPoint(double a, double b)
             {
-                A = b;
-                B = a;
+                A = a;
+                B = b;
                 Cluster = 0;
             }
 
             public DataPoint()
-            {}
+            {
+                //A = 0;
+                //B = 0;
+                //Cluster = 0;
+            }
         }
 
         List<DataPoint> _rawDataToCluster = new List<DataPoint>();
         List<DataPoint> _normalizedDataToCluster = new List<DataPoint>();
         List<DataPoint> _clusters = new List<DataPoint>();
         private int _numberOfClusters = 0;
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
 
         private void InitilizeRawData(double[] Vector1, double[] Vector2)
         {
@@ -381,6 +344,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 _rawDataToCluster.Add(dp);
             }
         }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
 
         private void NormalizeData()
         {
@@ -413,19 +382,32 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+
         private void InitializeCentroids()
         {
             int _amount = 3;
+
             for (int i = 0; i < _amount; ++i)
             {
                 _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = i;
             }
-            Random random = new Random(_amount);
+            Random random = new Random();
             for (int i = _amount; i < _normalizedDataToCluster.Count; i++)
             {
                 _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = random.Next(0, _amount);
             }
         }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
 
         private bool UpdateDataPointMeans()
         {
@@ -451,6 +433,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return true;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+
         private bool EmptyCluster(List<DataPoint> data)
         {
             var emptyCluster =
@@ -466,6 +454,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return false;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+
         private double ElucidanDistance(DataPoint dataPoint, DataPoint mean)
         {
             double _diffs = 0.0;
@@ -473,6 +467,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
             _diffs += Math.Pow(dataPoint.B - mean.B, 2);
             return Math.Sqrt(_diffs);
         }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
 
         private bool UpdateClusterMembership()
         {
@@ -499,6 +499,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return true;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+
         private int MinIndex(double[] distances)
         {
             int _indexOfMin = 0;
@@ -513,6 +519,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
             return _indexOfMin;
         }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
 
         public void Cluster(List<DataPoint> data, int numClusters)
         {
@@ -530,17 +542,23 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
         }
 
-        private void btnCluster_Click(object sender, EventArgs e, double[] Vector1, double[] Vector2, int _numberOfClusters)
-        {
-            InitilizeRawData(Vector1, Vector2);
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
 
-            for (int i = 0; i < _numberOfClusters; i++)
-            {
-                _clusters.Add(new DataPoint() { Cluster = i });
-            }
+        //private void ClusteringPoints(object sender, EventArgs e, double[] Vector1, double[] Vector2, int _numberOfClusters)
+        //{
+        //    InitilizeRawData(Vector1, Vector2);
 
-            Cluster(_normalizedDataToCluster, _numberOfClusters);
-            var group = _rawDataToCluster.GroupBy(s => s.Cluster).OrderBy(s => s.Key);
-        }
+        //    for (int i = 0; i < _numberOfClusters; i++)
+        //    {
+        //        _clusters.Add(new DataPoint() { Cluster = i });
+        //    }
+
+        //    Cluster(_normalizedDataToCluster, _numberOfClusters);
+        //    var group = _rawDataToCluster.GroupBy(s => s.Cluster).OrderBy(s => s.Key);
+        //}
     }
 }
