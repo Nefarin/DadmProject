@@ -19,7 +19,7 @@ namespace EKG_Project.Modules.Heart_Class
 
 
         private Basic_Data_Worker _inputWorker;
-        private Heart_Class_Data_Worker _outputWorker;
+        //private Heart_Class_Data_Worker _outputWorker;
 
         private Heart_Class_Data _outputData;
         private Basic_Data _inputData;
@@ -40,6 +40,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         public void Init(ModuleParams parameters)
         {
+            /*
             Params = parameters as Heart_Class_Params;
             
 
@@ -63,6 +64,7 @@ namespace EKG_Project.Modules.Heart_Class
                 _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
 
             }
+            */
         }
 
         public void ProcessData(int numberOfSamples)
@@ -70,12 +72,13 @@ namespace EKG_Project.Modules.Heart_Class
             if (Runnable()) processData();
             else _ended = true;
         }
-
+        
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
+            throw new NotImplementedException();
+            //return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
         }
-
+        
         public bool Runnable()
         {
             return Params != null;
@@ -91,13 +94,13 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _inputWorker; }
             set { _inputWorker = value; }
         }
-
+        /*
         public Heart_Class_Data_Worker OutputWorker
         {
             get { return _outputWorker; }
             set { _outputWorker = value; }
         }
-
+        */
         public bool Aborted
         {
             get { return _aborted; }
@@ -109,13 +112,13 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _params; }
             set { _params = value; }
         }
-
+        /*
         public Heart_Class_Data OutputData
         {
             get { return _outputData; }
             set { _outputData = value; }
         }
-
+        */
         public Basic_Data InputData
         {
             get { return _inputData; }

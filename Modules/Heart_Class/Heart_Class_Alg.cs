@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Ink;
@@ -16,6 +15,15 @@ namespace EKG_Project.Modules.Heart_Class
 {
     public partial class Heart_Class : IModule
     {
+        private Vector<double> _signal;          // inicjalizacja przez wczytanie Vector z pliku
+        private Vector<double> _qrsOnset;        // inicjalizacja przez wczytanie Vector z pliku
+        private Vector<double> _qrsEnd;          // inicjalizacja przez wczytanie Vector z pliku
+        private int _qrsNumber;                  // inicjalizacja przez zliczenie elementów _qrsOnset
+        private Vector<double> _qrsR;            // inicjalizacja przez wczytanie Vector z pliku
+        private Vector<double> _singleQrs;       // inicjalizacja w konstruktorze
+        private List<Tuple<int, Vector<double>>> _QrsComplex; // inicjalizacja w kontruktorze
+        private List<Tuple<int, Vector<double>>> _qrsCoefficients;
+
         private Vector<double> _qrssignal;
         double malinowskaCoefficient;
         double pnRatio;
@@ -26,11 +34,22 @@ namespace EKG_Project.Modules.Heart_Class
         int qrsLength; 
         private Heart_Class_Data HeartClassData;
         List<Vector<double>> coefficients; //lista współczynników kształtu dla zbioru treningowego
-        List<Tuple<int, int>> classificationResult; // pierwszy int - nr zespołu (nr R), drugi int - klasa zespołu
+        //List<Tuple<int, int>> classificationResult; // pierwszy int - nr zespołu (nr R), drugi int - klasa zespołu
 
 
         public Heart_Class()
         {
+
+            _signal = Vector<double>.Build.Dense(1);
+            _qrsOnset = Vector<double>.Build.Dense(1);
+            _qrsEnd = Vector<double>.Build.Dense(1);
+            _qrsNumber = new int();
+            _qrsR = Vector<double>.Build.Dense(1);
+            _singleQrs = Vector<double>.Build.Dense(1);
+            _QrsComplex = new List<Tuple<int, Vector<double>>>();
+            _qrsCoefficients = new List<Tuple<int, Vector<double>>>();
+
+
             _qrssignal = Vector<double>.Build.Dense(1);
             malinowskaCoefficient = new double();
             pnRatio = new double();
@@ -43,7 +62,7 @@ namespace EKG_Project.Modules.Heart_Class
             HeartClassData = new Heart_Class_Data();
             // nie wiem czemu ale poniższe wywołanie obiektu nie działa, musi byc w metodzie loadFile ;/
             List<Vector<double>> coefficients = new List<Vector<double>>();
-            classificationResult = new List<Tuple<int, int>>();
+            //classificationResult = new List<Tuple<int, int>>();
         }
 
 
@@ -57,27 +76,27 @@ namespace EKG_Project.Modules.Heart_Class
             Heart_Class HeartClass = new Heart_Class();
             TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\signal.txt");
             uint fs = TempInput.getFrequency();
-            HeartClass.HeartClassData.Signal = TempInput.getSignal();
+            HeartClass.Signal = TempInput.getSignal();
             TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsOnset.txt");
-            HeartClass.HeartClassData.QrsOnset = TempInput.getSignal();
+            HeartClass.QrsOnset = TempInput.getSignal();
             TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
-            HeartClass.HeartClassData.QrsEnd = TempInput.getSignal();
+            HeartClass.QrsEnd = TempInput.getSignal();
 
             // uwaga tu mam pozniej wrzucic plik qrsR.txt !!!!
             TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
-            HeartClass.HeartClassData.QrsR = TempInput.getSignal();
+            HeartClass.QrsR = TempInput.getSignal();
 
             //WCZYTANIE ZESPOŁÓW QRS NA PODSTAWIE QRSonsets i QRSends
             HeartClass.SetQrsComplex(); 
 
             //LICZENIE WSPÓŁCZYNNIKÓW KSZTAŁTU
-            HeartClass.HeartClassData.QrsCoefficients = HeartClass.CountCoeff(HeartClass.GetQrsComplex(), fs);
+            HeartClass.QrsCoefficients = HeartClass.CountCoeff(HeartClass.GetQrsComplex(), fs);
 
             
             TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_sig.txt");
-            TempInput.writeFile(fs, HeartClass.HeartClassData.Signal);
+            TempInput.writeFile(fs, HeartClass.Signal);
             TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_on.txt");
-            TempInput.writeFile(fs, HeartClass.HeartClassData.QrsOnset);
+            TempInput.writeFile(fs, HeartClass.QrsOnset);
 
             //WCZYTANIE ZBIORU TRENINGOWEGO
             List<Vector<double>> trainDataList = HeartClass.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d.txt");
@@ -114,7 +133,7 @@ namespace EKG_Project.Modules.Heart_Class
                     }
 
             //KLASYFIKACJA
-            HeartClass.classificationResult = HeartClass.TestKnnCase(trainDataList, HeartClass.HeartClassData.QrsCoefficients, trainClass, 1); // klasyfikacja sygnału testowego signal
+            HeartClass.HeartClassData.ClassificationResult = HeartClass.TestKnnCase(trainDataList, HeartClass.QrsCoefficients, trainClass, 1); // klasyfikacja sygnału testowego signal
             //HeartClass.classificationResult = HeartClass.TestKnnCase(trainDataList, testSamples, trainClass, 1); // jeśli chcemy prztestować zbiór testowy (z matlaba)
 
 
@@ -127,16 +146,16 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         private void SetQrsComplex()
         {
-            for (int i = 0; i < HeartClassData.QrsNumber; i++)
+            for (int i = 0; i < QrsNumber; i++)
             {
-                double singleQrsOnset = HeartClassData.QrsOnset.At(i);
-                double signleQrsEnd = HeartClassData.QrsEnd.At(i);
+                double singleQrsOnset = QrsOnset.At(i);
+                double signleQrsEnd = QrsEnd.At(i);
                 int qrsLength = (int)(signleQrsEnd - singleQrsOnset+1);
-                HeartClassData.SingleQrs = Vector<double>.Build.Dense(qrsLength);
-                int singleQrsR = (int)HeartClassData.QrsR.At(i);
-                HeartClassData.Signal.CopySubVectorTo(HeartClassData.SingleQrs, sourceIndex: (int)singleQrsOnset, targetIndex: 0, count: qrsLength);
-                Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>(singleQrsR, HeartClassData.SingleQrs);
-                HeartClassData.QrsComplex.Add(a);
+                SingleQrs = Vector<double>.Build.Dense(qrsLength);
+                int singleQrsR = (int)QrsR.At(i);
+                Signal.CopySubVectorTo(SingleQrs, sourceIndex: (int)singleQrsOnset, targetIndex: 0, count: qrsLength);
+                Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>(singleQrsR, SingleQrs);
+                QrsComplex.Add(a);
             }
         }
 
@@ -148,7 +167,7 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         public List<Tuple<int, Vector<double>>> GetQrsComplex()
         {
-            return HeartClassData.QrsComplex;
+            return QrsComplex;
         }
 
         #region Documentation
@@ -491,6 +510,102 @@ namespace EKG_Project.Modules.Heart_Class
             vector.SetValues(digits); // zapisanie do wektora tablicy typu double
             return vector;
 
+        }
+
+
+        // getery i settery danych przejściowych
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        public Vector<double> Signal
+        {
+            get { return _signal; }
+            set { _signal = value; }
+        }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        public Vector<double> QrsOnset
+        {
+            get { return _qrsOnset; }
+            set
+            {
+                //powinien byc typ int! ale to pozniej, bo klasa TempInut nie wczytuje int
+                _qrsOnset = value;
+                QrsNumber = _qrsOnset.Count();
+            }
+        }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        public Vector<double> QrsEnd
+        {
+            get { return _qrsEnd; }
+            set { _qrsEnd = value; }
+        }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        public Vector<double> QrsR
+        {
+            get { return _qrsR; }
+            set { _qrsR = value; }
+        }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        public int QrsNumber
+        {
+            get { return _qrsNumber; }
+            set { _qrsNumber = value; }
+        }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        public Vector<double> SingleQrs
+        {
+            get { return _singleQrs; }
+            set { _singleQrs = value; }
+        }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        public List<Tuple<int, Vector<double>>> QrsComplex
+        {
+            get { return _QrsComplex; }
+            set { _QrsComplex = value; }
+        }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        #endregion
+        public List<Tuple<int, Vector<double>>> QrsCoefficients
+        {
+            get { return _qrsCoefficients; }
+            set { _qrsCoefficients = value; }
         }
 
 
