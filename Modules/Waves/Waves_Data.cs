@@ -9,15 +9,15 @@ namespace EKG_Project.Modules.Waves
 {
     class Waves_Data : ECG_Data
     {
-        private Vector<uint> _QRSonsets;
-        private Vector<uint> _QRSends;
-        private Vector<uint> _Ponsets;
-        private Vector<uint> _Pends;
-        private Vector<uint> _Tends;
+        private List<Tuple<string, Vector<uint>>> _QRSonsets;
+        private List<Tuple<string, Vector<uint>>> _QRSends;
+        private List<Tuple<string, Vector<uint>>> _Ponsets;
+        private List<Tuple<string, Vector<uint>>> _Pends;
+        private List<Tuple<string, Vector<uint>>> _Tends;
 
         public Waves_Data() { }
 
-        public Vector<uint> QRSOnsets
+        public List<Tuple<string, Vector<uint>>> QRSOnsets
         {
             get
             {
@@ -29,7 +29,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public Vector<uint> QRSEnds
+        public List<Tuple<string, Vector<uint>>> QRSEnds
         {
             get
             {
@@ -41,7 +41,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public Vector<uint> POnsets
+        public List<Tuple<string, Vector<uint>>> POnsets
         {
             get
             {
@@ -54,7 +54,7 @@ namespace EKG_Project.Modules.Waves
 
         }
 
-        public Vector<uint> PEnds
+        public List<Tuple<string, Vector<uint>>> PEnds
         {
             get
             {
@@ -67,7 +67,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public Vector<uint> TEnds
+        public List<Tuple<string, Vector<uint>>> TEnds
         {
             get
             {
