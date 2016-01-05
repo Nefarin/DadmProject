@@ -30,12 +30,13 @@ namespace EKG_Project.Modules.R_Peaks
             // Vector<double> sig = sig_data.Item2;
 
             //read data from dat file
-            TempInput.setInputFilePath(@"D:\biomed\DADM\C#\baseline.txt");
+            TempInput.setInputFilePath(@"D:\100in.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
             #endregion
             double samplingFreq = Convert.ToDouble(fs);
             R_Peaks pt = new R_Peaks();
+            R_Peaks h = new R_Peaks();
             double[] arr_sig = sig.ToArray();
 
 
@@ -52,14 +53,14 @@ namespace EKG_Project.Modules.R_Peaks
             // R_Peaks.Add(r_data);
 
             //write result to dat file
-            //TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\100emd.txt");
+            //TempInput.setOutputFilePath(@"D:\100out.txt");
             //TempInput.writeFile(fs, Vector<double>.Build.DenseOfArray(vector_f));
             /*TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\100v5RR.txt");
             TempInput.writeFile(fs, pt.RRms);*/
             #endregion
 
             //TEST-Console
-            Console.WriteLine(pt.Delay);
+            Console.WriteLine(h.Delay);
             Console.WriteLine(1 / (samplingFreq / 2));
             Console.WriteLine();
             //foreach (double sth in sig) { Console.WriteLine(sth); }
@@ -453,6 +454,135 @@ namespace EKG_Project.Modules.R_Peaks
 
         #region
         /// <summary>
+        /// Function that calculates Hilbert Transform of filtered ECG signal
+        /// </summary>
+        /// <param name="filteredSignal"> Filtered ECG signal</param>
+        /// <returns> Hilbert Transform of ECG as a double array</returns>
+        #endregion
+        public double[] HilbertTransform(double[] filteredSignal)
+        {
+            double pi = Math.PI;
+            IList<double> d = new List<double>();
+            d.Add(1 / (pi * filteredSignal.Length));
+
+            OnlineFirFilter transformFilter = new OnlineFirFilter(d);
+            double[] hSignal = transformFilter.ProcessSamples(filteredSignal);
+            double[] htSignal = new double[hSignal.Length];
+            for (int i = 0; i < htSignal.Length; i++)
+            {
+                htSignal[i] = Math.Abs(filteredSignal[i]) + Math.Abs(hSignal[i]);
+            }
+            return htSignal;
+        }
+
+        #region
+        /// <summary>
+        /// Function that integrates the signal in moving-window (width equals ??? ms)
+        /// </summary>
+        /// <param name="htSignal"> signal returned by HilbertTransform method</param>
+        /// <param name="fs"> sampling frequency of anlysed signal</param>
+        /// <returns> integration of signal as a double array </returns>
+        #endregion
+        public double[] Integration(double[] htSignal, uint fs)
+        {
+            double[] int1Signal = new double[htSignal.Length];
+            double window = Math.Round(0.37 * fs);
+            Delay += Convert.ToUInt32(Math.Round(window / 2));
+            IList<double> hi_coeff = new List<double>();
+            for (int i = 0; i < window; i++)
+            {
+                hi_coeff.Add((1 / window) + 1);
+            }
+            OnlineFirFilter integrationFilter = new OnlineFirFilter(hi_coeff);
+            int1Signal = integrationFilter.ProcessSamples(htSignal);
+            Vector<double> tempSignal = Vector<double>.Build.DenseOfArray(int1Signal);
+
+            // correcting signal length
+            Vector<double> int2Signal = CutSignal(tempSignal, Convert.ToInt16(Math.Round(window / 2)), htSignal.Length - 1);
+            int sigLength = htSignal.Length - Convert.ToInt16(Math.Round(window / 2));
+
+            // normalization
+            double tempMax = int2Signal.Maximum();
+            double tempMin = int2Signal.Minimum();
+            double normCoeff = (Math.Abs(tempMin) > tempMax) ? Math.Abs(tempMin) : tempMax;
+            double[] integratedSignal = new double[sigLength];
+            for (int i = 0; i < sigLength; i++)
+            {
+                integratedSignal[i] = int2Signal[i] / normCoeff;
+            }
+            return integratedSignal;
+        }
+
+        #region
+        /// <summary>
+        /// Function which locates R peaks in ECG signal by thersholding and finding local maxima
+        /// </summary>
+        /// <param name="integratedSignal"> integrated signal of ECG</param>
+        /// <param name="filteredSignal"> filtereg signal of ECG</param>
+        /// <returns> Numbers of samples of R peaks in ECG signal as int array </returns>
+        #endregion
+        double[] FindPeak(double[] integratedSignal, Vector<double> filteredSignal)
+        {
+            // finding threshold
+            double tempMax = integratedSignal.Max();
+            double threshold = integratedSignal.Average() * tempMax;
+
+            // thresholding
+            double[] thresResult = new double[integratedSignal.Length];
+            for (int i = 0; i < integratedSignal.Length; i++)
+            {
+                thresResult[i] = (integratedSignal[i] >= threshold) ? 1 : 0;
+            }
+
+            // determining sections limits which are above the threshold
+            IList<int> leftLimit = new List<int>();
+            IList<int> rightLimit = new List<int>();
+            for (int i = 1; i < thresResult.Length; i++)
+            {
+                if (thresResult[i] - thresResult[i - 1] == 1)
+                {
+                    leftLimit.Add(i);
+                }
+                else if (thresResult[i] - thresResult[i - 1] == -1)
+                {
+                    rightLimit.Add(i);
+                }
+            }
+
+            // locating R peaks as local extremes in between sections limits
+            List<double> locsR = new List<double>();
+            int rCount;
+            if (leftLimit.Count == rightLimit.Count)
+            {
+                rCount = leftLimit.Count;
+            }
+            else
+            {
+                rCount = (leftLimit.Count < rightLimit.Count) ? leftLimit.Count : rightLimit.Count;
+            }
+            for (int i = 0; i < rCount; i++)
+            {
+                int tempLength = rightLimit[i] - leftLimit[i] + 1;
+                double[] tempRRange = new double[tempLength];
+                for (int j = 0; j < tempLength; j++)
+                {
+                    tempRRange[j] = leftLimit[i] + j;
+                }
+                double[] tempV = new double[tempLength];
+                for (int j = 0; j < tempLength; j++)
+                {
+                    tempV[j] = filteredSignal[Convert.ToInt32(tempRRange[j])];
+                }
+                Vector<double> tempI = Vector<double>.Build.DenseOfArray(tempV);
+                double tempIndex = tempI.MaximumIndex();
+                locsR.Add(tempIndex + leftLimit[i] - 10);
+            }
+            
+            return locsR.ToArray();
+        }
+
+        #region
+        /// <summary>
         /// Implemented algorithm Pan-Tompkins for detecting R Peaks in ECG signal 
         /// </summary>
         /// <param name="signalECG"> Vector of double that contain raw or filtered values of the ECG Signal </param>
@@ -484,6 +614,40 @@ namespace EKG_Project.Modules.R_Peaks
 
             return locsR;
         }
+
+        #region
+        /// <summary>
+        /// Implemented algorithm using Hilbert Transform for detecting R Peaks in ECG signal 
+        /// </summary>
+        /// <param name="signalECG"> Vector of double that contain raw or filtered values of the ECG Signal </param>
+        /// <param name="samplingFrequency"> sampling frequency of aquiring the signal </param>
+        /// <returns> numbers of indexes where are located R peaks as vector </returns>
+        #endregion
+        public Vector<double> Hilbert(Vector<double> signalECG, uint samplingFrequency)
+        {
+            //Init
+            double fd = 5;
+            double fg = 15;
+            Delay = 0;
+
+            //PROCESS
+            //filtering
+            double[] h_arr_f = Filtering(Convert.ToDouble(samplingFrequency), fd, fg, signalECG.ToArray());   //plus convert vector to array
+            Vector<double> h_sig_f = Vector<double>.Build.DenseOfArray(h_arr_f);
+
+            //Hilbert Transform 
+            double[] h_arr_ht = HilbertTransform(h_arr_f);
+
+            //moving-window integration
+            double[] h_arr_i = Integration(h_arr_ht, samplingFrequency);
+
+            //adaptive thresholding 
+            double[] loc_R = FindPeak(h_arr_i, h_sig_f);
+            Vector<double> locsR = Vector<double>.Build.DenseOfArray(loc_R);
+
+            return locsR;
+        }
+
         #region
         /// <summary>
         /// Function that filters the signal by lowpass FIR filter (cutoff frequency equals 2Hz, 3rd order)
