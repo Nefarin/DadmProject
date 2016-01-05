@@ -5,7 +5,13 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Waves
 {
-    
+
+    #region Waves Class doc
+    /// <summary>
+    /// Class locates P-onsets, P-ends, QRS-onsets, QRS-end and T-ends in ECG 
+    /// </summary>
+    #endregion
+
     public partial class Waves : IModule
     {
         public Vector<double> HaarDWT(Vector<double> signal, int n)
@@ -156,7 +162,18 @@ namespace EKG_Project.Modules.Waves
                 return (qrsEndInd << decompLevel);
         }
 
-        public void FindMaxValue(int begin_loc, int end_loc, out int pmax_loc, out double pmax_val)
+
+        #region
+        /// <summary>
+        /// This method finds maximum value and its location through particular segment of ecg signal
+        /// </summary>
+        /// <param name="begin_loc"> First sample of specified signal segment</param>
+        /// <param name="end_loc"> Last sample of specified signal segment</param>
+        /// <param name="max_loc"> Localization of sample at maximum value</param>
+        /// <param name="max_val"> Maximum value in specified signal segment</param>
+        /// <returns> maximum value and its location in signal segment</returns>
+        #endregion
+        public void FindMaxValue(int begin_loc, int end_loc, out int max_loc, out double max_val)
         {
 
             if (_data.ECG.Count == 0)
@@ -165,20 +182,26 @@ namespace EKG_Project.Modules.Waves
             }
             int loc_index;
 
-            pmax_val = double.MinValue;
-            pmax_loc = 0;
+            max_val = double.MinValue;
+            max_loc = 0;
 
             for (loc_index = begin_loc; loc_index <= end_loc; loc_index++)
             {
-                if (pmax_val < _data.ECG[loc_index])
+                if (max_val < _data.ECG[loc_index])
                 {
-                    pmax_val = _data.ECG[loc_index];
-                    pmax_loc = loc_index;
+                    max_val = _data.ECG[loc_index];
+                    max_loc = loc_index;
                 }
             }
 
         }
 
+        #region
+        /// <summary>
+        /// This method finds locations of P-onsets and P-ends
+        /// </summary>
+        /// <returns> List containing locations of P-onsets and P-ends</returns>
+        #endregion
         public void FindP()
         {
             double pmax_val;
@@ -224,6 +247,12 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
+        #region
+        /// <summary>
+        /// This method finds locations of T-ends
+        /// </summary>
+        /// <returns> List containing locations of T-ends</returns>
+        #endregion
         public void FindT()
         {
             double tmax_val;
