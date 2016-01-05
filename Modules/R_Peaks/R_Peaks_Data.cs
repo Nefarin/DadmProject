@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.R_Peaks
 {
-    class R_Peaks_Data : ECG_Data
+    public class R_Peaks_Data : ECG_Data
     {
         private List<Tuple<string, Vector<double>>> _rPeaks;
         /// Wektor indeksów wykrytych zalamków R

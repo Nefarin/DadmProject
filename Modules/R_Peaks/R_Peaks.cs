@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EKG_Project.IO
+using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.R_Peaks
@@ -70,7 +70,7 @@ namespace EKG_Project.Modules.R_Peaks
             }
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
             if (Runnable()) processData();
             else _ended = true;
@@ -96,7 +96,7 @@ namespace EKG_Project.Modules.R_Peaks
             {
                 if (startIndex + step > _currentChannelLength)
                 {
-                    scaleSamples(channel, startIndex, _currentChannelLength - startIndex); ///TODO wybór metody detekcji
+                    //scaleSamples(channel, startIndex, _currentChannelLength - startIndex); ///TODO wybór metody detekcji
                     OutputData.RPeaks.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector)); // Czy to doda Rpeaki do Rpeaków
                     OutputData.RRInterval.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector)); // A to RRinterwały do RRinterwałów bez dodatkowej zabawy (tzn. nowych currentVectorów czy cos?
                     _currentChannelIndex++;
@@ -111,7 +111,7 @@ namespace EKG_Project.Modules.R_Peaks
                 }
                 else
                 {
-                    scaleSamples(channel, startIndex, step); ///TODO przerobić (jak wyżej)
+                    //scaleSamples(channel, startIndex, step); ///TODO przerobić (jak wyżej)
                     _samplesProcessed = startIndex + step;
                 }
             }

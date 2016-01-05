@@ -19,7 +19,7 @@ namespace EKG_Project.Modules.R_Peaks
         //TO DO: parts of signal reading
 
 
-        /*static void Main(string[] args)
+        static void Main(string[] args)
         {
             #region readData
             //read data from ecg_baseline (TO DO!)
@@ -66,7 +66,7 @@ namespace EKG_Project.Modules.R_Peaks
             Console.WriteLine();
             //foreach (double sth in locsR) { Console.WriteLine(sth); }
             Console.ReadKey();
-        }*/
+        }
 
         //FIELDS
         #region 
@@ -671,11 +671,6 @@ namespace EKG_Project.Modules.R_Peaks
             double[] signal_f = filter.ProcessSamples(signal);
             Delay += 2;
             return signal_f;
-        }
-
-        public void ProcessData()
-        {
-            throw new NotImplementedException();
         }
     }
 }
