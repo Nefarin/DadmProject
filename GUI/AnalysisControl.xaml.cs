@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.IO;
 using EKG_Project.Architecture;
 using EKG_Project.Architecture.ProcessingStates;
 using EKG_Project.Architecture.GUIMessages;
@@ -37,6 +38,7 @@ namespace EKG_Project.GUI
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 inputFilePath = fileDialog.FileName;
+                checkPlayButton();
             }
 
         }
@@ -74,6 +76,8 @@ namespace EKG_Project.GUI
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 outputPdfPath = fileDialog.FileName;
+                checkPlayButton();
+
             }
 
         }
@@ -89,6 +93,20 @@ namespace EKG_Project.GUI
         {
             message.Read(this);
         }
+
+        private void checkPlayButton()
+        {
+            
+            if ( File.Exists(inputFilePath) && Directory.Exists(Path.GetDirectoryName(outputPdfPath)) )
+            {
+                startAnalyseButton.IsEnabled = true;
+            }
+            else
+            {
+                startAnalyseButton.IsEnabled = false;
+            }
+        }
+
 
     }
 }
