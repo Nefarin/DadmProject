@@ -16,7 +16,43 @@ namespace EKG_Project.Modules.R_Peaks
     #endregion
     public partial class R_Peaks : IModule
     {
-        //TO DO: parts of signal reading
+
+
+         private void theEnd(int startIndex, int step)
+         {
+            //nie jestem w stanie napisać switcha bez węży :(
+           /* switch (Params.Method)
+            {
+                case R_Peaks_Method.PANTOMPKINS:
+                    {
+                    }
+                case R_Peaks_Method.HILBERT:
+                    {
+                    }
+                case R_Peaks_Method.EMD:
+                    {
+                    }
+
+            }
+            */
+            if (Params.Method == R_Peaks_Method.PANTOMPKINS)
+            {
+                //Hilbert(InputData.???, InputData.Frequency);
+                // dobra, tego też nie wiem jak zrobić
+                // nie ogarniam nic
+            }
+            else if (Params.Method == R_Peaks_Method.HILBERT)
+            {
+
+            }
+            else if (Params.Method == R_Peaks_Method.EMD)
+            {
+
+            }
+
+             //lastRPeak = locsR.Last;
+
+         }
 
 
         static void Main(string[] args)
@@ -35,37 +71,35 @@ namespace EKG_Project.Modules.R_Peaks
             Vector<double> sig = TempInput.getSignal();
             #endregion
             double samplingFreq = Convert.ToDouble(fs);
-            R_Peaks pt = new R_Peaks();
-            R_Peaks h = new R_Peaks();
+            //R_Peaks pt = new R_Peaks();
+            //R_Peaks h = new R_Peaks();
             double[] arr_sig = sig.ToArray();
             //Vector<double> locsR = h.Hilbert(sig, fs);
 
 
 
+        /*//RR in ms
+        pt.RRms = pt.Diff(pt.LocsR);
+        pt.RRms.Multiply(Math.Round(1000 / Convert.ToDouble(fs), 3), pt.RRms);*/
 
+        #region writeData
+        //write result to DATA
+        //Tuple<string, Vector<double>> r_data = Tuple.Create<channel, Vector<int> rPeaks>;
+        // R_Peaks.Add(r_data);
 
-            /*//RR in ms
-            pt.RRms = pt.Diff(pt.LocsR);
-            pt.RRms.Multiply(Math.Round(1000 / Convert.ToDouble(fs), 3), pt.RRms);*/
+        //write result to dat file
+        //TempInput.setOutputFilePath(@"D:\100out.txt");
+        //TempInput.writeFile(fs, Vector<double>.Build.DenseOfArray(vector_f));
+        /*TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\100v5RR.txt");
+        TempInput.writeFile(fs, pt.RRms);*/
+        #endregion
 
-            #region writeData
-            //write result to DATA
-            //Tuple<string, Vector<double>> r_data = Tuple.Create<channel, Vector<int> rPeaks>;
-            // R_Peaks.Add(r_data);
-
-            //write result to dat file
-            //TempInput.setOutputFilePath(@"D:\100out.txt");
-            //TempInput.writeFile(fs, Vector<double>.Build.DenseOfArray(vector_f));
-            /*TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\100v5RR.txt");
-            TempInput.writeFile(fs, pt.RRms);*/
-            #endregion
-
-            //TEST-Console
-            Console.WriteLine(h.Delay);
-            Console.WriteLine(1 / (samplingFreq / 2));
-            Console.WriteLine();
+        //TEST-Console
+        //Console.WriteLine(h.Delay);
+            //Console.WriteLine(1 / (samplingFreq / 2));
+            //Console.WriteLine();
             //foreach (double sth in locsR) { Console.WriteLine(sth); }
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
         //FIELDS
@@ -87,7 +121,18 @@ namespace EKG_Project.Modules.R_Peaks
         /// </summary>
         #endregion
         private Vector<double> _RRms;
+        #region
+        /// <summary>
+        /// Store the value of index of last detected R peak in ECG signal
+        /// </summary>
+        #endregion
+        private int _lastRPeak;
 
+        public int LastRPeak
+        {
+            set { _lastRPeak = value; }
+            get { return _lastRPeak; }
+        }
         public uint Delay
         {
             set { _delay = value; }

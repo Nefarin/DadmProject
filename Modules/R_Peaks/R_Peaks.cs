@@ -89,7 +89,8 @@ namespace EKG_Project.Modules.R_Peaks
         private void processData()
         {
             int channel = _currentChannelIndex;
-            int startIndex = _samplesProcessed; ///TODO: ostatni Rpeak+30
+            int startIndex = (_samplesProcessed == 0) ? _samplesProcessed : LastRPeak;
+            //int startIndex = _samplesProcessed; ///TODO: ostatni Rpeak+30
             int step = 6000; //krok (porcja sygnału)
 
             if (channel < NumberOfChannels)
