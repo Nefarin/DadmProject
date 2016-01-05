@@ -169,4 +169,7 @@
     <NumberOfClass>1</NumberOfClass>
     <PercentOfNormalComplex>30</PercentOfNormalComplex>
   </module>
+  <module name="Heart_Axis">
+    <HeartAxis>30</HeartAxis>
+  </module>
 </EKG>

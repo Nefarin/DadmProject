@@ -11,11 +11,16 @@ namespace EKG_Project.Modules.Heart_Axis
         //Heart_Axis Module output parameters
         private double _heartAxis;
 
-        public double HeartAxis { get; set; }
-
-        public Heart_Axis_Params(double heartAxis)
+        public double HeartAxis
         {
-            _heartAxis = heartAxis;
+            get
+            {
+                return _heartAxis;
+            }
+            set
+            {
+                _heartAxis = value;
+            }
         }
     }
 }
