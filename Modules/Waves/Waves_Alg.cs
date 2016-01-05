@@ -230,7 +230,7 @@ namespace EKG_Project.Modules.Waves
             int window,break_window,tmax_loc, tend;
 
 
-            window = Convert.ToInt32(_data.Fs*0.22);
+            window = Convert.ToInt32(_data.Fs*0.2);
             break_window = Convert.ToInt32(_data.Fs * 0.35);
 
             foreach (int ends_loc in _data.QRSEnds)
@@ -245,7 +245,7 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 tend = tmax_loc;
-                while (_data.ECG[tend] > _data.ECG[tend + 1] || (tmax_val - _data.ECG[tend] < 20))
+                while (_data.ECG[tend] > _data.ECG[tend + 1] || ((tmax_val - _data.ECG[tend] < 30) && (tmax_val - _data.ECG[tend] > -10)))
                 {
                     tend++;
                     if(tend > ends_loc+break_window)
