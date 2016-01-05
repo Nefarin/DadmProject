@@ -37,18 +37,91 @@ namespace EKG_Project.Modules.Flutter
 
             bool[] aflDetected = new bool[spectralDensityList.Count];
 
-            foreach (double[] spectralDensity in spectralDensityList)
+            for (int i = 0; i < spectralDensityList.Count ; i++)
             {
-                if (spectralDensity.Length > 0)
+                if (spectralDensityList[i].Length == 0)
                 {                 
-                    double maxValue = spectralDensity.Max();
-                    int maxValueIndex = Array.IndexOf(spectralDensity, maxValue);
+                    continue;                    
+                }
+                double maxValue = spectralDensityList[i].Max();
+                int maxValueIndex = Array.IndexOf(spectralDensityList[i], maxValue);
+                if(maxValueIndex == 0 || maxValueIndex == spectralDensityList[i].Length)
+                {
+                    continue;
+                }
+                double freqForMaxValue = frequenciesList[i][maxValueIndex];
+
+                double RIPower = 0;
+                int j = 0;
+                
+                int leftIndex = maxValueIndex - 1;
+                int rightIndex = maxValueIndex + 1;
+                while(RIPower < 0.5*powerList[i])
+                {
+                    if (j % 2 == 0)
+                    {
+                        RIPower += (spectralDensityList[i][leftIndex] + spectralDensityList[i][leftIndex + 1])
+                            * (frequenciesList[i][leftIndex + 1] - frequenciesList[i][leftIndex])
+                            * 0.5;
+                    }
+                    else
+                    {
+                        RIPower += (spectralDensityList[i][rightIndex] + spectralDensityList[i][rightIndex - 1])
+                            * (frequenciesList[i][rightIndex] - frequenciesList[i][rightIndex - 1])
+                            * 0.5;
+                    }
+
+                    if(leftIndex <= 0 && rightIndex >= frequenciesList[i].Length-1)
+                    {
+                        break;
+                    }
+
+                    if (leftIndex <= 0)
+                    {
+                        j = 1;
+                        rightIndex++;
+                    }
+                    else if (rightIndex >= frequenciesList[i].Length - 1)
+                    {
+                        j = 2;
+                        leftIndex--;
+                    }
+                    else
+                    {
+                        j++;
+                        leftIndex--;
+                        rightIndex++;
+                    }
                     
-                    
+                }
+
+                double RI = frequenciesList[i][rightIndex] - frequenciesList[i][leftIndex];
+                
+                if(RI > 1.6 && RI < 3.0)
+                {
+                    aflDetected[i] = true;
                 }
             }
 
-            throw new NotImplementedException();
+            int start = -1;
+            List<Tuple<int, int>> aflAnnotations = new List<Tuple<int, int>>();
+            for (int i = 0; i < aflDetected.Length; i++)
+            {            
+                if(aflDetected[i])
+                {
+                    if(start == -1)
+                    {
+                        start = i;
+                    }
+                    else
+                    {
+                        aflAnnotations.Add(new Tuple<int, int>(start, i));
+                        start = -1;
+                    }
+                }
+            }
+
+            return aflAnnotations;
         }
 
         private List<double> CalculateIntegralForEachSpectrum(List<double[]> frequenciesList, List<double[]> spectralDensityList)
