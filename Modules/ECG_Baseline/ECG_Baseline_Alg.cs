@@ -14,7 +14,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             public Vector<double> butterworth(Vector<double> signal, double fs, double fc, int order, int type)
             {
 
-                //TODO: Comments kkk
+                //TODO: Comments
 
                 int L = signal.Count;
                 int DCGain = 1;
@@ -95,6 +95,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 return out_signal;
 
             }
+
             public Vector<double> savitzky_golay(Vector<double> signal, int window_size, int type)
             {
 
@@ -116,15 +117,15 @@ namespace EKG_Project.Modules.ECG_Baseline
 
                 for (int i = 0; i < signal_extension_size; i++)
                 {
-                    signal_extended[i] = signal_extension_front[i];                   //powielenie piewszej próbki sygnału wejściowego
+                    signal_extended[i] = signal_extension_front[i]; //powielenie piewszej próbki sygnału wejściowego
                 }
                 for (int i = 0; i < signal_size; i++)
                 {
-                    signal_extended[i + signal_extension_size] = signal[i];                   //powielenie piewszej próbki sygnału wejściowego
+                    signal_extended[i + signal_extension_size] = signal[i]; //powielenie piewszej próbki sygnału wejściowego
                 }
                 for (int i = 0; i < signal_extension_size; i++)
                 {
-                    signal_extended[i + signal_extension_size + signal_size] = signal_extension_back[i];                   //powielenie piewszej próbki sygnału wejściowego
+                    signal_extended[i + signal_extension_size + signal_size] = signal_extension_back[i]; //powielenie piewszej próbki sygnału wejściowego
                 }
                 Vector<double> samples = Vector<double>.Build.Dense(signal_extended.Count, 0);
 
@@ -161,25 +162,25 @@ namespace EKG_Project.Modules.ECG_Baseline
 
                 for (int i = 0; i < signal_extension.Count; i++)
                 {
-                    signal_extended[i] = signal_extension[i];                   //powielenie piewszej próbki sygnału wejściowego
+                    signal_extended[i] = signal_extension[i]; //powielenie piewszej próbki sygnału wejściowego
                 }
 
                 for (int i = 0; i < signal_size; i++)
                 {
-                    signal_extended[i + window_size - 1] = signal[i];           //przygotowanie sygnału do filtracji
+                    signal_extended[i + window_size - 1] = signal[i]; //przygotowanie sygnału do filtracji
                 }
 
-                double sum = 0;                                                 //zmienna pomocnicza
+                double sum = 0; //zmienna pomocnicza
                 for (int i = 0; i < signal_size; i++)
                 {
                     sum = 0;
                     for (int j = 0; j < window_size; j++)
                     {
-                        sum = sum + signal_extended[i + j];                     //sumowanie kolejnych próbek sygnału 
+                        sum = sum + signal_extended[i + j]; //sumowanie kolejnych próbek sygnału 
                     }
-                    signal_filtered[i] = sum / window_size;                     //obliczenie średniej 
+                    signal_filtered[i] = sum / window_size; //obliczenie średniej 
                 }
-                return signal_filtered;                                         //sygnał przefiltrowany
+                return signal_filtered; //sygnał przefiltrowany
 
             }
         }
