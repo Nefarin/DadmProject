@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace EKG_Project.Modules.R_Peaks
 {
     class R_Peaks_Data : ECG_Data
@@ -14,7 +15,11 @@ namespace EKG_Project.Modules.R_Peaks
         private List<Tuple<string, Vector<double>>> _rRInterval;
         /// Wektor odleglosci miedzy kolejnymi zalamkami R [ms]
 
-        public R_Peaks_Data() { }
+        public R_Peaks_Data()
+        {
+            RPeaks = new List<Tuple<string, Vector<double>>>();
+            RRInterval = new List<Tuple<string, Vector<double>>>();
+        }
 
         public List<Tuple<string, Vector<double>>> RPeaks
         {

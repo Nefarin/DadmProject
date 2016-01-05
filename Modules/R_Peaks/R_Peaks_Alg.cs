@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MathNet.Filtering.FIR;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Statistics;
 using EKG_Project.IO;
 using EKG_Project.Modules.ECG_Baseline;
 using System.Linq;
@@ -17,14 +18,9 @@ namespace EKG_Project.Modules.R_Peaks
     {
         //TO DO: parts of signal reading
 
+
         static void Main(string[] args)
         {
-            //Init
-            double fd = 5;
-            double fg = 15;
-            R_Peaks pt = new R_Peaks();
-            pt.delay = 0;
-
             #region readData
             //read data from ecg_baseline (TO DO!)
             //List<Tuple<string, Vector<double>>> R_Peaks = new List<Tuple<string, Vector<double>>>();
@@ -38,26 +34,17 @@ namespace EKG_Project.Modules.R_Peaks
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
             #endregion
+            double samplingFreq = Convert.ToDouble(fs);
+            R_Peaks pt = new R_Peaks();
+            double[] arr_sig = sig.ToArray();
 
-            //PROCESS
-            //filtering
-            double[] arr_f = pt.Filtering(Convert.ToDouble(fs), fd, fg, sig.ToArray());   //plus convert vector to array
-            Vector<double> sig_f = Vector<double>.Build.DenseOfArray(arr_f);           //convert array to vector
 
-            //differentiation
-            double[] arr_d = pt.Derivative(arr_f);
 
-            //squaring
-            double[] arr_2 = pt.Squaring(arr_d);
 
-            //moving-window integration
-            double[] arr_i = pt.Integrating(arr_2, fs);
 
-            //adaptive thresholding 
-            List<double> locsR = pt.findRs(arr_i, sig, fs);
-
-            Vector<double> RRvector = pt.Diff(Vector<double>.Build.DenseOfArray(locsR.ToArray()));
-            List<double> RRs = new List<double>(RRvector);
+            /*//RR in ms
+            pt.RRms = pt.Diff(pt.LocsR);
+            pt.RRms.Multiply(Math.Round(1000 / Convert.ToDouble(fs), 3), pt.RRms);*/
 
             #region writeData
             //write result to DATA
@@ -65,24 +52,55 @@ namespace EKG_Project.Modules.R_Peaks
             // R_Peaks.Add(r_data);
 
             //write result to dat file
-            //TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\100v5R.txt");
-            //TempInput.writeFile(fs, Vector<double>.Build.DenseOfArray(locsR.ToArray()) );
+            //TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\100emd.txt");
+            //TempInput.writeFile(fs, Vector<double>.Build.DenseOfArray(vector_f));
+            /*TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\100v5RR.txt");
+            TempInput.writeFile(fs, pt.RRms);*/
             #endregion
 
             //TEST-Console
-            Console.WriteLine(pt.delay);
+            Console.WriteLine(pt.Delay);
+            Console.WriteLine(1 / (samplingFreq / 2));
             Console.WriteLine();
-            foreach (int loc in locsR) { Console.WriteLine(loc); }
+            //foreach (double sth in sig) { Console.WriteLine(sth); }
             Console.ReadKey();
         }
 
         //FIELDS
         #region 
         /// <summary>
-        /// Store tha value of delay in samples generates due to processing
+        /// Store the value of delay in samples generates due to processing
         /// </summary>
         #endregion
-        private uint delay { set; get; }
+        private uint _delay;
+        #region
+        /// <summary>
+        /// Store the numbers of indexes of R peaks in signal ECG as vector
+        /// </summary>
+        #endregion
+        private Vector<double> _locsR;
+        #region
+        /// <summary>
+        /// Store the values of RR intervals in ms as vector
+        /// </summary>
+        #endregion
+        private Vector<double> _RRms;
+
+        public uint Delay
+        {
+            set { _delay = value; }
+            get { return _delay; }
+        }
+        public Vector<double> LocsR
+        {
+            set { _locsR = value; }
+            get { return _locsR; }
+        }
+        public Vector<double> RRms
+        {
+            set { _RRms = value; }
+            get { return _RRms; }
+        }
 
         //METHODS
         #region
@@ -98,7 +116,7 @@ namespace EKG_Project.Modules.R_Peaks
         public double[] Filtering(double samplingFreq, double lowCutOff, double highCutOff, double[] rawSignal)
         {
             //TO DO: add cutoffs as constants not param?
-            delay += 10;
+            Delay += 10;
             IList<double> coef = new List<double>();
 
             double[] hf = FirCoefficients.BandPass(samplingFreq, lowCutOff, highCutOff, 10);
@@ -121,7 +139,7 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public double[] Derivative(double[] filteredSignal)
         {
-            delay += 2;
+            Delay += 2;
             IList<double> hd_coef = new List<double>();
             double[] hd_array = { -1, -2, 0, 2, 1 };
             foreach (double num in hd_array)
@@ -162,7 +180,7 @@ namespace EKG_Project.Modules.R_Peaks
         {
             double[] integratedSignal = new double[squaredSignal.Length];
             double window = Math.Round(0.15 * fs);
-            delay += Convert.ToUInt32(Math.Round(window / 2));
+            Delay += Convert.ToUInt32(Math.Round(window / 2));
             IList<double> hi_coeff = new List<double>();
             for (int i = 0; i < window; i++)
             {
@@ -189,7 +207,7 @@ namespace EKG_Project.Modules.R_Peaks
         /// <param name="distanceInSec"> Distance in seconds - minimum distance between next peaks</param>
         /// <returns> list of double which contains teh localisation of peaks in signal </returns>
         #endregion
-        List<double> FindPeaks(double[] signal, uint fs, double distanceInSec)
+        public List<double> FindPeaks(double[] signal, uint fs, double distanceInSec)
         //TO DO: distance--> threshold???
         {
             List<double> potRs = new List<double>();
@@ -226,7 +244,7 @@ namespace EKG_Project.Modules.R_Peaks
         /// <returns> cutted signal from teh whole signal as Vector of double </returns>
         #endregion
         //SUBVECTOR from MATHNET?!
-        Vector<double> CutSignal(Vector<double> inputSignal, int begin, int end)
+        public Vector<double> CutSignal(Vector<double> inputSignal, int begin, int end)
         {
             int len = end - begin + 1;
             double[] cuttedSignal = new double[len];
@@ -244,7 +262,7 @@ namespace EKG_Project.Modules.R_Peaks
         /// <param name="vect"></param>
         /// <returns></returns>
         #endregion
-        Vector<double> Diff(Vector<double> signal)
+        public Vector<double> Diff(Vector<double> signal)
         {
             Vector<double> diffSignal = Vector<double>.Build.Dense(signal.Count - 1);
             signal.SubVector(1, signal.Count - 1).Subtract(signal.SubVector(0, signal.Count - 1), diffSignal);
@@ -260,11 +278,20 @@ namespace EKG_Project.Modules.R_Peaks
         /// <param name="fs"> sampling frequency of signal</param>
         /// <returns> Numbers of samples of R peaks in ECG signal as list of double </returns>
         #endregion
-        List<double> findRs(double[] integratedSignal, Vector<double> filteredSignal, uint fs)
+        public Vector<double> findRs(double[] integratedSignal, Vector<double> filteredSignal, uint fs)
         {
             Vector<double> integratedSignalV = Vector<double>.Build.DenseOfArray(integratedSignal);
+
+            //init temp values
             List<double> locsR = new List<double>();
+            List<double> locsRi = new List<double>();
             double selectedRR = 0;
+            double testRR = 0;
+            double mRR = 0;
+            bool serback = false;
+            bool skip = false;
+            double potR = 0;
+            double potAmp = 0;
 
             //init thresholds for integrated signal
             Vector<double> sig_ic = CutSignal(integratedSignalV, 0, Convert.ToInt16(2 * fs));
@@ -280,36 +307,210 @@ namespace EKG_Project.Modules.R_Peaks
             double levNoise = thrNoise;
 
             //detecting peaks in both signals(integrated and filtered)
-            List<double> potRs = FindPeaks(integratedSignal, fs, 0.2);
-            foreach (int r in potRs)
+            List<double> potRsI = FindPeaks(integratedSignal, fs, 0.2);
+            foreach (int r in potRsI)
             {
                 //detect peaks in filetred signal
                 int window = Convert.ToInt16(0.15 * fs);
                 if ((r <= filteredSignal.Count) && (r - window >= 0))
                 {
                     Vector<double> tempSig = CutSignal(filteredSignal, r - window, r);
-                    locsR.Add(tempSig.MaximumIndex() + r - window);
+                    potR = tempSig.MaximumIndex();
+                    potAmp = tempSig.Maximum();
                 }
                 else if (r > filteredSignal.Count)
                 {
                     Vector<double> tempSig = CutSignal(filteredSignal, r - window, filteredSignal.Count - 1);
-                    locsR.Add(tempSig.MaximumIndex() + r - window);
+                    potR = tempSig.MaximumIndex();
+                    potAmp = tempSig.Maximum();
                 }
                 else
                 {
                     Vector<double> tempSig = CutSignal(filteredSignal, 0, r);
-                    locsR.Add(tempSig.MaximumIndex());
+                    potR = tempSig.MaximumIndex();
+                    potAmp = tempSig.Maximum();
+                    serback = true;
                 }
 
                 //updating HR and thersholds
                 if (locsR.Count >= 9)
                 {
-                    Vector<double> diff = Diff(Vector<double>.Build.DenseOfArray(locsR.ToArray()));
+                    List<double> lastRs = locsRi.GetRange(locsRi.Count - 8, 8);
+                    Vector<double> tempRR = Diff(Vector<double>.Build.DenseOfArray(lastRs.ToArray()));
+                    mRR = tempRR.Mean();
+                    double lastRR = locsRi.Last() - locsRi[locsRi.Count - 1];
+                    if (lastRR <= 0.92 * mRR || lastRR >= 1.66 * mRR) //lower thersholds if irregular beat
+                    {
+                        thrSig = 0.5 * thrSig;
+                        thrSigI = 0.5 * thrSigI;
+                    }
+                    else        //regular beat
+                    {
+                        selectedRR = mRR;
+                    }
                 }
+
+                // trigger search back if missing R
+                if (selectedRR != 0) { testRR = selectedRR; }
+                else if (mRR != 0 && selectedRR == 0) { testRR = mRR; }
+                else { testRR = 0; }
+
+                //searchback
+                if (testRR != 0)
+                {
+                    if ((r - locsRi.Last()) >= 1.66 * testRR)
+                    {
+                        int buff = Convert.ToInt16(0.2 * fs);
+                        int beg = Convert.ToInt16(locsRi.Last()) + buff;
+                        int en = Convert.ToInt16(potRsI.Last()) - buff;
+                        Vector<double> tempSigI = CutSignal(integratedSignalV, beg, en);
+                        double tempPeak = tempSigI.Maximum();
+                        double tempInd = tempSigI.MaximumIndex() + beg;
+                        if (tempPeak > thrNoiseI)
+                        {
+                            locsRi.Add(tempInd);
+                            double tempPotR = 0;
+                            double tempAmpR = 0;
+                            if (tempInd < filteredSignal.Count)
+                            {
+                                Vector<double> tempSig = CutSignal(filteredSignal, Convert.ToInt16(tempInd) - window, Convert.ToInt16(tempInd));
+                                tempPotR = tempSig.MaximumIndex();
+                                tempAmpR = tempSig.Maximum();
+                            }
+                            else
+                            {
+                                Vector<double> tempSig = CutSignal(filteredSignal, Convert.ToInt16(tempInd) - window, filteredSignal.Count);
+                                tempPotR = tempSig.MaximumIndex();
+                                tempAmpR = tempSig.Maximum();
+                            }
+
+                            if (tempAmpR > thrNoise)
+                            {
+                                locsR.Add(tempPotR + Convert.ToInt16(tempInd) - window);
+                                levSig = 0.25 * tempAmpR + 0.75 * levSig;
+                            }
+                            levSigI = 0.25 * tempPeak + 0.75 * levSigI;
+                        }
+                    }
+                }
+
+                //find noise and peaks
+                if (integratedSignal[r] >= thrSigI)
+                {
+                    if (locsRi.Count >= 3)
+                    {
+                        if (r - locsRi.Last() <= Math.Round(0.360 * fs))
+                        {
+                            Vector<double> tempSig1 = CutSignal(filteredSignal, r - Convert.ToInt16(0.075 * fs), r);
+                            double slope1 = Math.Abs(Diff(tempSig1).Mean());
+                            Vector<double> tempSig2 = CutSignal(filteredSignal, Convert.ToInt16(locsRi.Last() - Math.Round(0.075 * fs)), Convert.ToInt16(locsRi.Last()));
+                            double slope2 = Math.Abs(Diff(tempSig2).Mean());
+                            if (slope1 <= 0.5 * slope2)
+                            {
+                                skip = true;
+                                levNoise = 0.125 * potAmp + 0.875 * levNoise;
+                                levNoiseI = 0.125 * integratedSignal[r] + 0.875 * levNoiseI;
+                            }
+                            else { skip = false; }
+                        }
+                    }
+                    if (!skip)
+                    {
+                        locsRi.Add(r);
+                        if (potAmp >= thrSig)
+                        {
+                            if (serback) { locsR.Add(potR); }
+                            else { locsR.Add(potR + r - window); }
+                            levSig = 0.125 * potAmp + 0.875 * levSig;
+                        }
+                        levSigI = 0.125 * integratedSignal[r] + 0.875 * levSigI;
+                    }
+                }
+                else if (thrNoiseI <= integratedSignal[r] && integratedSignal[r] < thrSigI)
+                {
+                    levNoise = 0.125 * potAmp + 0.875 * levNoise;
+                    levNoiseI = 0.125 * integratedSignal[r] + 0.875 * levNoiseI;
+                }
+                else if (integratedSignal[r] < thrNoiseI)
+                {
+                    levNoise = 0.125 * potAmp + 0.875 * levNoise;
+                    levNoiseI = 0.125 * integratedSignal[r] + 0.875 * levNoiseI;
+                }
+
+                //adjust thresholds with SNR
+                if (levNoise != 0 || levSig != 0)
+                {
+                    thrSig = levNoise + 0.25 * Math.Abs(levSig - levNoise);
+                    thrNoise = 0.5 * thrSig;
+                }
+
+                //reset param
+                skip = false;
+                serback = false;
             }
+            return Vector<double>.Build.DenseOfArray(locsR.ToArray());
+        }
+
+        #region
+        /// <summary>
+        /// Implemented algorithm Pan-Tompkins for detecting R Peaks in ECG signal 
+        /// </summary>
+        /// <param name="signalECG"> Vector of double that contain raw or filtered values of the ECG Signal </param>
+        /// <param name="samplingFrequency"> sampling frequency of aquiring the signal </param>
+        /// <returns> numbers of indexes where are located R peaks as vector </returns>
+        #endregion
+        public Vector<double> PanTompkins(Vector<double> signalECG, uint samplingFrequency)
+        {
+            //Init
+            double fd = 5;
+            double fg = 15;
+            Delay = 0;
+
+            //PROCESS
+            //filtering
+            double[] arr_f = Filtering(Convert.ToDouble(samplingFrequency), fd, fg, signalECG.ToArray());   //plus convert vector to array
+
+            //differentiation
+            double[] arr_d = Derivative(arr_f);
+
+            //squaring
+            double[] arr_2 = Squaring(arr_d);
+
+            //moving-window integration
+            double[] arr_i = Integrating(arr_2, samplingFrequency);
+
+            //adaptive thresholding 
+            Vector<double> locsR = findRs(arr_i, signalECG, samplingFrequency);
 
             return locsR;
         }
+        #region
+        /// <summary>
+        /// Function that filters the signal by lowpass FIR filter (cutoff frequency equals 2Hz, 3rd order)
+        /// </summary>
+        /// <param name="signal"> Raw signal which is going to be filtered as double array</param>
+        /// <param name="samplingFrequency"> Sampling frequency of the signal </param>
+        /// <returns> Filtered signal as double array </returns>
+        #endregion
+        public double[] LPFiltering(double[] signal, uint samplingFrequency)
+        {
+            IList<double> coef = new List<double>();
+            double samplingFreq = Convert.ToDouble(samplingFrequency);
+            double[] hf = FirCoefficients.LowPass(samplingFreq, 2 / (samplingFreq / 2), 1);
+            foreach (double number in hf)
+            {
+                coef.Add(number);
+            }
 
+            OnlineFirFilter filter = new OnlineFirFilter(coef);
+            double[] signal_f = filter.ProcessSamples(signal);
+            Delay += 2;
+            return signal_f;
+        }
+
+        public void ProcessData()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

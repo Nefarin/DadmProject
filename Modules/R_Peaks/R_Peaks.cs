@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.R_Peaks
 {
@@ -10,6 +11,9 @@ namespace EKG_Project.Modules.R_Peaks
     {
         public R_Peaks()
         {
+            Delay = 0;
+            LocsR = Vector<double>.Build.Dense(1);
+            RRms = Vector<double>.Build.Dense(1);
 
         }
 
@@ -28,8 +32,9 @@ namespace EKG_Project.Modules.R_Peaks
             throw new NotImplementedException();
         }
 
-        public void ProcessData()
+        public void ProcessData(int numberOfSamples)
         {
+            R_Peaks pt = new R_Peaks();
             throw new NotImplementedException();
         }
 
