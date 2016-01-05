@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.App</StartupObject>
+    <StartupObject>EKG_Project.IO.FileLoader</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -219,10 +219,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
+    <Compile Include="IO\ASCIIConverter.cs" />
+    <Compile Include="IO\Basic_Data_Worker.cs" />
+    <Compile Include="IO\ECG_Worker.cs" />
+    <Compile Include="IO\FileLoader.cs" />
+    <Compile Include="IO\IECGConverter.cs" />
+    <Compile Include="IO\IECG_Worker.cs" />
+    <Compile Include="IO\MITBIHConverter.cs" />
     <Compile Include="IO\TempInput.cs" />
-    <Compile Include="IO\WFDBInput.cs" />
     <Compile Include="IO\WFDBTest.cs" />
-    <Compile Include="IO\XMLInput.cs" />
+    <Compile Include="IO\XMLConverter.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Data.cs" />
@@ -341,6 +347,8 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\data\100.txt" />
+    <Resource Include="IO\data\234.txt" />
     <Resource Include="Modules\HRV2\nsr001.txt" />
     <Resource Include="IO\data\2.xml" />
     <Resource Include="IO\data\3.xml" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.Sleep_Apnea
 {
-    class Sleep_Apnea_Data : IO.ECG_Data
+    class Sleep_Apnea_Data : ECG_Data
     {
     }
 }
