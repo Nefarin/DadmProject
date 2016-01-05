@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.Modules.ECG_Baseline.ECG_Baseline</StartupObject>
+    <StartupObject>EKG_Project.Modules.TestModule3.TestModule3</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -390,8 +390,8 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
-    <Resource Include="IO\temp\Analysis6_TestModule3.xml" />
     <Resource Include="IO\temp\Analysis6_Data.xml" />
+    <Resource Include="IO\temp\Analysis6_TestModule3.xml" />
     <Resource Include="IO\data\2.xml" />
     <Resource Include="IO\data\3.xml" />
     <Resource Include="IO\data\5.xml" />
