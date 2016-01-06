@@ -98,6 +98,7 @@ namespace EKG_Project.Modules.R_Peaks
             {
                 if (startIndex + step > _currentChannelLength)
                 {
+                    _currentVector = InputData.Signals[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
                     switch (Params.Method)
                     {
                         // no idea what I'm doing
@@ -129,6 +130,7 @@ namespace EKG_Project.Modules.R_Peaks
                 }
                 else
                 {
+                    _currentVector = InputData.Signals[_currentChannelIndex].Item2.SubVector(startIndex, step);
                     switch (Params.Method)
                     {
                         // no idea what I'm doing
