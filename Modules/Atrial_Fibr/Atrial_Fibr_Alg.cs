@@ -23,23 +23,39 @@ namespace EKG_Project.Modules.Atrial_Fibr
     {
         private uint fs;
         //private int[] RR_intervals;
-        private Vector<double> RR_intervals;
+        private Vector<double> _rr_intervals;
         private Vector<double> partOfRrIntervals;
         private Vector<double> pointsDetected;
 
+        public Atrial_Fibr()
+        {
+            _rr_intervals = Vector<double>.Build.Dense(1);
+        }
+
+        
         public static void Main()
         {
-            var af = new Atrial_Fibr();
+            Atrial_Fibr af = new Atrial_Fibr();
+            //var af = new Atrial_Fibr();
 
-            TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\RR.txt");
+            TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\RR_100.txt");
             uint fs = TempInput.getFrequency();
-            
+
             af.RR_intervals = TempInput.getSignal();
             af.fs = TempInput.getFrequency();
 
             af.detectAFStat(af.RR_intervals,af.fs);
+
+            Console.WriteLine("DZIALA!");
+            Console.ReadLine();
         }
-        
+
+        public Vector<double> RR_intervals
+        {
+            get { return _rr_intervals; }
+            set { _rr_intervals = value; }
+        }
+
         #region Documentation
         /// <summary>
         /// TODO
@@ -163,14 +179,17 @@ namespace EKG_Project.Modules.Atrial_Fibr
             double minRr = _RR.Minimum();
             double width = (maxRr - minRr) / 8;
             double tmp = minRr;
-            List<double> listOfElements = new List<double>();
+            //List<double> listOfElements = new List<double>();
+            List<Tuple<int,double>> listOfElements = new List<Tuple<int,double>>();
             for (int i=0; i < 8; i++)
             {
                 if (i < 7)
                 {
                     for (int k = 0; k < _RR.Count; k++)
                     {
-                        double elements = _RR.Find(element => (element >= tmp && element < (tmp + width))).Item2;
+                        //double elements = _RR.Find(element => (element >= tmp && element < (tmp + width)));
+                        Tuple<int,double> elements = _RR.Find(element => (element >= tmp && element < (tmp + width)));
+                        //listOfElements.Add(elements);
                         listOfElements.Add(elements);
                     }
                     histogram[i] = listOfElements.Count / (32 - 8);
@@ -223,7 +242,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             {
                 AF = false;
             }
-            return AF;  
+            return AF;
         }
 
         #region Documentation
