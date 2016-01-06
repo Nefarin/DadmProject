@@ -36,9 +36,18 @@ namespace EKG_Project.Modules.Heart_Axis
             return max;
         }
 
-        //metoda najmniejszych kwadratow - ustalic
+        /*Least-Squares method*/
+        // Double[] Polynomial(Double[] x, Double[] y, int order, DirectRegressionMethod method)
 
-        // max z paraboli
+
+        /*Max of Polynomial*/
+        /*private double First(double [] fitting_parameters)
+        {
+            double I = 0;
+            I =(-fitting_parameters[1])/(2*fitting_parameters[0]);
+                return I;
+        }*/
+        // x = -b/2a
 
         //odczytanie polozen
 
