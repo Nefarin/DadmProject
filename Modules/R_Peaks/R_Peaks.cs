@@ -30,13 +30,6 @@ namespace EKG_Project.Modules.R_Peaks
         private R_Peaks_Params _params;
 
         private Vector<Double> _currentVector;
-        /*
-        public R_Peaks()
-        {
-            Delay = 0;
-            LocsR = Vector<double>.Build.Dense(1);
-            RRms = Vector<double>.Build.Dense(1);
-        }*/
 
         public void Abort()
         {
@@ -134,8 +127,6 @@ namespace EKG_Project.Modules.R_Peaks
                     _currentVector = InputData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, step);
                     switch (Params.Method)
                     {
-                        // no idea what I'm doing
-                        // skąd _currentVector wie, że jest sygnałem?
                         case R_Peaks_Method.PANTOMPKINS:
                             _currentVector = Hilbert(_currentVector, InputData_basic.Frequency);
                             break;
