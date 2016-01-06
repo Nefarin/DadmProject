@@ -98,10 +98,10 @@ namespace EKG_Project.Modules.R_Peaks
                     switch (Params.Method)
                     {
                         case R_Peaks_Method.PANTOMPKINS:
-                            _currentVector = Hilbert(_currentVector, InputData_basic.Frequency);
+                            _currentVector = PanTompkins(_currentVector, InputData_basic.Frequency);
                             break;
                         case R_Peaks_Method.HILBERT:
-                            _currentVector = PanTompkins(_currentVector, InputData_basic.Frequency);
+                            _currentVector = Hilbert(_currentVector, InputData_basic.Frequency);
                             break;
                         case R_Peaks_Method.EMD:
                             _currentVector = EMD(_currentVector, InputData_basic.Frequency);
