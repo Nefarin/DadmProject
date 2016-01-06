@@ -11,7 +11,7 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
-    class Atrial_Fibr_Data_Worker
+    public class Atrial_Fibr_Data_Worker
     {
         string directory;
         string analysisName = "Analysis6";
