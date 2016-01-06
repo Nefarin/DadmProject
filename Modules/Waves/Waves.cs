@@ -61,6 +61,7 @@ namespace EKG_Project.Modules.Waves
                 _ended = false;
 
                 InputWorker = new Basic_Data_Worker(Params.AnalysisName);
+                InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
                 InputWorker.Load();
                 InputData = InputWorker.BasicData;
                 InputDataRpeaks = InputWorkerRpeaks.Data;
