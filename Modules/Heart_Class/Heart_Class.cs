@@ -34,6 +34,8 @@ namespace EKG_Project.Modules.Heart_Class
         private Heart_Class_Params _params;
 
         private Vector<Double> _currentVector;
+        private Vector<Double> _tempVector;
+
 
 
         public void Abort()
@@ -85,12 +87,14 @@ namespace EKG_Project.Modules.Heart_Class
                 NumberOfChannels = InputData.Signals.Count;
                 _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
                 _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                _tempVector = Vector<Double>.Build.Dense(1);
+                
 
             }
             
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
             if (Runnable()) processData();
             else _ended = true;
@@ -109,7 +113,6 @@ namespace EKG_Project.Modules.Heart_Class
 
         private void processData()
         {
-            // TU NIE WIEM CO SIĘ DZIEJE I JAK TO PRZEROBIC NA SWOJE
 
             int channel = _currentChannelIndex;
             int startIndex = _samplesProcessed;
@@ -121,8 +124,8 @@ namespace EKG_Project.Modules.Heart_Class
                 {
                     //scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
 
-
-                    // coooo ? OutputData.ClassificationResult.Add(new Tuple<int, int>(InputRpeaksData.Signals[_currentChannelIndex].Item1, _currentVector));
+                    OutputData.ClassificationResult = Classification(Signal, fs, InputRpeaksData.RPeaks[_currentChannelIndex].Item2, InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.QRSEnds[_currentChannelIndex].Item2);
+                    //OutputData.ClassificationResult.Add(new Tuple<int, int>(InputRpeaksData.Signals[_currentChannelIndex].Item1, _currentVector));
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)
                     {

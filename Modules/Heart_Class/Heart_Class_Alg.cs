@@ -86,6 +86,7 @@ namespace EKG_Project.Modules.Heart_Class
             TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
             HeartClass.QrsR = TempInput.getSignal();
 
+            /*
             //WCZYTANIE ZESPOŁÓW QRS NA PODSTAWIE QRSonsets i QRSends
             HeartClass.SetQrsComplex(); 
 
@@ -136,6 +137,69 @@ namespace EKG_Project.Modules.Heart_Class
             HeartClass.HeartClassData.ClassificationResult = HeartClass.TestKnnCase(trainDataList, HeartClass.QrsCoefficients, trainClass, 1); // klasyfikacja sygnału testowego signal
             //HeartClass.classificationResult = HeartClass.TestKnnCase(trainDataList, testSamples, trainClass, 1); // jeśli chcemy prztestować zbiór testowy (z matlaba)
 
+        */
+
+           // nie działa bo onset i end są już List<int>
+            //HeartClass.HeartClassData.ClassificationResult = HeartClass.Classification(HeartClass.Signal, fs,
+            //    HeartClass.QrsR, HeartClass.QrsOnset, HeartClass.QrsEnd);
+
+        }
+
+        #region Documentation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loadedSignal"></param>
+        /// <param name="fs"></param>
+        /// <param name="R"></param>
+        /// <param name="qrsOnset"></param>
+        /// <param name="qrsEnd"></param>
+        /// <returns></returns>
+        #endregion
+        List<Tuple<int, int>> Classification(Vector<double> loadedSignal, uint fs, Vector<double> R, List<int> qrsOnset,
+            List<int> qrsEnd)
+        {
+            Signal = loadedSignal;
+            SetQrsComplex();
+            QrsCoefficients = CountCoeff(GetQrsComplex(), fs);
+            //WCZYTANIE ZBIORU TRENINGOWEGO
+            List<Vector<double>> trainDataList = loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d.txt");
+
+
+            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-NV
+            List<Vector<double>> trainClassList = loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d_label.txt");
+            // konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
+            int oneClassElement;
+            List<int> trainClass;
+            trainClass = new List<int>();
+            foreach (var item in trainClassList)
+            {
+                foreach (var element in item)
+                {
+                    oneClassElement = (int)element;
+                    trainClass.Add(oneClassElement);
+                }
+
+            }
+
+            //Do tesowania:
+            List<Vector<double>> testDataList = loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\test_d.txt");
+            // Tworzenie listy tupli zbioru testowego - w celach testowych (zbior treningowy i testowy wczytywany jest z pliku). 
+            //w ostatecznej  wresji testDataList będzie obliczane w programie w formie:  List<Tuple<int, Vector<double>>>: 
+            List<Tuple<int, Vector<double>>> testSamples;
+            testSamples = new List<Tuple<int, Vector<double>>>();
+            Tuple<int, Vector<double>> oneElement;
+            int Rpeak = 1;
+            foreach (var item in testDataList)
+            {
+                oneElement = new Tuple<int, Vector<double>>(Rpeak, item.Clone());
+                testSamples.Add(oneElement);
+            }
+
+            //KLASYFIKACJA
+            return HeartClassData.ClassificationResult = TestKnnCase(trainDataList, QrsCoefficients, trainClass, 1); // klasyfikacja sygnału signal
+            //HeartClass.classificationResult = HeartClass.TestKnnCase(trainDataList, testSamples, trainClass, 1); // jeśli chcemy prztestować zbiór testowy (z matlaba)
+
 
         }
 
@@ -144,7 +208,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// This method uses data from WAVES module (Qrs_onset and Qrs_end) and extracts single QRS complexes, creating list of Tuple. Each tuple contains int value - number of R peaks corresponding to the QRS complex, and vector - containing following signal samples. 
         /// </summary>
         #endregion
-        private void SetQrsComplex()
+        void SetQrsComplex()
         {
             for (int i = 0; i < QrsNumber; i++)
             {
