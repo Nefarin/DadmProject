@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics;
 
 namespace EKG_Project.Modules.Heart_Axis
 {
@@ -32,12 +33,25 @@ namespace EKG_Project.Modules.Heart_Axis
                 {
                     max = i;
                 }
+                //znalezc funkcje max
             }
             return max;
         }
 
         /*Least-Squares method*/
         // Double[] Polynomial(Double[] x, Double[] y, int order, DirectRegressionMethod method)
+        /*double[] Fitting(double[] xdata, double[] ydata, int order)
+        {
+            double[] p = Fit.Polynomial(xdata, ydata, 3);
+            return p;
+        }*/
+
+        private double[] LeastSquaresMethod(double[] signal, double[] pseudo_tab)
+        {
+            int order = 2;
+            double[] bestFitCoefficients = Fit.Polynomial(signal, pseudo_tab, order);
+            return bestFitCoefficients;
+        }
 
 
         /*Max of Polynomial*/
