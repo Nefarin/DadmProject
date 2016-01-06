@@ -13,7 +13,7 @@ namespace EKG_Project.Modules.ECG_Baseline
         private Vector<double> _ecgFiltered;      //przefiltrowany sygnał do algorytmu LMS
         private double _fs;                       //częstotliwość próbkowania 
         private double _fc;                       //częstotliwość odcięcia
-        private uint _windowSize;                 //szerokość okna filtracji
+        private int _windowSize;                 //szerokość okna filtracji
         private uint _order;                      //rząd filtru
         private string _analysisName;             //analysisName
 
@@ -27,7 +27,7 @@ namespace EKG_Project.Modules.ECG_Baseline
            this.Order = order;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, uint windowSize, string analysisName)
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSize, string analysisName)
         {
             this.Method = method;
             this.AnalysisName = analysisName;
@@ -130,7 +130,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             }
         }
 
-        public uint WindowSize
+        public int WindowSize
         {
             get
             {
@@ -143,7 +143,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             }
         }
 
-        public uint Order
+        public int Order
         {
             get
             {

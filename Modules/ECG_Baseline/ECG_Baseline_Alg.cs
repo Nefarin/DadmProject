@@ -11,7 +11,7 @@ namespace EKG_Project.Modules.ECG_Baseline
     {
         public class Filter
         {
-            public Vector<double> butterworth(Vector<double> signal, double fs, double fc, int order, int type)
+            public Vector<double> butterworth(Vector<double> signal, double fs, double fc, int order, Filtr_Type type)
             {
 
                 //TODO: Comments
@@ -41,7 +41,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                     {
                         binFreq = binWidth * (i+1);
                         gain = DCGain / Math.Sqrt(1 + Math.Pow(binFreq/fc, 2.0 * order));
-                        if (type == 2)
+                        if (type == Filtr_Type.HIGHPASS)
                         {
                             gain = 1 - gain;
                         }
@@ -96,7 +96,7 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             }
 
-            public Vector<double> savitzky_golay(Vector<double> signal, int window_size, int type)
+            public Vector<double> savitzky_golay(Vector<double> signal, int window_size, Filtr_Type type)
             {
 
                 //TODO: Comments
