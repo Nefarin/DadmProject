@@ -118,7 +118,7 @@ namespace EKG_Project.Modules.ECG_Baseline
 
                     }
 
-                    OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector)); // Czy to doda Rpeaki do Rpeaków
+                    OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)
                     {
