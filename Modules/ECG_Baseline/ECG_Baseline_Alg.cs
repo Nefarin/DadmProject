@@ -150,10 +150,15 @@ namespace EKG_Project.Modules.ECG_Baseline
 
                 Vector<double> output_signal = Vector<double>.Build.DenseOfArray(output_signal_table);
 
+                if (type == Filtr_Type.HIGHPASS)
+                {
+                    return signal - output_signal;
+                }
+
                 return output_signal;
             }
 
-            public Vector<double> moving_average(Vector<double> signal, int window_size)
+            public Vector<double> moving_average(Vector<double> signal, int window_size, Filtr_Type type)
             {
                 int signal_size = signal.Count; //rozmiar sygału wejściowego
                 Vector<double> signal_extension = Vector<double>.Build.Dense(window_size - 1, signal[0]); //uwzględnienie warunków początkowych filtracji
@@ -180,6 +185,12 @@ namespace EKG_Project.Modules.ECG_Baseline
                     }
                     signal_filtered[i] = sum / window_size; //obliczenie średniej 
                 }
+
+                if(type == Filtr_Type.HIGHPASS)
+                {
+                    return signal - signal_filtered;
+                }
+
                 return signal_filtered; //sygnał przefiltrowany
 
             }

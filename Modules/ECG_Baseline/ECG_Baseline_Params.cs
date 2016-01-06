@@ -35,11 +35,10 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.WindowSize = windowSize;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, string analysisName)
+        public ECG_Baseline_Params(Filtr_Method method, string analysisName)
         {
             this.Method = method;
             this.AnalysisName = analysisName;
-            this.Type = type;
         }
 
         public void CopyParametersFrom(ECG_Baseline_Params parameters)

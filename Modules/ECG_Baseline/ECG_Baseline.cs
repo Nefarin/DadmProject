@@ -101,7 +101,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                     switch (Params.Method)
                     {
                         case Filtr_Method.MOVING_AVG:
-                            _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSize);
+                            _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSize, Params.Type);
                             break;
                         case Filtr_Method.BUTTERWORTH:
                             _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.Fc, Params.Order, Params.Type);
