@@ -16,8 +16,10 @@ namespace EKG_Project.Modules.Heart_Class
     public partial class Heart_Class : IModule
     {
         private Vector<double> _signal;          // inicjalizacja przez wczytanie Vector z pliku
-        private Vector<double> _qrsOnset;        // inicjalizacja przez wczytanie Vector z pliku
-        private Vector<double> _qrsEnd;          // inicjalizacja przez wczytanie Vector z pliku
+        //private Vector<double> _qrsOnset;        // inicjalizacja przez wczytanie Vector z pliku
+        private List<int> _qrsOnset;
+        //private Vector<double> _qrsEnd;          // inicjalizacja przez wczytanie Vector z pliku
+        private List<int> _qrsEnd;
         private int _qrsNumber;                  // inicjalizacja przez zliczenie elementów _qrsOnset
         private Vector<double> _qrsR;            // inicjalizacja przez wczytanie Vector z pliku
         private Vector<double> _singleQrs;       // inicjalizacja w konstruktorze
@@ -41,8 +43,10 @@ namespace EKG_Project.Modules.Heart_Class
         {
 
             _signal = Vector<double>.Build.Dense(1);
-            _qrsOnset = Vector<double>.Build.Dense(1);
-            _qrsEnd = Vector<double>.Build.Dense(1);
+            //_qrsOnset = Vector<double>.Build.Dense(1);
+            _qrsOnset = new List<int>();
+            //_qrsEnd = Vector<double>.Build.Dense(1);
+            _qrsEnd = new List<int>();
             _qrsNumber = new int();
             _qrsR = Vector<double>.Build.Dense(1);
             _singleQrs = Vector<double>.Build.Dense(1);
@@ -78,9 +82,10 @@ namespace EKG_Project.Modules.Heart_Class
             uint fs = TempInput.getFrequency();
             HeartClass.Signal = TempInput.getSignal();
             TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsOnset.txt");
-            HeartClass.QrsOnset = TempInput.getSignal();
+            //ponizej chce wczytac jako wektor a to jest juz lista
+            //HeartClass.QrsOnset = TempInput.getSignal();
             TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
-            HeartClass.QrsEnd = TempInput.getSignal();
+            //HeartClass.QrsEnd = TempInput.getSignal();
 
             // uwaga tu mam pozniej wrzucic plik qrsR.txt !!!!
             TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
@@ -212,14 +217,19 @@ namespace EKG_Project.Modules.Heart_Class
         {
             for (int i = 0; i < QrsNumber; i++)
             {
-                double singleQrsOnset = QrsOnset.At(i);
-                double signleQrsEnd = QrsEnd.At(i);
+                double singleQrsOnset = QrsOnset[i];
+                double signleQrsEnd = QrsEnd[i];
                 int qrsLength = (int)(signleQrsEnd - singleQrsOnset+1);
                 SingleQrs = Vector<double>.Build.Dense(qrsLength);
                 int singleQrsR = (int)QrsR.At(i);
-                Signal.CopySubVectorTo(SingleQrs, sourceIndex: (int)singleQrsOnset, targetIndex: 0, count: qrsLength);
-                Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>(singleQrsR, SingleQrs);
-                QrsComplex.Add(a);
+
+                if ((int)singleQrsOnset != -1)
+                {
+                    Signal.CopySubVectorTo(SingleQrs, sourceIndex: (int) singleQrsOnset, targetIndex: 0,
+                        count: qrsLength);
+                    Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>(singleQrsR, SingleQrs);
+                    QrsComplex.Add(a);
+                }
             }
         }
 
@@ -589,7 +599,7 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _signal; }
             set { _signal = value; }
         }
-
+        /*
         #region Documentation
         /// <summary>
         /// TODO
@@ -616,7 +626,7 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _qrsEnd; }
             set { _qrsEnd = value; }
         }
-
+        */
         #region Documentation
         /// <summary>
         /// TODO
@@ -672,7 +682,17 @@ namespace EKG_Project.Modules.Heart_Class
             set { _qrsCoefficients = value; }
         }
 
+        public List<int> QrsOnset
+        {
+            get { return _qrsOnset; }
+            set { _qrsOnset = value; }
+        }
 
+        public List<int> QrsEnd
+        {
+            get { return _qrsEnd; }
+            set { _qrsEnd = value; }
+        }
     }
 
 }
