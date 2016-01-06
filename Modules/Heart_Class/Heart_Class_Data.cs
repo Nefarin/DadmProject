@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace EKG_Project.Modules.Heart_Class
 {
-    class Heart_Class_Data : ECG_Data
+    public class Heart_Class_Data : ECG_Data
     {
 
         //output:

@@ -3,6 +3,9 @@ using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
 using System.Collections.Generic;
+using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.R_Peaks;
+using EKG_Project.Modules.Waves;
 
 namespace EKG_Project.Modules.Heart_Class
 {
@@ -16,13 +19,13 @@ namespace EKG_Project.Modules.Heart_Class
         private int _samplesProcessed;
         private int _numberOfChannels;
 
-
+        private Basic_Data_Worker _inputWorker;
         private ECG_Baseline_Data_Worker _inputECGbaselineWorker;
         private R_Peaks_Data_Worker _inputRpeaksWorker;
         private Waves_Data_Worker _inputWavesWorker;
         private Heart_Class_Data_Worker _outputWorker;
 
-        private Heart_Class_Data _outputData;
+        private Basic_Data _inputData;
         private ECG_Baseline_Data _inputECGbaselineData;
         private R_Peaks_Data _inputRpeaksData;
         private Waves_Data _inputWavesData;
@@ -56,30 +59,31 @@ namespace EKG_Project.Modules.Heart_Class
             {
                 _ended = false;
 
+                InputWorker = new Basic_Data_Worker(Params.AnalysisName);
+                InputWorker.Load();
+                InputData = InputWorker.BasicData;
+
                 InputEcGbaselineWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
                 InputEcGbaselineWorker.Load();
-                InputECGbaselineData = InputEcGbaselineWorker.BasicData;
+                InputECGbaselineData = InputEcGbaselineWorker.Data;
 
                 InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
                 InputRpeaksWorker.Load();
-                InputRpeaksData = InputRpeaksWorker.BasicData;
+                InputRpeaksData = InputRpeaksWorker.Data;
 
                 InputWavesWorker = new Waves_Data_Worker(Params.AnalysisName);
                 InputWavesWorker.Load();
-                InputWavesData = InputWavesWorker.BasicData;
-
-
+                InputWavesData = InputWavesWorker.Data;
 
 
                 OutputWorker = new Heart_Class_Data_Worker(Params.AnalysisName);
+                OutputData = new Heart_Class_Data();
 
-                // CO to?
-                //OutputData = new Heart_Class_Data(InputData.Frequency, InputData.SampleAmount);
 
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
-                NumberOfChannels = InputECGbaselineData.Signals.Count;
-                _currentChannelLength = InputECGbaselineData.Signals[_currentChannelIndex].Item2.Count;
+                NumberOfChannels = InputData.Signals.Count;
+                _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
                 _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
 
             }
@@ -109,14 +113,16 @@ namespace EKG_Project.Modules.Heart_Class
 
             int channel = _currentChannelIndex;
             int startIndex = _samplesProcessed;
-            int step = Params.Step;
+            int step = 6000;
 
             if (channel < NumberOfChannels)
             {
                 if (startIndex + step > _currentChannelLength)
                 {
-                    scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
-                    OutputData.Output.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
+                    //scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
+
+
+                    // coooo ? OutputData.ClassificationResult.Add(new Tuple<int, int>(InputRpeaksData.Signals[_currentChannelIndex].Item1, _currentVector));
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)
                     {
@@ -129,7 +135,7 @@ namespace EKG_Project.Modules.Heart_Class
                 }
                 else
                 {
-                    scaleSamples(channel, startIndex, step);
+                    //scaleSamples(channel, startIndex, step);
                     _samplesProcessed = startIndex + step;
                 }
             }
@@ -209,6 +215,18 @@ namespace EKG_Project.Modules.Heart_Class
         {
             get { return _numberOfChannels; }
             set { _numberOfChannels = value; }
+        }
+
+        public Basic_Data_Worker InputWorker
+        {
+            get { return _inputWorker; }
+            set { _inputWorker = value; }
+        }
+
+        public Basic_Data InputData
+        {
+            get { return _inputData; }
+            set { _inputData = value; }
         }
     }
 }
