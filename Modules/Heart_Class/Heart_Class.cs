@@ -109,7 +109,7 @@ namespace EKG_Project.Modules.Heart_Class
 
             int channel = _currentChannelIndex;
             int startIndex = _samplesProcessed;
-            int step = Params.Step;
+            int step = Params.R_PeaksStep //i tak samo dla ECG_Baseline i Waves
 
             if (channel < NumberOfChannels)
             {
