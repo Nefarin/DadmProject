@@ -8,10 +8,13 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.R_Peaks
 {
-    class R_Peaks_Data : ECG_Data
+    public class R_Peaks_Data : ECG_Data
     {
         private List<Tuple<string, Vector<double>>> _rPeaks; 
-
+        /// Wektor indeksów wykrytych zalamków R
+        private List<Tuple<string, Vector<double>>> _rRInterval; 
+        /// Wektor odleglosci miedzy kolejnymi zalamkami R [ms]
+        
         public R_Peaks_Data() {}
 
         public List<Tuple<string, Vector<double>>> RPeaks
@@ -23,6 +26,18 @@ namespace EKG_Project.Modules.R_Peaks
             set
             {
                 _rPeaks = value;
+            }
+        }
+        
+        public List<Tuple<string, Vector<double>>> RRInterval
+        {
+            get
+            {
+                return _rRInterval;
+            }
+            set
+            {
+                _rRInterval = value;
             }
         }
     }

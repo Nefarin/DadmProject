@@ -50,5 +50,18 @@ namespace EKG_Project.Modules
                 _signals = value;
             }
         }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(String.Format("Frequency: {0} \n", this.Frequency));
+            builder.Append(String.Format("Sample amount : {0} \n", this.SampleAmount));
+            foreach (var signal in this.Signals)
+            {
+                builder.Append(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+            }
+            
+            return builder.ToString();
+        }
     }
 }

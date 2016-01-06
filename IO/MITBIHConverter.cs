@@ -17,10 +17,9 @@ namespace EKG_Project.IO
             analysisName = MITBIHAnalysisName;
         }
 
-        public Basic_Data SaveResult()
+        public void SaveResult()
         {
             Basic_Data data = new Basic_Data();
-            return data;
         }
 
         public void ConvertFile(string path)

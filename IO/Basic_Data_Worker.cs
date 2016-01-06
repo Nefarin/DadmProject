@@ -12,11 +12,33 @@ namespace EKG_Project.IO
 {
     public class Basic_Data_Worker : IECG_Worker
     {
-        string directory = @"C:\temp\";
+        string directory;
         string analysisName = "Analysis6";
-        
+        private Basic_Data basicData;
 
-        public Basic_Data_Worker() { }
+        public Basic_Data BasicData
+        {
+            get
+            {
+                return basicData;
+            }
+
+            set
+            {
+                basicData = value;
+            }
+        }
+
+        public Basic_Data_Worker() {
+            IECGPath pathBuilder = new DebugECGPath();
+            directory = pathBuilder.getTempPath();
+            BasicData = null;
+        }
+
+        public Basic_Data_Worker(String analysisName) : this()
+        {
+            this.analysisName = analysisName;
+        }
 
         public void Save(ECG_Data data)
         {
@@ -72,7 +94,8 @@ namespace EKG_Project.IO
                 ew.InternalXMLFile = file;
 
                 string fileName = analysisName + "_Data.xml";
-                file.Save(directory + fileName);
+                //Console.WriteLine(System.IO.Path.Combine(directory, fileName));
+                file.Save(System.IO.Path.Combine(directory, fileName));
 
             }
 
@@ -84,7 +107,7 @@ namespace EKG_Project.IO
 
             XmlDocument file = new XmlDocument();
             string fileName = analysisName + "_Data.xml";
-            file.Load(directory + fileName);
+            file.Load(System.IO.Path.Combine(directory, fileName));
 
             XmlNodeList modules = file.SelectNodes("EKG/module");
 
@@ -118,11 +141,18 @@ namespace EKG_Project.IO
                     basicData.Signals = Signals;
                 }
             }
+            this.BasicData = basicData;
         }
 
-        static void Main()
+        public static void Main()
         {
-            
+            Basic_Data_Worker worker = new Basic_Data_Worker();
+            worker.Load();
+            Console.WriteLine(worker.BasicData.ToString());
+
+
+            Console.Read();
+
         }
     }
 }

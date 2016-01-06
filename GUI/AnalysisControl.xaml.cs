@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using EKG_Project.Architecture;
 using EKG_Project.Architecture.ProcessingStates;
 using EKG_Project.Architecture.GUIMessages;
+using EKG_Project.Modules;
 
 namespace EKG_Project.GUI
 {
@@ -26,14 +27,25 @@ namespace EKG_Project.GUI
             loadFileDialogBox.ShowDialog();
 
         }
-
+        
         
 
         private void startAnalyseButton_Click(object sender, RoutedEventArgs e)
         {
-
+            foreach (var option in modulePanel.Options)
+            {
+                if (option.Set)
+                {
+                    if (option.ModuleParam == null) //tylko tymczasowo dopoki nie jest przez was zaimplementowane
+                    {
+                        //option.ModuleParam = new ModuleParams();
+                        //moduleParams[option.Code] = option.ModuleParam;
+                        Console.WriteLine(option.Name + " is set.");
+                    }
+                }
+            }
             MessageBox.Show("Starting Analyses");
-            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
+            //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
             //VisualisationPanelUserControl.UpdateLayout();
 
         }

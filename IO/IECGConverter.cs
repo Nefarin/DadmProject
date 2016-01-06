@@ -9,7 +9,7 @@ namespace EKG_Project.IO
 {
     public interface IECGConverter
     {
-        Basic_Data SaveResult();
+        void SaveResult();
         void ConvertFile(string path);
 
         

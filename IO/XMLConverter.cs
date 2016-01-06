@@ -10,7 +10,7 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
-    class XMLConverter : IECGConverter
+    public class XMLConverter : IECGConverter
     {
         string analysisName;
         XmlNodeList sequences;
@@ -21,21 +21,10 @@ namespace EKG_Project.IO
             analysisName = XMLAnalysisName;
         }
 
-        public Basic_Data SaveResult() //co ta metoda ma robić...?
+        public void SaveResult()
         {
             Basic_Data data = new Basic_Data();
-            return data;
-        }
-
-        public void ConvertFile(string path)
-        {
-            loadXMLFile(path);
-            Basic_Data data = new Basic_Data();
-            data.Frequency = getFrequency();
-            data.Signals = getSignals();
-            data.SampleAmount = sampleAmount;
-            
-            foreach(var property in data.GetType().GetProperties()) 
+            foreach (var property in data.GetType().GetProperties())
             {
 
                 if (property.GetValue(data, null) == null)
@@ -49,7 +38,15 @@ namespace EKG_Project.IO
                     dataWorker.Save(data);
                 }
             }
+        }
 
+        public void ConvertFile(string path)
+        {
+            loadXMLFile(path);
+            Basic_Data data = new Basic_Data();
+            data.Frequency = getFrequency();
+            data.Signals = getSignals();
+            data.SampleAmount = sampleAmount;
         }
         
         public void loadXMLFile(string path)
@@ -84,7 +81,7 @@ namespace EKG_Project.IO
             return frequency;
         }
 
-        double getOrigin()
+        public double getOrigin()
         {
             double readOrigin = 0;
             foreach (XmlNode sequence in sequences)
@@ -104,7 +101,7 @@ namespace EKG_Project.IO
             return readOrigin;
         }
 
-        double getScale()
+        public double getScale()
         {
             double readScale = 0;
             foreach (XmlNode sequence in sequences)
@@ -190,13 +187,13 @@ namespace EKG_Project.IO
         }
 
         
-        static void Main()
+        public static void Main()
         {
-            
+            IECGPath pathBuilder = new DebugECGPath();
             XMLConverter xml = new XMLConverter("Analysis1");
-            xml.ConvertFile(@"C:\temp\6.xml");
-            
-            xml.loadXMLFile(@"C:\temp\6.xml");
+            xml.ConvertFile(System.IO.Path.Combine(pathBuilder.getDataPath(), "6.xml"));
+
+            //xml.loadXMLFile(@"C:\temp\6.xml");
 
             uint f = xml.getFrequency();
             Console.WriteLine("Frequency: " + f + " Hz");
@@ -211,7 +208,7 @@ namespace EKG_Project.IO
                 Console.WriteLine("Lead name: " + tuple.Item1);
                 Console.WriteLine("Signal Vector in uV: " + tuple.Item2);
                 Console.WriteLine();
-
+           
             }
 
             Console.Read();
