@@ -6,9 +6,9 @@ using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules.R_Peaks; //nie wiem jak połaczyc te moduły :(
 
-namespace Histogram.Data
+namespace EKG_Project.Modules.HRV2
 {
-    public class Sample
+    public partial class HRV2 : IModule
     {
         public float Count { get; set; }
         public float LowestValue { get; set; }
@@ -37,11 +37,11 @@ namespace Histogram.Data
         private double _binLength;
         private ObservableCollection<Sample> _samples;
 
-        public DataSource(double binLength, List<Tuple<string, Vector<double>>> RRInterval ) //chialam wziac dane z R_Peaks ale nie potrafie
+        public DataSource(List<Tuple<string, Vector<double>>> RRInterval) //chialam wziac dane z R_Peaks ale nie potrafie
         {
             Tuple<string, Vector<double>> RRIntervalTuple = RRInterval.First();
             _RRInterval = RRIntervalTuple.Item2;
-            _binLength = binLength;
+            _binLength = 0.0078125;
             _samples = new ObservableCollection<Sample>();
         }
 

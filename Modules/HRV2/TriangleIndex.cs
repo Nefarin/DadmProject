@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -12,11 +13,13 @@ namespace EKG_Project.Modules.HRV2
     /// </summary>
     /// 
     #endregion
-    class TriangleIndex
+    public partial class HRV2 : IModule
     {
-        var Lista = new DataSource();
-        ObservableCollection<Sample> Samples = from ObservableCollection <Sample> Count in Samples
-                                                orderby Count
+        static List<Tuple<string, Vector<double>>> RRIntervaals;
+        public DataSource lista = new DataSource(RRIntervaals);
+
+        DataSource TriangleIndex.lista.ObservableCollection<Sample> Samples = from ObservableCollection <Sample> Count in Samples
+                                                 orderby Count
                                                 select Count;
         ObesvableCollection valueMax = Sample.Last(); //maksymalna wartość
 
