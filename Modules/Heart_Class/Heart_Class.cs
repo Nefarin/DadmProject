@@ -23,7 +23,11 @@ namespace EKG_Project.Modules.Heart_Class
         private Heart_Class_Data_Worker _outputWorker;
 
         private Heart_Class_Data _outputData;
-        private Basic_Data _inputData;
+        private ECG_Baseline_Data _inputECGbaselineData;
+        private R_Peaks_Data _inputRpeaksData;
+        private Waves_Data _inputWavesData;
+        private Heart_Class_Data _outputData;
+
         private Heart_Class_Params _params;
 
         private Vector<Double> _currentVector;
@@ -54,19 +58,32 @@ namespace EKG_Project.Modules.Heart_Class
 
                 InputEcGbaselineWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
                 InputEcGbaselineWorker.Load();
-                InputData = InputEcGbaselineWorker.BasicData;
+                InputECGbaselineData = InputEcGbaselineWorker.BasicData;
+
+                InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
+                InputRpeaksWorker.Load();
+                InputRpeaksData = InputRpeaksWorker.BasicData;
+
+                InputWavesWorker = new Waves_Data_Worker(Params.AnalysisName);
+                InputWavesWorker.Load();
+                InputWavesData = InputWavesWorker.BasicData;
+
+
+
 
                 OutputWorker = new Heart_Class_Data_Worker(Params.AnalysisName);
-                OutputData = new Heart_Class_Data(InputData.Frequency, InputData.SampleAmount);
+
+                // CO to?
+                //OutputData = new Heart_Class_Data(InputData.Frequency, InputData.SampleAmount);
 
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
-                NumberOfChannels = InputData.Signals.Count;
-                _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+                NumberOfChannels = InputECGbaselineData.Signals.Count;
+                _currentChannelLength = InputECGbaselineData.Signals[_currentChannelIndex].Item2.Count;
                 _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
 
             }
-            */
+            
         }
 
         public void ProcessData(int numberOfSamples)
@@ -77,8 +94,8 @@ namespace EKG_Project.Modules.Heart_Class
         
         public double Progress()
         {
-            throw new NotImplementedException();
-            //return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
+            
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
         }
         
         public bool Runnable()
@@ -88,10 +105,44 @@ namespace EKG_Project.Modules.Heart_Class
 
         private void processData()
         {
-            //////
+            // TU NIE WIEM CO SIĘ DZIEJE I JAK TO PRZEROBIC NA SWOJE
+
+            int channel = _currentChannelIndex;
+            int startIndex = _samplesProcessed;
+            int step = Params.Step;
+
+            if (channel < NumberOfChannels)
+            {
+                if (startIndex + step > _currentChannelLength)
+                {
+                    scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
+                    OutputData.Output.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
+                    _currentChannelIndex++;
+                    if (_currentChannelIndex < NumberOfChannels)
+                    {
+                        _samplesProcessed = 0;
+                        _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+                        _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                    }
+
+
+                }
+                else
+                {
+                    scaleSamples(channel, startIndex, step);
+                    _samplesProcessed = startIndex + step;
+                }
+            }
+            else
+            {
+                OutputWorker.Save(OutputData);
+                _ended = true;
+            }
+
+
         }
 
-        
+
         public Heart_Class_Data_Worker OutputWorker
         {
             get { return _outputWorker; }
@@ -116,11 +167,7 @@ namespace EKG_Project.Modules.Heart_Class
             set { _outputData = value; }
         }
         
-        public Basic_Data InputData
-        {
-            get { return _inputData; }
-            set { _inputData = value; }
-        }
+
 
         public ECG_Baseline_Data_Worker InputEcGbaselineWorker
         {
@@ -138,6 +185,30 @@ namespace EKG_Project.Modules.Heart_Class
         {
             get { return _inputWavesWorker; }
             set { _inputWavesWorker = value; }
+        }
+
+        public ECG_Baseline_Data InputECGbaselineData
+        {
+            get { return _inputECGbaselineData; }
+            set { _inputECGbaselineData = value; }
+        }
+
+        public R_Peaks_Data InputRpeaksData
+        {
+            get { return _inputRpeaksData; }
+            set { _inputRpeaksData = value; }
+        }
+
+        public Waves_Data InputWavesData
+        {
+            get { return _inputWavesData; }
+            set { _inputWavesData = value; }
+        }
+
+        public int NumberOfChannels
+        {
+            get { return _numberOfChannels; }
+            set { _numberOfChannels = value; }
         }
     }
 }
