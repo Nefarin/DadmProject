@@ -56,7 +56,7 @@ namespace EKG_Project.Modules.R_Peaks
 
                 InputWorker = new Basic_Data_Worker(Params.AnalysisName);
                 InputWorker.Load();
-                InputData = InputWorker.BasicData;
+                InputData = InputWorker.BasicData;          
 
                 OutputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
                 OutputData = new R_Peaks_Data();
@@ -97,7 +97,23 @@ namespace EKG_Project.Modules.R_Peaks
             {
                 if (startIndex + step > _currentChannelLength)
                 {
-                    //scaleSamples(channel, startIndex, _currentChannelLength - startIndex); ///TODO wybór metody detekcji
+                    //scaleSamples(channel, startIndex, _currentChannelLength - startIndex); ///TODO wybór metody detekcji:
+
+                    switch (Params.Method)
+                    {
+                        // no idea what I'm doing
+                        // skąd _currentVector wie, że jest sygnałem?
+                        case R_Peaks_Method.PANTOMPKINS:
+                            _currentVector = Hilbert(_currentVector, InputData.Frequency);
+                            break;
+                        case R_Peaks_Method.HILBERT:
+                            _currentVector = PanTompkins(_currentVector, InputData.Frequency);
+                            break;
+                        case R_Peaks_Method.EMD:
+                            //_currentVector = EMD(_currentVector, InputData.Frequency);
+                            break;
+                    }
+
                     OutputData.RPeaks.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector)); // Czy to doda Rpeaki do Rpeaków
                     OutputData.RRInterval.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector)); // A to RRinterwały do RRinterwałów bez dodatkowej zabawy (tzn. nowych currentVectorów czy cos?
                     _currentChannelIndex++;
@@ -112,7 +128,7 @@ namespace EKG_Project.Modules.R_Peaks
                 }
                 else
                 {
-                    //scaleSamples(channel, startIndex, step); ///TODO przerobić (jak wyżej)
+                    //scaleSamples(channel, startIndex, step); ///TODO przerobić (jak wyżej):
                     _samplesProcessed = startIndex + step;
                 }
             }
@@ -218,7 +234,7 @@ namespace EKG_Project.Modules.R_Peaks
 
         public static void Main()
         {
-            R_Peaks_Params param = new R_Peaks_Params(0, "Analysis6");
+            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "Analysis6");
             //R_Peaks_Params param = null;
             R_Peaks testModule = new R_Peaks();
             testModule.Init(param);

@@ -16,9 +16,8 @@ namespace EKG_Project.Modules.R_Peaks
     #endregion
     public partial class R_Peaks : IModule
     {
-
-
-         private void theEnd(int startIndex, int step)
+        /*
+         private void detectRPeaks()
          {
             // sygnał do przetwarzania InputData.Signals;
             switch (Params.Method)
@@ -39,7 +38,7 @@ namespace EKG_Project.Modules.R_Peaks
 
              //lastRPeak = locsR.Last;
 
-         }
+         }*/
 
 
         static void Main(string[] args)
@@ -64,10 +63,7 @@ namespace EKG_Project.Modules.R_Peaks
             //Vector<double> locsR = h.Hilbert(sig, fs);
 
 
-
-        /*//RR in ms
-        pt.RRms = pt.Diff(pt.LocsR);
-        pt.RRms.Multiply(Math.Round(1000 / Convert.ToDouble(fs), 3), pt.RRms);*/
+        // RR in ms zostało przerobione na funkcję i jest pod LPFiltering
 
         #region writeData
         //write result to DATA
@@ -703,6 +699,21 @@ namespace EKG_Project.Modules.R_Peaks
             double[] signal_f = filter.ProcessSamples(signal);
             Delay += 2;
             return signal_f;
+        }
+
+        #region
+        /// <summary>
+        /// Function that calculates RR intervals
+        /// </summary>
+        /// <param name="locsR"> Vector of double that contains detected R peaks indexes</param>
+        /// <param name="samplingFrequency"> Sampling frequency of the signal</param>
+        /// <returns></returns>
+        #endregion
+        public Vector<double> RRinMS(Vector<double> locsR, uint samplingFrequency)
+        {
+            Vector<double> RRms = Diff(locsR);
+            RRms.Multiply(Math.Round(1000 / Convert.ToDouble(samplingFrequency), 3), RRms);
+            return RRms;
         }
     }
 }
