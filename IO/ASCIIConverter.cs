@@ -22,20 +22,9 @@ namespace EKG_Project.IO
             analysisName = ASCIIAnalysisName;
         }
 
-        public Basic_Data SaveResult()
+        public void SaveResult()
         {
             Basic_Data data = new Basic_Data();
-            return data;
-        }
-
-        public void ConvertFile(string path)
-        {
-            loadASCIIFile(path);
-            Basic_Data data = new Basic_Data();
-            data.Frequency = getFrequency();
-            data.Signals = getSignals();
-            data.SampleAmount = sampleAmount;
-
             foreach (var property in data.GetType().GetProperties())
             {
 
@@ -50,6 +39,15 @@ namespace EKG_Project.IO
                     dataWorker.Save(data);
                 }
             }
+        }
+
+        public void ConvertFile(string path)
+        {
+            loadASCIIFile(path);
+            Basic_Data data = new Basic_Data();
+            data.Frequency = getFrequency();
+            data.Signals = getSignals();
+            data.SampleAmount = sampleAmount;
         }
 
         public void loadASCIIFile(string path)
