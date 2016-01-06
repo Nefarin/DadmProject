@@ -17,15 +17,17 @@ namespace EKG_Project.Modules.Heart_Class
         private int _numberOfChannels;
 
 
-
-        private Basic_Data_Worker _inputWorker;
-        //private Heart_Class_Data_Worker _outputWorker;
+        private ECG_Baseline_Data_Worker _inputECGbaselineWorker;
+        private R_Peaks_Data_Worker _inputRpeaksWorker;
+        private Waves_Data_Worker _inputWavesWorker;
+        private Heart_Class_Data_Worker _outputWorker;
 
         private Heart_Class_Data _outputData;
         private Basic_Data _inputData;
         private Heart_Class_Params _params;
 
         private Vector<Double> _currentVector;
+
 
         public void Abort()
         {
@@ -40,7 +42,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         public void Init(ModuleParams parameters)
         {
-            /*
+            
             Params = parameters as Heart_Class_Params;
             
 
@@ -50,9 +52,9 @@ namespace EKG_Project.Modules.Heart_Class
             {
                 _ended = false;
 
-                InputWorker = new Basic_Data_Worker(Params.AnalysisName);
-                InputWorker.Load();
-                InputData = InputWorker.BasicData;
+                InputEcGbaselineWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
+                InputEcGbaselineWorker.Load();
+                InputData = InputEcGbaselineWorker.BasicData;
 
                 OutputWorker = new Heart_Class_Data_Worker(Params.AnalysisName);
                 OutputData = new Heart_Class_Data(InputData.Frequency, InputData.SampleAmount);
@@ -89,18 +91,13 @@ namespace EKG_Project.Modules.Heart_Class
             //////
         }
 
-        public Basic_Data_Worker InputWorker
-        {
-            get { return _inputWorker; }
-            set { _inputWorker = value; }
-        }
-        /*
+        
         public Heart_Class_Data_Worker OutputWorker
         {
             get { return _outputWorker; }
             set { _outputWorker = value; }
         }
-        */
+        
         public bool Aborted
         {
             get { return _aborted; }
@@ -112,18 +109,35 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _params; }
             set { _params = value; }
         }
-        /*
+       
         public Heart_Class_Data OutputData
         {
             get { return _outputData; }
             set { _outputData = value; }
         }
-        */
+        
         public Basic_Data InputData
         {
             get { return _inputData; }
             set { _inputData = value; }
         }
 
+        public ECG_Baseline_Data_Worker InputEcGbaselineWorker
+        {
+            get { return _inputECGbaselineWorker; }
+            set { _inputECGbaselineWorker = value; }
+        }
+
+        public R_Peaks_Data_Worker InputRpeaksWorker
+        {
+            get { return _inputRpeaksWorker; }
+            set { _inputRpeaksWorker = value; }
+        }
+
+        public Waves_Data_Worker InputWavesWorker
+        {
+            get { return _inputWavesWorker; }
+            set { _inputWavesWorker = value; }
+        }
     }
 }
