@@ -17,6 +17,9 @@ namespace EKG_Project.Modules.Flutter
         private Vector<double> _samples; // próbki sygnału
         private double _fs;
 
+        private const double RI_LOWER_LIMIT_FOR_AFL = 1.6;
+        private const double RI_UPPER_LIMIT_FOR_AFL = 2.4;
+
         public Flutter(List<int> tEnds, List<int> qrsOnsets, 
             Vector<double> samples, double fs)
         {
@@ -63,12 +66,14 @@ namespace EKG_Project.Modules.Flutter
                         RIPower += (spectralDensityList[i][leftIndex] + spectralDensityList[i][leftIndex + 1])
                             * (frequenciesList[i][leftIndex + 1] - frequenciesList[i][leftIndex])
                             * 0.5;
+                        leftIndex--;
                     }
                     else
                     {
                         RIPower += (spectralDensityList[i][rightIndex] + spectralDensityList[i][rightIndex - 1])
                             * (frequenciesList[i][rightIndex] - frequenciesList[i][rightIndex - 1])
                             * 0.5;
+                        rightIndex++;
                     }
 
                     if(leftIndex <= 0 && rightIndex >= frequenciesList[i].Length-1)
@@ -79,25 +84,21 @@ namespace EKG_Project.Modules.Flutter
                     if (leftIndex <= 0)
                     {
                         j = 1;
-                        rightIndex++;
                     }
                     else if (rightIndex >= frequenciesList[i].Length - 1)
                     {
-                        j = 2;
-                        leftIndex--;
+                        j = 2;                       
                     }
                     else
                     {
                         j++;
-                        leftIndex--;
-                        rightIndex++;
                     }
                     
                 }
 
                 double RI = frequenciesList[i][rightIndex] - frequenciesList[i][leftIndex];
                 
-                if(RI > 1.6 && RI < 3.0)
+                if(RI > RI_LOWER_LIMIT_FOR_AFL && RI < RI_UPPER_LIMIT_FOR_AFL)
                 {
                     aflDetected[i] = true;
                 }
@@ -113,9 +114,16 @@ namespace EKG_Project.Modules.Flutter
                     {
                         start = i;
                     }
-                    else
+                    else if(start != -1 && i == aflDetected.Length)
                     {
                         aflAnnotations.Add(new Tuple<int, int>(start, i));
+                    }
+                }
+                else
+                {
+                    if (start != -1)
+                    {
+                        aflAnnotations.Add(new Tuple<int, int>(start, i-1));
                         start = -1;
                     }
                 }
@@ -146,7 +154,8 @@ namespace EKG_Project.Modules.Flutter
             for (int i = 0 ; i < spectralDensityList.Count ; i++)
             {
                 List<double> interpolatedFreq = new List<double>((int)Math.Ceiling((frequenciesList[i].Last() - frequenciesList[i].First()) / step));
-                List<double> interpolatedSpectralDensity = new List<double>((int)Math.Ceiling((frequenciesList[i].Last() - frequenciesList[i].First()) / step));            
+                List<double> interpolatedSpectralDensity = new List<double>((int)Math.Ceiling((frequenciesList[i].Last() - frequenciesList[i].First()) / step));
+                double k = frequenciesList[i][0];
                 for (int j = 0; j < spectralDensityList[i].Length-1; j++)
                 {
                     double y1 = spectralDensityList[i][j];
@@ -156,8 +165,6 @@ namespace EKG_Project.Modules.Flutter
 
                     double a = (y2 - y1) / (x2 - x1);
                     double b = y1 - a * x1;
-
-                    double k = x1;
                     
                     while(k < x2)
                     {
@@ -271,7 +278,7 @@ namespace EKG_Project.Modules.Flutter
             List<int> tEndsTmp = ReadFromCSV(Path.Combine(path, TEndsFileName)).Select(x => (int)x).ToList();
 
             Flutter flutter = new Flutter(tEndsTmp, QRSOnsetsTmp, samplesTmp, 360);
-            flutter.DetectAtrialFlutter();
+            var result = flutter.DetectAtrialFlutter();
 
             Console.ReadKey();
         }
