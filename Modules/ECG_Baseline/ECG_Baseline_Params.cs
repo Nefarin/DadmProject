@@ -15,27 +15,31 @@ namespace EKG_Project.Modules.ECG_Baseline
         private double _fc;                       //częstotliwość odcięcia
         private uint _windowSize;                 //szerokość okna filtracji
         private uint _order;                      //rząd filtru
+        private string _analysisName;             //analysisName
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, uint order, double fs, double fc)
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, uint order, double fs, double fc, string analysisName)
         {
-            _method = method;
-            _type = type;
-            _fs = fs;
-            _fc = fc;
-            _order = order;
+           this.Method = method;
+           this.AnalysisName = analysisName;
+           this.Type = type;
+           this.Fs = fs;
+           this.Fc = fc;
+           this.Order = order;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, uint windowSize)
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, uint windowSize, string analysisName)
         {
-            _method = method;
-            _type = type;
-            _windowSize = windowSize;
+            this.Method = method;
+            this.AnalysisName = analysisName;
+            this.Type = type;
+            this.WindowSize = windowSize;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type)
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, string analysisName)
         {
-            _method = method;
-            _type = type;
+            this.Method = method;
+            this.AnalysisName = analysisName;
+            this.Type = type;
         }
 
         public void CopyParametersFrom(ECG_Baseline_Params parameters)
@@ -46,6 +50,19 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.Fs = parameters.Fs;
             this.Order = parameters.Order;
             this.WindowSize = parameters.WindowSize;
+        }
+
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+
+            set
+            {
+                _analysisName = value;
+            }
         }
 
         public Filtr_Method Method
