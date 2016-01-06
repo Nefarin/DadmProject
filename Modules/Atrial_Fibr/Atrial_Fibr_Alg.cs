@@ -4,6 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
+using System.IO;
+using System.Windows;
+using System.Windows.Automation.Peers;
+using System.Windows.Ink;
+using EKG_Project.IO;
+using System.Numerics;
+using MathNet.Numerics.LinearAlgebra;
+
 
 namespace EKG_Project.Modules.Atrial_Fibr
 {
@@ -13,22 +21,42 @@ namespace EKG_Project.Modules.Atrial_Fibr
     //-komentarze zgodnie z dokumentacją
     public partial class Atrial_Fibr : IModule
     {
+        private double fs;
+        //private int[] RR_intervals;
+        private Vector<double> RR_intervals;
+        private Vector<double> partOfRrIntervals;
+        private Vector<double> pointsDetected;
+        private Vector<double> _elements;
+
+        public static void Main()
+        {
+            var af = new Atrial_Fibr();
+
+            TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\RR.txt");
+            uint fs = TempInput.getFrequency();
+            
+            af.RR_intervals = TempInput.getSignal();
+            af.fs = TempInput.getFrequency();
+
+            af.detectAFStat(af.RR_intervals,af.fs);
+        }
+        
         #region Documentation
         /// <summary>
         /// TODO
         /// </summary>
         #endregion
-        private void detectAF (int[] RR, double fs)
+        private void detectAF (Vector<double> _rrIntervals, double fs)
         {
-            int[] rrIntervals = new int[(RR.Length - 1)];
-            for (int i=0; i < (RR.Length - 2); i++)
-            {
-                rrIntervals[i] = RR[i + 1] - RR[i];
-            }
-            int nrOfParts;
+            //int[] rrIntervals = new int[(RR.Count - 1)];
+            //for (int i=0; i < (RR.Count - 2); i++)
+            //{
+            //    rrIntervals[i] = RR[i + 1] - RR[i];
+            //}
+
             double tmp;
             bool[] detectedIntervals;
-            int dividingFactor;
+            int dividingFactor, nrOfParts;
             if (_method.Method== Detect_Method.STATISTIC)
             {
                 dividingFactor = 32;
@@ -37,53 +65,54 @@ namespace EKG_Project.Modules.Atrial_Fibr
             {
                 dividingFactor = 30;
             }
-            tmp = rrIntervals.Length / dividingFactor;
+            tmp = _rrIntervals.Count / dividingFactor;
             nrOfParts = Convert.ToInt32(Math.Floor(tmp));
             detectedIntervals = new bool[nrOfParts];
             for (int i = 0; i < nrOfParts; i++)
             {
-                int[] partOfRrIntervals = new int[dividingFactor];
-                Array.Copy(rrIntervals, i * dividingFactor, partOfRrIntervals, 0, dividingFactor);
+                //int[] partOfRrIntervals = new int[dividingFactor];
+                //Array.Copy(rrIntervals, i * dividingFactor, partOfRrIntervals, 0, dividingFactor);
+                _rrIntervals.CopySubVectorTo(partOfRrIntervals, i * dividingFactor, 0, dividingFactor);
                 if (_method.Method == Detect_Method.STATISTIC)
                 {
                     detectedIntervals[i] = detectAFStat(partOfRrIntervals, fs);
                 }
                 else
                 {
-                    detectedIntervals[i] = detectAFPoin(partOfRrIntervals, fs);
+                    //detectedIntervals[i] = detectAFPoin(partOfRrIntervals, fs);
                 }
             }
-            int lengthOfDetectedIntervals = 0;
+            double lengthOfDetectedIntervals = 0.0;
             bool afDetected = false;
             for (int i=0; i < detectedIntervals.Length; i++)
             {
                 if (detectedIntervals[i])
                 {
-                    lengthOfDetectedIntervals += rrIntervals[i];
+                    lengthOfDetectedIntervals += _rrIntervals.At(i);
                     afDetected = true;
                 }
             }
-            int[] pointsDetected;
+            //double[] pointsDetected;
             string afDetectedS; //nieuzywane
             string afDetectionDescription="";
             if (afDetected)
             {
                 int lastIndex = 0;
-                pointsDetected = new int[lengthOfDetectedIntervals];
+                //pointsDetected = new double [lengthOfDetectedIntervals];
                 for (int i = 0; i < detectedIntervals.Length; i++)
                 {
                     if (detectedIntervals[i])
                     {
                         int j;
-                        for (j = 0; j <  rrIntervals[i]; j++)
+                        for (j = 0; j <  _rrIntervals.At(i); j++)
                         {
-                            pointsDetected[j + lastIndex] = RR[i] + j;
+                            pointsDetected[j + lastIndex] = _rrIntervals.At(i) + j;
                         }
                         lastIndex = j;
                     }
                 }
                 afDetectedS = "Wykryto migotanie przedsionków.";
-                double lengthOfSignal = (RR[RR.Length] - RR[0]) / fs;
+                double lengthOfSignal = (_rrIntervals.At(_rrIntervals.Count) - _rrIntervals.At(0)) / fs;
                 double lengthOfDetection = lengthOfDetectedIntervals / fs;
                 double percentOfDetection = (lengthOfDetection / lengthOfSignal) * 100;
                 afDetectionDescription += "Wykryto migotanie trwające ";
@@ -94,7 +123,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
             else
             {
-                pointsDetected=new int [0];
+                pointsDetected.Clear();
                 afDetectedS="Nie wykryto migotania przedsionków";
             }
 
@@ -106,18 +135,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// </summary>
         #endregion
 
-        bool detectAFStat(int[] RR, double fs )
+         bool detectAFStat(Vector<double> _RR, double fs )
         {
-            bool AF;
-            bool tprD;
-            bool seD;
-            bool rmssdD;
+            bool AF, tprD, seD, rmssdD;
 
             //Turning Punct Ratio
             int turningPoints = 0;
-            for (int i = 1; i < (RR.Length - 1); i++)
+            for (int i = 1; i < (_RR.Count - 1); i++)
             {
-                if( ((RR[i - 1] < RR[i])&& (RR[i + 1] < RR[i]))|| ((RR[i - 1] > RR[i]) && (RR[i + 1] > RR[i])))
+                if( ((_RR.At(i - 1) < _RR.At(i)) && (_RR.At(i + 1) < _RR.At(i)))|| ((_RR.At(i - 1) > _RR.At(i)) && (_RR.At(i + 1) > _RR.At(i))))
                 {
                     turningPoints++;
                 }
@@ -134,21 +160,22 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
             //Shannon Entrophy
             int[] histogram = new int[8];
-            int maxRr = RR.Max();
-            int minRr = RR.Min();
+            double maxRr = _RR.Maximum();
+            double minRr = _RR.Minimum();
             double width = (maxRr - minRr) / 8;
             double tmp = minRr;
             for (int i=0; i < 8; i++)
             {
                 if (i < 7)
                 {
-                    int[] elements = Array.FindAll(RR, element => (element >= tmp && element < (tmp + width)));
-                    histogram[i] = elements.Length / (32 - 8);
+                    //_elements=_RR.Find
+                    //int[] elements = Array.FindAll(RR, element => (element >= tmp && element < (tmp + width)));
+                    histogram[i] = _elements.Count / (32 - 8);
                 }
                 else
                 {
-                    int[] elements = Array.FindAll(RR, element => (element >= tmp && element <= (tmp + width)));
-                    histogram[i] = elements.Length / (32 - 8);
+                    //int[] elements = Array.FindAll(RR, element => (element >= tmp && element <= (tmp + width)));
+                    histogram[i] = _elements.Count / (32 - 8);
                 }
                 tmp += width;
             }
@@ -169,13 +196,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
             //RMSSD
             double rmssd=0;
-            for (int i=0; i < (RR.Length - 1); i++)
+            for (int i=0; i < (_RR.Count - 1); i++)
             {
-                rmssd += Math.Pow((RR[i + 1] - RR[i]), 2);
+                rmssd += Math.Pow((_RR.At(i + 1) - _RR.At(i)), 2);
             }
             rmssd /= (32 - 1);
             rmssd = Math.Sqrt(rmssd);
-            rmssd /= RR.Average();
+            rmssd /= _RR.Average();
             if (rmssd > 0.1)
             {
                 rmssdD = true;
@@ -526,7 +553,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// </summary>
         #endregion
 
-        public void Cluster(List<DataPoint> data, int numClusters)
+        public void Cluster(List<DataPoint> data)
         {
             bool _changed = true;
             bool _success = true;
@@ -548,17 +575,103 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// </summary>
         #endregion
 
-        //private void ClusteringPoints(object sender, EventArgs e, double[] Vector1, double[] Vector2, int _numberOfClusters)
-        //{
-        //    InitilizeRawData(Vector1, Vector2);
+        private void ClusteringPoints(object sender, EventArgs e, double[] Vector1, double[] Vector2)
+        {
+            InitilizeRawData(Vector1, Vector2);
+            NormalizeData();
+            Cluster(_normalizedDataToCluster);
+            var group = _rawDataToCluster.GroupBy(s => s.Cluster).OrderBy(s => s.Key);
+        }
 
-        //    for (int i = 0; i < _numberOfClusters; i++)
+        //bool detectAFStat(int[] RR, double fs)
+        //{
+        //    bool AF;
+        //    bool tprD;
+        //    bool seD;
+        //    bool rmssdD;
+
+        //    //Turning Punct Ratio
+        //    int turningPoints = 0;
+        //    for (int i = 1; i < (RR.Length - 1); i++)
         //    {
-        //        _clusters.Add(new DataPoint() { Cluster = i });
+        //        if (((RR[i - 1] < RR[i]) && (RR[i + 1] < RR[i])) || ((RR[i - 1] > RR[i]) && (RR[i + 1] > RR[i])))
+        //        {
+        //            turningPoints++;
+        //        }
+        //    }
+        //    double tpr = turningPoints / ((2 * 30 - 4) / 3);
+        //    if (tpr < 0.77 && tpr > 0.54)
+        //    {
+        //        tprD = false;
+        //    }
+        //    else
+        //    {
+        //        tprD = true;
         //    }
 
-        //    Cluster(_normalizedDataToCluster, _numberOfClusters);
-        //    var group = _rawDataToCluster.GroupBy(s => s.Cluster).OrderBy(s => s.Key);
+        //    //Shannon Entrophy
+        //    int[] histogram = new int[8];
+        //    int maxRr = RR.Max();
+        //    int minRr = RR.Min();
+        //    double width = (maxRr - minRr) / 8;
+        //    double tmp = minRr;
+        //    for (int i = 0; i < 8; i++)
+        //    {
+        //        if (i < 7)
+        //        {
+        //            int[] elements = Array.FindAll(RR, element => (element >= tmp && element < (tmp + width)));
+        //            histogram[i] = elements.Length / (32 - 8);
+        //        }
+        //        else
+        //        {
+        //            int[] elements = Array.FindAll(RR, element => (element >= tmp && element <= (tmp + width)));
+        //            histogram[i] = elements.Length / (32 - 8);
+        //        }
+        //        tmp += width;
+        //    }
+        //    double se = 0;
+        //    foreach (int a in histogram)
+        //    {
+        //        se -= a * Math.Log10(a) / Math.Log10(0.125);
+        //    }
+
+        //    if (se > 0.7)
+        //    {
+        //        seD = true;
+        //    }
+        //    else
+        //    {
+        //        seD = false;
+        //    }
+
+        //    //RMSSD
+        //    double rmssd = 0;
+        //    for (int i = 0; i < (RR.Length - 1); i++)
+        //    {
+        //        rmssd += Math.Pow((RR[i + 1] - RR[i]), 2);
+        //    }
+        //    rmssd /= (32 - 1);
+        //    rmssd = Math.Sqrt(rmssd);
+        //    rmssd /= RR.Average();
+        //    if (rmssd > 0.1)
+        //    {
+        //        rmssdD = true;
+        //    }
+        //    else
+        //    {
+        //        rmssdD = false;
+        //    }
+        //    if (tprD && seD && rmssdD)
+        //    {
+        //        AF = true;
+        //    }
+        //    else
+        //    {
+        //        AF = false;
+        //    }
+        //    return AF;
+
         //}
+
     }
 }
