@@ -20,6 +20,7 @@ namespace EKG_Project.Modules.ECG_Baseline
         public ECG_Baseline_Params()
         {
             this.Method = Filtr_Method.MOVING_AVG;
+            this.AnalysisName = "Analysis6";
             this.Fc = 50;
             this.Type = Filtr_Type.LOWPASS;
         }
