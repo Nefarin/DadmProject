@@ -45,7 +45,7 @@ namespace EKG_Project.Modules.R_Peaks
             return locsR;
         }*/
         
-        static void Main(string[] args)
+        /*static void Main(string[] args)
         {
             //#region readData
             //read data from ecg_baseline (TO DO!)
@@ -55,7 +55,7 @@ namespace EKG_Project.Modules.R_Peaks
             //  string channel = sig_data.Item1;
             // Vector<double> sig = sig_data.Item2;
 
-            /*
+            
             //read data from dat file
             TempInput.setInputFilePath(@"D:\biomed\DADM\C#\baseline.txt");
             uint fs = TempInput.getFrequency();
@@ -66,7 +66,7 @@ namespace EKG_Project.Modules.R_Peaks
 
             Vector<double> locsR = emd.EMD(sig, fs);
             emd.LocsR = locsR;
-            */
+            
 
             // RR in ms zostało przerobione na funkcję i jest pod LPFiltering
 
@@ -76,17 +76,17 @@ namespace EKG_Project.Modules.R_Peaks
             // R_Peaks.Add(r_data);
 
             //write result to dat file
-            /*TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baserr.txt");
+            TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baserr.txt");
             TempInput.writeFile(fs, RRms);
             TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baser.txt");
-            TempInput.writeFile(fs, emd.LocsR);*/
+            TempInput.writeFile(fs, emd.LocsR);
             //#endregion
 
             //TEST-Console
             //Console.WriteLine();
             //foreach (double sth in emd.LocsR) { Console.WriteLine(sth); }
             //Console.ReadKey();
-        }
+        }*/
 
         //FIELDS
         #region 
