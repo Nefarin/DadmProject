@@ -168,9 +168,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 }
             }
             else
-            {
-                //Do usuniecia wypisywanie
-                Console.WriteLine(_currentVector);  
+            { 
                 OutputWorker.Save(OutputData);
                 _ended = true;
             }
