@@ -72,6 +72,7 @@ namespace EKG_Project.Modules.Heart_Class
 
 
                 OutputWorker = new Heart_Class_Data_Worker(Params.AnalysisName);
+                OutputData = new Heart_Class_Data();
 
                 // CO to?
                 //OutputData = new Heart_Class_Data(InputData.Frequency, InputData.SampleAmount);
