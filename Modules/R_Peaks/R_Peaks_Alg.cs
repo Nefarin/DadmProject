@@ -16,30 +16,32 @@ namespace EKG_Project.Modules.R_Peaks
     #endregion
     public partial class R_Peaks : IModule
     {
-        /*
-         private void detectRPeaks()
-         {
-            // sygnał do przetwarzania InputData.Signals;
+        /* nie działa kanalia - wężyk sobie spacuje po locsR
+        #region
+        /// <summary>
+        /// Detects R peaks using chosen method
+        /// </summary>
+        /// <returns> numbers of indexes where are located R peaks as vector </returns>
+        #endregion
+        public Vector<double> detectRPeaks2()
+        {
+            //Vector<double> locsR;  jaka długość?
             switch (Params.Method)
             {
-                
+                // no idea what I'm doing
+                // skąd _currentVector wie, że jest sygnałem?
                 case R_Peaks_Method.PANTOMPKINS:
-                    //Hilbert(InputData.Signals, InputData.Frequency);
-                    // dobra, tego też nie wiem jak zrobić
-                    //
+                    locsR = Hilbert(_currentVector, InputData.Frequency);
                     break;
                 case R_Peaks_Method.HILBERT:
-                    //
+                    locsR = PanTompkins(_currentVector, InputData.Frequency);
                     break;
                 case R_Peaks_Method.EMD:
-                    //
-                    break;                 
+                    //locsR = EMD(_currentVector, InputData.Frequency);
+                    break;
             }
-
-             //lastRPeak = locsR.Last;
-
-         }*/
-
+            return locsR;
+        }*/
 
         static void Main(string[] args)
         {
@@ -104,18 +106,7 @@ namespace EKG_Project.Modules.R_Peaks
         /// </summary>
         #endregion
         private Vector<double> _RRms;
-        #region
-        /// <summary>
-        /// Store the value of index of last detected R peak in ECG signal
-        /// </summary>
-        #endregion
-        private int _lastRPeak;
 
-        public int LastRPeak
-        {
-            set { _lastRPeak = value; }
-            get { return _lastRPeak; }
-        }
         public uint Delay
         {
             set { _delay = value; }
@@ -547,10 +538,10 @@ namespace EKG_Project.Modules.R_Peaks
         /// Function which locates R peaks in ECG signal by thersholding and finding local maxima
         /// </summary>
         /// <param name="integratedSignal"> integrated signal of ECG</param>
-        /// <param name="filteredSignal"> filtereg signal of ECG</param>
+        /// <param name="signal"> ECG signal</param>
         /// <returns> Numbers of samples of R peaks in ECG signal as int array </returns>
         #endregion
-        double[] FindPeak(double[] integratedSignal, Vector<double> filteredSignal)
+        double[] FindPeak(double[] integratedSignal, Vector<double> signal)
         {
             // finding threshold
             double tempMax = integratedSignal.Max();
@@ -600,7 +591,7 @@ namespace EKG_Project.Modules.R_Peaks
                 double[] tempV = new double[tempLength];
                 for (int j = 0; j < tempLength; j++)
                 {
-                    tempV[j] = filteredSignal[Convert.ToInt32(tempRRange[j])];
+                    tempV[j] = signal[Convert.ToInt32(tempRRange[j])];
                 }
                 Vector<double> tempI = Vector<double>.Build.DenseOfArray(tempV);
                 double tempIndex = tempI.MaximumIndex();
@@ -671,7 +662,7 @@ namespace EKG_Project.Modules.R_Peaks
             double[] h_arr_i = Integration(h_arr_ht, samplingFrequency);
 
             //adaptive thresholding 
-            double[] loc_R = FindPeak(h_arr_i, h_sig_f);
+            double[] loc_R = FindPeak(h_arr_i, signalECG);
             Vector<double> locsR = Vector<double>.Build.DenseOfArray(loc_R);
 
             return locsR;
