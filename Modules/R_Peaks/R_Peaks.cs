@@ -32,7 +32,7 @@ namespace EKG_Project.Modules.R_Peaks
             throw new NotImplementedException();
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
             R_Peaks pt = new R_Peaks();
             throw new NotImplementedException();

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using MathNet.Filtering.FIR;
+using MathNet.Filtering.IIR;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Statistics;
+using MathNet.Numerics.Interpolation;
 using EKG_Project.IO;
 using EKG_Project.Modules.ECG_Baseline;
 using System.Linq;
@@ -30,22 +32,20 @@ namespace EKG_Project.Modules.R_Peaks
             // Vector<double> sig = sig_data.Item2;
 
             //read data from dat file
-            TempInput.setInputFilePath(@"D:\100in.txt");
+            TempInput.setInputFilePath(@"D:\biomed\DADM\C#\baseline.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
             #endregion
-            double samplingFreq = Convert.ToDouble(fs);
-            R_Peaks pt = new R_Peaks();
-            R_Peaks h = new R_Peaks();
-            double[] arr_sig = sig.ToArray();
 
+            R_Peaks emd = new R_Peaks();
 
+            Vector<double> locsR = emd.EMD(sig, fs);
+            emd.LocsR = locsR;
+            
 
-
-
-            /*//RR in ms
-            pt.RRms = pt.Diff(pt.LocsR);
-            pt.RRms.Multiply(Math.Round(1000 / Convert.ToDouble(fs), 3), pt.RRms);*/
+            //RR in ms
+            emd.RRms = emd.Diff(emd.LocsR);
+            emd.RRms.Multiply(Math.Round(1000 / Convert.ToDouble(fs), 3), emd.RRms);
 
             #region writeData
             //write result to DATA
@@ -53,17 +53,15 @@ namespace EKG_Project.Modules.R_Peaks
             // R_Peaks.Add(r_data);
 
             //write result to dat file
-            //TempInput.setOutputFilePath(@"D:\100out.txt");
-            //TempInput.writeFile(fs, Vector<double>.Build.DenseOfArray(vector_f));
-            /*TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\100v5RR.txt");
-            TempInput.writeFile(fs, pt.RRms);*/
+            /*TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baserr.txt");
+            TempInput.writeFile(fs, RRms);
+            TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baser.txt");
+            TempInput.writeFile(fs, emd.LocsR);*/
             #endregion
 
             //TEST-Console
-            Console.WriteLine(h.Delay);
-            Console.WriteLine(1 / (samplingFreq / 2));
             Console.WriteLine();
-            //foreach (double sth in sig) { Console.WriteLine(sth); }
+            foreach(double sth in emd.LocsR) { Console.WriteLine(sth); }
             Console.ReadKey();
         }
 
@@ -583,6 +581,307 @@ namespace EKG_Project.Modules.R_Peaks
 
         #region
         /// <summary>
+        /// Function that returns indexes for values in signal which fulfil some conditions (defined by predicate)
+        /// </summary>
+        /// <param name="signal"> Vector of signal in which value is searched </param>
+        /// <param name="searchValue"> Functions which defines searching parameters </param>
+        /// <returns> Vector of searched indexes </returns>
+        #endregion
+        public Vector<double> FindIndexes(Vector<double> signal, Func<double,bool> predicate)
+        {
+            Vector<double> indexes = Vector<double>.Build.Dense(signal.Count);
+            int i = 0;
+            int lastInd = 0;
+            while (lastInd < signal.Count)
+            {
+                Vector<double> partSig = signal.SubVector(lastInd, signal.Count - lastInd);
+                Tuple<int, double> findItem = partSig.Find(predicate);
+                if (findItem!=null)
+                {
+                    lastInd = findItem.Item1 + lastInd;
+                    indexes[i] = Convert.ToDouble(lastInd);
+                    i++;
+                }
+                else { break; }
+                lastInd++;
+            }
+
+            return i!=0?indexes.SubVector(0, i):null;
+        }
+
+        #region
+        /// <summary>
+        /// Function that finds extrema in signal
+        /// </summary>
+        /// <param name="signal"> Analyzed signal as vector </param>
+        /// <returns>Extrema as Tuple of two lists: Item1 is Minima, Item2 is Maxima </returns>
+        #endregion
+        public Tuple<List<double>, List<double>> Extrema (Vector<double> signal)
+        {
+            List<double> iMax = new List<double>();
+            List<double> iMin = new List<double>();
+            Vector<double> diffSig = Diff(signal);
+            Vector<double> dSig1 = diffSig.SubVector(0, diffSig.Count - 1);
+            Vector<double> dSig2 = diffSig.SubVector(1, diffSig.Count - 1);
+            for (int i = 0; i < dSig1.Count; i++)
+            {
+                if (dSig1[i] * dSig2[i] >= 0)
+                {
+                    dSig1[i] = 0;
+                }
+            }
+            Vector<double> indMin = FindIndexes(dSig1, item => item < 0);
+            Vector<double> indMax = FindIndexes(dSig1, item => item > 0);
+            if (indMin != null) { indMin.Add(1,indMin); }
+            if (indMax != null) { indMax.Add(1, indMax); }
+
+            if (diffSig.Exists(item => item == 0))
+            {
+                Vector<double> bad = Vector<double>.Build.Dense(diffSig.Count + 2);
+                for (int i = 0; i < diffSig.Count; i++)
+                {
+                    if (diffSig[i] == 0)
+                    {
+                        bad[i + 1] = 1;
+                    }
+                }
+                Vector<double> diffBad = Diff(bad);
+                Vector<double> debS = FindIndexes(diffBad, item => item == 1);
+                Vector<double> finS = FindIndexes(diffBad, item => item == -1);
+                if (debS[0] == 0)
+                {
+                    if (debS.Count > 1)
+                    {
+                        debS = debS.SubVector(1, debS.Count - 1);
+                        finS = finS.SubVector(1, finS.Count - 1);
+                    }
+                    else
+                    {
+                        debS = null;
+                        finS = null;
+                    }
+                }
+                if (debS!= null)
+                {
+                    if (finS.Last() == signal.Count)
+                    {
+                        if (debS.Count > 1)
+                        {
+                            debS = debS.SubVector(0, debS.Count - 1);
+                            finS = finS.SubVector(0, finS.Count - 1);
+                        }
+                        else
+                        {
+                            debS=null;
+                            finS=null;
+                        }
+                    }
+                }
+                if (debS != null)
+                {
+                    for (int i = 0; i < debS.Count; i++)
+                    {
+                        if (diffSig[Convert.ToInt16(debS[i]) - 1] > 0)
+                        {
+                            if (diffSig[Convert.ToInt16(finS[i])] < 0)
+                            {
+                                iMax.Add(Math.Round((finS[i] + debS[i]) / 2));
+                            }
+                        }
+                        else
+                        {
+                            if (diffSig[Convert.ToInt16(finS[i])] > 0)
+                            {
+                                iMin.Add(Math.Round((finS[i] + debS[i]) / 2));
+                            }
+                        }
+                    }
+                }
+            }
+            if (indMax != null)
+            {
+                iMax.AddRange(indMax);
+                iMax.Sort();
+            }
+            if (indMin != null)
+            {
+                iMin.AddRange(indMin);
+                iMin.Sort();
+            }
+            Tuple<List<double>, List<double>> extrema = new Tuple<List<double>, List<double>>(iMin, iMax);
+            return extrema;
+        }
+
+        #region
+        /// <summary>
+        /// Function that interpolate the signal to the given (x, y) points 
+        /// </summary>
+        /// <param name="signalLength"> Legnth of the interpolated signal </param>
+        /// <param name="x"> Values of x of points </param>
+        /// <param name="y"> Values of y of points</param>
+        /// <returns> Signal consists of interpolated values for values of x form 0 to signalLength step 1 </returns>
+        #endregion
+        public Vector<double> CubicSplineInterp (int signalLength, IEnumerable<double> x, IEnumerable<double> y )
+        {    
+            //TO DO: ROUND???       
+            //result vector
+            Vector<double> interpSpl = Vector<double>.Build.Dense(signalLength);
+            //cubic spline interpolation
+            CubicSpline splineCoeff = CubicSpline.InterpolateNatural(x, y);
+            for (double c = 0; c < signalLength; c++)
+            {
+                interpSpl[Convert.ToInt16(c)] = splineCoeff.Interpolate(c);
+            }
+            return interpSpl;
+        }
+
+        #region
+        /// <summary>
+        /// Function which extract from signal its first intrinsic mode function
+        /// </summary>
+        /// <param name="signal"> Signal for decomposition</param>
+        /// <returns> First Intrinsic Mode Function of the given signal </returns>
+#endregion
+        public Vector<double> ExtractModeFun(Vector<double> signal)
+        {
+            int numOfSift = 20;
+            Vector<double> d = signal;
+            for (int i = 0; i < numOfSift; i++)
+            {
+                //find extrema
+                Tuple<List<double>, List<double>> extr = Extrema(d);
+                List<double> iMin = extr.Item1;
+                List<double> iMax = extr.Item2;
+                if (iMin.Count > 0)
+                {
+                    Vector<double> ampMin = Vector<double>.Build.Dense(iMin.Count);
+                    Vector<double> ampMax = Vector<double>.Build.Dense(iMax.Count);
+                    for (int j = 0; j < iMin.Count; j++)
+                    {
+                        ampMin[j] = d[Convert.ToInt16(iMin[j])];
+                        ampMax[j] = d[Convert.ToInt16(iMax[j])];
+                    }
+                    //envelopes
+                    Vector<double> envMin = CubicSplineInterp(signal.Count, iMin, ampMin);
+                    Vector<double> envMax = CubicSplineInterp(signal.Count, iMax, ampMax);
+                    Vector<double> envMean = envMin.Add(envMax).Divide(2);
+
+                    //substract form signal
+                    d = d - envMean;
+                }
+                else break;
+            }
+            return d;
+        }
+
+        #region
+        /// <summary>
+        /// Function which decomposes the signal into 3 first Intrinsic Mode Functions (using EMD)
+        /// </summary>
+        /// <param name="signal"> Decomposed signal as vector of samples</param>
+        /// <returns> An array of vectors in which each vector is next Intrinsic Mode Function of signal </returns>
+#endregion
+        public Vector<double>[] EmpipricalModeDecomposition(Vector<double> signal)
+        {
+            int numOfImfs = 1;
+            Vector<double>[] imfs = new Vector<double>[numOfImfs];
+            Vector<double> res = Vector<double>.Build.DenseOfVector(signal);
+            for (int i = 0; i < numOfImfs; i++)
+            {
+                imfs[i] = ExtractModeFun(res);
+                res = res - imfs[i];
+            }
+            return imfs;
+        }
+
+        #region
+        /// <summary>
+        /// Function that makes operations on Intrinsic Mode Functions from Empirical Mode Decomposition. This function povides nonlinear transform and integration imfs and as result return sum of imfs. 
+        /// </summary>
+        /// <param name="imfs"> Intrinsic Mode Functions as array of vectors</param>
+        /// <param name="fs"> sampling frequency of signal of imf</param>
+        /// <returns> Vector consists sum of transformed imfs </returns>
+        #endregion
+        public Vector<double> TransformImf(Vector<double>[] imfs, uint fs)
+        {
+            //result Vector
+            Vector<double> imfSum = Vector<double>.Build.Dense(imfs[0].Count - 2);
+            //integrating window
+            double window = Math.Round(0.1 * fs);
+            Delay += Convert.ToUInt32(window / 2);
+
+            foreach (Vector<double> imf in imfs)
+            {
+                //nonlinear transform
+                Vector<double> imfTransformed = Vector<double>.Build.Dense(imf.Count);
+                for (int i = 2; i < imfs[0].Count; i++)
+                {
+                    if ((imf[i] * imf[i - 1] > 0) && (imf[i - 2] * imf[i] > 0))
+                    {
+                        imfTransformed[i] = Math.Abs(imf[i] * imf[i - 1] * imf[i - 2]);
+                    }
+                    else
+                    {
+                        imfTransformed[i] = 0;
+                    }
+                }
+                imfTransformed = imfTransformed.SubVector(2, imf.Count - 2);
+
+                //integrating
+                IList<double> hi_coeff = new List<double>();
+                for (int i = 0; i < window; i++)
+                {
+                    hi_coeff.Add(1 / window);
+                }
+                OnlineFirFilter integrationFilter = new OnlineFirFilter(hi_coeff);
+                double[] imfIntegrated = integrationFilter.ProcessSamples(imfTransformed.ToArray());
+
+                //sum
+                imfSum = imfSum.Add(Vector<double>.Build.DenseOfArray(imfIntegrated));
+            }
+            return imfSum;
+        }
+
+        #region
+        /// <summary>
+        /// Function that filters the signal by lowpass IIR filter (cutoff frequency equals 2Hz, 1st order)
+        /// </summary>
+        /// <param name="signal"> Raw signal which is going to be filtered as double array</param>
+        /// <param name="samplingFrequency"> Sampling frequency of the signal </param>
+        /// <returns> Filtered signal as double array </returns>
+        #endregion
+        public double[] LPFiltering(double[] signal, uint samplingFrequency)
+        {
+            double[] hf = new double[] { 0.0172, 0.0172, 1, -0.9657 };
+            OnlineIirFilter filter = new OnlineIirFilter(hf);
+            double[] signal_f = filter.ProcessSamples(signal);
+            Delay += 12;
+            return signal_f;
+        }
+
+        #region
+        /// <summary>
+        /// Function that locates the peaks in signal which are higher than thershold (0.00005)
+        /// </summary>
+        /// <param name="signal"> Signal in which peaks should be located</param>
+        /// <returns> List of indexes of localosations of peaks in signal</returns>
+        #endregion
+        public List<double> FindPeaksTh(double[] signal)
+        {
+            List<double> potRs = new List<double>();
+            double th = 0.00005;
+            for (int i = 1; i < signal.Length - 1; i++)
+            {
+                if ((signal[i] > signal[i - 1]) && (signal[i] > signal[i + 1]) && signal[i] > th)
+                {
+                    potRs.Add(i);
+                }
+            }
+            return potRs;
+        }
+
+        #region
+        /// <summary>
         /// Implemented algorithm Pan-Tompkins for detecting R Peaks in ECG signal 
         /// </summary>
         /// <param name="signalECG"> Vector of double that contain raw or filtered values of the ECG Signal </param>
@@ -648,33 +947,23 @@ namespace EKG_Project.Modules.R_Peaks
             return locsR;
         }
 
-        #region
-        /// <summary>
-        /// Function that filters the signal by lowpass FIR filter (cutoff frequency equals 2Hz, 3rd order)
-        /// </summary>
-        /// <param name="signal"> Raw signal which is going to be filtered as double array</param>
-        /// <param name="samplingFrequency"> Sampling frequency of the signal </param>
-        /// <returns> Filtered signal as double array </returns>
-        #endregion
-        public double[] LPFiltering(double[] signal, uint samplingFrequency)
-        {
-            IList<double> coef = new List<double>();
-            double samplingFreq = Convert.ToDouble(samplingFrequency);
-            double[] hf = FirCoefficients.LowPass(samplingFreq, 2 / (samplingFreq / 2), 1);
-            foreach (double number in hf)
-            {
-                coef.Add(number);
-            }
 
-            OnlineFirFilter filter = new OnlineFirFilter(coef);
-            double[] signal_f = filter.ProcessSamples(signal);
-            Delay += 2;
-            return signal_f;
-        }
-
-        public void ProcessData()
+        public Vector<double> EMD(Vector<double> signalECG, uint samplingFrequency)
         {
-            throw new NotImplementedException();
+            //emd
+            Vector<double>[] imfs = EmpipricalModeDecomposition(signalECG);
+            //non linear tranform imfs
+            Vector<double> imfSum = TransformImf(imfs, samplingFrequency);
+            //filtering
+            double[] filtSum = LPFiltering(imfSum.ToArray(), samplingFrequency);
+            //finding peaks
+            List<double> potRs = FindPeaksTh(filtSum);
+            Vector<double> locsR = Vector<double>.Build.DenseOfEnumerable(potRs);
+            //subtract delay
+            locsR = locsR.Subtract(Delay);
+
+            return locsR; 
         }
+                
     }
 }
