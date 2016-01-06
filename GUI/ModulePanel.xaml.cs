@@ -1,5 +1,6 @@
 ﻿using EKG_Project.GUI.ModuleOptionDialogues;
 using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.R_Peaks;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -59,13 +60,16 @@ namespace EKG_Project.GUI
         private void btn_Click(object sender, RoutedEventArgs e)
         {
             ModuleOption option = (ModuleOption)((Button)sender).DataContext;
+            Window dialogue = null;
             switch (option.Code)
             {
                 case AvailableOptions.ECG_BASELINE:
-                    var dialogue = new Dialogue_ECG_Baseline_Options((ECG_Baseline_Params)option.ModuleParam);
+                    dialogue = new Dialogue_ECG_Baseline_Options((ECG_Baseline_Params)option.ModuleParam);
                     dialogue.ShowDialog();
                     break;
                 case AvailableOptions.R_PEAKS:
+                    dialogue = new Dialogue_R_Peaks_Options((R_Peaks_Params)option.ModuleParam);
+                    dialogue.ShowDialog();
                     break;
                 default:
                     break;

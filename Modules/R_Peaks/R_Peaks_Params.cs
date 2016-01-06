@@ -26,5 +26,9 @@ namespace EKG_Project.Modules.R_Peaks
                 _method = value;
             }
         }
+        public void CopyParametersFrom(R_Peaks_Params parameters)
+        {
+            this.Method = parameters.Method;
+        }
     }
 }

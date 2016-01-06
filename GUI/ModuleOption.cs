@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EKG_Project.Modules;
 using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.R_Peaks;
 
 namespace EKG_Project.GUI
 {
@@ -62,12 +63,14 @@ namespace EKG_Project.GUI
             switch (this.Code)
             {
                 case AvailableOptions.ECG_BASELINE:
-                    this.ModuleParam = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS);
+                    this.ModuleParam = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS);            
+                    break;
+                case AvailableOptions.R_PEAKS:
+                    this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD);
                     break;
                 default:
                     break;
-            }
-                
+            }        
         }
 
         public ModuleOption AddSuboption(AvailableOptions code)
