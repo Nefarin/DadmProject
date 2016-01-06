@@ -15,9 +15,16 @@ namespace EKG_Project.Modules.Waves
     public partial class Waves : IModule
     {
         
-        public void analyzeSignalPart( int channel, int step, int startIndex)
+        public void analyzeSignalPart(  )
         {
-            ;
+            DetectQRS();
+            FindP();
+            FindT();
+
+            _currentQRSonsets.AddRange(_currentQRSonsetsPart);
+            _currentQRSends.AddRange(_currentQRSendsPart);
+            _currentPonsets.AddRange(_currentPonsetsPart);
+            _currentTends.AddRange(_currentTendsPart);
         }
         
         public Vector<double> HaarDWT(Vector<double> signal, int n)
@@ -120,19 +127,29 @@ namespace EKG_Project.Modules.Waves
         {
             _currentQRSonsetsPart.Clear();
             List<Vector<double>> dwt =new List< Vector<double>>();
+            int startInd = 0;
+            if (_rPeaksProcessed > 1)
+                startInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed-1];
+            int endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1;
+            if (_rPeaksProcessed + _params.RpeaksStep + 1 < endInd)
+                endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + _params.RpeaksStep + 1];
 
-            dwt = ListDWT(InputData.Signals[_currentChannelIndex].Item2, _params.DecompositionLevel , _params.WaveType);
+            dwt = ListDWT(InputData.Signals[_currentChannelIndex].Item2.SubVector(startInd, endInd - startInd), _params.DecompositionLevel , _params.WaveType);
             
             int d2size = dwt[_params.DecompositionLevel - 1].Count();
-            int rSize = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count();
+            int rSize = _params.RpeaksStep;
 
-            _currentQRSonsetsPart.Add(FindQRSOnset(0, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[0], dwt[1], _params.DecompositionLevel));
-            for (int middleR = 1; middleR < rSize - 1; middleR++ )
+            if (startInd == 0)
+                 _currentQRSonsetsPart.Add(FindQRSOnset(0, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[0], dwt[1], _params.DecompositionLevel));
+
+            for (int middleR = 1; middleR < rSize ; middleR++ )
             {
-                _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR-1], InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR], dwt[1], _params.DecompositionLevel));
-                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR], InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1], dwt[1], _params.DecompositionLevel));
+                _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR-1], InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR], dwt[1], _params.DecompositionLevel)+ startInd);
+                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR], InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1], dwt[1], _params.DecompositionLevel)+ startInd);
             }
-            _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[rSize - 1], InputData.Signals[_currentChannelIndex].Item2.Count - 1, dwt[1], _params.DecompositionLevel));
+
+            if (endInd == (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1)
+                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[rSize ], InputData.Signals[_currentChannelIndex].Item2.Count - 1, dwt[1], _params.DecompositionLevel));
 
         }
 
