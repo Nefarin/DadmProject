@@ -17,6 +17,13 @@ namespace EKG_Project.Modules.ECG_Baseline
         private int _order;                      //rząd filtru
         private string _analysisName;             //analysisName
 
+        public ECG_Baseline_Params()
+        {
+            this.Method = Filtr_Method.MOVING_AVG;
+            this.Fc = 50;
+            this.Type = Filtr_Type.LOWPASS;
+        }
+
         public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int order, double fs, double fc, string analysisName)
         {
            this.Method = method;
@@ -39,6 +46,13 @@ namespace EKG_Project.Modules.ECG_Baseline
         {
             this.Method = method;
             this.AnalysisName = analysisName;
+        }
+
+        //Tymczasowy konstruktor, bo ktoś coś odj**
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type)
+        {
+            this.Method = method;
+            this.Type = type;
         }
 
         public void CopyParametersFrom(ECG_Baseline_Params parameters)

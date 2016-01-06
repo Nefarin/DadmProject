@@ -196,7 +196,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             }
         }
 
-
+        /*
         static void Main()
         {
             double[] input_signal = {10,22,24,42,37,77,89,22,63,9};
@@ -223,6 +223,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             System.Console.WriteLine("Press any key to exit.");
             System.Console.ReadKey();
         }
+        */
 
     }
 
