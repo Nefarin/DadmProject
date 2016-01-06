@@ -20,7 +20,6 @@ namespace EKG_Project.Modules.Waves
             ;
         }
         
-        /*
         public Vector<double> HaarDWT(Vector<double> signal, int n)
         {
             //Work just like wavedec but use only haar wavelet
@@ -119,21 +118,21 @@ namespace EKG_Project.Modules.Waves
 
         public void DetectQRS()
         {
-            _data.QRSOnsets.Clear();
+            _currentQRSonsets.Clear();
             List<Vector<double>> dwt =new List< Vector<double>>();
 
-            dwt = ListDWT(_data.ECG, _params.DecompositionLevel , _params.WaveType);
+            dwt = ListDWT(InputData.Signals[_currentChannelIndex].Item2, _params.DecompositionLevel , _params.WaveType);
             
             int d2size = dwt[_params.DecompositionLevel - 1].Count();
-            int rSize = _data.Rpeaks.Count();
+            int rSize = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count();
 
-            _data.QRSOnsets.Add(FindQRSOnset(0, _data.Rpeaks[0], dwt[1], _params.DecompositionLevel));
+            _currentQRSonsets.Add(FindQRSOnset(0, _data.Rpeaks[0], dwt[1], _params.DecompositionLevel));
             for (int middleR = 1; middleR < rSize - 1; middleR++ )
             {
-                _data.QRSOnsets.Add(FindQRSOnset(_data.Rpeaks[middleR-1], _data.Rpeaks[middleR], dwt[1], _params.DecompositionLevel));
-                _data.QRSEnds.Add(FindQRSEnd(_data.Rpeaks[middleR], _data.Rpeaks[middleR + 1], dwt[1], _params.DecompositionLevel));
+                _currentQRSonsets.Add(FindQRSOnset(_data.Rpeaks[middleR-1], _data.Rpeaks[middleR], dwt[1], _params.DecompositionLevel));
+                _currentQRSends.Add(FindQRSEnd(_data.Rpeaks[middleR], _data.Rpeaks[middleR + 1], dwt[1], _params.DecompositionLevel));
             }
-            _data.QRSEnds.Add(FindQRSEnd(_data.Rpeaks[rSize - 1], _data.ECG.Count - 1, dwt[1], _params.DecompositionLevel));
+            _currentQRSends.Add(FindQRSEnd(_data.Rpeaks[rSize - 1], InputData.Signals[_currentChannelIndex].Item2.Count - 1, dwt[1], _params.DecompositionLevel));
 
         }
 
@@ -183,7 +182,7 @@ namespace EKG_Project.Modules.Waves
         public void FindMaxValue(int begin_loc, int end_loc, out int max_loc, out double max_val)
         {
 
-            if (_data.ECG.Count == 0)
+            if (InputData.Signals[_currentChannelIndex].Item2.Count == 0)
             {
                 throw new InvalidOperationException("Empty vector");
             }
@@ -194,9 +193,9 @@ namespace EKG_Project.Modules.Waves
 
             for (loc_index = begin_loc; loc_index <= end_loc; loc_index++)
             {
-                if (max_val < _data.ECG[loc_index])
+                if (max_val < InputData.Signals[_currentChannelIndex].Item2[loc_index])
                 {
-                    max_val = _data.ECG[loc_index];
+                    max_val = InputData.Signals[_currentChannelIndex].Item2[loc_index];
                     max_loc = loc_index;
                 }
             }
@@ -214,10 +213,10 @@ namespace EKG_Project.Modules.Waves
             double pmax_val;
             int window,break_window,pmax_loc,ponset,pend;
 
-            window = Convert.ToInt32(_data.Fs*0.25);
-            break_window = Convert.ToInt32(_data.Fs * 0.3);
+            window = Convert.ToInt32(InputData.Frequency*0.25);
+            break_window = Convert.ToInt32(InputData.Frequency * 0.3);
 
-            foreach (int onset_loc in _data.QRSOnsets)
+            foreach (int onset_loc in _currentQRSonsets)
             {
                 if ((onset_loc - (window)) >= 1 && onset_loc != -1)
                 {
@@ -229,7 +228,7 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 ponset = pmax_loc;
-                while(_data.ECG[ponset] > _data.ECG[ponset-1] || (pmax_val-_data.ECG[ponset] < 70))
+                while(InputData.Signals[_currentChannelIndex].Item2[ponset] > InputData.Signals[_currentChannelIndex].Item2[ponset-1] || (pmax_val- InputData.Signals[_currentChannelIndex].Item2[ponset] < 70))
                 {
                     ponset--;
                     if (ponset < onset_loc - break_window)
@@ -238,10 +237,10 @@ namespace EKG_Project.Modules.Waves
                         break;
                     }
                 }
-                _data.POnsets.Add(ponset);
+                _currentPonsets.Add(ponset);
 
                 pend = pmax_loc;
-                while (_data.ECG[pend] > _data.ECG[pend+1] || (pmax_val - _data.ECG[pend] < 110))
+                while (InputData.Signals[_currentChannelIndex].Item2[pend] > InputData.Signals[_currentChannelIndex].Item2[pend+1] || (pmax_val - InputData.Signals[_currentChannelIndex].Item2[pend] < 110))
                 {
                     pend++;
                     if (pend > onset_loc)
@@ -250,7 +249,7 @@ namespace EKG_Project.Modules.Waves
                         break;
                     }
                 }
-                _data.PEnds.Add(pend);
+                _currentPends.Add(pend);
             }
         }
 
@@ -266,12 +265,12 @@ namespace EKG_Project.Modules.Waves
             int window,break_window,tmax_loc, tend;
 
 
-            window = Convert.ToInt32(_data.Fs*0.2);
-            break_window = Convert.ToInt32(_data.Fs * 0.35);
+            window = Convert.ToInt32(InputData.Frequency * 0.2);
+            break_window = Convert.ToInt32(InputData.Frequency * 0.35);
 
-            foreach (int ends_loc in _data.QRSEnds)
+            foreach (int ends_loc in _currentQRSends)
             {
-                if (((ends_loc + (window)) < _data.ECG.Count) && ends_loc != -1)
+                if (((ends_loc + (window)) < InputData.Signals[_currentChannelIndex].Item2.Count) && ends_loc != -1)
                 {
                     FindMaxValue(ends_loc, ends_loc + window, out tmax_loc, out tmax_val);
                 }
@@ -281,7 +280,7 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 tend = tmax_loc;
-                while (_data.ECG[tend] > _data.ECG[tend + 1] || ((tmax_val - _data.ECG[tend] < 30) && (tmax_val - _data.ECG[tend] > -10)))
+                while (InputData.Signals[_currentChannelIndex].Item2[tend] > InputData.Signals[_currentChannelIndex].Item2[tend + 1] || ((tmax_val - InputData.Signals[_currentChannelIndex].Item2[tend] < 30) && (tmax_val - InputData.Signals[_currentChannelIndex].Item2[tend] > -10)))
                 {
                     tend++;
                     if(tend > ends_loc+break_window)
@@ -290,9 +289,9 @@ namespace EKG_Project.Modules.Waves
                         break;
                     }
                 }
-                _data.TEnds.Add(tend);
+                _currentTends.Add(tend);
             }
-        }*/
+        }
     }
     
 
