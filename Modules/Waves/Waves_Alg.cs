@@ -13,7 +13,7 @@ namespace EKG_Project.Modules.Waves
     #endregion
 
     public partial class Waves : IModule
-    {
+    {/*
         public Vector<double> HaarDWT(Vector<double> signal, int n)
         {
             //Work just like wavedec but use only haar wavelet
@@ -285,8 +285,8 @@ namespace EKG_Project.Modules.Waves
                 }
                 _data.TEnds.Add(tend);
             }
-        }
+        }*/
     }
-
+    
 
 }

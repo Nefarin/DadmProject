@@ -9,60 +9,30 @@ namespace EKG_Project.Modules.Waves
 {
     public class Waves_Data : ECG_Data
     {
-        private Vector<double> _ecg;
-        private List<int> _Rpeaks;
 
-        private List<int> _QRSonsets;
-        private List<int> _QRSends;
-        private List<int> _Ponsets;
-        private List<int> _Pends;
-        private List<int> _Tends;
+        private List<Tuple<string, List<int>>> _QRSonsets;
+        private List<Tuple<string, List<int>>> _QRSends;
+        private List<Tuple<string, List<int>>> _Ponsets;
+        private List<Tuple<string, List<int>>> _Pends;
+        private List<Tuple<string, List<int>>> _Tends;
 
         private uint _fs;
 
         public Waves_Data() {
-            _ecg = Vector<double>.Build.Dense(1);
 
-            _Rpeaks = new List<int>();
-            _QRSends = new List<int>();
-            _QRSonsets = new List<int>();
-            _Pends = new List<int>();
-            _Ponsets = new List<int>();
-            _Tends = new List<int>();
+            _QRSends = new List<Tuple<string, List<int>>>();
+            _QRSonsets = new List<Tuple<string, List<int>>>();
+            _Pends = new List<Tuple<string, List<int>>>();
+            _Ponsets = new List<Tuple<string, List<int>>>();
+            _Tends = new List<Tuple<string, List<int>>>();
         }
 
-        public Waves_Data( Vector<double> ecg, List<int> RpeaksIn, uint fs):this()
+        public Waves_Data(  uint fs):this()
         {
-            ECG = ecg;
-            Rpeaks = RpeaksIn;
             Fs = fs;
         }
 
-        public Vector<double> ECG
-        {
-            get
-            {
-                return _ecg;
-            }
-            set
-            {
-                _ecg = value;
-            }
-        }
-
-        public List<int> Rpeaks
-        {
-            get
-            {
-                return _Rpeaks;
-            }
-            set
-            {
-                _Rpeaks = value;
-            }
-        }
-
-        public List<int> QRSOnsets
+        public List<Tuple<string, List<int>>> QRSOnsets
         {
             get
             {
@@ -74,7 +44,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public List<int> QRSEnds
+        public List<Tuple<string, List<int>>> QRSEnds
         {
             get
             {
@@ -86,7 +56,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public List<int> POnsets
+        public List<Tuple<string, List<int>>> POnsets
         {
             get
             {
@@ -99,7 +69,7 @@ namespace EKG_Project.Modules.Waves
 
         }
 
-        public List<int> PEnds
+        public List<Tuple<string, List<int>>> PEnds
         {
             get
             {
@@ -112,7 +82,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public List<int> TEnds
+        public List<Tuple<string, List<int>>> TEnds
         {
             get
             {
