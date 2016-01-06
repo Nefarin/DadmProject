@@ -11,7 +11,7 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
-    class Heart_Axis_Data_Worker
+    public class Heart_Axis_Data_Worker
     {
         string directory;
         string analysisName = "Analysis6";
