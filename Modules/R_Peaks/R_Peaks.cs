@@ -251,7 +251,7 @@ namespace EKG_Project.Modules.R_Peaks
             }
         }
 
-        public static void Main()
+        /*public static void Main()
         {
             R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "Analysis6");
             //R_Peaks_Params param = null;
@@ -265,6 +265,6 @@ namespace EKG_Project.Modules.R_Peaks
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-        }
+        }*/
     }
 }

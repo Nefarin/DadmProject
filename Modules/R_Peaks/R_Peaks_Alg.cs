@@ -18,8 +18,32 @@ namespace EKG_Project.Modules.R_Peaks
     #endregion
     public partial class R_Peaks : IModule
     {
-        //TO DO: parts of signal reading
-
+        /* nie działa kanalia - wężyk sobie spacuje po locsR
+        #region
+        /// <summary>
+        /// Detects R peaks using chosen method
+        /// </summary>
+        /// <returns> numbers of indexes where are located R peaks as vector </returns>
+        #endregion
+        public Vector<double> detectRPeaks2()
+        {
+            //Vector<double> locsR;  jaka długość?
+            switch (Params.Method)
+            {
+                // no idea what I'm doing
+                // skąd _currentVector wie, że jest sygnałem?
+                case R_Peaks_Method.PANTOMPKINS:
+                    locsR = Hilbert(_currentVector, InputData.Frequency);
+                    break;
+                case R_Peaks_Method.HILBERT:
+                    locsR = PanTompkins(_currentVector, InputData.Frequency);
+                    break;
+                case R_Peaks_Method.EMD:
+                    //locsR = EMD(_currentVector, InputData.Frequency);
+                    break;
+            }
+            return locsR;
+        }*/
 
         static void Main(string[] args)
         {
@@ -41,11 +65,9 @@ namespace EKG_Project.Modules.R_Peaks
 
             Vector<double> locsR = emd.EMD(sig, fs);
             emd.LocsR = locsR;
-            
 
-            //RR in ms
-            emd.RRms = emd.Diff(emd.LocsR);
-            emd.RRms.Multiply(Math.Round(1000 / Convert.ToDouble(fs), 3), emd.RRms);
+
+        // RR in ms zostało przerobione na funkcję i jest pod LPFiltering
 
             #region writeData
             //write result to DATA
@@ -516,10 +538,10 @@ namespace EKG_Project.Modules.R_Peaks
         /// Function which locates R peaks in ECG signal by thersholding and finding local maxima
         /// </summary>
         /// <param name="integratedSignal"> integrated signal of ECG</param>
-        /// <param name="filteredSignal"> filtereg signal of ECG</param>
+        /// <param name="signal"> ECG signal</param>
         /// <returns> Numbers of samples of R peaks in ECG signal as int array </returns>
         #endregion
-        double[] FindPeak(double[] integratedSignal, Vector<double> filteredSignal)
+        double[] FindPeak(double[] integratedSignal, Vector<double> signal)
         {
             // finding threshold
             double tempMax = integratedSignal.Max();
@@ -569,7 +591,7 @@ namespace EKG_Project.Modules.R_Peaks
                 double[] tempV = new double[tempLength];
                 for (int j = 0; j < tempLength; j++)
                 {
-                    tempV[j] = filteredSignal[Convert.ToInt32(tempRRange[j])];
+                    tempV[j] = signal[Convert.ToInt32(tempRRange[j])];
                 }
                 Vector<double> tempI = Vector<double>.Build.DenseOfArray(tempV);
                 double tempIndex = tempI.MaximumIndex();
@@ -941,7 +963,7 @@ namespace EKG_Project.Modules.R_Peaks
             double[] h_arr_i = Integration(h_arr_ht, samplingFrequency);
 
             //adaptive thresholding 
-            double[] loc_R = FindPeak(h_arr_i, h_sig_f);
+            double[] loc_R = FindPeak(h_arr_i, signalECG);
             Vector<double> locsR = Vector<double>.Build.DenseOfArray(loc_R);
 
             return locsR;
@@ -949,7 +971,7 @@ namespace EKG_Project.Modules.R_Peaks
 
 
         public Vector<double> EMD(Vector<double> signalECG, uint samplingFrequency)
-        {
+            {
             //emd
             Vector<double>[] imfs = EmpipricalModeDecomposition(signalECG);
             //non linear tranform imfs
@@ -964,6 +986,20 @@ namespace EKG_Project.Modules.R_Peaks
 
             return locsR; 
         }
-                
+
+        #region
+        /// <summary>
+        /// Function that calculates RR intervals
+        /// </summary>
+        /// <param name="locsR"> Vector of double that contains detected R peaks indexes</param>
+        /// <param name="samplingFrequency"> Sampling frequency of the signal</param>
+        /// <returns></returns>
+        #endregion
+        public Vector<double> RRinMS(Vector<double> locsR, uint samplingFrequency)
+        {
+            Vector<double> RRms = Diff(locsR);
+            RRms.Multiply(Math.Round(1000 / Convert.ToDouble(samplingFrequency), 3), RRms);
+            return RRms;
+        }
     }
 }
