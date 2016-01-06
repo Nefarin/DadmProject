@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -94,7 +95,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public List<double> HistogramData
+        public List<Tuple<string, Vector<double>>> HistogramData
         {
             get
             {
@@ -113,7 +114,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public List<double> PoincarePlotData
+        public List<Tuple<string, Vector<double>>> PoincarePlotData
         {
             get
             {
@@ -135,8 +136,8 @@ namespace EKG_Project.Modules.HRV2
         #endregion
         public HRV2_Data()
         {
-            HistogramData = new List<double>(); // Dzięki inicjalizacji, nawet pustej, nie będzie NullPointerException
-            PoincarePlotData = new List<double>(); // Dzięki inicjalizacji, nawet pustej, nie będzie NullPointerException
+            HistogramData = new List<Tuple<string, Vector<double>>>(); // Dzięki inicjalizacji, nawet pustej, nie będzie NullPointerException
+            PoincarePlotData = new List<Tuple<string, Vector<double>>>(); // Dzięki inicjalizacji, nawet pustej, nie będzie NullPointerException
         }
 
         // TODO Pewnie będzie trzeba zrobić więcej konstruktorów - kilku elementowych, etc.
