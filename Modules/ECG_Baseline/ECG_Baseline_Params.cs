@@ -14,10 +14,10 @@ namespace EKG_Project.Modules.ECG_Baseline
         private double _fs;                       //częstotliwość próbkowania 
         private double _fc;                       //częstotliwość odcięcia
         private int _windowSize;                 //szerokość okna filtracji
-        private uint _order;                      //rząd filtru
+        private int _order;                      //rząd filtru
         private string _analysisName;             //analysisName
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, uint order, double fs, double fc, string analysisName)
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int order, double fs, double fc, string analysisName)
         {
            this.Method = method;
            this.AnalysisName = analysisName;

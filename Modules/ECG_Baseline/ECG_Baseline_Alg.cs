@@ -203,12 +203,12 @@ namespace EKG_Project.Modules.ECG_Baseline
             Filter newFilter2 = new Filter();
             signal_filtered2 = newFilter2.lms(signal, signal_filtered, 50);
 
-            Filter newFilter3 = new Filter();
-            signal_filtered3 = newFilter3.butterworth(signal, 20, 1, 3, 1);
+            //Filter newFilter3 = new Filter();
+            //signal_filtered3 = newFilter3.butterworth(signal, 20, 1, 3, 1);
 
             System.Console.WriteLine(signal_filtered.ToString());
             System.Console.WriteLine(signal_filtered2.ToString());
-            System.Console.WriteLine(signal_filtered3.ToString());
+            //System.Console.WriteLine(signal_filtered3.ToString());
             System.Console.WriteLine("Press any key to exit.");
             System.Console.ReadKey();
         }
