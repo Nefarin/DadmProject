@@ -20,34 +20,21 @@ namespace EKG_Project.Modules.R_Peaks
 
          private void theEnd(int startIndex, int step)
          {
-            //nie jestem w stanie napisać switcha bez węży :(
-           /* switch (Params.Method)
+            // sygnał do przetwarzania InputData.Signals;
+            switch (Params.Method)
             {
+                
                 case R_Peaks_Method.PANTOMPKINS:
-                    {
-                    }
+                    //Hilbert(InputData.Signals, InputData.Frequency);
+                    // dobra, tego też nie wiem jak zrobić
+                    //
+                    break;
                 case R_Peaks_Method.HILBERT:
-                    {
-                    }
+                    //
+                    break;
                 case R_Peaks_Method.EMD:
-                    {
-                    }
-
-            }
-            */
-            if (Params.Method == R_Peaks_Method.PANTOMPKINS)
-            {
-                //Hilbert(InputData.???, InputData.Frequency);
-                // dobra, tego też nie wiem jak zrobić
-                // nie ogarniam nic
-            }
-            else if (Params.Method == R_Peaks_Method.HILBERT)
-            {
-
-            }
-            else if (Params.Method == R_Peaks_Method.EMD)
-            {
-
+                    //
+                    break;                 
             }
 
              //lastRPeak = locsR.Last;
