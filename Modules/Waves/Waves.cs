@@ -89,6 +89,49 @@ namespace EKG_Project.Modules.Waves
 
         }
 
+        public void InitForTestsOnly( Vector<double> ecg, Vector<double> rPeaks, Waves_Params parameters)
+        {
+            Params = parameters as Waves_Params;
+            Aborted = false;
+            if (!Runnable()) _ended = true;
+            else
+            {
+                _ended = false;
+
+
+                InputData = new Basic_Data();
+                InputData.Frequency = 360;
+                InputData.Signals = new List<Tuple<string, Vector<double>>>();
+                InputData.Signals.Add(new Tuple<string, Vector<double>>("dupa", ecg));
+
+                InputDataRpeaks = new R_Peaks_Data();
+
+                InputDataRpeaks.RPeaks = new List<Tuple<string, Vector<double>>>();
+                InputDataRpeaks.RPeaks.Add(new Tuple < string, Vector<double>>("dupa", rPeaks));
+
+                OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
+                OutputData = new Waves_Data();
+
+                _currentChannelIndex = 0;
+                _rPeaksProcessed = 0;
+                NumberOfChannels = InputData.Signals.Count;
+                _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
+                _currentQRSonsetsPart = new List<int>();
+                _currentQRSendsPart = new List<int>();
+                _currentPonsetsPart = new List<int>();
+                _currentPendsPart = new List<int>();
+                _currentTendsPart = new List<int>();
+
+                _currentQRSonsets = new List<int>();
+                _currentQRSends = new List<int>();
+                _currentPonsets = new List<int>();
+                _currentPends = new List<int>();
+                _currentTends = new List<int>();
+
+            }
+
+        }
+
         public void ProcessData()
         {
             if (Runnable()) processData();
@@ -144,6 +187,8 @@ namespace EKG_Project.Modules.Waves
                 {
                     analyzeSignalPart( );
                     _rPeaksProcessed = startIndex + step;
+                    Console.WriteLine("Jedna sesja poszla!");
+                    Console.WriteLine(_rPeaksProcessed);
                 }
             }
             else
@@ -274,10 +319,17 @@ namespace EKG_Project.Modules.Waves
 
         public static void Main()
         {
-            Waves_Params param = new Waves_Params( Wavelet_Type.haar, 2, "Analysis6", 5);
-            //TestModule3_Params param = null;
+            Waves_Params param = new Waves_Params( Wavelet_Type.haar, 2, "Analysis6", 10);
+
+            TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
+            TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
+            Vector<double> ecg = TempInput.getSignal();
+
+            TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");
+            Vector<double> rpeaks = TempInput.getSignal();
+
             Waves testModule = new Waves();
-            testModule.Init(param);
+            testModule.InitForTestsOnly(ecg, rpeaks, param);
             while (true)
             {
                 //Console.WriteLine("Press key to continue.");
@@ -286,10 +338,21 @@ namespace EKG_Project.Modules.Waves
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
+
+            Vector<double> onsets = Vector<double>.Build.Dense(testModule.OutputData.QRSOnsets[0].Item2.Count);
+            Console.WriteLine("fajrant");
+            for (int i = 0; i < onsets.Count; i++)
+            {
+                onsets[i] = (double)testModule.OutputData.QRSOnsets[0].Item2[i];
+
+            }
+
+            TempInput.writeFile(360, onsets);
+
             //POKI CO BIERZEMY DANE Z NASZYCH GOWNIANYCH PLIKOW
 
-            //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
-            //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
+
+            //
             //TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG.txt");
             //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSonsets.txt");
             //uint fs = TempInput.getFrequency();
@@ -297,7 +360,7 @@ namespace EKG_Project.Modules.Waves
             ////Vector<double> dwt = ListDWT(_ecg, 3, Wavelet_Type.db2)[1];
             //Vector<double> temp = Vector<double>.Build.Dense(2);
 
-            //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");
+            //
             ////TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG3Rpeaks.txt");
 
             //List<int> Rpeaks = new List<int>();

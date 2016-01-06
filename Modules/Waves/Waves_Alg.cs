@@ -126,30 +126,53 @@ namespace EKG_Project.Modules.Waves
         public void DetectQRS()
         {
             _currentQRSonsetsPart.Clear();
-            List<Vector<double>> dwt =new List< Vector<double>>();
+            List<Vector<double>> dwt = new List<Vector<double>>();
             int startInd = 0;
             if (_rPeaksProcessed > 1)
-                startInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed-1];
+            {
+                startInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed - 1];
+                Console.WriteLine("startujemy");
+                Console.WriteLine(startInd);
+            }
             int endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1;
+            
             if (_rPeaksProcessed + _params.RpeaksStep + 1 < endInd)
+            {
                 endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + _params.RpeaksStep + 1];
+                Console.WriteLine(endInd);
+            }
+            else
+            {
+                endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[endInd];
+            }
 
-            dwt = ListDWT(InputData.Signals[_currentChannelIndex].Item2.SubVector(startInd, endInd - startInd), _params.DecompositionLevel , _params.WaveType);
+            int dwtLen = 1;
+            if (endInd != startInd)
+                dwtLen = endInd - startInd;
+            Console.WriteLine(endInd);
+            Console.WriteLine(dwtLen);
+
+            dwt = ListDWT(InputData.Signals[_currentChannelIndex].Item2.SubVector(startInd, dwtLen), _params.DecompositionLevel , _params.WaveType);
             
             int d2size = dwt[_params.DecompositionLevel - 1].Count();
             int rSize = _params.RpeaksStep;
+            int decLev = _params.DecompositionLevel;
 
             if (startInd == 0)
-                 _currentQRSonsetsPart.Add(FindQRSOnset(0, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[0], dwt[1], _params.DecompositionLevel));
+                 _currentQRSonsetsPart.Add(FindQRSOnset(0, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[0], dwt[decLev-1], _params.DecompositionLevel));
 
-            for (int middleR = 1; middleR < rSize ; middleR++ )
+            int maxRInd = _rPeaksProcessed + rSize;
+            if (maxRInd >= _currentRpeaksLength)
+                maxRInd = _currentRpeaksLength - 1;
+
+            for (int middleR = _rPeaksProcessed+1; middleR < maxRInd ; middleR++ )
             {
-                _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR-1], InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR], dwt[1], _params.DecompositionLevel)+ startInd);
-                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR], InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1], dwt[1], _params.DecompositionLevel)+ startInd);
+                _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR-1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, dwt[decLev - 1], _params.DecompositionLevel)+ startInd);
+                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel)+ startInd);
             }
 
             if (endInd == (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1)
-                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[rSize ], InputData.Signals[_currentChannelIndex].Item2.Count - 1, dwt[1], _params.DecompositionLevel));
+                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[rSize] -startInd, InputData.Signals[_currentChannelIndex].Item2.Count - 1, dwt[decLev - 1], _params.DecompositionLevel));
 
         }
 
@@ -158,8 +181,22 @@ namespace EKG_Project.Modules.Waves
             int rightEnd = (int)drightEnd;
             int middleR = (int)dmiddleR;
             int sectionStart = (rightEnd >> decompLevel);
-            int qrsOnsetInd = dwt.SubVector(sectionStart, (middleR >> decompLevel) - (rightEnd>> decompLevel)+1).MinimumIndex() + sectionStart;
-            double treshold = Math.Abs(dwt[qrsOnsetInd])*0.05; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
+
+            int len = (middleR >> decompLevel) - (rightEnd >> decompLevel);
+
+            if (len < 1)
+                len = 1;
+
+            Console.WriteLine("nadupcamy!");
+            Console.WriteLine(sectionStart);
+            Console.WriteLine((middleR >> decompLevel) - (rightEnd >> decompLevel) + 1);
+            Console.WriteLine(dwt.Count);
+
+            if (sectionStart + len >= dwt.Count)
+                return -1;
+
+            int qrsOnsetInd = dwt.SubVector(sectionStart, len).MinimumIndex() + sectionStart;
+            double treshold = Math.Abs(dwt[qrsOnsetInd])*0.05; 
 
             while (Math.Abs(dwt[qrsOnsetInd]) > treshold && qrsOnsetInd > sectionStart)
                 qrsOnsetInd--;
@@ -176,9 +213,27 @@ namespace EKG_Project.Modules.Waves
             int leftEnd = (int)dmiddleR;
             int sectionEnd = (leftEnd >> decompLevel) + 1;
             int qrsEndInd = (middleR >> decompLevel);
+            int len = (leftEnd >> decompLevel) - qrsEndInd;
 
-            double treshold = Math.Abs(dwt.SubVector(qrsEndInd, (leftEnd >> decompLevel) - qrsEndInd + 1).Minimum()) * 0.03; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
-            while (dwt[qrsEndInd] > dwt[qrsEndInd + 1] && qrsEndInd < sectionEnd)
+            if ( len < 1)
+                len = 1;
+
+            Console.WriteLine("qrsEndzik");
+            Console.WriteLine(len);
+            Console.WriteLine(qrsEndInd);
+            Console.WriteLine(dwt.Count);
+
+            if (qrsEndInd + len >= dwt.Count)
+                return -1;
+
+            double treshold = Math.Abs(dwt.SubVector(qrsEndInd, len).Minimum()) * 0.03;
+
+            Console.WriteLine("szczegoliki:");
+            Console.WriteLine(qrsEndInd);
+            Console.WriteLine(dwt.Count);
+            if (!(qrsEndInd+1 < dwt.Count))
+                return -1;
+            while ( qrsEndInd < sectionEnd && dwt[qrsEndInd] > dwt[qrsEndInd + 1] )
                 qrsEndInd++;
             while (Math.Abs(dwt[qrsEndInd]) > treshold && qrsEndInd < sectionEnd)
                 qrsEndInd++;
