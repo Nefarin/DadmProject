@@ -104,7 +104,7 @@ namespace EKG_Project.Modules.R_Peaks
                             _currentVector = PanTompkins(_currentVector, InputData_basic.Frequency);
                             break;
                         case R_Peaks_Method.EMD:
-                            //_currentVector = EMD(_currentVector, InputData.Frequency);
+                            _currentVector = EMD(_currentVector, InputData_basic.Frequency);
                             break;
                     }
                     _lastRPeak = Convert.ToInt32(_currentVector[_currentVector.Count]) + 30;
