@@ -609,6 +609,10 @@ namespace EKG_Project.Modules.Heart_Class
         }
 
 
+        public void ProcessData()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

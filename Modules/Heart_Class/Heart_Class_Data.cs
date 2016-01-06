@@ -12,63 +12,31 @@ namespace EKG_Project.Modules.Heart_Class
     {
 
         //output:
-        private List<Tuple<int, int>> _classificationResult;
 
         //niezrealizowane:
-        private uint _totalNumberOfQrsComplex;
-        private uint _numberOfClass;
-        private double _percentOfNormalComplex;
         private Qrs_Class _cluster;
 
 
-        public uint TotalNumberOfQrsComplex
-        {
-            get { return _totalNumberOfQrsComplex; }
-            set { _totalNumberOfQrsComplex = value; }
-        }
+        public uint TotalNumberOfQrsComplex { get; set; }
 
-        public uint NumberOfClass
-        {
-            get { return _numberOfClass; }
-            set { _numberOfClass = value; }
-        }
+        public uint NumberOfClass { get; set; }
 
-        public double PercentOfNormalComplex
-        {
-            get { return _percentOfNormalComplex; }
-            set { _percentOfNormalComplex = value; }
-        }
+        public double PercentOfNormalComplex { get; set; }
 
-        public List<Tuple<int, int>> ClassificationResult
-        {
-            get { return _classificationResult; }
-            set { _classificationResult = value; }
-        }
+        public List<Tuple<int, int>> ClassificationResult { get; set; }
+
+        public List<Tuple<int, int>> QrsComplexLabel { get; set; }
 
 
         public class Qrs_Class
         {
-            private int _indexOfClass;
-            private int _numberOfQrsComplex;
-            private int _indexOfRepresentative;
+            public int IndexOfClass { get; }
 
-            public int IndexOfClass
-            {
-                get { return _indexOfClass; }
+            public int NumberOfQrsComplex { get; }
 
-            }
-
-            public int NumberOfQrsComplex
-            {
-                get{ return _numberOfQrsComplex; }
-            }
-
-            public int IndexOfRepresentative
-            {
-                get  { return _indexOfRepresentative; }
-            }
-
+            public int IndexOfRepresentative { get; }
         }
+
         #region Documentation
         /// <summary>
         /// Not parameterized constructor of Heart_Class_Data.cs data class
@@ -76,7 +44,7 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         public Heart_Class_Data()
         {
-            _classificationResult = new List<Tuple<int, int>>();
+            ClassificationResult = new List<Tuple<int, int>>();
         }
     }
 }
