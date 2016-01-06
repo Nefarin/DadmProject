@@ -2,6 +2,7 @@
 using EKG_Project.IO;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
+using System.Collections.Generic;
 
 namespace EKG_Project.Modules.ECG_Baseline
 {
@@ -116,6 +117,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                             break;
 
                     }
+
                     OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector)); // Czy to doda Rpeaki do Rpeaków
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)
