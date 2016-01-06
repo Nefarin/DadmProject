@@ -1,5 +1,8 @@
 ﻿using System;
 using EKG_Project.IO;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics;
+using System.Collections.Generic;
 
 namespace EKG_Project.Modules.Atrial_Fibr
 {
@@ -13,12 +16,14 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private int _samplesProcessed;
         private int _numberOfChannels;
 
-//        private Basic_Data_Worker _inputWorker;
-//        private Atrial_Fibr_Data_Worker _outputWorker;
+        //private Basic_Data_Worker _inputWorker;
+        //private Atrial_Fibr_Data_Worker _outputWorker;
 
         private Atrial_Fibr_Data _afDetection;
         private Basic_Data _inputData;
         private Atrial_Fibr_Params _method;
+
+        private Vector<Double> _currentVector;
 
         public void Abort()
         {
@@ -40,7 +45,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             {
                 _ended = false;
 
-               // InputWorker = new Basic_Data_Worker(Params.AnalysisName);
+//                InputWorker = new Basic_Data_Worker(Method.AnalysisName);
 //                InputWorker.Load();
 //                InputData = InputWorker.BasicData;
 
@@ -56,8 +61,8 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         public void ProcessData(int numberOfSamples)
         {
-//            if (Runnable()) processData();
-//            else _ended = true;
+            if (Runnable()) processData();
+            else _ended = true;
         }
 
         public double Progress()
@@ -70,8 +75,8 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return Method == null;
         }
 
-        //private void processData()
-        //{
+        private void processData()
+        {
         //    int channel = _currentChannelIndex;
         //    int startIndex = _samplesProcessed;
         //    int step = Params.Step;
@@ -95,97 +100,49 @@ namespace EKG_Project.Modules.Atrial_Fibr
         //    {
         //        OutputWorker.Save(AfDetection);
         //        _ended = true;
-        //    }
+        //  }
+        }
 
         public Atrial_Fibr_Data AfDetection
         {
-            get
-            {
-                return _afDetection;
-            }
-
-            set
-            {
-                _afDetection = value;
-            }
+            get { return _afDetection; }
+            set { _afDetection = value; }
         }
 
         public Atrial_Fibr_Params Method
         {
-            get
-            {
-                return _method;
-            }
-
-            set
-            {
-                _method = value;
-            }
+            get { return _method; }
+            set { _method = value; }
         }
 
         public int NumberOfChannels
         {
-            get
-            {
-                return _numberOfChannels;
-            }
-
-            set
-            {
-                _numberOfChannels = value;
-            }
+            get { return _numberOfChannels; }
+            set { _numberOfChannels = value; }
         }
 
         public bool Aborted
         {
-            get
-            {
-                return _aborted;
-            }
-
-            set
-            {
-                _aborted = value;
-            }
+            get { return _aborted; }
+            set { _aborted = value; }
         }
 
-//        public Basic_Data InputData
-//        {
-//            get
-//            {
-//                return _inputData;
-//            }
-//
-//            set
-//            {
-//                _inputData = value;
-//            }
-//        }
+        //public Basic_Data InputData
+        //{
+        //    get { return _inputData; }
+        //    set { _inputData = value; }
+        //}
 
-//        public Basic_Data_Worker InputWorker
-//        {
-//            get
-//           {
-//                return _inputWorker;
-//            }
+        //public Basic_Data_Worker InputWorker
+        //{
+        //    get { return _inputWorker; }
+        //    set { _inputWorker = value; }
+        //}
 
-//            set
-//            {
-//                _inputWorker = value;
-//            }
-//        }
-
-//        public Atrial_Fibr_Data_Worker OutputWorker
-//        {
-//            get
-//            {
-//                return _outputWorker;
-//            }
-
-//            set
-//            {
-//               _outputWorker = value;
-//            }
-//        }
+        //public Atrial_Fibr_Data_Worker OutputWorker
+        //{
+        //    get { return _outputWorker; }
+        //    set { _outputWorker = value; }
+        //}
     }
 }
