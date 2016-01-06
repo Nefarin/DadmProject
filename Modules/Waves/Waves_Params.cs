@@ -14,7 +14,7 @@ namespace EKG_Project.Modules.Waves
         private Wavelet_Type _waveType;
         private int _decompositionLevel;
         private string _analysisName;
-        private int _step;
+        private int _rpeaks_step;
 
         public Wavelet_Type WaveType {
             get
@@ -50,23 +50,23 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public int Step
+        public int RpeaksStep
         {
             get
             {
-                return _step;
+                return _rpeaks_step;
             }
             set
             {
-                _step = value;
+                _rpeaks_step = value;
             }
         }
-        public Waves_Params( Wavelet_Type waveType, int decompositionLevel, string analysisName, int step)
+        public Waves_Params( Wavelet_Type waveType, int decompositionLevel, string analysisName, int rpeaksStep)
         {
             this.WaveType = waveType;
             this.DecompositionLevel = decompositionLevel;
             this.AnalysisName = analysisName;
-            this.Step = step;
+            this.RpeaksStep = rpeaksStep;
         }
     }
 }

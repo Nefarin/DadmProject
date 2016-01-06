@@ -96,28 +96,29 @@ namespace EKG_Project.Modules.Waves
         {
             int channel = _currentChannelIndex;
             int startIndex = _samplesProcessed;
+            int step = Params.RpeaksStep;
 
             if (channel < NumberOfChannels)
             {
-                //if (startIndex + step > _currentChannelLength)
-                //{
-                //    scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
-                //    OutputData.Output.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
-                //    _currentChannelIndex++;
-                //    if (_currentChannelIndex < NumberOfChannels)
-                //    {
-                //        _samplesProcessed = 0;
-                //        _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-                //        _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                //    }
+                if (startIndex + step > _currentChannelLength)
+                {
+                    //analyzeSignalPart(channel, step, startIndex);
+                    //OutputData.Output.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
+                    //_currentChannelIndex++;
+                    //if (_currentChannelIndex < NumberOfChannels)
+                    //{
+                    //    _samplesProcessed = 0;
+                    //    _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+                    //    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                    //}
 
 
-                //}
-                //else
-                //{
-                //    //scaleSamples(channel, startIndex, step);
-                //    //_samplesProcessed = startIndex + step;
-                //}
+                }
+                else
+                {
+                    //scaleSamples(channel, startIndex, step);
+                    //_samplesProcessed = startIndex + step;
+                }
             }
             else
             {

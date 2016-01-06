@@ -13,7 +13,14 @@ namespace EKG_Project.Modules.Waves
     #endregion
 
     public partial class Waves : IModule
-    {/*
+    {
+        
+        public void analyzeSignalPart( int channel, int step, int startIndex)
+        {
+            ;
+        }
+        
+        /*
         public Vector<double> HaarDWT(Vector<double> signal, int n)
         {
             //Work just like wavedec but use only haar wavelet
