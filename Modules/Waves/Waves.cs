@@ -28,6 +28,12 @@ namespace EKG_Project.Modules.Waves
         
         private Waves_Params _params;
 
+        private List<int> _currentQRSonsetsPart;
+        private List<int> _currentQRSendsPart;
+        private List<int> _currentPonsetsPart;
+        private List<int> _currentPendsPart;
+        private List<int> _currentTendsPart;
+
         private List<int> _currentQRSonsets;
         private List<int> _currentQRSends;
         private List<int> _currentPonsets;
@@ -60,12 +66,18 @@ namespace EKG_Project.Modules.Waves
                 InputDataRpeaks = InputWorkerRpeaks.Data;
 
                 OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
-                OutputData = new Waves_Data(InputData.Frequency);
+                OutputData = new Waves_Data();
 
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
                 NumberOfChannels = InputData.Signals.Count;
                 _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+                _currentQRSonsetsPart = new List<int>();
+                _currentQRSendsPart = new List<int>();
+                _currentPonsetsPart = new List<int>();
+                _currentPendsPart = new List<int>();
+                _currentTendsPart = new List<int>();
+
                 _currentQRSonsets = new List<int>();
                 _currentQRSends = new List<int>();
                 _currentPonsets = new List<int>();

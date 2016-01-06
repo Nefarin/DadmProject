@@ -118,7 +118,7 @@ namespace EKG_Project.Modules.Waves
 
         public void DetectQRS()
         {
-            _currentQRSonsets.Clear();
+            _currentQRSonsetsPart.Clear();
             List<Vector<double>> dwt =new List< Vector<double>>();
 
             dwt = ListDWT(InputData.Signals[_currentChannelIndex].Item2, _params.DecompositionLevel , _params.WaveType);
@@ -126,18 +126,20 @@ namespace EKG_Project.Modules.Waves
             int d2size = dwt[_params.DecompositionLevel - 1].Count();
             int rSize = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count();
 
-            _currentQRSonsets.Add(FindQRSOnset(0, _data.Rpeaks[0], dwt[1], _params.DecompositionLevel));
+            _currentQRSonsetsPart.Add(FindQRSOnset(0, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[0], dwt[1], _params.DecompositionLevel));
             for (int middleR = 1; middleR < rSize - 1; middleR++ )
             {
-                _currentQRSonsets.Add(FindQRSOnset(_data.Rpeaks[middleR-1], _data.Rpeaks[middleR], dwt[1], _params.DecompositionLevel));
-                _currentQRSends.Add(FindQRSEnd(_data.Rpeaks[middleR], _data.Rpeaks[middleR + 1], dwt[1], _params.DecompositionLevel));
+                _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR-1], InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR], dwt[1], _params.DecompositionLevel));
+                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR], InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1], dwt[1], _params.DecompositionLevel));
             }
-            _currentQRSends.Add(FindQRSEnd(_data.Rpeaks[rSize - 1], InputData.Signals[_currentChannelIndex].Item2.Count - 1, dwt[1], _params.DecompositionLevel));
+            _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[rSize - 1], InputData.Signals[_currentChannelIndex].Item2.Count - 1, dwt[1], _params.DecompositionLevel));
 
         }
 
-        public int FindQRSOnset( int rightEnd, int middleR, Vector<double> dwt, int decompLevel)
+        public int FindQRSOnset( double drightEnd, double dmiddleR, Vector<double> dwt, int decompLevel)
         {
+            int rightEnd = (int)drightEnd;
+            int middleR = (int)dmiddleR;
             int sectionStart = (rightEnd >> decompLevel);
             int qrsOnsetInd = dwt.SubVector(sectionStart, (middleR >> decompLevel) - (rightEnd>> decompLevel)+1).MinimumIndex() + sectionStart;
             double treshold = Math.Abs(dwt[qrsOnsetInd])*0.05; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
@@ -151,8 +153,10 @@ namespace EKG_Project.Modules.Waves
                 return (qrsOnsetInd << decompLevel);
         }
 
-        public int FindQRSEnd( int middleR, int leftEnd, Vector<double> dwt, int decompLevel)
+        public int FindQRSEnd( double dmiddleR, double dleftEnd, Vector<double> dwt, int decompLevel)
         {
+            int middleR = (int)dmiddleR;
+            int leftEnd = (int)dmiddleR;
             int sectionEnd = (leftEnd >> decompLevel) + 1;
             int qrsEndInd = (middleR >> decompLevel);
 
@@ -216,7 +220,7 @@ namespace EKG_Project.Modules.Waves
             window = Convert.ToInt32(InputData.Frequency*0.25);
             break_window = Convert.ToInt32(InputData.Frequency * 0.3);
 
-            foreach (int onset_loc in _currentQRSonsets)
+            foreach (int onset_loc in _currentQRSonsetsPart)
             {
                 if ((onset_loc - (window)) >= 1 && onset_loc != -1)
                 {
@@ -237,7 +241,7 @@ namespace EKG_Project.Modules.Waves
                         break;
                     }
                 }
-                _currentPonsets.Add(ponset);
+                _currentPonsetsPart.Add(ponset);
 
                 pend = pmax_loc;
                 while (InputData.Signals[_currentChannelIndex].Item2[pend] > InputData.Signals[_currentChannelIndex].Item2[pend+1] || (pmax_val - InputData.Signals[_currentChannelIndex].Item2[pend] < 110))
@@ -249,7 +253,7 @@ namespace EKG_Project.Modules.Waves
                         break;
                     }
                 }
-                _currentPends.Add(pend);
+                _currentPendsPart.Add(pend);
             }
         }
 
@@ -268,7 +272,7 @@ namespace EKG_Project.Modules.Waves
             window = Convert.ToInt32(InputData.Frequency * 0.2);
             break_window = Convert.ToInt32(InputData.Frequency * 0.35);
 
-            foreach (int ends_loc in _currentQRSends)
+            foreach (int ends_loc in _currentQRSendsPart)
             {
                 if (((ends_loc + (window)) < InputData.Signals[_currentChannelIndex].Item2.Count) && ends_loc != -1)
                 {
@@ -289,7 +293,7 @@ namespace EKG_Project.Modules.Waves
                         break;
                     }
                 }
-                _currentTends.Add(tend);
+                _currentTendsPart.Add(tend);
             }
         }
     }
