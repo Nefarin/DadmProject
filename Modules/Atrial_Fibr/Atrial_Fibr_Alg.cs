@@ -21,12 +21,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
     //-komentarze zgodnie z dokumentacją
     public partial class Atrial_Fibr : IModule
     {
-        private double fs;
+        private uint fs;
         //private int[] RR_intervals;
         private Vector<double> RR_intervals;
         private Vector<double> partOfRrIntervals;
         private Vector<double> pointsDetected;
-        private Vector<double> _elements;
 
         public static void Main()
         {
@@ -46,7 +45,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// TODO
         /// </summary>
         #endregion
-        private void detectAF (Vector<double> _rrIntervals, double fs)
+        private void detectAF (Vector<double> _rrIntervals, uint fs)
         {
             //int[] rrIntervals = new int[(RR.Count - 1)];
             //for (int i=0; i < (RR.Count - 2); i++)
@@ -135,7 +134,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// </summary>
         #endregion
 
-         bool detectAFStat(Vector<double> _RR, double fs )
+         bool detectAFStat(Vector<double> _RR, uint fs )
         {
             bool AF, tprD, seD, rmssdD;
 
@@ -164,18 +163,23 @@ namespace EKG_Project.Modules.Atrial_Fibr
             double minRr = _RR.Minimum();
             double width = (maxRr - minRr) / 8;
             double tmp = minRr;
+            List<double> listOfElements = new List<double>();
             for (int i=0; i < 8; i++)
             {
                 if (i < 7)
                 {
-                    //_elements=_RR.Find
-                    //int[] elements = Array.FindAll(RR, element => (element >= tmp && element < (tmp + width)));
-                    histogram[i] = _elements.Count / (32 - 8);
+                    for (int k = 0; k < _RR.Count; k++)
+                    {
+                        double elements = _RR.Find(element => (element >= tmp && element < (tmp + width))).Item2;
+                        listOfElements.Add(elements);
+                    }
+                    histogram[i] = listOfElements.Count / (32 - 8);
+                    listOfElements.Clear();
                 }
                 else
                 {
-                    //int[] elements = Array.FindAll(RR, element => (element >= tmp && element <= (tmp + width)));
-                    histogram[i] = _elements.Count / (32 - 8);
+                    histogram[i] = listOfElements.Count / (32 - 8);
+                    listOfElements.Clear();
                 }
                 tmp += width;
             }
@@ -219,8 +223,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             {
                 AF = false;
             }
-            return AF;
-            
+            return AF;  
         }
 
         #region Documentation
