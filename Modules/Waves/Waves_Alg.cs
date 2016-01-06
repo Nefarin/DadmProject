@@ -131,15 +131,15 @@ namespace EKG_Project.Modules.Waves
             if (_rPeaksProcessed > 1)
             {
                 startInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed - 1];
-                Console.WriteLine("startujemy");
-                Console.WriteLine(startInd);
+                //Console.WriteLine("startujemy");
+                //Console.WriteLine(startInd);
             }
             int endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1;
             
             if (_rPeaksProcessed + _params.RpeaksStep + 1 < endInd)
             {
                 endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + _params.RpeaksStep + 1];
-                Console.WriteLine(endInd);
+                //Console.WriteLine(endInd);
             }
             else
             {
@@ -149,8 +149,8 @@ namespace EKG_Project.Modules.Waves
             int dwtLen = 1;
             if (endInd != startInd)
                 dwtLen = endInd - startInd;
-            Console.WriteLine(endInd);
-            Console.WriteLine(dwtLen);
+            //Console.WriteLine(endInd);
+            //Console.WriteLine(dwtLen);
 
             dwt = ListDWT(InputData.Signals[_currentChannelIndex].Item2.SubVector(startInd, dwtLen), _params.DecompositionLevel , _params.WaveType);
             
@@ -187,10 +187,10 @@ namespace EKG_Project.Modules.Waves
             if (len < 1)
                 len = 1;
 
-            Console.WriteLine("nadupcamy!");
-            Console.WriteLine(sectionStart);
-            Console.WriteLine((middleR >> decompLevel) - (rightEnd >> decompLevel) + 1);
-            Console.WriteLine(dwt.Count);
+            //Console.WriteLine("nadupcamy!");
+            //Console.WriteLine(sectionStart);
+            //Console.WriteLine((middleR >> decompLevel) - (rightEnd >> decompLevel) + 1);
+            //Console.WriteLine(dwt.Count);
 
             if (sectionStart + len >= dwt.Count)
                 return -1;
@@ -210,7 +210,7 @@ namespace EKG_Project.Modules.Waves
         public int FindQRSEnd( double dmiddleR, double dleftEnd, Vector<double> dwt, int decompLevel)
         {
             int middleR = (int)dmiddleR;
-            int leftEnd = (int)dmiddleR;
+            int leftEnd = (int)dleftEnd;
             int sectionEnd = (leftEnd >> decompLevel) + 1;
             int qrsEndInd = (middleR >> decompLevel);
             int len = (leftEnd >> decompLevel) - qrsEndInd;
@@ -218,27 +218,36 @@ namespace EKG_Project.Modules.Waves
             if ( len < 1)
                 len = 1;
 
-            Console.WriteLine("qrsEndzik");
-            Console.WriteLine(len);
-            Console.WriteLine(qrsEndInd);
-            Console.WriteLine(dwt.Count);
+            //Console.WriteLine("qrsEndzik");
+            //Console.WriteLine(len);
+            //Console.WriteLine(qrsEndInd);
+            //Console.WriteLine(dwt.Count);
 
             if (qrsEndInd + len >= dwt.Count)
+            {
                 return -1;
+                //Console.WriteLine("Brak enda");
+            }
+                
 
-            double treshold = Math.Abs(dwt.SubVector(qrsEndInd, len).Minimum()) * 0.03;
+            double treshold = Math.Abs(dwt.SubVector(qrsEndInd, len).Minimum()) * 0.08;
 
-            Console.WriteLine("szczegoliki:");
-            Console.WriteLine(qrsEndInd);
-            Console.WriteLine(dwt.Count);
-            if (!(qrsEndInd+1 < dwt.Count))
+            //Console.WriteLine("szczegoliki:");
+            //Console.WriteLine(qrsEndInd);
+            //Console.WriteLine(dwt.Count);
+            if (!(qrsEndInd + 1 < dwt.Count))
+            {
                 return -1;
-            while ( qrsEndInd < sectionEnd && dwt[qrsEndInd] > dwt[qrsEndInd + 1] )
+                //Console.WriteLine("brak enda");
+            }
+            //while (dwt[qrsEndInd] < dwt[qrsEndInd + 1])
+            //    qrsEndInd++;
+            while (dwt[qrsEndInd] > dwt[qrsEndInd + 1])
                 qrsEndInd++;
             while (Math.Abs(dwt[qrsEndInd]) > treshold && qrsEndInd < sectionEnd)
                 qrsEndInd++;
 
-            if (qrsEndInd == sectionEnd)
+            if (qrsEndInd >= sectionEnd)
                 return -1;
             else
                 return (qrsEndInd << decompLevel);

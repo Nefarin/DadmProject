@@ -319,17 +319,18 @@ namespace EKG_Project.Modules.Waves
 
         public static void Main()
         {
-            Waves_Params param = new Waves_Params( Wavelet_Type.haar, 2, "Analysis6", 10);
+            Waves_Params param = new Waves_Params( Wavelet_Type.haar, 2, "Analysis6", 100);
 
-            TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
-            TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
-            Vector<double> ecg = TempInput.getSignal();
+            //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
+            //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
+            //Vector<double> ecg = TempInput.getSignal();
 
-            TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");
-            Vector<double> rpeaks = TempInput.getSignal();
+            //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");
+            //Vector<double> rpeaks = TempInput.getSignal();
 
             Waves testModule = new Waves();
-            testModule.InitForTestsOnly(ecg, rpeaks, param);
+            //testModule.InitForTestsOnly(ecg, rpeaks, param);
+            testModule.Init(param);
             while (true)
             {
                 //Console.WriteLine("Press key to continue.");
@@ -339,15 +340,15 @@ namespace EKG_Project.Modules.Waves
                 testModule.ProcessData();
             }
 
-            Vector<double> onsets = Vector<double>.Build.Dense(testModule.OutputData.QRSOnsets[0].Item2.Count);
-            Console.WriteLine("fajrant");
-            for (int i = 0; i < onsets.Count; i++)
-            {
-                onsets[i] = (double)testModule.OutputData.QRSOnsets[0].Item2[i];
+            //Vector<double> onsets = Vector<double>.Build.Dense(testModule.OutputData.QRSEnds[0].Item2.Count);
+            //Console.WriteLine("fajrant");
+            //for (int i = 0; i < onsets.Count; i++)
+            //{
+            //    onsets[i] = (double)testModule.OutputData.QRSEnds[0].Item2[i];
 
-            }
-
-            TempInput.writeFile(360, onsets);
+            //}
+            //Console.WriteLine(onsets);
+            //TempInput.writeFile(360, onsets);
 
             //POKI CO BIERZEMY DANE Z NASZYCH GOWNIANYCH PLIKOW
 
@@ -428,7 +429,7 @@ namespace EKG_Project.Modules.Waves
             //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\d2ekg.txt");
             //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\d2ekg.txt");
             //TempInput.writeFile(360, dwt);
-            Console.Read();
+            //Console.Read();
         }
 
     }
