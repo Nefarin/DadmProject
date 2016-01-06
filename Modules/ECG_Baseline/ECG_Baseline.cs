@@ -25,7 +25,8 @@ namespace EKG_Project.Modules.ECG_Baseline
         private ECG_Baseline_Params _params;
 
         private Vector<Double> _currentVector;
-        private Vector<Double> _temporaryVector; 
+        private Vector<Double> _temporaryVector;
+        private Vector<Double> _temporaryVector2;
 
         Filter _newFilter = new Filter();
 
@@ -70,6 +71,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 //_currentVector = InputData.Signals[_currentChannelIndex].Item2.CopySubVectorTo(_currentVector,0,0, _currentChannelLength); //Vector<Double>.Build.Dense(_currentChannelLength);
                 //InputData.Signals[_currentChannelIndex].Item2.CopySubVectorTo(_currentVector, 0, 0, _currentChannelLength);
                 _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                _temporaryVector2 = Vector<Double>.Build.Dense(_currentChannelLength);
             }
         }
 
@@ -93,13 +95,14 @@ namespace EKG_Project.Modules.ECG_Baseline
         {
             int channel = _currentChannelIndex;
             int startIndex = _samplesProcessed;
-            int step = 100;
+            int step = 1000;
 
             if (channel < NumberOfChannels)
             {
                 if (startIndex + step >= _currentChannelLength)
                 {
                       
+                    
                     _currentVector = InputData.Signals[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
                     
                     switch (Params.Method)
@@ -120,8 +123,10 @@ namespace EKG_Project.Modules.ECG_Baseline
                             break;
 
                     }
-                    
-                    OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
+
+                    _currentVector.CopySubVectorTo(_temporaryVector2, 0, startIndex, _currentVector.Count);
+                    //OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
+                    OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _temporaryVector2));
                     _currentChannelIndex++;
 
                     if (_currentChannelIndex < NumberOfChannels)
@@ -129,6 +134,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                         _samplesProcessed = 0;
                         _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
                         _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                        _temporaryVector2 = Vector<Double>.Build.Dense(_currentChannelLength);
                     }
 
 
@@ -156,7 +162,8 @@ namespace EKG_Project.Modules.ECG_Baseline
                             break;
 
                     }
-
+                    _currentVector.CopySubVectorTo(_temporaryVector2, 0, startIndex, _currentVector.Count);
+                    //OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
                     _samplesProcessed = startIndex + step;
                 }
             }
@@ -263,7 +270,7 @@ namespace EKG_Project.Modules.ECG_Baseline
 
         public static void Main()
         {
-            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.HIGHPASS, 40, "Analysis6"); //Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 5, "Analysis6");
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 9, "Analysis6"); //Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 5, "Analysis6");
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 5, "Analysis6");
             ECG_Baseline testModule = new ECG_Baseline();
             testModule.Init(param);
