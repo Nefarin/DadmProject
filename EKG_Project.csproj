@@ -123,6 +123,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\ModuleOptionDialogues\Dialogue_Waves_Options.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\ModuleOptionDialogues\NumericTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -213,6 +217,9 @@
     </Compile>
     <Compile Include="GUI\ModuleOptionDialogues\Dialogue_R_Peaks_Options.xaml.cs">
       <DependentUpon>Dialogue_R_Peaks_Options.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ModuleOptionDialogues\Dialogue_Waves_Options.xaml.cs">
+      <DependentUpon>Dialogue_Waves_Options.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ModuleOptionDialogues\NumericTextBox.xaml.cs">
       <DependentUpon>NumericTextBox.xaml</DependentUpon>
@@ -402,7 +409,9 @@
     <Resource Include="Matlab\TextFile1.txt" />
     <Resource Include="Resources\TextFile1.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="GUI\Converters\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,6 +1,7 @@
 ﻿using EKG_Project.GUI.ModuleOptionDialogues;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.R_Peaks;
+using EKG_Project.Modules.Waves;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,7 +31,7 @@ namespace EKG_Project.GUI
         public ModulePanel()
         {
             InitializeComponent();
-            var ecgBaseline = new ModuleOption(AvailableOptions.ECG_BASELINE, null);
+            var ecgBaseline = new ModuleOption(AvailableOptions.ECG_BASELINE);
 
             ecgBaseline.
                 AddSuboptionAndMoveDown(AvailableOptions.R_PEAKS).
@@ -42,16 +43,14 @@ namespace EKG_Project.GUI
                         AddSuboption(AvailableOptions.SLEEP_APNEA).
                         AddSuboptionAndMoveDown(AvailableOptions.HEART_CLASS).
                             AddSuboption(AvailableOptions.HRT).
-                            AddSuboption(AvailableOptions.ECTOPIC_BEAT).
                             AddSuboptionAndMoveUp(AvailableOptions.HEART_AXIS).
                         AddSuboption(AvailableOptions.ATRIAL_FIBER).
                         AddSuboption(AvailableOptions.QT_DISP).
                         AddSuboptionAndMoveUp(AvailableOptions.FLUTTER).
                     AddSuboption(AvailableOptions.HRV_DFA).
-                    AddSuboptionAndMoveUp(AvailableOptions.SIG_EDR).
-                AddSuboption(AvailableOptions.VCG_T_LOOP);
+                    AddSuboptionAndMoveUp(AvailableOptions.SIG_EDR);
 
-            var testModule = new ModuleOption(AvailableOptions.TEST_MODULE, null);
+            var testModule = new ModuleOption(AvailableOptions.TEST_MODULE);
             Options.Add(ecgBaseline);
             Options.Add(testModule);
             this.treeViewModules.ItemsSource = this.Options;
@@ -69,6 +68,10 @@ namespace EKG_Project.GUI
                     break;
                 case AvailableOptions.R_PEAKS:
                     dialogue = new Dialogue_R_Peaks_Options((R_Peaks_Params)option.ModuleParam);
+                    dialogue.ShowDialog();
+                    break;
+                case AvailableOptions.WAVES:
+                    dialogue = new Dialogue_Waves_Options((Waves_Params)option.ModuleParam);
                     dialogue.ShowDialog();
                     break;
                 default:
