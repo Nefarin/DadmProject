@@ -16,8 +16,6 @@ namespace EKG_Project.Modules.Waves
         private List<Tuple<string, List<int>>> _Pends;
         private List<Tuple<string, List<int>>> _Tends;
 
-        private uint _fs;
-
         public Waves_Data() {
 
             _QRSends = new List<Tuple<string, List<int>>>();
@@ -25,11 +23,6 @@ namespace EKG_Project.Modules.Waves
             _Pends = new List<Tuple<string, List<int>>>();
             _Ponsets = new List<Tuple<string, List<int>>>();
             _Tends = new List<Tuple<string, List<int>>>();
-        }
-
-        public Waves_Data(  uint fs):this()
-        {
-            Fs = fs;
         }
 
         public List<Tuple<string, List<int>>> QRSOnsets
@@ -91,17 +84,6 @@ namespace EKG_Project.Modules.Waves
             set
             {
                 _Tends = value;
-            }
-        }
-        public uint Fs
-        {
-            get
-            {
-                return _fs;
-            }
-            set
-            {
-                _fs = value;
             }
         }
 
