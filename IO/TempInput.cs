@@ -88,7 +88,7 @@ namespace EKG_Project.IO
         {
             double[] digits = input
                               .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                              .Select(digit => Convert.ToDouble(digit, new System.Globalization.NumberFormatInfo()))
+                              .Select(digit => double.Parse(digit))
                               .ToArray();
             Vector<double> vector = Vector<double>.Build.Dense(digits.Length);
             vector.SetValues(digits);
@@ -106,17 +106,15 @@ namespace EKG_Project.IO
             return output;
         }
         
-        
+        /*
         static void Main()
         {
-            setInputFilePath(@"C:\temp\RR_100.txt");
+            setInputFilePath(@"C:\temp\in.txt");
             uint fs = getFrequency();
             Vector<double> sig = getSignal();
-            Console.Write(sig);
-            Console.Read();
 
-            //setOutputFilePath(@"C:\temp\out.txt");
-            //writeFile(fs, sig);
-        }
+            setOutputFilePath(@"C:\temp\out.txt");
+            writeFile(fs, sig);
+        }*/
     }
 }
