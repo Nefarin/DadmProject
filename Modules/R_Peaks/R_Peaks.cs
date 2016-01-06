@@ -16,6 +16,7 @@ namespace EKG_Project.Modules.R_Peaks
         private int _currentChannelIndex;
         private int _currentChannelLength;
         private int _samplesProcessed;
+        private int _lastRPeak;
         private int _numberOfChannels;
 
         private Basic_Data_Worker _inputWorker;
@@ -63,6 +64,7 @@ namespace EKG_Project.Modules.R_Peaks
 
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
+                _lastRPeak = 0;
                 NumberOfChannels = InputData.Signals.Count;
                 _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
                 _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
@@ -89,16 +91,13 @@ namespace EKG_Project.Modules.R_Peaks
         private void processData()
         {
             int channel = _currentChannelIndex;
-            int startIndex = (_samplesProcessed == 0) ? _samplesProcessed : LastRPeak;
-            //int startIndex = _samplesProcessed; ///TODO: ostatni Rpeak+30
-            int step = 6000; //krok (porcja sygnału)
+            int startIndex = (_samplesProcessed == 0) ? _samplesProcessed : _lastRPeak;
+            int step = 6000;
 
             if (channel < NumberOfChannels)
             {
                 if (startIndex + step > _currentChannelLength)
                 {
-                    //scaleSamples(channel, startIndex, _currentChannelLength - startIndex); ///TODO wybór metody detekcji:
-
                     switch (Params.Method)
                     {
                         // no idea what I'm doing
@@ -113,22 +112,40 @@ namespace EKG_Project.Modules.R_Peaks
                             //_currentVector = EMD(_currentVector, InputData.Frequency);
                             break;
                     }
+                    _lastRPeak = Convert.ToInt32(_currentVector[_currentVector.Count]) + 30;
+                    Vector<double> _currentVectorRRInterval = RRinMS(_currentVector, InputData.Frequency);
 
                     OutputData.RPeaks.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector)); // Czy to doda Rpeaki do Rpeaków
-                    OutputData.RRInterval.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector)); // A to RRinterwały do RRinterwałów bez dodatkowej zabawy (tzn. nowych currentVectorów czy cos?
+                    OutputData.RRInterval.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVectorRRInterval)); // A to RRinterwały do RRinterwałów bez dodatkowej zabawy (tzn. nowych currentVectorów czy cos?
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)
                     {
                         _samplesProcessed = 0;
+                        _lastRPeak = 0;
                         _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
                         _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
                     }
 
-
                 }
                 else
                 {
-                    //scaleSamples(channel, startIndex, step); ///TODO przerobić (jak wyżej):
+                    switch (Params.Method)
+                    {
+                        // no idea what I'm doing
+                        // skąd _currentVector wie, że jest sygnałem?
+                        case R_Peaks_Method.PANTOMPKINS:
+                            _currentVector = Hilbert(_currentVector, InputData.Frequency);
+                            break;
+                        case R_Peaks_Method.HILBERT:
+                            _currentVector = PanTompkins(_currentVector, InputData.Frequency);
+                            break;
+                        case R_Peaks_Method.EMD:
+                            //_currentVector = EMD(_currentVector, InputData.Frequency);
+                            break;
+                    }
+                    _lastRPeak = Convert.ToInt32(_currentVector[_currentVector.Count]) + 30;
+                    Vector<double> _currentVectorRRInterval = RRinMS(_currentVector, InputData.Frequency);
+
                     _samplesProcessed = startIndex + step;
                 }
             }
