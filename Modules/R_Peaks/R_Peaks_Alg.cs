@@ -476,7 +476,12 @@ namespace EKG_Project.Modules.R_Peaks
                 skip = false;
                 serback = false;
             }
-            return Vector<double>.Build.DenseOfArray(locsR.ToArray());
+
+            if (locsR.Count == 0)
+            {
+                throw new Exception();
+            }
+            return Vector<double>.Build.DenseOfEnumerable(locsR);
         }
 
         #region
