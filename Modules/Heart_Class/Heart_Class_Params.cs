@@ -10,138 +10,25 @@ namespace EKG_Project.Modules.Heart_Class
 {
     public class Heart_Class_Params : ModuleParams
     {
-        private string _analysisName;
-        //HEART_CLASS Module input parameters - to podobno idzie kaj indziej
-        //private Vector<double> _ecg;
-        //private Vector<uint> _QRSonsets;
-        //private Vector<uint> _QRSends;
-
-
-
-        /*HEART_CLASS Module output parameters
-        private Vector<int> _qrsComplexLabel;
-        private uint _totalNumberOfQrsComplex;
-        private uint _numberOfClass;
-        private double _percentOfNormalComplex;
-        private Qrs_Class _cluster;
-
-        public class Qrs_Class
+        public Heart_Class_Params()
         {
-            private int _indexOfClass;
-            private int _numberOfQrsComplex;
-            private int _indexOfRepresentative;
-            
-            public int IndexOfClass
-            {
-                get
-                {
-                    return _indexOfClass;
-                }
+            K = 1; // domyslnie
+                   //dodac wczytywanie domyslnych plikow treningowych?
 
-            }
+            //WCZYTANIE ZBIORU TRENINGOWEGO19
+            //List<Vector<double>> trainDataList = loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d.txt");
 
-            public int NumberOfQrsComplex
-            {
-                get
-                {
-                    return _numberOfQrsComplex;
-                }
-
-            }
-
-            public int IndexOfRepresentative
-            {
-                get
-                {
-                    return _indexOfRepresentative;
-                }
-
-            }
-
+            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-NV
+            //List<Vector<double>> trainClassList = loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d_label.txt");
         }
+        public string AnalysisName { get; set; }
 
-        /*
-        public Vector<double> Ecg
-        {
-            get
-            {
-                return _ecg;
-            }
-
-            set
-            {
-                _ecg = value;
-            }
-        }
-        
-
-        public Vector<uint> QRSOnsets
-        {
-            get
-            {
-                return _QRSonsets;
-            }
-
-        }
-
-        public Vector<uint> QRSEnds
-        {
-            get
-            {
-                return _QRSends;
-            }
-
-        }
-        
-
-        public Vector<int> QrsComplexLabel
-        {
-            get
-            {
-                return _qrsComplexLabel;
-            }
-
-        }
-
-        public uint TotalNumberOfQrsComplex
-        {
-            get
-            {
-                return _totalNumberOfQrsComplex;
-            }
-
-            set
-            {
-                _totalNumberOfQrsComplex = value;
-            }
-
-        }
-
-        public uint NumberOfClass
-        {
-            get
-            {
-                return _numberOfClass;
-            }
-
-        }
-
-        public double PercentOfNormalComplex
-        {
-            get
-            {
-                return _percentOfNormalComplex;
-            }
-
-        }
-
-    */
+        public int K { get; set; }
 
 
-        public string AnalysisName
-        {
-            get { return _analysisName; }
-            set { _analysisName = value; }
-        }
+        //potencjalna mozliwosc zmiany danych treningowych
+
+        public List<Vector<double>> TrainSamples { get; set; }
+        public List<int> TrainClasses { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         public double PercentOfNormalComplex { get; set; }
 
-        public List<Tuple<int, int>> ClassificationResult { get; set; }
+        public List<Tuple<string, List<Tuple<int, int>>>> ClassificationResult { get; set; }
 
         public List<Tuple<int, int>> QrsComplexLabel { get; set; }
 
@@ -44,7 +44,7 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         public Heart_Class_Data()
         {
-            ClassificationResult = new List<Tuple<int, int>>();
+            ClassificationResult = new List<Tuple<string, List<Tuple<int, int>>>>();
         }
     }
 }

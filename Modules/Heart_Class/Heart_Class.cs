@@ -12,42 +12,25 @@ namespace EKG_Project.Modules.Heart_Class
     public partial class Heart_Class : IModule
     {
         private bool _ended;
-        private bool _aborted;
-
+        public bool Aborted { get; set; }
+        
         private int _currentChannelIndex;
         private int _currentChannelLength;
         private int _samplesProcessed;
-        private int _numberOfChannels;
 
-        private Basic_Data_Worker _inputWorker;
-        private ECG_Baseline_Data_Worker _inputECGbaselineWorker;
-        private R_Peaks_Data_Worker _inputRpeaksWorker;
-        private Waves_Data_Worker _inputWavesWorker;
-        private Heart_Class_Data_Worker _outputWorker;
+        public Heart_Class_Params Params { get; set; }
+        public int NumberOfChannels { get; set; }
 
-        private Basic_Data _inputData;
-        private ECG_Baseline_Data _inputECGbaselineData;
-        private R_Peaks_Data _inputRpeaksData;
-        private Heart_Class_Data _outputData;
+        public Heart_Class_Data_Worker OutputWorker { get; set; }
+        public Heart_Class_Data OutputData { get; set; }
 
-        private Heart_Class_Params _params;
+        public Basic_Data InputData { get; set; }
 
+        public R_Peaks_Data InputRpeaksData { get; set; }
 
-
-
-        public void Abort()
-        {
-            Aborted = true;
-            _ended = true;
-        }
-
-        public bool Ended()
-        {
-            return _ended;
-        }
+        public ECG_Baseline_Data InputECGbaselineData { get; set; }
 
         public Waves_Data InputWavesData { get; set; }
-
 
         public void Init(ModuleParams parameters)
         {
@@ -60,37 +43,51 @@ namespace EKG_Project.Modules.Heart_Class
             {
                 _ended = false;
 
-                InputWorker = new Basic_Data_Worker(Params.AnalysisName);
-                InputWorker.Load();
-                InputData = InputWorker.BasicData;
+                var inputWorker = new Basic_Data_Worker(Params.AnalysisName);
+                inputWorker.Load();
+                InputData = inputWorker.BasicData;
 
-                InputEcGbaselineWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
-                InputEcGbaselineWorker.Load();
-                InputECGbaselineData = InputEcGbaselineWorker.Data;
+                var inputEcGbaselineWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
+                inputEcGbaselineWorker.Load();
+                InputECGbaselineData = inputEcGbaselineWorker.Data;
 
-                InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-                InputRpeaksWorker.Load();
-                InputRpeaksData = InputRpeaksWorker.Data;
+                var inputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
+                inputRpeaksWorker.Load();
+                InputRpeaksData = inputRpeaksWorker.Data;
 
-                InputWavesWorker = new Waves_Data_Worker(Params.AnalysisName);
-                InputWavesWorker.Load();
-                InputWavesData = InputWavesWorker.Data;
-
+                var inputWavesWorker = new Waves_Data_Worker(Params.AnalysisName);
+                inputWavesWorker.Load();
+                InputWavesData = inputWavesWorker.Data;
 
                 OutputWorker = new Heart_Class_Data_Worker(Params.AnalysisName);
                 OutputData = new Heart_Class_Data();
-
-
+                
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
                 NumberOfChannels = InputData.Signals.Count;
                 _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-                _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                _tempVector = Vector<Double>.Build.Dense(1);
-
-
             }
 
+        }
+
+        private void processData()
+        {
+            int channel = _currentChannelIndex;
+
+            if (channel < NumberOfChannels)
+            {
+                OutputData.ClassificationResult.Add(
+                    new Tuple<string, List<Tuple<int, int>>>(InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item1, // nazwa kanału ?
+                    Classification(InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2, InputData.Frequency, InputRpeaksData.RPeaks[_currentChannelIndex].Item2, InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.QRSEnds[_currentChannelIndex].Item2)) // klasyfikacja
+                    );
+
+                _currentChannelIndex++;
+            }
+            else
+            {
+                OutputWorker.Save(OutputData);
+                _ended = true;
+            }
         }
 
         public void ProcessData()
@@ -103,7 +100,6 @@ namespace EKG_Project.Modules.Heart_Class
 
         public double Progress()
         {
-
             return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
         }
 
@@ -112,122 +108,15 @@ namespace EKG_Project.Modules.Heart_Class
             return Params != null;
         }
 
-        private void processData()
+        public void Abort()
         {
-
-            int channel = _currentChannelIndex;
-            int startIndex = _samplesProcessed;
-            int step = 6000;
-
-            if (channel < NumberOfChannels)
-            {
-                if (startIndex + step > _currentChannelLength)
-                {
-                    //scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
-
-                    OutputData.ClassificationResult = Classification(Signal, fs, InputRpeaksData.RPeaks[_currentChannelIndex].Item2, InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.QRSEnds[_currentChannelIndex].Item2);
-                    //OutputData.ClassificationResult.Add(new Tuple<int, int>(InputRpeaksData.Signals[_currentChannelIndex].Item1, _currentVector));
-                    _currentChannelIndex++;
-                    if (_currentChannelIndex < NumberOfChannels)
-                    {
-                        _samplesProcessed = 0;
-                        _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-                        _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                    }
-
-
-                }
-                else
-                {
-                    //scaleSamples(channel, startIndex, step);
-                    _samplesProcessed = startIndex + step;
-                }
-            }
-            else
-            {
-                OutputWorker.Save(OutputData);
-                _ended = true;
-            }
-
-
+            Aborted = true;
+            _ended = true;
         }
 
-
-        public Heart_Class_Data_Worker OutputWorker
+        public bool Ended()
         {
-            get { return _outputWorker; }
-            set { _outputWorker = value; }
+            return _ended;
         }
-
-        public bool Aborted
-        {
-            get { return _aborted; }
-            set { _aborted = value; }
-        }
-
-        public Heart_Class_Params Params
-        {
-            get { return _params; }
-            set { _params = value; }
-        }
-
-        public Heart_Class_Data OutputData
-        {
-            get { return _outputData; }
-            set { _outputData = value; }
-        }
-
-
-
-        public ECG_Baseline_Data_Worker InputEcGbaselineWorker
-        {
-            get { return _inputECGbaselineWorker; }
-            set { _inputECGbaselineWorker = value; }
-        }
-
-        public R_Peaks_Data_Worker InputRpeaksWorker
-        {
-            get { return _inputRpeaksWorker; }
-            set { _inputRpeaksWorker = value; }
-        }
-
-        public Waves_Data_Worker InputWavesWorker
-        {
-            get { return _inputWavesWorker; }
-            set { _inputWavesWorker = value; }
-        }
-
-        public ECG_Baseline_Data InputECGbaselineData
-        {
-            get { return _inputECGbaselineData; }
-            set { _inputECGbaselineData = value; }
-        }
-
-        public R_Peaks_Data InputRpeaksData
-        {
-            get { return _inputRpeaksData; }
-            set { _inputRpeaksData = value; }
-        }
-
-
-        public int NumberOfChannels
-        {
-            get { return _numberOfChannels; }
-            set { _numberOfChannels = value; }
-        }
-
-        public Basic_Data_Worker InputWorker
-        {
-            get { return _inputWorker; }
-            set { _inputWorker = value; }
-        }
-
-        public Basic_Data InputData
-        {
-            get { return _inputData; }
-            set { _inputData = value; }
-        }
-
-
     }
 }
