@@ -57,6 +57,16 @@ namespace EKG_Project.IO
                 XmlElement module = file.CreateElement(string.Empty, "module", string.Empty);
                 string moduleName = this.GetType().Name;
                 moduleName = moduleName.Replace("_Data_Worker", "");
+
+                XmlNodeList existingModules = file.SelectNodes("EKG/module");
+                foreach (XmlNode existingModule in existingModules)
+                {
+                    if (existingModule.Attributes["name"].Value == moduleName)
+                    {
+                        root.RemoveChild(existingModule);
+                    }
+                }
+
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
 
@@ -77,24 +87,11 @@ namespace EKG_Project.IO
                     moduleNode.AppendChild(item2);
                 }
 
-                uint TotalNumberOfQrsComplex = basicData.TotalNumberOfQrsComplex;
-                XmlElement totalNumberOfQrsComplex = file.CreateElement(string.Empty, "TotalNumberOfQrsComplex", string.Empty);
-                XmlText value = file.CreateTextNode(TotalNumberOfQrsComplex.ToString());
-                totalNumberOfQrsComplex.AppendChild(value);
-                module.AppendChild(totalNumberOfQrsComplex);
-
-
-                uint NumberOfClass = basicData.NumberOfClass;
-                XmlElement numberOfClass = file.CreateElement(string.Empty, "NumberOfClass", string.Empty);
-                XmlText numberOfClassValue = file.CreateTextNode(NumberOfClass.ToString());
-                numberOfClass.AppendChild(numberOfClassValue);
-                module.AppendChild(numberOfClass);
-
-                double PercentOfNormalComplex = basicData.PercentOfNormalComplex;
-                XmlElement percentOfNormalComplex = file.CreateElement(string.Empty, "PercentOfNormalComplex", string.Empty);
-                XmlText percentOfNormalComplexValue = file.CreateTextNode(PercentOfNormalComplex.ToString());
-                percentOfNormalComplex.AppendChild(percentOfNormalComplexValue);
-                module.AppendChild(percentOfNormalComplex);
+                bool ChannelMliiDetected = basicData.ChannelMliiDetected;
+                XmlElement channelMliiDetected = file.CreateElement(string.Empty, "ChannelMliiDetected", string.Empty);
+                XmlText channelMliiDetectedValue = file.CreateTextNode(ChannelMliiDetected.ToString());
+                channelMliiDetected.AppendChild(channelMliiDetectedValue);
+                module.AppendChild(channelMliiDetected);
 
                 ew.InternalXMLFile = file;
 
@@ -136,19 +133,12 @@ namespace EKG_Project.IO
                     }
                     basicData.ClassificationResult = list;
 
-                    XmlNode totalNumberOfQrsComplex = module["TotalNumberOfQrsComplex"];
-                    basicData.TotalNumberOfQrsComplex = Convert.ToUInt32(totalNumberOfQrsComplex.InnerText, new System.Globalization.NumberFormatInfo());
-
-                    XmlNode numberOfClass = module["NumberOfClass"];
-                    basicData.NumberOfClass = Convert.ToUInt32(numberOfClass.InnerText, new System.Globalization.NumberFormatInfo());
-
-                    XmlNode percentOfNormalComplex = module["PercentOfNormalComplex"];
-                    basicData.PercentOfNormalComplex = Convert.ToUInt32(percentOfNormalComplex.InnerText, new System.Globalization.NumberFormatInfo());
+                    XmlNode channelMliiDetected = module["ChannelMliiDetected"];
+                    basicData.ChannelMliiDetected = Convert.ToBoolean(channelMliiDetected.InnerText);
                     
                 }
             }
             this.Data = basicData;
         }
-
     }
 }
