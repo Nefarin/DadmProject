@@ -27,5 +27,10 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 _method = value;
             }
         }
+
+        public void CopyParametersFrom(Atrial_Fibr_Params parameters)
+        {
+            this.Method = parameters.Method;
+        }
     }
 }
