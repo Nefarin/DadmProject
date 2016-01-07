@@ -17,58 +17,21 @@ namespace EKG_Project.Modules.QT_Disp
         {
 
              Console.WriteLine("Test");
-            /* TempInput.setInputFilePath("D:\\Dadm_nowy\\dane.txt");
-             TempInput.setOutputFilePath("D:\\Dadm_nowy\\rn100.txt");
-             uint sda = TempInput.getFrequency();
-             Console.WriteLine("Fs: " + sda);
-             Vector<double> RR = TempInput.getSignal();
-             List<double> signal = (RR.ToList());
-             Console.WriteLine("Signal length: " + RR.Count);
 
-             TWave samp = new TWave(RR);
-             samp.DeleteQRSWave();
-             TempInput.writeFile(sda, samp.signal);
-            List<int> wyniki = samp.ExecuteTWave();
-            Console.WriteLine(wyniki.Count);
-           
-            
-             foreach (int a in wyniki)
-             {
-                 Console.WriteLine(a);
-             }
-            // TempInput.writeFile(360, wyniki);
 
-             
-            //Vector<double> sig = Vector<double>.Build.Dense(10);*/
-            /*QT_Data test = new QT_Data();
-            List<QT_Data> test_list = new List<QT_Data>();
-            test_list.Add(test);
-            QTCalculation output = new QTCalculation(test_list);
-            output.setOutput();*/
-
-            
+            //TWave testes - begin
             TempInput.setInputFilePath("D:\\Dadm_nowy\\EKG.txt");
             Vector<double> signalfile = TempInput.getSignal();
             List<Tuple<String, Vector<double>>> input = new List<Tuple<string, Vector<double>>>();
-            input.Add(Tuple.Create("My drain", signalfile));
-            
+            input.Add(Tuple.Create("My drain", signalfile));            
             TWave signal = new TWave(input);
-            // double[] test = { 2, -1, 3.5, -4, 4, 5, 6, -7, -8.9, 500, 10, 0, 11 };
-            // Vector<double> testvec = Vector<double>.Build.DenseOfArray(test);
+            //here insert a breakpoint          
             List<Tuple<String,List<int>>> wynik = signal.ExecuteTWave();
-            
-            /*Console.WriteLine("Hello");
-            double[] x= new double[10];
-            double[] y = new double[10];
-            for (int i = 0; i < 10; i++)
-            {
-                x[i] = i;
-                y[i] = i * i + 2;
-            }
-            double[] wynik = MathNet.Numerics.Fit.Polynomial(x, y, 2);
-            Console.WriteLine("Size" +wynik.Count());
-            Console.WriteLine(wynik.ElementAt(0) +"   "+ wynik.ElementAt(1) +"      "+ wynik.ElementAt(2));*/
-           /* QTCalculation wyniki = new QTCalculation();
+            //  TWave testes - end
+           
+            //QTCalulation testes - begin
+            QTCalculation wyniki = new QTCalculation();
+            //here insert a breakpoint 
             wyniki.setOutput();
             Console.WriteLine(wyniki.meanQTInterval.ElementAt(0).Item2);
             Console.WriteLine(wyniki.meanQTInterval.ElementAt(1).Item2);
@@ -77,7 +40,8 @@ namespace EKG_Project.Modules.QT_Disp
             Console.WriteLine(wyniki.stdQTInterval.ElementAt(1).Item2);
 
             Console.WriteLine(wyniki.localQTdisp.ElementAt(0).Item2);
-            Console.WriteLine(wyniki.localQTdisp.ElementAt(1).Item2);*/
+            Console.WriteLine(wyniki.localQTdisp.ElementAt(1).Item2);
+            //QTCalculation testes - end
             Console.ReadKey();
 
         }
@@ -384,7 +348,7 @@ namespace EKG_Project.Modules.QT_Disp
     {
         //iput
         private List<int> QRS_Onset = new List<int>();       
-        private List<double> RR_interval = new List<double>();
+        private Vector<double> RR_interval;
         private QT_Calc_Method method;
         private double Fs;
         private List<Tuple<String, List<int>>> T_End = new List<Tuple<string, List<int>>>();
@@ -406,7 +370,7 @@ namespace EKG_Project.Modules.QT_Disp
         /// <param name="RR_interval">This list stores next RR Intervals in signal in ms</param>
         /// <param name="Fs">This is frequency sampling ih Hz</param>
         /// <param name="method">This is a formula, which we want to calculate a QT_interval</param>
-        public QTCalculation(List<int> QRS_Onset, List<double> RR_interval, QT_Calc_Method method,double Fs, List<Tuple<String,List<int>>> T_End)
+        public QTCalculation(List<int> QRS_Onset, Vector<double> RR_interval, QT_Calc_Method method,double Fs, List<Tuple<String,List<int>>> T_End)
         {
             this.Fs = Fs;
             this.method = method;
@@ -421,7 +385,7 @@ namespace EKG_Project.Modules.QT_Disp
         /// </summary>
         public QTCalculation()
         {
-            int[] qrs_onset = { 558, -1, 1407, 1855 };
+            int[] qrs_onset = { 558, 920, 1407, 1855 };
             int[] qrs_end = { 779, 1176, 1604, 2032 };
             int[] t_end = { 750, 1300, 1654, 2067 };
             double[] rr = { 958.33, 1152.78, 1238.89, 1113.78 };
@@ -429,7 +393,7 @@ namespace EKG_Project.Modules.QT_Disp
 
             this.QRS_Onset = qrs_onset.ToList();
             this.T_End = new List<Tuple<String, List<int>>>(); qrs_end.ToList();
-            this.RR_interval = rr.ToList();
+            this.RR_interval = Vector<double>.Build.DenseOfArray(rr);
             this.Fs = 360;
             Tuple<String, List<int>> drain1 = Tuple.Create("V2", qrs_end.ToList());
             Tuple<String, List<int>> drain2 = Tuple.Create("V5", t_end.ToList());
@@ -452,6 +416,8 @@ namespace EKG_Project.Modules.QT_Disp
             double[] std = new double[this.AmountOFDrains];                 //stores standard deviation from next drain
             double[] local = new double[this.AmountOFDrains];               //stores locals qt_disp
             int j = 0;
+            int start = 0;
+            int koniec = 0;
 
             //adding qt intervals calculated according to chosen formula 
             foreach (Tuple<String,List<int>> T_EndInDrain in T_End)
@@ -463,7 +429,7 @@ namespace EKG_Project.Modules.QT_Disp
                         for (int i = 0; i < QRS_Onset.Count; i++)
                         {
                             if (QRS_Onset.ElementAt(i) != -1 && (T_EndInDrain.Item2.ElementAt(i) != -1))
-                            {
+                            {                                
                                 QTIntervals.Add((((T_EndInDrain.Item2.ElementAt(i) - QRS_Onset.ElementAt(i)) / Fs) * 1000) / Math.Sqrt(RR_interval.ElementAt(i) / 1000));
                             }
                             else
@@ -516,9 +482,11 @@ namespace EKG_Project.Modules.QT_Disp
                 mean[j] = QTIntervals.Sum() / (QTIntervals.Except(zero)).Count();
                 local[j] = QTIntervals.Max() - QTIntervals.Except(zero).Min();
                 std[j] = (QTIntervals.Except(zero)).StandardDeviation();
-                QTIntervalsAll.Add(QTIntervals);        //this list strores all qt intervals from all drain
+                koniec = QTIntervals.Count;
+                QTIntervalsAll.Add(QTIntervals.GetRange(start,koniec-start));        //this list strores all qt intervals from all drain
                 j++;
-                QTIntervals.Clear();                    //can't do it because it's a reference
+                start = koniec;
+                //QTIntervals.Clear();                    //can't do it because it's a reference
             }
             //here we create data to send them to the GUI to show them in table
             for (int i = 0; i < AmountOFDrains; i++)
@@ -531,6 +499,7 @@ namespace EKG_Project.Modules.QT_Disp
             }
             //here we calculate a global QT_disp froma all drains   check it because all above works
             List<double> temp = new List<double>();
+            List<double> temp2 = new List<double>();
             List<double> globalQT = new List<double>();
             for (int i = 0; i < QTIntervalsAll.ElementAt(0).Count; i++)
             {
@@ -538,9 +507,10 @@ namespace EKG_Project.Modules.QT_Disp
                 {
                     temp.Add(onedrain.ElementAt(i));
                 }
-                if (!temp.Contains(0))
+                temp2 = temp.GetRange(i * this.AmountOFDrains, AmountOFDrains);
+                if (!temp2.Contains(0))
                 {
-                    globalQT.Add(temp.Max() - temp.Min());
+                    globalQT.Add(temp2.Max() - temp2.Min());
                 }
 
             }
