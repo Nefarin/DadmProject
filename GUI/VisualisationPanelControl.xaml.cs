@@ -63,6 +63,11 @@ namespace EKG_Project.GUI
             ecgBaselineTab.Content = ecgVDataControl;
             visulisationDataTabsList.Add(ecgBaselineTab);
 
+            //TabItem ecgBasicDataTab = new TabItem();
+            //ecgBasicDataTab.Header = "ecgBasicData";
+            //ecgBasicDataTab.Content = ecgVDataControl;
+            //visulisationDataTabsList.Add(ecgBasicDataTab);
+
             //TabItem r_peaksTab = new TabItem();
             //r_peaksTab.Header = "R_Peaks";
             //r_peaksTab.Content = ecgVDataControl;
@@ -76,9 +81,28 @@ namespace EKG_Project.GUI
 
             this.EcgDynamicTab.DataContext = visulisationDataTabsList;
 
+        }
 
 
+        public VisualisationPanelControl(List<string> tabNames)
+        {
+            InitializeComponent();
+            ChooseTabDisplay(tabNames);
+        }
 
+        private void ChooseTabDisplay(List<string> tabNames)
+        {
+            visulisationDataTabsList = new List<TabItem>();
+            foreach(string tabName in tabNames)
+            {
+                VisualisationDataControl ecgVDataControl = new VisualisationDataControl();
+                TabItem tabItem = new TabItem();
+                tabItem.Header = tabName;
+                tabItem.Content = ecgVDataControl;
+                visulisationDataTabsList.Add(tabItem);
+            }
+
+            this.EcgDynamicTab.DataContext = visulisationDataTabsList;
         }
     }
 }

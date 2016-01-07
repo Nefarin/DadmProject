@@ -49,5 +49,7 @@ namespace EKG_Project.GUI
 
             this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
         }
+
+
     }
 }

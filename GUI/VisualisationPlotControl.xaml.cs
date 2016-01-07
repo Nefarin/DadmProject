@@ -27,8 +27,8 @@ namespace EKG_Project.GUI
             InitializeComponent();
             ecgPlot = new ECGPlot("ECG_BASELINE");
             DataContext = ecgPlot;
-            ecgPlot.DisplayBasicData();
-            //ecgPlot.DisplayEcgBaseline();
+            //ecgPlot.DisplayBasicData();
+            ecgPlot.DisplayEcgBaseline();
         }
     }
 }

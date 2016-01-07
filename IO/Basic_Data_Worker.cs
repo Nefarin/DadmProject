@@ -144,18 +144,18 @@ namespace EKG_Project.IO
             this.BasicData = basicData;
         }
 
-        public static void Main()
-        {
-            Basic_Data_Worker worker = new Basic_Data_Worker();
-            worker.Load();
+        //public static void Main()
+        //{
+        //    Basic_Data_Worker worker = new Basic_Data_Worker();
+        //    worker.Load();
 
-            foreach (var signal in worker.BasicData.Signals)
-            {
-                Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
-            }
+        //    foreach (var signal in worker.BasicData.Signals)
+        //    {
+        //        Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //    }
 
-            Console.Read();
+        //    Console.Read();
 
-        }
+        //}
     }
 }
