@@ -71,21 +71,21 @@ namespace EKG_Project.GUI
             switch (modulesVisualisationNeeds[moduleName])
             {
                 case 0:                  
-                    StartPlot();
+                    StartPlot(moduleName);
                     break;
                     
                 case 1:                    
-                    StartPlot();
-                    StartTable();
+                    StartPlot(moduleName);
+                    StartTable(moduleName);
                     break;                   
                 case 2:
-                    StartPlot();
-                    StartHistogram();
+                    StartPlot(moduleName);
+                    StartHistogram(moduleName);
                     break;                   
                 case 3:                   
-                    StartPlot();
-                    StartTable();
-                    StartHistogram();
+                    StartPlot(moduleName);
+                    StartTable(moduleName);
+                    StartHistogram(moduleName);
                     break;
                     
                 default:
@@ -98,9 +98,9 @@ namespace EKG_Project.GUI
 
         }
 
-        public void StartPlot()
+        public void StartPlot(string modName)
         {
-            VisualisationPlotControl ecgVPControl = new VisualisationPlotControl();
+            VisualisationPlotControl ecgVPControl = new VisualisationPlotControl(modName);
 
             TabItem ecgBaselineTab = new TabItem();
             ecgBaselineTab.Header = "Plot";
@@ -108,7 +108,7 @@ namespace EKG_Project.GUI
             visulisationDataTabsList.Add(ecgBaselineTab);
         }
 
-        public void StartTable()
+        public void StartTable(string modName)
         {
             VisualisationTableControl ecgVTControl = new VisualisationTableControl();
 
@@ -118,7 +118,7 @@ namespace EKG_Project.GUI
             visulisationDataTabsList.Add(tableControl);
         }
 
-        public void StartHistogram()
+        public void StartHistogram(string modName)
         {
             VisualisationHistogramControl ecgVHControl = new VisualisationHistogramControl();
 
