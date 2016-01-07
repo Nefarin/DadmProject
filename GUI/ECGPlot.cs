@@ -18,6 +18,7 @@ namespace EKG_Project.GUI
         private int _windowSize;
         private int _beginingPoint;
         private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
+        private Basic_Data_Worker _ecg_Basic_Data_Worker;
         private bool first;
 
 
@@ -73,24 +74,67 @@ namespace EKG_Project.GUI
         public void DisplayBasicData()
         {
 
-            Basic_Data_Worker worker = new Basic_Data_Worker();
-            worker.Load();
+            //Basic_Data_Worker worker = new Basic_Data_Worker();
+            //worker.Load();
 
-            foreach (var signal in worker.BasicData.Signals)
+            //foreach (var signal in worker.BasicData.Signals)
+            //{
+
+            //    Vector<double> signalVector = signal.Item2;
+            //    LineSeries ls = new LineSeries();
+            //    ls.Title = signal.Item1;
+
+            //    for(int i=0; i<signalVector.Count; i++)
+            //    {
+            //        ls.Points.Add(new DataPoint(i, signalVector[i]));
+            //    }
+
+
+            //    CurrentPlot.Series.Add(ls);
+            //}
+
+            if (first)
             {
-                
+                _ecg_Basic_Data_Worker = new Basic_Data_Worker();
+                _ecg_Basic_Data_Worker.Load();
+                first = false;
+                var lineraYAxis = new LinearAxis();
+                lineraYAxis.Position = AxisPosition.Left;
+                lineraYAxis.Minimum = -100.0;
+                lineraYAxis.Maximum = 80.0;
+                lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+                lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+                lineraYAxis.Title = "Voltage [mV]";
+
+                CurrentPlot.Axes.Add(lineraYAxis);
+            }
+            else
+            {
+                ClearPlot();
+            }
+
+            foreach (var signal in _ecg_Basic_Data_Worker.BasicData.Signals)
+            {
+
                 Vector<double> signalVector = signal.Item2;
                 LineSeries ls = new LineSeries();
                 ls.Title = signal.Item1;
-                
-                for(int i=0; i<signalVector.Count; i++)
+
+                ls.MarkerStrokeThickness = 1;
+
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
                 {
                     ls.Points.Add(new DataPoint(i, signalVector[i]));
                 }
 
-               
+
                 CurrentPlot.Series.Add(ls);
+
+
             }
+
+            RefreshPlot();
 
         }
 
