@@ -25,9 +25,11 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
         // nie udostępnia żadnych metod kopiujących itp.
         private ECG_Baseline_Params returnParameters { get; set; }
         public ECG_Baseline_Params PendingParameters { get; set; }
+        ModulePanel panel;
 
-        public Dialogue_ECG_Baseline_Options(ECG_Baseline_Params parameters)
+        public Dialogue_ECG_Baseline_Options(Object parent, ECG_Baseline_Params parameters)
         {
+            panel = parent as ModulePanel;
             this.returnParameters = parameters;
 
             // do dupy kawałek kodu, bo nie ma odpowiednich konstruktorów w klasie ECG_Baseline_Parameters 

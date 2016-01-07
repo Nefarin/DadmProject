@@ -60,10 +60,10 @@ namespace EKG_Project.IO
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
 
-                List<Tuple<int, int>> list = basicData.QrsComplexLabel;
+                List<Tuple<int, int>> list = basicData.ClassificationResult;
                 foreach (var tuple in list)
                 {
-                    XmlElement moduleNode = file.CreateElement(string.Empty, "QrsComplexLabel", string.Empty);
+                    XmlElement moduleNode = file.CreateElement(string.Empty, "ClassificationResult", string.Empty);
                     module.AppendChild(moduleNode);
 
                     XmlElement item1 = file.CreateElement(string.Empty, "item1", string.Empty);
@@ -120,7 +120,7 @@ namespace EKG_Project.IO
                 if (module.Attributes["name"].Value == moduleName)
                 {
                     List<Tuple<int, int>> list = new List<Tuple<int, int>>();
-                    XmlNodeList nodes = module.SelectNodes("QrsComplexLabel");
+                    XmlNodeList nodes = module.SelectNodes("ClassificationResult");
                     foreach (XmlNode node in nodes)
                     {
                         XmlNode item1 = node["item1"];
@@ -134,7 +134,7 @@ namespace EKG_Project.IO
                         Tuple<int, int> read = Tuple.Create(convertedItem1, convertedItem2);
                         list.Add(read);
                     }
-                    basicData.QrsComplexLabel = list;
+                    basicData.ClassificationResult = list;
 
                     XmlNode totalNumberOfQrsComplex = module["TotalNumberOfQrsComplex"];
                     basicData.TotalNumberOfQrsComplex = Convert.ToUInt32(totalNumberOfQrsComplex.InnerText, new System.Globalization.NumberFormatInfo());

@@ -7,7 +7,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:params="clr-namespace:EKG_Project.Modules.ECG_Baseline"
         mc:Ignorable="d"
-        Title="Opcje ECG Baseline" Height="255" Width="270" MinWidth="270" MaxWidth="270" MinHeight="255" MaxHeight="255">
+        Title="Opcje ECG Baseline" Height="250" Width="270" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Window.Resources>
         <ObjectDataProvider x:Key="availableFilterMethods" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
@@ -28,13 +28,13 @@
             <ColumnDefinition Width="150"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Grid.Column="0">Filter method</Label>
         <Label Grid.Row="1" Grid.Column="0">Filter type</Label>
@@ -42,15 +42,15 @@
         <Label Grid.Row="3" Grid.Column="0">FC</Label>
         <Label Grid.Row="4" Grid.Column="0">Window size</Label>
         <Label Grid.Row="5" Grid.Column="0">Order</Label>
-        <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,2" x:Name="filterMethod" ItemsSource="{Binding Source={StaticResource availableFilterMethods}}" SelectedItem="{Binding Path=Method}" ></ComboBox>
-        <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,2" x:Name="filterType" ItemsSource="{Binding Source={StaticResource availableFilterTypes}}" SelectedItem="{Binding Path=Type}" ></ComboBox>
-        <local:NumericTextBox Grid.Row="2" Grid.Column="1" Margin="0,2" x:Name="fs" NumberType="Float" Number="{Binding Path=Fs, Mode=TwoWay}" Text="{Binding Path=Fs, Mode=OneTime}"></local:NumericTextBox>
-        <local:NumericTextBox Grid.Row="3" Grid.Column="1" Margin="0,2" x:Name="fc" NumberType="Float" Number="{Binding Path=Fc, Mode=TwoWay}" Text="{Binding Path=Fc, Mode=OneTime}"></local:NumericTextBox>
-        <local:NumericTextBox Grid.Row="4" Grid.Column="1" Margin="0,2" x:Name="windowSize" NumberType="Integer" Number="{Binding Path=WindowSize, Mode=TwoWay}" Text="{Binding Path=WindowSize, Mode=OneTime}"></local:NumericTextBox>
-        <local:NumericTextBox Grid.Row="5" Grid.Column="1" Margin="0,2" x:Name="order" NumberType="Integer" Number="{Binding Path=Order, Mode=TwoWay}" Text="{Binding Path=Order, Mode=OneTime}"></local:NumericTextBox>
-        <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" Margin="0,5,0,0">
-            <Button Margin="3" Width="69" Click="ApplyParameterChanges">OK</Button>
-            <Button Margin="3" Width="69" Click="RejectParameterChanges">Cancel</Button>
+        <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,5" x:Name="filterMethod" ItemsSource="{Binding Source={StaticResource availableFilterMethods}}" SelectedItem="{Binding Path=Method}" ></ComboBox>
+        <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,5" x:Name="filterType" ItemsSource="{Binding Source={StaticResource availableFilterTypes}}" SelectedItem="{Binding Path=Type}" ></ComboBox>
+        <local:NumericTextBox Grid.Row="2" Grid.Column="1" Margin="0,5" x:Name="fs" NumberType="Float" Number="{Binding Path=Fs, Mode=TwoWay}" Text="{Binding Path=Fs, Mode=OneTime}"></local:NumericTextBox>
+        <local:NumericTextBox Grid.Row="3" Grid.Column="1" Margin="0,5" x:Name="fc" NumberType="Float" Number="{Binding Path=Fc, Mode=TwoWay}" Text="{Binding Path=Fc, Mode=OneTime}"></local:NumericTextBox>
+        <local:NumericTextBox Grid.Row="4" Grid.Column="1" Margin="0,5" x:Name="windowSize" NumberType="Integer" Number="{Binding Path=WindowSize, Mode=TwoWay}" Text="{Binding Path=WindowSize, Mode=OneTime}"></local:NumericTextBox>
+        <local:NumericTextBox Grid.Row="5" Grid.Column="1" Margin="0,5" x:Name="order" NumberType="Integer" Number="{Binding Path=Order, Mode=TwoWay}" Text="{Binding Path=Order, Mode=OneTime}"></local:NumericTextBox>
+        <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" Margin="0,5" VerticalAlignment="Center">
+            <Button Margin="3" Width="69" Click="ApplyParameterChanges" VerticalAlignment="Center">OK</Button>
+            <Button Margin="3" Width="69" Click="RejectParameterChanges" VerticalAlignment="Center">Cancel</Button>
         </StackPanel>
     </Grid>
 </Window>

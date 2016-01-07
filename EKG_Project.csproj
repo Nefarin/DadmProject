@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.IO.QT_Disp_Data_Worker</StartupObject>
+    <StartupObject>EKG_Project.IO.Waves_Data_Worker</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -115,11 +115,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="GUI\LoadFileDialogBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ModuleOptionDialogues\Dialogue_R_Peaks_Options.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ModuleOptionDialogues\Dialogue_Waves_Options.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -132,10 +136,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\NewAnalysisDialogBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\PdfPathDialogBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -211,12 +211,15 @@
     <Compile Include="GUI\Flutter.xaml.cs">
       <DependentUpon>Flutter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\LoadFileDialogBox.xaml.cs">
-      <DependentUpon>LoadFileDialogBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GUI\ModuleOption.cs" />
     <Compile Include="GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml.cs">
       <DependentUpon>Dialogue_ECG_Baseline_Options.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ModuleOptionDialogues\Dialogue_R_Peaks_Options.xaml.cs">
+      <DependentUpon>Dialogue_R_Peaks_Options.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ModuleOptionDialogues\Dialogue_Waves_Options.xaml.cs">
+      <DependentUpon>Dialogue_Waves_Options.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ModuleOptionDialogues\NumericTextBox.xaml.cs">
       <DependentUpon>NumericTextBox.xaml</DependentUpon>
@@ -226,9 +229,6 @@
     </Compile>
     <Compile Include="GUI\NewAnalysisDialogBox.xaml.cs">
       <DependentUpon>NewAnalysisDialogBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\PdfPathDialogBox.xaml.cs">
-      <DependentUpon>PdfPathDialogBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\R_peaks.xaml.cs">
       <DependentUpon>R_peaks.xaml</DependentUpon>
@@ -419,7 +419,9 @@
     <Resource Include="Matlab\TextFile1.txt" />
     <Resource Include="Resources\TextFile1.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="GUI\Converters\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

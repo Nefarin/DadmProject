@@ -5,6 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EKG_Project.GUI"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    </UserControl.Resources>
     <Grid>
         <TreeView x:Name="treeViewModules" Width="310" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
             <TreeView.Resources>
@@ -12,7 +15,7 @@
                     <DockPanel LastChildFill="True" Width="150">
                         <CheckBox Name="chk" Margin="2,6,2,2" DockPanel.Dock="Left" Tag="{Binding Path=Name}" IsChecked="{Binding Path=Set, Mode=TwoWay}"/>
                         <Label Name="txt" Content="{Binding Path=Name}"/>
-                        <Button Name="btn" IsEnabled="{Binding Path=Set}" Click="btn_Click" HorizontalAlignment="Right" Margin="0,2">Options</Button>
+                        <Button Name="btn" Visibility="{Binding Path=ParametersAvailable, Converter={StaticResource BoolToVisibility}}" IsEnabled="{Binding Path=Set}" Click="btn_Click" HorizontalAlignment="Right" Margin="0,2">Options</Button>
                     </DockPanel>
                 </HierarchicalDataTemplate>
             </TreeView.Resources>

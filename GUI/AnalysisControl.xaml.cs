@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.IO;
 using EKG_Project.Architecture;
 using EKG_Project.Architecture.ProcessingStates;
 using EKG_Project.Architecture.GUIMessages;
 using EKG_Project.Modules;
+
 
 namespace EKG_Project.GUI
 {
@@ -14,8 +16,13 @@ namespace EKG_Project.GUI
     /// </summary>
     /// 
     #endregion
+
+
     public partial class AnalysisControl : UserControl
     {
+        public string outputPdfPath;
+        public string inputFilePath;
+
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
             _communication.SendGUIMessage(new Abort());
@@ -23,8 +30,16 @@ namespace EKG_Project.GUI
 
         private void loadFileButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadFileDialogBox loadFileDialogBox = new LoadFileDialogBox();
-            loadFileDialogBox.ShowDialog();
+            System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
+            fileDialog.Title = "Specify input file";
+            fileDialog.RestoreDirectory = true;
+            fileDialog.FileName = inputFilePath;
+
+            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                inputFilePath = fileDialog.FileName;
+                checkPlayButton();
+            }
 
         }
         
@@ -52,8 +67,18 @@ namespace EKG_Project.GUI
 
         private void pdfButton_Click(object sender, RoutedEventArgs e)
         {
-            PdfPathDialogBox pdfPathDialogBox = new PdfPathDialogBox();
-            pdfPathDialogBox.ShowDialog();
+            System.Windows.Forms.SaveFileDialog fileDialog = new System.Windows.Forms.SaveFileDialog();
+            fileDialog.Title = "Specify output pdf file";
+            fileDialog.Filter = "pdf file|*.pdf";
+            fileDialog.RestoreDirectory = true;
+            fileDialog.FileName = outputPdfPath;
+
+            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                outputPdfPath = fileDialog.FileName;
+                checkPlayButton();
+
+            }
 
         }
 
@@ -68,6 +93,12 @@ namespace EKG_Project.GUI
         {
             message.Read(this);
         }
+
+        private void checkPlayButton()
+        {
+           startAnalyseButton.IsEnabled = File.Exists(inputFilePath) && Directory.Exists(Path.GetDirectoryName(outputPdfPath));
+        }
+
 
     }
 }
