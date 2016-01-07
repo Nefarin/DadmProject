@@ -26,6 +26,7 @@ namespace EKG_Project.GUI
 
         public string Name { get; set; }
         public AvailableOptions Code { get; set; }
+
         public bool Set
         {
             get
@@ -48,7 +49,9 @@ namespace EKG_Project.GUI
                 this.OnPropertyChanged("Set");
             }
         }
+
         public ModuleOption Parent { get; set; }
+
         public List<ModuleOption> Suboptions
         {
             get
@@ -58,7 +61,9 @@ namespace EKG_Project.GUI
                 return this._suboptions;
             }
         }
+
         public ModuleParams ModuleParam { get; set; }
+
         public bool ParametersAvailable { get { return this.ModuleParam != null; } }
 
         public string AnalysisName
@@ -132,12 +137,14 @@ namespace EKG_Project.GUI
             this.Suboptions.Add(new ModuleOption(code, this));
             return this;
         }
+
         public ModuleOption AddSuboptionAndMoveDown(AvailableOptions code)
         {
             var suboption = new ModuleOption(code, this);
             this.Suboptions.Add(suboption);
             return suboption;
         }
+
         public ModuleOption AddSuboptionAndMoveUp(AvailableOptions code)
         {
             this.Suboptions.Add(new ModuleOption(code, this));

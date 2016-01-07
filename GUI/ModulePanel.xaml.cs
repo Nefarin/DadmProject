@@ -96,24 +96,37 @@ namespace EKG_Project.GUI
                     break;
                 default:
                     break;
-            }      
+            }
         }
 
 
         public List<ModuleOption> getAllOptions()
         {
-            var OptionValues = Enum.GetValues(typeof(AvailableOptions));
-
             List<ModuleOption> AllOptions = new List<ModuleOption>();
 
-            foreach (var option in OptionValues)
+            foreach (var option in Options)
             {
+                AllOptions = getSuboptions(option, AllOptions);
 
-                ModuleOption Module = new ModuleOption((AvailableOptions)option);
-                AllOptions.Add(Module);
             }
+
             return AllOptions;
         }
+
+        public List<ModuleOption> getSuboptions(ModuleOption option, List<ModuleOption> currentOptions)
+        {
+            currentOptions.Add(option);
+
+            if (option.Suboptions.Any())
+            {
+                foreach (var suboption in option.Suboptions)
+                {
+                    currentOptions = getSuboptions(suboption, currentOptions);
+                }
+            }
+            return currentOptions;
+        }
+
                     
     }
 
