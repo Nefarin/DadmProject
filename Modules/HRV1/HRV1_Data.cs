@@ -7,7 +7,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV1
 {
-    class HRV1_Data : ECG_Data
+    public class HRV1_Data : ECG_Data
     {
 
         private List<Tuple<string, Vector<double>>> _timeBasedParams;

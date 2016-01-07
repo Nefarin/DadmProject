@@ -258,17 +258,26 @@
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
     <Compile Include="IO\ASCIIConverter.cs" />
+    <Compile Include="IO\Atrial_Fibr_Data_Worker.cs" />
     <Compile Include="IO\Basic_Data_Worker.cs" />
     <Compile Include="IO\DebugECGPath.cs" />
+    <Compile Include="IO\ECG_Baseline_Data_Worker.cs" />
     <Compile Include="IO\ECG_Worker.cs" />
     <Compile Include="IO\FileLoader.cs" />
+    <Compile Include="IO\Flutter_Data_Worker.cs" />
+    <Compile Include="IO\Heart_Axis_Data_Worker.cs" />
+    <Compile Include="IO\Heart_Class_Data_Worker.cs" />
+    <Compile Include="IO\HRV1_Data_Worker.cs" />
+    <Compile Include="IO\HRV_DFA_Data_Worker.cs" />
     <Compile Include="IO\IECGConverter.cs" />
     <Compile Include="IO\IECGPath.cs" />
     <Compile Include="IO\IECG_Worker.cs" />
     <Compile Include="IO\MITBIHConverter.cs" />
     <Compile Include="IO\ReleaseECGPath.cs" />
+    <Compile Include="IO\R_Peaks_Data_Worker.cs" />
     <Compile Include="IO\TempInput.cs" />
     <Compile Include="IO\TestModule3_Data_Worker.cs" />
+    <Compile Include="IO\Waves_Data_Worker.cs" />
     <Compile Include="IO\WFDBTest.cs" />
     <Compile Include="IO\XMLConverter.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
