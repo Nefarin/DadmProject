@@ -61,8 +61,11 @@ namespace EKG_Project.GUI
                 }
             }
             MessageBox.Show("Starting Analyses");
+            System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
+            tempList.Add("ecgBaseline");
+            tempList.Add("ecgBasic");
+            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(tempList);
             //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
-            //VisualisationPanelUserControl.UpdateLayout();
 
         }
 

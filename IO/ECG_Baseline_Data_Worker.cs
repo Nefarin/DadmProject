@@ -127,5 +127,20 @@ namespace EKG_Project.IO
             }
             this.Data = basicData;
         }
+
+
+        public static void Main()
+        {
+            ECG_Baseline_Data_Worker worker = new ECG_Baseline_Data_Worker();
+            worker.Load();
+
+            foreach (var signal in worker.Data.SignalsFiltered)
+            {
+                Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+            }
+
+            Console.Read();
+
+        }
     }
 }

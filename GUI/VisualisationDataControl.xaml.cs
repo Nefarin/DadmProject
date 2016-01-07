@@ -22,6 +22,17 @@ namespace EKG_Project.GUI
     {
         private List<TabItem> visulisationDataTabsList;
 
+        //0 - plot
+        //1 - plot and table
+        //2 - plot and histogram
+        //3 - plot and table and histogram 
+        private Dictionary<string, uint> modulesVisualisationNeeds = new Dictionary<string, uint>()
+        {
+            {"ecgBaseline", 1 },
+            {"ecgBasic", 0 }
+        };
+
+
         public VisualisationDataControl()
         {
             InitializeComponent();
@@ -49,5 +60,74 @@ namespace EKG_Project.GUI
 
             this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
         }
+
+        public VisualisationDataControl(string moduleName)
+        {
+            InitializeComponent();
+            visulisationDataTabsList = new List<TabItem>();
+            
+
+            //if needed and what where needed? 
+            switch (modulesVisualisationNeeds[moduleName])
+            {
+                case 0:                  
+                    StartPlot();
+                    break;
+                    
+                case 1:                    
+                    StartPlot();
+                    StartTable();
+                    break;                   
+                case 2:
+                    StartPlot();
+                    StartHistogram();
+                    break;                   
+                case 3:                   
+                    StartPlot();
+                    StartTable();
+                    StartHistogram();
+                    break;
+                    
+                default:
+                    break;
+                            
+            }
+
+
+            this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
+
+        }
+
+        public void StartPlot()
+        {
+            VisualisationPlotControl ecgVPControl = new VisualisationPlotControl();
+
+            TabItem ecgBaselineTab = new TabItem();
+            ecgBaselineTab.Header = "Plot";
+            ecgBaselineTab.Content = ecgVPControl;
+            visulisationDataTabsList.Add(ecgBaselineTab);
+        }
+
+        public void StartTable()
+        {
+            VisualisationTableControl ecgVTControl = new VisualisationTableControl();
+
+            TabItem tableControl = new TabItem();
+            tableControl.Header = "Table";
+            tableControl.Content = ecgVTControl;
+            visulisationDataTabsList.Add(tableControl);
+        }
+
+        public void StartHistogram()
+        {
+            VisualisationHistogramControl ecgVHControl = new VisualisationHistogramControl();
+
+            TabItem histogramControl = new TabItem();
+            histogramControl.Header = "Histogram";
+            histogramControl.Content = ecgVHControl;
+            visulisationDataTabsList.Add(histogramControl);
+        }
+
+
     }
 }
