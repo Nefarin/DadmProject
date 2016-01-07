@@ -16,7 +16,7 @@ namespace EKG_Project.IO
 
         public FileLoader() { }
 
-        void Load(string path)
+        public void Load(string path)
         {
             switch (extension)
             {
@@ -37,7 +37,7 @@ namespace EKG_Project.IO
 
         }
 
-        void Validate(string path)
+        public void Validate(string path)
         {
             try
             {
