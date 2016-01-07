@@ -298,6 +298,7 @@
     <Compile Include="Modules\Heart_Axis\Heart_Axis_Alg.cs" />
     <Compile Include="Modules\Heart_Axis\Heart_Axis_Data.cs" />
     <Compile Include="Modules\Heart_Axis\Heart_Axis_Params.cs" />
+    <Compile Include="Modules\Heart_Class\Coefficients.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Alg.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Data.cs" />

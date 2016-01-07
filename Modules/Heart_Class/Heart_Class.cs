@@ -28,13 +28,10 @@ namespace EKG_Project.Modules.Heart_Class
         private Basic_Data _inputData;
         private ECG_Baseline_Data _inputECGbaselineData;
         private R_Peaks_Data _inputRpeaksData;
-        private Waves_Data _inputWavesData;
         private Heart_Class_Data _outputData;
 
         private Heart_Class_Params _params;
 
-        private Vector<Double> _currentVector;
-        private Vector<Double> _tempVector;
 
 
 
@@ -49,14 +46,16 @@ namespace EKG_Project.Modules.Heart_Class
             return _ended;
         }
 
+        public Waves_Data InputWavesData { get; set; }
+
+
         public void Init(ModuleParams parameters)
         {
-            
             Params = parameters as Heart_Class_Params;
-            
 
             Aborted = false;
-            if (!Runnable()) _ended = true;
+            if (!Runnable())
+                _ended = true;
             else
             {
                 _ended = false;
@@ -88,24 +87,26 @@ namespace EKG_Project.Modules.Heart_Class
                 _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
                 _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
                 _tempVector = Vector<Double>.Build.Dense(1);
-                
+
 
             }
-            
+
         }
 
         public void ProcessData()
         {
-            if (Runnable()) processData();
-            else _ended = true;
+            if (Runnable())
+                processData();
+            else
+                _ended = true;
         }
-        
+
         public double Progress()
         {
-            
+
             return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
         }
-        
+
         public bool Runnable()
         {
             return Params != null;
@@ -157,7 +158,7 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _outputWorker; }
             set { _outputWorker = value; }
         }
-        
+
         public bool Aborted
         {
             get { return _aborted; }
@@ -169,13 +170,13 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _params; }
             set { _params = value; }
         }
-       
+
         public Heart_Class_Data OutputData
         {
             get { return _outputData; }
             set { _outputData = value; }
         }
-        
+
 
 
         public ECG_Baseline_Data_Worker InputEcGbaselineWorker
@@ -208,11 +209,6 @@ namespace EKG_Project.Modules.Heart_Class
             set { _inputRpeaksData = value; }
         }
 
-        public Waves_Data InputWavesData
-        {
-            get { return _inputWavesData; }
-            set { _inputWavesData = value; }
-        }
 
         public int NumberOfChannels
         {
@@ -231,5 +227,7 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _inputData; }
             set { _inputData = value; }
         }
+
+
     }
 }
