@@ -40,11 +40,11 @@ namespace EKG_Project.Modules.QT_Disp
 
              
             //Vector<double> sig = Vector<double>.Build.Dense(10);*/
-             QT_Data test = new QT_Data();
-             List<QT_Data> test_list = new List<QT_Data>();
-             test_list.Add(test);
-             QTCalculation output = new QTCalculation(test_list);
-             output.setOutput();
+            /*QT_Data test = new QT_Data();
+            List<QT_Data> test_list = new List<QT_Data>();
+            test_list.Add(test);
+            QTCalculation output = new QTCalculation(test_list);
+            output.setOutput();*/
 
             /*
             TempInput.setInputFilePath("D:\\Dadm_nowy\\EKG.txt");
@@ -65,6 +65,16 @@ namespace EKG_Project.Modules.QT_Disp
             double[] wynik = MathNet.Numerics.Fit.Polynomial(x, y, 2);
             Console.WriteLine("Size" +wynik.Count());
             Console.WriteLine(wynik.ElementAt(0) +"   "+ wynik.ElementAt(1) +"      "+ wynik.ElementAt(2));*/
+            QTCalculation wyniki = new QTCalculation();
+            wyniki.setOutput();
+            Console.WriteLine(wyniki.meanQTInterval.ElementAt(0).Item2);
+            Console.WriteLine(wyniki.meanQTInterval.ElementAt(1).Item2);
+
+            Console.WriteLine(wyniki.stdQTInterval.ElementAt(0).Item2);
+            Console.WriteLine(wyniki.stdQTInterval.ElementAt(1).Item2);
+
+            Console.WriteLine(wyniki.localQTdisp.ElementAt(0).Item2);
+            Console.WriteLine(wyniki.localQTdisp.ElementAt(1).Item2);
             Console.ReadKey();
 
         }
@@ -81,7 +91,6 @@ namespace EKG_Project.Modules.QT_Disp
         //
         String drainName;
         T_End_Method method;
-
        
         private List<int> QRS_End;
         private List<int> P_Onset;
@@ -266,86 +275,67 @@ namespace EKG_Project.Modules.QT_Disp
         }
 
     }
-    #region Documentation
+    
     /// <summary>
-    /// This class keep all data to calculate QT interval - no methods
+    /// This class is to calculate QT intervals statistic and QT disp from one drain and all drains
     /// </summary>
-    #endregion
-    public class QT_Data
-    {
-
-        public List<int> QRS_Onset;
-        public List<int> T_End;
-        public List<double> RR_Interval;
-        public double Fs;
-        public String drainName;
-        public QT_Calc_Method method;
-
-        #region Documentation
-        /// <summary>
-        /// This constructor creates object that consist of all vectors needed to calculate a QT interval stats and QT disp
-        /// </summary>
-        /// <param name="QRS_Onset"></param>
-        /// <param name="T_End"></param>
-        /// <param name="RR_Interval"></param>
-        /// <param name="Fs"></param>
-        /// <param name="drainName"></param>
-        /// <param name="method"></param>
-        #endregion
-        public QT_Data(List<int> QRS_Onset, List<int> T_End, List<double> RR_Interval, double Fs, String drainName, QT_Calc_Method method)
-        {
-            this.QRS_Onset = QRS_Onset;
-            this.T_End = T_End;
-            this.RR_Interval = RR_Interval;
-            this.Fs = Fs;
-            this.drainName = drainName;
-            this.method = method;
-
-        }
-        /// <summary>
-        /// only for test
-        /// </summary>
-        public QT_Data()
-        {
-            int[] qrs_onset = { 558, -1, 1407, 1855 };
-            int[] qrs_end = { 779, 1176, 1604, 2032 };
-            double[] rr = { 958.33, 1152.78, 1238.89,1113.78};     
-
-
-            this.QRS_Onset = qrs_onset.ToList();
-            this.T_End = qrs_end.ToList();
-            this.RR_Interval = rr.ToList();
-            this.Fs = 360;
-            this.drainName = "V2";
-            this.method = QT_Calc_Method.BAZETTA;
-        }
-
-    }
-    #region Documentation
-    /// <summary>
-    /// This class is to calculate a QT_disp(both local and global), mean and std of QT intervals
-    /// </summary>
-    #endregion
     class QTCalculation
     {
-        private List<Tuple<string, double>> meanQTInterval = new List<Tuple<string, double>>();
-        private List<Tuple<string, double>> stdQTInterval = new List<Tuple<string, double>>();
-        private List<Tuple<string, double>> localQTdisp= new List<Tuple<string, double>>();
-       
+        //iput
+        private List<int> QRS_Onset = new List<int>();       
+        private List<double> RR_interval = new List<double>();
+        private QT_Calc_Method method;
+        private double Fs;
+        private List<Tuple<String, List<int>>> T_End = new List<Tuple<string, List<int>>>();
+        //output
+        public List<Tuple<string, double>> meanQTInterval = new List<Tuple<string, double>>();
+        public List<Tuple<string, double>> stdQTInterval = new List<Tuple<string, double>>();
+        public List<Tuple<string, double>> localQTdisp = new List<Tuple<string, double>>();
+
         private double globalQTDisp;
-        private List<QT_Data> DataToOperate;            //size of List tells us the amount of drains.
+      
         int AmountOFDrains;
 
 
         /// <summary>
         /// This constructor creates list of QT_Data such as QRS_Onset, T_End, RR_interval, Fs, drain name, and QT_interval calculation method
         /// </summary>
-        /// <param name="DataToOperate">List with charecteristic points dranin name and method</param>
-        public QTCalculation(List<QT_Data> DataToOperate)
+        /// <param name="QRS_Onset">This list stores next QRS_Onset indexes</param>
+        /// <param name="T_End">This list stores tuples which is a drain name and list with T-End inexes</param>
+        /// <param name="RR_interval">This list stores next RR Intervals in signal in ms</param>
+        /// <param name="Fs">This is frequency sampling ih Hz</param>
+        /// <param name="method">This is a formula, which we want to calculate a QT_interval</param>
+        public QTCalculation(List<int> QRS_Onset, List<double> RR_interval, QT_Calc_Method method,double Fs, List<Tuple<String,List<int>>> T_End)
         {
-            this.DataToOperate = DataToOperate;
-            this.AmountOFDrains = this.DataToOperate.Count;           
+            this.Fs = Fs;
+            this.method = method;
+            this.QRS_Onset = QRS_Onset;
+            this.T_End = T_End;
+            this.RR_interval = RR_interval;
+            this.AmountOFDrains = this.T_End.Count;
 
+        }
+        /// <summary>
+        /// only for test
+        /// </summary>
+        public QTCalculation()
+        {
+            int[] qrs_onset = { 558, -1, 1407, 1855 };
+            int[] qrs_end = { 779, 1176, 1604, 2032 };
+            int[] t_end = { 750, 1300, 1654, 2067 };
+            double[] rr = { 958.33, 1152.78, 1238.89, 1113.78 };
+
+
+            this.QRS_Onset = qrs_onset.ToList();
+            this.T_End = new List<Tuple<String, List<int>>>(); qrs_end.ToList();
+            this.RR_interval = rr.ToList();
+            this.Fs = 360;
+            Tuple<String, List<int>> drain1 = Tuple.Create("V2", qrs_end.ToList());
+            Tuple<String, List<int>> drain2 = Tuple.Create("V5", t_end.ToList());
+            this.T_End.Add(drain1);
+            this.T_End.Add(drain2);
+            this.method = QT_Calc_Method.BAZETTA;
+            this.AmountOFDrains = this.T_End.Count;
         }
 
         /// <summary>
@@ -363,17 +353,17 @@ namespace EKG_Project.Modules.QT_Disp
             int j = 0;
 
             //adding qt intervals calculated according to chosen formula 
-            foreach (QT_Data drain in DataToOperate)
+            foreach (Tuple<String,List<int>> T_EndInDrain in T_End)
             {
-                if (drain.method == QT_Calc_Method.BAZETTA)
+                if (method == QT_Calc_Method.BAZETTA)
                 {
-                    if (drain.QRS_Onset.ElementAt(0) < drain.T_End.ElementAt(0))
+                    if (QRS_Onset.ElementAt(0) < T_EndInDrain.Item2.ElementAt(0))
                     {
-                        for (int i = 0; i < drain.QRS_Onset.Count; i++)
+                        for (int i = 0; i < QRS_Onset.Count; i++)
                         {
-                            if (drain.QRS_Onset.ElementAt(i) != -1 && (drain.T_End.ElementAt(i) != -1))
+                            if (QRS_Onset.ElementAt(i) != -1 && (T_EndInDrain.Item2.ElementAt(i) != -1))
                             {
-                                QTIntervals.Add((((drain.T_End.ElementAt(i) - drain.QRS_Onset.ElementAt(i)) / drain.Fs)*1000) / Math.Sqrt(drain.RR_Interval.ElementAt(i)/1000));
+                                QTIntervals.Add((((T_EndInDrain.Item2.ElementAt(i) - QRS_Onset.ElementAt(i)) / Fs) * 1000) / Math.Sqrt(RR_interval.ElementAt(i) / 1000));
                             }
                             else
                             {
@@ -383,32 +373,34 @@ namespace EKG_Project.Modules.QT_Disp
                         }
                     }
                 }
-                if (drain.method == QT_Calc_Method.FRIDERICA)
+                if (method == QT_Calc_Method.FRIDERICA)
                 {
-                    if (drain.QRS_Onset.ElementAt(0) < drain.T_End.ElementAt(0))
+                    if (QRS_Onset.ElementAt(0) < T_EndInDrain.Item2.ElementAt(0))
                     {
-                        for (int i = 0; i < drain.QRS_Onset.Count; i++)
+                        for (int i = 0; i < QRS_Onset.Count; i++)
                         {
-                            if (drain.QRS_Onset.ElementAt(i) != -1 && (drain.T_End.ElementAt(i) != -1))
+                            if (QRS_Onset.ElementAt(i) != -1 && (T_EndInDrain.Item2.ElementAt(i) != -1))
                             {
-                                QTIntervals.Add((((drain.T_End.ElementAt(i) - drain.QRS_Onset.ElementAt(i)) / drain.Fs)*1000) / Math.Pow((drain.RR_Interval.ElementAt(i)/1000), 1 / 3));
+                                QTIntervals.Add((((T_EndInDrain.Item2.ElementAt(i) - QRS_Onset.ElementAt(i)) / Fs) * 1000) / Math.Sqrt(RR_interval.ElementAt(i) / 1000));
                             }
                             else
                             {
                                 QTIntervals.Add(0);
                             }
+
                         }
+
                     }
                 }
-                if (drain.method == QT_Calc_Method.FRAMIGHAMA)
+                if (method == QT_Calc_Method.FRAMIGHAMA)
                 {
-                    if (drain.QRS_Onset.ElementAt(0) < drain.T_End.ElementAt(0))
+                    if (QRS_Onset.ElementAt(0) < T_EndInDrain.Item2.ElementAt(0))
                     {
-                        for (int i = 0; i < drain.QRS_Onset.Count; i++)
+                        for (int i = 0; i < QRS_Onset.Count; i++)
                         {
-                            if (drain.QRS_Onset.ElementAt(i) != -1 && (drain.T_End.ElementAt(i) != -1))
+                            if (QRS_Onset.ElementAt(i) != -1 && (T_EndInDrain.Item2.ElementAt(i) != -1))
                             {
-                                QTIntervals.Add((((drain.T_End.ElementAt(i) - drain.QRS_Onset.ElementAt(i)) / drain.Fs)/1000) + 0.154 * (1 - (drain.RR_Interval.ElementAt(i)/1000)));
+                                QTIntervals.Add((((T_EndInDrain.Item2.ElementAt(i) - QRS_Onset.ElementAt(i)) / Fs) * 1000) / Math.Sqrt(RR_interval.ElementAt(i) / 1000));
                             }
                             else
                             {
@@ -419,36 +411,37 @@ namespace EKG_Project.Modules.QT_Disp
                     }
                 }
                 //calculate mean we count all intervals expect 0 because 0 means that there was a bad recognition
+               
                 mean[j] = QTIntervals.Sum() / (QTIntervals.Except(zero)).Count();
-                local[j] = QTIntervals.Max() - QTIntervals.Min();
+                local[j] = QTIntervals.Max() - QTIntervals.Except(zero).Min();
                 std[j] = (QTIntervals.Except(zero)).StandardDeviation();
                 QTIntervalsAll.Add(QTIntervals);        //this list strores all qt intervals from all drain
                 j++;
-               // QTIntervals.Clear();
+                QTIntervals.Clear();                    //can't do it because it's a reference
             }
             //here we create data to send them to the GUI to show them in table
             for (int i = 0; i < AmountOFDrains; i++)
             {
-                
-                    this.localQTdisp.Add(Tuple.Create(DataToOperate.ElementAt(i).drainName, local.ElementAt(i)));
-                    this.meanQTInterval.Insert(i, Tuple.Create(DataToOperate.ElementAt(i).drainName, mean.ToList().ElementAt(i)));
-                    this.stdQTInterval.Insert(i, Tuple.Create(DataToOperate.ElementAt(i).drainName, std.ToList().ElementAt(i)));
-               
+
+                this.localQTdisp.Add(Tuple.Create(T_End.ElementAt(i).Item1, local.ElementAt(i)));
+                this.meanQTInterval.Add(Tuple.Create(T_End.ElementAt(i).Item1, mean.ToList().ElementAt(i)));
+                this.stdQTInterval.Add(Tuple.Create(T_End.ElementAt(i).Item1, std.ToList().ElementAt(i)));
+
             }
-            //here we calculate a global QT_disp froma all drains
+            //here we calculate a global QT_disp froma all drains   check it because all above works
             List<double> temp = new List<double>();
             List<double> globalQT = new List<double>();
-            for(int i = 0; i < QTIntervalsAll.ElementAt(0).Count; i++)
+            for (int i = 0; i < QTIntervalsAll.ElementAt(0).Count; i++)
             {
                 foreach (List<double> onedrain in QTIntervalsAll)
                 {
-                   temp.Add(onedrain.ElementAt(i));
+                    temp.Add(onedrain.ElementAt(i));
                 }
                 if (!temp.Contains(0))
                 {
                     globalQT.Add(temp.Max() - temp.Min());
                 }
-              
+
             }
             this.globalQTDisp = globalQT.Mean();
             globalQT.Clear();
