@@ -16,7 +16,15 @@ namespace EKG_Project.Modules.Heart_Class
         //private Vector<uint> _QRSonsets;
         //private Vector<uint> _QRSends;
 
+        public Heart_Class_Params()
+        {
+            this.AnalysisName = "Analysis6";
+        }
 
+        public Heart_Class_Params(string analysisName)
+        {
+            this.AnalysisName = analysisName;
+        }
 
         /*HEART_CLASS Module output parameters
         private Vector<int> _qrsComplexLabel;
