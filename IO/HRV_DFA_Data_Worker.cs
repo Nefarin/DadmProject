@@ -57,76 +57,49 @@ namespace EKG_Project.IO
                 XmlElement module = file.CreateElement(string.Empty, "module", string.Empty);
                 string moduleName = this.GetType().Name;
                 moduleName = moduleName.Replace("_Data_Worker", "");
+
+                XmlNodeList existingModules = file.SelectNodes("EKG/module");
+                foreach (XmlNode existingModule in existingModules)
+                {
+                    if (existingModule.Attributes["name"].Value == moduleName)
+                    {
+                        root.RemoveChild(existingModule);
+                    }
+                }
+
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
 
-                List<Tuple<string, Vector<double>>> dfaNumberN = basicData.DfaNumberN;
-                foreach (var tuple in dfaNumberN)
+                object[] Properties = { basicData.DfaNumberN, basicData.DfaValueFn, basicData.ParamAlpha};
+                string[] Names = { "DfaNumberN", "DfaValueFn", "ParamAlpha"};
+                int licznik = 0;
+
+                foreach (var property in Properties)
                 {
-                    XmlElement DfaNumberN = file.CreateElement(string.Empty, "DfaNumberN", string.Empty);
-                    module.AppendChild(DfaNumberN);
-
-                    XmlElement lead = file.CreateElement(string.Empty, "lead", string.Empty);
-                    XmlText leadValue = file.CreateTextNode(tuple.Item1);
-                    lead.AppendChild(leadValue);
-                    DfaNumberN.AppendChild(lead);
-
-                    XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-                    string samplesText = null;
-                    foreach (var value in tuple.Item2)
+                    List<Tuple<string, Vector<double>>> list = (List<Tuple<string, Vector<double>>>)property;
+                    foreach (var tuple in list)
                     {
-                        samplesText += value.ToString() + " ";
+                        XmlElement moduleNode = file.CreateElement(string.Empty, Names[licznik], string.Empty);
+                        module.AppendChild(moduleNode);
+
+                        XmlElement lead = file.CreateElement(string.Empty, "lead", string.Empty);
+                        XmlText leadValue = file.CreateTextNode(tuple.Item1);
+                        lead.AppendChild(leadValue);
+                        moduleNode.AppendChild(lead);
+
+                        XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
+                        string samplesText = null;
+                        foreach (var value in tuple.Item2)
+                        {
+                            samplesText += value.ToString() + " ";
+                        }
+
+                        XmlText samplesValue = file.CreateTextNode(samplesText);
+                        samples.AppendChild(samplesValue);
+                        moduleNode.AppendChild(samples);
                     }
 
-                    XmlText samplesValue = file.CreateTextNode(samplesText);
-                    samples.AppendChild(samplesValue);
-                    DfaNumberN.AppendChild(samples);
-                }
-
-                List<Tuple<string, Vector<double>>> dfaValueFn = basicData.DfaValueFn;
-                foreach (var tuple in dfaValueFn)
-                {
-                    XmlElement DfaValueFn = file.CreateElement(string.Empty, "DfaValueFn", string.Empty);
-                    module.AppendChild(DfaValueFn);
-
-                    XmlElement lead = file.CreateElement(string.Empty, "lead", string.Empty);
-                    XmlText leadValue = file.CreateTextNode(tuple.Item1);
-                    lead.AppendChild(leadValue);
-                    DfaValueFn.AppendChild(lead);
-
-                    XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-                    string samplesText = null;
-                    foreach (var value in tuple.Item2)
-                    {
-                        samplesText += value.ToString() + " ";
-                    }
-
-                    XmlText samplesValue = file.CreateTextNode(samplesText);
-                    samples.AppendChild(samplesValue);
-                    DfaValueFn.AppendChild(samples);
-                }
-
-                List<Tuple<string, Vector<double>>> paramAlpha = basicData.ParamAlpha;
-                foreach (var tuple in paramAlpha)
-                {
-                    XmlElement ParamAlpha = file.CreateElement(string.Empty, "ParamAlpha", string.Empty);
-                    module.AppendChild(ParamAlpha);
-
-                    XmlElement lead = file.CreateElement(string.Empty, "lead", string.Empty);
-                    XmlText leadValue = file.CreateTextNode(tuple.Item1);
-                    lead.AppendChild(leadValue);
-                    ParamAlpha.AppendChild(lead);
-
-                    XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-                    string samplesText = null;
-                    foreach (var value in tuple.Item2)
-                    {
-                        samplesText += value.ToString() + " ";
-                    }
-
-                    XmlText samplesValue = file.CreateTextNode(samplesText);
-                    samples.AppendChild(samplesValue);
-                    ParamAlpha.AppendChild(samples);
+                    licznik++;
                 }
 
                 ew.InternalXMLFile = file;
