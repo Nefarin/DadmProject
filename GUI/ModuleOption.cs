@@ -8,6 +8,7 @@ using EKG_Project.Modules;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Waves;
+using EKG_Project.Modules.Atrial_Fibr;
 
 namespace EKG_Project.GUI
 {
@@ -100,6 +101,9 @@ namespace EKG_Project.GUI
                     break;
                 case AvailableOptions.WAVES:
                     this.ModuleParam = new Waves_Params();
+                    break;
+                case AvailableOptions.ATRIAL_FIBER:
+                    this.ModuleParam = new Atrial_Fibr_Params(Detect_Method.POINCARE);
                     break;
                 default:
                     this.ModuleParam = null;

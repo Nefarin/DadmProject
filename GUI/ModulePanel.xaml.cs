@@ -1,4 +1,5 @@
 ﻿using EKG_Project.GUI.ModuleOptionDialogues;
+using EKG_Project.Modules.Atrial_Fibr;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Waves;
@@ -87,6 +88,10 @@ namespace EKG_Project.GUI
                     break;
                 case AvailableOptions.WAVES:
                     dialogue = new Dialogue_Waves_Options(this, (Waves_Params)option.ModuleParam);
+                    dialogue.ShowDialog();
+                    break;
+                case AvailableOptions.ATRIAL_FIBER:
+                    dialogue = new Dialogue_Atrial_fibr_Options(this, (Atrial_Fibr_Params)option.ModuleParam);
                     dialogue.ShowDialog();
                     break;
                 default:
