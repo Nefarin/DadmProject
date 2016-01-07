@@ -134,7 +134,9 @@ namespace EKG_Project.IO
                     basicData.ClassificationResult = list;
 
                     XmlNode channelMliiDetected = module["ChannelMliiDetected"];
-                    basicData.ChannelMliiDetected = Convert.ToBoolean(channelMliiDetected.InnerText);
+                    string readChannelMliiDetected = channelMliiDetected.InnerText;
+                    bool convertedChannelMliiDetected = Convert.ToBoolean(readChannelMliiDetected);
+                    basicData.ChannelMliiDetected = convertedChannelMliiDetected;
                     
                 }
             }
