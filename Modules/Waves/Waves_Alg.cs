@@ -5,9 +5,29 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Waves
 {
-    /*
+
+    #region Waves Class doc
+    /// <summary>
+    /// Class locates P-onsets, P-ends, QRS-onsets, QRS-end and T-ends in ECG 
+    /// </summary>
+    #endregion
+
     public partial class Waves : IModule
     {
+        
+        public void analyzeSignalPart(  )
+        {
+            DetectQRS();
+            FindP();
+            FindT();
+
+            _currentQRSonsets.AddRange(_currentQRSonsetsPart);
+            _currentQRSends.AddRange(_currentQRSendsPart);
+            _currentPonsets.AddRange(_currentPonsetsPart);
+            _currentPends.AddRange(_currentPendsPart);
+            _currentTends.AddRange(_currentTendsPart);
+        }
+        
         public Vector<double> HaarDWT(Vector<double> signal, int n)
         {
             //Work just like wavedec but use only haar wavelet
@@ -106,29 +126,78 @@ namespace EKG_Project.Modules.Waves
 
         public void DetectQRS()
         {
-            _data.QRSOnsets.Clear();
-            List<Vector<double>> dwt =new List< Vector<double>>();
+            _currentQRSonsetsPart.Clear();
+            List<Vector<double>> dwt = new List<Vector<double>>();
+            int startInd = 0;
+            if (_rPeaksProcessed > 1)
+            {
+                startInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed - 1];
+                //Console.WriteLine("startujemy");
+                //Console.WriteLine(startInd);
+            }
+            int endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1;
+            
+            if (_rPeaksProcessed + _params.RpeaksStep + 1 < endInd)
+            {
+                endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + _params.RpeaksStep + 1];
+                //Console.WriteLine(endInd);
+            }
+            else
+            {
+                endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[endInd];
+            }
 
-            dwt = ListDWT(_data.ECG, _params.DecompositionLevel , _params.WaveType);
+            int dwtLen = 1;
+            if (endInd != startInd)
+                dwtLen = endInd - startInd;
+            //Console.WriteLine(endInd);
+            //Console.WriteLine(dwtLen);
+
+            dwt = ListDWT(InputData.Signals[_currentChannelIndex].Item2.SubVector(startInd, dwtLen), _params.DecompositionLevel , _params.WaveType);
             
             int d2size = dwt[_params.DecompositionLevel - 1].Count();
-            int rSize = _data.Rpeaks.Count();
+            int rSize = _params.RpeaksStep;
+            int decLev = _params.DecompositionLevel;
 
-            _data.QRSOnsets.Add(FindQRSOnset(0, _data.Rpeaks[0], dwt[1], _params.DecompositionLevel));
-            for (int middleR = 1; middleR < rSize - 1; middleR++ )
+            if (startInd == 0)
+                 _currentQRSonsetsPart.Add(FindQRSOnset(0, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[0], dwt[decLev-1], _params.DecompositionLevel));
+
+            int maxRInd = _rPeaksProcessed + rSize;
+            if (maxRInd >= _currentRpeaksLength)
+                maxRInd = _currentRpeaksLength - 1;
+
+            for (int middleR = _rPeaksProcessed+1; middleR < maxRInd ; middleR++ )
             {
-                _data.QRSOnsets.Add(FindQRSOnset(_data.Rpeaks[middleR-1], _data.Rpeaks[middleR], dwt[1], _params.DecompositionLevel));
-                _data.QRSEnds.Add(FindQRSEnd(_data.Rpeaks[middleR], _data.Rpeaks[middleR + 1], dwt[1], _params.DecompositionLevel));
+                _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR-1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, dwt[decLev - 1], _params.DecompositionLevel)+ startInd);
+                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel)+ startInd);
             }
-            _data.QRSEnds.Add(FindQRSEnd(_data.Rpeaks[rSize - 1], _data.ECG.Count - 1, dwt[1], _params.DecompositionLevel));
+
+            if (endInd == (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1)
+                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[rSize] -startInd, InputData.Signals[_currentChannelIndex].Item2.Count - 1, dwt[decLev - 1], _params.DecompositionLevel));
 
         }
 
-        public int FindQRSOnset( int rightEnd, int middleR, Vector<double> dwt, int decompLevel)
+        public int FindQRSOnset( double drightEnd, double dmiddleR, Vector<double> dwt, int decompLevel)
         {
+            int rightEnd = (int)drightEnd;
+            int middleR = (int)dmiddleR;
             int sectionStart = (rightEnd >> decompLevel);
-            int qrsOnsetInd = dwt.SubVector(sectionStart, (middleR >> decompLevel) - (rightEnd>> decompLevel)+1).MinimumIndex() + sectionStart;
-            double treshold = Math.Abs(dwt[qrsOnsetInd])*0.05; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
+
+            int len = (middleR >> decompLevel) - (rightEnd >> decompLevel);
+
+            if (len < 1)
+                len = 1;
+
+            //Console.WriteLine("nadupcamy!");
+            //Console.WriteLine(sectionStart);
+            //Console.WriteLine((middleR >> decompLevel) - (rightEnd >> decompLevel) + 1);
+            //Console.WriteLine(dwt.Count);
+
+            if (sectionStart + len >= dwt.Count)
+                return -1;
+
+            int qrsOnsetInd = dwt.SubVector(sectionStart, len).MinimumIndex() + sectionStart;
+            double treshold = Math.Abs(dwt[qrsOnsetInd])*0.05; 
 
             while (Math.Abs(dwt[qrsOnsetInd]) > treshold && qrsOnsetInd > sectionStart)
                 qrsOnsetInd--;
@@ -139,55 +208,101 @@ namespace EKG_Project.Modules.Waves
                 return (qrsOnsetInd << decompLevel);
         }
 
-        public int FindQRSEnd( int middleR, int leftEnd, Vector<double> dwt, int decompLevel)
+        public int FindQRSEnd( double dmiddleR, double dleftEnd, Vector<double> dwt, int decompLevel)
         {
+            int middleR = (int)dmiddleR;
+            int leftEnd = (int)dleftEnd;
             int sectionEnd = (leftEnd >> decompLevel) + 1;
             int qrsEndInd = (middleR >> decompLevel);
+            int len = (leftEnd >> decompLevel) - qrsEndInd;
 
-            double treshold = Math.Abs(dwt.SubVector(qrsEndInd, (leftEnd >> decompLevel) - qrsEndInd + 1).Minimum()) * 0.03; //TRZEBA POTESTOWAC TĄ METODE PROGOWANIA!!!!
-            while (dwt[qrsEndInd] > dwt[qrsEndInd + 1] && qrsEndInd < sectionEnd)
+            if ( len < 1)
+                len = 1;
+
+            //Console.WriteLine("qrsEndzik");
+            //Console.WriteLine(len);
+            //Console.WriteLine(qrsEndInd);
+            //Console.WriteLine(dwt.Count);
+
+            if (qrsEndInd + len >= dwt.Count)
+            {
+                return -1;
+                //Console.WriteLine("Brak enda");
+            }
+                
+
+            double treshold = Math.Abs(dwt.SubVector(qrsEndInd, len).Minimum()) * 0.08;
+
+            //Console.WriteLine("szczegoliki:");
+            //Console.WriteLine(qrsEndInd);
+            //Console.WriteLine(dwt.Count);
+            if (!(qrsEndInd + 1 < dwt.Count))
+            {
+                return -1;
+                //Console.WriteLine("brak enda");
+            }
+            //while (dwt[qrsEndInd] < dwt[qrsEndInd + 1])
+            //    qrsEndInd++;
+            while (dwt[qrsEndInd] > dwt[qrsEndInd + 1])
                 qrsEndInd++;
             while (Math.Abs(dwt[qrsEndInd]) > treshold && qrsEndInd < sectionEnd)
                 qrsEndInd++;
 
-            if (qrsEndInd == sectionEnd)
+            if (qrsEndInd >= sectionEnd)
                 return -1;
             else
                 return (qrsEndInd << decompLevel);
         }
 
-        public void FindMaxValue(int begin_loc, int end_loc, out int pmax_loc, out double pmax_val)
+
+        #region
+        /// <summary>
+        /// This method finds maximum value and its location through particular segment of ecg signal
+        /// </summary>
+        /// <param name="begin_loc"> First sample of specified signal segment</param>
+        /// <param name="end_loc"> Last sample of specified signal segment</param>
+        /// <param name="max_loc"> Localization of sample at maximum value</param>
+        /// <param name="max_val"> Maximum value in specified signal segment</param>
+        /// <returns> maximum value and its location in signal segment</returns>
+        #endregion
+        public void FindMaxValue(int begin_loc, int end_loc, out int max_loc, out double max_val)
         {
 
-            if (_data.ECG.Count == 0)
+            if (InputData.Signals[_currentChannelIndex].Item2.Count == 0)
             {
                 throw new InvalidOperationException("Empty vector");
             }
             int loc_index;
 
-            pmax_val = double.MinValue;
-            pmax_loc = 0;
+            max_val = double.MinValue;
+            max_loc = 0;
 
             for (loc_index = begin_loc; loc_index <= end_loc; loc_index++)
             {
-                if (pmax_val < _data.ECG[loc_index])
+                if (max_val < InputData.Signals[_currentChannelIndex].Item2[loc_index])
                 {
-                    pmax_val = _data.ECG[loc_index];
-                    pmax_loc = loc_index;
+                    max_val = InputData.Signals[_currentChannelIndex].Item2[loc_index];
+                    max_loc = loc_index;
                 }
             }
 
         }
 
+        #region
+        /// <summary>
+        /// This method finds locations of P-onsets and P-ends
+        /// </summary>
+        /// <returns> List containing locations of P-onsets and P-ends</returns>
+        #endregion
         public void FindP()
         {
             double pmax_val;
             int window,break_window,pmax_loc,ponset,pend;
 
-            window = Convert.ToInt32(_data.Fs*0.25);
-            break_window = Convert.ToInt32(_data.Fs * 0.3);
+            window = Convert.ToInt32(InputData.Frequency*0.25);
+            break_window = Convert.ToInt32(InputData.Frequency * 0.3);
 
-            foreach (int onset_loc in _data.QRSOnsets)
+            foreach (int onset_loc in _currentQRSonsetsPart)
             {
                 if ((onset_loc - (window)) >= 1 && onset_loc != -1)
                 {
@@ -199,7 +314,7 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 ponset = pmax_loc;
-                while(_data.ECG[ponset] > _data.ECG[ponset-1] || (pmax_val-_data.ECG[ponset] < 70))
+                while(InputData.Signals[_currentChannelIndex].Item2[ponset] > InputData.Signals[_currentChannelIndex].Item2[ponset-1] || (pmax_val- InputData.Signals[_currentChannelIndex].Item2[ponset] < 70))
                 {
                     ponset--;
                     if (ponset < onset_loc - break_window)
@@ -208,10 +323,10 @@ namespace EKG_Project.Modules.Waves
                         break;
                     }
                 }
-                _data.POnsets.Add(ponset);
+                _currentPonsetsPart.Add(ponset);
 
                 pend = pmax_loc;
-                while (_data.ECG[pend] > _data.ECG[pend+1] || (pmax_val - _data.ECG[pend] < 110))
+                while (InputData.Signals[_currentChannelIndex].Item2[pend] > InputData.Signals[_currentChannelIndex].Item2[pend+1] || (pmax_val - InputData.Signals[_currentChannelIndex].Item2[pend] < 110))
                 {
                     pend++;
                     if (pend > onset_loc)
@@ -220,22 +335,28 @@ namespace EKG_Project.Modules.Waves
                         break;
                     }
                 }
-                _data.PEnds.Add(pend);
+                _currentPendsPart.Add(pend);
             }
         }
 
+        #region
+        /// <summary>
+        /// This method finds locations of T-ends
+        /// </summary>
+        /// <returns> List containing locations of T-ends</returns>
+        #endregion
         public void FindT()
         {
             double tmax_val;
             int window,break_window,tmax_loc, tend;
 
 
-            window = Convert.ToInt32(_data.Fs*0.22);
-            break_window = Convert.ToInt32(_data.Fs * 0.35);
+            window = Convert.ToInt32(InputData.Frequency * 0.2);
+            break_window = Convert.ToInt32(InputData.Frequency * 0.35);
 
-            foreach (int ends_loc in _data.QRSEnds)
+            foreach (int ends_loc in _currentQRSendsPart)
             {
-                if (((ends_loc + (window)) < _data.ECG.Count) && ends_loc != -1)
+                if (((ends_loc + (window)) < InputData.Signals[_currentChannelIndex].Item2.Count) && ends_loc != -1)
                 {
                     FindMaxValue(ends_loc, ends_loc + window, out tmax_loc, out tmax_val);
                 }
@@ -245,7 +366,7 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 tend = tmax_loc;
-                while (_data.ECG[tend] > _data.ECG[tend + 1] || (tmax_val - _data.ECG[tend] < 20))
+                while (InputData.Signals[_currentChannelIndex].Item2[tend] > InputData.Signals[_currentChannelIndex].Item2[tend + 1] || ((tmax_val - InputData.Signals[_currentChannelIndex].Item2[tend] < 30) && (tmax_val - InputData.Signals[_currentChannelIndex].Item2[tend] > -10)))
                 {
                     tend++;
                     if(tend > ends_loc+break_window)
@@ -254,10 +375,10 @@ namespace EKG_Project.Modules.Waves
                         break;
                     }
                 }
-                _data.TEnds.Add(tend);
+                _currentTendsPart.Add(tend);
             }
         }
     }
-    **/
+    
 
 }
