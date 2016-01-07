@@ -65,33 +65,6 @@
     <NumberOfClass>1</NumberOfClass>
     <PercentOfNormalComplex>30</PercentOfNormalComplex>
   </module>
-  <module name="QT_Disp">
-    <QT_disp_local>
-      <lead>V1</lead>
-      <samples>2</samples>
-    </QT_disp_local>
-    <QT_disp_local>
-      <lead>MLII</lead>
-      <samples>23</samples>
-    </QT_disp_local>
-    <QT_mean>
-      <lead>V1</lead>
-      <samples>2</samples>
-    </QT_mean>
-    <QT_mean>
-      <lead>MLII</lead>
-      <samples>23</samples>
-    </QT_mean>
-    <QT_std>
-      <lead>V1</lead>
-      <samples>2</samples>
-    </QT_std>
-    <QT_std>
-      <lead>MLII</lead>
-      <samples>23</samples>
-    </QT_std>
-    <QT_disp_global>78</QT_disp_global>
-  </module>
   <module name="ECG_Baseline">
     <signalFiltered>
       <lead>V1</lead>
@@ -248,5 +221,32 @@
       <lead>MLII</lead>
       <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
     </TEnds>
+  </module>
+  <module name="QT_Disp">
+    <QT_disp_local>
+      <lead>V1</lead>
+      <samples>2</samples>
+    </QT_disp_local>
+    <QT_disp_local>
+      <lead>MLII</lead>
+      <samples>23</samples>
+    </QT_disp_local>
+    <QT_mean>
+      <lead>V1</lead>
+      <samples>2</samples>
+    </QT_mean>
+    <QT_mean>
+      <lead>MLII</lead>
+      <samples>23</samples>
+    </QT_mean>
+    <QT_std>
+      <lead>V1</lead>
+      <samples>2</samples>
+    </QT_std>
+    <QT_std>
+      <lead>MLII</lead>
+      <samples>23</samples>
+    </QT_std>
+    <QT_disp_global>78</QT_disp_global>
   </module>
 </EKG>
