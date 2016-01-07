@@ -19,13 +19,16 @@ namespace EKG_Project.Modules.Heart_Class
         private int _samplesProcessed;
         private int _numberOfChannels;
 
-        private Basic_Data_Worker _inputWorker;
+        // Czy te zmienne muszą być private? 
+        int qrsEndStep;// o tyle qrs się przesuwamy 
+        int i; //do inkrementacji co 10
+        int step; // ilość próbek o którą sie przesuwamy
+
         private ECG_Baseline_Data_Worker _inputECGbaselineWorker;
         private R_Peaks_Data_Worker _inputRpeaksWorker;
         private Waves_Data_Worker _inputWavesWorker;
         private Heart_Class_Data_Worker _outputWorker;
 
-        private Basic_Data _inputData;
         private ECG_Baseline_Data _inputECGbaselineData;
         private R_Peaks_Data _inputRpeaksData;
         private Waves_Data _inputWavesData;
@@ -34,7 +37,7 @@ namespace EKG_Project.Modules.Heart_Class
         private Heart_Class_Params _params;
 
         private Vector<Double> _currentVector;
-        private Vector<Double> _tempVector;
+        private List<Tuple<int, int>> _tempClassResult;
 
 
 
@@ -61,10 +64,6 @@ namespace EKG_Project.Modules.Heart_Class
             {
                 _ended = false;
 
-                InputWorker = new Basic_Data_Worker(Params.AnalysisName);
-                InputWorker.Load();
-                InputData = InputWorker.BasicData;
-
                 InputEcGbaselineWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
                 InputEcGbaselineWorker.Load();
                 InputECGbaselineData = InputEcGbaselineWorker.Data;
@@ -87,8 +86,11 @@ namespace EKG_Project.Modules.Heart_Class
                 NumberOfChannels = InputECGbaselineData.SignalsFiltered.Count;
                 _currentChannelLength = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
                 _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                _tempVector = Vector<Double>.Build.Dense(1);
-                
+                qrsEndStep = 10;
+                i = 10; 
+                step = InputWavesData.QRSEnds[_currentChannelIndex].Item2[qrsEndStep]; //ilośc próbek, aż do indeksu końca 10 załamka
+                _tempClassResult = new List<Tuple<int, int>>();
+
 
             }
             
@@ -116,39 +118,52 @@ namespace EKG_Project.Modules.Heart_Class
 
             int channel = _currentChannelIndex;
             int startIndex = _samplesProcessed;
-            int qrsEndStep = 10;// o tyle qrs się przesuwamy
-            int i = 10; //do inkrementacji co 10
-            int step; // ilość próbek o którą sie przesuwamy
+            //int qrsEndStep = 10;// o tyle qrs się przesuwamy
+            //int i = 10; //do inkrementacji co 10
+            //int step; // ilość próbek o którą sie przesuwamy
 
             if (channel < NumberOfChannels)
             {
-                step = InputWavesData.QRSEnds[_currentChannelIndex].Item2[qrsEndStep];
+                //step = InputWavesData.QRSEnds[_currentChannelIndex].Item2[qrsEndStep];
 
                 if (startIndex + step > _currentChannelLength)
                 {
-                    //scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
+                    
 
 
                     _currentVector = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
-                    
-                    OutputData.ClassificationResult.AddRange(new List<Tuple<int, int>>(Classification(_currentVector, fs, InputRpeaksData.RPeaks[_currentChannelIndex].Item2, InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.QRSEnds[_currentChannelIndex].Item2))); 
 
+                    //OutputData.ClassificationResult.AddRange(new List<Tuple<int, int>>(Classification(_currentVector, fs, InputRpeaksData.RPeaks[_currentChannelIndex].Item2, InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.QRSEnds[_currentChannelIndex].Item2)));
+                    _tempClassResult = Classification(_currentVector, fs,
+                        InputRpeaksData.RPeaks[_currentChannelIndex].Item2,
+                        InputWavesData.QRSOnsets[_currentChannelIndex].Item2,
+                        InputWavesData.QRSEnds[_currentChannelIndex].Item2);
+                    OutputData.ClassificationResult.AddRange(new List<Tuple<int, int>>(_tempClassResult));
                     _currentChannelIndex++;
+
                     if (_currentChannelIndex < NumberOfChannels)
                     {
                         _samplesProcessed = 0;
                         _currentChannelLength = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
                         _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                        //_tempClassResult = new List<Tuple<int, int>>(); //kasowanie tego co było wczesniej zapisane, czy tak moze byc?
                     }
 
-                    qrsEndStep += i;
-                    step = InputWavesData.QRSEnds[_currentChannelIndex].Item2[qrsEndStep] - step;
+                   
                 }
                 else
                 {
-                    //scaleSamples(channel, startIndex, step);
+                    
+                    _currentVector = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, step);
+
+                    _tempClassResult = Classification(_currentVector, fs,
+                        InputRpeaksData.RPeaks[_currentChannelIndex].Item2,
+                        InputWavesData.QRSOnsets[_currentChannelIndex].Item2,
+                        InputWavesData.QRSEnds[_currentChannelIndex].Item2);
+                    OutputData.ClassificationResult.AddRange(new List<Tuple<int, int>>(_tempClassResult));
+
                     _samplesProcessed = startIndex + step;
-                    step = qrsEndStep + i;
+                   
                 }
             }
             else
@@ -157,7 +172,8 @@ namespace EKG_Project.Modules.Heart_Class
                 _ended = true;
             }
 
-
+            qrsEndStep += i;
+            step = InputWavesData.QRSEnds[_currentChannelIndex].Item2[qrsEndStep] - step;
         }
 
 
@@ -227,18 +243,6 @@ namespace EKG_Project.Modules.Heart_Class
         {
             get { return _numberOfChannels; }
             set { _numberOfChannels = value; }
-        }
-
-        public Basic_Data_Worker InputWorker
-        {
-            get { return _inputWorker; }
-            set { _inputWorker = value; }
-        }
-
-        public Basic_Data InputData
-        {
-            get { return _inputData; }
-            set { _inputData = value; }
         }
     }
 }
