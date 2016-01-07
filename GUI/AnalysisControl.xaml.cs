@@ -47,8 +47,9 @@ namespace EKG_Project.GUI
 
         private void startAnalyseButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var option in modulePanel.Options)
+            foreach (var option in modulePanel.getAllOptions())
             {
+
                 if (option.Set)
                 {
                     if (option.ModuleParam == null) //tylko tymczasowo dopoki nie jest przez was zaimplementowane
@@ -61,8 +62,8 @@ namespace EKG_Project.GUI
             }
             MessageBox.Show("Starting Analyses");
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
-            tempList.Add("EcgBasline");
-            tempList.Add("EcgBasic");
+            tempList.Add("ecgBaseline");
+            tempList.Add("ecgBasic");
             VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(tempList);
             //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
 

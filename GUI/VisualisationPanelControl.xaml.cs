@@ -95,7 +95,7 @@ namespace EKG_Project.GUI
             visulisationDataTabsList = new List<TabItem>();
             foreach(string tabName in tabNames)
             {
-                VisualisationDataControl ecgVDataControl = new VisualisationDataControl();
+                VisualisationDataControl ecgVDataControl = new VisualisationDataControl(tabName);
                 TabItem tabItem = new TabItem();
                 tabItem.Header = tabName;
                 tabItem.Content = ecgVDataControl;
