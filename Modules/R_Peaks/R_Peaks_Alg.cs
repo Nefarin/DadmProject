@@ -19,7 +19,7 @@ namespace EKG_Project.Modules.R_Peaks
 
         static void Main(string[] args)
         {
-        //Init
+            //Init
             double fd = 5;
             double fg = 15;
             R_Peaks pt = new R_Peaks();
@@ -34,12 +34,12 @@ namespace EKG_Project.Modules.R_Peaks
             // Vector<double> sig = sig_data.Item2;
 
             //read data from dat file
-            TempInput.setInputFilePath(@"D:\biomed\DADM\C#\100v5.txt");
+            TempInput.setInputFilePath(@"D:\biomed\DADM\C#\baseline.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
             #endregion
 
-        //PROCESS
+            //PROCESS
             //filtering
             double[] arr_f = pt.Filtering(Convert.ToDouble(fs), fd, fg, sig.ToArray());   //plus convert vector to array
             Vector<double> sig_f = Vector<double>.Build.DenseOfArray(arr_f);           //convert array to vector
@@ -54,8 +54,10 @@ namespace EKG_Project.Modules.R_Peaks
             double[] arr_i = pt.Integrating(arr_2, fs);
 
             //adaptive thresholding 
-            int[] locsR = pt.findRs(arr_i, sig, fs);
-            Vector<int> rPeaks = Vector<int>.Build.DenseOfArray(locsR);
+            List<double> locsR = pt.findRs(arr_i, sig, fs);
+
+            Vector<double> RRvector = pt.Diff(Vector<double>.Build.DenseOfArray(locsR.ToArray()));
+            List<double> RRs = new List<double>(RRvector);
 
             #region writeData
             //write result to DATA
@@ -64,10 +66,10 @@ namespace EKG_Project.Modules.R_Peaks
 
             //write result to dat file
             //TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\100v5R.txt");
-            //TempInput.writeFile(fs, Vector<double>.Build.DenseOfArray(Rs1d));
+            //TempInput.writeFile(fs, Vector<double>.Build.DenseOfArray(locsR.ToArray()) );
             #endregion
 
-        //TEST-Console
+            //TEST-Console
             Console.WriteLine(pt.delay);
             Console.WriteLine();
             foreach (int loc in locsR) { Console.WriteLine(loc); }
@@ -185,12 +187,12 @@ namespace EKG_Project.Modules.R_Peaks
         /// <param name="signal"> Analysed signal with local maxima</param>
         /// <param name="fs"> sampling  grequency of the signal</param>
         /// <param name="distanceInSec"> Distance in seconds - minimum distance between next peaks</param>
-        /// <returns> int array which contains teh localisation of peaks in signal </returns>
+        /// <returns> list of double which contains teh localisation of peaks in signal </returns>
         #endregion
-        int[] FindPeaks(double[] signal, uint fs, double distanceInSec)
+        List<double> FindPeaks(double[] signal, uint fs, double distanceInSec)
         //TO DO: distance--> threshold???
         {
-            List<int> potRs = new List<int>();
+            List<double> potRs = new List<double>();
             double distanceInSamples = fs * distanceInSec;
             for (int i = 1; i < signal.Length - 1; i++)
             {
@@ -200,7 +202,7 @@ namespace EKG_Project.Modules.R_Peaks
                 }
             }
             int j = 1;                          //remove maximas which are closer to previous maximum than distance
-            int prevR = potRs.First();
+            double prevR = potRs.First();
             while (j < potRs.Count)
             {
                 if (potRs[j] - prevR < distanceInSamples)
@@ -211,7 +213,7 @@ namespace EKG_Project.Modules.R_Peaks
                     j++;
                 }
             }
-            return potRs.ToArray();
+            return potRs;
         }
 
         #region
@@ -223,6 +225,7 @@ namespace EKG_Project.Modules.R_Peaks
         /// <param name="end"> the last sample of signal (implicit)</param>
         /// <returns> cutted signal from teh whole signal as Vector of double </returns>
         #endregion
+        //SUBVECTOR from MATHNET?!
         Vector<double> CutSignal(Vector<double> inputSignal, int begin, int end)
         {
             int len = end - begin + 1;
@@ -236,18 +239,32 @@ namespace EKG_Project.Modules.R_Peaks
 
         #region
         /// <summary>
+        /// Function that calculates differential vector of  input signal
+        /// </summary>
+        /// <param name="vect"></param>
+        /// <returns></returns>
+        #endregion
+        Vector<double> Diff(Vector<double> signal)
+        {
+            Vector<double> diffSignal = Vector<double>.Build.Dense(signal.Count - 1);
+            signal.SubVector(1, signal.Count - 1).Subtract(signal.SubVector(0, signal.Count - 1), diffSignal);
+            return diffSignal;
+        }
+
+        #region
+        /// <summary>
         /// Function which finds in ECG signal R peaks by adaptive thersholding and reverse search
         /// </summary>
         /// <param name="integratedSignal"> integrated signal of ECG</param>
         /// <param name="filteredSignal"> filtereg signal of ECG</param>
         /// <param name="fs"> sampling frequency of signal</param>
-        /// <returns> Numbers of samples of R peaks in ECG signal as int array </returns>
+        /// <returns> Numbers of samples of R peaks in ECG signal as list of double </returns>
         #endregion
-        int[] findRs(double[] integratedSignal, Vector<double> filteredSignal, uint fs )
+        List<double> findRs(double[] integratedSignal, Vector<double> filteredSignal, uint fs)
         {
-            int[] potRs = FindPeaks(integratedSignal, fs, 0.2);
             Vector<double> integratedSignalV = Vector<double>.Build.DenseOfArray(integratedSignal);
-            List<int> locsR = new List<int>();
+            List<double> locsR = new List<double>();
+            double selectedRR = 0;
 
             //init thresholds for integrated signal
             Vector<double> sig_ic = CutSignal(integratedSignalV, 0, Convert.ToInt16(2 * fs));
@@ -263,6 +280,7 @@ namespace EKG_Project.Modules.R_Peaks
             double levNoise = thrNoise;
 
             //detecting peaks in both signals(integrated and filtered)
+            List<double> potRs = FindPeaks(integratedSignal, fs, 0.2);
             foreach (int r in potRs)
             {
                 //detect peaks in filetred signal
@@ -283,11 +301,14 @@ namespace EKG_Project.Modules.R_Peaks
                     locsR.Add(tempSig.MaximumIndex());
                 }
 
-                //allowance of HR and updating thersholds
-
+                //updating HR and thersholds
+                if (locsR.Count >= 9)
+                {
+                    Vector<double> diff = Diff(Vector<double>.Build.DenseOfArray(locsR.ToArray()));
+                }
             }
 
-            return locsR.ToArray();
+            return locsR;
         }
 
     }
