@@ -84,8 +84,8 @@ namespace EKG_Project.Modules.Heart_Class
 
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
-                NumberOfChannels = InputData.Signals.Count;
-                _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+                NumberOfChannels = InputECGbaselineData.SignalsFiltered.Count;
+                _currentChannelLength = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
                 _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
                 _tempVector = Vector<Double>.Build.Dense(1);
                 
@@ -116,30 +116,39 @@ namespace EKG_Project.Modules.Heart_Class
 
             int channel = _currentChannelIndex;
             int startIndex = _samplesProcessed;
-            int step = 6000;
+            int qrsEndStep = 10;// o tyle qrs się przesuwamy
+            int i = 10; //do inkrementacji co 10
+            int step; // ilość próbek o którą sie przesuwamy
 
             if (channel < NumberOfChannels)
             {
+                step = InputWavesData.QRSEnds[_currentChannelIndex].Item2[qrsEndStep];
+
                 if (startIndex + step > _currentChannelLength)
                 {
                     //scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
 
-                    OutputData.ClassificationResult = Classification(Signal, fs, InputRpeaksData.RPeaks[_currentChannelIndex].Item2, InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.QRSEnds[_currentChannelIndex].Item2);
-                    //OutputData.ClassificationResult.Add(new Tuple<int, int>(InputRpeaksData.Signals[_currentChannelIndex].Item1, _currentVector));
+
+                    _currentVector = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
+                    
+                    OutputData.ClassificationResult.AddRange(new List<Tuple<int, int>>(Classification(_currentVector, fs, InputRpeaksData.RPeaks[_currentChannelIndex].Item2, InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.QRSEnds[_currentChannelIndex].Item2))); 
+
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)
                     {
                         _samplesProcessed = 0;
-                        _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+                        _currentChannelLength = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
                         _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
                     }
 
-
+                    qrsEndStep += i;
+                    step = InputWavesData.QRSEnds[_currentChannelIndex].Item2[qrsEndStep] - step;
                 }
                 else
                 {
                     //scaleSamples(channel, startIndex, step);
                     _samplesProcessed = startIndex + step;
+                    step = qrsEndStep + i;
                 }
             }
             else
