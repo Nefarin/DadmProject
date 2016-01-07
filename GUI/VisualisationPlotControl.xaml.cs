@@ -29,6 +29,7 @@ namespace EKG_Project.GUI
             DataContext = ecgPlot;
             //ecgPlot.DisplayBasicData();
             ecgPlot.DisplayEcgBaseline();
+            //ecgPlot.DisplayR_Peaks();
         }
 
         public VisualisationPlotControl(string moduleName)

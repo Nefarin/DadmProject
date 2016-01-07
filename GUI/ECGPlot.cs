@@ -19,6 +19,7 @@ namespace EKG_Project.GUI
         private int _beginingPoint;
         private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
         private Basic_Data_Worker _ecg_Basic_Data_Worker;
+        private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
         private bool first;
 
 
@@ -246,6 +247,52 @@ namespace EKG_Project.GUI
             {
                 _beginingPoint = 0;
             }
+        }
+
+        public void DisplayR_Peaks()
+        {
+            if (first)
+            {
+                _r_Peaks_Data_Worker = new R_Peaks_Data_Worker();
+                _r_Peaks_Data_Worker.Load();
+                first = false;
+                //var lineraYAxis = new LinearAxis();
+                //lineraYAxis.Position = AxisPosition.Left;
+                //lineraYAxis.Minimum = -100.0;
+                //lineraYAxis.Maximum = 80.0;
+                //lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+                //lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+                //lineraYAxis.Title = "Voltage [mV]";
+
+                //CurrentPlot.Axes.Add(lineraYAxis);
+            }
+            else
+            {
+                ClearPlot();
+            }
+
+            foreach (var signal in _r_Peaks_Data_Worker.Data.RPeaks)
+            {
+
+                Vector<double> signalVector = signal.Item2;
+                LineSeries ls = new LineSeries();
+                ls.Title = signal.Item1;
+
+                ls.MarkerStrokeThickness = 1;
+
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                }
+
+
+                CurrentPlot.Series.Add(ls);
+
+
+            }
+
+            RefreshPlot();
         }
 
         public ScatterSeries DisplayR_Peaks(double x, double y)
