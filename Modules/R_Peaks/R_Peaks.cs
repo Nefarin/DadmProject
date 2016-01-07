@@ -19,6 +19,7 @@ namespace EKG_Project.Modules.R_Peaks
         private int _samplesProcessed;
         private int _lastRPeak;
         private int _numberOfChannels;
+        private int _numRPeaks;
 
         private ECG_Baseline_Data_Worker _inputWorker;
         private Basic_Data_Worker _inputWorker_basic;
@@ -30,6 +31,7 @@ namespace EKG_Project.Modules.R_Peaks
         private R_Peaks_Params _params;
 
         private Vector<Double> _currentVector;
+        private Vector<Double> _totalVector;
 
         public void Abort()
         {
@@ -51,6 +53,10 @@ namespace EKG_Project.Modules.R_Peaks
             {
                 _ended = false;
 
+                InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
+                InputWorker_basic.Load();
+                InputData_basic = InputWorker_basic.BasicData;
+
                 InputWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
                 InputWorker.Load();
                 InputData = InputWorker.Data;
@@ -61,9 +67,11 @@ namespace EKG_Project.Modules.R_Peaks
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
                 _lastRPeak = 0;
+                _numRPeaks = 0;
                 NumberOfChannels = InputData.SignalsFiltered.Count;
                 _currentChannelLength = InputData.SignalsFiltered[_currentChannelIndex].Item2.Count;
                 _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                _totalVector = Vector<Double>.Build.Dense(_currentChannelLength);
 
             }
         }
@@ -92,7 +100,7 @@ namespace EKG_Project.Modules.R_Peaks
 
             if (channel < NumberOfChannels)
             {
-                if (startIndex + step > _currentChannelLength)
+                if (startIndex + step >= _currentChannelLength)
                 {
                     _currentVector = InputData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
                     switch (Params.Method)
@@ -107,7 +115,10 @@ namespace EKG_Project.Modules.R_Peaks
                             _currentVector = EMD(_currentVector, InputData_basic.Frequency);
                             break;
                     }
-                    _lastRPeak = Convert.ToInt32(_currentVector[_currentVector.Count]) + 30;
+                    _currentVector.Add(startIndex, _currentVector);
+                    _totalVector.SetSubVector(_numRPeaks, _currentVector.Count,_currentVector);
+                    _numRPeaks = _numRPeaks + _currentVector.Count;
+                    _currentVector = _totalVector.SubVector(0, _numRPeaks);
                     Vector<double> _currentVectorRRInterval = RRinMS(_currentVector, InputData_basic.Frequency);
 
                     OutputData.RPeaks.Add(new Tuple<string, Vector<double>>(InputData.SignalsFiltered[_currentChannelIndex].Item1, _currentVector)); 
@@ -117,8 +128,10 @@ namespace EKG_Project.Modules.R_Peaks
                     {
                         _samplesProcessed = 0;
                         _lastRPeak = 0;
+                        _numRPeaks = 0;
                         _currentChannelLength = InputData.SignalsFiltered[_currentChannelIndex].Item2.Count;
                         _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                        _totalVector = Vector<Double>.Build.Dense(_currentChannelLength);
                     }
 
                 }
@@ -128,19 +141,23 @@ namespace EKG_Project.Modules.R_Peaks
                     switch (Params.Method)
                     {
                         case R_Peaks_Method.PANTOMPKINS:
-                            _currentVector = Hilbert(_currentVector, InputData_basic.Frequency);
-                            break;
-                        case R_Peaks_Method.HILBERT:
                             _currentVector = PanTompkins(_currentVector, InputData_basic.Frequency);
                             break;
+                        case R_Peaks_Method.HILBERT:
+                            _currentVector = Hilbert(_currentVector, InputData_basic.Frequency);
+                            break;
                         case R_Peaks_Method.EMD:
-                            //_currentVector = EMD(_currentVector, InputData.Frequency);
+                            _currentVector = EMD(_currentVector, InputData_basic.Frequency);
                             break;
                     }
-                    _lastRPeak = Convert.ToInt32(_currentVector[_currentVector.Count]) + 30;
-                    Vector<double> _currentVectorRRInterval = RRinMS(_currentVector, InputData_basic.Frequency);
+                    _currentVector.Add(startIndex, _currentVector);
+                    _totalVector.SetSubVector(_numRPeaks, _currentVector.Count, _currentVector);
+                    _numRPeaks = _currentVector.Count + _numRPeaks;
+                    _lastRPeak = Convert.ToInt32(_currentVector[_currentVector.Count - 1]) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
+                    //Vector<double> _currentVectorRRInterval = RRinMS(_currentVector, InputData_basic.Frequency);
 
                     _samplesProcessed = startIndex + step;
+                    
                 }
             }
             else

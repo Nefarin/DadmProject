@@ -315,14 +315,20 @@ namespace EKG_Project.Modules.R_Peaks
             double potR = 0;
             double potAmp = 0;
 
+            //init thresholds 
+            int assumedLength = Convert.ToInt16(2 * fs); //2 seconds of signal
+            if(integratedSignalV.Count < Convert.ToInt16(2 * fs))
+            {
+                assumedLength = integratedSignalV.Count-1;
+            }
             //init thresholds for integrated signal
-            Vector<double> sig_ic = CutSignal(integratedSignalV, 0, Convert.ToInt16(2 * fs));
+            Vector<double> sig_ic = CutSignal(integratedSignalV, 0, assumedLength);
             double thrSigI = sig_ic.Maximum() / 3;
             double thrNoiseI = sig_ic.Average() / 2;
             double levSigI = thrSigI;
             double levNoiseI = thrNoiseI;
             //init thersholds for filtered signal
-            Vector<double> sig_fc = CutSignal(filteredSignal, 0, Convert.ToInt16(2 * fs));
+            Vector<double> sig_fc = CutSignal(filteredSignal, 0, assumedLength);
             double thrSig = sig_fc.Maximum() / 3;
             double thrNoise = sig_fc.Average() / 2;
             double levSig = thrSig;
