@@ -41,5 +41,11 @@ namespace EKG_Project.Modules.R_Peaks
                 _analysisName = value;
             }
         }
+
+        public void CopyParametersFrom(R_Peaks_Params parameters)
+        {
+            this.Method = parameters.Method;
+            this.AnalysisName = parameters.AnalysisName;
+        }
     }
 }

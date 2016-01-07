@@ -22,9 +22,11 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
     {
         private Waves_Params returnParameters { get; set; }
         public Waves_Params PendingParameters { get; set; }
+        ModulePanel panel;
 
-        public Dialogue_Waves_Options(Waves_Params parameters)
+        public Dialogue_Waves_Options(Object parent, Waves_Params parameters)
         {
+            panel= parent as ModulePanel;
             this.returnParameters = parameters;
 
             this.PendingParameters = new Waves_Params();

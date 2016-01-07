@@ -27,11 +27,13 @@ namespace EKG_Project.GUI
     public partial class ModulePanel : UserControl
     {
         public List<ModuleOption> Options = new List<ModuleOption>();
+        private string _analysisName;
 
         public ModulePanel()
         {
             InitializeComponent();
             var ecgBaseline = new ModuleOption(AvailableOptions.ECG_BASELINE);
+            ecgBaseline.AnalysisName = this.AnalysisName;
 
             ecgBaseline.
                 AddSuboptionAndMoveDown(AvailableOptions.R_PEAKS).
@@ -56,6 +58,19 @@ namespace EKG_Project.GUI
             this.treeViewModules.ItemsSource = this.Options;
         }
 
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+
+            set
+            {
+                _analysisName = value;
+            }
+        }
+
         private void btn_Click(object sender, RoutedEventArgs e)
         {
             ModuleOption option = (ModuleOption)((Button)sender).DataContext;
@@ -63,15 +78,15 @@ namespace EKG_Project.GUI
             switch (option.Code)
             {
                 case AvailableOptions.ECG_BASELINE:
-                    dialogue = new Dialogue_ECG_Baseline_Options((ECG_Baseline_Params)option.ModuleParam);
+                    dialogue = new Dialogue_ECG_Baseline_Options(this, (ECG_Baseline_Params)option.ModuleParam);
                     dialogue.ShowDialog();
                     break;
                 case AvailableOptions.R_PEAKS:
-                    dialogue = new Dialogue_R_Peaks_Options((R_Peaks_Params)option.ModuleParam);
+                    dialogue = new Dialogue_R_Peaks_Options(this, (R_Peaks_Params)option.ModuleParam);
                     dialogue.ShowDialog();
                     break;
                 case AvailableOptions.WAVES:
-                    dialogue = new Dialogue_Waves_Options((Waves_Params)option.ModuleParam);
+                    dialogue = new Dialogue_Waves_Options(this, (Waves_Params)option.ModuleParam);
                     dialogue.ShowDialog();
                     break;
                 default:

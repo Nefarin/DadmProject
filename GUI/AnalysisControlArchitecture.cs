@@ -116,6 +116,8 @@ namespace EKG_Project.GUI
             _parent = parent;
             _parentTab = parentTab;
             InitializeComponent();
+
+            modulePanel.AnalysisName = AnalysisName;
         }
 
         public AnalysisControl(ProcessSync communication, Window_ECG parent, TabItem parentTab, SynchronizationContext context, string analysisName)

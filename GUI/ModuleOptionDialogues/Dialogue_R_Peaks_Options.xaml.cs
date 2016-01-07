@@ -24,12 +24,14 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
 
         private R_Peaks_Params returnParameters { get; set; }
         public R_Peaks_Params PendingParameters { get; set; }
+        ModulePanel panel;
 
-        public Dialogue_R_Peaks_Options(R_Peaks_Params parameters)
+        public Dialogue_R_Peaks_Options(Object parent, R_Peaks_Params parameters)
         {
+            panel = parent as ModulePanel;
             this.returnParameters = parameters;
 
-            this.PendingParameters = new R_Peaks_Params(R_Peaks_Method.EMD);
+            this.PendingParameters = new R_Peaks_Params(R_Peaks_Method.EMD, panel.AnalysisName);
             this.PendingParameters.CopyParametersFrom(parameters);
             this.DataContext = this.PendingParameters;
             InitializeComponent();
