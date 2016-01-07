@@ -63,15 +63,15 @@ namespace EKG_Project.GUI
             ecgBaselineTab.Content = ecgVDataControl;
             visulisationDataTabsList.Add(ecgBaselineTab);
 
-            TabItem r_peaksTab = new TabItem();
-            r_peaksTab.Header = "R_Peaks";
-            r_peaksTab.Content = ecgVDataControl;
-            visulisationDataTabsList.Add(r_peaksTab);
+            //TabItem r_peaksTab = new TabItem();
+            //r_peaksTab.Header = "R_Peaks";
+            //r_peaksTab.Content = ecgVDataControl;
+            //visulisationDataTabsList.Add(r_peaksTab);
 
-            TabItem addInfo = new TabItem();
-            addInfo.Header = "Info";
-            addInfo.Content = "W ten sposób będą dodawane pozostałe moduły";
-            visulisationDataTabsList.Add(addInfo);
+            //TabItem addInfo = new TabItem();
+            //addInfo.Header = "Info";
+            //addInfo.Content = "W ten sposób będą dodawane pozostałe moduły";
+            //visulisationDataTabsList.Add(addInfo);
 
 
             this.EcgDynamicTab.DataContext = visulisationDataTabsList;

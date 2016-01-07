@@ -60,8 +60,8 @@ namespace EKG_Project.GUI
                 }
             }
             MessageBox.Show("Starting Analyses");
-            //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
-            //VisualisationPanelUserControl.UpdateLayout();
+            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
+            VisualisationPanelUserControl.UpdateLayout();
 
         }
 

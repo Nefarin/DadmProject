@@ -7,6 +7,8 @@ using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Series;
 using OxyPlot.Axes;
+using EKG_Project.IO;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.GUI
 {
@@ -58,6 +60,30 @@ namespace EKG_Project.GUI
 
         }
 
+        public void DisplayBasicData()
+        {
+
+            Basic_Data_Worker worker = new Basic_Data_Worker();
+            worker.Load();
+
+            foreach (var signal in worker.BasicData.Signals)
+            {
+                
+                Vector<double> signalVector = signal.Item2;
+                LineSeries ls = new LineSeries();
+                ls.Title = signal.Item1;
+                
+                for(int i=0; i<signalVector.Count; i++)
+                {
+                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                }
+
+               
+                CurrentPlot.Series.Add(ls);
+            }
+
+        }
+
         public void ClearPlot()
         {
             CurrentPlot.Series.Clear();
@@ -86,6 +112,28 @@ namespace EKG_Project.GUI
             CurrentPlot.Series.Add(hist);
             
 
+        }
+
+        public void DisplayEcgBaseline()
+        {
+            ECG_Baseline_Data_Worker worker = new ECG_Baseline_Data_Worker();
+            worker.Load();
+
+            foreach (var signal in worker.Data.SignalsFiltered)
+            {
+
+                Vector<double> signalVector = signal.Item2;
+                LineSeries ls = new LineSeries();
+                ls.Title = signal.Item1;
+
+                for (int i = 0; i < signalVector.Count; i++)
+                {
+                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                }
+
+
+                CurrentPlot.Series.Add(ls);
+            }
         }
 
         public ScatterSeries DisplayR_Peaks(double x, double y)
