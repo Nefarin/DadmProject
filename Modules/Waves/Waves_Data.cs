@@ -9,8 +9,6 @@ namespace EKG_Project.Modules.Waves
 {
     public class Waves_Data : ECG_Data
     {
-        private Vector<double> _ecg;
-        private List<int> _Rpeaks;
 
         private List<Tuple<string, List<int>>> _QRSonsets;
         private List<Tuple<string, List<int>>> _QRSends;
@@ -18,48 +16,13 @@ namespace EKG_Project.Modules.Waves
         private List<Tuple<string, List<int>>> _Pends;
         private List<Tuple<string, List<int>>> _Tends;
 
-        private uint _fs;
-
         public Waves_Data() {
-            _ecg = Vector<double>.Build.Dense(1);
 
-            _Rpeaks = new List<int>();
             _QRSends = new List<Tuple<string, List<int>>>();
             _QRSonsets = new List<Tuple<string, List<int>>>();
             _Pends = new List<Tuple<string, List<int>>>();
             _Ponsets = new List<Tuple<string, List<int>>>();
             _Tends = new List<Tuple<string, List<int>>>();
-        }
-
-        public Waves_Data( Vector<double> ecg, List<int> RpeaksIn, uint fs):this()
-        {
-            ECG = ecg;
-            Rpeaks = RpeaksIn;
-            Fs = fs;
-        }
-
-        public Vector<double> ECG
-        {
-            get
-            {
-                return _ecg;
-            }
-            set
-            {
-                _ecg = value;
-            }
-        }
-
-        public List<int> Rpeaks
-        {
-            get
-            {
-                return _Rpeaks;
-            }
-            set
-            {
-                _Rpeaks = value;
-            }
         }
 
         public List<Tuple<string, List<int>>> QRSOnsets
@@ -121,17 +84,6 @@ namespace EKG_Project.Modules.Waves
             set
             {
                 _Tends = value;
-            }
-        }
-        public uint Fs
-        {
-            get
-            {
-                return _fs;
-            }
-            set
-            {
-                _fs = value;
             }
         }
 

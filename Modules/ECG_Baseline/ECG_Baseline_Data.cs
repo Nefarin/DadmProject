@@ -11,7 +11,10 @@ namespace EKG_Project.Modules.ECG_Baseline
     {
         private List<Tuple<string, Vector<double>>> _signalsFiltered;    
 
-        public ECG_Baseline_Data() {}
+        public ECG_Baseline_Data()
+        {
+            this.SignalsFiltered = new List<Tuple<string, Vector<double>>>();
+        }
 
         public List<Tuple<string, Vector<double>>> SignalsFiltered
         {
@@ -24,5 +27,6 @@ namespace EKG_Project.Modules.ECG_Baseline
                 _signalsFiltered = value;
             }
         }
+
     }
 }

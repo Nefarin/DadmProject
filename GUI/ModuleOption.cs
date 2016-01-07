@@ -17,6 +17,7 @@ namespace EKG_Project.GUI
 
         private bool _set = false;
         private List<ModuleOption> _suboptions = null;
+        private String _analysisName;
 
         #endregion
 
@@ -59,6 +60,19 @@ namespace EKG_Project.GUI
         public ModuleParams ModuleParam { get; set; }
         public bool ParametersAvailable { get { return this.ModuleParam != null; } }
 
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+
+            set
+            {
+                _analysisName = value;
+            }
+        }
+
         #endregion
 
         #region Events
@@ -82,7 +96,7 @@ namespace EKG_Project.GUI
                     this.ModuleParam = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS);            
                     break;
                 case AvailableOptions.R_PEAKS:
-                    this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD);
+                    this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.getAnalysisName());
                     break;
                 case AvailableOptions.WAVES:
                     this.ModuleParam = new Waves_Params();
@@ -96,6 +110,18 @@ namespace EKG_Project.GUI
         #endregion
 
         #region Methods
+
+        private String getAnalysisName()
+        {
+            if (this.Parent == null)
+            {
+                return this.AnalysisName;
+            }
+            else
+            {
+                return Parent.getAnalysisName();
+            }
+        }
 
         public ModuleOption AddSuboption(AvailableOptions code)
         {

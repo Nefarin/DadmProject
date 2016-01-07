@@ -7,11 +7,13 @@ namespace EKG_Project.Modules.R_Peaks
     public class R_Peaks_Params : ModuleParams
     {
         private R_Peaks_Method _method;
-        /// Metoda detekcji zalamków R
+        //Metoda detekcji zalamków R
+        private string _analysisName;
 
-        public R_Peaks_Params(R_Peaks_Method method)
+        public R_Peaks_Params(R_Peaks_Method method, string analysisName)
         {
-            Method = method;
+            this.Method = method;
+            this.AnalysisName = analysisName;
         }
 
         public R_Peaks_Method Method
@@ -26,9 +28,24 @@ namespace EKG_Project.Modules.R_Peaks
                 _method = value;
             }
         }
+
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+
+            set
+            {
+                _analysisName = value;
+            }
+        }
+
         public void CopyParametersFrom(R_Peaks_Params parameters)
         {
             this.Method = parameters.Method;
+            this.AnalysisName = parameters.AnalysisName;
         }
     }
 }
