@@ -24,6 +24,7 @@ namespace EKG_Project.Modules.Waves
             _currentQRSonsets.AddRange(_currentQRSonsetsPart);
             _currentQRSends.AddRange(_currentQRSendsPart);
             _currentPonsets.AddRange(_currentPonsetsPart);
+            _currentPends.AddRange(_currentPendsPart);
             _currentTends.AddRange(_currentTendsPart);
         }
         
