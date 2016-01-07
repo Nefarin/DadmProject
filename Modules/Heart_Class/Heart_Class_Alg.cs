@@ -223,7 +223,7 @@ namespace EKG_Project.Modules.Heart_Class
                 SingleQrs = Vector<double>.Build.Dense(qrsLength);
                 int singleQrsR = (int)QrsR.At(i);
 
-                if ((int)singleQrsOnset != -1)
+                if ((int)singleQrsOnset != -1) //modul WAVES wypluwa -1 jeśli zespół nie został wykryty
                 {
                     Signal.CopySubVectorTo(SingleQrs, sourceIndex: (int) singleQrsOnset, targetIndex: 0,
                         count: qrsLength);
