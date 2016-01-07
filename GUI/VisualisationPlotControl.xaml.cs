@@ -30,5 +30,15 @@ namespace EKG_Project.GUI
             //ecgPlot.DisplayBasicData();
             ecgPlot.DisplayEcgBaseline();
         }
+
+        public VisualisationPlotControl(string moduleName)
+        {
+            InitializeComponent();
+            ecgPlot = new ECGPlot(moduleName);
+            DataContext = ecgPlot;           
+            ecgPlot.DisplayEcgBaseline();
+        }
+
+    
     }
 }

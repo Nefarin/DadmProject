@@ -22,9 +22,10 @@ namespace EKG_Project.GUI
             CurrentPlot = new PlotModel();
             CurrentPlot.Title = plotTitle;
             //CurrentPlot.LegendTitle = "Legend";
-            //CurrentPlot.LegendOrientation = LegendOrientation.Horizontal;
-            //CurrentPlot.LegendPlacement = LegendPlacement.Outside;
-            //CurrentPlot.LegendPosition = LegendPosition.TopRight;
+            CurrentPlot.LegendOrientation = LegendOrientation.Horizontal;
+            CurrentPlot.LegendPlacement = LegendPlacement.Outside;
+            CurrentPlot.LegendPosition = LegendPosition.RightMiddle;
+            
             //CurrentPlot.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
             //CurrentPlot.LegendBorder = OxyColors.Black;
         }
@@ -125,6 +126,9 @@ namespace EKG_Project.GUI
                 Vector<double> signalVector = signal.Item2;
                 LineSeries ls = new LineSeries();
                 ls.Title = signal.Item1;
+                
+                ls.MarkerStrokeThickness = 1;
+                
 
                 for (int i = 0; i < signalVector.Count; i++)
                 {
