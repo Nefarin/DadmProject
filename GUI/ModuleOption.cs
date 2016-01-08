@@ -97,6 +97,7 @@ namespace EKG_Project.GUI
             this.Set = false;
             this.Parent = parent;
             this.Panel = panel;
+            this.AnalysisName = panel.AnalysisName;
 
             switch (this.Code)
             {

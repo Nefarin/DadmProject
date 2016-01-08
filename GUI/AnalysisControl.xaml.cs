@@ -49,6 +49,8 @@ namespace EKG_Project.GUI
         {
             foreach (var option in modulePanel.getAllOptions())
             {
+
+                // Tuple<ModuleOption, ModuleParams> test = modulePanel.ModuleOptionAndParams(option.Code);
                 if (option.Set)
                 {
 

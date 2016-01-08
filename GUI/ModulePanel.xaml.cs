@@ -38,7 +38,6 @@ namespace EKG_Project.GUI
         {
             InitializeComponent();
             var ecgBaseline = new ModuleOption(AvailableOptions.ECG_BASELINE, this);
-            ecgBaseline.AnalysisName = this.AnalysisName;
 
             ecgBaseline.
                 AddSuboptionAndMoveDown(AvailableOptions.R_PEAKS).
