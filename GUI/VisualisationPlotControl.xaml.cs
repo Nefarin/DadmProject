@@ -29,6 +29,7 @@ namespace EKG_Project.GUI
             DataContext = ecgPlot;
             //ecgPlot.DisplayBasicData();
             ecgPlot.DisplayEcgBaseline();
+            //ecgPlot.DisplayR_Peaks();
         }
 
         public VisualisationPlotControl(string moduleName)
@@ -39,6 +40,17 @@ namespace EKG_Project.GUI
             ecgPlot.DisplayEcgBaseline();
         }
 
-    
+        private void PlotForwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            ecgPlot.MovePlot(500);
+            ecgPlot.DisplayEcgBaseline();
+           
+        }
+
+        private void PlotBackwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            ecgPlot.MovePlot(-500);
+            ecgPlot.DisplayEcgBaseline();
+        }
     }
 }
