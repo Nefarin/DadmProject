@@ -101,7 +101,7 @@ namespace EKG_Project.GUI
             switch (this.Code)
             {
                 case AvailableOptions.ECG_BASELINE:
-                    this.ModuleParam = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS);
+                    this.ModuleParam = new ECG_Baseline_Params();
                     panel.OptionParams[this] = this.ModuleParam;
                     panel.Params[this.Code] = this.ModuleParam;
                     break;
@@ -123,7 +123,7 @@ namespace EKG_Project.GUI
                 default:
                     this.ModuleParam = null;
                     break;
-            }        
+            }
         }
 
         #endregion

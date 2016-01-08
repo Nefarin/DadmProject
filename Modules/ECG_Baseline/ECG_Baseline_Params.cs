@@ -1,13 +1,15 @@
 ﻿using MathNet.Numerics.LinearAlgebra;
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace EKG_Project.Modules.ECG_Baseline
 {
 
-    public enum Filtr_Method {MOVING_AVG, BUTTERWORTH, SAV_GOL, LMS};
+    public enum Filtr_Method { MOVING_AVG, BUTTERWORTH, SAV_GOL, LMS };
     public enum Filtr_Type { LOWPASS, HIGHPASS, BANDPASS };
 
-
-    public class ECG_Baseline_Params : ModuleParams
+    public class ECG_Baseline_Params : ModuleParams, INotifyPropertyChanged
     {
         private Filtr_Method _method;             //metoda filtracji
         private Filtr_Type _type;                 //typ filtracji
@@ -19,6 +21,8 @@ namespace EKG_Project.Modules.ECG_Baseline
         private int _orderHigh;                   //rząd filtru górnoprzepustowy
         private string _analysisName;             //analysisName
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public ECG_Baseline_Params() // konstruktor domyślny
         {
             this.Method = Filtr_Method.MOVING_AVG;
@@ -29,17 +33,17 @@ namespace EKG_Project.Modules.ECG_Baseline
 
         public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int order, double fc, string analysisName) //konstruktor BUTTERWORTH LOW, HIGH
         {
-           this.Method = method;
-           this.AnalysisName = analysisName;
-           this.Type = type;
-           if (type == Filtr_Type.LOWPASS)
+            this.Method = method;
+            this.AnalysisName = analysisName;
+            this.Type = type;
+            if (type == Filtr_Type.LOWPASS)
                 this.FcLow = fc;
-           else if (type == Filtr_Type.HIGHPASS)
+            else if (type == Filtr_Type.HIGHPASS)
                 this.FcHigh = fc;
-           if (type == Filtr_Type.LOWPASS)
-               this.OrderLow = order;
-           else if (type == Filtr_Type.HIGHPASS)
-               this.OrderHigh = order;
+            if (type == Filtr_Type.LOWPASS)
+                this.OrderLow = order;
+            else if (type == Filtr_Type.HIGHPASS)
+                this.OrderHigh = order;
         }
 
         public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int orderLow, int orderHigh, double fcLow, double fcHigh, string analysisName) //konstruktor BUTTERWORTH BAND
@@ -47,10 +51,10 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.Method = method;
             this.AnalysisName = analysisName;
             this.Type = type;
-                this.FcLow = fcLow;
-                this.FcHigh = fcHigh;
-                this.OrderLow = orderLow;
-                this.OrderHigh = orderHigh;
+            this.FcLow = fcLow;
+            this.FcHigh = fcHigh;
+            this.OrderLow = orderLow;
+            this.OrderHigh = orderHigh;
         }
 
         public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSize, string analysisName) // konstruktor MOVING_AVG, SAV_GOL, LMS LOW, HIGH
@@ -71,13 +75,6 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.Type = type;
             this.WindowSizeLow = windowSizeLow;
             this.WindowSizeHigh = windowSizeHigh;
-        }
-
-        //Tymczasowy konstruktor, bo ktoś coś odj** i potrzebuje takiego ;o
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type)
-        {
-            this.Method = method;
-            this.Type = type;
         }
 
         public void CopyParametersFrom(ECG_Baseline_Params parameters)
@@ -115,6 +112,28 @@ namespace EKG_Project.Modules.ECG_Baseline
             set
             {
                 _method = value;
+                this.NotifyPropertyChanged("IsButterworthLowPass");
+                this.NotifyPropertyChanged("IsButterworthHighPass");
+                this.NotifyPropertyChanged("IsOtherLowPass");
+                this.NotifyPropertyChanged("IsOtherHighPass");
+            }
+        }
+
+        public bool IsButterworthLowPass
+        {
+            get
+            {
+                return this.Method == Filtr_Method.BUTTERWORTH &&
+                    (this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS);
+            }
+        }
+
+        public bool IsButterworthHighPass
+        {
+            get
+            {
+                return this.Method == Filtr_Method.BUTTERWORTH &&
+                    (this.Type == Filtr_Type.HIGHPASS || this.Type == Filtr_Type.BANDPASS);
             }
         }
 
@@ -128,8 +147,15 @@ namespace EKG_Project.Modules.ECG_Baseline
             set
             {
                 _type = value;
+                this.NotifyPropertyChanged("IsButterworthLowPass");
+                this.NotifyPropertyChanged("IsButterworthHighPass");
+                this.NotifyPropertyChanged("IsOtherLowPass");
+                this.NotifyPropertyChanged("IsOtherHighPass");
             }
         }
+
+        public bool IsOtherLowPass { get { return this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS; } }
+        public bool IsOtherHighPass { get { return this.Type == Filtr_Type.HIGHPASS || this.Type == Filtr_Type.BANDPASS; } }
 
         public double FcLow
         {
@@ -206,6 +232,14 @@ namespace EKG_Project.Modules.ECG_Baseline
             set
             {
                 _orderHigh = value;
+            }
+        }
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

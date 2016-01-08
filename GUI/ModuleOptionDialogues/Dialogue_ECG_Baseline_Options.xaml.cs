@@ -2,8 +2,10 @@
 using EKG_Project.Modules.ECG_Baseline;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,14 +29,20 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
         public ECG_Baseline_Params PendingParameters { get; set; }
         ModulePanel panel;
 
+        public static CultureInfo CurrentCulture
+        {
+            get
+            {
+                return Thread.CurrentThread.CurrentCulture;
+            }
+        }
+
         public Dialogue_ECG_Baseline_Options(Object parent, ECG_Baseline_Params parameters)
         {
             panel = parent as ModulePanel;
             this.returnParameters = parameters;
 
-            // do dupy kawałek kodu, bo nie ma odpowiednich konstruktorów w klasie ECG_Baseline_Parameters 
-            // (ani domyślnego, ani ustawiającego wszystkie parametry)
-            this.PendingParameters = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS);
+            this.PendingParameters = new ECG_Baseline_Params();
             this.PendingParameters.CopyParametersFrom(parameters);
             this.DataContext = this.PendingParameters;
             InitializeComponent();
