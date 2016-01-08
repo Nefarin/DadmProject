@@ -9,8 +9,8 @@ namespace EKG_Project.Modules.HRV2
         private double _triangleIndex;
         private double _sd1;
         private double _sd2;
-        private List<double> _histogramData; //nie do konca wiemy czy to bd lista double
-        private List<double> _poincarePlotData; //nie do konca wiemy czy to bd lista double
+        private List<Tuple<string, Vector<double>>> _histogramData;
+        private List<Tuple<string, Vector<double>>> _poincarePlotData;
 
         #region Properties
         #region Documentation

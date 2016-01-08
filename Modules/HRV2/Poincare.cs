@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.HRV2
 {
-    class poincare
+    public partial class HRV2 : IModule
     {
+
     }
 }
