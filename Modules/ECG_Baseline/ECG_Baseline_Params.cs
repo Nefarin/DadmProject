@@ -4,7 +4,7 @@ namespace EKG_Project.Modules.ECG_Baseline
 {
 
     public enum Filtr_Method {MOVING_AVG, BUTTERWORTH, SAV_GOL, LMS};
-    public enum Filtr_Type {LOWPASS, HIGHPASS};
+    public enum Filtr_Type {LOWPASS, HIGHPASS, BANDPASS};
 
     public class ECG_Baseline_Params : ModuleParams
     {
