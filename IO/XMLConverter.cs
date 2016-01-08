@@ -15,6 +15,20 @@ namespace EKG_Project.IO
         string analysisName;
         XmlNodeList sequences;
         uint sampleAmount;
+        Basic_Data _data;
+
+        public Basic_Data Data
+        {
+            get
+            {
+                return _data;
+            }
+
+            set
+            {
+                _data = value;
+            }
+        }
 
         public XMLConverter(string XMLAnalysisName) 
         {
@@ -23,19 +37,18 @@ namespace EKG_Project.IO
 
         public void SaveResult()
         {
-            Basic_Data data = new Basic_Data();
-            foreach (var property in data.GetType().GetProperties())
+            foreach (var property in Data.GetType().GetProperties())
             {
 
-                if (property.GetValue(data, null) == null)
+                if (property.GetValue(Data, null) == null)
                 {
                     throw new Exception(); // < - robić coś takiego?
 
                 }
                 else
                 {
-                    Basic_Data_Worker dataWorker = new Basic_Data_Worker();
-                    dataWorker.Save(data);
+                    Basic_Data_Worker dataWorker = new Basic_Data_Worker(analysisName);
+                    dataWorker.Save(Data);
                 }
             }
         }
@@ -43,10 +56,10 @@ namespace EKG_Project.IO
         public void ConvertFile(string path)
         {
             loadXMLFile(path);
-            Basic_Data data = new Basic_Data();
-            data.Frequency = getFrequency();
-            data.Signals = getSignals();
-            data.SampleAmount = sampleAmount;
+            Data = new Basic_Data();
+            Data.Frequency = getFrequency();
+            Data.Signals = getSignals();
+            Data.SampleAmount = sampleAmount;
         }
         
         public void loadXMLFile(string path)
@@ -190,8 +203,9 @@ namespace EKG_Project.IO
         public static void Main()
         {
             IECGPath pathBuilder = new DebugECGPath();
-            XMLConverter xml = new XMLConverter("Analysis1");
+            XMLConverter xml = new XMLConverter("TestAnalysis");
             xml.ConvertFile(System.IO.Path.Combine(pathBuilder.getDataPath(), "6.xml"));
+            xml.SaveResult();
 
             //xml.loadXMLFile(@"C:\temp\6.xml");
 
