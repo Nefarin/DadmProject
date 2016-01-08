@@ -38,7 +38,7 @@ namespace EKG_Project.Modules.QT_Disp
             
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
             throw new NotImplementedException();
         }
