@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.App</StartupObject>
+    <StartupObject>EKG_Project.Modules.QT_Disp.QT_Disp</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -290,13 +290,10 @@
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
     <Compile Include="Modules\IModule.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
-    <Compile Include="Modules\QT_Disp\QTCalculation.cs" />
-    <Compile Include="Modules\QT_Disp\QTIntervalStatistics.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Data.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Params.cs" />
-    <Compile Include="Modules\QT_Disp\TWave.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Alg.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Data.cs" />
