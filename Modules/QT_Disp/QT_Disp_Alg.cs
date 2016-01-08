@@ -56,13 +56,15 @@ namespace EKG_Project.Modules.QT_Disp
     class TWave
     {
        
-        private T_End_Method method;
-        private bool alldrains;
+        private T_End_Method method;                                    //get from Params
+        private bool alldrains;                                         //get from Params                                      
+        uint Fs;                                                        //get from Basic Data
        
-        private List<int> QRS_End;       
-        private List<int> T_EndGlobal;
+        private List<int> QRS_End;                                      //get from Waves
+        private List<int> T_EndGlobal;                                  //get from Waves
+        private Vector<double> R_Peaks;                                 //get from R_Peaks
        
-        private List<Tuple<String,Vector<double>>> AllDrainSiganl;
+        private List<Tuple<String,Vector<double>>> AllDrainSignal;      //get from ECG_Baseline
 
         #region Documentation
         /// <summary>
@@ -70,19 +72,23 @@ namespace EKG_Project.Modules.QT_Disp
         /// </summary>
         /// <param name="AllDrainSignal">This is a list of tuple which stores a drain name and a vector signal from ECG_baseline module</param>
         /// <param name="T_EndGlobal">This list contains T_End indexes</param>      
-        /// <param name="QRS_End">This list contains QRS_End indexes</param>       
+        /// <param name="QRS_End">This list contains QRS_End indexes</param>      
+        /// <param name="R_Peaks">Vector that contains a R_Peak indexes</param> 
+        /// <param name="Fs">A sampling frequency</param>
         /// <param name="alldrains">This argument check if the control alldrains in gui is set</param>
         /// <param name="method">This argument is a method to find T_End in a signal</param>
         #endregion
-        public TWave(List<Tuple<String, Vector<double>>> AllDrainSiganl, List<int> QRS_End, List<int> T_EndGlobal, T_End_Method method, bool alldrains)
+        public TWave(List<Tuple<String, Vector<double>>> AllDrainSignal, List<int> QRS_End, List<int> T_EndGlobal, Vector<double> R_Peaks, uint Fs,T_End_Method method, bool alldrains)
         {           
            
             this.method = method;
             this.alldrains = alldrains;
+            this.Fs = Fs;
 
-            this.AllDrainSiganl = AllDrainSiganl;          
+            this.AllDrainSignal = AllDrainSignal;          
             this.QRS_End = QRS_End;             
             this.T_EndGlobal = T_EndGlobal;
+            this.R_Peaks = R_Peaks;
         }
         /// <summary>
         /// Only for test
@@ -97,7 +103,7 @@ namespace EKG_Project.Modules.QT_Disp
             int[] tend = { 265,553,835,1119,1410 };        
            
             this.QRS_End = qrsend.ToList();
-            this.AllDrainSiganl = input;
+            this.AllDrainSignal = input;
            
                   
             this.T_EndGlobal = tend.ToList();
@@ -312,15 +318,15 @@ namespace EKG_Project.Modules.QT_Disp
             //if alldrains in gui i set we calculate t_end index in all drains according to chosen method
             if(alldrains == true)
             {
-                for(int i = 0; i<this.AllDrainSiganl.Count(); i++)
+                for(int i = 0; i<this.AllDrainSignal.Count(); i++)
                 {
                     if (this.method == T_End_Method.PARABOLA)
                     {
-                         output.Add(Tuple.Create(this.AllDrainSiganl.ElementAt(i).Item1,ParabolaMethod(this.AllDrainSiganl.ElementAt(i).Item2)));
+                         output.Add(Tuple.Create(this.AllDrainSignal.ElementAt(i).Item1,ParabolaMethod(this.AllDrainSignal.ElementAt(i).Item2)));
                     }
                     else
                     {
-                        output.Add(Tuple.Create(this.AllDrainSiganl.ElementAt(i).Item1, TangentMethod(this.AllDrainSiganl.ElementAt(i).Item2)));                        
+                        output.Add(Tuple.Create(this.AllDrainSignal.ElementAt(i).Item1, TangentMethod(this.AllDrainSignal.ElementAt(i).Item2)));                        
                     }
                 }
             }

@@ -18,11 +18,13 @@ namespace EKG_Project.Modules.QT_Disp
         private QT_Calc_Method _qt_method;
         private T_End_Method _t_end_method;
         private bool _alldrains; // determinate if we calculate QT_disp for all drains or only one
+        private string _analysisName;
         public QT_Disp_Params()
         {
             this._alldrains = false;
             this._qt_method = QT_Calc_Method.BAZETTA;
             this._t_end_method = T_End_Method.TANGENT;
+            this._analysisName = "TestAnalysis";
         }
 
         public QT_Calc_Method QTMethod
@@ -57,6 +59,18 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 _alldrains = value;
             }
+        }
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+            set
+            {
+                _analysisName = value;
+            }
+         
         }
 
 
