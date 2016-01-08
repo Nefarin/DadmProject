@@ -8,19 +8,34 @@ namespace EKG_Project.Modules.QT_Disp
 {
     public partial class QT_Disp : IModule
     {
+        private bool _ended;
+        private bool _aborted;
+
+        //private Basi_Data_Worker _inputWorker;
+        private Basic_Data _inputData;
+
+        private QT_Disp_Params _params;
         public void Abort()
         {
-            throw new NotImplementedException();
+            Aborted = true;
+            _ended = true;
         }
 
         public bool Ended()
         {
-            throw new NotImplementedException();
+            return _ended;
         }
 
         public void Init(ModuleParams parameters)
         {
-            throw new NotImplementedException();
+            Params = parameters as QT_Disp_Params;
+            Aborted = false;
+            if (!Runnable()) _ended = true;
+            else
+            {
+
+            }
+            
         }
 
         public void ProcessData(int numberOfSamples)
@@ -37,5 +52,29 @@ namespace EKG_Project.Modules.QT_Disp
         {
             throw new NotImplementedException();
         }
+
+        public bool Aborted
+        {
+            get
+            {
+                return _aborted;
+            }
+            set
+            {
+                _aborted = value;
+            }
+        }
+        public QT_Disp_Params Params
+        {
+            get
+            {
+                return _params;
+            }
+            set
+            {
+                _params = value;
+            }
+        }
+        
     }
 }
