@@ -13,6 +13,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         //output:
         private List<Tuple<int, int>> _classificationResult;
+        private bool _channelMLIIDetected;
 
         //niezrealizowane:
         private uint _totalNumberOfQrsComplex;
@@ -43,6 +44,12 @@ namespace EKG_Project.Modules.Heart_Class
         {
             get { return _classificationResult; }
             set { _classificationResult = value; }
+        }
+
+        public bool ChannelMliiDetected
+        {
+            get { return _channelMLIIDetected; }
+            set { _channelMLIIDetected = value; }
         }
 
 
@@ -77,6 +84,7 @@ namespace EKG_Project.Modules.Heart_Class
         public Heart_Class_Data()
         {
             _classificationResult = new List<Tuple<int, int>>();
+            ChannelMliiDetected = new bool();
         }
     }
 }
