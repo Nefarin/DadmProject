@@ -37,7 +37,7 @@ namespace EKG_Project.GUI
         public ModulePanel()
         {
             InitializeComponent();
-            var ecgBaseline = new ModuleOption(AvailableOptions.ECG_BASELINE);
+            var ecgBaseline = new ModuleOption(AvailableOptions.ECG_BASELINE, this);
             ecgBaseline.AnalysisName = this.AnalysisName;
 
             ecgBaseline.
@@ -57,7 +57,7 @@ namespace EKG_Project.GUI
                     AddSuboption(AvailableOptions.HRV_DFA).
                     AddSuboptionAndMoveUp(AvailableOptions.SIG_EDR);
 
-            var testModule = new ModuleOption(AvailableOptions.TEST_MODULE);
+            var testModule = new ModuleOption(AvailableOptions.TEST_MODULE, this);
             Options.Add(ecgBaseline);
             Options.Add(testModule);
             this.treeViewModules.ItemsSource = this.Options;
@@ -154,7 +154,7 @@ namespace EKG_Project.GUI
             }
 
             return null;
-            
+                
         }
 
 
