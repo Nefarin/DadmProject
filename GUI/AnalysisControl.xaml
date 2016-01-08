@@ -34,7 +34,7 @@
             <Button x:Name="pdfButton" Click="pdfButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="images/pdf.png"/>
-                    <Label Padding="0">Get pdf</Label>
+                    <Label Padding="0">Pdf path</Label>
                 </StackPanel>
             </Button>
             <Button x:Name="exitButton" Click="exitButton_Click">

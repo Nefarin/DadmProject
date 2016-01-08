@@ -57,13 +57,23 @@ namespace EKG_Project.IO
                 XmlElement module = file.CreateElement(string.Empty, "module", string.Empty);
                 string moduleName = this.GetType().Name;
                 moduleName = moduleName.Replace("_Data_Worker", "");
+
+                XmlNodeList existingModules = file.SelectNodes("EKG/module");
+                foreach (XmlNode existingModule in existingModules)
+                {
+                    if (existingModule.Attributes["name"].Value == moduleName)
+                    {
+                        root.RemoveChild(existingModule);
+                    }
+                }
+
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
 
-                List<Tuple<int, int>> list = basicData.QrsComplexLabel;
+                List<Tuple<int, int>> list = basicData.ClassificationResult;
                 foreach (var tuple in list)
                 {
-                    XmlElement moduleNode = file.CreateElement(string.Empty, "QrsComplexLabel", string.Empty);
+                    XmlElement moduleNode = file.CreateElement(string.Empty, "ClassificationResult", string.Empty);
                     module.AppendChild(moduleNode);
 
                     XmlElement item1 = file.CreateElement(string.Empty, "item1", string.Empty);
@@ -77,24 +87,11 @@ namespace EKG_Project.IO
                     moduleNode.AppendChild(item2);
                 }
 
-                uint TotalNumberOfQrsComplex = basicData.TotalNumberOfQrsComplex;
-                XmlElement totalNumberOfQrsComplex = file.CreateElement(string.Empty, "TotalNumberOfQrsComplex", string.Empty);
-                XmlText value = file.CreateTextNode(TotalNumberOfQrsComplex.ToString());
-                totalNumberOfQrsComplex.AppendChild(value);
-                module.AppendChild(totalNumberOfQrsComplex);
-
-
-                uint NumberOfClass = basicData.NumberOfClass;
-                XmlElement numberOfClass = file.CreateElement(string.Empty, "NumberOfClass", string.Empty);
-                XmlText numberOfClassValue = file.CreateTextNode(NumberOfClass.ToString());
-                numberOfClass.AppendChild(numberOfClassValue);
-                module.AppendChild(numberOfClass);
-
-                double PercentOfNormalComplex = basicData.PercentOfNormalComplex;
-                XmlElement percentOfNormalComplex = file.CreateElement(string.Empty, "PercentOfNormalComplex", string.Empty);
-                XmlText percentOfNormalComplexValue = file.CreateTextNode(PercentOfNormalComplex.ToString());
-                percentOfNormalComplex.AppendChild(percentOfNormalComplexValue);
-                module.AppendChild(percentOfNormalComplex);
+                bool ChannelMliiDetected = basicData.ChannelMliiDetected;
+                XmlElement channelMliiDetected = file.CreateElement(string.Empty, "ChannelMliiDetected", string.Empty);
+                XmlText channelMliiDetectedValue = file.CreateTextNode(ChannelMliiDetected.ToString());
+                channelMliiDetected.AppendChild(channelMliiDetectedValue);
+                module.AppendChild(channelMliiDetected);
 
                 ew.InternalXMLFile = file;
 
@@ -120,7 +117,7 @@ namespace EKG_Project.IO
                 if (module.Attributes["name"].Value == moduleName)
                 {
                     List<Tuple<int, int>> list = new List<Tuple<int, int>>();
-                    XmlNodeList nodes = module.SelectNodes("QrsComplexLabel");
+                    XmlNodeList nodes = module.SelectNodes("ClassificationResult");
                     foreach (XmlNode node in nodes)
                     {
                         XmlNode item1 = node["item1"];
@@ -134,21 +131,16 @@ namespace EKG_Project.IO
                         Tuple<int, int> read = Tuple.Create(convertedItem1, convertedItem2);
                         list.Add(read);
                     }
-                    basicData.QrsComplexLabel = list;
+                    basicData.ClassificationResult = list;
 
-                    XmlNode totalNumberOfQrsComplex = module["TotalNumberOfQrsComplex"];
-                    basicData.TotalNumberOfQrsComplex = Convert.ToUInt32(totalNumberOfQrsComplex.InnerText, new System.Globalization.NumberFormatInfo());
-
-                    XmlNode numberOfClass = module["NumberOfClass"];
-                    basicData.NumberOfClass = Convert.ToUInt32(numberOfClass.InnerText, new System.Globalization.NumberFormatInfo());
-
-                    XmlNode percentOfNormalComplex = module["PercentOfNormalComplex"];
-                    basicData.PercentOfNormalComplex = Convert.ToUInt32(percentOfNormalComplex.InnerText, new System.Globalization.NumberFormatInfo());
+                    XmlNode channelMliiDetected = module["ChannelMliiDetected"];
+                    string readChannelMliiDetected = channelMliiDetected.InnerText;
+                    bool convertedChannelMliiDetected = Convert.ToBoolean(readChannelMliiDetected);
+                    basicData.ChannelMliiDetected = convertedChannelMliiDetected;
                     
                 }
             }
             this.Data = basicData;
         }
-
     }
 }

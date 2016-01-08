@@ -1,5 +1,4 @@
-﻿using EKG_Project.Modules;
-using EKG_Project.Modules.ECG_Baseline;
+﻿using EKG_Project.Modules.Waves;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,24 +16,20 @@ using System.Windows.Shapes;
 namespace EKG_Project.GUI.ModuleOptionDialogues
 {
     /// <summary>
-    /// Interaction logic for Dialogue_ECG_Baseline_Options.xaml
+    /// Interaction logic for Dialogue_Waves_Options.xaml
     /// </summary>
-    public partial class Dialogue_ECG_Baseline_Options : Window
+    public partial class Dialogue_Waves_Options : Window
     {
-        // muszę znać typ (nie mogę użyć samgo ModuleParams), ponieważ klasa bazowa (a nie np. interface), 
-        // nie udostępnia żadnych metod kopiujących itp.
-        private ECG_Baseline_Params returnParameters { get; set; }
-        public ECG_Baseline_Params PendingParameters { get; set; }
+        private Waves_Params returnParameters { get; set; }
+        public Waves_Params PendingParameters { get; set; }
         ModulePanel panel;
 
-        public Dialogue_ECG_Baseline_Options(Object parent, ECG_Baseline_Params parameters)
+        public Dialogue_Waves_Options(Object parent, Waves_Params parameters)
         {
-            panel = parent as ModulePanel;
+            panel= parent as ModulePanel;
             this.returnParameters = parameters;
 
-            // do dupy kawałek kodu, bo nie ma odpowiednich konstruktorów w klasie ECG_Baseline_Parameters 
-            // (ani domyślnego, ani ustawiającego wszystkie parametry)
-            this.PendingParameters = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS);
+            this.PendingParameters = new Waves_Params();
             this.PendingParameters.CopyParametersFrom(parameters);
             this.DataContext = this.PendingParameters;
             InitializeComponent();
