@@ -6,28 +6,25 @@ using System.Threading.Tasks;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.R_Peaks;
 
 namespace EKG_Project.Modules.Sleep_Apnea
 {
     class Sleep_Apnea_Data : ECG_Data
     {
-        private Matrix<int> _Detected_Apnea;
-        private Vector<double> _ecg;
-        private int _il_Apnea;
+        private List<Tuple<string, List<Tuple<int, int>>>> _Detected_Apnea;
+        private List<Tuple<string, List<List<double>>>> _h_amp;
+        private List<Tuple<string, double>> _il_Apnea;
 
-        public Vector<double> ecg
+        public Sleep_Apnea_Data()
         {
-            get
-            {
-                return _ecg;
-            }
-            set
-            {
-                _ecg = value;
-            }
+            _Detected_Apnea = new List<Tuple<string, List<Tuple<int, int>>>>();
+            _h_amp = new List<Tuple<string, List<List<double>>>>();
+            _il_Apnea = new List<Tuple<string, double>>();
         }
 
-        public Matrix<int> Detected_Apnea
+        public List<Tuple<string, List<Tuple<int, int>>>> Detected_Apnea
         {
             get
             {
@@ -39,7 +36,20 @@ namespace EKG_Project.Modules.Sleep_Apnea
             }
         }
 
-        public int il_Apnea
+        public List<Tuple<string, List<List<double>>>> h_amp
+        {
+            get
+            {
+                return _h_amp;
+            }
+            set
+            {
+                _h_amp = value;
+            }
+        }
+
+
+        public List<Tuple<string, double>> il_Apnea
         {
             get
             {
