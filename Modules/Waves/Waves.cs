@@ -75,13 +75,16 @@ namespace EKG_Project.Modules.Waves
 
                 InputWorkerRpeaks.Load();
                 InputDataRpeaks = InputWorkerRpeaks.Data;
+                Console.Write(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
 
                 OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
                 OutputData = new Waves_Data();
 
                 _currentChannelIndex = 0;
                 _rPeaksProcessed = 0;
-                NumberOfChannels = InputData.Signals.Count;
+                //NumberOfChannels = InputData.Signals.Count;
+                //najwyrazniej liczba tych kanalow nie byla rowna w trakcie pierwszych testow
+                NumberOfChannels = InputDataRpeaks.RPeaks.Count;
                 _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
                 _currentQRSonsetsPart = new List<int>();
                 _currentQRSendsPart = new List<int>();
@@ -354,7 +357,7 @@ namespace EKG_Project.Modules.Waves
 
         public static void Main()
         {
-            Waves_Params param = new Waves_Params( Wavelet_Type.haar, 2, "TestAnalysis", 100);
+            Waves_Params param = new Waves_Params( Wavelet_Type.haar, 2, "Analysis6", 100);
 
             //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
             //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
