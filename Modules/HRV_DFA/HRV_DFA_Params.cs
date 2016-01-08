@@ -6,16 +6,26 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
+    public enum Plot_Breakpoint { ONE_THIRD, HALF, TWO_THIRD };
+    public enum Box_Max_Size { _10000,_50000, _100000};
+    public enum Box_StepSize { _10,_50, _100};
+
 
     public class HRV_DFA_Params : ModuleParams
     {
         //HRV_DFA parameters
-        private double _breakpoint;
-        private int _boxStart;
-        private int _boxEnd;
-        private int _stepSize;
+        private Plot_Breakpoint _breakpoint;
+        private Box_Max_Size _boxSize;
+        private Box_StepSize _stepSize;
 
-        public double Breakpoint
+        public HRV_DFA_Params(Plot_Breakpoint breakpoint, Box_Max_Size boxSize, Box_StepSize stepSize)
+        {
+            this.Breakpoint = breakpoint;
+            this.BoxSize = boxSize;
+            this.StepSize = stepSize;
+        }
+
+        public Plot_Breakpoint Breakpoint
         {
             get
             {
@@ -28,33 +38,21 @@ namespace EKG_Project.Modules.HRV_DFA
             }
         }
 
-        public int BoxStart
+        public Box_Max_Size BoxSize
         {
             get
             {
-                return _boxStart;
+                return _boxSize;
             }
 
             set
             {
-                _boxStart = value;
+                _boxSize = value;
             }
         }
 
-        public int BoxEnd
-        {
-            get
-            {
-                return _boxEnd;
-            }
 
-            set
-            {
-                _boxEnd = value;
-            }
-        }
-
-        public int StepSize
+        public Box_StepSize StepSize
         {
             get
             {
@@ -67,15 +65,14 @@ namespace EKG_Project.Modules.HRV_DFA
             }
         }
 
-        public HRV_DFA_Params(double breakpoint, int boxStart, int boxEnd, int stepSize)
-          {
-              Breakpoint = breakpoint;
-              BoxStart = boxStart;
-              BoxEnd = boxEnd;
-              StepSize = stepSize;
+        public void CopyParametersFrom(HRV_DFA_Params parameters)
+        {
+            this.Breakpoint = parameters.Breakpoint;
+            this.BoxSize = parameters.BoxSize;
+            this.StepSize = parameters.StepSize;
+        
+        }
 
-          }
 
-       
     }
 }
