@@ -99,7 +99,7 @@ namespace EKG_Project.GUI
             switch (this.Code)
             {
                 case AvailableOptions.ECG_BASELINE:
-                    this.ModuleParam = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS);            
+                    this.ModuleParam = new ECG_Baseline_Params();
                     break;
                 case AvailableOptions.R_PEAKS:
                     this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.getAnalysisName());
@@ -113,7 +113,7 @@ namespace EKG_Project.GUI
                 default:
                     this.ModuleParam = null;
                     break;
-            }        
+            }
         }
 
         #endregion
