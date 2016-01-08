@@ -23,7 +23,7 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
     {
         // muszę znać typ (nie mogę użyć samgo ModuleParams), ponieważ klasa bazowa (a nie np. interface), 
         // nie udostępnia żadnych metod kopiujących itp.
-        private ECG_Baseline_Params returnParameters { get; set; }
+        public ECG_Baseline_Params returnParameters { get; set; }
         public ECG_Baseline_Params PendingParameters { get; set; }
         ModulePanel panel;
 
@@ -50,5 +50,6 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
         {
             this.Close();
         }
+
     }
 }

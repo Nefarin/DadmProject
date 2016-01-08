@@ -3,6 +3,7 @@ using EKG_Project.Modules.Atrial_Fibr;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Waves;
+using EKG_Project.Modules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,6 +29,8 @@ namespace EKG_Project.GUI
     public partial class ModulePanel : UserControl
     {
         public List<ModuleOption> Options = new List<ModuleOption>();
+        public Dictionary<AvailableOptions, ModuleParams> Params = new Dictionary<AvailableOptions, ModuleParams>();
+
         private string _analysisName;
 
         public ModulePanel()
@@ -75,24 +78,27 @@ namespace EKG_Project.GUI
         private void btn_Click(object sender, RoutedEventArgs e)
         {
             ModuleOption option = (ModuleOption)((Button)sender).DataContext;
-            Window dialogue = null;
             switch (option.Code)
             {
                 case AvailableOptions.ECG_BASELINE:
-                    dialogue = new Dialogue_ECG_Baseline_Options(this, (ECG_Baseline_Params)option.ModuleParam);
-                    dialogue.ShowDialog();
+                    var baseline_dialogue = new Dialogue_ECG_Baseline_Options(this, (ECG_Baseline_Params)option.ModuleParam);
+                    baseline_dialogue.ShowDialog();
+                    Params[option.Code] = baseline_dialogue.returnParameters;
                     break;
                 case AvailableOptions.R_PEAKS:
-                    dialogue = new Dialogue_R_Peaks_Options(this, (R_Peaks_Params)option.ModuleParam);
-                    dialogue.ShowDialog();
+                    var peaks_dialogue = new Dialogue_R_Peaks_Options(this, (R_Peaks_Params)option.ModuleParam);
+                    peaks_dialogue.ShowDialog();
+                    Params[option.Code] = peaks_dialogue.returnParameters;
                     break;
                 case AvailableOptions.WAVES:
-                    dialogue = new Dialogue_Waves_Options(this, (Waves_Params)option.ModuleParam);
-                    dialogue.ShowDialog();
+                    var waves_dialogue = new Dialogue_Waves_Options(this, (Waves_Params)option.ModuleParam);
+                    waves_dialogue.ShowDialog();
+                    Params[option.Code] = waves_dialogue.returnParameters;
                     break;
                 case AvailableOptions.ATRIAL_FIBER:
-                    dialogue = new Dialogue_Atrial_fibr_Options(this, (Atrial_Fibr_Params)option.ModuleParam);
-                    dialogue.ShowDialog();
+                    var atrial_dialogue = new Dialogue_Atrial_fibr_Options(this, (Atrial_Fibr_Params)option.ModuleParam);
+                    atrial_dialogue.ShowDialog();
+                    Params[option.Code] = atrial_dialogue.returnParameters;
                     break;
                 default:
                     break;
@@ -127,7 +133,20 @@ namespace EKG_Project.GUI
             return currentOptions;
         }
 
-                    
+        public ModuleParams ModuleParams(AvailableOptions code)
+        {
+            foreach(var option in this.getAllOptions())
+            {
+                if (code == option.Code && option.Set == true)
+                {
+                    return Params[code];
+                }
+            }
+
+            return null;
+        }
+
+
     }
 
 }

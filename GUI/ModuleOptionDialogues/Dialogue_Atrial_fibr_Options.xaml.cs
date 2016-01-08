@@ -20,7 +20,7 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
     /// </summary>
     public partial class Dialogue_Atrial_fibr_Options : Window
     {
-        private Atrial_Fibr_Params returnParameters { get; set; }
+        public Atrial_Fibr_Params returnParameters { get; set; }
         public Atrial_Fibr_Params PendingParameters { get; set; }
         ModulePanel panel;
 

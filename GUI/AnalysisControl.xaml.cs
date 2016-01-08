@@ -49,13 +49,15 @@ namespace EKG_Project.GUI
         {
             foreach (var option in modulePanel.getAllOptions())
             {
-
+               // Console.Write(modulePanel.ModuleParams(option.Code));
                 if (option.Set)
                 {
-                    if (option.ModuleParam == null) //tylko tymczasowo dopoki nie jest przez was zaimplementowane
+                    
+                    if (option.ModuleParam == modulePanel.ModuleParams(option.Code)) //tylko tymczasowo dopoki nie jest przez was zaimplementowane
                     {
+
                         //option.ModuleParam = new ModuleParams();
-                        //moduleParams[option.Code] = option.ModuleParam;
+                        //moduleParams(option.Code)= option.ModuleParam;
                         Console.WriteLine(option.Name + " is set.");
                     }
                 }
