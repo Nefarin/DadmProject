@@ -1,6 +1,7 @@
 ﻿using System;
 using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
+using EKG_Project.Modules.ECG_Baseline;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
 using System.Collections.Generic;
@@ -19,11 +20,13 @@ namespace EKG_Project.Modules.Waves
         private int _numberOfChannels;
 
         private Basic_Data_Worker _inputWorker;
+        private ECG_Baseline_Data_Worker _inputECGWorker;
         private R_Peaks_Data_Worker _inputRpeaksWorker;
         private Waves_Data_Worker _outputWorker;
 
         private Waves_Data _outputData;
         private Basic_Data _inputData;
+        private ECG_Baseline_Data _inputECGData;
         private R_Peaks_Data _inputRpeaksData;
         
         private Waves_Params _params;
@@ -61,9 +64,16 @@ namespace EKG_Project.Modules.Waves
                 _ended = false;
 
                 InputWorker = new Basic_Data_Worker(Params.AnalysisName);
+                InputECGworker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
                 InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
+
                 InputWorker.Load();
                 InputData = InputWorker.BasicData;
+
+                InputECGworker.Load();
+                InputECGData = InputECGworker.Data;
+
+                InputWorkerRpeaks.Load();
                 InputDataRpeaks = InputWorkerRpeaks.Data;
 
                 OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
@@ -214,6 +224,19 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
+        public ECG_Baseline_Data InputECGData
+        {
+            get
+            {
+                return _inputECGData;
+            }
+
+            set
+            {
+                _inputECGData = value;
+            }
+        }
+
         public R_Peaks_Data InputDataRpeaks
         {
             get
@@ -289,6 +312,18 @@ namespace EKG_Project.Modules.Waves
             set
             {
                 _inputWorker = value;
+            }
+        }
+
+        public ECG_Baseline_Data_Worker InputECGworker
+        {
+            get
+            {
+                return _inputECGWorker;
+            }
+            set
+            {
+                _inputECGWorker = value;
             }
         }
 
