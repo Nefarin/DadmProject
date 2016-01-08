@@ -15,8 +15,7 @@
                 <x:Type TypeName="params:Filtr_Method"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-        <ObjectDataProvider x:Key="availableFilterTypes" MethodName="GetValues"
-                            ObjectType="{x:Type System:Enum}">
+        <ObjectDataProvider x:Key="availableFilterTypes" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="params:Filtr_Type"/>
             </ObjectDataProvider.MethodParameters>

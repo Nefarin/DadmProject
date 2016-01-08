@@ -30,6 +30,7 @@ namespace EKG_Project.GUI
     {
         public List<ModuleOption> Options = new List<ModuleOption>();
         public Dictionary<AvailableOptions, ModuleParams> Params = new Dictionary<AvailableOptions, ModuleParams>();
+        public Dictionary<ModuleOption, ModuleParams> OptionParams = new Dictionary<ModuleOption, ModuleParams>();
 
         private string _analysisName;
 
@@ -84,21 +85,26 @@ namespace EKG_Project.GUI
                         var baseline_dialogue = new Dialogue_ECG_Baseline_Options(this, (ECG_Baseline_Params)option.ModuleParam);
                         baseline_dialogue.ShowDialog();
                         Params[option.Code] = baseline_dialogue.returnParameters;
+                        OptionParams[option] = baseline_dialogue.returnParameters;
                     break;
                 case AvailableOptions.R_PEAKS:
                         var peaks_dialogue = new Dialogue_R_Peaks_Options(this, (R_Peaks_Params)option.ModuleParam);
                         peaks_dialogue.ShowDialog();
                         Params[option.Code] = peaks_dialogue.returnParameters;
+                        OptionParams[option] = peaks_dialogue.returnParameters;
+
                     break;
                 case AvailableOptions.WAVES:
                         var waves_dialogue = new Dialogue_Waves_Options(this, (Waves_Params)option.ModuleParam);
                         waves_dialogue.ShowDialog();
                         Params[option.Code] = waves_dialogue.returnParameters;
+                        OptionParams[option] = waves_dialogue.returnParameters;
                     break;
                 case AvailableOptions.ATRIAL_FIBER:
                         var atrial_dialogue = new Dialogue_Atrial_fibr_Options(this, (Atrial_Fibr_Params)option.ModuleParam);
                         atrial_dialogue.ShowDialog();
                         Params[option.Code] = atrial_dialogue.returnParameters;
+                        OptionParams[option] = atrial_dialogue.returnParameters;
                     break;
                 default:
                     break;
@@ -133,22 +139,22 @@ namespace EKG_Project.GUI
             return currentOptions;
         }
 
-        public ModuleParams ModuleParams(AvailableOptions code)
+        public Tuple<ModuleOption, ModuleParams> ModuleOptionAndParams(AvailableOptions code)
         {
-            
-            foreach (var option in this.getAllOptions())
-            {
-                
-                if (code == option.Code && option.Set == true)
-                {
-                    if (Params.ContainsKey(code)) {
-                        return Params[code];
-                    }
 
+            foreach (KeyValuePair<ModuleOption, ModuleParams> entry in OptionParams)
+            {
+                if (entry.Key.Code == code && entry.Key.Set == true)
+                {
+                    Tuple<ModuleOption, ModuleParams> correctOptionParams = new Tuple<ModuleOption, ModuleParams>(entry.Key, entry.Value);
+
+                        return correctOptionParams;
                 }
+
             }
 
             return null;
+            
         }
 
 

@@ -52,7 +52,7 @@ namespace EKG_Project.GUI
                 if (option.Set)
                 {
 
-                    if (option.ModuleParam == modulePanel.ModuleParams(option.Code) && option.ModuleParam != null) //tylko tymczasowo dopoki nie jest przez was zaimplementowane
+                    if (option.ModuleParam == null) //tylko tymczasowo dopoki nie jest przez was zaimplementowane
                     {
 
                         //option.ModuleParam = new ModuleParams();
