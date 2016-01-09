@@ -9,8 +9,10 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
+    /*
     public partial class HRV2 : IModule
     {
+        
         private bool _ended;
         private bool _aborted;
 
@@ -225,5 +227,7 @@ namespace EKG_Project.Modules.HRV2
                 hrv2.ProcessData();
             }
         }
+         
     }
+         * * */
 }

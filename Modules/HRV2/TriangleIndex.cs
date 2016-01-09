@@ -7,8 +7,10 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
+    /*
     public partial class HRV2 : IModule
     {
+        
         static List<Tuple<string, Vector<double>>> RRIntervaals;
         public DataSource lista = new DataSource(RRIntervaals);
 
@@ -26,5 +28,6 @@ namespace EKG_Project.Modules.HRV2
             return TINN;
         }
     }
+         * */
 }
 

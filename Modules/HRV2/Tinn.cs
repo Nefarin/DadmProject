@@ -1,4 +1,4 @@
-﻿using Histogram.Data;
+﻿//using Histogram.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.HRV2
 {
+    /*
 
     #region Documentation
     /// <summary>
@@ -16,8 +17,11 @@ namespace EKG_Project.Modules.HRV2
     #endregion
     public class Tinn
     {
+        /*
         //podstawa trójkąta dofitowanego do histogramu
         double length = rr_intervals.Max - rr_intervals.Min;
         double Tinn = length / _binLength;
+        
     }
+     * */
 }

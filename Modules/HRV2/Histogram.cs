@@ -8,7 +8,7 @@ using EKG_Project.Modules.R_Peaks;
 using WfdbCsharpWrapper;
 
 namespace EKG_Project.Modules.HRV2
-{
+{/*
     public partial class HRV2 : IModule
     {
         public class Sample
@@ -141,4 +141,5 @@ namespace EKG_Project.Modules.HRV2
             #endregion
         }
     }
+  * */
 }

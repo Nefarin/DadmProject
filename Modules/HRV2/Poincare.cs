@@ -7,6 +7,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
+    /*
     public partial class HRV2 : IModule
     {
         void PoincarePlot( Vector<double> rr_intervals_x, Vector<double> rr_intervals_y) {
@@ -28,4 +29,5 @@ namespace EKG_Project.Modules.HRV2
             //double SD2 = std(rr_intervals_x + rr_intervals_y) / Math.Sqrt(2);
         }
     }
+     * */
 }

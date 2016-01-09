@@ -297,4 +297,26 @@
       <item2>54</item2>
     </il_Apnea>
   </module>
+  <module name="HRV2">
+    <HistogramData>
+      <lead>V1</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </HistogramData>
+    <HistogramData>
+      <lead>MLII</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </HistogramData>
+    <PoincarePlotData_x>
+      <item1>V1</item1>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_y>
+      <item1>MLII</item1>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </PoincarePlotData_y>
+    <Tinn>90</Tinn>
+    <TriangleIndex>100</TriangleIndex>
+    <SD1>1</SD1>
+    <SD2>2</SD2>
+  </module>
 </EKG>

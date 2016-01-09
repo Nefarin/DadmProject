@@ -4,6 +4,7 @@ using EKG_Project.Modules.R_Peaks;
 
 namespace EKG_Project.Modules.HRV2
 {
+    /*
     public partial class HRV2 : IModule
     {
         #region
@@ -53,4 +54,5 @@ namespace EKG_Project.Modules.HRV2
         {
         }
     }
+     * */
 }
