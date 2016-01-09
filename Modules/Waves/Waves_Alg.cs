@@ -309,11 +309,11 @@ namespace EKG_Project.Modules.Waves
         #endregion
         public void FindP()
         {
-            double pmax_val;
+            double pmax_val,thr;
             int window,break_window,pmax_loc,ponset,pend;
 
-            window = Convert.ToInt32(InputData.Frequency*0.25);
-            break_window = Convert.ToInt32(InputData.Frequency * 0.3);
+            window = Convert.ToInt32(InputData.Frequency*0.5);
+            break_window = Convert.ToInt32(InputData.Frequency * 0.6);
 
             foreach (int onset_loc in _currentQRSonsetsPart)
             {
@@ -327,7 +327,8 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 ponset = pmax_loc;
-                while(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset-1] || Math.Abs(pmax_val- InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset]) < 30) //dawniej 70
+                thr = (pmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[onset_loc]) * 0.4;
+                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset-1] || Math.Abs(pmax_val- InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset]) < thr) //dawniej 70
                 {
                     ponset--;
                     if (ponset < onset_loc - break_window)
@@ -339,7 +340,8 @@ namespace EKG_Project.Modules.Waves
                 _currentPonsetsPart.Add(ponset);
 
                 pend = pmax_loc;
-                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend+1] || (pmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] < 110))
+                thr = (pmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[onset_loc]) * 0.4;
+                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend+1] || (pmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] < thr))
                 {
                     pend++;
                     if (pend > onset_loc)
@@ -360,12 +362,12 @@ namespace EKG_Project.Modules.Waves
         #endregion
         public void FindT()
         {
-            double tmax_val;
+            double tmax_val,thr;
             int window,break_window,tmax_loc, tend;
 
 
-            window = Convert.ToInt32(InputData.Frequency * 0.2);
-            break_window = Convert.ToInt32(InputData.Frequency * 0.35);
+            window = Convert.ToInt32(InputData.Frequency * 0.5);
+            break_window = Convert.ToInt32(InputData.Frequency * 0.55);
 
             foreach (int ends_loc in _currentQRSendsPart)
             {
@@ -379,7 +381,8 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 tend = tmax_loc;
-                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend + 1] || ((tmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] < 30) && (tmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] > -10)))
+                thr = (tmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ends_loc]) * 0.25;
+                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend + 1] || ((tmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] < thr) && (tmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] > -(tmax_val*0.01))))
                 {
                     tend++;
                     if(tend > ends_loc+break_window)
