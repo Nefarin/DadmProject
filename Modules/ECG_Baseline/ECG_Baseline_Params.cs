@@ -13,29 +13,47 @@ namespace EKG_Project.Modules.ECG_Baseline
         private Vector<double> _ecgFiltered;      //przefiltrowany sygnał do algorytmu LMS
         private double _fs;                       //częstotliwość próbkowania 
         private double _fc;                       //częstotliwość odcięcia
-        private uint _windowSize;                 //szerokość okna filtracji
-        private uint _order;                      //rząd filtru
+        private int _windowSize;                 //szerokość okna filtracji
+        private int _order;                      //rząd filtru
+        private string _analysisName;             //analysisName
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, uint order, double fs, double fc)
+        public ECG_Baseline_Params()
         {
-            _method = method;
-            _type = type;
-            _fs = fs;
-            _fc = fc;
-            _order = order;
+            this.Method = Filtr_Method.MOVING_AVG;
+            this.AnalysisName = "Analysis6";
+            this.Fc = 50;
+            this.Type = Filtr_Type.LOWPASS;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, uint windowSize)
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int order, double fs, double fc, string analysisName)
         {
-            _method = method;
-            _type = type;
-            _windowSize = windowSize;
+           this.Method = method;
+           this.AnalysisName = analysisName;
+           this.Type = type;
+           this.Fs = fs;
+           this.Fc = fc;
+           this.Order = order;
         }
 
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSize, string analysisName)
+        {
+            this.Method = method;
+            this.AnalysisName = analysisName;
+            this.Type = type;
+            this.WindowSize = windowSize;
+        }
+
+        public ECG_Baseline_Params(Filtr_Method method, string analysisName)
+        {
+            this.Method = method;
+            this.AnalysisName = analysisName;
+        }
+
+        //Tymczasowy konstruktor, bo ktoś coś odj**
         public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type)
         {
-            _method = method;
-            _type = type;
+            this.Method = method;
+            this.Type = type;
         }
 
         public void CopyParametersFrom(ECG_Baseline_Params parameters)
@@ -46,6 +64,19 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.Fs = parameters.Fs;
             this.Order = parameters.Order;
             this.WindowSize = parameters.WindowSize;
+        }
+
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+
+            set
+            {
+                _analysisName = value;
+            }
         }
 
         public Filtr_Method Method
@@ -113,7 +144,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             }
         }
 
-        public uint WindowSize
+        public int WindowSize
         {
             get
             {
@@ -126,7 +157,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             }
         }
 
-        public uint Order
+        public int Order
         {
             get
             {

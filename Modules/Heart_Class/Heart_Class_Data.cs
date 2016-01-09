@@ -12,6 +12,8 @@ namespace EKG_Project.Modules.Heart_Class
     {
 
         //output:
+        private List<Tuple<int, int>> _classificationResult;
+        private bool _channelMLIIDetected;
 
         //niezrealizowane:
         private Qrs_Class _cluster;
@@ -27,6 +29,12 @@ namespace EKG_Project.Modules.Heart_Class
 
         public List<Tuple<int, int>> QrsComplexLabel { get; set; }
 
+        public bool ChannelMliiDetected
+        {
+            get { return _channelMLIIDetected; }
+            set { _channelMLIIDetected = value; }
+        }
+
 
         public class Qrs_Class
         {
@@ -35,7 +43,7 @@ namespace EKG_Project.Modules.Heart_Class
             public int NumberOfQrsComplex { get; }
 
             public int IndexOfRepresentative { get; }
-        }
+            }
 
         #region Documentation
         /// <summary>
@@ -44,6 +52,8 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         public Heart_Class_Data()
         {
+            _classificationResult = new List<Tuple<int, int>>();
+            ChannelMliiDetected = new bool();
             ClassificationResult = new List<Tuple<string, List<Tuple<int, int>>>>();
         }
     }
