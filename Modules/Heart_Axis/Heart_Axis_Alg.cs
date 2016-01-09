@@ -12,47 +12,24 @@ namespace EKG_Project.Modules.Heart_Axis
 
         /* Input Data */
 
-        private double[] EKGSignalValues;
-        private double[] EKGSignalTimestamps; //potrzebne to?
-        private int samplingRate;
-        private int QSampleNumber; //wektor? i string?
-        private int SSampleNumber; //wektor? i string?
+
+        /*private int samplingRate;
+        private Vector<double> firstLead;
+        private Vector<double> secondLead;
+        private List<int> QRSonsets;
+        private List<int> QRSends;*/    //error: The type or namespace name 'Vector<double>' could not be found(are you missing a using directive or an assembly reference?
 
 
-        // todo: zastanowić się, czy trzeba dopisać settery i gettery do tych pól
-
-        // PARAMETRY I TESTY
-
-        // todo: dowiedzieć się, skąd dostaje się listę parametrów, i jakie są wartości w stringach
-
-        // todo: ta funkcja powinna być konstruktorem - jak tu działają konstruktory?
-
-        //public void InitializeFields
-
-        /*public Heart_Axis((List<Tuple<String, Vector<double>>> parameters) //Heart_Axis? bledy - namespace tupple i namespace vector<double>
-        {
-            foreach (Tupple<String, Vector<double>> parameter in parameters)
-            {
-                String parameterName = parameter.Item1;
-                Vector<double> parameterData = parameter.Item2;
-                // todo: dowiedzieć się jak rozpoznawać co jest czym w liście; na podstawie nazw wykonać odpowiednie przypisania
-            }
-        }*/
-
-
-        //private check // eee?
+        //czy to potrzebne? - dane są inicjalizowane w głównej klasie modułu?
 
         /*Pseudo Module*/
 
-        //todo: ujednoznacznić nazwy zmiennych - czemu?
-        //todo: dodać zwracanie wartości
+        //todo: poprawne q i s - w pliku głównym?
 
-        private void PseudoModule(uint Q, uint S, double[] signal) // sygnal? spr
+
+        private double[] PseudoModule(uint Q, uint S, double[] signal)
         {
-            if (Q > S)
-            {
-                // todo: wyrzucić wyjątek z błędnymi parametrami - gdy S mniejsze od Q
-            }
+
             uint j = 0;
             double[] pseudo_tab;
             pseudo_tab = new double[S - Q];
@@ -60,79 +37,98 @@ namespace EKG_Project.Modules.Heart_Axis
             {
                 pseudo_tab[j] = Math.Sqrt(Math.Pow(signal[i], 2) + Math.Pow(signal[i+1], 2));
             }
-            //return pseudo_tab[]; //error: value expected
+            return pseudo_tab;
         }
 
         /* Finding Max */
-        private int MaxOfPseudoModule(int Q, uint S, double[] pseudo_tab, double[] signal)
+        private uint MaxOfPseudoModule(uint Q, double[] pseudo_tab)
         {
-
-            if (Q > S)
-            {
-                // todo: wyrzucić wyjątek z błędnymi parametrami
-            }
 
             double maxValue = pseudo_tab.Max();
-            int maxIndex = Array.IndexOf(pseudo_tab, maxValue); //Array? todo: zmienić na uint, potrzebny cast?
-            maxIndex = maxIndex + Q;
-
-
-            return maxIndex;
+            int maxIndex = Array.IndexOf(pseudo_tab, maxValue);
+            uint uMaxIndex = (uint)maxIndex;
+            uMaxIndex = uMaxIndex + Q;
+            return uMaxIndex;
         }
 
+        /*Least-Squares method*/
+        /*
+        // todo: czy pseudo_tab nie powinno być składową klasy
+        private double[] LeastSquaresMethod(double []signal, uint Q, double[] pseudo_tab, int frequency) // todo: skąd wziąć tablicę samples
+        {
+            uint uMaxIndex = MaxOfPseudoModule(Q, pseudo_tab);
+            int timePeriod = 40; // czy 20?
+            int milisecondsDivider = 1000;
+            double T = (timePeriod * frequency) / milisecondsDivider; // ilość próbek na 1 ms -  todo: sprawdzić czy zwraca poprawną wartość, zabezpieczyć się przed dzieleniem przez zero
+            int roundedT = Math.Round(T, MidpointRounding.AwayFromZero); // zaokrąglenie
+
+            //Trzeba się zabezpieczyć przed wyjściem poza zakres tablicy!
+
+            int signalSize = signal.Length;
+            double []indexes;
+            int partArrayLength = 0;
+            if ((uMaxIndex - roundedT >= 0) && (uMaxIndex + roundedT < signalSize))
+            {
+                partArrayLength = 2 * roundedT + 1;
+                indexes = new double[partArrayLength]; //?
+            }
+            else
+            {
+                //todo: zrobić odpowiednio krótszą tablicę z odpowiedniej strony
+                indexes = new double[1]; //?
+            }
+
+            // inicjalizacja indexes/samples numerami próbek
+
+
+            
+            //98,99,100,101,102, indexes.Length = 5, maxIndex = 100, roundedT = 2, i = 0..4, index
             
 
-            /*int QSLength = S - Q + 1;
-            double[] QSArray = new double[QSLength];
-            Array.Copy(signal, Q, QSArray, 0, QSLength);
+            for (int i = 0; i < indexes.Length; i++)
+            {
+                indexes[i] = uMaxIndex - roundedT + i; //
+            }
 
-            int maxValue = QSArray.Max();
-            uint maxIndex = Array.IndexOf(QSArray, maxValue);
+            // inicjalizacja tablicy z częścią sygnału
+            double[] partSignal = new double[partArrayLength];
 
-            return maxIndex;    //???*/
+            int startCopyIndex = uMaxIndex - roundedT;
 
+            // przekopiuj z tablicy signal do tablicy partSignal n elementów (gdzie n = indexes.Length)
+            Array.Copy(signal, startCopyIndex, partSignal, 0, indexes.Length);
 
-
-        /*Least-Squares method*/
-        // Double[] Polynomial(Double[] x, Double[] y, int order, DirectRegressionMethod method)
-        /*double[] Fitting(double[] xdata, double[] ydata, int order)
-        {
-            double[] p = Fit.Polynomial(xdata, ydata, 3);
-            return p;
-        }*/
-
-        private double[] LeastSquaresMethod(double[] signal, double[] samples) // todo: skąd wziąć tablicę samples
-        {
             int order = 2;
             double[] bestFitCoefficients = Fit.Polynomial(signal, samples, order);
             return bestFitCoefficients;
         }
+        */
 
 
         /*Max of Polynomial*/
-        private double MaxOfPolynomial(double [] fitting_parameters) //todo: przekonwertować na uint
+        private double MaxOfPolynomial(uint Q, double [] fitting_parameters)
         {
-            double I = 0;
-            I =(-fitting_parameters[1])/(2*fitting_parameters[0]);
-                return I; //todo: dodać Q?
+            double maxOfPoly =(-fitting_parameters[1])/(2*fitting_parameters[0]);       // x = -b/2a
+            uint uMaxOfPoly = (uint)maxOfPoly;
+            uMaxOfPoly = uMaxOfPoly + Q;
+            return uMaxOfPoly;
         }
-        // x = -b/2a
+  
 
-        //odczytanie polozen
         /*Reading Amplitudes*/
-        private double[] ReadingAmplitudes(double[] FirstLead, double[] SecondLead, uint maximum)
+        private double[] ReadingAmplitudes(double[] FirstLead, double[] SecondLead, uint uMaxOfPoly)
             {
-            double[] amplitudes = new double[1]; //1? 2 elementy
-            amplitudes[0] = FirstLead[maximum];
-            amplitudes[1] = SecondLead[maximum];
+            double[] amplitudes = new double[2];
+            amplitudes[0] = FirstLead[uMaxOfPoly];
+            amplitudes[1] = SecondLead[uMaxOfPoly];
             return amplitudes;
             }
 
 
-        /* Trigonometrical formula - between I and II */ //todo: zamiana na tablicę dwuelementową?
-        private double IandII(double I, double II)
+        /* Trigonometrical formula - between I and II */
+        private double IandII(double[]amplitudes)
         {
-            double angle = Math.Atan((2 * (II - I)) / (Math.Sqrt(3) * I));
+            double angle = Math.Atan((2 * (amplitudes[1] - amplitudes[0])) / (Math.Sqrt(3) * amplitudes[0]));
             return angle;   // an angle in radians
         }
 
