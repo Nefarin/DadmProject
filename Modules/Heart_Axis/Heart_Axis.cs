@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EKG_Project.IO;
+using MathNet.Numerics;
 
 namespace EKG_Project.Modules.Heart_Axis
 {
@@ -27,7 +28,7 @@ namespace EKG_Project.Modules.Heart_Axis
         /* Dane wyjściowe - Kąt osi serca  */
 
         //private Heart_Axis_Data_Worker _output;   //Heart_Axis_Data_Worker could not be found
-        //private Heart_Axis_Data _outputData; //Heart_Axis_Data could not be found
+        private Heart_Axis_Data _outputData; //Heart_Axis_Data could not be found
 
         public void Abort()
         {
@@ -76,4 +77,5 @@ namespace EKG_Project.Modules.Heart_Axis
         }
 
     }
+     
 }
