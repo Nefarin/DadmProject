@@ -319,4 +319,7 @@
     <SD1>1</SD1>
     <SD2>2</SD2>
   </module>
+  <module name="T_Wave_Alt">
+    <AlternansIndexArray>1 2 3 4 5 6 7 8 9 </AlternansIndexArray>
+  </module>
 </EKG>
