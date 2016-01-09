@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
+using System;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -136,10 +137,8 @@ namespace EKG_Project.Modules.HRV2
         #endregion
         public HRV2_Data()
         {
-            HistogramData = new List<Tuple<string, Vector<double>>>(); // Dzięki inicjalizacji, nawet pustej, nie będzie NullPointerException
-            PoincarePlotData = new List<Tuple<string, Vector<double>>>(); // Dzięki inicjalizacji, nawet pustej, nie będzie NullPointerException
+            HistogramData = new List<Tuple<string, Vector<double>>>();
+            PoincarePlotData = new List<Tuple<string, Vector<double>>>(); 
         }
-
-        // TODO Pewnie będzie trzeba zrobić więcej konstruktorów - kilku elementowych, etc.
     }
 }

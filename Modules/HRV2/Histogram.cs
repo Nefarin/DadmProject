@@ -4,7 +4,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.Modules.R_Peaks; //nie wiem jak połaczyc te moduły :(
+using EKG_Project.Modules.R_Peaks;
+using WfdbCsharpWrapper;
 
 namespace EKG_Project.Modules.HRV2
 {

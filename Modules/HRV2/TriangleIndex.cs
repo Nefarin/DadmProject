@@ -7,12 +7,6 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
-    #region Documentation
-    /// <summary>
-    /// Coś tu pomieszalam :(
-    /// </summary>
-    /// 
-    #endregion
     public partial class HRV2 : IModule
     {
         static List<Tuple<string, Vector<double>>> RRIntervaals;
