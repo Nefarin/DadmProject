@@ -14,6 +14,7 @@ namespace EKG_Project.IO
     public class T_Wave_Alt_Data_Worker
     {
         string directory;
+        string analysisName;
         private T_Wave_Alt_Data _data;
 
         public T_Wave_Alt_Data Data

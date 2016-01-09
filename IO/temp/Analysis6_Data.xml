@@ -247,6 +247,31 @@
     </QT_std>
     <QT_disp_global>78</QT_disp_global>
   </module>
+  <module name="HRV2">
+    <HistogramData>
+      <lead>V1</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </HistogramData>
+    <HistogramData>
+      <lead>MLII</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </HistogramData>
+    <PoincarePlotData_x>
+      <item1>V1</item1>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_y>
+      <item1>MLII</item1>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </PoincarePlotData_y>
+    <Tinn>90</Tinn>
+    <TriangleIndex>100</TriangleIndex>
+    <SD1>1</SD1>
+    <SD2>2</SD2>
+  </module>
+  <module name="T_Wave_Alt">
+    <AlternansIndexArray>1 2 3 4 5 6 7 8 9 </AlternansIndexArray>
+  </module>
   <module name="Sleep_Apnea">
     <Detected_Apnea>
       <lead>V1</lead>
@@ -290,36 +315,11 @@
     </h_amp>
     <il_Apnea>
       <lead>V1</lead>
-      <item2>34,45</item2>
+      <item2>30,09</item2>
     </il_Apnea>
     <il_Apnea>
       <lead>MLII</lead>
       <item2>54</item2>
     </il_Apnea>
-  </module>
-  <module name="HRV2">
-    <HistogramData>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </HistogramData>
-    <HistogramData>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </HistogramData>
-    <PoincarePlotData_x>
-      <item1>V1</item1>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </PoincarePlotData_x>
-    <PoincarePlotData_y>
-      <item1>MLII</item1>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </PoincarePlotData_y>
-    <Tinn>90</Tinn>
-    <TriangleIndex>100</TriangleIndex>
-    <SD1>1</SD1>
-    <SD2>2</SD2>
-  </module>
-  <module name="T_Wave_Alt">
-    <AlternansIndexArray>1 2 3 4 5 6 7 8 9 </AlternansIndexArray>
   </module>
 </EKG>
