@@ -37,7 +37,8 @@ namespace EKG_Project.IO
             Data = null;
         }
 
-        public R_Peaks_Data_Worker(String analysisName) : this()
+        public R_Peaks_Data_Worker(String analysisName)
+            : this()
         {
             this.analysisName = analysisName;
         }
@@ -57,6 +58,16 @@ namespace EKG_Project.IO
                 XmlElement module = file.CreateElement(string.Empty, "module", string.Empty);
                 string moduleName = this.GetType().Name;
                 moduleName = moduleName.Replace("_Data_Worker", "");
+
+                XmlNodeList existingModules = file.SelectNodes("EKG/module");
+                foreach (XmlNode existingModule in existingModules)
+                {
+                    if (existingModule.Attributes["name"].Value == moduleName)
+                    {
+                        root.RemoveChild(existingModule);
+                    }
+                }
+
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
 
