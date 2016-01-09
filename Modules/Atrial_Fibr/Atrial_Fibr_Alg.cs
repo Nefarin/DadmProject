@@ -16,8 +16,6 @@ using MathNet.Numerics.LinearAlgebra;
 namespace EKG_Project.Modules.Atrial_Fibr
 {
     //TODO: 
-    //-cały alorytm poincare, k-średnie, wartość dopasowania
-    //-testy
     //-komentarze zgodnie z dokumentacją
     public partial class Atrial_Fibr : IModule
     {
@@ -28,6 +26,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private Vector<double> pointsDetected;
         bool migotanie;
         double tpr, se, rmssd;
+        int amountOfCluster;
         List<DataPoint> _RawData;
         List<DataPoint> _NormalizedData;
         List<DataPoint> _ClusteredData;
@@ -41,6 +40,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             tpr = new double();
             se = new double();
             rmssd = new double();
+            amountOfCluster = new int();
             _RawData = new List<DataPoint>();
             _NormalizedData = new List<DataPoint>();
             _ClusteredData = new List<DataPoint>();
@@ -483,12 +483,22 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 AF = false;
             else
             {
-                double sil = new double();
-                RawData =  InitilizeRawData(Ii, Ii1);
+                double[] sil = new double[5];
+                int counter = new int();
+                counter = 0;
+                RawData = InitilizeRawData(Ii, Ii1);
                 NormalizedData = NormalizeData(RawData);
-                RawData=Cluster(RawData, NormalizedData,ClusteredData);
-                //var group = RawData.GroupBy(s => s.Cluster).OrderBy(s => s.Key);
-                sil = SilhouetteCoefficient(RawData);
+                for (amountOfCluster = 2; amountOfCluster < 5; amountOfCluster++)
+                {
+                    RawData = Cluster(RawData, NormalizedData, ClusteredData);
+                    //var group = RawData.GroupBy(s => s.Cluster).OrderBy(s => s.Key);
+                    sil[counter] = SilhouetteCoefficient(RawData);
+                    counter++;
+                }
+
+
+                if (sil.Max() < 0.92) AF = true;
+                else AF = false;
 
             }
             return AF;
@@ -589,18 +599,18 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// </summary>
         #endregion
 
-        private Tuple<List<DataPoint>,List<DataPoint>> InitializeCentroids(int _amount, List<DataPoint> _rawDataToCluster, List<DataPoint> _normalizedDataToCluster)
+        private Tuple<List<DataPoint>,List<DataPoint>> InitializeCentroids(List<DataPoint> _rawDataToCluster, List<DataPoint> _normalizedDataToCluster)
         {
             //int _amount = 3;
 
-            for (int i = 0; i < _amount; ++i)
+            for (int i = 0; i < amountOfCluster; ++i)
             {
                 _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = i;
             }
             Random random = new Random();
-            for (int i = _amount; i < _normalizedDataToCluster.Count; i++)
+            for (int i = amountOfCluster; i < _normalizedDataToCluster.Count; i++)
             {
-                _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = random.Next(0, _amount);
+                _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = random.Next(0, (amountOfCluster-1));
             }
             Tuple<List<DataPoint>, List<DataPoint>> result = new Tuple<List<DataPoint>, List<DataPoint>> (_normalizedDataToCluster, _rawDataToCluster);
             return result;
@@ -611,16 +621,19 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// TODO
         /// </summary>
         #endregion
-
-        private Tuple<bool, List<DataPoint>> UpdateDataPointMeans(List<DataPoint> _normalizedDataToCluster)
+        List<DataPoint> _clusters = new List<DataPoint>();
+        private Tuple<bool, List<DataPoint>> UpdateDataPointMeans(List<DataPoint> _normalizedDataToCluster,List<DataPoint> _clusters)
         {
-            List<DataPoint> _clusters = new List<DataPoint>();
+           // List<DataPoint> _clusters = new List<DataPoint>();
             bool result_bool = new bool();
-            if (EmptyCluster(_normalizedDataToCluster)) result_bool = false;
+            if (EmptyCluster(_normalizedDataToCluster))
+            {
+                result_bool = false;
+            }
             else
             {
+                _clusters.Clear();
                 var groupToComputeMeans = _normalizedDataToCluster.GroupBy(p => p.Cluster).OrderBy(p => p.Key);
-                //int clusterIndex = 0;
                 double a = 0.0;
                 double b = 0.0;
                 foreach (var item in groupToComputeMeans)
@@ -631,9 +644,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         a += value.A;
                         b += value.B;
                     }
-                    //_clusters[clusterIndex].A = a / size;
-                    //_clusters[clusterIndex].B = b / size;
-                    //clusterIndex++;
                     _clusters.Add(new DataPoint()
                     {
                         A = a / size,
@@ -659,15 +669,17 @@ namespace EKG_Project.Modules.Atrial_Fibr
         {
             var emptyCluster =
             data.GroupBy(s => s.Cluster).OrderBy(s => s.Key).Select(g => new { Cluster = g.Key, Count = g.Count() });
+            bool result = new bool();
+            result = false;
 
             foreach (var item in emptyCluster)
             {
                 if (item.Count == 0)
                 {
-                    return true;
+                    result = true;
                 }
             }
-            return false;
+            return result;
         }
         
         #region Documentation
@@ -693,14 +705,14 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private Tuple<bool, List<DataPoint>,List<DataPoint>> UpdateClusterMembership(List<DataPoint> _rawDataToCluster, List<DataPoint> _normalizedDataToCluster, List<DataPoint> _clusters)
         {
             bool changed = false;
-            int _numberOfClusters = 3;
+            //int _numberOfClusters = 3;
 
-            double[] distances = new double[_numberOfClusters];
+            double[] distances = new double[amountOfCluster];
 
-            for (int i = 0; i < _normalizedDataToCluster.Count; ++i)
+            for (int i = 0; i < _normalizedDataToCluster.Count; i++)
             {
 
-                for (int k = 0; k < _numberOfClusters; ++k)
+                for (int k = 0; k < amountOfCluster; k++)
                     distances[k] = ElucidanDistance(_normalizedDataToCluster[i], _clusters[k]);
 
                 int newClusterId = MinIndex(distances);
@@ -710,10 +722,9 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = newClusterId;
                 }
             }
-            //if (changed == false) return false;
             if (EmptyCluster(_normalizedDataToCluster)) changed = false;
-            // w innym przypadku niż powyższe zwraca true
             Tuple<bool, List<DataPoint>,List<DataPoint>> result = new Tuple<bool, List<DataPoint>,List<DataPoint>>(changed, _normalizedDataToCluster,_rawDataToCluster);
+            _clusters.Clear();
             return result;
         }
 
@@ -748,33 +759,34 @@ namespace EKG_Project.Modules.Atrial_Fibr
         {
             bool _changed = true;
             bool _success = true;
-            InitializeCentroids(3,_rawDataToCluster,_normalizedDataToCluster);
+            InitializeCentroids(_rawDataToCluster,_normalizedDataToCluster);
 
             int maxIteration = _rawDataToCluster.Count * 10;
             int _threshold = 0;
             while (_success == true && _changed == true && _threshold < maxIteration)
             {
                 ++_threshold;
-                _success = UpdateDataPointMeans(_normalizedDataToCluster).Item1;
-                _changed = UpdateClusterMembership(_rawDataToCluster, _normalizedDataToCluster, UpdateDataPointMeans(_normalizedDataToCluster).Item2).Item1;
+                _success = UpdateDataPointMeans(_normalizedDataToCluster,_clusters).Item1;
+                _changed = UpdateClusterMembership(_rawDataToCluster, _normalizedDataToCluster, UpdateDataPointMeans(_normalizedDataToCluster, _clusters).Item2).Item1;
             }
+
             return _rawDataToCluster;
         }
 
         private double SilhouetteCoefficient(List<DataPoint> _rawDataToCluster)
         {
             double SilhouetteCoeff = new double();
-            double[] distanceIn_a = new double[16];//pozmieniać na listy, bo nie znamy rozmiaru tablicy
-            double[] distanceIn_b = new double[16];
-            double[] distanceOut_a = new double[16];
-            double[] distanceOut_b = new double[16];
-            double[] a_mean_In = new double[16];
-            double[] b_mean_In= new double[16];
-            double[] a_mean_Out = new double[16];
-            double[] b_mean_Out = new double[16];
-            double[] dist_In = new double[16];
-            double[] dist_Out = new double[16];
-            double[] Silh = new double[16];
+            List<double> distanceIn_a = new List<double>();
+            List<double> distanceIn_b = new List<double>();
+            List<double> distanceOut_a = new List<double>();
+            List<double> distanceOut_b = new List<double>();
+            List<double> a_mean_In = new List<double>();
+            List<double> b_mean_In = new List<double>();
+            List<double> a_mean_Out = new List<double>();
+            List<double> b_mean_Out = new List<double>();
+            List<double> dist_In = new List<double>();
+            List<double> dist_Out = new List<double>();
+            List<double> Silh = new List<double>();
 
             for (int i = 0; i < _rawDataToCluster.Count; i++)
             {
@@ -784,487 +796,75 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     {
                         if (i != j)
                         {
-                            distanceIn_a[j] = Math.Abs(_rawDataToCluster[j].A - _rawDataToCluster[i].A);
-                            distanceIn_b[j] = Math.Abs(_rawDataToCluster[j].B - _rawDataToCluster[i].B);
+                            distanceIn_a.Add(Math.Abs(_rawDataToCluster[j].A - _rawDataToCluster[i].A));
+                            distanceIn_b.Add(Math.Abs(_rawDataToCluster[j].B - _rawDataToCluster[i].B));
                         }
                     }
                     else
                     {
-                        distanceOut_a[j] = Math.Abs(_rawDataToCluster[j].A - _rawDataToCluster[i].A);
-                        distanceOut_b[j] = Math.Abs(_rawDataToCluster[j].B - _rawDataToCluster[i].B);
+                        distanceOut_a.Add(Math.Abs(_rawDataToCluster[j].A - _rawDataToCluster[i].A));
+                        distanceOut_b.Add(Math.Abs(_rawDataToCluster[j].B - _rawDataToCluster[i].B));
                     }
                 }
 
-                a_mean_In[i] = distanceIn_a.Average();//zmienić na sumę i podział na liczbę niezerowych elementów
-                b_mean_In[i] = distanceIn_b.Average();
-                a_mean_Out[i] = distanceOut_a.Average();
-                b_mean_Out[i] = distanceOut_b.Average();
-                dist_In[i] = Math.Sqrt(Math.Pow(a_mean_In[i], 2) + Math.Pow(b_mean_In[i], 2));
-                dist_Out[i] = Math.Sqrt(Math.Pow(a_mean_Out[i], 2) + Math.Pow(b_mean_Out[i], 2));
-                Silh[i] = Math.Abs(dist_Out[i] - dist_In[i]) / Math.Max(dist_Out[i], dist_In[i]);
+                if (distanceIn_a.Count == 0)
+                {
+                    a_mean_In.Add(0.0);
+                    b_mean_In.Add(0.0);
+                    a_mean_Out.Add(distanceOut_a.Average());
+                    b_mean_Out.Add(distanceOut_b.Average());
+                }
+                else if (distanceOut_a.Count == 0)
+                {
+                    a_mean_Out.Add(0.0);
+                    b_mean_Out.Add(0.0);
+                    a_mean_In.Add(distanceIn_a.Average());
+                    b_mean_In.Add(distanceIn_b.Average());
+                    //dist_Out.Add(0.0);
+                }
+                else
+                {
+
+                    a_mean_In.Add(distanceIn_a.Average());
+                    b_mean_In.Add(distanceIn_b.Average());
+                    a_mean_Out.Add(distanceOut_a.Average());
+                    b_mean_Out.Add(distanceOut_b.Average());
+
+                }
+                if (a_mean_In.Count == 1 && a_mean_In[0] == 0.0)
+                {
+                    dist_In.Add(0.0);
+                    dist_Out.Add(Math.Sqrt(Math.Pow(a_mean_Out[0], 2) + Math.Pow(b_mean_Out[0], 2)));
+
+                }
+                else if (a_mean_Out.Count == 1 && a_mean_Out[0] == 0.0)
+                {
+                    dist_Out.Add(0.0);
+                    dist_In.Add(Math.Sqrt(Math.Pow(a_mean_In[0], 2) + Math.Pow(b_mean_In[0], 2)));
+
+                }
+                else
+                {
+                    dist_In.Add(Math.Sqrt(Math.Pow(a_mean_In[0], 2) + Math.Pow(b_mean_In[0], 2)));
+                    dist_Out.Add(Math.Sqrt(Math.Pow(a_mean_Out[0], 2) + Math.Pow(b_mean_Out[0], 2)));
+                }
+                Silh.Add(Math.Abs(dist_Out[0] - dist_In[0]) / Math.Max(dist_Out[0], dist_In[0]));
+                distanceIn_a.Clear();
+                distanceIn_b.Clear();
+                distanceOut_a.Clear();
+                distanceOut_b.Clear();
+                a_mean_In.Clear();
+                b_mean_In.Clear();
+                a_mean_Out.Clear();
+                b_mean_Out.Clear();
+                dist_In.Clear();
+                dist_Out.Clear();
             }
             SilhouetteCoeff = Silh.Average();
+
+            Silh.Clear();
             return SilhouetteCoeff;
         }
-
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-
-        //private void ClusteringPoints(double[] Vector1, double[] Vector2)
-        //{
-        //    InitilizeRawData(Vector1, Vector2);
-        //    _normalizedDataToCluster = NormalizeData(_rawDataToCluster);
-        //    Cluster(_normalizedDataToCluster);
-        //    var group = _rawDataToCluster.GroupBy(s => s.Cluster).OrderBy(s => s.Key);
-        //}
-
-        //bool detectAFStat(int[] RR, double fs)
-        //{
-        //    bool AF;
-        //    bool tprD;
-        //    bool seD;
-        //    bool rmssdD;
-
-        //    //Turning Punct Ratio
-        //    int turningPoints = 0;
-        //    for (int i = 1; i < (RR.Length - 1); i++)
-        //    {
-        //        if (((RR[i - 1] < RR[i]) && (RR[i + 1] < RR[i])) || ((RR[i - 1] > RR[i]) && (RR[i + 1] > RR[i])))
-        //        {
-        //            turningPoints++;
-        //        }
-        //    }
-        //    double tpr = turningPoints / ((2 * 30 - 4) / 3);
-        //    if (tpr < 0.77 && tpr > 0.54)
-        //    {
-        //        tprD = false;
-        //    }
-        //    else
-        //    {
-        //        tprD = true;
-        //    }
-
-        //    //Shannon Entrophy
-        //    int[] histogram = new int[8];
-        //    int maxRr = RR.Max();
-        //    int minRr = RR.Min();
-        //    double width = (maxRr - minRr) / 8;
-        //    double tmp = minRr;
-        //    for (int i = 0; i < 8; i++)
-        //    {
-        //        if (i < 7)
-        //        {
-        //            int[] elements = Array.FindAll(RR, element => (element >= tmp && element < (tmp + width)));
-        //            histogram[i] = elements.Length / (32 - 8);
-        //        }
-        //        else
-        //        {
-        //            int[] elements = Array.FindAll(RR, element => (element >= tmp && element <= (tmp + width)));
-        //            histogram[i] = elements.Length / (32 - 8);
-        //        }
-        //        tmp += width;
-        //    }
-        //    double se = 0;
-        //    foreach (int a in histogram)
-        //    {
-        //        se -= a * Math.Log10(a) / Math.Log10(0.125);
-        //    }
-
-        //    if (se > 0.7)
-        //    {
-        //        seD = true;
-        //    }
-        //    else
-        //    {
-        //        seD = false;
-        //    }
-
-        //    //RMSSD
-        //    double rmssd = 0;
-        //    for (int i = 0; i < (RR.Length - 1); i++)
-        //    {
-        //        rmssd += Math.Pow((RR[i + 1] - RR[i]), 2);
-        //    }
-        //    rmssd /= (32 - 1);
-        //    rmssd = Math.Sqrt(rmssd);
-        //    rmssd /= RR.Average();
-        //    if (rmssd > 0.1)
-        //    {
-        //        rmssdD = true;
-        //    }
-        //    else
-        //    {
-        //        rmssdD = false;
-        //    }
-        //    if (tprD && seD && rmssdD)
-        //    {
-        //        AF = true;
-        //    }
-        //    else
-        //    {
-        //        AF = false;
-        //    }
-        //    return AF;
-
-        //}
-
-
-        //bool detectAFPoin(Vector<double> _RR, uint fs)
-        //{
-        //    bool AF = false;
-        //    int length = _RR.Count;
-        //    //int[] Ii;
-        //    //int[] Ii1;
-        //    if (length % 2 == 0)
-        //    {
-        //        int tmp = length / 2;
-        //        //Ii = new int[tmp];
-        //        //Ii1 = new int[tmp];
-        //        int j = 0;
-
-        //        for (int i = 0; i < tmp; i = i + 2)
-        //        {
-        //            Ii[j] = RR[i];
-        //            Ii1[j] = RR[i + 1];
-        //            j++;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        double tmp = length / 2;
-        //        int size = Convert.ToInt32(Math.Ceiling(tmp));
-        //        Ii = new int[size];
-        //        Ii1 = new int[size];
-        //        int j = 0;
-
-        //        for (int i = 0; i < size; i = i + 2)
-        //        {
-        //            Ii[j] = RR[i];
-        //            j++;
-        //        }
-
-        //        for (int i = 1; i < (size - 1); i = i + 2)
-        //        {
-        //            Ii1[j] = RR[i];
-        //            j++;
-        //        }
-        //    }
-        //    double[] A1 = new double[Ii.Length];
-        //    for (int i = 0; i < Ii.Length; i++)
-        //    {
-        //        A1[i] = Ii[i] - Ii1[i];
-        //    }
-        //    double[] A2 = new double[A1.Length];
-
-        //    for (int i = 0; i < A1.Length; i++)
-        //    {
-        //        A2[i] = Math.Pow(A1[i], 2);
-        //    }
-
-        //    double suma = 0;
-        //    for (int i = 0; i < A2.Length; i++)
-        //    {
-        //        suma += A2[i];
-        //    }
-
-        //    double[] A3 = new double[A1.Length];
-        //    for (int i = 0; i < A1.Length; i++)
-        //    {
-        //        A3[i] = Math.Abs(A1[i]);
-        //    }
-
-        //    double suma_modul = 0;
-        //    for (int i = 0; i < A3.Length; i++)
-        //    {
-        //        suma_modul += A3[i];
-        //    }
-
-        //    double C, D, E, F, G, d;
-        //    C = suma / (2 * length - 2);
-        //    D = suma_modul / ((length - 1) * Math.Sqrt(2));
-        //    E = Math.Pow(D, 2);
-        //    F = Math.Sqrt(C - E);
-
-        //    int sum = 0;
-        //    for (int i = 0; i < Ii.Length; i++)
-        //    {
-        //        sum += Ii[i];
-        //    }
-
-        //    G = (-RR[1] - RR[RR.Length - 1] + 2 * sum) / (2 * length - 2);
-        //    d = F / G;
-
-        //    if (d <= 0.06)
-        //        AF = false;
-        //    else
-        //    {
-        //        //..............................
-
-        //    }
-        //    return AF;
-        //}
-
-        //#region Documentation
-        ///// <summary>
-        ///// TODO
-        ///// </summary>
-        //#endregion
-
-        //public class DataPoint
-        //{
-        //    public double A { get; set; }
-        //    public double B { get; set; }
-        //    public int Cluster { get; set; }
-        //    public DataPoint(double a, double b)
-        //    {
-        //        A = a;
-        //        B = b;
-        //        Cluster = 0;
-        //    }
-
-        //    public DataPoint()
-        //    {
-        //        //A = 0;
-        //        //B = 0;
-        //        //Cluster = 0;
-        //    }
-        //}
-
-        //List<DataPoint> _rawDataToCluster = new List<DataPoint>();
-        //List<DataPoint> _normalizedDataToCluster = new List<DataPoint>();
-        //List<DataPoint> _clusters = new List<DataPoint>();
-        //private int _numberOfClusters = 0;
-
-        //#region Documentation
-        ///// <summary>
-        ///// TODO
-        ///// </summary>
-        //#endregion
-
-        //private void InitilizeRawData(double[] Vector1, double[] Vector2)
-        //{
-        //    for (int i = 0; i < Vector1.Length; i++)
-        //    {
-        //        DataPoint dp = new DataPoint();
-        //        dp.A = Vector1[i];
-        //        dp.B = Vector2[i];
-        //        _rawDataToCluster.Add(dp);
-        //    }
-        //}
-
-        //#region Documentation
-        ///// <summary>
-        ///// TODO
-        ///// </summary>
-        //#endregion
-
-        //private void NormalizeData()
-        //{
-        //    double aSum = 0.0;
-        //    double bSum = 0.0;
-        //    foreach (DataPoint dataPoint in _rawDataToCluster)
-        //    {
-        //        aSum += dataPoint.A;
-        //        bSum += dataPoint.B;
-        //    }
-        //    double aMean = aSum / _rawDataToCluster.Count;
-        //    double bMean = bSum / _rawDataToCluster.Count;
-        //    double sumA = 0.0;
-        //    double sumB = 0.0;
-        //    foreach (DataPoint dataPoint in _rawDataToCluster)
-        //    {
-        //        sumA += Math.Pow(dataPoint.A - aMean, 2);
-        //        sumB += Math.Pow(dataPoint.B - bMean, 2);
-        //    }
-        //    double aSD = sumA / _rawDataToCluster.Count;
-        //    double bSD = sumB / _rawDataToCluster.Count;
-        //    foreach (DataPoint dataPoint in _rawDataToCluster)
-        //    {
-        //        _normalizedDataToCluster.Add(new DataPoint()
-        //        {
-        //            A = (dataPoint.A - aMean) / aSD,
-        //            B = (dataPoint.B - bMean) / bSD
-        //        }
-        //        );
-        //    }
-        //}
-
-        //#region Documentation
-        ///// <summary>
-        ///// TODO
-        ///// </summary>
-        //#endregion
-
-        //private void InitializeCentroids()
-        //{
-        //    int _amount = 3;
-
-        //    for (int i = 0; i < _amount; ++i)
-        //    {
-        //        _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = i;
-        //    }
-        //    Random random = new Random();
-        //    for (int i = _amount; i < _normalizedDataToCluster.Count; i++)
-        //    {
-        //        _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = random.Next(0, _amount);
-        //    }
-        //}
-
-        //#region Documentation
-        ///// <summary>
-        ///// TODO
-        ///// </summary>
-        //#endregion
-
-        //private bool UpdateDataPointMeans()
-        //{
-        //    if (EmptyCluster(_normalizedDataToCluster)) return false;
-
-        //    var groupToComputeMeans = _normalizedDataToCluster.GroupBy(p => p.Cluster).OrderBy(p => p.Key);
-        //    int clusterIndex = 0;
-        //    double a = 0.0;
-        //    double b = 0.0;
-        //    foreach (var item in groupToComputeMeans)
-        //    {
-        //        foreach (var value in item)
-        //        {
-        //            a += value.A;
-        //            b += value.B;
-        //        }
-        //        _clusters[clusterIndex].A = a / item.Count();
-        //        _clusters[clusterIndex].B = b / item.Count();
-        //        clusterIndex++;
-        //        a = 0.0;
-        //        b = 0.0;
-        //    }
-        //    return true;
-        //}
-
-        //#region Documentation
-        ///// <summary>
-        ///// TODO
-        ///// </summary>
-        //#endregion
-
-        //private bool EmptyCluster(List<DataPoint> data)
-        //{
-        //    var emptyCluster =
-        //    data.GroupBy(s => s.Cluster).OrderBy(s => s.Key).Select(g => new { Cluster = g.Key, Count = g.Count() });
-
-        //    foreach (var item in emptyCluster)
-        //    {
-        //        if (item.Count == 0)
-        //        {
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
-
-        //#region Documentation
-        ///// <summary>
-        ///// TODO
-        ///// </summary>
-        //#endregion
-
-        //private double ElucidanDistance(DataPoint dataPoint, DataPoint mean)
-        //{
-        //    double _diffs = 0.0;
-        //    _diffs = Math.Pow(dataPoint.A - mean.A, 2);
-        //    _diffs += Math.Pow(dataPoint.B - mean.B, 2);
-        //    return Math.Sqrt(_diffs);
-        //}
-
-        //#region Documentation
-        ///// <summary>
-        ///// TODO
-        ///// </summary>
-        //#endregion
-
-        //private bool UpdateClusterMembership()
-        //{
-        //    bool changed = false;
-
-        //    double[] distances = new double[_numberOfClusters];
-
-        //    for (int i = 0; i < _normalizedDataToCluster.Count; ++i)
-        //    {
-
-        //        for (int k = 0; k < _numberOfClusters; ++k)
-        //            distances[k] = ElucidanDistance(_normalizedDataToCluster[i], _clusters[k]);
-
-        //        int newClusterId = MinIndex(distances);
-        //        if (newClusterId != _normalizedDataToCluster[i].Cluster)
-        //        {
-        //            changed = true;
-        //            _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = newClusterId;
-        //        }
-        //    }
-        //    if (changed == false) return false;
-        //    if (EmptyCluster(_normalizedDataToCluster)) return false;
-        //    // w innym przypadku niż powyższe zwraca true
-        //    return true;
-        //}
-
-        //#region Documentation
-        ///// <summary>
-        ///// TODO
-        ///// </summary>
-        //#endregion
-
-        //private int MinIndex(double[] distances)
-        //{
-        //    int _indexOfMin = 0;
-        //    double _smallDist = distances[0];
-        //    for (int k = 0; k < distances.Length; ++k)
-        //    {
-        //        if (distances[k] < _smallDist)
-        //        {
-        //            _smallDist = distances[k];
-        //            _indexOfMin = k;
-        //        }
-        //    }
-        //    return _indexOfMin;
-        //}
-
-        //#region Documentation
-        ///// <summary>
-        ///// TODO
-        ///// </summary>
-        //#endregion
-
-        //public void Cluster(List<DataPoint> data)
-        //{
-        //    bool _changed = true;
-        //    bool _success = true;
-        //    InitializeCentroids();
-
-        //    int maxIteration = data.Count * 10;
-        //    int _threshold = 0;
-        //    while (_success == true && _changed == true && _threshold < maxIteration)
-        //    {
-        //        ++_threshold;
-        //        _success = UpdateDataPointMeans();
-        //        _changed = UpdateClusterMembership();
-        //    }
-        //}
-
-        //#region Documentation
-        ///// <summary>
-        ///// TODO
-        ///// </summary>
-        //#endregion
-
-        //private void ClusteringPoints(object sender, EventArgs e, double[] Vector1, double[] Vector2)
-        //{
-        //    InitilizeRawData(Vector1, Vector2);
-        //    NormalizeData();
-        //    Cluster(_normalizedDataToCluster);
-        //    var group = _rawDataToCluster.GroupBy(s => s.Cluster).OrderBy(s => s.Key);
-        //}
 
     }
 }
