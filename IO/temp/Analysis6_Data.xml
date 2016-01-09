@@ -322,4 +322,12 @@
       <item2>54</item2>
     </il_Apnea>
   </module>
+  <module name="HRT">
+    <TurbulenceOnset>1 2 3 4 5 6 7 8 9 </TurbulenceOnset>
+    <TurbulenceSlope>1 2 3 4 5 6 7 8 9 </TurbulenceSlope>
+    <VPCtachogram>1 2 3 4 5 6 7 8 9 </VPCtachogram>
+    <TurbulenceOnsetMean>1 2 3 4 5 6 7 8 9 </TurbulenceOnsetMean>
+    <TurbulenceSlopeMean>1 2 3 4 5 6 7 8 9 </TurbulenceSlopeMean>
+    <VPCcount>1</VPCcount>
+  </module>
 </EKG>
