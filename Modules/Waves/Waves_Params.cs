@@ -7,33 +7,79 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Waves
 {
-    public enum Waves_Method { DWT, MORLET };
+    public enum Wavelet_Type { haar, db2, db3 };
 
     public class Waves_Params : ModuleParams
     {
- 
-        private Waves_Method _method;
+        private Wavelet_Type _waveType;
+        private int _decompositionLevel;
+        private string _analysisName;
+        private int _rpeaks_step;
 
-
-        public Waves_Params(Waves_Method method)
-        {
-            _method = method;
-        }
-
-
-
-        public Waves_Method Method
+        public Wavelet_Type WaveType
         {
             get
             {
-                return _method;
+                return _waveType;
             }
-
             set
             {
-                _method = value;
+                _waveType = value;
+            }
+        }
+        public int DecompositionLevel
+        {
+            get
+            {
+                return _decompositionLevel;
+            }
+            set
+            {
+                _decompositionLevel = value;
             }
         }
 
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+            set
+            {
+                _analysisName = value;
+            }
+        }
+
+        public int RpeaksStep
+        {
+            get
+            {
+                return _rpeaks_step;
+            }
+            set
+            {
+                _rpeaks_step = value;
+            }
+        }
+        public Waves_Params(Wavelet_Type waveType, int decompositionLevel, string analysisName, int rpeaksStep)
+        {
+            this.WaveType = waveType;
+            this.DecompositionLevel = decompositionLevel;
+            this.AnalysisName = analysisName;
+            this.RpeaksStep = rpeaksStep;
+        }
+
+        public Waves_Params()
+        {
+            _waveType = Wavelet_Type.haar;
+        }
+
+        public void CopyParametersFrom(Waves_Params parameters)
+        {
+            this.WaveType = parameters.WaveType;
+            this.DecompositionLevel = parameters.DecompositionLevel;
+            this.RpeaksStep = parameters.RpeaksStep;
+        }
     }
 }

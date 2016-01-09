@@ -29,7 +29,7 @@ namespace EKG_Project.Modules.HRV2
         #endregion
         static void Main(string[] args)
         {
-            DataSource data = new DataSource(0.0078125, RRInterval); //nie wiem jak pobrac z r_peaks :(
+            DataSource data = null;//new DataSource(0.0078125, RRInterval); //nie wiem jak pobrac z r_peaks :(
             ObservableCollection<Sample> samples = data.Samples;
 
             foreach (Sample s in samples)
