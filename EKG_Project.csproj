@@ -311,12 +311,12 @@
     <Compile Include="Modules\HRV1\HRV1_Alg.cs" />
     <Compile Include="Modules\HRV1\HRV1_Data.cs" />
     <Compile Include="Modules\HRV1\HRV1_Params.cs" />
+    <Compile Include="Modules\HRV2\Histogram.cs" />
     <Compile Include="Modules\HRV2\HRV2.cs" />
     <Compile Include="Modules\HRV2\HRV2_Alg.cs" />
     <Compile Include="Modules\HRV2\HRV2_Data.cs" />
     <Compile Include="Modules\HRV2\HRV2_Params.cs" />
     <Compile Include="Modules\HRV2\Poincare.cs" />
-    <Compile Include="Modules\HRV2\SampleDataSource.cs" />
     <Compile Include="Modules\HRV2\Tinn.cs" />
     <Compile Include="Modules\HRV2\TriangleIndex.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA.cs" />

@@ -11,131 +11,134 @@ namespace EKG_Project.Modules.HRV2
 {
     public partial class HRV2 : IModule
     {
-        public float Count { get; set; }
-        public float LowestValue { get; set; }
-        public float HighestValue { get; set; }
-        public float AverageValue
+        public class Sample
         {
-            get
+            public float Count { get; set; }
+            public float LowestValue { get; set; }
+            public float HighestValue { get; set; }
+            public float AverageValue
             {
-                return (LowestValue + HighestValue) / 2;
+                get
+                {
+                    return (LowestValue + HighestValue) / 2;
+                }
+            }
+
+            public override string ToString()
+            {
+                return String.Format("Average value: {0}, lowest value: {1}, highest value: {2}, count: {3}",
+                    AverageValue,
+                    LowestValue,
+                    HighestValue,
+                    Count);
             }
         }
 
-        public override string ToString()
+        public class DataSource
         {
-            return String.Format("Average value: {0}, lowest value: {1}, highest value: {2}, count: {3}", 
-                AverageValue,
-                LowestValue,
-                HighestValue,
-                Count);
-        }
-    }
+            Vector<double> _RRInterval;
+            private double _binLength;
+            private ObservableCollection<Sample> _samples;
 
-    public class DataSource
-    {
-        Vector<double> _RRInterval;
-        private double _binLength;
-        private ObservableCollection<Sample> _samples;
+            public DataSource(List<Tuple<string, Vector<double>>> RRInterval) //chialam wziac dane z R_Peaks ale nie potrafie
+            {
+                Tuple<string, Vector<double>> RRIntervalTuple = RRInterval.First();
+                _RRInterval = RRIntervalTuple.Item2;
+                _binLength = 0.0078125;
+                _samples = new ObservableCollection<Sample>();
+            }
 
-        public DataSource(List<Tuple<string, Vector<double>>> RRInterval) //chialam wziac dane z R_Peaks ale nie potrafie
-        {
-            Tuple<string, Vector<double>> RRIntervalTuple = RRInterval.First();
-            _RRInterval = RRIntervalTuple.Item2;
-            _binLength = 0.0078125;
-            _samples = new ObservableCollection<Sample>();
-        }
+            public ObservableCollection<Sample> Samples
+            {
+                get
+                {
+                    if (_samples.Count == 0)
+                    {
+                        ensureDataLoaded();
+                    }
+                    return _samples;
+                }
+            }
 
-        public ObservableCollection<Sample> Samples
-        {
-            get
+            private void ensureDataLoaded()
             {
                 if (_samples.Count == 0)
-                {
-                    ensureDataLoaded();
-                }
-                return _samples;
-            }
-        }
+                    getSamplesData();
 
-        private void ensureDataLoaded()
-        {
-            if (_samples.Count == 0)
-                getSamplesData();
-
-            return;
-        }
-
-        private void getSamplesData()
-        {
-            if (_samples.Count != 0)
                 return;
-        }
+            }
 
-        private void groupSamples(List<Double> samples)
-        {
-            double start = samples[0];
-            List<List<Double>> _helperListOfSampleList = new List<List<Double>>();
-            List<Double> _helperSampleList = new List<Double>();
-            foreach (Double d in samples)
+            private void getSamplesData()
             {
-                _helperSampleList.Add(d);
-                if (d >= start + _binLength)
+                if (_samples.Count != 0)
+                    return;
+            }
+
+            private void groupSamples(List<Double> samples)
+            {
+                double start = samples[0];
+                List<List<Double>> _helperListOfSampleList = new List<List<Double>>();
+                List<Double> _helperSampleList = new List<Double>();
+                foreach (Double d in samples)
                 {
-                    _helperListOfSampleList.Add(_helperSampleList);
-                    _helperSampleList = new List<Double>();
-                    start = d;
+                    _helperSampleList.Add(d);
+                    if (d >= start + _binLength)
+                    {
+                        _helperListOfSampleList.Add(_helperSampleList);
+                        _helperSampleList = new List<Double>();
+                        start = d;
+                    }
                 }
-            }
-            try
-            {
-                checkCountOfSamples(_helperListOfSampleList, samples);
-                createSampleList(_helperListOfSampleList);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
+                try
+                {
+                    checkCountOfSamples(_helperListOfSampleList, samples);
+                    createSampleList(_helperListOfSampleList);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
             }
 
-        }
-
-        private void createSampleList(List<List<Double>> lists)
-        {
-            if (lists == null)
-                return;
-
-            foreach (List<Double> l in lists)
+            private void createSampleList(List<List<Double>> lists)
             {
-                if (l == null)
+                if (lists == null)
                     return;
 
-                Sample sample = new Sample()
+                foreach (List<Double> l in lists)
                 {
-                    Count = l.Count,
-                    LowestValue = (float)l[0],
-                    HighestValue = (float)l[l.Count - 1]
-                };
-                _samples.Add(sample);
+                    if (l == null)
+                        return;
+
+                    Sample sample = new Sample()
+                    {
+                        Count = l.Count,
+                        LowestValue = (float)l[0],
+                        HighestValue = (float)l[l.Count - 1]
+                    };
+                    _samples.Add(sample);
+                }
             }
+
+            #region Debug functions
+
+            [Conditional("DEBUG")]
+            void checkCountOfSamples(List<List<Double>> listOfSampleList, List<Double> sampleList)
+            {
+                int sum = 0;
+                foreach (List<Double> l in listOfSampleList)
+                {
+                    sum += l.Count;
+                }
+
+                if (sum != sampleList.Count)
+                {
+                    throw new System.Exception("Klops");
+                }
+            }
+
+            #endregion
         }
-
-        #region Debug functions
-
-        [Conditional("DEBUG")]
-        void checkCountOfSamples(List<List<Double>> listOfSampleList, List<Double> sampleList)
-        {
-            int sum = 0;
-            foreach (List<Double> l in listOfSampleList)
-            {
-                sum += l.Count;
-            }
-
-            if (sum != sampleList.Count)
-            {
-                throw new System.Exception("Klops");
-            }
-       }
-
-        #endregion
     }
 }
