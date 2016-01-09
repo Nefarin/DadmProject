@@ -12,8 +12,7 @@ namespace EKG_Project.Modules.Heart_Class
     {
 
         //output:
-        private List<Tuple<int, int>> _classificationResult;
-        private bool _channelMLIIDetected;
+        public List<Tuple<int, int>> ClassificationResult { get; set; }
 
         //niezrealizowane:
         private Qrs_Class _cluster;
@@ -25,15 +24,9 @@ namespace EKG_Project.Modules.Heart_Class
 
         public double PercentOfNormalComplex { get; set; }
 
-        public List<Tuple<string, List<Tuple<int, int>>>> ClassificationResult { get; set; }
-
         public List<Tuple<int, int>> QrsComplexLabel { get; set; }
 
-        public bool ChannelMliiDetected
-        {
-            get { return _channelMLIIDetected; }
-            set { _channelMLIIDetected = value; }
-        }
+        public bool ChannelMliiDetected { get; set; }
 
 
         public class Qrs_Class
@@ -52,9 +45,7 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         public Heart_Class_Data()
         {
-            _classificationResult = new List<Tuple<int, int>>();
-            ChannelMliiDetected = new bool();
-            ClassificationResult = new List<Tuple<string, List<Tuple<int, int>>>>();
+            ClassificationResult = new List<Tuple<int, int>>();
         }
     }
 }

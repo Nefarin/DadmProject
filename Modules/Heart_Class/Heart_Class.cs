@@ -76,9 +76,8 @@ namespace EKG_Project.Modules.Heart_Class
 
             if (channel < NumberOfChannels)
             {
-                OutputData.ClassificationResult.Add(
-                    new Tuple<string, List<Tuple<int, int>>>(InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item1, // nazwa kanału ?
-                    Classification(InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2, InputData.Frequency, InputRpeaksData.RPeaks[_currentChannelIndex].Item2, InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.QRSEnds[_currentChannelIndex].Item2)) // klasyfikacja
+                OutputData.ClassificationResult.AddRange(
+                    Classification(InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2, InputData.Frequency, InputRpeaksData.RPeaks[_currentChannelIndex].Item2, InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.QRSEnds[_currentChannelIndex].Item2) // klasyfikacja
                     );
 
                 _currentChannelIndex++;

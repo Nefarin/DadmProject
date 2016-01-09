@@ -23,7 +23,7 @@ namespace EKG_Project.Modules.Heart_Class
             List<Tuple<int, Vector<double>>> qrsCoefficients = CountCoefficients(qrsComplexes, fs);
 
             //KLASYFIKACJA
-            return TestKnnCase(Params.TrainSamples, qrsCoefficients, Params.TrainClasses, Params.K); // klasyfikacja sygnału signal
+            return TestKnnCase(Params.TrainSamples, qrsCoefficients, Params.TrainClasses, 1); // klasyfikacja sygnału signal
             }
 
         #region Documentation
