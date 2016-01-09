@@ -137,6 +137,7 @@ namespace EKG_Project.Modules.Waves
         public void DetectQRS()
         {
             _currentQRSonsetsPart.Clear();
+            _currentQRSendsPart.Clear();
             List<Vector<double>> dwt = new List<Vector<double>>();
             int startInd = 0;
             if (_rPeaksProcessed > 1)
@@ -326,7 +327,7 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 ponset = pmax_loc;
-                while(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset] > InputData.Signals[_currentChannelIndex].Item2[ponset-1] || (pmax_val- InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset] < 70))
+                while(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset-1] || Math.Abs(pmax_val- InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset]) < 30) //dawniej 70
                 {
                     ponset--;
                     if (ponset < onset_loc - break_window)
@@ -338,7 +339,7 @@ namespace EKG_Project.Modules.Waves
                 _currentPonsetsPart.Add(ponset);
 
                 pend = pmax_loc;
-                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] > InputData.Signals[_currentChannelIndex].Item2[pend+1] || (pmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] < 110))
+                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend+1] || (pmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] < 110))
                 {
                     pend++;
                     if (pend > onset_loc)

@@ -200,4 +200,246 @@
       <intervals>2878 1456 2900 1464 2954 7060 </intervals>
     </RRInterval>
   </module>
+  <module name="Waves">
+    <QRSOnsets>
+      <lead>I</lead>
+      <samples>32 732 1464 2192 3644 4376 5116 5844 7332 8072 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>II</lead>
+      <samples>1532 3604 -1 -1 6340 8140 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>III</lead>
+      <samples>-1 -1 -1 -1 3696 5836 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>aVR</lead>
+      <samples>32 2624 -1 3636 4348 5112 5892 6300 -1 8056 9416 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>aVL</lead>
+      <samples>32 748 1468 2192 3648 4380 5120 5856 7336 8056 8812 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>aVF</lead>
+      <samples>8 2660 -1 -1 6280 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V1</lead>
+      <samples>-1 68 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V2</lead>
+      <samples>5896 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V3</lead>
+      <samples>72 4424 5904 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V4</lead>
+      <samples>-1 76 3692 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V5</lead>
+      <samples>-1 -1 1520 -1 5908 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V6</lead>
+      <samples>-1 720 -1 -1 -1 -1 </samples>
+    </QRSOnsets>
+    <QRSEnds>
+      <lead>I</lead>
+      <samples>788 1572 2232 3748 4476 5220 5956 7380 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>II</lead>
+      <samples>4508 5132 5864 8084 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>III</lead>
+      <samples>752 1472 2744 4516 6648 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>aVR</lead>
+      <samples>-1 2816 3732 4472 5204 5948 -1 6424 8904 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>aVL</lead>
+      <samples>864 1580 2240 3764 4492 5232 5904 7384 8192 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>aVF</lead>
+      <samples>4500 5240 5860 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V1</lead>
+      <samples>-1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V2</lead>
+      <samples>-1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V3</lead>
+      <samples>5140 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V4</lead>
+      <samples>2224 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V5</lead>
+      <samples>752 4380 5908 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V6</lead>
+      <samples>1592 2212 3664 4396 -1 </samples>
+    </QRSEnds>
+    <POnsets>
+      <lead>I</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>II</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>III</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>aVR</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>aVL</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>aVF</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V1</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V2</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V3</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V4</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V5</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V6</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <PEnds>
+      <lead>I</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>II</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>III</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>aVR</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>aVL</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>aVF</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V1</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V2</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V3</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V4</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V5</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V6</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </PEnds>
+    <TEnds>
+      <lead>I</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>II</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 -1 5183 5923 8142 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>III</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 -1 5183 5923 8142 799 1520 -1 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>aVR</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 -1 5183 5923 8142 799 1520 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>aVL</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 -1 5183 5923 8142 799 1520 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 2317 -1 -1 -1 5982 7457 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>aVF</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 -1 5183 5923 8142 799 1520 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 2317 -1 -1 -1 5982 7457 -1 -1 -1 5911 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V1</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 -1 5183 5923 8142 799 1520 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 2317 -1 -1 -1 5982 7457 -1 -1 -1 5911 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V2</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 -1 5183 5923 8142 799 1520 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 2317 -1 -1 -1 5982 7457 -1 -1 -1 5911 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V3</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 -1 5183 5923 8142 799 1520 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 2317 -1 -1 -1 5982 7457 -1 -1 -1 5911 5284 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V4</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 -1 5183 5923 8142 799 1520 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 2317 -1 -1 -1 5982 7457 -1 -1 -1 5911 5284 2368 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V5</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 -1 5183 5923 8142 799 1520 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 2317 -1 -1 -1 5982 7457 -1 -1 -1 5911 5284 2368 801 4431 6060 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V6</lead>
+      <samples>850 -1 2298 -1 -1 -1 -1 7438 -1 5183 5923 8142 799 1520 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 2317 -1 -1 -1 5982 7457 -1 -1 -1 5911 5284 2368 801 4431 6060 -1 2251 3705 4436 </samples>
+    </TEnds>
+  </module>
 </EKG>
