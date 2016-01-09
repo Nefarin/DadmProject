@@ -47,28 +47,29 @@ namespace EKG_Project.Modules.Atrial_Fibr
         }
 
 
-        public static void Main()
-        {
-            Atrial_Fibr af = new Atrial_Fibr();
+        //public static void Main()
+        //{
+        //    Atrial_Fibr af = new Atrial_Fibr();
 
-            TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\RR_afdb05091.txt");
-            uint fs = TempInput.getFrequency();
+        //    TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\RR_afdb05091.txt");
+        //    uint fs = TempInput.getFrequency();
 
-            af.RR_intervals = TempInput.getSignal();
-            af.fs = TempInput.getFrequency();
+        //    af.RR_intervals = TempInput.getSignal();
+        //    af.fs = TempInput.getFrequency();
+        //    af.detectAF(af.RR_intervals, af.fs);
 
-            af.migotanie = af.detectAFPoin(af.RR_intervals, af.fs);
+            //af.migotanie = af.detectAFPoin(af.RR_intervals, af.fs);
 
-            if (af.migotanie)
-            {
-                Console.WriteLine("MIGOTANIE PRZEDSIONKOW");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine("BRAK MIGOTANIA");
-                Console.ReadLine();
-            }
+            //if (af.migotanie)
+            //{
+            //    Console.WriteLine("MIGOTANIE PRZEDSIONKOW");
+            //    Console.ReadLine();
+            //}
+            //else
+            //{
+            //    Console.WriteLine("BRAK MIGOTANIA");
+            //    Console.ReadLine();
+            //}
 
             //af.tpr = af.TPR(af.RR_intervals);
             //af.se = af.SE(af.RR_intervals);
@@ -81,7 +82,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             //Console.ReadLine();
 
 
-        }
+        //}
 
         public Vector<double> RR_intervals
         {
@@ -151,7 +152,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 }
                 else
                 {
-                    //detectedIntervals[i] = detectAFPoin(partOfRrIntervals, fs);
+                    detectedIntervals[i] = detectAFPoin(partOfRrIntervals, fs);
                 }
             }
             double lengthOfDetectedIntervals = 0.0;
