@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules;
+using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
@@ -151,10 +152,11 @@ namespace EKG_Project.IO
 
         //    foreach (var signal in worker.BasicData.Signals)
         //    {
-        //        Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //        //Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //        Debug.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
         //    }
 
-        //    Console.Read();
+        //    //Console.Read();
 
         //}
     }

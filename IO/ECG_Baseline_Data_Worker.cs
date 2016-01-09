@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules;
+using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
@@ -140,18 +141,21 @@ namespace EKG_Project.IO
         }
 
 
-        public static void Main()
-        {
-            ECG_Baseline_Data_Worker worker = new ECG_Baseline_Data_Worker();
-            worker.Load();
+        //public static void Main()
+        //{
+        //    ECG_Baseline_Data_Worker worker = new ECG_Baseline_Data_Worker();
+        //    worker.Load();
 
-            foreach (var signal in worker.Data.SignalsFiltered)
-            {
-                Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
-            }
+        //    foreach (var signal in worker.Data.SignalsFiltered)
+        //    {
+        //        //Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //        Debug.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //        //Debug.
+        //    }
 
-            Console.Read();
+            
+        //    //Console.Read();
 
-        }
+        //}
     }
 }

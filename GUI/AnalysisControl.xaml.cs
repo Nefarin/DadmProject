@@ -67,6 +67,7 @@ namespace EKG_Project.GUI
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
             tempList.Add("ecgBaseline");
             tempList.Add("ecgBasic");
+            tempList.Add("r_Peaks");
             VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(tempList);
             //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
 
