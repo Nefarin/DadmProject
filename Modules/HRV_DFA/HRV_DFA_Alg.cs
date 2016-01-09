@@ -24,9 +24,12 @@ namespace EKG_Project.Modules.HRV_DFA
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
 
+            
             HRV_DFA dfa = new HRV_DFA();
 
-           // Box_StepSize stepSize = new Box_StepSize;
+            // Box_StepSize stepSize = new Box_StepSize;
+
+            
 
             int step = 50;
             int start = 50;
@@ -34,6 +37,59 @@ namespace EKG_Project.Modules.HRV_DFA
 
             double[] boxRanged = Generate.LinearRange(start, step, stop);
             Vector<double> box = Vector<double>.Build.DenseOfArray(boxRanged);
+   //
+
+            int box_length = box.Count();    // number of all boxes
+            int sig_length = sig.Count();    // signal length
+
+            for (int i = 0; i < box_length; i++)
+            {
+                double boxVal = box[i];
+                double box_number = sig_length / boxVal;   // number of boxes
+                double box_qtyD = box_number * boxVal;      // quantity of samples in boxes
+                int boxValint = Convert.ToInt32(boxVal);
+                int box_qty = Convert.ToInt32(box_qtyD);
+
+                // Vector<double> yk = Vector<double>.Build.Dense(box_qty);
+                //Vector<double> yn = Vector<double>.Build.Dense(box_qty);
+
+                // Signal integration
+                Vector<double> yk = dfa.Integrate(sig);
+                Vector<double> fn = Vector<double>.Build.Dense(box_length);
+
+                for (int j = 0; j < box_number; j++)
+                {
+                    // Least-Square Fitting
+                    int ykIndex = j * boxValint;
+                    int ykCount = (j+1) * boxValint - ykIndex;
+                    double[] x = Generate.LinearRange(1, boxValint);
+                    Vector<double> y = yk.SubVector(ykIndex, ykCount);
+                    double[] y1 = y.ToArray();
+                    double[] p = Fit.Polynomial(x, y1, 1);     //fitting coefficients
+                    // Fitting method: NormalEquations                                         
+                    Func<double, double> fitting = Fit.PolynomialFunc(x, y1, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
+                    Vector<double> yn = Vector<double>.Build.Dense(y.Count());
+                    //fitting curve
+                    for (int k = 0; k < y.Count(); k++)
+                    {
+                        yn[k] = fitting(x[k]);
+                    }
+                    
+                    
+                    // dfa fluctuation function F(n)
+                    //Vector<double> fyn = yn.Invoke();
+                    //fn[i] = 
+                    Console.WriteLine(ykIndex);
+                    Console.WriteLine(p[0].ToString());
+                    Console.WriteLine(p[1].ToString());
+                    Console.WriteLine(yn.ToString());
+                    
+                    Console.ReadKey();
+
+                }
+            }
+      //
+
 
             // samplesOrder obtaining
             Vector<double> samplesOrder = dfa.Ordering(sig);
@@ -77,9 +133,14 @@ namespace EKG_Project.Modules.HRV_DFA
 
             return signal_integrated;
         }
+        
+        public void InBoxFluctuations(Vector<double> y_integrated, Vector<double> y_fitted)
+        {
+
+        }
 
 
-        public void DfaFluctuationComputation(Vector<double> dfabox, Vector<double> signal )
+       /* public void DfaFluctuationComputation(Vector<double> dfabox, Vector<double> signal )
         {
             int box_length = dfabox.Count();    // number of all boxes
             int sig_length = signal.Count();    // signal length
@@ -108,20 +169,20 @@ namespace EKG_Project.Modules.HRV_DFA
                     double[] y = yk.SubVector(ykIndex, ykCount).ToArray();
                     double[] p = Fit.Polynomial(x, y, 1);     //fitting coefficients
                     //Fitting curve
-                    Func<double, double> yn = Fit.PolynomialFunc(x, y, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
-                    // dfa fluctuation F(n)
+                    Func<double, double> fitting = Fit.PolynomialFunc(x, y, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
+
+                    // dfa fluctuation function F(n)
+                    //Vector<double> fyn = yn.Invoke();
                     //fn[i] = 
-
-
+                    Console.WriteLine(p);
+                    
                 }
-
-
-
             }
-            
 
-        }
-    
+            //return ;
+
+        }*/
+
 
     }
 }
