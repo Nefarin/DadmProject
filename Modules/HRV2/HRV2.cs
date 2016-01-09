@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -14,18 +15,19 @@ namespace EKG_Project.Modules.HRV2
         private bool _aborted;
 
         private int _currentChannelIndex;
-        private int _currentChannelLength;
+        private int _currentRPeaksLength;
         private int _samplesProcessed;
         private int _numberOfChannels;
 
         private R_Peaks_Data_Worker _inputWorker;
-        private HRV2_Data_Worker _outputWorker;
+        //private HRV2_Data_Worker _outputWorker;
 
         private HRV2_Data _outputData;
         private R_Peaks_Data _inputData;
         private HRV2_Params _params;
 
-        private Vector<Double> _currentVector;
+        private Vector<double> _currentHistogram;
+        private Vector<double> _currentPoincare;
 
         public void Abort()
         {
@@ -49,17 +51,18 @@ namespace EKG_Project.Modules.HRV2
 
                 InputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
                 InputWorker.Load();
-                InputData = InputWorker.BasicData;
+                InputData = InputWorker.Data;
 
-                OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
-                OutputData = new HRV2_Data(InputData.Frequency, InputData.SampleAmount);
+                //OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
+                OutputData = new HRV2_Data();
 
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
-                NumberOfChannels = InputData.Signals.Count;
-                _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-                _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-
+                NumberOfChannels = InputData.RPeaks.Count;
+                _currentRPeaksLength = InputData.RPeaks[_currentChannelIndex].Item2.Count;
+                //cos z sensem tu bedzie
+                _currentHistogram = Vector<Double>.Build.Dense(_currentRPeaksLength);
+                _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
             }
 
         }
@@ -72,7 +75,7 @@ namespace EKG_Project.Modules.HRV2
 
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentRPeaksLength));
         }
 
         public bool Runnable()
@@ -84,33 +87,31 @@ namespace EKG_Project.Modules.HRV2
         {
             int channel = _currentChannelIndex;
             int startIndex = _samplesProcessed;
-            int step = Params.Step;
 
             if (channel < NumberOfChannels)
             {
-                if (startIndex + step > _currentChannelLength)
+
+                Analyse();
+                OutputData.HistogramData.Add( new Tuple<string, Vector<double>>( InputData.RPeaks[_currentChannelIndex].Item1, _currentHistogram));
+                Vector<double> rr_intervals_x = Vector<double>.Build.Dense(1);
+                Vector<double> rr_intervals_y = Vector<double>.Build.Dense(1);
+                PoincarePlot( rr_intervals_x,  rr_intervals_y);
+                OutputData.PoincarePlotData_x = new Tuple<string, Vector<double>>("X", rr_intervals_x);
+                OutputData.PoincarePlotData_y = new Tuple<string, Vector<double>>("Y", rr_intervals_y);
+                _currentChannelIndex++;
+                if (_currentChannelIndex < NumberOfChannels)
                 {
-                    scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
-                    OutputData.Output.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
-                    _currentChannelIndex++;
-                    if (_currentChannelIndex < NumberOfChannels)
-                    {
-                        _samplesProcessed = 0;
-                        _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-                        _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                    }
+                    _currentRPeaksLength = InputData.RPeaks[_currentChannelIndex].Item2.Count;
+                    _currentHistogram = Vector<Double>.Build.Dense(_currentRPeaksLength);
+                    _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
+                }
 
 
-                }
-                else
-                { 
-                    scaleSamples(channel, startIndex, step);
-                    _samplesProcessed = startIndex + step;
-                }
+ 
             }
             else
             {
-                OutputWorker.Save(OutputData);
+                //OutputWorker.Save(OutputData);
                 _ended = true;
             }
 
@@ -196,18 +197,18 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
-        public HRV2_Data_Worker OutputWorker
-        {
-            get
-            {
-                return _outputWorker;
-            }
+        //public HRV2_Data_Worker OutputWorker
+        //{
+        //    get
+        //    {
+        //        return _outputWorker;
+        //    }
 
-            set
-            {
-                _outputWorker = value;
-            }
-        }
+        //    set
+        //    {
+        //        _outputWorker = value;
+        //    }
+        //}
 
         public static void Main()
         {

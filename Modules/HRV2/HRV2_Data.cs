@@ -4,16 +4,17 @@ using System;
 
 namespace EKG_Project.Modules.HRV2
 {
-    class HRV2_Data : IO.ECG_Data
+    public class HRV2_Data : ECG_Data
     {
         private double _tinn;
         private double _triangleIndex;
         private double _sd1;
         private double _sd2;
         private List<Tuple<string, Vector<double>>> _histogramData;
-        private List<Tuple<string, Vector<double>>> _poincarePlotData;
+        private Tuple<string, Vector<double>> _poincarePlotData_x;
+        private Tuple<string, Vector<double>> _poincarePlotData_y;
 
-        #region Properties
+
         #region Documentation
         /// <summary>
         /// Współczynnik TINN
@@ -111,23 +112,41 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Wykres Poincare
+        /// Wykres Poincare_x
         /// </summary>
         /// 
         #endregion
-        public List<Tuple<string, Vector<double>>> PoincarePlotData
+        public Tuple<string, Vector<double>> PoincarePlotData_x 
         {
             get
             {
-                return _poincarePlotData;
+                return _poincarePlotData_x;
             }
 
             set
             {
-                _poincarePlotData = value;
+                _poincarePlotData_x = value;
             }
         }
+
+        #region Documentation
+        /// <summary>
+        /// Wykres Poincare_y
+        /// </summary>
+        /// 
         #endregion
+        public Tuple<string, Vector<double>> PoincarePlotData_y
+        {
+            get
+            {
+                return _poincarePlotData_y;
+            }
+
+            set
+            {
+                _poincarePlotData_y = value;
+            }
+        }
 
         #region Documentation
         /// <summary>
@@ -138,7 +157,6 @@ namespace EKG_Project.Modules.HRV2
         public HRV2_Data()
         {
             HistogramData = new List<Tuple<string, Vector<double>>>();
-            PoincarePlotData = new List<Tuple<string, Vector<double>>>(); 
         }
     }
 }

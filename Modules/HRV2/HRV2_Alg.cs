@@ -9,6 +9,10 @@ namespace EKG_Project.Modules.HRV2
         #region
 
         #endregion
+        private void Analyse()
+        {
+            ;
+        }
         private HRV2_Data Analyse(R_Peaks_Data RRIntervals)
         {
             HRV2_Data hrv2Data = new HRV2_Data();
