@@ -47,21 +47,28 @@ namespace EKG_Project.GUI
 
         private void startAnalyseButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var option in modulePanel.Options)
+            foreach (var option in modulePanel.getAllOptions())
             {
+
+                // Tuple<ModuleOption, ModuleParams> test = modulePanel.ModuleOptionAndParams(option.Code);
                 if (option.Set)
                 {
+
                     if (option.ModuleParam == null) //tylko tymczasowo dopoki nie jest przez was zaimplementowane
                     {
+
                         //option.ModuleParam = new ModuleParams();
-                        //moduleParams[option.Code] = option.ModuleParam;
+                        //moduleParams(option.Code)= option.ModuleParam;
                         Console.WriteLine(option.Name + " is set.");
                     }
                 }
             }
             MessageBox.Show("Starting Analyses");
+            System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
+            tempList.Add("ecgBaseline");
+            tempList.Add("ecgBasic");
+            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(tempList);
             //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
-            //VisualisationPanelUserControl.UpdateLayout();
 
         }
 

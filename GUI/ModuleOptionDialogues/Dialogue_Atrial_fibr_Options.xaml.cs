@@ -1,11 +1,8 @@
-﻿using EKG_Project.Modules;
-using EKG_Project.Modules.ECG_Baseline;
+﻿using EKG_Project.Modules.Atrial_Fibr;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,30 +16,20 @@ using System.Windows.Shapes;
 namespace EKG_Project.GUI.ModuleOptionDialogues
 {
     /// <summary>
-    /// Interaction logic for Dialogue_ECG_Baseline_Options.xaml
+    /// Interaction logic for Dialogue_Atrial_fibr_Options.xaml
     /// </summary>
-    public partial class Dialogue_ECG_Baseline_Options : Window
+    public partial class Dialogue_Atrial_fibr_Options : Window
     {
-        // muszę znać typ (nie mogę użyć samgo ModuleParams), ponieważ klasa bazowa (a nie np. interface), 
-        // nie udostępnia żadnych metod kopiujących itp.
-        public ECG_Baseline_Params returnParameters { get; set; }
-        public ECG_Baseline_Params PendingParameters { get; set; }
+        public Atrial_Fibr_Params returnParameters { get; set; }
+        public Atrial_Fibr_Params PendingParameters { get; set; }
         ModulePanel panel;
 
-        public static CultureInfo CurrentCulture
-        {
-            get
-            {
-                return Thread.CurrentThread.CurrentCulture;
-            }
-        }
-
-        public Dialogue_ECG_Baseline_Options(Object parent, ECG_Baseline_Params parameters)
+        public Dialogue_Atrial_fibr_Options(Object parent, Atrial_Fibr_Params parameters)
         {
             panel = parent as ModulePanel;
             this.returnParameters = parameters;
 
-            this.PendingParameters = new ECG_Baseline_Params();
+            this.PendingParameters = new Atrial_Fibr_Params(Detect_Method.POINCARE);
             this.PendingParameters.CopyParametersFrom(parameters);
             this.DataContext = this.PendingParameters;
             InitializeComponent();
@@ -58,6 +45,5 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
         {
             this.Close();
         }
-
     }
 }

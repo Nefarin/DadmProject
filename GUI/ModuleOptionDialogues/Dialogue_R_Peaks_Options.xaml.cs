@@ -22,7 +22,7 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
     {
 
 
-        private R_Peaks_Params returnParameters { get; set; }
+        public R_Peaks_Params returnParameters { get; set; }
         public R_Peaks_Params PendingParameters { get; set; }
         ModulePanel panel;
 

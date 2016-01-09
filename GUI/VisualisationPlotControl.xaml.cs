@@ -27,7 +27,30 @@ namespace EKG_Project.GUI
             InitializeComponent();
             ecgPlot = new ECGPlot("ECG_BASELINE");
             DataContext = ecgPlot;
-            ecgPlot.DisplayAnything();
+            //ecgPlot.DisplayBasicData();
+            ecgPlot.DisplayEcgBaseline();
+            //ecgPlot.DisplayR_Peaks();
+        }
+
+        public VisualisationPlotControl(string moduleName)
+        {
+            InitializeComponent();
+            ecgPlot = new ECGPlot(moduleName);
+            DataContext = ecgPlot;           
+            ecgPlot.DisplayEcgBaseline();
+        }
+
+        private void PlotForwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            ecgPlot.MovePlot(500);
+            ecgPlot.DisplayEcgBaseline();
+           
+        }
+
+        private void PlotBackwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            ecgPlot.MovePlot(-500);
+            ecgPlot.DisplayEcgBaseline();
         }
     }
 }
