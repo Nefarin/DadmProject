@@ -22,6 +22,13 @@ namespace EKG_Project.GUI
         private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
         private bool first;
 
+        private Dictionary<string, uint> modulesVisualisationNeeds = new Dictionary<string, uint>()
+        {
+            {"ecgBaseline",1 },
+            {"ecgBasic", 0 },
+            { "r_Peaks", 3 }
+        };
+
 
 
         //test
@@ -149,12 +156,12 @@ namespace EKG_Project.GUI
             CurrentPlot.InvalidatePlot(true);
         }
 
-        public void DisplayBasicSignal()
-        {
-            ClearPlot();
+        //public void DisplayBasicSignal()
+        //{
+        //    ClearPlot();
 
-            //CurrentPlot.Series.Add();
-        }
+        //    //CurrentPlot.Series.Add();
+        //}
 
         public void DisplayHistogram()
         {
@@ -302,6 +309,28 @@ namespace EKG_Project.GUI
             return series;
         }
 
+
+        public void DisplayControler(string whatToDisplay)
+        {
+            switch (whatToDisplay)
+            {
+                case "ecgBaseline":
+                    DisplayEcgBaseline();
+                    break;
+
+                case "ecgBasic":
+                    DisplayBasicData();
+                    break;
+
+                case "r_Peaks":
+                    DisplayR_Peaks();
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
 
         //Annotations
         private ArrowAnnotation AddArrowAnnotation()

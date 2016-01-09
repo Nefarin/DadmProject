@@ -29,7 +29,8 @@ namespace EKG_Project.GUI
         private Dictionary<string, uint> modulesVisualisationNeeds = new Dictionary<string, uint>()
         {
             {"ecgBaseline", 1 },
-            {"ecgBasic", 0 }
+            {"ecgBasic", 0 },
+            { "r_Peaks", 3 }
         };
 
 
