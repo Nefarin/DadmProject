@@ -15,7 +15,7 @@ namespace EKG_Project.IO
     public class R_Peaks_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName = "TestAnalysis";
         private R_Peaks_Data _data;
 
         public R_Peaks_Data Data

@@ -407,6 +407,7 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\temp\TestAnalysis_Data.xml" />
     <Resource Include="IO\temp\Analysis6_Data.xml" />
     <Resource Include="IO\temp\Analysis6_TestModule3.xml" />
     <Resource Include="IO\data\2.xml" />

@@ -15,7 +15,7 @@ namespace EKG_Project.IO
     public class ECG_Baseline_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName = "TestAnalysis";
         private ECG_Baseline_Data _data;
 
         public ECG_Baseline_Data Data
