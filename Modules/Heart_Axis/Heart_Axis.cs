@@ -137,6 +137,7 @@ namespace EKG_Project.Modules.Heart_Axis
                 if ((Lead_I != null) && (Lead_II != null))
                 {
                     FirstSignalName = LeadISymbol;
+                    FirstSignal = Lead_I;
                 }
                 else
                 {
@@ -160,11 +161,12 @@ namespace EKG_Project.Modules.Heart_Axis
                 List<Tuple<string, List<int>>> allQRSOnSets = InputWavesData.QRSOnsets;
                 List<Tuple<string, List<int>>> allQRSEnds = InputWavesData.QRSEnds;
 
-               
+
 
                 /*wczytywnie list załamków */
 
-
+                QArray = null;
+                SArray = null;
 
                 // QRSOnsets
                 foreach (Tuple<String,List<int>> lead in allQRSOnSets) // pętla po sygnałach z odprowadzeń
@@ -191,6 +193,11 @@ namespace EKG_Project.Modules.Heart_Axis
 
                 }
 
+                if ((QArray == null) || (SArray == null))
+                {
+                    Abort();
+                }
+
                 Q = 0;
                 S = 0;
                 // sprawdzanie, czy Q i S jest poprawne
@@ -204,7 +211,7 @@ namespace EKG_Project.Modules.Heart_Axis
                     }
                 }
 
-                if ((Q == -1) || (S == -1) || (Q < S))
+                if ((Q == -1) || (S == -1) || (Q > S))
                 {
                     _ended = true;
                     Aborted = true;
@@ -542,9 +549,7 @@ namespace EKG_Project.Modules.Heart_Axis
             }
         }
          
-       
-
-        /*
+       /* Test */
         
         public static void Main()
         {
@@ -561,49 +566,14 @@ namespace EKG_Project.Modules.Heart_Axis
                 if (testModule.Ended()) break;
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
+                Console.WriteLine(testModule.OutputData.HeartAxis);
+                Console.WriteLine("Press key to continue.");
+                Console.Read();
             }
         
 
-
         
-        // 1. Parametry dla modułu?
-        Heart_Axis_Params param = new Heart_Axis_Params("TestAnalysis");
-
-        // 2. Wczytanie plików?
-
-
-
-        // 3. Stworzenie obiketu modułu
-        Heart_Axis testModule = new Heart_Axis();
-        //testModule.InitForTestsOnly(ecg, rpeaks, param);
-
-
-        // 4. Inicjalizacja danych wejściowych
-        testModule.Init(param);
-        while (true)
-        {
-            //Console.WriteLine("Press key to continue.");
-            //Console.Read();
-
-            if (testModule.Ended()) break;
-
-            testModule.ProcessData();
-        }
-
-        // 4. Inicjalizacja danych wejściowych
-        testModule.Init(param);
-        while (true)
-        {
-            //Console.WriteLine("Press key to continue.");
-            //Console.Read();
-
-            // todo: czy to podlega tej samej logice?
-            if (testModule.Ended()) break;
-            Console.WriteLine(testModule.Progress());
-            testModule.ProcessData();
-        }
-        
-    }*/
+    }
 
 }
      
