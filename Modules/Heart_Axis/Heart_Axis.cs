@@ -7,6 +7,7 @@ using EKG_Project.IO;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.Waves;
 using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Heart_Axis
 {
@@ -44,7 +45,7 @@ namespace EKG_Project.Modules.Heart_Axis
 
         /* Dane wyjściowe - Kąt osi serca  */
 
-        private Heart_Axis_Data_Worker _output;
+        private Heart_Axis_Data_Worker _outputWorker;
         private Heart_Axis_Data _outputData;
         private Heart_Axis_Params _params; // tak ma być?
 
@@ -93,12 +94,139 @@ namespace EKG_Project.Modules.Heart_Axis
             else
             {
                 _ended = false;
-                // HMM!
 
+                // wczytywanie danych
+
+                // inicjalizacja zmiennych 
+
+
+                /* wczytanie sygnałów z odprowadzeń */
+
+
+                string _analysisName = Params.AnalysisName;
+                InputECGBaselineWorker = new ECG_Baseline_Data_Worker(_analysisName);
+
+                InputECGBaselineWorker.Load(); // todo: czy to jest analogiczne
+                InputECGBaselineData = InputECGBaselineWorker.Data;
+
+                List<Tuple<string, Vector<double>>> allSignalsFiltered = InputECGBaselineData.SignalsFiltered;
+
+                /*
+                Ustawiam wszystkie zmienne przechowujące sygnał z odprowadzeń na null,
+                żeby potem móc sprawdzić które zostały wykryte i wybrać na których
+                będą przeprowadzane obliczenia
+                */
+
+                Lead_I = null;
+                Lead_II = null;
+
+                foreach (Tuple<string, Vector<double>> lead in allSignalsFiltered)
+                {
+                    String _leadName = lead.Item1;
+                    if (_leadName.Equals(LeadISymbol)) // todo: sprawdzić czy o to chodziło przy wyborze odprowadzenia do obliczeń
+                    {
+                        Lead_I = lead.Item2.ToArray();
+                    }
+                    else if (_leadName.Equals(LeadIISymbol))
+                    {
+                        Lead_II = lead.Item2.ToArray();
+                    }
+                   
+                }
+
+                // przypadki - trzeba ustalić z którego odprowadzenia korzystamy jako głównego
+                if ((Lead_I != null) && (Lead_II != null))
+                {
+                    FirstSignalName = LeadISymbol;
+                }
+                else
+                {
+                    // pozostały przypadek to taki, gdzie wszystkie są nullami - nie udało się wykryć żadnej pary odprowadzeń, wyrzucamy wyjątek
+                    throw (new Exception("Brak odpowiednich odprowadzen  w sygnale wejsciowym."));
+                }
+
+
+
+
+                // wczytywanie danych QRS
+
+
+                InputWavesWorker = new Waves_Data_Worker(_analysisName); // todo: nie mam bladego pojęcia czy to jest poprawne - oni dostają nazwę analizy z GUI, a nie widzę nigdzie w kodzie tego
+                InputWavesWorker.Load();
+                InputWavesData = InputWavesWorker.Data; // todo: czy tu nie powinno być Waves_Data?;
+
+
+
+                List<Tuple<string, List<int>>> allQRSOnSets = InputWavesData.QRSOnsets;
+                List<Tuple<string, List<int>>> allQRSEnds = InputWavesData.QRSEnds;
+
+               
+
+                /*wczytywnie list załamków */
+
+
+
+                // QRSOnsets
+                foreach (Tuple<String,List<int>> lead in allQRSOnSets) // pętla po sygnałach z odprowadzeń
+                {
+                    String _leadName = lead.Item1;
+                    if (_leadName.Equals(FirstSignalName))
+                    {
+                        QArray = lead.Item2.ToArray(); ;
+                        break;
+                    }
+
+                }
+
+                // QRSEnds
+                foreach (Tuple<String, List<int>> lead in allQRSEnds) // pętla po sygnałach z odprowadzeń
+                {
+
+                    String _leadName = lead.Item1;
+                    if (_leadName.Equals(FirstSignalName))
+                    {
+                        SArray = lead.Item2.ToArray();
+                        break;
+                    }
+
+                }
+
+                Q = 0;
+                S = 0;
+                // sprawdzanie, czy Q i S jest poprawne
+                for (int QIndex = 0; QIndex < QArray.Length; QIndex++)
+                {
+                    Q = QArray[QIndex];
+                    S = SArray[QIndex];
+                    if ((Q < S) && (Q != -1) && (S != -1))
+                    {
+                        break;
+                    }
+                }
+
+                if ((Q == -1) || (S == -1) || (Q < S))
+                {
+                    throw new Exception();
+                }
+
+                // wczytywanie częstotliwości próbkowania
+
+                InputBasicDataWorker = new Basic_Data_Worker(_analysisName);
+                InputBasicDataWorker.Load();
+                InputBasicData = InputBasicDataWorker.BasicData;
+
+                Fs = (int)InputBasicData.Frequency;// opcja druga - bierzemy to z BasicData, tam to jest na pewno
+
+
+                // dane wyjściowe - inicjalizacja
+
+                OutputWorker = new Heart_Axis_Data_Worker(Params.AnalysisName);
+                OutputData = new Heart_Axis_Data();
             }
+
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
             if (Runnable()) processData();
             else _ended = true;
@@ -122,8 +250,12 @@ namespace EKG_Project.Modules.Heart_Axis
         {
 
             // todo: wstawić kolejne etapy obliczania osi serca
+       
 
-            
+            OutputWorker.Save(OutputData);
+            _ended = true;
+
+
         }
 
         /* Przepływ sterowania dla GUI */
@@ -157,7 +289,7 @@ namespace EKG_Project.Modules.Heart_Axis
         }
  
         // Data
-       /*
+       
         public Waves_Data InputWavesData
         {
             get
@@ -166,7 +298,7 @@ namespace EKG_Project.Modules.Heart_Axis
             }
             set
             {
-                inputWavesData = value;
+                _inputWavesData = value;
             }
         }
        
@@ -195,20 +327,20 @@ namespace EKG_Project.Modules.Heart_Axis
                 _inputBasicData = value;
             }
         }
-       
-        public int NumberOfChannels
+
+        public Heart_Axis_Data OutputData
         {
             get
             {
-                return _numberOfChannels;
+                return _outputData;
             }
- 
+
             set
             {
-                _numberOfChannels = value;
+                _outputData = value;
             }
-       
         }
+       
        
         public int Fs
         {
@@ -224,30 +356,30 @@ namespace EKG_Project.Modules.Heart_Axis
            
         }
        
-        public List<int> QRSonsets
+        public int[] QArray
         {
             get
             {
-                return _QRSonsets;
+                return _QArray;
             }
  
             set
             {
-                _QRSonsets = value;
+                _QArray = value;
             }
            
         }
                
-        public List<int> QRSends
+        public int[] SArray
         {
             get
             {
-                return _QRSends;
+                return _SArray;
             }
  
             set
             {
-                _QRSends = value;
+                _SArray = value;
             }
            
         }
@@ -278,7 +410,7 @@ namespace EKG_Project.Modules.Heart_Axis
             }
         }
        
-        public Vector<double> Lead_I
+        public double[] Lead_I
         {
             get
             {
@@ -292,7 +424,7 @@ namespace EKG_Project.Modules.Heart_Axis
            
         }
        
-        public Vector<double> Lead_II
+        public double[] Lead_II
         {
             get
             {
@@ -306,21 +438,9 @@ namespace EKG_Project.Modules.Heart_Axis
            
         }
        
-        public Vector<double> Lead_III
-        {
-            get
-            {
-                return _lead_III;
-            }
- 
-            set
-            {
-                _lead_III = value;
-            }
-           
-        }
+      
        
-        public Vector<double> FirstSignalName
+        public string FirstSignalName
         {
             get
             {
@@ -377,7 +497,7 @@ namespace EKG_Project.Modules.Heart_Axis
            
  
        
-        public Heart_Data_Worker OutputWorker
+        public Heart_Axis_Data_Worker OutputWorker
         {
             get
             {
@@ -389,7 +509,7 @@ namespace EKG_Project.Modules.Heart_Axis
                 _outputWorker = value;
             }
         }
-       */
+       
         public double[] FirstSignal
          {
             get
