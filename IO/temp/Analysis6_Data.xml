@@ -316,18 +316,5 @@
     <TurbulenceSlopeMean>1 2 3 4 5 6 7 8 9 </TurbulenceSlopeMean>
     <VPCcount>1</VPCcount>
   </module>
-  <module name="Atrial_Fibr">
-    <detectedAF>
-      <detected>True</detected>
-      <detectedPoints>1 2 3 4 5 6 7 8 9 </detectedPoints>
-      <detectedS>V1</detectedS>
-      <timeofAF>V1</timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>True</detected>
-      <detectedPoints>1 2 3 4 5 6 7 8 9 </detectedPoints>
-      <detectedS>MLII</detectedS>
-      <timeofAF>MLII</timeofAF>
-    </detectedAF>
-  </module>
+  <module name="Atrial_Fibr" />
 </EKG>

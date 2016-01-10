@@ -101,14 +101,14 @@ namespace EKG_Project.Modules.Atrial_Fibr
             Vector<double> pointsDetected=Vector<double>.Build.Dense(1);
             Vector<double> pointsDetected2;
             double lengthOfDetection = 0;
-
+            _ClassResult = new Tuple<bool, Vector<double>, double>(detected, pointsDetected, lengthOfDetection);
             if (channel < NumberOfChannels)
             {
                 
                 if (startIndex + step >= _currentChannelLength)
                 {
-                    _currentVector = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, step);
-                    _vectorOfIntervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.SubVector(startIndex, step);
+                    _currentVector = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
+                    _vectorOfIntervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
 
                     _tempClassResult = detectAF(_vectorOfIntervals, _currentVector, Convert.ToUInt32(InputData_basic.Frequency), Params);
 
@@ -118,8 +118,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         pointsDetected.SetSubVector(pointsDetected.Count, _tempClassResult.Item2.Count, _tempClassResult.Item2);
                         lengthOfDetection += _tempClassResult.Item3;
                         _ClassResult = new Tuple<bool, Vector<double>, double>(detected, pointsDetected, lengthOfDetection);
+                        pointsDetected2 = Vector<double>.Build.Dense(_ClassResult.Item2.Count - 1);
                     }
-                    pointsDetected2 = Vector<double>.Build.Dense(_ClassResult.Item2.Count - 1);
+                    else
+                    {
+                        pointsDetected2 = Vector<double>.Build.Dense(1);
+                    }
+                    
                     if (_ClassResult.Item1)
                     {
                         double percentOfDetection = _ClassResult.Item3 / (InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count) - InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(0))*100* Convert.ToUInt32(InputData_basic.Frequency);
@@ -219,7 +224,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         public static void Main()
         {
-            Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC, "Analysis1");
+            Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC, "Analysis6");
 
             Atrial_Fibr testModule = new Atrial_Fibr();
             testModule.Init(param);
