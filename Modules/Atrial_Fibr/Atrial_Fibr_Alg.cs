@@ -23,7 +23,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         //private int[] RR_intervals;
         private Vector<double> _rr_intervals;
         private Vector<double> partOfRrIntervals;
-        private Vector<double> pointsDetected;
+        private Vector <double> pointsDetected;
         bool migotanie;
         double tpr, se, rmssd;
         int amountOfCluster;
@@ -127,11 +127,14 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// TODO
         /// </summary>
         #endregion
-        private void detectAF (Vector<double> _rrIntervals, uint fs)
+        private Tuple<bool, Vector<double>, double> detectAF(Vector<double> _rrIntervals, Vector<double> _rPeaks, uint fs, Atrial_Fibr_Params _method)
         {
             double tmp;
             bool[] detectedIntervals;
             int dividingFactor, nrOfParts;
+            double lengthOfDetection=0;
+            double percentOfDetection = 0;
+
             if (_method.Method== Detect_Method.STATISTIC)
             {
                 dividingFactor = 32;
@@ -169,6 +172,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             string afDetectionDescription="";
             if (afDetected)
             {
+                pointsDetected= Vector<Double>.Build.Dense(Convert.ToInt32(lengthOfDetectedIntervals));
                 int lastIndex = 0;
                 for (int i = 0; i < detectedIntervals.Length; i++)
                 {
@@ -177,15 +181,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         int j;
                         for (j = 0; j <  _rrIntervals.At(i); j++)
                         {
-                            pointsDetected[j + lastIndex] = _rrIntervals.At(i) + j;
+                            pointsDetected.At(j + lastIndex, _rPeaks.At(i) + j);
                         }
-                        lastIndex = j;
+                        lastIndex += j;
                     }
                 }
                 afDetectedS = "Wykryto migotanie przedsionków.";
-                double lengthOfSignal = (_rrIntervals.At(_rrIntervals.Count) - _rrIntervals.At(0)) / fs;
-                double lengthOfDetection = lengthOfDetectedIntervals / fs;
-                double percentOfDetection = (lengthOfDetection / lengthOfSignal) * 100;
+                double lengthOfSignal = (_rPeaks.At(_rPeaks.Count-1) - _rPeaks.At(0)) / fs;
+                lengthOfDetection = lengthOfDetectedIntervals / fs;
+                percentOfDetection = (lengthOfDetection / lengthOfSignal) * 100;
                 afDetectionDescription += "Wykryto migotanie trwające ";
                 afDetectionDescription += lengthOfDetection.ToString("F1", CultureInfo.InvariantCulture);
                 afDetectionDescription += "s. Stanowi to ";
@@ -197,7 +201,8 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 pointsDetected.Clear();
                 afDetectedS="Nie wykryto migotania przedsionków";
             }
-
+            Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetection);
+            return result;
         }
 
         #region Documentation
