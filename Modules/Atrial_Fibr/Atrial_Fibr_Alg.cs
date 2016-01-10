@@ -15,15 +15,12 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Atrial_Fibr
 {
-    //TODO: 
-    //-komentarze zgodnie z dokumentacją
     public partial class Atrial_Fibr : IModule
     {
         private uint fs;
-        //private int[] RR_intervals;
         private Vector<double> _rr_intervals;
         private Vector<double> partOfRrIntervals;
-        private Vector<double> pointsDetected;
+        private Vector <double> pointsDetected;
         bool migotanie;
         double tpr, se, rmssd;
         int amountOfCluster;
@@ -34,8 +31,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
         public Atrial_Fibr()
         {
             _rr_intervals = Vector<double>.Build.Dense(1);
-            //_Ii = Vector<double>.Build.Dense(1);
-            //_Ii1 = Vector<double>.Build.Dense(1);
             migotanie = new bool();
             tpr = new double();
             se = new double();
@@ -47,28 +42,29 @@ namespace EKG_Project.Modules.Atrial_Fibr
         }
 
 
-        public static void Main()
-        {
-            Atrial_Fibr af = new Atrial_Fibr();
+        //public static void Main()
+        //{
+        //    Atrial_Fibr af = new Atrial_Fibr();
 
-            TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\RR_afdb05091.txt");
-            uint fs = TempInput.getFrequency();
+        //    TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\RR_afdb05091.txt");
+        //    uint fs = TempInput.getFrequency();
 
-            af.RR_intervals = TempInput.getSignal();
-            af.fs = TempInput.getFrequency();
+        //    af.RR_intervals = TempInput.getSignal();
+        //    af.fs = TempInput.getFrequency();
+        //    af.detectAF(af.RR_intervals, af.fs);
 
-            af.migotanie = af.detectAFPoin(af.RR_intervals, af.fs);
+            //af.migotanie = af.detectAFPoin(af.RR_intervals, af.fs);
 
-            if (af.migotanie)
-            {
-                Console.WriteLine("MIGOTANIE PRZEDSIONKOW");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.WriteLine("BRAK MIGOTANIA");
-                Console.ReadLine();
-            }
+            //if (af.migotanie)
+            //{
+            //    Console.WriteLine("MIGOTANIE PRZEDSIONKOW");
+            //    Console.ReadLine();
+            //}
+            //else
+            //{
+            //    Console.WriteLine("BRAK MIGOTANIA");
+            //    Console.ReadLine();
+            //}
 
             //af.tpr = af.TPR(af.RR_intervals);
             //af.se = af.SE(af.RR_intervals);
@@ -81,7 +77,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             //Console.ReadLine();
 
 
-        }
+        //}
 
         public Vector<double> RR_intervals
         {
@@ -107,30 +103,24 @@ namespace EKG_Project.Modules.Atrial_Fibr
             set { _ClusteredData = value; }
         }
 
-        //public Vector<double> Ii_vec
-        //{
-        //    get { return _Ii; }
-        //    set { _Ii = value; }
-        //}
-
-        //public Vector<double> Ii1_vec
-        //{
-        //    get { return _Ii1; }
-        //    set { _Ii1 = value; }
-        //}
-
-
 
         #region Documentation
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="_rrIntervals" </param>
+        /// <param name="_rPeaks" </param>
+        /// <param name="fs" </param>
+        /// <param name="_method" </param>
+        /// <returns></returns>
         #endregion
-        private void detectAF (Vector<double> _rrIntervals, uint fs)
+        private Tuple<bool, Vector<double>, double> detectAF(Vector<double> _rrIntervals, Vector<double> _rPeaks, uint fs, Atrial_Fibr_Params _method)
         {
             double tmp;
             bool[] detectedIntervals;
             int dividingFactor, nrOfParts;
+            double lengthOfDetection=0;
+
             if (_method.Method== Detect_Method.STATISTIC)
             {
                 dividingFactor = 32;
@@ -151,7 +141,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 }
                 else
                 {
-                    //detectedIntervals[i] = detectAFPoin(partOfRrIntervals, fs);
+                    detectedIntervals[i] = detectAFPoin(partOfRrIntervals, fs);
                 }
             }
             double lengthOfDetectedIntervals = 0.0;
@@ -164,10 +154,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     afDetected = true;
                 }
             }
-            string afDetectedS;
-            string afDetectionDescription="";
+            //string afDetectedS;
+            //string afDetectionDescription="";
             if (afDetected)
             {
+                pointsDetected= Vector<Double>.Build.Dense(Convert.ToInt32(lengthOfDetectedIntervals));
                 int lastIndex = 0;
                 for (int i = 0; i < detectedIntervals.Length; i++)
                 {
@@ -176,35 +167,37 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         int j;
                         for (j = 0; j <  _rrIntervals.At(i); j++)
                         {
-                            pointsDetected[j + lastIndex] = _rrIntervals.At(i) + j;
+                            pointsDetected.At(j + lastIndex, _rPeaks.At(i) + j);
                         }
-                        lastIndex = j;
+                        lastIndex += j;
                     }
                 }
-                afDetectedS = "Wykryto migotanie przedsionków.";
-                double lengthOfSignal = (_rrIntervals.At(_rrIntervals.Count) - _rrIntervals.At(0)) / fs;
-                double lengthOfDetection = lengthOfDetectedIntervals / fs;
-                double percentOfDetection = (lengthOfDetection / lengthOfSignal) * 100;
-                afDetectionDescription += "Wykryto migotanie trwające ";
-                afDetectionDescription += lengthOfDetection.ToString("F1", CultureInfo.InvariantCulture);
-                afDetectionDescription += "s. Stanowi to ";
-                afDetectionDescription += percentOfDetection.ToString("F1", CultureInfo.InvariantCulture);
-                afDetectionDescription += "% trwania sygnału.";
+                //afDetectedS = "Wykryto migotanie przedsionków.";
+                double lengthOfSignal = (_rPeaks.At(_rPeaks.Count-1) - _rPeaks.At(0)) / fs;
+                //lengthOfDetection = lengthOfDetectedIntervals / fs;
+                //percentOfDetection = (lengthOfDetection / lengthOfSignal) * 100;
+                //afDetectionDescription += "Wykryto migotanie trwające ";
+                //afDetectionDescription += lengthOfDetection.ToString("F1", CultureInfo.InvariantCulture);
+                //afDetectionDescription += "s. Stanowi to ";
+                //afDetectionDescription += percentOfDetection.ToString("F1", CultureInfo.InvariantCulture);
+                //afDetectionDescription += "% trwania sygnału.";
             }
             else
             {
                 pointsDetected.Clear();
-                afDetectedS="Nie wykryto migotania przedsionków";
+                //afDetectedS="Nie wykryto migotania przedsionków";
             }
-
+            Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetection);
+            return result;
         }
 
         #region Documentation
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="_RR"></param>
+        /// <returns></returns>
         #endregion
-
         double TPR(Vector<double> _RR)
         {
             int turningPoints = 0;
@@ -218,112 +211,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return tpr = turningPoints / ((2 * 30 - 4) / 3);
         }
 
-
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="_RR"></param>
+        /// <returns></returns>
+        #endregion
         double SE(Vector<double> _RR)
         {
-            double[] histogram = new double[8];
-            double dzielnik = 0.0;
-            double maxRr = _RR.Maximum();
-            double minRr = _RR.Minimum();
-            double width = (maxRr - minRr) / 8;
-            double tmp = minRr;
-            Vector<double> _RR1;
-            _RR1=_RR;
-             List<Tuple<int, double>> listOfElements = new List<Tuple<int, double>>();
-            for (int i = 0; i < 8; i++)
-            {
-                if (i < 7)
-                {
-                    for (int k = 0; k < _RR1.Count ; k++)
-                    {
-                        Tuple<int, double> elements = _RR1.Find(element => (element >= tmp && element < (tmp + width)));
-                        if (elements != null)
-                        {
-                            listOfElements.Add(elements);
-                            _RR1.ClearSubVector(elements.Item1, 1);
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    dzielnik= listOfElements.Count / 24.0;
-                    histogram[i] = dzielnik;
-                    listOfElements.Clear();
-                }
-                else
-                {
-                    dzielnik= (32 - (histogram.Sum()*24.0)) / 24.0;
-                    histogram[i] = dzielnik;
-                }
-                tmp += width;
-            }
-            double se = 0;
-            foreach (double a in histogram)
-            {
-                if (a != 0)
-                    se += (a * Math.Log10(a)) / (Math.Log10(0.125));
-            }
-            return se;
-        }
-
-        double RMSSD(Vector<double> _RR)
-        {
-            double[] rmssd_vec = new double[_RR.Count-1];
-            double rmssd = 0.0;
-            for (int i = 0; i < (_RR.Count - 1); i++)
-            {
-                rmssd_vec[i] = Math.Pow(_RR.At(i + 1) - _RR.At(i),2);
-            }
-            rmssd = rmssd_vec.Sum();
-            rmssd = rmssd / (_RR.Count - 1);
-            rmssd = Math.Sqrt(rmssd);
-            return (rmssd = rmssd / _RR.Average());
-        }
-        
-        bool detectAFStat(Vector<double> _RR, uint fs )
-        {
-           bool AF, tprD, seD, rmssdD;
-
-            //Turning Punct Ratio
-            int turningPoints = 0;
-            for (int i = 1; i < (_RR.Count - 1); i++)
-            {
-               if (((_RR.At(i - 1) < _RR.At(i)) && (_RR.At(i + 1) < _RR.At(i))) || ((_RR.At(i - 1) > _RR.At(i)) && (_RR.At(i + 1) > _RR.At(i))))
-               {
-                   turningPoints++;
-               }
-            }
-            double tpr = turningPoints / ((2 * 30- 4) / 3);
-            if (tpr < 0.77 && tpr > 0.54)
-            {
-               tprD = false;
-            }
-            else
-            {
-               tprD = true;
-            }
-            
-            //RMSSD
-            double[] rmssd_vec = new double[_RR.Count - 1];
-            double rmssd = 0.0;
-            for (int i = 0; i < (_RR.Count - 1); i++)
-            {
-                rmssd_vec[i] = Math.Pow(_RR.At(i + 1) - _RR.At(i), 2);
-            }
-            rmssd = rmssd_vec.Sum();
-            rmssd = rmssd / (_RR.Count - 1);
-            rmssd = Math.Sqrt(rmssd);
-            if (rmssd > 0.1)
-            {
-                rmssdD = true;
-            }
-            else
-            {
-                rmssdD = false;
-            }
-
-            //Shannon Entrophy
             double[] histogram = new double[8];
             double dzielnik = 0.0;
             double maxRr = _RR.Maximum();
@@ -367,6 +263,66 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 if (a != 0)
                     se += (a * Math.Log10(a)) / (Math.Log10(0.125));
             }
+            return se;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="_RR"></param>
+        /// <returns></returns>
+        #endregion
+        double RMSSD(Vector<double> _RR)
+        {
+            double[] rmssd_vec = new double[_RR.Count - 1];
+            double rmssd = 0.0;
+            for (int i = 0; i < (_RR.Count - 1); i++)
+            {
+                rmssd_vec[i] = Math.Pow(_RR.At(i + 1) - _RR.At(i), 2);
+            }
+            rmssd = rmssd_vec.Sum();
+            rmssd = rmssd / (_RR.Count - 1);
+            rmssd = Math.Sqrt(rmssd);
+            return (rmssd = rmssd / _RR.Average());
+        }
+
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="_RR"></param>
+        /// <param name="fs"></param>
+        /// <returns></returns>
+        #endregion
+        bool detectAFStat(Vector<double> _RR, uint fs )
+        {
+           bool AF, tprD, seD, rmssdD;
+
+           //Turning Punct Ratio
+           tpr = TPR(_RR);
+           if (tpr < 0.77 && tpr > 0.54)
+           {
+              tprD = false;
+           }
+           else
+           {
+              tprD = true;
+           }
+
+           //RMSSD
+           rmssd = RMSSD(_RR);
+           if (rmssd > 0.1)
+           {
+               rmssdD = true;
+           }
+           else
+           {
+               rmssdD = false;
+           }
+           
+           //Shannon Entrophy
+           se = SE(_RR);
            if (se > 0.7)
            {
                seD = true;
@@ -390,8 +346,10 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="_RR"></param>
+        /// <param name="fs"></param>
+        /// <returns></returns>
         #endregion
-           
         bool detectAFPoin(Vector<double> _RR, uint fs)
         {
             bool AF = false;
@@ -504,12 +462,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return AF;
         }
 
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-
+   
         public class DataPoint
         {
             public double A { get; set; }
@@ -530,15 +483,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
         }
 
-        //List<DataPoint> _rawDataToCluster = new List<DataPoint>();
-        //List<DataPoint> _normalizedDataToCluster = new List<DataPoint>();
-        //List<DataPoint> _clusters = new List<DataPoint>();
-        //private int _numberOfClusters = 3;
-
         #region Documentation
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="Vector1"></param>
+        /// <param name="Vector2"></param>
+        /// <returns></returns>
         #endregion
 
         private List<DataPoint> InitilizeRawData(double[] Vector1, double[] Vector2)
@@ -558,6 +509,8 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="_rawDataToCluster"></param>
+        /// <returns></returns>
         #endregion
 
         private List<DataPoint> NormalizeData(List <DataPoint> _rawDataToCluster)
@@ -597,12 +550,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="_rawDataToCluster"></param>
+        /// <param name="_normalizedDataToCluster"></param>
+        /// <returns></returns>
         #endregion
-
         private Tuple<List<DataPoint>,List<DataPoint>> InitializeCentroids(List<DataPoint> _rawDataToCluster, List<DataPoint> _normalizedDataToCluster)
         {
-            //int _amount = 3;
-
             for (int i = 0; i < amountOfCluster; ++i)
             {
                 _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = i;
@@ -616,15 +569,18 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return result;
         }
 
+        List<DataPoint> _clusters = new List<DataPoint>();
+
         #region Documentation
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="_normalizedDataToCluster"></param>
+        /// <param name="_clusters"></param>
+        /// <returns></returns>
         #endregion
-        List<DataPoint> _clusters = new List<DataPoint>();
         private Tuple<bool, List<DataPoint>> UpdateDataPointMeans(List<DataPoint> _normalizedDataToCluster,List<DataPoint> _clusters)
         {
-           // List<DataPoint> _clusters = new List<DataPoint>();
             bool result_bool = new bool();
             if (EmptyCluster(_normalizedDataToCluster))
             {
@@ -663,8 +619,9 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         #endregion
-
         private bool EmptyCluster(List<DataPoint> data)
         {
             var emptyCluster =
@@ -681,13 +638,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
             return result;
         }
-        
+
         #region Documentation
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="dataPoint"></param>
+        /// <param name="mean"></param>
+        /// <returns></returns>
         #endregion
-
         private double ElucidanDistance(DataPoint dataPoint, DataPoint mean)
         {
             double _diffs = 0.0;
@@ -700,8 +659,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="_rawDataToCluster"></param>
+        /// <param name="_normalizedDataToCluster"></param>
+        /// <param name="_clusters"></param>
+        /// <returns></returns>
         #endregion
-
         private Tuple<bool, List<DataPoint>,List<DataPoint>> UpdateClusterMembership(List<DataPoint> _rawDataToCluster, List<DataPoint> _normalizedDataToCluster, List<DataPoint> _clusters)
         {
             bool changed = false;
@@ -732,8 +694,9 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="distances"></param>
+        /// <returns></returns>
         #endregion
-
         private int MinIndex(double[] distances)
         {
             int _indexOfMin = 0;
@@ -753,8 +716,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="_rawDataToCluster"></param>
+        /// <param name="_normalizedDataToCluster"></param>
+        /// <param name="_clusters"></param>
+        /// <returns></returns>
         #endregion
-
         public List<DataPoint> Cluster(List<DataPoint> _rawDataToCluster, List<DataPoint> _normalizedDataToCluster, List<DataPoint> _clusters)
         {
             bool _changed = true;
@@ -773,6 +739,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return _rawDataToCluster;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="_rawDataToCluster"></param>
+        /// <returns></returns>
+        #endregion
         private double SilhouetteCoefficient(List<DataPoint> _rawDataToCluster)
         {
             double SilhouetteCoeff = new double();
