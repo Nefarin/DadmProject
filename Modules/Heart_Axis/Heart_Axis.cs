@@ -62,7 +62,6 @@ namespace EKG_Project.Modules.Heart_Axis
         private string _firstSignalName; // nazwa odprowadzenia, które wybraliśmy jako główne przy obliczeniach
 
         /* Częstotliwość próbkowania sygnału */
-        //TODO:  2) w module Waves korzysta się z Basic_Data i ustawia pole Frequency, może stąd trzeba wziąć fs?
         //todo: wyświetl w konsoli sobie wartość Fs po przypisaniu
         private int _fs;
 
@@ -70,8 +69,8 @@ namespace EKG_Project.Modules.Heart_Axis
 
         private int[] _QArray;
         private int[] _SArray;
-        private int _Q; //uint??
-        private int _S; //uint??
+        private int _Q;
+        private int _S;
         
         /*Funkcje do GUI*/
 
@@ -106,7 +105,7 @@ namespace EKG_Project.Modules.Heart_Axis
                 string _analysisName = Params.AnalysisName;
                 InputECGBaselineWorker = new ECG_Baseline_Data_Worker(_analysisName);
 
-                InputECGBaselineWorker.Load(); // todo: czy to jest analogiczne
+                InputECGBaselineWorker.Load();
                 InputECGBaselineData = InputECGBaselineWorker.Data;
 
                 List<Tuple<string, Vector<double>>> allSignalsFiltered = InputECGBaselineData.SignalsFiltered;
@@ -142,7 +141,8 @@ namespace EKG_Project.Modules.Heart_Axis
                 else
                 {
                     // pozostały przypadek to taki, gdzie wszystkie są nullami - nie udało się wykryć żadnej pary odprowadzeń, wyrzucamy wyjątek
-                    throw (new Exception("Brak odpowiednich odprowadzen  w sygnale wejsciowym."));
+                    _ended = true;
+                    Aborted = true;
                 }
 
 
@@ -206,7 +206,8 @@ namespace EKG_Project.Modules.Heart_Axis
 
                 if ((Q == -1) || (S == -1) || (Q < S))
                 {
-                    throw new Exception();
+                    _ended = true;
+                    Aborted = true;
                 }
 
                 // wczytywanie częstotliwości próbkowania
@@ -215,7 +216,7 @@ namespace EKG_Project.Modules.Heart_Axis
                 InputBasicDataWorker.Load();
                 InputBasicData = InputBasicDataWorker.BasicData;
 
-                Fs = (int)InputBasicData.Frequency;// opcja druga - bierzemy to z BasicData, tam to jest na pewno
+                Fs = (int)InputBasicData.Frequency;
 
 
                 // dane wyjściowe - inicjalizacja
@@ -250,7 +251,12 @@ namespace EKG_Project.Modules.Heart_Axis
         {
 
             // todo: wstawić kolejne etapy obliczania osi serca
-       
+
+            double[] pseudo_tab = PseudoModule(Q, S, FirstSignal);
+            double[] fitting_parameters = LeastSquaresMethod(FirstSignal, Q, pseudo_tab, Fs);
+            int MaxOfPoly = MaxOfPolynomial(Q, fitting_parameters);
+            double[] amplitudes = ReadingAmplitudes(Lead_I, Lead_II, MaxOfPoly);
+            OutputData.HeartAxis = IandII(amplitudes);
 
             OutputWorker.Save(OutputData);
             _ended = true;
@@ -538,45 +544,68 @@ namespace EKG_Project.Modules.Heart_Axis
          
        
 
-        // tu można dać kod do testów
         /*
+        
         public static void Main()
         {
-            // TODO: tuta trzeba dopisać testy
 
-            // 1. Parametry dla modułu?
-            ECG_Baseline_Params param = new ECG_Baseline_Params();
-
-            // 2. Wczytanie plików?
-
-            //TempInput.setInputFilePath(@"C:\ścieżka.txt");
-            //TempInput.setOutputFilePath(@"C:\ścieżka.txt");
-            //Vector<double> ecg = TempInput.getSignal();
-
-            //TempInput.setInputFilePath(@"C:\ścieżka.txt");
-            //Vector<double> rpeaks = TempInput.getSignal();
-
-
-            // 3. Stworzenie obiketu modułu
+        
+            Heart_Axis_Params param = new Heart_Axis_Params("Analysis6");
+            //TestModule3_Params param = null;
             Heart_Axis testModule = new Heart_Axis();
-            //testModule.InitForTestsOnly(ecg, rpeaks, param);
-
-            // 4. Inicjalizacja danych wejściowych
             testModule.Init(param);
             while (true)
             {
-                //Console.WriteLine("Press key to continue.");
-                //Console.Read();
-
-                // todo: czy to podlega tej samej logice?
+                Console.WriteLine("Press key to continue.");
+                Console.Read();
                 if (testModule.Ended()) break;
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
+        
 
-        }*/
 
-    }
+        
+        // 1. Parametry dla modułu?
+        Heart_Axis_Params param = new Heart_Axis_Params("TestAnalysis");
+
+        // 2. Wczytanie plików?
+
+
+
+        // 3. Stworzenie obiketu modułu
+        Heart_Axis testModule = new Heart_Axis();
+        //testModule.InitForTestsOnly(ecg, rpeaks, param);
+
+
+        // 4. Inicjalizacja danych wejściowych
+        testModule.Init(param);
+        while (true)
+        {
+            //Console.WriteLine("Press key to continue.");
+            //Console.Read();
+
+            if (testModule.Ended()) break;
+
+            testModule.ProcessData();
+        }
+
+        // 4. Inicjalizacja danych wejściowych
+        testModule.Init(param);
+        while (true)
+        {
+            //Console.WriteLine("Press key to continue.");
+            //Console.Read();
+
+            // todo: czy to podlega tej samej logice?
+            if (testModule.Ended()) break;
+            Console.WriteLine(testModule.Progress());
+            testModule.ProcessData();
+        }
+        
+    }*/
+
+}
      
 }
  
