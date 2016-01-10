@@ -6,51 +6,10 @@ namespace EKG_Project.Modules.HRV2
 {
     public partial class HRV2 : IModule
     {
-        #region
 
-        #endregion
         private void Analyse()
         {
-            ;
-        }
-        private HRV2_Data Analyse(R_Peaks_Data RRIntervals)
-        {
-            HRV2_Data hrv2Data = new HRV2_Data();
-
-            int most_often_RR = 0;
-
-
-            hrv2Data.HistogramData = ;
-            return hrv2Data;
-        }
-
-        #region Documentation
-        /// <summary>
-        /// metoda testowa dla modułu
-        /// </summary>
-        /// <param name="args"></param>
-        /// 
-        #endregion
-        static void Main(string[] args)
-        {
-            DataSource data = null;//new DataSource(0.0078125, RRInterval); //nie wiem jak pobrac z r_peaks :(
-            ObservableCollection<Sample> samples = data.Samples;
-
-            foreach (Sample s in samples)
-            {
-                Console.WriteLine(s.ToString());
-            }
-            Console.ReadKey();
-        }
-
-        #region Documentation
-        /// <summary>
-        /// TODO - uzupełnić dokumentację konstruktora HRV2
-        /// </summary>
-        ///
-        #endregion
-        public HRV2()
-        {
+            //tu bd metody z histogram.cs, tinn.cs itd :)
         }
     }
 }
