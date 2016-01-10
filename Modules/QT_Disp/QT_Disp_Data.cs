@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.QT_Disp
 {
-    class QT_Disp_Data : ECG_Data
+    public class QT_Disp_Data : ECG_Data
     {
         private List<Tuple<String, double>> _qt_disp_local;
         private List<Tuple<String, double>> _qt_mean;
