@@ -11,32 +11,22 @@ namespace EKG_Project.Modules.T_Wave_Alt
 {
     class T_Wave_Alt_Data : ECG_Data
     {
-        private Vector<int> _t_end_Vec;
-        private Vector<double> _ecg;
+        private int[] _alternansIndexArray;
 
-        public T_Wave_Alt_Data() {}
-
-        public Vector<int> t_end_Vec
+        public T_Wave_Alt_Data()
         {
-            get
-            {
-                return _t_end_Vec;
-            }
-            set
-            {
-                _t_end_Vec = value;
-            }
+            _alternansIndexArray = new int[1000];
         }
 
-        public Vector<double> ecg
+        public int[] AlternansIndexArray
         {
             get
             {
-                return _ecg;
+                return _alternansIndexArray;
             }
             set
             {
-                _ecg = value;
+                _alternansIndexArray = value;
             }
         }
     }

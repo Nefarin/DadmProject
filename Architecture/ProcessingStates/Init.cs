@@ -1,4 +1,5 @@
-﻿namespace EKG_Project.Architecture.ProcessingStates
+﻿
+namespace EKG_Project.Architecture.ProcessingStates
 {
     #region Documentation
     /// <summary>
@@ -20,5 +21,6 @@
         {
             timeoutState = new Idle(5);
         }
+
     }
 }
