@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using MathNet.Numerics.Statistics;
 using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
 using MathNet.Numerics.LinearAlgebra;
@@ -27,6 +27,7 @@ namespace EKG_Project.Modules.HRV2
         private HRV2_Params _params;
 
         private Vector<double> _currentHistogram;
+        private int _currentBinAmout;
         private Vector<double> _currentPoincare;
 
         public void Abort()
@@ -92,11 +93,11 @@ namespace EKG_Project.Modules.HRV2
             {
 
                 Analyse();
-                OutputData.HistogramData.Add( new Tuple<string, Vector<double>>( InputData.RPeaks[_currentChannelIndex].Item1, _currentHistogram));
+                OutputData.HistogramData = new Histogram (_currentHistogram, _currentBinAmout);
                 Vector<double> rr_intervals_x = Vector<double>.Build.Dense(1);
                 Vector<double> rr_intervals_y = Vector<double>.Build.Dense(1);
                 PoincarePlot( rr_intervals_x,  rr_intervals_y);
-                OutputData.PoincarePlotData_x = new Tuple<string, Vector<double>>("X", rr_intervals_x);
+                OutputData.PoincarePlotData_x = new Tuple<string,Vector<double>>("X", rr_intervals_x);
                 OutputData.PoincarePlotData_y = new Tuple<string, Vector<double>>("Y", rr_intervals_y);
                 _currentChannelIndex++;
                 if (_currentChannelIndex < NumberOfChannels)
