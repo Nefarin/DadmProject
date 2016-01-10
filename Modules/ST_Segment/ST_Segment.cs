@@ -10,7 +10,10 @@ namespace EKG_Project.Modules.ST_Segment
     {
         public void Abort()
         {
-            throw new NotImplementedException();
+            private Basic_Data_Worker _inputWorker; //
+            private R_Peaks_Data_Worker _outputWorker;//
+
+           // throw new NotImplementedException();
         }
 
         public bool Ended()
@@ -20,11 +23,11 @@ namespace EKG_Project.Modules.ST_Segment
 
         public void Init(ModuleParams parameters)
         {
-            InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
+            InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName); //
 
 
-            InputWorkerRpeaks.Load();
-            InputDataRpeaks = InputWorkerRpeaks.Data;
+            InputWorkerRpeaks.Load(); //
+            InputDataRpeaks = InputWorkerRpeaks.Data; //
             //throw new NotImplementedException();
         }
 
