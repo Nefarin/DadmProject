@@ -25,7 +25,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             throw new NotImplementedException();
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
             throw new NotImplementedException();
         }

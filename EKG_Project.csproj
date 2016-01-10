@@ -115,19 +115,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="GUI\LoadFileDialogBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ModuleOptionDialogues\Dialogue_R_Peaks_Options.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ModuleOptionDialogues\Dialogue_Waves_Options.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ModuleOptionDialogues\NumericTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\ModulePanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\NewAnalysisDialogBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\PdfPathDialogBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -175,9 +183,12 @@
     <Compile Include="Architecture\Modules.cs" />
     <Compile Include="Architecture\ProcessingStates\Abort.cs" />
     <Compile Include="Architecture\ProcessingStates\AbortTest.cs" />
+    <Compile Include="Architecture\ProcessingStates\BeginAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\Idle.cs" />
     <Compile Include="Architecture\ProcessingStates\Init.cs" />
     <Compile Include="Architecture\ProcessingStates\IProcessingState.cs" />
+    <Compile Include="Architecture\ProcessingStates\NextAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\ProcessAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\TestState.cs" />
     <Compile Include="Architecture\TabContainer.cs" />
     <Compile Include="Architecture\Processing.cs" />
@@ -200,18 +211,24 @@
     <Compile Include="GUI\Flutter.xaml.cs">
       <DependentUpon>Flutter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\LoadFileDialogBox.xaml.cs">
-      <DependentUpon>LoadFileDialogBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GUI\ModuleOption.cs" />
+    <Compile Include="GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml.cs">
+      <DependentUpon>Dialogue_ECG_Baseline_Options.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ModuleOptionDialogues\Dialogue_R_Peaks_Options.xaml.cs">
+      <DependentUpon>Dialogue_R_Peaks_Options.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ModuleOptionDialogues\Dialogue_Waves_Options.xaml.cs">
+      <DependentUpon>Dialogue_Waves_Options.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ModuleOptionDialogues\NumericTextBox.xaml.cs">
+      <DependentUpon>NumericTextBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\ModulePanel.xaml.cs">
       <DependentUpon>ModulePanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\NewAnalysisDialogBox.xaml.cs">
       <DependentUpon>NewAnalysisDialogBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\PdfPathDialogBox.xaml.cs">
-      <DependentUpon>PdfPathDialogBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\R_peaks.xaml.cs">
       <DependentUpon>R_peaks.xaml</DependentUpon>
@@ -241,10 +258,27 @@
   <ItemGroup>
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
     <Compile Include="IO\ASCIIConverter.cs" />
+    <Compile Include="IO\Atrial_Fibr_Data_Worker.cs" />
+    <Compile Include="IO\Basic_Data_Worker.cs" />
+    <Compile Include="IO\DebugECGPath.cs" />
+    <Compile Include="IO\ECG_Baseline_Data_Worker.cs" />
+    <Compile Include="IO\ECG_Worker.cs" />
     <Compile Include="IO\FileLoader.cs" />
+    <Compile Include="IO\Flutter_Data_Worker.cs" />
+    <Compile Include="IO\Heart_Axis_Data_Worker.cs" />
+    <Compile Include="IO\Heart_Class_Data_Worker.cs" />
+    <Compile Include="IO\HRV1_Data_Worker.cs" />
+    <Compile Include="IO\HRV_DFA_Data_Worker.cs" />
     <Compile Include="IO\IECGConverter.cs" />
+    <Compile Include="IO\IECGPath.cs" />
+    <Compile Include="IO\IECG_Worker.cs" />
     <Compile Include="IO\MITBIHConverter.cs" />
+    <Compile Include="IO\QT_Disp_Data_Worker.cs" />
+    <Compile Include="IO\ReleaseECGPath.cs" />
+    <Compile Include="IO\R_Peaks_Data_Worker.cs" />
     <Compile Include="IO\TempInput.cs" />
+    <Compile Include="IO\TestModule3_Data_Worker.cs" />
+    <Compile Include="IO\Waves_Data_Worker.cs" />
     <Compile Include="IO\WFDBTest.cs" />
     <Compile Include="IO\XMLConverter.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
@@ -252,7 +286,6 @@
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Data.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Params.cs" />
     <Compile Include="Modules\Basic_Data.cs" />
-    <Compile Include="Modules\Class1.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Alg.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Data.cs" />
@@ -278,25 +311,23 @@
     <Compile Include="Modules\HRV1\HRV1_Alg.cs" />
     <Compile Include="Modules\HRV1\HRV1_Data.cs" />
     <Compile Include="Modules\HRV1\HRV1_Params.cs" />
-    <Compile Include="Modules\HRV2\Converters.cs" />
     <Compile Include="Modules\HRV2\HRV2.cs" />
     <Compile Include="Modules\HRV2\HRV2_Alg.cs" />
     <Compile Include="Modules\HRV2\HRV2_Data.cs" />
     <Compile Include="Modules\HRV2\HRV2_Params.cs" />
     <Compile Include="Modules\HRV2\SampleDataSource.cs" />
+    <Compile Include="Modules\HRV2\Tinn.cs" />
+    <Compile Include="Modules\HRV2\TriangleIndex.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Alg.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Data.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
     <Compile Include="Modules\IModule.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
-    <Compile Include="Modules\QT_Disp\QTCalculation.cs" />
-    <Compile Include="Modules\QT_Disp\QTIntervalStatistics.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Data.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Params.cs" />
-    <Compile Include="Modules\QT_Disp\TWave.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Alg.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Data.cs" />
@@ -316,6 +347,10 @@
     <Compile Include="Modules\TestModule2\Test_Module2_Alg.cs" />
     <Compile Include="Modules\TestModule2\Test_Module2.cs" />
     <Compile Include="Modules\TestModule2\Test_Module2_Param.cs" />
+    <Compile Include="Modules\TestModule3\TestModule3.cs" />
+    <Compile Include="Modules\TestModule3\TestModule3_Alg.cs" />
+    <Compile Include="Modules\TestModule3\TestModule3_Data.cs" />
+    <Compile Include="Modules\TestModule3\TestModule3_Params.cs" />
     <Compile Include="Modules\TestModule\TestModule.cs" />
     <Compile Include="Modules\TestModule\TestModule_Params.cs" />
     <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt.cs" />
@@ -365,23 +400,27 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
-    <Resource Include="Modules\HRV2\nsr001.txt" />
+    <Resource Include="IO\temp\Analysis6_Data.xml" />
+    <Resource Include="IO\temp\Analysis6_TestModule3.xml" />
     <Resource Include="IO\data\2.xml" />
     <Resource Include="IO\data\3.xml" />
     <Resource Include="IO\data\5.xml" />
     <Resource Include="IO\data\6.xml" />
     <Resource Include="IO\data\8.xml" />
     <Resource Include="GUI\baseline.png" />
-    <Resource Include="GUI\images\addNewAnalysis.png" />
-    <Resource Include="GUI\images\backward.png" />
-    <Resource Include="GUI\images\close.png" />
-    <Resource Include="GUI\images\forward.png" />
-    <Resource Include="GUI\images\loadfile.png" />
-    <Resource Include="GUI\images\pdf.png" />
-    <Resource Include="GUI\images\Play.png" />
-    <Resource Include="GUI\images\save.png" />
+    <Resource Include="GUI\Images\addNewAnalysis.png" />
+    <Resource Include="GUI\Images\backward.png" />
+    <Resource Include="GUI\Images\close.png" />
+    <Resource Include="GUI\Images\forward.png" />
+    <Resource Include="GUI\Images\loadfile.png" />
+    <Resource Include="GUI\Images\pdf.png" />
+    <Resource Include="GUI\Images\Play.png" />
+    <Resource Include="GUI\Images\save.png" />
     <Resource Include="Matlab\TextFile1.txt" />
     <Resource Include="Resources\TextFile1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GUI\Converters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

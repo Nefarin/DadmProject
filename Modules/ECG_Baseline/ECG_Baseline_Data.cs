@@ -7,12 +7,14 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.ECG_Baseline
 {
-    class ECG_Baseline_Data : ECG_Data
+    public class ECG_Baseline_Data : ECG_Data
     {
-        private List<Tuple<string, Vector<double>>> _signalsFiltered;   //taka konwencja -> jak Wam bardzo przeszkadza 
-                                                                        //mozemy pomyslec nad zmiana
+        private List<Tuple<string, Vector<double>>> _signalsFiltered;    
 
-        public ECG_Baseline_Data() {}
+        public ECG_Baseline_Data()
+        {
+            this.SignalsFiltered = new List<Tuple<string, Vector<double>>>();
+        }
 
         public List<Tuple<string, Vector<double>>> SignalsFiltered
         {
@@ -25,5 +27,6 @@ namespace EKG_Project.Modules.ECG_Baseline
                 _signalsFiltered = value;
             }
         }
+
     }
 }
