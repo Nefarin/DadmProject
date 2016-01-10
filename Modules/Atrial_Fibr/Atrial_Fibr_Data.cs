@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EKG_Project.IO;
 
 namespace EKG_Project.Modules.Atrial_Fibr
 {
-    public class Atrial_Fibr_Data : ECG_Data
+   public class Atrial_Fibr_Data : ECG_Data
     {
         private List<Tuple<bool, int[],string, string>> _afDetection;   
-        public Atrial_Fibr_Data() { }
 
         public List<Tuple<bool, int[], string, string>> AfDetection
         {
@@ -21,6 +18,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
             {
                 _afDetection = value;
             }
+        }
+
+        public Atrial_Fibr_Data()
+        {
+            AfDetection = new List<Tuple<bool, int[], string, string>>();
         }
     }
 }
