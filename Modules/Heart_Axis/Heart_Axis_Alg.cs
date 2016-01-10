@@ -77,24 +77,24 @@ namespace EKG_Project.Modules.Heart_Axis
             int order = 2;
             double[] bestFitCoefficients = Fit.Polynomial(indexes, partSignal, order);
             return bestFitCoefficients;
-        }
-        
+        }       
 
 
         /*Max of Polynomial*/
-        private double MaxOfPolynomial(int Q, double [] fitting_parameters)
+        private int MaxOfPolynomial(int Q, double [] fitting_parameters)
         {
-            double maxOfPoly =(-fitting_parameters[1])/(2*fitting_parameters[0]);       // x = -b/2a
+            double dMaxOfPoly =(-fitting_parameters[1])/(2*fitting_parameters[0]);       // x = -b/2a
+            int maxOfPoly = (int)Math.Round(dMaxOfPoly, MidpointRounding.AwayFromZero);
             return maxOfPoly;
         }
   
 
         /*Reading Amplitudes*/
-        private double[] ReadingAmplitudes(double[] FirstLead, double[] SecondLead, int uMaxOfPoly)
+        private double[] ReadingAmplitudes(double[] FirstLead, double[] SecondLead, int MaxOfPoly)
             {
             double[] amplitudes = new double[2];
-            amplitudes[0] = FirstLead[uMaxOfPoly];
-            amplitudes[1] = SecondLead[uMaxOfPoly];
+            amplitudes[0] = FirstLead[MaxOfPoly];
+            amplitudes[1] = SecondLead[MaxOfPoly];
             return amplitudes;
             }
 
