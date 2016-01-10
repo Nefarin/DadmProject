@@ -18,27 +18,66 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main(string[] args)
         {
+            HRV_DFA dfa = new HRV_DFA();
 
             //read data from file
             TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\DADM\RR_100.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
-            
-            HRV_DFA dfa = new HRV_DFA();
 
+            // DFA box parameters
             int step = 50;
             int start = 50;
             int stop = 50000; 
 
-            double[] boxRanged = Generate.LinearRange(start, step, stop);
-            Vector<double> box = Vector<double>.Build.DenseOfArray(boxRanged);
+            // DFA - fluctuation funcion computation
+            double[] boxRanged = Generate.LinearRange(start, step, stop);       // set of box sizes
+            Vector<double> box = Vector<double>.Build.DenseOfArray(boxRanged);  // n
+            Vector<double> vectorFn = dfa.DfaFluctuationComputation(box, sig);  // F(n)
 
-            Console.WriteLine(fs);
-            Console.WriteLine(box);
+            // Convert to logarytmic scale
+            Vector<double> logn = box.PointwiseLog();
+            Vector<double> logFn = vectorFn.PointwiseLog();
+
+            // short-range:long-range fitting bending data proportion
+            double proportion = 0.33;
+            int q = Convert.ToInt32(logn.Count() * proportion);
+            // short - range correlations
+            Vector<double> logn1 = logn.SubVector(0, q);
+            Vector<double> logFn1 = logFn.SubVector(0, q);
+            double[] logn1a = logn1.ToArray();
+            double[] logFn1a = logFn1.ToArray();
+            double[] p1 = Fit.Polynomial(logn1a, logFn1a, 1);
+
+            Vector<double> fittedFn1 = Vector<double>.Build.Dense(logn1.Count());
+            Func<double, double> fitting1 = Fit.PolynomialFunc(logn1a, logFn1a, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
+            //fitting curve obtaining for short-range correlations
+            for (int k = 0; k < logn1.Count(); k++)
+            {
+                fittedFn1[k] = fitting1(logn1a[k]);
+            }
+            //long - range correlations
+            Vector<double> logn2 = logn.SubVector(q, logn.Count());
+            Vector<double> logFn2 = logFn.SubVector(q, logn.Count() );
+            double[] logn2a = logn2.ToArray();
+            double[] logFn2a = logFn2.ToArray();
+            double[] p2 = Fit.Polynomial(logn2a, logFn2a, 1);
+
+            Vector<double> fittedFn2 = Vector<double>.Build.Dense(logn2.Count());
+            Func<double, double> fitting2 = Fit.PolynomialFunc(logn2a, logFn2a, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
+            //fitting curve obtaining for short-range correlations
+            for (int k = 0; k < logn1.Count(); k++)
+            {
+                fittedFn2[k] = fitting2(logn2a[k]);
+            }
+
+
+            Console.WriteLine(fittedFn1.ToString());
+            Console.WriteLine(fittedFn2.ToString());
             Console.ReadKey();
 
         }
-
+     
         // METHODS
         //function that integrates signal
         public Vector<double> Integrate(Vector<double> signal_rr)
@@ -77,13 +116,13 @@ namespace EKG_Project.Modules.HRV_DFA
         // Method that returs vector F(n) of Fluctuation Analysis results 
         public Vector<double> DfaFluctuationComputation(Vector<double> dfabox, Vector<double> signal )
         {
+            HRV_DFA dfaFn = new HRV_DFA();
             int box_length = dfabox.Count();    // number of all boxes
             int sig_length = signal.Count();    // signal length
             Vector<double> fn = Vector<double>.Build.Dense(box_length);
 
             for (int i = 0; i < box_length; i++)
             {
-                HRV_DFA dfaFn = new HRV_DFA();
                 double boxVal = dfabox[i];
                 double box_number = sig_length / boxVal;   // number of boxes
                 double box_qtyD = box_number * boxVal;      // quantity of samples in boxes
@@ -92,14 +131,15 @@ namespace EKG_Project.Modules.HRV_DFA
 
                 // Signal integration
                 Vector<double> yk = dfaFn.Integrate(signal);
+                
 
-                for (int j = 0; j < box_number; j++)
+                for (int j = 0; j < boxValint; j++)
                 {
                     // Least-Square Fitting
                     int ykIndex = j * boxValint;
-                    int ykCount = (j + 1) * boxValint - ykIndex;
+                    int ykCount = (sig_length - boxValint) - ykIndex ;
                     double[] x = Generate.LinearRange(1, boxValint);
-                    Vector<double> y = yk.SubVector(ykIndex, ykCount);
+                    Vector<double> y = yk.SubVector(ykIndex, boxValint);          // FIIIXXXXX IIIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     double[] y1 = y.ToArray();
                     double[] p = Fit.Polynomial(x, y1, 1);     //fitting coefficients
                     // Fitting method: NormalEquations                                         
