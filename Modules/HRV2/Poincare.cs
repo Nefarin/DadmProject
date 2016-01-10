@@ -15,9 +15,6 @@ namespace EKG_Project.Modules.HRV2
             Vector<double> RRIntervaals = InputData.RPeaks[_currentChannelIndex].Item2;
             rr_intervals_x = RRIntervaals.Subtract(RRIntervaals[0]);
             rr_intervals_y = RRIntervaals.Subtract(RRIntervaals.Last());
-            
-            double SD1 = getStandardDeviation(rr_intervals_x.Subtract(rr_intervals_y)) / Math.Sqrt(2);
-            double SD2 = getStandardDeviation(rr_intervals_x.Add(rr_intervals_y)) / Math.Sqrt(2);
         }
 
         private double getStandardDeviation(Vector<double> dataVector)

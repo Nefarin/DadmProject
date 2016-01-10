@@ -14,10 +14,10 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        double makeTinn()
+        double makeTinn(Vector<double> RRIntervals)
         {
-            Vector<double> RRIntervaals = InputData.RPeaks[_currentChannelIndex].Item2;
-            double tinn = (RRIntervaals.Max() - RRIntervaals.Min());
+            RRIntervals = InputData.RPeaks[_currentChannelIndex].Item2;
+            double tinn = (RRIntervals.Max() - RRIntervals.Min());
             return tinn;
         }
     }

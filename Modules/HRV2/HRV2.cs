@@ -92,12 +92,12 @@ namespace EKG_Project.Modules.HRV2
             if (channel < NumberOfChannels)
             {
 
-                Analyse();
+                Analyse(InputData.RPeaks[_currentChannelIndex].Item2);
                 OutputData.HistogramData = new Histogram (_currentHistogram, _currentBinAmout);
                 Vector<double> rr_intervals_x = Vector<double>.Build.Dense(1);
                 Vector<double> rr_intervals_y = Vector<double>.Build.Dense(1);
                 PoincarePlot( rr_intervals_x,  rr_intervals_y);
-                OutputData.PoincarePlotData_x = new Tuple<string,Vector<double>>("X", rr_intervals_x);
+                OutputData.PoincarePlotData_x = new Tuple<string, Vector<double>>("X", rr_intervals_x);
                 OutputData.PoincarePlotData_y = new Tuple<string, Vector<double>>("Y", rr_intervals_y);
                 _currentChannelIndex++;
                 if (_currentChannelIndex < NumberOfChannels)
