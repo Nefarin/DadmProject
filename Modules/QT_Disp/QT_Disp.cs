@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.IO;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.Waves;
@@ -14,6 +15,14 @@ namespace EKG_Project.Modules.QT_Disp
     {
         private bool _ended;
         private bool _aborted;
+
+        private int _currentChannelIndex;
+        private int _currentChannelLength;
+        private int _samplesProcessed;
+        private int _numberOfChannels;
+
+        int step = 0;
+        int R_Peak_step = 0;
 
         //input workers
         private ECG_Baseline_Data_Worker _inputECGBaselineWorker;
@@ -32,8 +41,11 @@ namespace EKG_Project.Modules.QT_Disp
 
         //output data
         private QT_Disp_Data _outputData;
-       
+
         private QT_Disp_Params _params;
+
+        private Vector<double> _currentVector;
+       
 
         public void Abort()
         {
@@ -75,25 +87,71 @@ namespace EKG_Project.Modules.QT_Disp
                 OutputWorker.Load();
                 OutputData = new QT_Disp_Data();
 
-
-
+                _currentChannelIndex = 0;
+                _samplesProcessed = 0;
+                NumberOfChannels = InputECGBaselineData.SignalsFiltered.Count;
+                _currentChannelLength = InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
+                _currentVector = Vector<double>.Build.Dense(_currentChannelLength);
+                step = (int) InputRPeaksData.RPeaks[_currentChannelIndex].Item2[R_Peak_step];
+                TODoInInit(InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.TEnds[_currentChannelIndex].Item2, 
+                    InputWavesData.QRSEnds[_currentChannelIndex].Item2, InputRPeaksData.RPeaks[_currentChannelIndex].Item2, 
+                    Params.TEndMethod, Params.QTMethod, InputBasicData.Frequency);
             }
             
         }
 
         public void ProcessData()
         {
-            throw new NotImplementedException();
+            if (Runnable()) processData();
+            else _ended = true;
         }
 
         public double Progress()
         {
-            throw new NotImplementedException();
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
         }
 
         public bool Runnable()
         {
-            throw new NotImplementedException();
+            return Params != null;
+        }
+        private void processData()
+        {
+            int channel = _currentChannelIndex;
+            int startIndex = _samplesProcessed;
+            if (channel < NumberOfChannels)
+            {
+                if (startIndex + step > _currentChannelLength)
+                {
+                    OutputData.QT_mean.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getMean()));
+                    OutputData.QT_disp_local.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getLocal()));
+                    OutputData.QT_std.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getStd()));
+                    _currentChannelIndex++;
+                    if (_currentChannelIndex < NumberOfChannels)
+                    {
+                        DeleteQT_Intervals();
+                        _samplesProcessed = 0;
+                        _currentChannelLength = InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
+                        _currentVector = Vector<double>.Build.Dense(_currentChannelLength);
+                    }
+                }
+                else
+                {
+                    _currentVector = InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, step);
+                    ToDoInProccessData(_currentVector, R_Peak_step);
+                    _samplesProcessed = startIndex + step;
+                }
+            }
+            else
+            {
+                OutputData.QT_disp_global = CalculateQT_Disp(NumberOfChannels);
+                OutputWorker.Save(OutputData);
+                _ended = true;
+            }
+            R_Peak_step += 1;
+            step = (int)InputRPeaksData.RPeaks[_currentChannelIndex].Item2[R_Peak_step] - step;
+            
+
         }
         //Getters and Setters
         public bool Aborted
@@ -105,6 +163,17 @@ namespace EKG_Project.Modules.QT_Disp
             set
             {
                 _aborted = value;
+            }
+        }
+        public int NumberOfChannels
+        {
+            get
+            {
+                return _numberOfChannels;
+            }
+            set
+            {
+                _numberOfChannels = value;
             }
         }
         //input workers
@@ -154,7 +223,7 @@ namespace EKG_Project.Modules.QT_Disp
         }
         
         //output worker
-        private QT_Disp_Data_Worker OutputWorker
+        public QT_Disp_Data_Worker OutputWorker
         {
             get
             {
@@ -221,11 +290,6 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 _outputData = value;
             }
-
-            
-
-
-
         }
             
         public QT_Disp_Params Params
