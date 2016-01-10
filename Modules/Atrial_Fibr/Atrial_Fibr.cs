@@ -55,15 +55,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
             else
             {
                 _ended = false;
-                InputWorker_basic = new Basic_Data_Worker();
+                InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
                 InputWorker_basic.Load();
                 InputData_basic = InputWorker_basic.BasicData;
 
-                InputRpeaksWorker = new R_Peaks_Data_Worker();
+                InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
                 InputRpeaksWorker.Load();
                 InputRpeaksData = InputRpeaksWorker.Data;
 
-                OutputWorker = new Atrial_Fibr_Data_Worker();
+                OutputWorker = new Atrial_Fibr_Data_Worker(Params.AnalysisName);
                 OutputData = new Atrial_Fibr_Data();
 
                 _currentChannelIndex = 0;
@@ -219,8 +219,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         public static void Main()
         {
-            //Atrial_Fibr_Params param = new Atrial_Fibr_Params("Analysis6"); // "Analysis6");
-            Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC);
+            Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC, "Analysis1");
 
             Atrial_Fibr testModule = new Atrial_Fibr();
             testModule.Init(param);

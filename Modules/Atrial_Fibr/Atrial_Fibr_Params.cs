@@ -10,21 +10,28 @@ namespace EKG_Project.Modules.Atrial_Fibr
     public class Atrial_Fibr_Params : ModuleParams
     {
         private Detect_Method _method;
-      
+        private string _analysisName;
+
         public Detect_Method Method
         {
             get { return _method; }
             set { _method = value; }
         }
-
-        public Atrial_Fibr_Params(Detect_Method method)
+        public string AnalysisName
+        {
+            get { return _analysisName; }
+            set { _analysisName = value; }
+        }
+        public Atrial_Fibr_Params(Detect_Method method, string analysisName)
         {
             this.Method = method;
+            this.AnalysisName = analysisName;
         }
 
         public Atrial_Fibr_Params()
         {
             this.Method = Detect_Method.STATISTIC;
+            this.AnalysisName = "";
         }
 
     }
