@@ -51,8 +51,8 @@ namespace EKG_Project.Modules.ST_Segment
             int[] finalShapes = new int[signal.Count()];
             for (int i = 0; i < signal.Count(); ++i)
             {
-                double tJ = tQRS_ends[i] + 20;
-                double tST = tQRS_ends[i] + 35;
+                long tJ = tQRS_ends[i] + 20;
+                long tST = tQRS_ends[i] + 35;
                 result.tJs.Add(tJ);
                 result.tSTs.Add(tST);
                 int tADD = 0;
@@ -73,14 +73,14 @@ namespace EKG_Project.Modules.ST_Segment
                     tADD = 60;
                 }
                 long tJX = tQRS_onset[i] + tADD;
-                int offset = war_tJX[i] - war_tQRS_onset[i];
+                int offset = (int)(signal[(int)tJX] - signal[(int)tQRS_onset[i]]);
                 double tTE = tST;
-                double a = (war_tTE[i] - war_tJ[i]) / (tTE - tJ);
-                double b = (war_tJ[i] * tTE - war_tTE[i] * tJ) / (tTE - tJ);
+                double a = (signal[(int)tTE] - signal[(int)tJ]) / (tTE - tJ);
+                double b = (signal[(int)tJ] * tTE - signal[(int)tTE] * tJ) / (tTE - tJ);
                 int shape = 0;
                 for (double time = tJ; time < tTE; time += 1.0)
                 {
-                    double distance = (Math.Abs(a * time + war_time + b)) / (Math.Sqrt(1 + a * a));
+                    double distance = (Math.Abs(a * time + signal[i] + b)) / (Math.Sqrt(1 + a * a));
                     if (distance > 0.15)
                     {
                         ++shape;
@@ -105,9 +105,11 @@ namespace EKG_Project.Modules.ST_Segment
                 {
                     int pointsBeneath = 0;
                     int pointsAbove = 0;
+                    int allPoints = 0;
                     for (double time = tJ; time < tTE; time += 1.0)
                     {
-                        if (war_time > a * time + b)
+                        ++allPoints;
+                        if (signal[i] > a * time + b)
                         {
                             ++pointsAbove;
                         }
@@ -116,11 +118,11 @@ namespace EKG_Project.Modules.ST_Segment
                             ++pointsBeneath;
                         }
                     }
-                    if (pointsAbove / allPoints > 0.7)
+                    if ((double)pointsAbove / (double)allPoints > 0.7)
                     {
                         finalShapes[i] = 2;
                     }
-                    else if (pointsBeneath / allPoints > 0.7)
+                    else if ((double)pointsBeneath / (double)allPoints > 0.7)
                     {
                         finalShapes[i] = 1;
                     }
@@ -158,5 +160,5 @@ namespace EKG_Project.Modules.ST_Segment
 
     }
 }
-}
+
 

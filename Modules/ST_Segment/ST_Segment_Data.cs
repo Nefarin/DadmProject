@@ -11,12 +11,12 @@ namespace EKG_Project.Modules.ST_Segment
     {
         public StAnalysisResult()
         {
-            tJs = new List<int>();
-            tSTs = new List<int>();
+            tJs = new List<long>();
+            tSTs = new List<long>();
         }
 
-        public List<int> tJs { get; set; }
-        public List<int> tSTs { get; set; }
+        public List<long> tJs { get; set; }
+        public List<long> tSTs { get; set; }
         public int ConcaveCurves { get; set; }
         public int ConvexCurves { get; set; }
         public int IncreasingLines { get; set; }
@@ -24,6 +24,7 @@ namespace EKG_Project.Modules.ST_Segment
         public int DecreasingLines { get; set; }
     }
 }
+
 
 
 
