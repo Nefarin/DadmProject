@@ -14,7 +14,7 @@ namespace EKG_Project.IO
     public class Atrial_Fibr_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName;
         private Atrial_Fibr_Data _data;
 
         public Atrial_Fibr_Data Data
@@ -70,7 +70,7 @@ namespace EKG_Project.IO
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
 
-                List<Tuple<bool, int[], string, string>> afDetection = basicData.AfDetection;
+                List<Tuple<bool, Vector<double>, string, string>> afDetection = basicData.AfDetection;
                 foreach (var tuple in afDetection)
                 {
                     XmlElement detectedAF = file.CreateElement(string.Empty, "detectedAF", string.Empty);
@@ -115,6 +115,7 @@ namespace EKG_Project.IO
         public void Load()
         {
             Atrial_Fibr_Data basicData = new Atrial_Fibr_Data();
+            XMLConverter converter = new XMLConverter(analysisName);
 
             XmlDocument file = new XmlDocument();
             string fileName = analysisName + "_Data.xml";
@@ -129,7 +130,7 @@ namespace EKG_Project.IO
             {
                 if (module.Attributes["name"].Value == moduleName)
                 {
-                    List<Tuple<bool, int[], string, string>> AfDetections = new List<Tuple<bool, int[], string, string>>();
+                    List<Tuple<bool, Vector<double>, string, string>> AfDetections = new List<Tuple<bool, Vector<double>, string, string>>();
                     XmlNodeList detectedAFs = module.SelectNodes("detectedAF");
                     foreach (XmlNode detectedAF in detectedAFs)
                     {
@@ -139,10 +140,7 @@ namespace EKG_Project.IO
 
                         XmlNode detectedPoints = detectedAF["detectedPoints"];
                         string readDetectedPoints = detectedPoints.InnerText;
-                        int[] convertedDetectedPoints = readDetectedPoints
-                                                   .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                                                   .Select(point => int.Parse(point))
-                                                   .ToArray();
+                        Vector<double> convertedDetectedPoints = converter.stringToVector(readDetectedPoints);
 
                         XmlNode detectedS = detectedAF["detectedS"];
                         string readDetectedS = detectedS.InnerText;
@@ -150,7 +148,7 @@ namespace EKG_Project.IO
                         XmlNode timeofAF = detectedAF["timeofAF"];
                         string readTimeofAF = timeofAF.InnerText;
 
-                        Tuple<bool, int[], string, string> readDetectedAF = Tuple.Create(convertedDetected, convertedDetectedPoints, readDetectedS, readTimeofAF);
+                        Tuple<bool, Vector<double>, string, string> readDetectedAF = Tuple.Create(convertedDetected, convertedDetectedPoints, readDetectedS, readTimeofAF);
                         AfDetections.Add(readDetectedAF);
                     }
                     basicData.AfDetection = AfDetections;
