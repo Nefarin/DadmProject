@@ -13,15 +13,30 @@ namespace EKG_Project.Modules.QT_Disp
 {
     public partial class QT_Disp : IModule
     {
-        List<int> QRS_onset = new List<int>();          //to do in init
-        List<int> T_End_Global = new List<int>();       //to do in init
-        List<int> QRS_End = new List<int>();            //to do in init
+        List<int> QRS_onset;                            //to do in init
+        List<int> T_End_Global;                         //to do in init
+        List<int> QRS_End;                              //to do in init
         Vector<double> R_Peaks;                         //to do in init
         T_End_Method T_End_method;                      //to do in init
         QT_Calc_Method QT_Calc_method;                  //to do in init
         uint Fs;                                        //to do in init
         List<double> QT_intervals;                      //to do in processData
+        List<int> T_End_local;                          //to do in processData
         List<List<double>> AllQT_Intervals;             //to do after change a channel
+        public QT_Disp()
+        {
+            QRS_onset = new List<int>();
+            T_End_Global = new List<int>();
+            QRS_End = new List<int>();
+            R_Peaks = Vector<double>.Build.Dense(1);
+            T_End_method = new T_End_Method();
+            QT_Calc_method = new QT_Calc_Method();
+            Fs = new uint();
+            QT_intervals = new List<double>();
+            AllQT_Intervals = new List<List<double>>();
+            T_End_local = new List<int>();
+
+        }
 
         public void TODoInInit(List<int>QRS_Onset,List<int> T_End_Global,List<int> QRS_End, Vector<double> R_Peaks, T_End_Method T_End_method,QT_Calc_Method QT_Calc_method,uint Fs)
         {
@@ -33,14 +48,20 @@ namespace EKG_Project.Modules.QT_Disp
             this.QT_Calc_method = QT_Calc_method;
             this.Fs = Fs;
         }
-        public void ToDoInProccessData(Vector<double> samples,int index)
+        public int ToDoInProccessData(Vector<double> samples,int index)
         {
-            double[] R_peaks = new double[2];
-            R_peaks[0] = R_Peaks[index];
-            R_peaks[1] = R_Peaks[index + 1];
-            Test data = new Test(QRS_onset.ElementAt(index), QRS_End.ElementAt(index), T_End_Global.ElementAt(index), samples, QT_Calc_method, T_End_method, Fs, R_peaks);
-            this.QT_intervals.Add(data.Calc_QT_Interval());
-
+            int T_End = 0;
+            if(index < (R_Peaks.Count - 2))
+            {
+                double[] R_peaks = new double[2];
+                R_peaks[0] = R_Peaks[index];
+                R_peaks[1] = R_Peaks[index + 1];
+                Test data = new Test(QRS_onset.ElementAt(index), QRS_End.ElementAt(index), T_End_Global.ElementAt(index), samples, QT_Calc_method, T_End_method, Fs, R_peaks);
+                this.QT_intervals.Add(data.Calc_QT_Interval());
+                this.T_End_local.Add(data.FindT_End());
+                T_End = data.FindT_End();
+            }
+            return T_End;
         }
         public double getMean()
         {
@@ -127,41 +148,6 @@ namespace EKG_Project.Modules.QT_Disp
                 AllQT_Intervals = value;
             }
         }
-
-        static void Main()
-        {
-
-            // Console.WriteLine("Test");
-
-
-            ////TWave testes - begin
-            //TempInput.setInputFilePath("D:\\Dadm_nowy\\EKG.txt");
-            //Vector<double> signalfile = TempInput.getSignal();
-            //List<Tuple<String, Vector<double>>> input = new List<Tuple<string, Vector<double>>>();
-            //input.Add(Tuple.Create("My drain", signalfile));            
-            //TWave signal = new TWave(input);
-            ////here insert a breakpoint          
-            //List<Tuple<String,List<int>>> wynik = signal.ExecuteTWave();
-            ////  TWave testes - end
-           
-            ////QTCalulation testes - begin
-            //QTCalculation wyniki = new QTCalculation();
-            ////here insert a breakpoint 
-            //wyniki.setOutput();
-            //Console.WriteLine(wyniki.meanQTInterval.ElementAt(0).Item2);
-            //Console.WriteLine(wyniki.meanQTInterval.ElementAt(1).Item2);
-
-            //Console.WriteLine(wyniki.stdQTInterval.ElementAt(0).Item2);
-            //Console.WriteLine(wyniki.stdQTInterval.ElementAt(1).Item2);
-
-            //Console.WriteLine(wyniki.localQTdisp.ElementAt(0).Item2);
-            //Console.WriteLine(wyniki.localQTdisp.ElementAt(1).Item2);
-            ////QTCalculation testes - end
-            //Console.ReadKey();
-
-        }    
-
-
     }
     //It was writen but not tested, also there is not any comments
     //I get to know about processData asumptions on Saturday 09.01.16
@@ -198,7 +184,7 @@ namespace EKG_Project.Modules.QT_Disp
             int MaxSlope = 0;
             if (QRS_End != -1 && T_End_Global != -1)
             {
-                if (samples.ElementAt((int)R_Peak.ElementAt(1)) > 0)
+                if (samples.ElementAt((int)R_Peak.ElementAt(0)) > 0)
                 {
                     T_Max = samples.SubVector(QRS_End, T_End_Global - QRS_End).MaximumIndex() + QRS_End;
                 }

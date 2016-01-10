@@ -45,6 +45,8 @@ namespace EKG_Project.Modules.QT_Disp
         private QT_Disp_Params _params;
 
         private Vector<double> _currentVector;
+        private List<Tuple<string, List<int>>> _t_end_loacl;
+        private List<int> _t_end_index;
        
 
         public void Abort()
@@ -123,14 +125,19 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 if (startIndex + step > _currentChannelLength)
                 {
+                    int[] temp = new int[R_Peak_step];
+                    T_End_Index.CopyTo(temp);
                     OutputData.QT_mean.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getMean()));
                     OutputData.QT_disp_local.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getLocal()));
                     OutputData.QT_std.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getStd()));
-                    _currentChannelIndex++;
+                    OutputData.T_End_Local.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, temp.ToList()));
+                    _currentChannelIndex++;                   
                     if (_currentChannelIndex < NumberOfChannels)
                     {
+                        T_End_Index.Clear();
                         DeleteQT_Intervals();
                         _samplesProcessed = 0;
+                        R_Peak_step = 0;
                         _currentChannelLength = InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
                         _currentVector = Vector<double>.Build.Dense(_currentChannelLength);
                     }
@@ -138,7 +145,8 @@ namespace EKG_Project.Modules.QT_Disp
                 else
                 {
                     _currentVector = InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, step);
-                    ToDoInProccessData(_currentVector, R_Peak_step);
+
+                    T_End_Index.Add(ToDoInProccessData(_currentVector, R_Peak_step));
                     _samplesProcessed = startIndex + step;
                 }
             }
@@ -176,6 +184,30 @@ namespace EKG_Project.Modules.QT_Disp
                 _numberOfChannels = value;
             }
         }
+        public List<Tuple<string, List<int>>> T_End_Local
+        {
+            get
+            {
+                return _t_end_loacl;
+            }
+            set
+            {
+                _t_end_loacl = value;
+            }
+        }
+        public List<int> T_End_Index
+        {
+            get
+            {
+                return _t_end_index;
+            }
+            set
+            {
+                _t_end_index = value;
+            }        
+        }
+       
+
         //input workers
         public ECG_Baseline_Data_Worker InputECGBaselineWorker
         {
@@ -303,6 +335,23 @@ namespace EKG_Project.Modules.QT_Disp
                 _params = value;
             }
         }
+        public static void Main()
+        {
+            QT_Disp_Params param = new QT_Disp_Params();
+            QT_Disp testModule = new QT_Disp();
+            testModule.Init(param);
+            while (true)
+            {
+                Console.WriteLine("Press key to continue...");
+                Console.ReadKey();
+                if (testModule.Ended()) break;
+                Console.WriteLine(testModule.Progress());
+                testModule.ProcessData();
+            }
+
+        }
+        
+        
         
     }
 }
