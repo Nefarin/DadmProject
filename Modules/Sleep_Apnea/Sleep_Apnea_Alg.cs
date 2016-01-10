@@ -1,8 +1,10 @@
 using MathNet.Numerics;
+using MathNet.Numerics.IntegralTransforms;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,13 +23,11 @@ namespace EKG_Project.Modules.Sleep_Apnea
     public partial class Sleep_Apnea : IModule
     {
         
-        static List<int> _Rpeaks;
-
-        
+              
         //function that finds interval between RR peaks [s]
         List<List<double>> findIntervals(List<uint> R_detected, int freq)
         {
-            double inter;
+            
             List<List<double>> RR = new List<List<double>>(2);
             RR.Add(new List<double>(R_detected.Count));
             RR.Add(new List<double>(R_detected.Count));
@@ -324,6 +324,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         // Median Filtering using a moving window of 60 points
         void median_filter(List<List<double>> h_freq, List<List<double>> h_amp)
         {
+            int window_median = 60;
             double[] amp = new double[window_median];
             double[] freq = new double[window_median];
             int i, j, k, l;
@@ -406,21 +407,15 @@ namespace EKG_Project.Modules.Sleep_Apnea
         void amp_filter(List<List<double>> h_amp)
         {
             double sum = 0;
-            for (i = 0; i < h_amp[0].Count; i++)
+            for (int i = 0; i < h_amp[0].Count; i++)
                 sum += h_amp[1][i];
             double mean = sum / h_amp[0].Count;
 
             //Writing values to output array
-            for (i = 0; i < h_amp[0].Count; i++)
+            for (int i = 0; i < h_amp[0].Count; i++)
             {
                 h_amp[1][i] = h_amp[1][i] * (1 / mean);
             }
-        }
-
-        // Apnoea detection (if the frequency goes below 0,06 Hz and the amplitude goes above max amplitude the same time)
-        List<Tuple<int, int>> apnea_detection(List<List<double>> h_amp, List<List<double>> h_freq)
-        {
-            //List<Tuple<ulong, ulong>> apnea_out = new List<Tuple<ulong, ulong>>();
 
             //ZMIANA DZIEDZINY H_AMP Z NR PRÓBEK NA CZAS
             double[] time = new double[h_amp[0].Count];
@@ -433,6 +428,12 @@ namespace EKG_Project.Modules.Sleep_Apnea
             {
                 h_amp[0][i] = time[i];
             }
+        }
+
+        // Apnoea detection (if the frequency goes below 0,06 Hz and the amplitude goes above max amplitude the same time)
+        List<Tuple<int, int>> apnea_detection(List<List<double>> h_amp, List<List<double>> h_freq, out double il_Apnea)
+        {
+                 
 
             //Finding the minimum and maximum Hilbert amplitudes
                 int i;
@@ -466,7 +467,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             List<Tuple<int, int>> Detected_Apnea = new List<Tuple<int, int>>();
             int counter = 0;
             int counter2 = 0;          
-            for (i=0; i<detect.Count;i++)
+            for (i=0; i<detect.Length;i++)
             {
                 if (detect[i] == false)
                 {
@@ -484,8 +485,8 @@ namespace EKG_Project.Modules.Sleep_Apnea
             }
 
             //OBLICZENIE ILE % BEZDECHOW WYSTAPILO            
-            double il_Apnea;
-            il_Apnea = (counter2 / detect.Count) * 100;
+            
+            il_Apnea = (counter2 / detect.Length) * 100;
 
                        
 
@@ -494,7 +495,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 Detected_Apnea.Add(new Tuple<int, int>(0, 0));
             }
 
-            //return il_Apnea;
+            
             return Detected_Apnea;
         }
 
