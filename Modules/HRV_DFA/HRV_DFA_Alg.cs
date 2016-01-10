@@ -26,7 +26,7 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> sig = TempInput.getSignal();
 
             // DFA box parameters
-            int step = 50;
+            int step = 10;
             int start = 50;
             int stop = 50000; 
 
@@ -35,9 +35,11 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> box = Vector<double>.Build.DenseOfArray(boxRanged);  // n
             Vector<double> vectorFn = dfa.DfaFluctuationComputation(box, sig);  // F(n)
 
+            // Remove all zeros from vectors
+
             // Convert to logarytmic scale
-            Vector<double> logn = box.PointwiseLog();
-            Vector<double> logFn = vectorFn.PointwiseLog();
+            Vector<double> logn = dfa.Logarithmize(box);
+            Vector<double> logFn = dfa.Logarithmize(vectorFn);
 
             // short-range:long-range fitting bending data proportion
             double proportion = 0.33;
@@ -71,9 +73,9 @@ namespace EKG_Project.Modules.HRV_DFA
                 fittedFn2[k] = fitting2(logn2a[k]);
             }
 
-
-            Console.WriteLine(fittedFn1.ToString());
-            Console.WriteLine(fittedFn2.ToString());
+            Console.WriteLine(vectorFn.ToString());
+            Console.WriteLine(logFn.ToString());
+           
             Console.ReadKey();
 
         }
@@ -96,6 +98,16 @@ namespace EKG_Project.Modules.HRV_DFA
             }
 
             return signal_integrated;
+        }
+        // Method that logarithmizes signal
+        public Vector<double> Logarithmize(Vector<double> signal)
+        {
+            Vector<double> logSig = Vector<double>.Build.Dense(signal.Count());
+            for (int i = 0; i < signal.Count(); i++)
+            {
+                logSig[i] = Math.Log(signal[i]);
+            }
+            return logSig;
         }
         
         // Method that computates in-box fluctuations F in given box size 
@@ -149,9 +161,9 @@ namespace EKG_Project.Modules.HRV_DFA
                     double[] p = Fit.Polynomial(x, y1, 1);     //fitting coefficients
                     // Fitting method: NormalEquations                                         
                     Func<double, double> fitting = Fit.PolynomialFunc(x, y1, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.NormalEquations);
-                    Vector<double> yn = Vector<double>.Build.Dense(yk.Count());
-                    
+
                     //fitting curve obtaining
+                    Vector<double> yn = Vector<double>.Build.Dense(yk.Count());
                     for (int k = 0; k < y.Count(); k++)
                     {
                         yn[k] = fitting(x[k]);
