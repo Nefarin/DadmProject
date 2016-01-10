@@ -26,22 +26,69 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
         private SleepApneaAlgStates _currentState;
 
+        private double _actualProgress;
         private bool _ended;
+        private int _numberOfChannels;
         private bool _aborted;
 
-        private double _actualProgress;
+        public bool Aborted
+        {
+            get { return _aborted; }
+            set { _aborted = value; }
+        }
+        private Sleep_Apnea_Params _params;
 
-        public Sleep_Apnea_Params Params { get; set; }
-        public R_Peaks_Data_Worker InputWorker { get; set; }
-        public R_Peaks_Data InputData { get; set; }
-        public Sleep_Apnea_Data_Worker OutputWorker { get; set; }
-        public Sleep_Apnea_Data OutputData { get; set; }
-        public Basic_Data_Worker InputWorker_basic { get; set; }
-        public Basic_Data InputData_basic { get; set; }
+        public Sleep_Apnea_Params Params
+        {
+            get { return _params; }
+            set { _params = value; }
+        }
+        private Basic_Data _inputData_basic;
 
-        //tu mam dac to co mi wystepuje w definicjach metod?
+        public Basic_Data InputData_basic
+        {
+            get { return _inputData_basic; }
+            set { _inputData_basic = value; }
+        }
+        private Basic_Data_Worker _inputWorker_basic;
+
+        public Basic_Data_Worker InputWorker_basic
+        {
+            get { return _inputWorker_basic; }
+            set { _inputWorker_basic = value; }
+        }
+        private R_Peaks_Data_Worker _inputWorker;
+
+        public R_Peaks_Data_Worker InputWorker
+        {
+            get { return _inputWorker; }
+            set { _inputWorker = value; }
+        }
+        private R_Peaks_Data _inputData;
+
+        public R_Peaks_Data InputData
+        {
+            get { return _inputData; }
+            set { _inputData = value; }
+        }
+        private Sleep_Apnea_Data_Worker _outputWorker;
+
+        public Sleep_Apnea_Data_Worker OutputWorker
+        {
+            get { return _outputWorker; }
+            set { _outputWorker = value; }
+        }
+        private Sleep_Apnea_Data _outputData;
+
+        public Sleep_Apnea_Data OutputData
+        {
+            get { return _outputData; }
+            set { _outputData = value; }
+        }
+
+        string[] _channelsNames;
+
         List<uint> _R_detected;
-        int _freq;
         double _fs;
         List<List<double>> _RR;
         List<List<double>> _RR_average;
@@ -51,8 +98,6 @@ namespace EKG_Project.Modules.Sleep_Apnea
         List<List<double>> _h_freq;
         double _il_Apnea;
         List<Tuple<int, int>> _Detected_Apnea;
-
-
 
         public void Abort()
         {
@@ -68,7 +113,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         public void Init(ModuleParams parameters)
         {
             Params = parameters as Sleep_Apnea_Params;
-            _aborted = false;
+            Aborted = false;
             if (!Runnable())
             {
                 _ended = true;
@@ -89,12 +134,11 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 OutputData = new Sleep_Apnea_Data();
 
                 _actualProgress = 0;
-
-                _fs = InputData_basic.Frequency;
-
-                
+                _numberOfChannels = InputData_basic.Signals.Count;
+                _fs = InputData_basic.Frequency;                
                 _R_detected = InputData.RPeaks.Select(x => x.Item2).First().Cast<uint>().ToList();
                 _currentState = SleepApneaAlgStates.FindingRR;
+                _channelsNames = InputData_basic.Signals.Select(x => x.Item1).ToArray();
 
             }
         }
@@ -118,7 +162,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             switch (_currentState)
             {
                 case SleepApneaAlgStates.FindingRR:
-                    _RR = findIntervals(_R_detected, _fs);
+                    _RR = findIntervals(_R_detected, (int)_fs);
                     _currentState = SleepApneaAlgStates.CalculatingAverage;
                     _actualProgress = 100.0 / 9;
                     break;
@@ -130,7 +174,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     break;
 
                 case SleepApneaAlgStates.Resampling:
-                    _RR_res = resampling(_RR_average, _fs);
+                    _RR_res = resampling(_RR_average, (int)_fs);
                     _currentState = SleepApneaAlgStates.BandPassFiltering;
                     _actualProgress = 3 * 100.0 / 9;
                     break;
@@ -168,8 +212,25 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     break;
 
                 case SleepApneaAlgStates.Finished:
-                    _actualProgress = 100.0;
+                    List<Tuple<string, List<Tuple<int, int>>>> detected_Apnea = new List<Tuple<string, List<Tuple<int, int>>>>();
+                    List<Tuple<string, List<List<double>>>> h_amp = new List<Tuple<string, List<List<double>>>>();
+                    List<Tuple<string, double>> il_Apnea = new List<Tuple<string, double>>();
+
+                    for (int i = 0; i < _numberOfChannels; i++)
+                    {
+                        il_Apnea.Add(new Tuple<string, double>(_channelsNames[i], _il_Apnea));
+                        h_amp.Add(new Tuple<string, List<List<double>>>(_channelsNames[i], _h_amp));
+                        detected_Apnea.Add(new Tuple<string, List<Tuple<int, int>>>(_channelsNames[i], _Detected_Apnea));
+                    }
+
+
+                    OutputData.Detected_Apnea = detected_Apnea;
+                    OutputData.h_amp = h_amp;
+                    OutputData.il_Apnea = il_Apnea;
+
                     OutputWorker.Save(OutputData);
+
+                    _actualProgress = 100.0;
                     _ended = true;
                     break;
 
@@ -188,98 +249,6 @@ namespace EKG_Project.Modules.Sleep_Apnea
         public bool Runnable()
         {
             return Params != null;
-        }
-
-        
-        public Sleep_Apnea_Data OutputData
-        {
-            get
-            {
-                return _outputData;
-            }
-
-            set
-            {
-                _outputData = value;
-            }
-        }
-
-        public Sleep_Apnea_Params Params
-        {
-            get
-            {
-                return _params;
-            }
-
-            set
-            {
-                _params = value;
-            }
-        }
-
-        public int NumberOfChannels
-        {
-            get
-            {
-                return _numberOfChannels;
-            }
-
-            set
-            {
-                _numberOfChannels = value;
-            }
-        }
-
-        public bool Aborted
-        {
-            get
-            {
-                return _aborted;
-            }
-
-            set
-            {
-                _aborted = value;
-            }
-        }
-
-        public Basic_Data InputData
-        {
-            get
-            {
-                return _inputData;
-            }
-
-            set
-            {
-                _inputData = value;
-            }
-        }
-
-        public Basic_Data_Worker InputWorker
-        {
-            get
-            {
-                return _inputWorker;
-            }
-
-            set
-            {
-                _inputWorker = value;
-            }
-        }
-
-        public Sleep_Apnea_Data_Worker OutputWorker
-        {
-            get
-            {
-                return _outputWorker;
-            }
-
-            set
-            {
-                _outputWorker = value;
-            }
         }
 
         public static void Main()
