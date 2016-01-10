@@ -7,17 +7,25 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Waves
 {
-    class Waves_Data : ECG_Data
+    public class Waves_Data : ECG_Data
     {
-        private Vector<uint> _QRSonsets;
-        private Vector<uint> _QRSends;
-        private Vector<uint> _Ponsets;
-        private Vector<uint> _Pends;
-        private Vector<uint> _Tends;
 
-        public Waves_Data() { }
+        private List<Tuple<string, List<int>>> _QRSonsets;
+        private List<Tuple<string, List<int>>> _QRSends;
+        private List<Tuple<string, List<int>>> _Ponsets;
+        private List<Tuple<string, List<int>>> _Pends;
+        private List<Tuple<string, List<int>>> _Tends;
 
-        public Vector<uint> QRSOnsets
+        public Waves_Data() {
+
+            _QRSends = new List<Tuple<string, List<int>>>();
+            _QRSonsets = new List<Tuple<string, List<int>>>();
+            _Pends = new List<Tuple<string, List<int>>>();
+            _Ponsets = new List<Tuple<string, List<int>>>();
+            _Tends = new List<Tuple<string, List<int>>>();
+        }
+
+        public List<Tuple<string, List<int>>> QRSOnsets
         {
             get
             {
@@ -29,7 +37,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public Vector<uint> QRSEnds
+        public List<Tuple<string, List<int>>> QRSEnds
         {
             get
             {
@@ -41,7 +49,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public Vector<uint> POnsets
+        public List<Tuple<string, List<int>>> POnsets
         {
             get
             {
@@ -54,7 +62,7 @@ namespace EKG_Project.Modules.Waves
 
         }
 
-        public Vector<uint> PEnds
+        public List<Tuple<string, List<int>>> PEnds
         {
             get
             {
@@ -67,7 +75,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public Vector<uint> TEnds
+        public List<Tuple<string, List<int>>> TEnds
         {
             get
             {
@@ -78,5 +86,6 @@ namespace EKG_Project.Modules.Waves
                 _Tends = value;
             }
         }
+
     }
 }

@@ -16,7 +16,7 @@ namespace EKG_Project.IO
 
         public FileLoader() { }
 
-        void Load(string path)
+        public void Load(string path)
         {
             switch (extension)
             {
@@ -37,7 +37,7 @@ namespace EKG_Project.IO
 
         }
 
-        void Validate(string path)
+        public void Validate(string path)
         {
             try
             {
@@ -61,15 +61,15 @@ namespace EKG_Project.IO
                 
         }
 
-        /*
+        
         static void Main()
         {
             FileLoader fl = new FileLoader();
-            fl.Validate(@"C:\temp\2.xml");
+            fl.Validate(@"C:\temp\234.txt");
             Console.WriteLine("Rozszerzenie: " + fl.extension);
-            fl.Load(@"C:\temp\2.xml");
+            fl.Load(@"C:\temp\234.txt");
             Console.WriteLine("Konwerter: " + fl.converter.GetType().Name);
             Console.Read();
-        }*/
+        }
     }
 }

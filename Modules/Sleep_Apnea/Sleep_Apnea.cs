@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
 using System.Collections.Generic;
@@ -32,8 +32,8 @@ namespace EKG_Project.Modules.Sleep_Apnea
         private double _actualProgress;
 
         public Sleep_Apnea_Params Params { get; set; }
-        public R_peaks_Data_Worker InputWorker { get; set; }
-        public R_peaks_Data InputData { get; set; }
+        public R_Peaks_Data_Worker InputWorker { get; set; }
+        public R_Peaks_Data InputData { get; set; }
         public Sleep_Apnea_Data_Worker OutputWorker { get; set; }
         public Sleep_Apnea_Data OutputData { get; set; }
         public Basic_Data_Worker InputWorker_basic { get; set; }
