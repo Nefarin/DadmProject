@@ -7,7 +7,7 @@ namespace EKG_Project.Modules.HRV2
     public partial class HRV2 : IModule
     {
 
-        private void Analyse()
+        public void Analyse()
         {
             //tu bd metody z histogram.cs, tinn.cs itd :)
         }

@@ -20,7 +20,7 @@ namespace EKG_Project.Modules.HRV2
         private int _numberOfChannels;
 
         private R_Peaks_Data_Worker _inputWorker;
-        //private HRV2_Data_Worker _outputWorker;
+        private HRV2_Data_Worker _outputWorker;
 
         private HRV2_Data _outputData;
         private R_Peaks_Data _inputData;
@@ -53,7 +53,7 @@ namespace EKG_Project.Modules.HRV2
                 InputWorker.Load();
                 InputData = InputWorker.Data;
 
-                //OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
+                OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
                 OutputData = new HRV2_Data();
 
                 _currentChannelIndex = 0;
@@ -111,7 +111,7 @@ namespace EKG_Project.Modules.HRV2
             }
             else
             {
-                //OutputWorker.Save(OutputData);
+                OutputWorker.Save(OutputData);
                 _ended = true;
             }
 
@@ -197,18 +197,18 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
-        //public HRV2_Data_Worker OutputWorker
-        //{
-        //    get
-        //    {
-        //        return _outputWorker;
-        //    }
+        public HRV2_Data_Worker OutputWorker
+        {
+            get
+            {
+                return _outputWorker;
+            }
 
-        //    set
-        //    {
-        //        _outputWorker = value;
-        //    }
-        //}
+            set
+            {
+                _outputWorker = value;
+            }
+        }
 
         public static void Main()
         {
