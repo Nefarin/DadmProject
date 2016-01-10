@@ -14,7 +14,7 @@ namespace EKG_Project.IO
     public class Waves_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName;
         private Waves_Data _data;
 
         public Waves_Data Data

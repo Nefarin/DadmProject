@@ -14,7 +14,7 @@ namespace EKG_Project.IO
     public class Heart_Axis_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName;
         private Heart_Axis_Data _data;
 
         public Heart_Axis_Data Data

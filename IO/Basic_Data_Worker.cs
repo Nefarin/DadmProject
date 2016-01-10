@@ -13,7 +13,7 @@ namespace EKG_Project.IO
     public class Basic_Data_Worker : IECG_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName;
         private Basic_Data basicData;
 
         public Basic_Data BasicData

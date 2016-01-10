@@ -14,7 +14,7 @@ namespace EKG_Project.IO
     public class HRV2_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName;
         private HRV2_Data _data;
 
         public HRV2_Data Data
