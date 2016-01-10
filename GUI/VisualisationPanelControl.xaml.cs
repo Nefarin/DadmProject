@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data;
 
 namespace EKG_Project.GUI
 {
@@ -25,6 +26,7 @@ namespace EKG_Project.GUI
 
         public VisualisationPanelControl()
         {
+
             InitializeComponent();
 
             //VisualisationPlotControl ecgVPControl = new VisualisationPlotControl();
@@ -83,6 +85,17 @@ namespace EKG_Project.GUI
 
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                this.headerTable.ItemsSource = this.CreateHeaderInfoTable().DefaultView;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
 
         public VisualisationPanelControl(List<string> tabNames)
         {
@@ -104,5 +117,18 @@ namespace EKG_Project.GUI
 
             this.EcgDynamicTab.DataContext = visulisationDataTabsList;
         }
+
+        public DataTable CreateHeaderInfoTable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add(new DataColumn("Fs", Type.GetType("System.Int32")));
+            table.Columns.Add(new DataColumn("Samples", Type.GetType("System.Int32")));
+            table.Rows.Add(25, 2000);
+
+            return table;
+        }
+
+
+
     }
 }
