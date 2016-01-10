@@ -119,7 +119,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     }
                     if (_ClassResult.Item1)
                     {
-                        double percentOfDetection = _ClassResult.Item3 / (InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count) - InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(0))*100;
+                        double percentOfDetection = _ClassResult.Item3 / (InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count) - InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(0))*100* Convert.ToUInt32(InputData_basic.Frequency);
                         OutputData.AfDetection.Add(new Tuple<bool, Vector<double>,string,string>(true,_ClassResult.Item2, "Wykryto migotanie przedsionków.",
                             "Wykryto migotanie trwające "+ _ClassResult.Item3.ToString("F1", CultureInfo.InvariantCulture)+ "s. Stanowi to "+
                             percentOfDetection.ToString("F1", CultureInfo.InvariantCulture)+ "% trwania sygnału."));

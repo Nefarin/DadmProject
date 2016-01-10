@@ -133,7 +133,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
             bool[] detectedIntervals;
             int dividingFactor, nrOfParts;
             double lengthOfDetection=0;
-            double percentOfDetection = 0;
 
             if (_method.Method== Detect_Method.STATISTIC)
             {
@@ -168,8 +167,8 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     afDetected = true;
                 }
             }
-            string afDetectedS;
-            string afDetectionDescription="";
+            //string afDetectedS;
+            //string afDetectionDescription="";
             if (afDetected)
             {
                 pointsDetected= Vector<Double>.Build.Dense(Convert.ToInt32(lengthOfDetectedIntervals));
@@ -186,20 +185,20 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         lastIndex += j;
                     }
                 }
-                afDetectedS = "Wykryto migotanie przedsionków.";
+                //afDetectedS = "Wykryto migotanie przedsionków.";
                 double lengthOfSignal = (_rPeaks.At(_rPeaks.Count-1) - _rPeaks.At(0)) / fs;
-                lengthOfDetection = lengthOfDetectedIntervals / fs;
-                percentOfDetection = (lengthOfDetection / lengthOfSignal) * 100;
-                afDetectionDescription += "Wykryto migotanie trwające ";
-                afDetectionDescription += lengthOfDetection.ToString("F1", CultureInfo.InvariantCulture);
-                afDetectionDescription += "s. Stanowi to ";
-                afDetectionDescription += percentOfDetection.ToString("F1", CultureInfo.InvariantCulture);
-                afDetectionDescription += "% trwania sygnału.";
+                //lengthOfDetection = lengthOfDetectedIntervals / fs;
+                //percentOfDetection = (lengthOfDetection / lengthOfSignal) * 100;
+                //afDetectionDescription += "Wykryto migotanie trwające ";
+                //afDetectionDescription += lengthOfDetection.ToString("F1", CultureInfo.InvariantCulture);
+                //afDetectionDescription += "s. Stanowi to ";
+                //afDetectionDescription += percentOfDetection.ToString("F1", CultureInfo.InvariantCulture);
+                //afDetectionDescription += "% trwania sygnału.";
             }
             else
             {
                 pointsDetected.Clear();
-                afDetectedS="Nie wykryto migotania przedsionków";
+                //afDetectedS="Nie wykryto migotania przedsionków";
             }
             Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetection);
             return result;
