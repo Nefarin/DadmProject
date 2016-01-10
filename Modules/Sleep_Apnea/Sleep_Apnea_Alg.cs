@@ -1,4 +1,4 @@
-using MathNet.Numerics;
+﻿using MathNet.Numerics;
 using MathNet.Numerics.IntegralTransforms;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -22,12 +22,12 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
     public partial class Sleep_Apnea : IModule
     {
-        
-              
+
+
         //function that finds interval between RR peaks [s]
         List<List<double>> findIntervals(List<uint> R_detected, int freq)
         {
-            
+
             List<List<double>> RR = new List<List<double>>(2);
             RR.Add(new List<double>(R_detected.Count));
             RR.Add(new List<double>(R_detected.Count));
@@ -106,7 +106,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             {
                 if (RR[1][i] > 0.4 && RR[1][i] < 2.0)
                 {
-                    sum += RR[1][ i];
+                    sum += RR[1][i];
                     licznik += 1;
                 }
             }
@@ -256,7 +256,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         }
 
 
-        
+
 
         void hilbert(List<List<double>> RR_HPLP, ref List<List<double>> h_amp, ref List<List<double>> h_freq)
         {
@@ -417,7 +417,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 h_amp[1][i] = h_amp[1][i] * (1 / mean);
             }
 
-            //ZMIANA DZIEDZINY H_AMP Z NR PRÓBEK NA CZAS
+            //Changing the field from samples numbers to time
             double[] time = new double[h_amp[0].Count];
             for (int i = 0; i < h_amp[0].Count(); i++)
             {
@@ -433,10 +433,10 @@ namespace EKG_Project.Modules.Sleep_Apnea
         // Apnoea detection (if the frequency goes below 0,06 Hz and the amplitude goes above max amplitude the same time)
         List<Tuple<int, int>> apnea_detection(List<List<double>> h_amp, List<List<double>> h_freq, out double il_Apnea)
         {
-                 
+
 
             //Finding the minimum and maximum Hilbert amplitudes
-                int i;
+            int i;
             double a, b, min_amp, max_amp, mid, y_amp, y_freq;
             min_amp = 9999;
             max_amp = 0;
@@ -463,20 +463,20 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 else detect[i] = false;
             }
 
-            //DODANIE TYLKO TYCH BEZDECHOW GDZIE CZAS TRWANIA MIN 5 sekund - wartosc ta mozna bez problemu dowolnie zmienic
+            //Checking if the duration of sleep apnea is longer than 60 seconds
             List<Tuple<int, int>> Detected_Apnea = new List<Tuple<int, int>>();
             int counter = 0;
-            int counter2 = 0;          
-            for (i=0; i<detect.Length;i++)
+            int counter2 = 0;
+            for (i = 0; i < detect.Length; i++)
             {
                 if (detect[i] == false)
                 {
-                    if (counter >= 5)
-                    {                        
+                    if (counter >= 60)
+                    {
                         Detected_Apnea.Add(new Tuple<int, int>(i - 1 - counter, i - 1));
                         counter2 = counter2 + counter;
                     }
-                    counter = 0;                       
+                    counter = 0;
                 }
                 else
                 {
@@ -484,18 +484,18 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 }
             }
 
-            //OBLICZENIE ILE % BEZDECHOW WYSTAPILO            
-            
+            //Calculating the percentage of sleep apnea         
+
             il_Apnea = (counter2 / detect.Length) * 100;
 
-                       
+
 
             if (Detected_Apnea.Count == 0)
             {
                 Detected_Apnea.Add(new Tuple<int, int>(0, 0));
             }
 
-            
+
             return Detected_Apnea;
         }
 

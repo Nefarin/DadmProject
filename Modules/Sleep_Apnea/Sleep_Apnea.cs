@@ -121,7 +121,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             else
             {
                 _ended = false;
-                
+
                 InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
                 InputWorker_basic.Load();
                 InputData_basic = InputWorker_basic.BasicData;
@@ -135,7 +135,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
                 _actualProgress = 0;
                 _numberOfChannels = InputData_basic.Signals.Count;
-                _fs = InputData_basic.Frequency;                
+                _fs = InputData_basic.Frequency;
                 _R_detected = InputData.RPeaks.Select(x => x.Item2).First().Cast<uint>().ToList();
                 _currentState = SleepApneaAlgStates.FindingRR;
                 _channelsNames = InputData_basic.Signals.Select(x => x.Item1).ToArray();

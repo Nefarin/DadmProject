@@ -11,7 +11,7 @@ using EKG_Project.Modules.R_Peaks;
 
 namespace EKG_Project.Modules.Sleep_Apnea
 {
-    public class Sleep_Apnea_Data : ECG_Data
+    class Sleep_Apnea_Data : ECG_Data
     {
         private List<Tuple<string, List<Tuple<int, int>>>> _Detected_Apnea;
         private List<Tuple<string, List<List<double>>>> _h_amp;
@@ -62,4 +62,4 @@ namespace EKG_Project.Modules.Sleep_Apnea
         }
     }
 }
-    
+
