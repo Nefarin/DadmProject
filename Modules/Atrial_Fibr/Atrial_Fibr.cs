@@ -99,6 +99,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             int step=480;
             bool detected=false;
             Vector<double> pointsDetected=Vector<double>.Build.Dense(1);
+            Vector<double> pointsDetected2;
             double lengthOfDetection = 0;
 
             if (channel < NumberOfChannels)
@@ -114,13 +115,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     if (_tempClassResult.Item1 | _ClassResult.Item1)
                     {
                         detected = true;
-                        pointsDetected.SetSubVector(pointsDetected.Count - 1, _tempClassResult.Item2.Count, _tempClassResult.Item2);
+                        pointsDetected.SetSubVector(pointsDetected.Count, _tempClassResult.Item2.Count, _tempClassResult.Item2);
                         lengthOfDetection += _tempClassResult.Item3;
+                        _ClassResult = new Tuple<bool, Vector<double>, double>(detected, pointsDetected, lengthOfDetection);
                     }
+                    pointsDetected2 = Vector<double>.Build.Dense(_ClassResult.Item2.Count - 1);
                     if (_ClassResult.Item1)
                     {
                         double percentOfDetection = _ClassResult.Item3 / (InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count) - InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(0))*100* Convert.ToUInt32(InputData_basic.Frequency);
-                        OutputData.AfDetection.Add(new Tuple<bool, Vector<double>,string,string>(true,_ClassResult.Item2, "Wykryto migotanie przedsionków.",
+                        OutputData.AfDetection.Add(new Tuple<bool, Vector<double>,string,string>(true,pointsDetected2, "Wykryto migotanie przedsionków.",
                             "Wykryto migotanie trwające "+ _ClassResult.Item3.ToString("F1", CultureInfo.InvariantCulture)+ "s. Stanowi to "+
                             percentOfDetection.ToString("F1", CultureInfo.InvariantCulture)+ "% trwania sygnału."));
                     }
@@ -146,10 +149,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     if (_tempClassResult.Item1 | _ClassResult.Item1)
                     {
                         detected = true;
-                        pointsDetected.SetSubVector(pointsDetected.Count-1, _tempClassResult.Item2.Count, _tempClassResult.Item2);
+                        pointsDetected.SetSubVector(pointsDetected.Count, _tempClassResult.Item2.Count, _tempClassResult.Item2);
                         lengthOfDetection += _tempClassResult.Item3;
+                        _ClassResult = new Tuple<bool, Vector<double>, double>(detected, pointsDetected, lengthOfDetection);
                     }
-
+                    
                     _samplesProcessed = startIndex + step;
 
                 }
