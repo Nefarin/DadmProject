@@ -16,18 +16,18 @@ namespace EKG_Project.IO
         string[] lines;
         List<string>[] columns;
         uint sampleAmount;
-        private Basic_Data basicData;
+        Basic_Data _data;
 
-        public Basic_Data BasicData
+        public Basic_Data Data
         {
             get
             {
-                return basicData;
+                return _data;
             }
 
             set
             {
-                basicData = value;
+                _data = value;
             }
         }
 
@@ -38,18 +38,18 @@ namespace EKG_Project.IO
 
         public void SaveResult()
         {
-            foreach (var property in basicData.GetType().GetProperties())
+            foreach (var property in Data.GetType().GetProperties())
             {
 
-                if (property.GetValue(basicData, null) == null)
+                if (property.GetValue(Data, null) == null)
                 {
                     throw new Exception(); // < - robić coś takiego?
 
                 }
                 else
                 {
-                    Basic_Data_Worker dataWorker = new Basic_Data_Worker();
-                    dataWorker.Save(basicData);
+                    Basic_Data_Worker dataWorker = new Basic_Data_Worker(analysisName);
+                    dataWorker.Save(Data);
                 }
             }
         }
@@ -57,9 +57,10 @@ namespace EKG_Project.IO
         public void ConvertFile(string path)
         {
             loadASCIIFile(path);
-            basicData.Frequency = getFrequency();
-            basicData.Signals = getSignals();
-            basicData.SampleAmount = sampleAmount;
+            Data = new Basic_Data();
+            Data.Frequency = getFrequency();
+            Data.Signals = getSignals();
+            Data.SampleAmount = sampleAmount;
         }
 
         public void loadASCIIFile(string path)

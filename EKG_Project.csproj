@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.IO.Atrial_Fibr_Data_Worker</StartupObject>
+    <StartupObject>EKG_Project.IO.ASCIIConverter</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -405,6 +405,8 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\data\100.txt" />
+    <Resource Include="IO\data\234.txt" />
     <Resource Include="IO\temp\Analysis6_Data.xml" />
     <Resource Include="IO\temp\Analysis6_TestModule3.xml" />
     <Resource Include="IO\data\2.xml" />
