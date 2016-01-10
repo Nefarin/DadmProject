@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.Waves;
 using EKG_Project.Modules.R_Peaks;
-using MathNet;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.IO;
 
@@ -45,151 +44,119 @@ namespace EKG_Project.Modules.ST_Segment
             return tachos_r;
         }
         //dalej
-        public int Metoda(int tST, int tJ,) // tu potrzebuje metode która bedzie wyświetlać lub poprostu zapamiętywać  to co wyjdzie?//
 
+        public StAnalysisResult Method(Vector<double> signal, Vector<uint> tQRS_onset, Vector<uint> tQRS_ends)
         {
-            int signal_size = rRawSample.Count();
-            for (int i = 0; i < signal_size; i++)
+            StAnalysisResult result = new StAnalysisResult();
+            int[] finalShapes = new int[signal.Count()];
+            for (int i = 0; i < signal.Count(); ++i)
             {
-                int tJ = list < int > tachos_r[i] + 45;
-                int tST = tachos_r[i] + 60;
-
-                if (HR < 100)  //puls [uderzeń na minute]
+                double tJ = tQRS_ends[i] + 20;
+                double tST = tQRS_ends[i] + 35;
+                result.tJs.Add(tJ);
+                result.tSTs.Add(tST);
+                int tADD = 0;
+                if (HR < 100)
                 {
-                    int tADD = 80; // ms 
+                    tADD = 80;
                 }
                 else if (HR < 110)
                 {
-                    int tADD = 72;
+                    tADD = 72;
                 }
                 else if (HR < 120)
                 {
-                    int tADD = 64;
+                    tADD = 64;
                 }
                 else
                 {
-                    int tADD = 60;
+                    tADD = 60;
                 }
-                int tJX = tQRS_onset[i] + tADD;
-
-                //odległość od izolinii
-                const double K1 = -0.1;
-                const double K2 = 0.1;
-
+                long tJX = tQRS_onset[i] + tADD;
                 int offset = war_tJX[i] - war_tQRS_onset[i];
-
-                if (offset < K1)
-                {
-                    int odl = -1; //obniżony
-                }
-                else if (offset > K2)
-                {
-                    int odl = 1; // podwyższony
-                }
-                else
-                {
-                    int odl = 0; // normalny
-                }
-
-                // kształt : krzywa: wypukła/ wklesła, prosta rosnaca/malejaca/pozioma
-
                 double tTE = tST;
                 double a = (war_tTE[i] - war_tJ[i]) / (tTE - tJ);
                 double b = (war_tJ[i] * tTE - war_tTE[i] * tJ) / (tTE - tJ);
-                const double limit_prostej = 0.15;
-                int ksztalt_koncowy = 0;
-                for (double czas = tJ; double czas = tTE, ksztalt++)
+                int shape = 0;
+                for (double time = tJ; time < tTE; time += 1.0)
                 {
-                    decimal[] decimals = { Decimal.MaxValue, 12.45M, 0M, -19.69M,  ///nie wiem czy to tak
-                             Decimal.MinValue };
-                    foreach (decimal value in decimals) ;
-
-                    double distance = (Abs(a * czas + war_czas + b)) / Sqr(1 + a ^ 2);
-
-                    if (double distance > limit_prostej)
-            {
-                int ksztalt = int ksztalt + 1;
+                    double distance = (Math.Abs(a * time + war_time + b)) / (Math.Sqrt(1 + a * a));
+                    if (distance > 0.15)
+                    {
+                        ++shape;
+                    }
+                }
+                if (shape == 0)
+                {
+                    if (a > 0.15)
+                    {
+                        finalShapes[i] = 3;
+                    }
+                    else if (a < -0.15)
+                    {
+                        finalShapes[i] = 5;
+                    }
+                    else
+                    {
+                        finalShapes[i] = 4;
+                    }
+                }
+                else
+                {
+                    int pointsBeneath = 0;
+                    int pointsAbove = 0;
+                    for (double time = tJ; time < tTE; time += 1.0)
+                    {
+                        if (war_time > a * time + b)
+                        {
+                            ++pointsAbove;
+                        }
+                        else
+                        {
+                            ++pointsBeneath;
+                        }
+                    }
+                    if (pointsAbove / allPoints > 0.7)
+                    {
+                        finalShapes[i] = 2;
+                    }
+                    else if (pointsBeneath / allPoints > 0.7)
+                    {
+                        finalShapes[i] = 1;
+                    }
+                }
             }
+            for (int i = 0; i < signal.Count(); ++i)
+            {
+                switch (finalShapes[i])
+                {
+                    case 1:
+                        ++result.ConcaveCurves;
+                        break;
+
+                    case 2:
+                        ++result.ConvexCurves;
+                        break;
+
+                    case 3:
+                        ++result.IncreasingLines;
+                        break;
+
+                    case 4:
+                        ++result.HorizontalLines;
+                        break;
+
+                    case 5:
+                        ++result.DecreasingLines;
+                        break;
+                }
+            }
+            return result;
         }
-        if (int ksztalt = 0)
-            {
-            if (double a> 0.15)
-                {
-            int ksztalt_koncowy = 3;
-    }
-             else if (double a< - 0.15);
-                {
-                int ksztalt_koncowy = 5;
-    }
-            else 
-                {
-               int ksztalt_koncowy = 4;
-} 
-                }
-           else
-            {   
-            krzywa
-            }
 
-            int punkty_pod = 0;
-int punkty_nad = 0;
-        for ( double czas = tJ; double czas = tTE;)
-            {
-            if( war_czas > (int a* double czas + int b)
-                {
-                int punkty_nad ++;
-                }
-            else
-                {
-                int punkty_pod ++;   
-                }
-            }
-          if (punkty_nad/wszystkie_punkty > 0.5)
-            {
-            int ksztalt_koncowy = 2;  // wypulkła
-            }
-            else if (punkty_pod / wszystkie punkty < 0.5)
-                {
-                int ksztalt_koncowy = 1; //wklesla
-}
-                
 
-            } // nawias do dużego fora
- int ksztalt[i] = int ksztalt_koncowy;
-   
-    int licznik_krzywa_wklesla = 0;
-int licznik_krzywa_wypukla = 0;
-int licznik_prosta_rosnaca = 0;
-int licznik_prosta_pozioma = 0;
-int licznik_prosta_malejaca = 0;
-
-for (int i = 0; i<signal_size; )
-    {
-    if (int ksztalt[i]==1)
-{
-int licznik_krzywa_wklesla ++; 
-}
-else if (int ksztalt[i] == 2)
-{
-int licznik_krzywa_wypukla ++;
-}
-else if (int ksztalt[i] == 3)
-{
-int licznik_prosta_rosnaca ++;
-}
-else if (int ksztalt[i] == 4)
-{
-int licznik_prosta_pozioma ++;
-}
-else if (int ksztalt[i] == 5)
-{
-int licznik_prosta_malejaca ++;
-}
 
     }
-
-
-
-        }
-    }
 }
+}
+

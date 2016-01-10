@@ -4,8 +4,51 @@ using System.Windows;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.Waves;
+using EKG_Project.Modules.R_Peaks;
+using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra;
 
+
+namespace EKG_Project.Modules.ST_Segment
+{
+    public class ST_Segment_Params : ModuleParams
+    {
+        private int _pointJ;
+        private int _pointST;
+        private int _pointBL;
+        private int _nachylenie;
+        private float _odleglosc;
+
+        public int PointJ { get; set; }
+        public int PointST { get; set; }
+        public int PointBL { get; set; }
+        public int Nachylenie { get; set; }
+        public float Odleglosc { get; set; }
+
+        public ST_Segment_Params(int pointJ, int pointST, int pointBL, int nachylenie, float odleglosc)
+        {
+            _pointJ = pointJ;
+            _pointST = pointST;
+            _pointBL = pointBL;
+            _nachylenie = nachylenie;
+            _odleglosc = odleglosc;
+        }
+    }
+}
+
+
+        public ST_Segment_Params(int pointJ, int pointST, int pointBL, int nachylenie, float odleglosc)
+        {
+            _pointJ = pointJ;
+            _pointST = pointST;
+            _pointBL = pointBL;
+            _nachylenie = nachylenie;
+            _odleglosc = odleglosc;
+        }
+    }
+}
 
 namespace EKG_Project.Modules.ST_Segment
 {
