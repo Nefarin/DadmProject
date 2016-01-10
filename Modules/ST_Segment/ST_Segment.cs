@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.Waves;
+using EKG_Project.Modules.R_Peaks;
 
 namespace EKG_Project.Modules.ST_Segment
 {
@@ -70,12 +73,9 @@ namespace EKG_Project.Modules.ST_Segment
                 _currentRPeaksLength = InputData.RPeaks[_currentChannelIndex].Item2.Count;
 
                 _currenttJ = new List<int>();
-                _currenttST = new List<int>();
+                _currenttST = new List<int>(); // tu cos co mamy miec 
                 
-                _currenttQRSonsets = new List<int>();
-                _currenttQRSends = new List<int>();
-                
-
+               
             }
 
         }
@@ -84,56 +84,25 @@ namespace EKG_Project.Modules.ST_Segment
 
     public void ProcessData(ST_Segment_Params parameters)
         {
-            {
-                Params = parameters as ST_Segment_Params;
-                Aborted = false;
-                if (!Runnable()) _ended = true;
-                else
-                {
-                    _ended = false;
-
-
-                    InputData = new Basic_Data();
-                    InputData.Frequency = 360;
-                    InputData.Signals = new List<Tuple<string, Vector<double>>>();
-                    InputData.Signals.Add(new Tuple<string, Vector<double>>("aaa", ecg));
-
-                    InputDataRpeaks = new R_Peaks_Data();
-
-                    InputDataRpeaks.RPeaks = new List<Tuple<string, Vector<double>>>();
-                    InputDataRpeaks.RPeaks.Add(new Tuple<string, Vector<double>>("aaa", rPeaks));
-
-                    OutputWorker = new ST_Data_Data_Worker(Params.AnalysisName);
-                    OutputData = new ST_Data_Data();
-
-                    _currentChannelIndex = 0;
-                    _rPeaksProcessed = 0;
-                    NumberOfChannels = InputData.Signals.Count;
-                    _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
-                    _currenttQRSonsetsPart = new List<int>();
-                    _currenttQRSendsPart = new List<int>();
-                    
-
-                    _currenttQRSonsets = new List<int>();
-                    _currenttQRSends = new List<int>();
-                    
-
-                }
-
-            }
+            
+                if (Runnable()) processData();
+                else _ended = true;
+            
         }
 
         public double Progress()
+       
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_rPeaksProcessed / (double)_currentRpeaksLength));
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentRPeaksLength));
         }
 
-
-        public bool Runnable()
+    public bool Runnable()
         {
             return Params != null;
         }
-            private void processData()
+
+
+        private void processData()
         {
 
             int channel = _currentChannelIndex;

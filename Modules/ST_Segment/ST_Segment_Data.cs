@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.ST_Segment
 {
-    public class StAnalysisResult
+    public class ST_Segment_Data
     {
-        public StAnalysisResult()
+        public ST_Segment_Data ()
         {
             tJs = new List<long>();
             tSTs = new List<long>();

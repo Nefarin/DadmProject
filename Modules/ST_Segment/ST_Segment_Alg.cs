@@ -23,7 +23,7 @@ namespace EKG_Project.Modules.ST_Segment
             ST_Segment st = new ST_Segment();
 
             // zamiana próbek na czas
-            Vector<double> tacho_rr = st.TimeConvert(fs, sig.ToArray());
+        //    Vector<double> tacho_rr = st.TimeConvert(fs, sig.ToArray());
 
 
             //....
@@ -32,23 +32,27 @@ namespace EKG_Project.Modules.ST_Segment
         }
         // Metody
         // zamiana próbek na czas
-        public Vector<double> TimeConvert(uint samplFreq, double[] rRawSample)
-        {
-            int signal_size = rRawSample.Count();
-            Vector<double> tachos_r = Vector<double>.Build.Dense(signal_size);
+        // public Vector<double> TimeConvert(uint samplFreq, double[] rRawSample)
+        //  {
+        //   int signal_size = rRawSample.Count();
+        //   Vector<double> tachos_r = Vector<double>.Build.Dense(signal_size);
 
-            for (int i = 0; i < signal_size; i++)
-            {
-                tachos_r[i] = rRawSamples[i] * 1000 / samplFreq;  //[ms]
-            }
-            return tachos_r;
-        }
+        //  for (int i = 0; i < signal_size; i++)
+        //  {
+        //       tachos_r[i] = rRawSamples[i] * 1000 / samplFreq;  //[ms]
+        //   }
+        //   return tachos_r;
+        //}
         //dalej
 
-        public StAnalysisResult Method(Vector<double> signal, Vector<uint> tQRS_onset, Vector<uint> tQRS_ends)
+       
+       
+        public ST_Segment_Data Method(Vector<double> signal, Vector<uint> tQRS_onset, Vector<uint> tQRS_ends, Vector<double> rInterval, int freq)
         {
-            StAnalysisResult result = new StAnalysisResult();
+            ST_Segment_Data result = new ST_Segment_Data();
             int[] finalShapes = new int[signal.Count()];
+
+//Vector<long> QRSend = new Vector<long>();
             for (int i = 0; i < signal.Count(); ++i)
             {
                 long tJ = tQRS_ends[i] + 20;
@@ -56,6 +60,7 @@ namespace EKG_Project.Modules.ST_Segment
                 result.tJs.Add(tJ);
                 result.tSTs.Add(tST);
                 int tADD = 0;
+                int HR = (int)(60000 / rInterval[i]);
                 if (HR < 100)
                 {
                     tADD = 80;
@@ -156,8 +161,10 @@ namespace EKG_Project.Modules.ST_Segment
             return result;
         }
 
-
-
+        public void ProcessData(int numberOfSamples)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 
