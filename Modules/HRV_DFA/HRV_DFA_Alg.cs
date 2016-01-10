@@ -57,8 +57,8 @@ namespace EKG_Project.Modules.HRV_DFA
                 fittedFn1[k] = fitting1(logn1a[k]);
             }
             //long - range correlations
-            Vector<double> logn2 = logn.SubVector(q, logn.Count());
-            Vector<double> logFn2 = logFn.SubVector(q, logn.Count() );
+            Vector<double> logn2 = logn.SubVector( q, logn.Count() - q );
+            Vector<double> logFn2 = logFn.SubVector(q, logn.Count() - q );
             double[] logn2a = logn2.ToArray();
             double[] logFn2a = logFn2.ToArray();
             double[] p2 = Fit.Polynomial(logn2a, logFn2a, 1);
@@ -87,7 +87,7 @@ namespace EKG_Project.Modules.HRV_DFA
             //Average
             double rr_avg = signal_rr.Sum() / signal_rr.Count;
 
-            for (int i = 0; i < signal_rr.Count - 1; i++)
+            for (int i = 0; i < signal_rr.Count - 1 ; i++)
             {
                 signal_integrated[0] = 0;
                 signal_integrated[i + 1] = signal_rr[i] - rr_avg;
@@ -121,25 +121,30 @@ namespace EKG_Project.Modules.HRV_DFA
             int sig_length = signal.Count();    // signal length
             Vector<double> fn = Vector<double>.Build.Dense(box_length);
 
-            for (int i = 0; i < box_length; i++)
+            for (int i = 0; i < box_length - 1 ; i++)
             {
                 double boxVal = dfabox[i];
                 double box_number = sig_length / boxVal;   // number of boxes
                 double box_qtyD = box_number * boxVal;      // quantity of samples in boxes
                 int boxValint = Convert.ToInt32(boxVal);
                 int box_qty = Convert.ToInt32(box_qtyD);
+                int boxNumber = Convert.ToInt32(box_number);
 
                 // Signal integration
                 Vector<double> yk = dfaFn.Integrate(signal);
                 
 
-                for (int j = 0; j < boxValint; j++)
+                for (int j = 0; j < boxNumber-1; j++)
                 {
                     // Least-Square Fitting
                     int ykIndex = j * boxValint;
-                    int ykCount = (sig_length - boxValint) - ykIndex ;
-                    double[] x = Generate.LinearRange(1, boxValint);
-                    Vector<double> y = yk.SubVector(ykIndex, boxValint);          // FIIIXXXXX IIIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    if (ykIndex+boxValint > sig_length)
+                    {
+                        break;
+                    }
+                    int ykCount = boxValint;
+                    double[] x = Generate.LinearRange(1, boxValint);            //ok
+                    Vector<double> y = yk.SubVector(ykIndex, boxValint);         //ok
                     double[] y1 = y.ToArray();
                     double[] p = Fit.Polynomial(x, y1, 1);     //fitting coefficients
                     // Fitting method: NormalEquations                                         
