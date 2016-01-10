@@ -70,6 +70,24 @@ namespace EKG_Project.GUI
             //CurrentPlot.Series.Add();
         }
 
+        public void DisplayHistogram()
+        {
+            ColumnSeries hist = new ColumnSeries();
+
+            hist.Items.Add(new ColumnItem(5.23, 0));
+            hist.Items.Add(new ColumnItem(10.23, 1));
+            hist.Items.Add(new ColumnItem(11.23, 2));
+            hist.Items.Add(new ColumnItem(11.23, 3));
+            hist.Items.Add(new ColumnItem(11.23, 4));
+            hist.Items.Add(new ColumnItem(11.23, 5));
+            hist.Items.Add(new ColumnItem(15.23, 6));
+            hist.Items.Add(new ColumnItem(8.3, 7));
+
+            CurrentPlot.Series.Add(hist);
+            
+
+        }
+
         public ScatterSeries DisplayR_Peaks(double x, double y)
         {
             ScatterSeries series = new ScatterSeries();

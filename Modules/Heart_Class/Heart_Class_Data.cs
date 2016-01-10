@@ -8,110 +8,74 @@ using System.Windows;
 
 namespace EKG_Project.Modules.Heart_Class
 {
-    class Heart_Class_Data : IO.ECG_Data
+    public class Heart_Class_Data : ECG_Data
     {
-        private Vector<double> _signal;          // inicjalizacja przez wczytanie Vector z pliku
-        private Vector<double> _qrsOnset;        // inicjalizacja przez wczytanie Vector z pliku
-        private Vector<double> _qrsEnd;          // inicjalizacja przez wczytanie Vector z pliku
-        private int _qrsNumber;                  // inicjalizacja przez zliczenie elementów _qrsOnset
-        private Vector<double> _qrsR;            // inicjalizacja przez wczytanie Vector z pliku
-        private Vector<double> _singleQrs;       // inicjalizacja w konstruktorze
-        private List<Tuple<int, Vector<double>>> _QrsComplex; // inicjalizacja w kontruktorze
-        private List<Tuple<int, Vector<double>>> _qrsCoefficients;
 
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-        public Vector<double> Signal
+        //output:
+        private List<Tuple<int, int>> _classificationResult;
+        private bool _channelMLIIDetected;
+
+        //niezrealizowane:
+        private uint _totalNumberOfQrsComplex;
+        private uint _numberOfClass;
+        private double _percentOfNormalComplex;
+        private Qrs_Class _cluster;
+
+
+        public uint TotalNumberOfQrsComplex
         {
-            get { return _signal; }
-            set { _signal = value; }
+            get { return _totalNumberOfQrsComplex; }
+            set { _totalNumberOfQrsComplex = value; }
         }
 
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-        public Vector<double> QrsOnset
+        public uint NumberOfClass
         {
-            get { return _qrsOnset; }
-            set
+            get { return _numberOfClass; }
+            set { _numberOfClass = value; }
+        }
+
+        public double PercentOfNormalComplex
+        {
+            get { return _percentOfNormalComplex; }
+            set { _percentOfNormalComplex = value; }
+        }
+
+        public List<Tuple<int, int>> ClassificationResult
+        {
+            get { return _classificationResult; }
+            set { _classificationResult = value; }
+        }
+
+        public bool ChannelMliiDetected
+        {
+            get { return _channelMLIIDetected; }
+            set { _channelMLIIDetected = value; }
+        }
+
+
+        public class Qrs_Class
+        {
+            private int _indexOfClass;
+            private int _numberOfQrsComplex;
+            private int _indexOfRepresentative;
+
+            public int IndexOfClass
             {
-                //powinien byc typ int! ale to pozniej, bo klasa TempInut nie wczytuje int
-                _qrsOnset = value;
-                QrsNumber = _qrsOnset.Count();
+                get { return _indexOfClass; }
+
             }
-        }
 
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-        public Vector<double> QrsEnd
-        {
-            get { return _qrsEnd; }
-            set { _qrsEnd = value; }
-        }
+            public int NumberOfQrsComplex
+            {
+                get{ return _numberOfQrsComplex; }
+            }
 
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-        public Vector<double> QrsR
-        {
-            get { return _qrsR; }
-            set { _qrsR = value; }
-        }
+            public int IndexOfRepresentative
+            {
+                get  { return _indexOfRepresentative; }
+            }
 
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-        public int QrsNumber
-        {
-            get { return _qrsNumber; }
-            set { _qrsNumber = value; }
         }
-
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-        public Vector<double> SingleQrs
-        {
-            get { return _singleQrs; }
-            set { _singleQrs = value; }
-        }
-
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-        public List<Tuple<int, Vector<double>>> QrsComplex
-        {
-            get { return _QrsComplex; }
-            set { _QrsComplex = value; }
-        }
-
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-        public List<Tuple<int, Vector<double>>> QrsCoefficients
-        {
-            get { return _qrsCoefficients; }
-            set { _qrsCoefficients = value; }
-        }
-
         #region Documentation
         /// <summary>
         /// Not parameterized constructor of Heart_Class_Data.cs data class
@@ -119,15 +83,8 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         public Heart_Class_Data()
         {
-            _signal = Vector<double>.Build.Dense(1);
-            _qrsOnset = Vector<double>.Build.Dense(1);        
-            _qrsEnd = Vector<double>.Build.Dense(1);          
-            _qrsNumber = new int();                 
-            _qrsR = Vector<double>.Build.Dense(1);           
-            _singleQrs = Vector<double>.Build.Dense(1);       
-            _QrsComplex = new List<Tuple<int, Vector<double>>>();
-            _qrsCoefficients = new List<Tuple<int, Vector<double>>>();
-            _singleQrs = Vector<double>.Build.Dense(1);
+            _classificationResult = new List<Tuple<int, int>>();
+            ChannelMliiDetected = new bool();
         }
     }
 }
