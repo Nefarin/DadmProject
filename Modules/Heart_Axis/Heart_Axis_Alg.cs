@@ -12,16 +12,13 @@ namespace EKG_Project.Modules.Heart_Axis
 
         /*Pseudo Module*/
 
-        //todo: poprawne q i s - w pliku głównym?
-
-
-        private double[] PseudoModule(uint Q, uint S, double[] signal)
+        private double[] PseudoModule(int Q, int S, double[] signal)
         {
 
-            uint j = 0;
+            int j = 0;
             double[] pseudo_tab;
             pseudo_tab = new double[S - Q];
-            for (uint i = Q; i < S; i++,j++)
+            for (int i = Q; i < S; i++,j++)
             {
                 pseudo_tab[j] = Math.Sqrt(Math.Pow(signal[i], 2) + Math.Pow(signal[i+1], 2));
             }
@@ -29,51 +26,50 @@ namespace EKG_Project.Modules.Heart_Axis
         }
 
         /* Finding Max */
-        private uint MaxOfPseudoModule(uint Q, double[] pseudo_tab)
+
+        private int MaxOfPseudoModule(int Q, double[] pseudo_tab)
         {
 
             double maxValue = pseudo_tab.Max();
             int maxIndex = Array.IndexOf(pseudo_tab, maxValue);
-            uint uMaxIndex = (uint)maxIndex;
-            uMaxIndex = uMaxIndex + Q;
-            return uMaxIndex;
+            return maxIndex;
         }
 
         /*Least-Squares method*/
        
-        private double[] LeastSquaresMethod(double []signal, uint Q, double[] pseudo_tab, int frequency) // todo: skąd wziąć tablicę samples
+        private double[] LeastSquaresMethod(double []signal, int Q, double[] pseudo_tab, int frequency) // todo: skąd wziąć tablicę samples
         {
-            uint uMaxIndex = MaxOfPseudoModule(Q, pseudo_tab);
+            int MaxIndex = MaxOfPseudoModule(Q, pseudo_tab);
             int timePeriod = 40; // czy 20?
             int milisecondsDivider = 1000;
-            double T = (timePeriod * frequency) / milisecondsDivider; // ilość próbek na 1 ms -  todo: sprawdzić czy zwraca poprawną wartość, zabezpieczyć się przed dzieleniem przez zero
-            int roundedT = (int)Math.Round(T, MidpointRounding.AwayFromZero); // zaokrąglenie - zmienić na floor
-
-            //Trzeba się zabezpieczyć przed wyjściem poza zakres tablicy!
+            double T = (timePeriod * frequency) / milisecondsDivider; // ilość próbek na 1 ms
+            int roundedT = (int)Math.Round(T, MidpointRounding.AwayFromZero); // zaokrąglenie - zmienić na floor?
 
             int signalSize = signal.Length;
             double[] indexes = null;
             int partArrayLength = 0;
-            if ((uMaxIndex - roundedT >= 0) && (uMaxIndex + roundedT < signalSize))
+            if ((MaxIndex - roundedT >= 0) && (MaxIndex + roundedT < signalSize)) //zabezpieczenie przed wyjściem poza zakres tabilcy
             {
                 partArrayLength = 2 * roundedT + 1;
                 indexes = new double[partArrayLength];
             }
             else
             {
-                throw new Exception(); //jak wyrzucać wyjątki, jeśli dane są niepoprawne?
+                //wyjątek
+                Aborted = true;
+                _ended = true;
             }
             
 
-            for (int i = 0; i < indexes.Length; i++) // inicjalizacja indexes/samples numerami próbek
+            for (int i = 0; i < indexes.Length; i++) // inicjalizacja indexes numerami próbek
             {
-                indexes[i] = uMaxIndex - roundedT + i; //zrobić, żeby było od 1???
+                indexes[i] = MaxIndex - roundedT + i;
             }
 
             // inicjalizacja tablicy z częścią sygnału
             double[] partSignal = new double[partArrayLength];
 
-            int startCopyIndex = (int)uMaxIndex - roundedT;
+            int startCopyIndex = (int)MaxIndex - roundedT;
 
             // przekopiuj z tablicy signal do tablicy partSignal n elementów (gdzie n = indexes.Length)
             Array.Copy(signal, startCopyIndex, partSignal, 0, indexes.Length);
@@ -86,17 +82,15 @@ namespace EKG_Project.Modules.Heart_Axis
 
 
         /*Max of Polynomial*/
-        private double MaxOfPolynomial(uint Q, double [] fitting_parameters)
+        private double MaxOfPolynomial(int Q, double [] fitting_parameters)
         {
             double maxOfPoly =(-fitting_parameters[1])/(2*fitting_parameters[0]);       // x = -b/2a
-            uint uMaxOfPoly = (uint)maxOfPoly;
-            //uMaxOfPoly = uMaxOfPoly; //ew. dodać Q, jeśli zmienię wyżej
-            return uMaxOfPoly;
+            return maxOfPoly;
         }
   
 
         /*Reading Amplitudes*/
-        private double[] ReadingAmplitudes(double[] FirstLead, double[] SecondLead, uint uMaxOfPoly)
+        private double[] ReadingAmplitudes(double[] FirstLead, double[] SecondLead, int uMaxOfPoly)
             {
             double[] amplitudes = new double[2];
             amplitudes[0] = FirstLead[uMaxOfPoly];
