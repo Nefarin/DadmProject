@@ -11,6 +11,7 @@ using EKG_Project.IO;
 
 namespace EKG_Project.Modules.ST_Segment
 {
+    /*
     public partial class ST_Segment : IModule
     {
         public static void Main(string[] args)
@@ -166,6 +167,7 @@ namespace EKG_Project.Modules.ST_Segment
             throw new NotImplementedException();
         }
     }
+     * */
 }
 
 

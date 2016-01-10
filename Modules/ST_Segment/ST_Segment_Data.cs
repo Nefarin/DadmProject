@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.ST_Segment
 {
-    public class ST_Segment_Data
+    public class ST_Segment_Data : ECG_Data
     {
         public ST_Segment_Data ()
         {
