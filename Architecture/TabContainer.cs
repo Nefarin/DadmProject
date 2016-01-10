@@ -18,6 +18,7 @@ namespace EKG_Project.Architecture
         private List<Processing> _ecgAnalysisList;
         private List<UserControl> _analysisControlList;
         private List<Thread> _threadList;
+        private List<String> _analysisNames;
 
         #region Documentation
         /// <summary>
@@ -32,6 +33,7 @@ namespace EKG_Project.Architecture
             _ecgAnalysisList = new List<Processing>();
             _analysisControlList = new List<UserControl>();
             _threadList = new List<Thread>();
+            AnalysisNames = new List<String>();
         }
 
         #region Properties
@@ -127,6 +129,19 @@ namespace EKG_Project.Architecture
             set
             {
                 _threadList = value;
+            }
+        }
+
+        public List<string> AnalysisNames
+        {
+            get
+            {
+                return _analysisNames;
+            }
+
+            set
+            {
+                _analysisNames = value;
             }
         }
         #endregion

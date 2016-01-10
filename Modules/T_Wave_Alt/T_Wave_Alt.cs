@@ -23,7 +23,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
             throw new NotImplementedException();
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
             throw new NotImplementedException();
         }

@@ -28,6 +28,10 @@ namespace EKG_Project.Architecture
         #endregion
         public Modules Modules
         {
+            set
+            {
+                _modules = value;
+            }
             get
             {
                 return _modules;

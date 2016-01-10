@@ -24,16 +24,47 @@ namespace EKG_Project.Architecture
 {
     public class Modules
     {
-        public List<IModule> ECG_IModules;
+        private List<IModule> ecgModules;
+        private int currentAnalysisIndex;
 
-        public Modules(SortedList<IModule, ModuleParams> modulesList)
+        public Modules()
         {
-            foreach (KeyValuePair<IModule, ModuleParams> modulesData in modulesList)
+
+        }
+
+        public void Init()
+        {
+            CurrentAnalysisIndex = -1;
+        }
+
+        public int Amount()
+        {
+            return ecgModules.Count;
+        }
+
+        public List<IModule> EcgModules
+        {
+            get
             {
-                IModule module = modulesData.Key;
-                ModuleParams parameters = modulesData.Value;
-                module.Init(parameters);
-                ECG_IModules.Add(module);
+                return ecgModules;
+            }
+
+            set
+            {
+                ecgModules = value;
+            }
+        }
+
+        public int CurrentAnalysisIndex
+        {
+            get
+            {
+                return currentAnalysisIndex;
+            }
+
+            set
+            {
+                currentAnalysisIndex = value;
             }
         }
     }

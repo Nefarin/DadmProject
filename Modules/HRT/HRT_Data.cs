@@ -11,7 +11,7 @@ using MathNet.Numerics.LinearAlgebra;
 /// </summary>
 namespace EKG_Project.Modules.HRT
 {
-    class HRT_Data : IO.ECG_Data
+    class HRT_Data : ECG_Data
     {
         ///<Summary>_TurbulenceOnset- wartości TO</Summary>
         public Vector<double> _TurbulenceOnset { get; set; }

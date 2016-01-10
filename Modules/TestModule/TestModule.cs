@@ -42,7 +42,7 @@ namespace EKG_Project.Modules
             _numberOfSamples = parameters.NumberOfSamples;
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
 
         }

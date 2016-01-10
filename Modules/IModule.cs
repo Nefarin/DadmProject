@@ -26,10 +26,9 @@ namespace EKG_Project.Modules
         /// <summary>
         /// As name says.
         /// </summary>
-        /// <param name="numberOfSamples"></param>
         /// 
         #endregion
-        void ProcessData(int numberOfSamples);
+        void ProcessData();
 
         #region Documentation
         /// <summary>

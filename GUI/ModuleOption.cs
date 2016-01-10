@@ -4,13 +4,25 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EKG_Project.Modules;
+using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.R_Peaks;
+using EKG_Project.Modules.Waves;
 
 namespace EKG_Project.GUI
 {
     public class ModuleOption : INotifyPropertyChanged
     {
+        #region Private fields
+
         private bool _set = false;
         private List<ModuleOption> _suboptions = null;
+        private String _analysisName;
+
+        #endregion
+
+        #region Properties
+
         public string Name { get; set; }
         public AvailableOptions Code { get; set; }
         public bool Set
@@ -22,7 +34,12 @@ namespace EKG_Project.GUI
             set
             {
                 this._set = value;
-                if (!this._set)
+                if (this._set)
+                {
+                    if (this.Parent != null)
+                        this.Parent.Set = true;
+                }
+                else
                 {
                     foreach (ModuleOption option in this.Suboptions)
                         option.Set = false;
@@ -40,8 +57,31 @@ namespace EKG_Project.GUI
                 return this._suboptions;
             }
         }
+        public ModuleParams ModuleParam { get; set; }
+        public bool ParametersAvailable { get { return this.ModuleParam != null; } }
+
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+
+            set
+            {
+                _analysisName = value;
+            }
+        }
+
+        #endregion
+
+        #region Events
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        #region Constructors
 
         public ModuleOption(AvailableOptions code, ModuleOption parent = null)
         {
@@ -49,6 +89,38 @@ namespace EKG_Project.GUI
             this.Name = code.ToString();
             this.Set = false;
             this.Parent = parent;
+
+            switch (this.Code)
+            {
+                case AvailableOptions.ECG_BASELINE:
+                    this.ModuleParam = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS);            
+                    break;
+                case AvailableOptions.R_PEAKS:
+                    this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.getAnalysisName());
+                    break;
+                case AvailableOptions.WAVES:
+                    this.ModuleParam = new Waves_Params();
+                    break;
+                default:
+                    this.ModuleParam = null;
+                    break;
+            }        
+        }
+
+        #endregion
+
+        #region Methods
+
+        private String getAnalysisName()
+        {
+            if (this.Parent == null)
+            {
+                return this.AnalysisName;
+            }
+            else
+            {
+                return Parent.getAnalysisName();
+            }
         }
 
         public ModuleOption AddSuboption(AvailableOptions code)
@@ -75,6 +147,8 @@ namespace EKG_Project.GUI
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        #endregion
     }
 
     public enum AvailableOptions
@@ -96,6 +170,7 @@ namespace EKG_Project.GUI
         FLUTTER,
         HRT,
         ECTOPIC_BEAT,
-        HEART_AXIS
+        HEART_AXIS,
+        TEST_MODULE
     }
 }

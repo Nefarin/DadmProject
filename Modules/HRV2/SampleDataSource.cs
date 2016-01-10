@@ -1,8 +1,10 @@
-﻿using Histogram.HelperClasses;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
+using MathNet.Numerics.LinearAlgebra;
+using EKG_Project.Modules.R_Peaks; //nie wiem jak połaczyc te moduły :(
 
 namespace Histogram.Data
 {
@@ -29,15 +31,16 @@ namespace Histogram.Data
         }
     }
 
-    public class SampleDataSource
+    public class DataSource
     {
-        private string FILENAME;
+        Vector<double> _RRInterval;
         private double _binLength;
         private ObservableCollection<Sample> _samples;
 
-        public SampleDataSource(double binLength, string fileName = null)
+        public DataSource(double binLength, List<Tuple<string, Vector<double>>> RRInterval ) //chialam wziac dane z R_Peaks ale nie potrafie
         {
-            this.FILENAME = fileName;
+            Tuple<string, Vector<double>> RRIntervalTuple = RRInterval.First();
+            _RRInterval = RRIntervalTuple.Item2;
             _binLength = binLength;
             _samples = new ObservableCollection<Sample>();
         }
@@ -66,31 +69,6 @@ namespace Histogram.Data
         {
             if (_samples.Count != 0)
                 return;
-
-            try
-            {
-                string[] lines = System.IO.File.ReadAllLines(FILENAME);
-                retrieveSamples(lines);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-        }
-
-        private void retrieveSamples(string[] table)
-        {
-            try
-            {
-                List<Double> samples;
-                Converters.StringArrayToDoubleList(table, out samples);
-                samples.Sort();
-                groupSamples(samples);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
         }
 
         private void groupSamples(List<Double> samples)
@@ -153,7 +131,7 @@ namespace Histogram.Data
 
             if (sum != sampleList.Count)
             {
-                throw new System.Exception("Zadzwoń do mnie, coś jest nie tak");
+                throw new System.Exception("Klops");
             }
        }
 

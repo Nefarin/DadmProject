@@ -25,7 +25,7 @@ namespace EKG_Project.Modules.TestModule2
             _moduleParams = (Test_Module2_Param)parameters;
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
             throw new NotImplementedException();
         }
