@@ -132,6 +132,10 @@ namespace EKG_Project.Modules.Atrial_Fibr
                             "Wykryto migotanie trwające "+ _ClassResult.Item3.ToString("F1", CultureInfo.InvariantCulture)+ "s. Stanowi to "+
                             percentOfDetection.ToString("F1", CultureInfo.InvariantCulture)+ "% trwania sygnału."));
                     }
+                    else
+                    {
+                        OutputData.AfDetection.Add(new Tuple<bool, Vector<double>, string, string>(false, pointsDetected2, "Nie wykryto migotania przedsionków.",""));
+                    }
                     _currentChannelIndex++;
 
                     if (_currentChannelIndex < NumberOfChannels)
