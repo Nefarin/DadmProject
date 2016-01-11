@@ -49,7 +49,7 @@ namespace EKG_Project.GUI
                             this.ModuleParam = new Waves_Params(this.AnalysisName);
                             break;
                         case AvailableOptions.ATRIAL_FIBER:
-                            this.ModuleParam = new Atrial_Fibr_Params(Detect_Method.POINCARE);
+                            this.ModuleParam = new Atrial_Fibr_Params(this.AnalysisName);
                             break;
                         default:
                             this.ModuleParam = null;
