@@ -443,4 +443,90 @@
     </TEnds>
   </module>
   <module name="HRV_DFA" />
+  <module name="Atrial_Fibr">
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+  </module>
 </EKG>
