@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.IO.WFDBTest</StartupObject>
+    <StartupObject>EKG_Project.IO.ASCIIConverter</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -444,6 +444,9 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\data\210.txt" />
+    <Resource Include="IO\data\100.txt" />
+    <Resource Include="IO\data\234.txt" />
     <Resource Include="IO\temp\TestAnalysis8_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis6_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis5_Data.xml" />
