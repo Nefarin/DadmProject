@@ -69,8 +69,8 @@ namespace EKG_Project.IO
 
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
-
-                List<Tuple<string, Vector<double>>> list = basicData.HistogramData;
+                //List<Tuple<string, Vector<double>>> list = basicData.HistogramData;
+                List<Tuple<string, Vector<double>>> list = null;
                 foreach (var tuple in list)
                 {
                     XmlElement histogramData = file.CreateElement(string.Empty, "HistogramData", string.Empty);
@@ -179,7 +179,8 @@ namespace EKG_Project.IO
                         Tuple<string, Vector<double>> readHistogramData = Tuple.Create(readLead, readDigits);
                         list.Add(readHistogramData);
                     }
-                    basicData.HistogramData = list;
+                    //basicData.HistogramData = list;
+                    basicData.HistogramData = null;
 
                     XmlNode PoincarePlotData_x = module["PoincarePlotData_x"];
 

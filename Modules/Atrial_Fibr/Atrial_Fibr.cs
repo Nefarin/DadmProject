@@ -228,13 +228,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         public static void Main()
         {
-            Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC, "Analysis6");
+            Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC, "TestAnalysis2");
 
             Atrial_Fibr testModule = new Atrial_Fibr();
             testModule.Init(param);
             while (true)
             {
-                Console.WriteLine("Press key to continue.");
+                //Console.WriteLine("Press key to continue.");
                 Console.Read();
                 if (testModule.Ended()) break;
                 Console.WriteLine(testModule.Progress());
