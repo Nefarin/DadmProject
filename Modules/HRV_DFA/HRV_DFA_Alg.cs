@@ -174,16 +174,22 @@ namespace EKG_Project.Modules.HRV_DFA
         public Vector<double> Integrate(Vector<double> signal_rr)
         {
             Vector<double> signal_integrated = Vector<double>.Build.Dense(signal_rr.Count(), 0);
+            double signal_add = 0; 
 
             //Average
             double rr_avg = signal_rr.Sum() / signal_rr.Count;
 
-            for (int i = 0; i < signal_rr.Count - 1 ; i++)
+            signal_add = Math.Abs(signal_rr[0] - rr_avg);
+            signal_integrated[0] = signal_add;
+
+            for (int i = 1; i < signal_rr.Count - 1 ; i++)
             {
-                signal_integrated[0] = 0;
+                signal_integrated[i] = Math.Abs(signal_rr[i] - rr_avg)+ signal_add;
+                signal_add = signal_integrated[i];
+                /*signal_integrated[0] = 0;
                 signal_integrated[i + 1] = signal_rr[i] - rr_avg;
                 signal_integrated[i + 1] += signal_integrated[i];
-                signal_integrated[i + 1] = Math.Abs(signal_integrated[i + 1]);
+                signal_integrated[i + 1] = Math.Abs(signal_integrated[i + 1]);*/
             }
 
             return signal_integrated;
