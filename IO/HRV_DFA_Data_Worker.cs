@@ -76,7 +76,7 @@ namespace EKG_Project.IO
 
                 foreach (var property in Properties)
                 {
-                    List<Tuple<string, Vector<double>>> list = new List<Tuple<string, Vector<double>>>();//property;
+                    List<Tuple<string, Vector<double>, Vector<double>>> list = (List<Tuple<string, Vector<double>, Vector<double>>>)property;
                     foreach (var tuple in list)
                     {
                         XmlElement moduleNode = file.CreateElement(string.Empty, Names[licznik], string.Empty);
@@ -97,6 +97,17 @@ namespace EKG_Project.IO
                         XmlText samplesValue = file.CreateTextNode(samplesText);
                         samples.AppendChild(samplesValue);
                         moduleNode.AppendChild(samples);
+
+                        XmlElement samples1 = file.CreateElement(string.Empty, "samples1", string.Empty);
+                        string samplesText1 = null;
+                        foreach (var value in tuple.Item3)
+                        {
+                            samplesText1 += value.ToString() + " ";
+                        }
+
+                        XmlText samplesValue1 = file.CreateTextNode(samplesText1);
+                        samples1.AppendChild(samplesValue1);
+                        moduleNode.AppendChild(samples1);
                     }
 
                     licznik++;
@@ -127,7 +138,7 @@ namespace EKG_Project.IO
             {
                 if (module.Attributes["name"].Value == moduleName)
                 {
-                    List<Tuple<string, Vector<double>>> DfaNumberN = new List<Tuple<string, Vector<double>>>();
+                    List<Tuple<string, Vector<double>, Vector<double>>> DfaNumberN = new List<Tuple<string, Vector<double>, Vector<double>>>();
                     XmlNodeList dfaNumberN = module.SelectNodes("DfaNumberN");
                     foreach (XmlNode node in dfaNumberN)
                     {
@@ -138,13 +149,17 @@ namespace EKG_Project.IO
                         string readSamples = samples.InnerText;
                         Vector<double> readDigits = converter.stringToVector(readSamples);
 
-                        Tuple<string, Vector<double>> readDfaNumberN = Tuple.Create(readLead, readDigits);
+                        XmlNode samples1 = node["samples1"];
+                        string readSamples1 = samples1.InnerText;
+                        Vector<double> readDigits1 = converter.stringToVector(readSamples1);
+
+                        Tuple<string, Vector<double>, Vector<double>> readDfaNumberN = Tuple.Create(readLead, readDigits, readDigits1);
                         DfaNumberN.Add(readDfaNumberN);
                     }
                     basicData.DfaNumberN = DfaNumberN;
 
 
-                    List<Tuple<string, Vector<double>>> DfaValueFn = new List<Tuple<string, Vector<double>>>();
+                    List<Tuple<string, Vector<double>, Vector<double>>> DfaValueFn = new List<Tuple<string, Vector<double>, Vector<double>>>();
                     XmlNodeList dfaValueFn = module.SelectNodes("DfaValueFn");
                     foreach (XmlNode node in dfaValueFn)
                     {
@@ -155,12 +170,16 @@ namespace EKG_Project.IO
                         string readSamples = samples.InnerText;
                         Vector<double> readDigits = converter.stringToVector(readSamples);
 
-                        Tuple<string, Vector<double>> readDfaValueFn = Tuple.Create(readLead, readDigits);
+                        XmlNode samples1 = node["samples1"];
+                        string readSamples1 = samples1.InnerText;
+                        Vector<double> readDigits1 = converter.stringToVector(readSamples1);
+
+                        Tuple<string, Vector<double>, Vector<double>> readDfaValueFn = Tuple.Create(readLead, readDigits, readDigits1);
                         DfaValueFn.Add(readDfaValueFn);
                     }
                     basicData.DfaValueFn = DfaValueFn;
 
-                    List<Tuple<string, Vector<double>>> ParamAlpha = new List<Tuple<string, Vector<double>>>();
+                    List<Tuple<string, Vector<double>, Vector<double>>> ParamAlpha = new List<Tuple<string, Vector<double>, Vector<double>>>();
                     XmlNodeList paramAlpha = module.SelectNodes("ParamAlpha");
                     foreach (XmlNode node in paramAlpha)
                     {
@@ -171,7 +190,11 @@ namespace EKG_Project.IO
                         string readSamples = samples.InnerText;
                         Vector<double> readDigits = converter.stringToVector(readSamples);
 
-                        Tuple<string, Vector<double>> readParamAlpha = Tuple.Create(readLead, readDigits);
+                        XmlNode samples1 = node["samples1"];
+                        string readSamples1 = samples1.InnerText;
+                        Vector<double> readDigits1 = converter.stringToVector(readSamples1);
+
+                        Tuple<string, Vector<double>, Vector<double>> readParamAlpha = Tuple.Create(readLead, readDigits, readDigits1);
                         ParamAlpha.Add(readParamAlpha);
                     }
                     basicData.ParamAlpha = ParamAlpha;
