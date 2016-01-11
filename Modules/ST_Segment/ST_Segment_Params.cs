@@ -26,5 +26,7 @@ namespace EKG_Project.Modules.ST_Segment
                 _analysisName = value;
             }
         }
+
+        public int RpeaksStep { get; internal set; }
     }
 }

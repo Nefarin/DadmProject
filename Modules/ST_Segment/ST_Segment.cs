@@ -7,6 +7,9 @@ using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.Waves;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.IO;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics;
+
 
 
 namespace EKG_Project.Modules.ST_Segment
@@ -22,6 +25,8 @@ namespace EKG_Project.Modules.ST_Segment
         private int _currentRPeaksLength;
         private int _samplesProcessed;
         private int _numberOfChannels;
+
+        private Basic_Data_Worker _inputWorker;
 
         private ECG_Baseline_Data_Worker _inputECGBaselineWorker;
         private ECG_Baseline_Data _inputECGBaselineData;
@@ -70,6 +75,12 @@ namespace EKG_Project.Modules.ST_Segment
         public ST_Segment_Data_Worker OutputWorker { get; private set; }
         public ST_Segment_Data OutputData { get; private set; }
         public object NumberOfChannels { get; private set; }
+        public Waves_Data_Worker InputWavesWorker { get; private set; }
+        public ECG_Baseline_Data_Worker InputECGWorker { get; private set; }
+        public R_Peaks_Data_Worker InputRpeaksWorker { get; private set; }
+        public R_Peaks_Data InpuRpeaksData { get; private set; }
+        public Waves_Data InputWavesData { get; private set; }
+        public object InputECGbaselineData { get; private set; }
 
         public void Abort()
         {
@@ -93,17 +104,21 @@ namespace EKG_Project.Modules.ST_Segment
                 _ended = false;
 
                 InputWorker = new Basic_Data_Worker(Params.AnalysisName);
-                InputECGworker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
-                InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
+                InputECGWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
+                InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
+                InputWavesWorker = new Waves_Data_Worker(Params.AnalysisName);
 
                 InputWorker.Load();
                 InputData = InputWorker.BasicData;
 
-                InputECGworker.Load();
-                InputECGData = InputECGworker.Data;
+                InputECGWorker.Load();
+                InputECGData = InputECGWorker.Data;
 
-                InputWorkerRpeaks.Load();
-                InputDataRpeaks = InputWorkerRpeaks.Data;
+                InputRpeaksWorker.Load();
+                InpuRpeaksData = InputRpeaksWorker.Data;
+
+                InputWavesWorker.Load();
+                InputWavesData = InputWavesWorker.Data;
 
 
                 OutputWorker = new ST_Segment_Data_Worker(Params.AnalysisName);
@@ -112,8 +127,9 @@ namespace EKG_Project.Modules.ST_Segment
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
                 _rPeaksProcessed = 0;
-                NumberOfChannels = InputData.RPeaks.Count;
-                _currentRPeaksLength = InputData.RPeaks[_currentChannelIndex].Item2.Count;
+                //startIndex = _samplesProcessed;
+                NumberOfChannels = InputData.Signals.Count;
+                _currentRPeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
 
 
                 _currenttJ = new List<long>();
@@ -136,7 +152,7 @@ namespace EKG_Project.Modules.ST_Segment
         public double Progress()
 
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentRPeaksLength));
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / (double)NumberOfChannels) * ((double)_rPeaksProcessed / (double)_currentRpeaksLength));
         }
 
         public bool Runnable()
@@ -194,23 +210,13 @@ namespace EKG_Project.Modules.ST_Segment
 
 
 
-            } 
+            } }
 
 
 
 
 
-  public ST_Segment_Data 
-            {
-            get
-            {
-            return _outputData;
-            }
-    set
-        {
-                _outputData = value;
-            }
-        }
+  
 
        
 public ST_Segment_Params Params
@@ -227,8 +233,18 @@ public ST_Segment_Params Params
 }
 
 
-
-
+        public ST_Segment_Data 
+            {
+            get
+            {
+            return _outputData;
+            }
+    set
+        {
+                _outputData = value;
+            }
+        
+}
 
 public Basic_Data InputData
 {
@@ -357,10 +373,7 @@ public Waves_Data_Worker OutputWorker
         }
 
 
-
-
-
-
+   
     }
 
     //testowanie
@@ -384,10 +397,7 @@ public Waves_Data_Worker OutputWorker
 
 
         {
-
-
-
-
+            
             Console.WriteLine("Press key to continue.");
 
 
