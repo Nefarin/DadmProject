@@ -1,7 +1,7 @@
 ﻿/*
     TODO:
-        1 zaimplementowac metode samplesToInstants()
-        2 zaimplenentowac metode instantsToIntervals()
+        1 zaimplementowac metode samplesToInstants() - pomnożyć numery próbek razy dt / podzielić fs
+        2 zaimplenentowac metode instantsToIntervals() - odejmować próbki od siebie
         3 zaimplenetowac cala reszte
         4 podlaczyc do interfejsow
         5 Testy, testy, testy...
@@ -56,24 +56,45 @@ namespace EKG_Project.Modules.HRV1
 
         #region
         /// <summary>
+        /// This methods calculates vector rInstants based on values of Fs and rSamples
+        /// </summary>
+        #endregion
+        private void samplesToInstants(Vector<double> rSamples, double Fs )
+        {
+          ;
+        }
+
+        
+
+        #region
+        /// <summary>
+        /// This methods calculates vaecor rrIntervals based on values in rInstants
+        /// </summary>
+        #endregion
+        private void instantsToIntervals()
+        {
+    ;
+        }
+
+        
+        #region
+        /// <summary>
         /// This method calculates time-based parameters
         /// </summary>
         #endregion
         private void calculateTimeBased()
         {
-            ;
+    
+
+    SDNN = 0;
+            RMSSD = 0;
+            SDSD = 0;
+            NN50 = 0;
+            pNN50 = 0;
         }
 
 
-        #region
-        /// <summary>
-        /// This function calculates frequency-based parameters
-        /// </summary>
-        #endregion
-        private void calculateFreqBased()
-        {
-            ;
-        }
+       
 
 
         #region
@@ -143,42 +164,65 @@ namespace EKG_Project.Modules.HRV1
         }
 
 
-        #region
-        /// <summary>
-        /// This methods calculates vector rInstants based on values of Fs and rSamples
-        /// </summary>
-        #endregion
-        private void samplesToInstants()
+#region
+/// <summary>
+/// This function calculates frequency-based parameters
+/// </summary>
+#endregion
+private void calculateFreqBased()
+{
+        var temp_vec = Vector<double>.Build.Dense(f.Count, 1);
+    //Obliczenie mocy widma w zakresie wysokich częstotliwości (0,15-0,4Hz)
+        for (int i = 0; i < f.Count; i++)
         {
-            ;
-        }
 
-
-        #region
-        /// <summary>
-        /// This methods calculates vaecor rrIntervals based on values in rInstants
-        /// </summary>
-        #endregion
-        private void instantsToIntervals()
+        if (f[i] >= 0.15 && f[i] < 0.4)
         {
-            ;
+            HF = temp_vec[i] + HF;
         }
+    }
+
+    //Wyznaczenie mocy widma w zakresie niskich częstotliwości (0,04-0,15Hz)
+        for (int i = 0; i < f.Count; i++)
+    {
+        if (f[i] > 0.04 && f[i] < 0.15)
+        {
+            LF = temp_vec[i] + LF;
+        }
+    }
+
+    //Obliczenie mocy widma w zakresie bardzo niskich częstotliwości (0,003-0,04Hz)
+       for (int i = 0; i < f.Count; i++)
+    {
+        if (f[i] > 0.003 && f[i] < 0.04)
+        {
+            VLF = temp_vec[i] + VLF;
+        }
+    }
+
+            //Obliczenie stosunku mocy widm niskich częstotliwości do mocy widm wysokich częstotliwości
+            LFHF = LF / HF;
+
+}
 
 
 
-        #region Main method doc
-        /// <summary>
-        /// 'Main' mehod used for code debugging and testing
-        /// </summary>
-        #endregion
-        public static void Main()
+
+
+
+#region Main method doc
+/// <summary>
+/// 'Main' mehod used for code debugging and testing
+/// </summary>
+#endregion
+public static void Main()
         {
             Console.WriteLine("Hello Matylda!");
 
             // do testowania nalezy odkomentowac odpowiednia linijke, a zakomentowac pozostale
             //string dataPath = "F:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na duzym komputerze Michala
-            string dataPath = "C:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na laptopie Michala
-            // string dataPath = "...\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na komputerze Matyldy
+           // string dataPath = "C:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na laptopie Michala
+            string dataPath = "...\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na komputerze Matyldy
             string filename = "NSR001.txt"; // plik zawiera 'ladny' wycinek z tachogramu RR sygnalu NSR001
             dataPath = dataPath + filename;
 
@@ -190,8 +234,8 @@ namespace EKG_Project.Modules.HRV1
             hrv.Fs = TempInput.getFrequency();
             hrv.dt = 1 / hrv.Fs;
 
-            hrv.samplesToInstants();
-            hrv.instantsToIntervals();
+            //hrv.samplesToInstants();
+            //hrv.instantsToIntervals();
             hrv.f = hrv.gnerateFreqVector(0, 1, (double)1/1000);
             //Console.WriteLine(hrv.f);
 

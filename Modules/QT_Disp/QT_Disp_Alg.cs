@@ -15,6 +15,7 @@ namespace EKG_Project.Modules.QT_Disp
     {
         static void Main()
         {
+            //delete later
 
              Console.WriteLine("Test");
             /* TempInput.setInputFilePath("D:\\Dadm_nowy\\dane.txt");

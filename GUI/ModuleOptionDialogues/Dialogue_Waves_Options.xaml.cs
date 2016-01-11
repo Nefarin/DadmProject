@@ -20,7 +20,7 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
     /// </summary>
     public partial class Dialogue_Waves_Options : Window
     {
-        private Waves_Params returnParameters { get; set; }
+        public Waves_Params returnParameters { get; set; }
         public Waves_Params PendingParameters { get; set; }
         ModulePanel panel;
 

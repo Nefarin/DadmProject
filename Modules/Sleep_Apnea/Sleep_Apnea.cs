@@ -253,7 +253,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
         public static void Main()
         {
-            Sleep_Apnea_Params param = new Sleep_Apnea_Params("Sleep Apnea");
+            Sleep_Apnea_Params param = new Sleep_Apnea_Params("TestAnalysis3");
             Sleep_Apnea sleep_apnea = new Sleep_Apnea();
             sleep_apnea.Init(param);
             while (true)
