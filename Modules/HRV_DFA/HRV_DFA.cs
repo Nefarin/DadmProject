@@ -30,7 +30,8 @@ namespace EKG_Project.Modules.HRV_DFA
 
         private HRV_DFA_Params _params;
 
-        private Vector<double> _currentdfaNumberN;
+        private List<Tuple<string, Vector<double>, Vector<double>>> _currentdfaNumberN;
+       
         private Vector<double> _currentdfaValueFn;
         private Vector<double> _currentparamAlpha;
 
@@ -71,9 +72,9 @@ namespace EKG_Project.Modules.HRV_DFA
                 NumberOfChannels = InputData.Signals.Count;
                 _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
 
-                _currentdfaNumberN = Vector<double>.Build.Dense(_currentRpeaksLength);
-                _currentdfaValueFn = Vector<double>.Build.Dense(_currentRpeaksLength);
-                _currentparamAlpha = Vector<double>.Build.Dense(_currentRpeaksLength);
+               // _currentdfaNumberN = Tuple<string, Vector<double>, Vector<double>>();
+                //_currentdfaValueFn = Vector<double>.Build.Dense(_currentRpeaksLength);
+               // _currentparamAlpha = Vector<double>.Build.Dense(_currentRpeaksLength);
             }
         }
 
@@ -104,9 +105,12 @@ namespace EKG_Project.Modules.HRV_DFA
                 if (startIndex + step > _currentRpeaksLength)
                 {
                     HRV_DFA_Analysis();
-                    OutputData.DfaNumberN.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentdfaNumberN));
-                    OutputData.DfaValueFn.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentdfaValueFn));
-                    OutputData.ParamAlpha.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentparamAlpha));
+                    Tuple<string, Vector<double>, Vector<double>> numberN = new Tuple<string, Vector<double>, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, veclogn1 ,veclogn2);
+                    Tuple<string, Vector<double>, Vector<double>> faValue = new Tuple<string, Vector<double>, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, veclogFn1 , veclogFn2);
+                    Tuple<string, Vector<double>, Vector<double>> pAlpha = new Tuple<string, Vector<double>, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, vecparam1 , vecparam2);
+                    OutputData.DfaNumberN.Add(numberN);
+                    OutputData.DfaValueFn.Add(faValue);
+                    OutputData.ParamAlpha.Add(pAlpha);
 
                     _currentChannelIndex++;
 

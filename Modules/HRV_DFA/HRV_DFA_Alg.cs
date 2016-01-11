@@ -14,6 +14,12 @@ namespace EKG_Project.Modules.HRV_DFA
 
     public partial class HRV_DFA : IModule
     {
+        Vector<double> veclogn1;
+        Vector<double> veclogn2;
+        Vector<double> veclogFn1;
+        Vector<double> veclogFn2;
+        Vector<double> vecparam1;
+        Vector<double> vecparam2;
 
         public void HRV_DFA_Analysis()
         {
@@ -51,6 +57,7 @@ namespace EKG_Project.Modules.HRV_DFA
             // short - range correlations
             Vector<double> logn1 = logn.SubVector(0, q);
             Vector<double> logFn1 = logFn.SubVector(0, q);
+
             double[] logn1a = logn1.ToArray();
             double[] logFn1a = logFn1.ToArray();
             double[] p1 = Fit.Polynomial(logn1a, logFn1a, 1);
@@ -77,9 +84,21 @@ namespace EKG_Project.Modules.HRV_DFA
                 fittedFn2[k] = fitting2(logn2a[k]);
             }
 
-            Console.WriteLine(sig);
+            //Console.WriteLine(sig);
 
-        }
+            veclogn1 = logn1;
+            veclogn2 = logn2;
+            veclogFn1 = fittedFn1;
+            veclogFn2 = fittedFn2;
+            vecparam1 = p1;
+            vecparam2 = p2;
+
+
+            //Tuple<string, Vector<double>, Vector<double>> _currentdfaNumberN = Tuple.Create<string, Vector<double>, Vector<double>>("logn1 and logn2", logn1, logn2);
+            //Tuple<string, Vector<double>, Vector<double>> _currentdfaValueFn = Tuple.Create<string, Vector<double>, Vector<double>>("lognF1 and logFn2", fittedFn1, fittedFn2);
+            //Tuple<string, Vector<double>, Vector<double>> _currentparamAlpha = Tuple.Create<string, Vector<double>, Vector<double>>("alpha1,b1 and alpha2,b2", p1 ,p2 );
+
+    }
 
         // METHODS:
 
