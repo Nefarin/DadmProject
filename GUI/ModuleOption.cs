@@ -41,15 +41,19 @@ namespace EKG_Project.GUI
                     {
                         case AvailableOptions.ECG_BASELINE:
                             this.ModuleParam = new ECG_Baseline_Params();
+                            this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.R_PEAKS:
                             this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.WAVES:
                             this.ModuleParam = new Waves_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.ATRIAL_FIBER:
                             this.ModuleParam = new Atrial_Fibr_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         default:
                             this.ModuleParam = null;
@@ -100,7 +104,13 @@ namespace EKG_Project.GUI
         public ModuleParams ModuleParam { get; set; }
         public ModulePanel Panel;
 
-        public bool ParametersAvailable { get { return this.ModuleParam != null; } }
+        public bool ParametersAvailable
+        {
+            get
+            {
+                return this.ModuleParam != null ? this.ModuleParam.GUIParametersAvailable : false;
+            }
+        }
 
         public string AnalysisName
         {
