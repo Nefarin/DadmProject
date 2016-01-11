@@ -93,7 +93,8 @@ namespace EKG_Project.Modules.HRV2
             {
 
                 Analyse(InputData.RPeaks[_currentChannelIndex].Item2);
-                OutputData.HistogramData = new Histogram (_currentHistogram, _currentBinAmout);
+                //OutputData.HistogramData = new Histogram (_currentHistogram, _currentBinAmout);
+                OutputData.HistogramData.Add(new Tuple<string, Vector<double>>(InputData.RPeaks[_currentChannelIndex].Item1, _currentHistogram));
                 Vector<double> rr_intervals_x = Vector<double>.Build.Dense(1);
                 Vector<double> rr_intervals_y = Vector<double>.Build.Dense(1);
                 PoincarePlot( rr_intervals_x,  rr_intervals_y);
