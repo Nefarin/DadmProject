@@ -10,9 +10,9 @@ namespace EKG_Project.Modules.HRV_DFA
     public class HRV_DFA_Data : ECG_Data
     {
         // outputs
-        private List<Tuple<string, Vector<double>>> _dfaNumberN;
-        private List<Tuple<string, Vector<double>>> _dfaValueFn;
-        private List<Tuple<string, Vector<double>>> _paramAlpha;
+        private List<Tuple<string, Vector<double>, Vector<double>>> _dfaNumberN;
+        private List<Tuple<string, Vector<double>, Vector<double>>> _dfaValueFn;
+        private List<Tuple<string, Vector<double>, Vector<double>>> _paramAlpha;
 
         public HRV_DFA_Data() { }
 

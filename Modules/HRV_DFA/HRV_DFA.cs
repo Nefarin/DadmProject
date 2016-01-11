@@ -30,9 +30,9 @@ namespace EKG_Project.Modules.HRV_DFA
 
         private HRV_DFA_Params _params;
 
-        private Vector<double> _currentdfaNumberN;
-        private Vector<double> _currentdfaValueFn;
-        private Vector<double> _currentparamAlpha;
+        private List<Tuple<string,Vector<double>>> _currentdfaNumberN;
+        private List<Tuple<string, Vector<double>>> _currentdfaValueFn;
+        private List<Tuple<string, Vector<double>>> _currentparamAlpha;
 
         private Vector<Double> _currentVector;
 
@@ -291,7 +291,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main()
         {
-            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis");
+            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis2");
             HRV_DFA testModule = new HRV_DFA();
 
             while (true)
@@ -302,7 +302,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-            Console.ReadKey();
+            //Console.ReadKey();
         }
     }
 }

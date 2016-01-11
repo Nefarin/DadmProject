@@ -79,6 +79,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
             Console.WriteLine(sig);
 
+            
         }
 
         // METHODS:
@@ -124,6 +125,7 @@ namespace EKG_Project.Modules.HRV_DFA
                     {
                         yn[k] = fitting(x[k]);
                     }
+
                     // dfa fluctuation function F(n)
                     fn[i] = dfaFn.InBoxFluctuations(yk, yn, box_qtyD);
                 }
