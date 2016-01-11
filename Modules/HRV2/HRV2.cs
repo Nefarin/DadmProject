@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using MathNet.Numerics.Statistics;
 using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
-    /*
     public partial class HRV2 : IModule
     {
-        
         private bool _ended;
         private bool _aborted;
 
@@ -22,13 +20,14 @@ namespace EKG_Project.Modules.HRV2
         private int _numberOfChannels;
 
         private R_Peaks_Data_Worker _inputWorker;
-        //private HRV2_Data_Worker _outputWorker;
+        private HRV2_Data_Worker _outputWorker;
 
         private HRV2_Data _outputData;
         private R_Peaks_Data _inputData;
         private HRV2_Params _params;
 
         private Vector<double> _currentHistogram;
+        private int _currentBinAmout;
         private Vector<double> _currentPoincare;
 
         public void Abort()
@@ -55,7 +54,7 @@ namespace EKG_Project.Modules.HRV2
                 InputWorker.Load();
                 InputData = InputWorker.Data;
 
-                //OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
+                OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
                 OutputData = new HRV2_Data();
 
                 _currentChannelIndex = 0;
@@ -93,8 +92,8 @@ namespace EKG_Project.Modules.HRV2
             if (channel < NumberOfChannels)
             {
 
-                Analyse();
-                OutputData.HistogramData.Add( new Tuple<string, Vector<double>>( InputData.RPeaks[_currentChannelIndex].Item1, _currentHistogram));
+                Analyse(InputData.RPeaks[_currentChannelIndex].Item2);
+                OutputData.HistogramData = new Histogram (_currentHistogram, _currentBinAmout);
                 Vector<double> rr_intervals_x = Vector<double>.Build.Dense(1);
                 Vector<double> rr_intervals_y = Vector<double>.Build.Dense(1);
                 PoincarePlot( rr_intervals_x,  rr_intervals_y);
@@ -113,7 +112,7 @@ namespace EKG_Project.Modules.HRV2
             }
             else
             {
-                //OutputWorker.Save(OutputData);
+                OutputWorker.Save(OutputData);
                 _ended = true;
             }
 
@@ -199,18 +198,18 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
-        //public HRV2_Data_Worker OutputWorker
-        //{
-        //    get
-        //    {
-        //        return _outputWorker;
-        //    }
+        public HRV2_Data_Worker OutputWorker
+        {
+            get
+            {
+                return _outputWorker;
+            }
 
-        //    set
-        //    {
-        //        _outputWorker = value;
-        //    }
-        //}
+            set
+            {
+                _outputWorker = value;
+            }
+        }
 
         public static void Main()
         {
@@ -227,7 +226,5 @@ namespace EKG_Project.Modules.HRV2
                 hrv2.ProcessData();
             }
         }
-         
     }
-         * * */
 }

@@ -1,58 +1,23 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using EKG_Project.Modules.R_Peaks;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
-    /*
     public partial class HRV2 : IModule
-    {
-        #region
-
-        #endregion
-        private void Analyse()
         {
-            ;
-        }
-        private HRV2_Data Analyse(R_Peaks_Data RRIntervals)
-        {
-            HRV2_Data hrv2Data = new HRV2_Data();
-
-            int most_often_RR = 0;
-
-
-            hrv2Data.HistogramData = ;
-            return hrv2Data;
-        }
-
-        #region Documentation
-        /// <summary>
-        /// metoda testowa dla modułu
-        /// </summary>
-        /// <param name="args"></param>
-        /// 
-        #endregion
-        static void Main(string[] args)
-        {
-            DataSource data = null;//new DataSource(0.0078125, RRInterval); //nie wiem jak pobrac z r_peaks :(
-            ObservableCollection<Sample> samples = data.Samples;
-
-            foreach (Sample s in samples)
+            public HRV2_Data Analyse(Vector<double> inputData)
             {
-                Console.WriteLine(s.ToString());
-            }
-            Console.ReadKey();
-        }
+                HRV2_Data OUT_Data = new HRV2_Data();
+                inputData = InputData.RPeaks[_currentChannelIndex].Item2;
 
-        #region Documentation
-        /// <summary>
-        /// TODO - uzupełnić dokumentację konstruktora HRV2
-        /// </summary>
-        ///
-        #endregion
-        public HRV2()
-        {
+                OUT_Data.HistogramData = makeHistogram(inputData);
+                OUT_Data.Tinn = makeTinn(inputData);
+                OUT_Data.TriangleIndex = TriangleIndex(inputData);
+                
+            return OUT_Data;
+            }
+
         }
-    }
-     * */
 }
