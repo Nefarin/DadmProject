@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EKG_Project.Modules.ST_Segment;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Waves
@@ -81,11 +80,6 @@ namespace EKG_Project.Modules.Waves
             this.WaveType = parameters.WaveType;
             this.DecompositionLevel = parameters.DecompositionLevel;
             this.RpeaksStep = parameters.RpeaksStep;
-        }
-
-        public static implicit operator Waves_Params(ST_Segment_Params v)
-        {
-            throw new NotImplementedException();
         }
     }
 }

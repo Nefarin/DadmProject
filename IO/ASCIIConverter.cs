@@ -16,6 +16,20 @@ namespace EKG_Project.IO
         string[] lines;
         List<string>[] columns;
         uint sampleAmount;
+        Basic_Data _data;
+
+        public Basic_Data Data
+        {
+            get
+            {
+                return _data;
+            }
+
+            set
+            {
+                _data = value;
+            }
+        }
 
         public ASCIIConverter (string ASCIIAnalysisName) 
         {
@@ -24,19 +38,18 @@ namespace EKG_Project.IO
 
         public void SaveResult()
         {
-            Basic_Data data = new Basic_Data();
-            foreach (var property in data.GetType().GetProperties())
+            foreach (var property in Data.GetType().GetProperties())
             {
 
-                if (property.GetValue(data, null) == null)
+                if (property.GetValue(Data, null) == null)
                 {
                     throw new Exception(); // < - robić coś takiego?
 
                 }
                 else
                 {
-                    Basic_Data_Worker dataWorker = new Basic_Data_Worker();
-                    dataWorker.Save(data);
+                    Basic_Data_Worker dataWorker = new Basic_Data_Worker(analysisName);
+                    dataWorker.Save(Data);
                 }
             }
         }
@@ -44,10 +57,10 @@ namespace EKG_Project.IO
         public void ConvertFile(string path)
         {
             loadASCIIFile(path);
-            Basic_Data data = new Basic_Data();
-            data.Frequency = getFrequency();
-            data.Signals = getSignals();
-            data.SampleAmount = sampleAmount;
+            Data = new Basic_Data();
+            Data.Frequency = getFrequency();
+            Data.Signals = getSignals();
+            Data.SampleAmount = sampleAmount;
         }
 
         public void loadASCIIFile(string path)

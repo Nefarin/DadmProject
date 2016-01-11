@@ -72,20 +72,6 @@
       <end>4</end>
     </FlutterAnnotations>
   </module>
-  <module name="Atrial_Fibr">
-    <detectedAF>
-      <detected>True</detected>
-      <detectedPoints>1 2 3 4 5 6 7 8 9 </detectedPoints>
-      <detectedS>V1</detectedS>
-      <timeofAF>V1</timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>True</detected>
-      <detectedPoints>1 2 3 4 5 6 7 8 9 </detectedPoints>
-      <detectedS>MLII</detectedS>
-      <timeofAF>MLII</timeofAF>
-    </detectedAF>
-  </module>
   <module name="Heart_Axis">
     <HeartAxis>67</HeartAxis>
   </module>
@@ -209,6 +195,17 @@
       <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
     </TEnds>
   </module>
+  <module name="Heart_Class">
+    <ClassificationResult>
+      <item1>1</item1>
+      <item2>2</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>1</item1>
+      <item2>2</item2>
+    </ClassificationResult>
+    <ChannelMliiDetected>True</ChannelMliiDetected>
+  </module>
   <module name="QT_Disp">
     <QT_disp_local>
       <lead>V1</lead>
@@ -236,15 +233,110 @@
     </QT_std>
     <QT_disp_global>78</QT_disp_global>
   </module>
-  <module name="Heart_Class">
-    <ClassificationResult>
-      <item1>1</item1>
-      <item2>2</item2>
-    </ClassificationResult>
-    <ClassificationResult>
-      <item1>1</item1>
-      <item2>2</item2>
-    </ClassificationResult>
-    <ChannelMliiDetected>True</ChannelMliiDetected>
+  <module name="HRV2">
+    <HistogramData>
+      <lead>V1</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </HistogramData>
+    <HistogramData>
+      <lead>MLII</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </HistogramData>
+    <PoincarePlotData_x>
+      <item1>V1</item1>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_y>
+      <item1>MLII</item1>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </PoincarePlotData_y>
+    <Tinn>90</Tinn>
+    <TriangleIndex>100</TriangleIndex>
+    <SD1>1</SD1>
+    <SD2>2</SD2>
+  </module>
+  <module name="T_Wave_Alt">
+    <AlternansIndexArray>1 2 3 4 5 6 7 8 9 </AlternansIndexArray>
+  </module>
+  <module name="Sleep_Apnea">
+    <Detected_Apnea>
+      <lead>V1</lead>
+      <tupleList>
+        <tuple>
+          <item1>1</item1>
+          <item2>2</item2>
+        </tuple>
+        <tuple>
+          <item1>3</item1>
+          <item2>4</item2>
+        </tuple>
+      </tupleList>
+    </Detected_Apnea>
+    <Detected_Apnea>
+      <lead>MLII</lead>
+      <tupleList>
+        <tuple>
+          <item1>1</item1>
+          <item2>2</item2>
+        </tuple>
+        <tuple>
+          <item1>3</item1>
+          <item2>4</item2>
+        </tuple>
+      </tupleList>
+    </Detected_Apnea>
+    <h_amp>
+      <lead>V1</lead>
+      <samplesList>
+        <samples>1 2 3 4 5 </samples>
+        <samples>6 7 8 9 10 </samples>
+      </samplesList>
+    </h_amp>
+    <h_amp>
+      <lead>MLII</lead>
+      <samplesList>
+        <samples>1 2 3 4 5 </samples>
+        <samples>6 7 8 9 10 </samples>
+      </samplesList>
+    </h_amp>
+    <il_Apnea>
+      <lead>V1</lead>
+      <item2>30,09</item2>
+    </il_Apnea>
+    <il_Apnea>
+      <lead>MLII</lead>
+      <item2>54</item2>
+    </il_Apnea>
+  </module>
+  <module name="HRT">
+    <TurbulenceOnset>1 2 3 4 5 6 7 8 9 </TurbulenceOnset>
+    <TurbulenceSlope>1 2 3 4 5 6 7 8 9 </TurbulenceSlope>
+    <VPCtachogram>1 2 3 4 5 6 7 8 9 </VPCtachogram>
+    <TurbulenceOnsetMean>1 2 3 4 5 6 7 8 9 </TurbulenceOnsetMean>
+    <TurbulenceSlopeMean>1 2 3 4 5 6 7 8 9 </TurbulenceSlopeMean>
+    <VPCcount>1</VPCcount>
+  </module>
+  <module name="Atrial_Fibr">
+    <detectedAF>
+      <detected>True</detected>
+      <detectedPoints>1 2 3 4 5 6 7 8 9 </detectedPoints>
+      <detectedS>V1</detectedS>
+      <timeofAF>V1</timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>True</detected>
+      <detectedPoints>1 2 3 4 5 6 7 8 9 </detectedPoints>
+      <detectedS>MLII</detectedS>
+      <timeofAF>MLII</timeofAF>
+    </detectedAF>
+  </module>
+  <module name="ST_Segment">
+    <tJs>1 2 3 4 5 6 </tJs>
+    <tSTs>1 2 3 4 5 6 </tSTs>
+    <ConcaveCurves>90</ConcaveCurves>
+    <ConvexCurves>80</ConvexCurves>
+    <DecreasingLines>70</DecreasingLines>
+    <HorizontalLines>60</HorizontalLines>
+    <IncreasingLines>40</IncreasingLines>
   </module>
 </EKG>

@@ -9,22 +9,55 @@ namespace EKG_Project.IO
 {
     class MITBIHConverter : IECGConverter
     {
-        string pathIn;
         string analysisName;
+        uint sampleAmount;
+        Basic_Data _data;
 
-        public MITBIHConverter(string MITBIHAnalysisName)
+        public Basic_Data Data
+        {
+            get
+            {
+                return _data;
+            }
+
+            set
+            {
+                _data = value;
+            }
+        }
+
+        public MITBIHConverter(string MITBIHAnalysisName) 
         {
             analysisName = MITBIHAnalysisName;
         }
 
         public void SaveResult()
         {
-            Basic_Data data = new Basic_Data();
+            foreach (var property in Data.GetType().GetProperties())
+            {
+
+                if (property.GetValue(Data, null) == null)
+                {
+                    throw new Exception(); // < - robić coś takiego?
+
+                }
+                else
+                {
+                    Basic_Data_Worker dataWorker = new Basic_Data_Worker(analysisName);
+                    dataWorker.Save(Data);
+                }
+            }
         }
 
         public void ConvertFile(string path)
         {
-            pathIn = path;
+            /*
+            loadMITBIHFile(path);
+            Data = new Basic_Data();
+            Data.Frequency = getFrequency();
+            Data.Signals = getSignals();
+            Data.SampleAmount = sampleAmount;
+             * */
         }
     }
 }

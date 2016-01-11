@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EKG_Project.Modules.ECG_Baseline;
-using EKG_Project.Modules.Waves;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.IO;
 
 namespace EKG_Project.Modules.ST_Segment
 {
     
-
+    /*
         public partial class ST_Segment : IModule
         {
         private bool _ended;
@@ -62,7 +60,7 @@ namespace EKG_Project.Modules.ST_Segment
                 
                 InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
                 InputWorker.Load();
-                InputData = InputWorker.Data;
+                InputData = InputWorker.BasicData;
                 InputDataRpeaks = InputWorkerRpeaks.Data;
 
                 OutputWorker = new ST_Segment_Data_Worker(Params.AnalysisName);
@@ -299,4 +297,5 @@ namespace EKG_Project.Modules.ST_Segment
 
         }
     }
+     * */
 }
