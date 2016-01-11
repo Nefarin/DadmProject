@@ -112,7 +112,7 @@ namespace EKG_Project.Modules.ST_Segment
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
                 _rPeaksProcessed = 0;
-                NumberOfChannels = InputData.RPeaks.Count
+                NumberOfChannels = InputData.RPeaks.Count;
                 _currentRPeaksLength = InputData.RPeaks[_currentChannelIndex].Item2.Count;
 
 
@@ -194,19 +194,13 @@ namespace EKG_Project.Modules.ST_Segment
 
 
 
-            } }
+            } 
 
-        private void Method(bool v1, bool v2, bool v3, bool v4, int v5, object freq)
-        {
-            throw new NotImplementedException();
-        }
 
-        public void ProcessData()
-        {
-            throw new NotImplementedException();
-        }
 
-        public ST_Segment_Data 
+
+
+  public ST_Segment_Data 
             {
             get
             {
@@ -374,7 +368,7 @@ public Waves_Data_Worker OutputWorker
     public static void Main()
         {
 
-        ST_Segment _Params param = new ST_Segment _Params("Analysis6");
+        ST_Segment _Params param = new ST_Segment_Params("Analysis6"); 
 
 
         //TestModule3_Params param = null;
@@ -423,4 +417,4 @@ public Waves_Data_Worker OutputWorker
 
     }
 }
-}
+
