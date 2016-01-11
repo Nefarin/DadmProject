@@ -1,27 +1,24 @@
-﻿//using Histogram.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
-    /*
-
-    #region Documentation
-    /// <summary>
-    /// Coś tu pomieszalam :(
-    /// </summary>
-    /// 
-    #endregion
-    public class Tinn
+    public partial class HRV2 : IModule
     {
-        /*
-        //podstawa trójkąta dofitowanego do histogramu
-        double length = rr_intervals.Max - rr_intervals.Min;
-        double Tinn = length / _binLength;
-        
+        #region Documentation
+        /// <summary>
+        /// współczynnik TINN czyli podstawa trójkąta dofitowanego do histogramu
+        /// </summary>
+        /// 
+        #endregion
+        double makeTinn(Vector<double> RRIntervals)
+        {
+            RRIntervals = InputData.RPeaks[_currentChannelIndex].Item2;
+            double tinn = (RRIntervals.Max() - RRIntervals.Min());
+            return tinn;
+        }
     }
-     * */
 }
