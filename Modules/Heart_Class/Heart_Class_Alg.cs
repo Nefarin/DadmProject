@@ -94,11 +94,12 @@ namespace EKG_Project.Modules.Heart_Class
             SetQrsComplex();
             QrsCoefficients = CountCoeff(GetQrsComplex(), fs);
             //WCZYTANIE ZBIORU TRENINGOWEGO
-            List<Vector<double>> trainDataList = loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d.txt");
+            DebugECGPath loader = new DebugECGPath();
+            List<Vector<double>> trainDataList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
 
 
             //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-NV
-            List<Vector<double>> trainClassList = loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d_label.txt");
+            List<Vector<double>> trainClassList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
             // konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
             int oneClassElement;
             List<int> trainClass;
@@ -114,7 +115,7 @@ namespace EKG_Project.Modules.Heart_Class
             }
 
             //Do tesowania:
-            List<Vector<double>> testDataList = loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\test_d.txt");
+            List<Vector<double>> testDataList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "test_d.txt"));
             // Tworzenie listy tupli zbioru testowego - w celach testowych (zbior treningowy i testowy wczytywany jest z pliku). 
             //w ostatecznej  wresji testDataList będzie obliczane w programie w formie:  List<Tuple<int, Vector<double>>>: 
             List<Tuple<int, Vector<double>>> testSamples;
