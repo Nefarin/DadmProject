@@ -262,7 +262,14 @@ namespace EKG_Project.GUI
             {
                 _r_Peaks_Data_Worker = new R_Peaks_Data_Worker();
                 _r_Peaks_Data_Worker.Load();
+
+                //tutaj potrzebne do naniesienia na coś tych naszych r_peaksów
+                _ecg_Baseline_Data_worker = new ECG_Baseline_Data_Worker();
+                _ecg_Baseline_Data_worker.Load();
+                //
+
                 first = false;
+
                 //var lineraYAxis = new LinearAxis();
                 //lineraYAxis.Position = AxisPosition.Left;
                 //lineraYAxis.Minimum = -100.0;
@@ -278,26 +285,64 @@ namespace EKG_Project.GUI
                 ClearPlot();
             }
 
-            foreach (var signal in _r_Peaks_Data_Worker.Data.RPeaks)
+            //wyśiwtlenie ecgBaseline
+            foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
             {
 
                 Vector<double> signalVector = signal.Item2;
+                //var r_Peaks = _r_Peaks_Data_Worker.Data.RPeaks.Where(sig => sig.Item1 == signal.Item1);
+                var r_Peaks = _r_Peaks_Data_Worker.Data.RPeaks.Find(sig => sig.Item1 == signal.Item1);
+                Vector<double> r_PeaksVector = r_Peaks.Item2;
+                bool addR_Peak = false;
+
                 LineSeries ls = new LineSeries();
                 ls.Title = signal.Item1;
+                ScatterSeries rPeaksSeries = new ScatterSeries();
+                rPeaksSeries.Title = "R_Peak_" + signal.Item1;
+                //rPeaksSeries.MarkerType = MarkerType.Star;
+                
 
                 ls.MarkerStrokeThickness = 1;
-
 
                 for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
                 {
                     ls.Points.Add(new DataPoint(i, signalVector[i]));
+                    if(r_PeaksVector.Contains(i))
+                    {
+                        rPeaksSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3});
+                        
+                        addR_Peak = true;
+                    }
                 }
 
-
                 CurrentPlot.Series.Add(ls);
-
-
+                if (addR_Peak)
+                {
+                    CurrentPlot.Series.Add(rPeaksSeries);
+                }
             }
+
+            ////R_Peaks
+            //foreach (var signal in _r_Peaks_Data_Worker.Data.RPeaks)
+            //{
+
+            //    Vector<double> signalVector = signal.Item2;
+            //    LineSeries ls = new LineSeries();
+            //    ls.Title = signal.Item1;
+
+            //    ls.MarkerStrokeThickness = 1;
+
+
+            //    for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+            //    {
+            //        ls.Points.Add(new DataPoint(i, signalVector[i]));
+            //    }
+
+
+            //    CurrentPlot.Series.Add(ls);
+
+
+            //}
 
             RefreshPlot();
         }
