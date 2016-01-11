@@ -106,6 +106,22 @@ namespace EKG_Project.Modules.HRV_DFA
                     OutputData.DfaNumberN.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentdfaNumberN));
                     OutputData.DfaValueFn.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentdfaValueFn));
                     OutputData.ParamAlpha.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentparamAlpha));
+
+                    _currentChannelIndex++;
+
+                    if (_currentChannelIndex < NumberOfChannels)
+                    {
+                        _rPeaksProcessed = 0;
+
+                        _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
+                        _currentVector = Vector<Double>.Build.Dense(_currentRpeaksLength);
+                    }
+                    else
+                    {
+                        _currentVector = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, step);
+                        _rPeaksProcessed = startIndex + step;
+                        
+                    }
                 }
                 else
                 {
@@ -270,6 +286,22 @@ namespace EKG_Project.Modules.HRV_DFA
             {
                 _params = value;
             }
+        }
+
+        public static void Main()
+        {
+            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis");
+            HRV_DFA testModule = new HRV_DFA();
+
+            while (true)
+            {
+                //Console.WriteLine("Press key to continue.");
+                //Console.Read();
+                if (testModule.Ended()) break;
+                Console.WriteLine(testModule.Progress());
+                testModule.ProcessData();
+            }
+            //Console.ReadKey();
         }
     }
 }
