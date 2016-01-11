@@ -213,7 +213,7 @@ namespace EKG_Project.Modules.HRV2
 
         public static void Main()
         {
-            HRV2_Params param = new HRV2_Params(-2, 5000, "Analysis6");
+            HRV2_Params param = new HRV2_Params(-2, 5000, "TestAnalysis2");
             //HRV2_Params param = null;
             HRV2 hrv2 = new HRV2();
             hrv2.Init(param);
