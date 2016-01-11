@@ -184,7 +184,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
             else
             {
-                pointsDetected.Clear();
+                pointsDetected=Vector<Double>.Build.Dense(1);
                 //afDetectedS="Nie wykryto migotania przedsionków";
             }
             Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetection);

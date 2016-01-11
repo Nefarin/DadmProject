@@ -29,7 +29,7 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             panel = parent as ModulePanel;
             this.returnParameters = parameters;
 
-            this.PendingParameters = new Atrial_Fibr_Params(Detect_Method.POINCARE);
+            this.PendingParameters = new Atrial_Fibr_Params(Detect_Method.POINCARE, panel.AnalysisName);
             this.PendingParameters.CopyParametersFrom(parameters);
             this.DataContext = this.PendingParameters;
             InitializeComponent();

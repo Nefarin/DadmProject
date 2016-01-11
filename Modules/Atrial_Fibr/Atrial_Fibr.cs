@@ -55,15 +55,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
             else
             {
                 _ended = false;
-                InputWorker_basic = new Basic_Data_Worker();
+                InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
                 InputWorker_basic.Load();
                 InputData_basic = InputWorker_basic.BasicData;
 
-                InputRpeaksWorker = new R_Peaks_Data_Worker();
+                InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
                 InputRpeaksWorker.Load();
                 InputRpeaksData = InputRpeaksWorker.Data;
 
-                OutputWorker = new Atrial_Fibr_Data_Worker();
+                OutputWorker = new Atrial_Fibr_Data_Worker(Params.AnalysisName);
                 OutputData = new Atrial_Fibr_Data();
 
                 _currentChannelIndex = 0;
@@ -101,14 +101,14 @@ namespace EKG_Project.Modules.Atrial_Fibr
             Vector<double> pointsDetected=Vector<double>.Build.Dense(1);
             Vector<double> pointsDetected2;
             double lengthOfDetection = 0;
-
+            _ClassResult = new Tuple<bool, Vector<double>, double>(detected, pointsDetected, lengthOfDetection);
             if (channel < NumberOfChannels)
             {
                 
                 if (startIndex + step >= _currentChannelLength)
                 {
-                    _currentVector = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, step);
-                    _vectorOfIntervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.SubVector(startIndex, step);
+                    _currentVector = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
+                    _vectorOfIntervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
 
                     _tempClassResult = detectAF(_vectorOfIntervals, _currentVector, Convert.ToUInt32(InputData_basic.Frequency), Params);
 
@@ -118,14 +118,23 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         pointsDetected.SetSubVector(pointsDetected.Count, _tempClassResult.Item2.Count, _tempClassResult.Item2);
                         lengthOfDetection += _tempClassResult.Item3;
                         _ClassResult = new Tuple<bool, Vector<double>, double>(detected, pointsDetected, lengthOfDetection);
+                        pointsDetected2 = Vector<double>.Build.Dense(_ClassResult.Item2.Count - 1);
                     }
-                    pointsDetected2 = Vector<double>.Build.Dense(_ClassResult.Item2.Count - 1);
+                    else
+                    {
+                        pointsDetected2 = Vector<double>.Build.Dense(1);
+                    }
+                    
                     if (_ClassResult.Item1)
                     {
                         double percentOfDetection = _ClassResult.Item3 / (InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count) - InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(0))*100* Convert.ToUInt32(InputData_basic.Frequency);
                         OutputData.AfDetection.Add(new Tuple<bool, Vector<double>,string,string>(true,pointsDetected2, "Wykryto migotanie przedsionków.",
                             "Wykryto migotanie trwające "+ _ClassResult.Item3.ToString("F1", CultureInfo.InvariantCulture)+ "s. Stanowi to "+
                             percentOfDetection.ToString("F1", CultureInfo.InvariantCulture)+ "% trwania sygnału."));
+                    }
+                    else
+                    {
+                        OutputData.AfDetection.Add(new Tuple<bool, Vector<double>, string, string>(false, pointsDetected2, "Nie wykryto migotania przedsionków.",""));
                     }
                     _currentChannelIndex++;
 
@@ -219,14 +228,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         public static void Main()
         {
-            //Atrial_Fibr_Params param = new Atrial_Fibr_Params("Analysis6"); // "Analysis6");
-            Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC);
+            Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC, "TestAnalysis2");
 
             Atrial_Fibr testModule = new Atrial_Fibr();
             testModule.Init(param);
             while (true)
             {
-                Console.WriteLine("Press key to continue.");
+                //Console.WriteLine("Press key to continue.");
                 Console.Read();
                 if (testModule.Ended()) break;
                 Console.WriteLine(testModule.Progress());
