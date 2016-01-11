@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.Waves;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.IO;
 
 namespace EKG_Project.Modules.ST_Segment
 {
     
-    /*
-        public partial class ST_Segment : IModule
-        {
+
+    public partial class ST_Segment : IModule
+    {
         private bool _ended;
         private bool _aborted;
 
@@ -20,7 +22,7 @@ namespace EKG_Project.Modules.ST_Segment
         private int _samplesProcessed;
         private int _numberOfChannels;
 
-       // private Basic_Data_Worker _inputWorker; //
+            private Basic_Data_Worker _inputWorker; //
             private R_Peaks_Data_Worker _inputRpeaksWorker;
             private ST_Segment_Data_Worker _outputWorker;
 
@@ -37,11 +39,11 @@ namespace EKG_Project.Modules.ST_Segment
             private int _DecreasingLines;
 
         public void Abort()
-        { 
+        {
             Aborted = true;
             _ended = true;
 
-                  }
+        }
 
         public bool Ended()
         {
@@ -57,10 +59,10 @@ namespace EKG_Project.Modules.ST_Segment
             {
                 _ended = false;
 
-                
+
                 InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
-                InputWorker.Load();
-                InputData = InputWorker.BasicData;
+                InputWorkerRpeaks.Load();
+               // InputData = InputWorkerRpeaks.Data;
                 InputDataRpeaks = InputWorkerRpeaks.Data;
 
                 OutputWorker = new ST_Segment_Data_Worker(Params.AnalysisName);
@@ -73,15 +75,12 @@ namespace EKG_Project.Modules.ST_Segment
 
                 _currenttJ = new List<int>();
                 _currenttST = new List<int>(); // tu cos co mamy miec 
+            }
                 
                
-            }
-
         }
 
-    
-
-    public void ProcessData(ST_Segment_Params parameters)
+        public void ProcessData(ST_Segment_Params parameters)
         {
             
                 if (Runnable()) processData();
@@ -95,7 +94,7 @@ namespace EKG_Project.Modules.ST_Segment
             return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentRPeaksLength));
         }
 
-    public bool Runnable()
+        public bool Runnable()
         {
             return Params != null;
         }
@@ -258,7 +257,7 @@ namespace EKG_Project.Modules.ST_Segment
             }
         }
 
-        public Waves_Data_Worker OutputWorker
+        public ST_Segment_Data_Worker OutputWorker
         {
             get
             {
@@ -282,7 +281,7 @@ namespace EKG_Project.Modules.ST_Segment
             //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");
             //Vector<double> rpeaks = TempInput.getSignal();
 
-            Waves testModule = new Waves();
+            Waves.Waves testModule = new Waves.Waves();
             //testModule.InitForTestsOnly(ecg, rpeaks, param);
             testModule.Init(param);
             while (true)
@@ -297,5 +296,4 @@ namespace EKG_Project.Modules.ST_Segment
 
         }
     }
-     * */
 }
