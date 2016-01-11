@@ -12,7 +12,6 @@ namespace EKG_Project.Modules.HRV_DFA
 {
     public partial class HRV_DFA : IModule
     {
-
         private bool _ended;
         private bool _aborted;
 
