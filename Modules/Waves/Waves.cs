@@ -361,10 +361,10 @@ namespace EKG_Project.Modules.Waves
 
         public static void Main()
         {
-            Waves_Params param = new Waves_Params( Wavelet_Type.haar, 2, "TestAnalysis", 100);
+            Waves_Params param = new Waves_Params( Wavelet_Type.haar, 2, "TestAnalysis8", 100);
 
             //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
-            TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
+            //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
             //Vector<double> ecg = TempInput.getSignal();
 
             //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");
@@ -390,7 +390,7 @@ namespace EKG_Project.Modules.Waves
 
             }
             Console.WriteLine(onsets);
-            TempInput.writeFile(360, onsets);
+            //TempInput.writeFile(360, onsets);
             Console.Read();
 
             //POKI CO BIERZEMY DANE Z NASZYCH GOWNIANYCH PLIKOW

@@ -56,4 +56,66 @@
       <intervals>1566,51 776,589 773,256 779,922 1539,846 2203,113 743,259 806,586 829,917 3139,686 746,592 </intervals>
     </RRInterval>
   </module>
+  <module name="Waves">
+    <QRSOnsets>
+      <lead>I</lead>
+      <samples>-1 224 -1 -1 928 1152 -1 -1 2284 3480 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>II</lead>
+      <samples>-1 228 460 696 1624 2072 2284 2508 3000 3484 3716 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>III</lead>
+      <samples>-1 464 696 928 1164 1396 1852 2508 2752 3000 3484 </samples>
+    </QRSOnsets>
+    <QRSEnds>
+      <lead>I</lead>
+      <samples>244 484 716 948 1416 1644 1868 2772 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>II</lead>
+      <samples>248 484 716 1868 2088 2304 2768 3260 3500 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>III</lead>
+      <samples>488 720 952 1184 1648 2308 2532 2772 3024 -1 </samples>
+    </QRSEnds>
+    <POnsets>
+      <lead>I</lead>
+      <samples>197 897 1063 2139 3451 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>II</lead>
+      <samples>197 897 1063 2139 3451 190 438 516 1454 1907 2139 2341 2967 3451 3543 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>III</lead>
+      <samples>197 897 1063 2139 3451 190 438 516 1454 1907 2139 2341 2967 3451 3543 431 665 887 1129 1362 1817 2353 2717 2959 3451 </samples>
+    </POnsets>
+    <PEnds>
+      <lead>I</lead>
+      <samples>205 905 1075 2165 3468 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>II</lead>
+      <samples>205 905 1075 2165 3468 217 450 552 1484 1947 2167 2378 2989 3474 3578 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>III</lead>
+      <samples>205 905 1075 2165 3468 217 450 552 1484 1947 2167 2378 2989 3474 3578 456 685 919 1156 1374 1831 2377 2729 2990 3462 </samples>
+    </PEnds>
+    <TEnds>
+      <lead>I</lead>
+      <samples>296 526 765 1001 1462 1706 1930 2826 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>II</lead>
+      <samples>296 526 765 1001 1462 1706 1930 2826 296 543 775 1947 2167 2378 2840 3332 3578 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>III</lead>
+      <samples>296 526 765 1001 1462 1706 1930 2826 296 543 775 1947 2167 2378 2840 3332 3578 553 786 1027 1255 1717 2377 2605 2846 3092 </samples>
+    </TEnds>
+  </module>
 </EKG>
