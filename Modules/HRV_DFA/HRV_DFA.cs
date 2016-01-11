@@ -10,6 +10,7 @@ using MathNet.Numerics;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
+    /*
     public partial class HRV_DFA : IModule
     {
         private bool _ended;
@@ -97,11 +98,11 @@ namespace EKG_Project.Modules.HRV_DFA
         {
             int channel = _currentChannelIndex;
             int startIndex = _rPeaksProcessed;
-            int step = 0;
+            int step = 1000;
 
             if (channel < NumberOfChannels)
             {
-                
+
                 if (startIndex + step > _currentRpeaksLength)
                 {
                     HRV_DFA_Analysis();
@@ -121,19 +122,20 @@ namespace EKG_Project.Modules.HRV_DFA
                         _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
                         _currentVector = Vector<Double>.Build.Dense(_currentRpeaksLength);
                     }
-                    else
-                    {
-                        HRV_DFA_Analysis();
-                        _currentVector = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, step);
-                        _rPeaksProcessed = startIndex + step;
-                        
-                    }
                 }
                 else
                 {
-                    OutputWorker.Save(OutputData);
-                    _ended = true;
+                    HRV_DFA_Analysis();
+                    _currentVector = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, step);
+                    _rPeaksProcessed = startIndex + step;
+
                 }
+            }
+            else
+            {
+                Console.WriteLine("Here");
+                OutputWorker.Save(OutputData);
+                _ended = true;
             }
 
         }
@@ -296,7 +298,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main()
         {
-            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis3");
+            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis6");
             HRV_DFA testModule = new HRV_DFA();
 
             testModule.Init(param);
@@ -308,7 +310,8 @@ namespace EKG_Project.Modules.HRV_DFA
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-            //Console.ReadKey();
+            Console.Read();
         }
     }
+     * */
 }

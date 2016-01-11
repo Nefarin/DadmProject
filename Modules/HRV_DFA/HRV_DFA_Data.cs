@@ -12,10 +12,9 @@ namespace EKG_Project.Modules.HRV_DFA
         // outputs
         private List<Tuple<string, Vector<double>, Vector<double>>> _dfaNumberN;
         private List<Tuple<string, Vector<double>, Vector<double>>> _dfaValueFn;
-        private List<Tuple<string, Vector<double>, Vector<double>>> _paramAlpha;
+        private List<Tuple<string, Vector<double>,Vector<double>>> _paramAlpha;
 
-        public HRV_DFA_Data()
-        {
+        public HRV_DFA_Data() {
             _dfaNumberN = new List<Tuple<string, Vector<double>, Vector<double>>>();
             _dfaValueFn = new List<Tuple<string, Vector<double>, Vector<double>>>();
             _paramAlpha = new List<Tuple<string, Vector<double>, Vector<double>>>();
@@ -27,7 +26,6 @@ namespace EKG_Project.Modules.HRV_DFA
             {
                 return _dfaNumberN;
             }
-
             set
             {
                 _dfaNumberN = value;
@@ -40,26 +38,22 @@ namespace EKG_Project.Modules.HRV_DFA
             {
                 return _dfaValueFn;
             }
-
             set
             {
                 _dfaValueFn = value;
             }
         }
-
         public List<Tuple<string, Vector<double>, Vector<double>>> ParamAlpha
         {
             get
             {
                 return _paramAlpha;
             }
-
             set
             {
                 _paramAlpha = value;
             }
         }
+
     }
 }
-
-

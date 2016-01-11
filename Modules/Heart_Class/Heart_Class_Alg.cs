@@ -24,20 +24,27 @@ namespace EKG_Project.Modules.Heart_Class
         private Vector<double> _qrsR;            // inicjalizacja przez wczytanie Vector z pliku
         private Vector<double> _singleQrs;       // inicjalizacja w konstruktorze
         private List<Tuple<int, Vector<double>>> _QrsComplex; // inicjalizacja w kontruktorze
+        private Tuple<int, Vector<double>> _QrsComplexOne;
         private List<Tuple<int, Vector<double>>> _qrsCoefficients;
+        private int _currentQRSComplex = 0;
+        private Tuple<int, Vector<double>> _qrsCoeffOne;
+
+        private Vector<double> _currentRVector;
+        private Vector<double> _currentECGBaselineVector;
+          
 
         private Vector<double> _qrssignal;
-        double malinowskaCoefficient;
-        double pnRatio;
-        double speedAmpltudeRatio;
-        double fastSample;
-        double qRSTime;
-        uint fs;
-        int qrsLength; 
+        private double malinowskaCoefficient;
+        private double pnRatio;
+        private double speedAmpltudeRatio;
+        private double fastSample;
+        private double qRSTime;
+        private uint fs;
+        private int qrsLength; 
         private Heart_Class_Data HeartClassData;
-        List<Vector<double>> coefficients; //lista współczynników kształtu dla zbioru treningowego
+        private List<Vector<double>> coefficients; //lista współczynników kształtu dla zbioru treningowego
         //List<Tuple<int, int>> classificationResult; // pierwszy int - nr zespołu (nr R), drugi int - klasa zespołu
-
+        private Tuple<int, int> _classificationResultOne;
 
         public Heart_Class()
         {
@@ -130,9 +137,45 @@ namespace EKG_Project.Modules.Heart_Class
 
             //KLASYFIKACJA
             return HeartClassData.ClassificationResult = TestKnnCase(trainDataList, QrsCoefficients, trainClass, 1); // klasyfikacja sygnału signal
-            //HeartClass.classificationResult = HeartClass.TestKnnCase(trainDataList, testSamples, trainClass, 1); // jeśli chcemy prztestować zbiór testowy (z matlaba)
+        }
+        /// <summary>
+        /// TODO 
+        /// </summary>
+        /// <param name="loadedSignal"></param>
+        /// <param name="fs"></param>
+        /// <param name="R"></param>
+        /// <param name="qrsOnset"></param>
+        /// <param name="qrsEnd"></param>
+        /// <returns></returns>
+        Tuple<int, int> ClassificationOneQrs(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R)
+        {
+            Signal = loadedSignal;
+            OneQrsComplex(qrsOnset, qrsEnd, R);
+            CountCoeffOne(QrsComplexOne, fs);
+            //WCZYTANIE ZBIORU TRENINGOWEGO
+            DebugECGPath loader = new DebugECGPath();
+            List<Vector<double>> trainDataList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
 
 
+            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-NV
+            List<Vector<double>> trainClassList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
+            // konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
+            int oneClassElement;
+            List<int> trainClass;
+            trainClass = new List<int>();
+            foreach (var item in trainClassList)
+            {
+                foreach (var element in item)
+                {
+                    oneClassElement = (int)element;
+                    trainClass.Add(oneClassElement);
+                }
+
+            }
+
+
+            return ClassificationResultOne = TestKnnCaseOne(trainDataList, QrsCoeffOne, trainClass, 3);
+   
         }
 
         #region Documentation
@@ -140,23 +183,26 @@ namespace EKG_Project.Modules.Heart_Class
         /// This method uses data from WAVES module (Qrs_onset and Qrs_end) and extracts single QRS complexes, creating list of Tuple. Each tuple contains int value - number of R peaks corresponding to the QRS complex, and vector - containing following signal samples. 
         /// </summary>
         #endregion
-        void SetQrsComplex()
+        private void SetQrsComplex()
         {
             for (int i = 0; i < QrsNumber; i++)
             {
-                double singleQrsOnset = QrsOnset[i];
-                double signleQrsEnd = QrsEnd[i];
-                int qrsLength = (int)(signleQrsEnd - singleQrsOnset+1);
-                SingleQrs = Vector<double>.Build.Dense(qrsLength);
-                int singleQrsR = (int)QrsR.At(i);
+                //OneQrsComplex();
+                _currentQRSComplex++;
+            }
+        }
 
-                if ((int)singleQrsOnset != -1) //modul WAVES wypluwa -1 jeśli zespół nie został wykryty
-                {
-                    Signal.CopySubVectorTo(SingleQrs, sourceIndex: (int) singleQrsOnset, targetIndex: 0,
-                        count: qrsLength);
-                    Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>(singleQrsR, SingleQrs);
-                    QrsComplex.Add(a);
-                }
+        private void OneQrsComplex(double singleQrsOnset, double signleQrsEnd, double singleQrsR)
+        {
+            int qrsLength = (int)(signleQrsEnd - singleQrsOnset + 1);
+            SingleQrs = Vector<double>.Build.Dense(qrsLength);
+
+            if ((int)singleQrsOnset != -1) //modul WAVES wypluwa -1 jeśli zespół nie został wykryty
+            {
+                Signal.CopySubVectorTo(SingleQrs, sourceIndex: (int)singleQrsOnset, targetIndex: 0,
+                    count: qrsLength);
+                Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
+                QrsComplexOne = a;
             }
         }
 
@@ -373,17 +419,36 @@ namespace EKG_Project.Modules.Heart_Class
             return result;
         }
 
+        Tuple<int, Vector<double>> CountCoeffOne(Tuple<int, Vector<double>> _QrsComplexOne, uint fs)
+        {
+            Vector<double> singleCoeffVect;
+            singleCoeffVect = Vector<double>.Build.Dense(4); // (5) jeśli dodamy czas trwania zespołu
+            int singleQrsR;
+            Tuple<int, Vector<double>> coeffTuple;
+
+                singleQrsR = _QrsComplexOne.Item1;
+                singleCoeffVect[0] = CountMalinowskaFactor(_QrsComplexOne.Item2, fs);
+                singleCoeffVect[1] = PnRatio(_QrsComplexOne.Item2);
+                singleCoeffVect[2] = SpeedAmpRatio(_QrsComplexOne.Item2);
+                singleCoeffVect[3] = FastSampleCount(_QrsComplexOne.Item2);
+                //singleCoeffVect[4] = QrsDuration(data.Item2, fs);
+
+                coeffTuple = new Tuple<int, Vector<double>>(singleQrsR, singleCoeffVect.Clone());
+                QrsCoeffOne = coeffTuple;
+                return QrsCoeffOne;
+        }
+
         #region Documentation
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="trainSamples"></param>
-        /// <param name="testSamples"></param>
-        /// <param name="trainClasses"></param>
-        /// <param name="K"></param>
-        /// <returns></returns>
-        #endregion
-        List<Tuple<int, int>> TestKnnCase(List<Vector<double>> trainSamples, List<Tuple<int, Vector<double>>> testSamples,
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="trainSamples"></param>
+            /// <param name="testSamples"></param>
+            /// <param name="trainClasses"></param>
+            /// <param name="K"></param>
+            /// <returns></returns>
+            #endregion
+            List<Tuple<int, int>> TestKnnCase(List<Vector<double>> trainSamples, List<Tuple<int, Vector<double>>> testSamples,
             List<int> trainClasses, int K)
         {
             var testResults = new List<Tuple<int, int>>();
@@ -442,6 +507,65 @@ namespace EKG_Project.Modules.Heart_Class
 
         }
 
+        Tuple<int, int> TestKnnCaseOne(List<Vector<double>> trainSamples, Tuple<int, Vector<double>> testSamples,
+           List<int> trainClasses, int K)
+        {
+            Tuple< int, int> testResults;// = new Tuple<int, int>();
+            testResults = new Tuple<int, int>(0,0);
+            int classResult;
+            //var testNumber = testSamples.Count();
+            var trainNumber = trainSamples.Count();
+            Tuple<int, int> resultTuple;
+            int singleQrsR;
+
+            var distances = new double[trainNumber][];
+            for (var i = 0; i < trainNumber; i++)
+            {
+                distances[i] = new double[2]; // Will store both distance and index in here
+            }
+
+
+            // Performing KNN 
+
+                // For every test sample, calculate distance from every training sample
+
+                for (var trn = 0; trn < trainNumber; trn++)
+                {
+                    var dist = GetDistance(testSamples.Item2, trainSamples[trn]);
+                    distances[trn][0] = dist;
+                    distances[trn][1] = trn;
+                }
+
+                // Sort distances and take top K 
+                var votingDistances = distances.OrderBy(t => t[0]).Take(K);
+
+                // Do a 'majority vote' to classify test sample
+                var yes = 0.0;
+                var no = 0.0;
+
+                foreach (var voter in votingDistances)
+                {
+                    if (trainClasses[(int)voter[1]] == 1)
+                        yes++;
+                    else
+                        no++;
+                }
+                if (yes > no)
+                    classResult = 1;
+                else
+                    classResult = 0;
+
+                singleQrsR = testSamples.Item1;
+                resultTuple = new Tuple<int, int>(singleQrsR, classResult);
+
+                
+                return resultTuple;
+        }
+
+
+            
+
+        
         // Calculates and returns square of Euclidean distance between two vectors:
         #region Documentation
         /// <summary>
@@ -619,6 +743,24 @@ namespace EKG_Project.Modules.Heart_Class
         {
             get { return _qrsEnd; }
             set { _qrsEnd = value; }
+        }
+
+        public Tuple<int, Vector<double>> QrsComplexOne
+        {
+            get { return _QrsComplexOne; }
+            set { _QrsComplexOne = value; }
+        }
+
+        public Tuple<int, Vector<double>> QrsCoeffOne
+        {
+            get { return _qrsCoeffOne; }
+            set { _qrsCoeffOne = value; }
+        }
+
+        public Tuple<int, int> ClassificationResultOne
+        {
+            get { return _classificationResultOne; }
+            set { _classificationResultOne = value; }
         }
     }
 

@@ -69,8 +69,9 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
                 NumberOfChannels = InputRpeaksData.RPeaks.Count;
-                _currentChannelLength = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count;
+                _currentChannelLength = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.Count;
                 _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                _vectorOfIntervals = Vector<Double>.Build.Dense(_currentChannelLength);
 
             }
             }
@@ -107,8 +108,8 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 
                 if (startIndex + step >= _currentChannelLength)
                 {
-                    _currentVector = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
-                    _vectorOfIntervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
+                    _currentVector = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex-1);
+                    _vectorOfIntervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex-1);
 
                     _tempClassResult = detectAF(_vectorOfIntervals, _currentVector, Convert.ToUInt32(InputData_basic.Frequency), Params);
 
