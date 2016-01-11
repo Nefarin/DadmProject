@@ -443,90 +443,55 @@
     </TEnds>
   </module>
   <module name="HRV_DFA" />
-  <module name="Atrial_Fibr">
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
-    <detectedAF>
-      <detected>False</detected>
-      <detectedPoints>0 </detectedPoints>
-      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
-      <timeofAF>
-      </timeofAF>
-    </detectedAF>
+  <module name="Heart_Class">
+    <ClassificationResult>
+      <item1>447</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>1382</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>2314</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>3277</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>4220</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>5162</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>5412</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>6141</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7082</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>8043</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>8998</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>9951</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
 </EKG>
