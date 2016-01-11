@@ -1,6 +1,7 @@
 ﻿using System;
 using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
+using EKG_Project.Modules.ECG_Baseline;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
 using System.Collections.Generic;
@@ -19,11 +20,13 @@ namespace EKG_Project.Modules.Waves
         private int _numberOfChannels;
 
         private Basic_Data_Worker _inputWorker;
+        private ECG_Baseline_Data_Worker _inputECGWorker;
         private R_Peaks_Data_Worker _inputRpeaksWorker;
         private Waves_Data_Worker _outputWorker;
 
         private Waves_Data _outputData;
         private Basic_Data _inputData;
+        private ECG_Baseline_Data _inputECGData;
         private R_Peaks_Data _inputRpeaksData;
         
         private Waves_Params _params;
@@ -61,17 +64,31 @@ namespace EKG_Project.Modules.Waves
                 _ended = false;
 
                 InputWorker = new Basic_Data_Worker(Params.AnalysisName);
+                InputECGworker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
                 InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
+
                 InputWorker.Load();
                 InputData = InputWorker.BasicData;
+
+                InputECGworker.Load();
+                InputECGData = InputECGworker.Data;
+
+                InputWorkerRpeaks.Load();
                 InputDataRpeaks = InputWorkerRpeaks.Data;
+                //Console.Write(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
+                Console.Write("ilosc kanalow ECG ");
+                Console.WriteLine(InputECGData.SignalsFiltered.Count);
+                Console.WriteLine("Ilosc kanalow Rpeaks");
+                Console.WriteLine(InputDataRpeaks.RPeaks.Count);
 
                 OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
                 OutputData = new Waves_Data();
 
                 _currentChannelIndex = 0;
                 _rPeaksProcessed = 0;
-                NumberOfChannels = InputData.Signals.Count;
+                //NumberOfChannels = InputData.Signals.Count;
+                //najwyrazniej liczba tych kanalow nie byla rowna w trakcie pierwszych testow
+                NumberOfChannels = InputDataRpeaks.RPeaks.Count;
                 _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
                 _currentQRSonsetsPart = new List<int>();
                 _currentQRSendsPart = new List<int>();
@@ -161,7 +178,7 @@ namespace EKG_Project.Modules.Waves
                     analyzeSignalPart();
                     OutputData.QRSOnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSonsets));
                     OutputData.QRSEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSends));
-
+                    
                     OutputData.POnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPonsets));
                     OutputData.PEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPends));
 
@@ -187,8 +204,8 @@ namespace EKG_Project.Modules.Waves
                 {
                     analyzeSignalPart( );
                     _rPeaksProcessed = startIndex + step;
-                    Console.WriteLine("Jedna sesja poszla!");
-                    Console.WriteLine(_rPeaksProcessed);
+                    //Console.WriteLine("Jedna sesja poszla!");
+                    //Console.WriteLine(_rPeaksProcessed);
                 }
             }
             else
@@ -211,6 +228,19 @@ namespace EKG_Project.Modules.Waves
             set
             {
                 _inputData = value;
+            }
+        }
+
+        public ECG_Baseline_Data InputECGData
+        {
+            get
+            {
+                return _inputECGData;
+            }
+
+            set
+            {
+                _inputECGData = value;
             }
         }
 
@@ -292,6 +322,18 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
+        public ECG_Baseline_Data_Worker InputECGworker
+        {
+            get
+            {
+                return _inputECGWorker;
+            }
+            set
+            {
+                _inputECGWorker = value;
+            }
+        }
+
         public R_Peaks_Data_Worker InputWorkerRpeaks
         {
             get
@@ -319,10 +361,10 @@ namespace EKG_Project.Modules.Waves
 
         public static void Main()
         {
-            Waves_Params param = new Waves_Params( Wavelet_Type.haar, 2, "Analysis6", 100);
+            Waves_Params param = new Waves_Params( Wavelet_Type.haar, 2, "TestAnalysis", 100);
 
             //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
-            //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
+            TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
             //Vector<double> ecg = TempInput.getSignal();
 
             //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");
@@ -339,16 +381,17 @@ namespace EKG_Project.Modules.Waves
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
+            
+            Vector<double> onsets = Vector<double>.Build.Dense(testModule.OutputData.QRSEnds[0].Item2.Count);
+            Console.WriteLine("fajrant");
+            for (int i = 0; i < onsets.Count; i++)
+            {
+                onsets[i] = (double)testModule.OutputData.QRSEnds[0].Item2[i];
 
-            //Vector<double> onsets = Vector<double>.Build.Dense(testModule.OutputData.QRSEnds[0].Item2.Count);
-            //Console.WriteLine("fajrant");
-            //for (int i = 0; i < onsets.Count; i++)
-            //{
-            //    onsets[i] = (double)testModule.OutputData.QRSEnds[0].Item2[i];
-
-            //}
-            //Console.WriteLine(onsets);
-            //TempInput.writeFile(360, onsets);
+            }
+            Console.WriteLine(onsets);
+            TempInput.writeFile(360, onsets);
+            Console.Read();
 
             //POKI CO BIERZEMY DANE Z NASZYCH GOWNIANYCH PLIKOW
 
