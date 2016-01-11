@@ -29,13 +29,13 @@ namespace EKG_Project.Modules.HRV_DFA
             // DFA box parameters
             int step = 10;
             int start = 100;
-            int stop = 10000;
+            int stop = 10000; 
 
             // DFA - fluctuation funcion computation
             double[] boxRanged = Generate.LinearRange(start, step, stop);       // set of box sizes
             Vector<double> box = Vector<double>.Build.DenseOfArray(boxRanged);  // n
             Vector<double> vectorFn = dfa.DfaFluctuationComputation(box, sig);  // F(n)
-
+    
             // Remove all zeros from vector
             Vector<double> vFn = dfa.ZerosRemove(vectorFn);
             Vector<double> vn = box.SubVector(0, vFn.Count());
@@ -63,8 +63,8 @@ namespace EKG_Project.Modules.HRV_DFA
                 fittedFn1[k] = fitting1(logn1a[k]);
             }
             //long - range correlations
-            Vector<double> logn2 = logn.SubVector(q, logn.Count() - q);
-            Vector<double> logFn2 = logFn.SubVector(q, logFn.Count() - q);
+            Vector<double> logn2 = logn.SubVector( q, logn.Count() - q );
+            Vector<double> logFn2 = logFn.SubVector(q, logFn.Count() - q );
             double[] logn2a = logn2.ToArray();
             double[] logFn2a = logFn2.ToArray();
             double[] p2 = Fit.Polynomial(logn2a, logFn2a, 1);
@@ -79,7 +79,6 @@ namespace EKG_Project.Modules.HRV_DFA
 
             Console.WriteLine(sig);
 
-            
         }
 
         // METHODS:
@@ -125,7 +124,6 @@ namespace EKG_Project.Modules.HRV_DFA
                     {
                         yn[k] = fitting(x[k]);
                     }
-
                     // dfa fluctuation function F(n)
                     fn[i] = dfaFn.InBoxFluctuations(yk, yn, box_qtyD);
                 }
@@ -161,7 +159,7 @@ namespace EKG_Project.Modules.HRV_DFA
             //Average
             double rr_avg = signal_rr.Sum() / signal_rr.Count;
 
-            for (int i = 0; i < signal_rr.Count - 1; i++)
+            for (int i = 0; i < signal_rr.Count - 1 ; i++)
             {
                 signal_integrated[0] = 0;
                 signal_integrated[i + 1] = signal_rr[i] - rr_avg;
@@ -197,9 +195,9 @@ namespace EKG_Project.Modules.HRV_DFA
                     break;
                 }
             }
-            Vector<double> vectorOut = vectorIn.SubVector(0, counter);
+            Vector<double> vectorOut = vectorIn.SubVector(0,counter);
             return vectorOut;
         }
-
+ 
     }
 }

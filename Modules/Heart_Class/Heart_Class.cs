@@ -126,11 +126,14 @@ namespace EKG_Project.Modules.Heart_Class
             {
                 //step = InputWavesData.QRSEnds[_currentChannelIndex].Item2[qrsEndStep];
 
+                Console.WriteLine(step);
+                Console.WriteLine(startIndex);
+                Console.WriteLine(_currentChannelLength);
                 if (startIndex + step > _currentChannelLength)
                 {
                     
 
-
+                    Console.WriteLine("jestem tuuu");
                     _currentVector = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
 
                     //OutputData.ClassificationResult.AddRange(new List<Tuple<int, int>>(Classification(_currentVector, fs, InputRpeaksData.RPeaks[_currentChannelIndex].Item2, InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.QRSEnds[_currentChannelIndex].Item2)));
@@ -256,7 +259,7 @@ namespace EKG_Project.Modules.Heart_Class
                 //Console.WriteLine("Press key to continue.");
                 Console.Read();
                 if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress());
+                //Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
 

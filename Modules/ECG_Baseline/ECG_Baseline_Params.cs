@@ -25,10 +25,13 @@ namespace EKG_Project.Modules.ECG_Baseline
 
         public ECG_Baseline_Params() // konstruktor domyślny
         {
-            this.Method = Filtr_Method.MOVING_AVG;
+            this.Method = Filtr_Method.BUTTERWORTH;
+            this.Type = Filtr_Type.BANDPASS;
             this.AnalysisName = "Analysis6";
-            this._windowSizeLow = 5;
-            this.Type = Filtr_Type.LOWPASS;
+            this._fcLow = 1;
+            this._fcHigh = 50;
+            this.OrderLow = 3;
+            this.OrderHigh = 3;
         }
 
         public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int order, double fc, string analysisName) //konstruktor BUTTERWORTH LOW, HIGH

@@ -11,53 +11,38 @@ using EKG_Project.IO;
 
 namespace EKG_Project.Modules.ST_Segment
 {
-    /*
+    
     public partial class ST_Segment : IModule
     {
-        public static void Main(string[] args)
-        {
+        //public static void Main(string[] args)
+       // {
+            /*
             // wczytywanie pliku
             TempInput.setInputFilePath(@"C:\Users\Ania\Desktop\DADM_Projekt\R_100.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
 
-            ST_Segment st = new ST_Segment();
+            //ST_Segment st = new ST_Segment();
 
-            // zamiana próbek na czas
-        //    Vector<double> tacho_rr = st.TimeConvert(fs, sig.ToArray());
-
-
-            //....
+            
             Console.WriteLine(fs);
             Console.ReadKey();
-        }
-        // Metody
-        // zamiana próbek na czas
-        // public Vector<double> TimeConvert(uint samplFreq, double[] rRawSample)
-        //  {
-        //   int signal_size = rRawSample.Count();
-        //   Vector<double> tachos_r = Vector<double>.Build.Dense(signal_size);
-
-        //  for (int i = 0; i < signal_size; i++)
-        //  {
-        //       tachos_r[i] = rRawSamples[i] * 1000 / samplFreq;  //[ms]
-        //   }
-        //   return tachos_r;
-        //}
-        //dalej
+            */
+          //  Console.WriteLine("dziendobry");
+       // }
 
        
-       
+
         public ST_Segment_Data Method(Vector<double> signal, Vector<uint> tQRS_onset, Vector<uint> tQRS_ends, Vector<double> rInterval, int freq)
         {
             ST_Segment_Data result = new ST_Segment_Data();
             int[] finalShapes = new int[signal.Count()];
 
-//Vector<long> QRSend = new Vector<long>();
             for (int i = 0; i < signal.Count(); ++i)
             {
-                long tJ = tQRS_ends[i] + 20;
-                long tST = tQRS_ends[i] + 35;
+                if (tQRS_ends[i] < 0 || tQRS_onset[i] < 0) continue;
+                long tJ = tQRS_ends[i]*1/1000*freq + 20;
+                long tST = tQRS_ends[i] * 1 / 1000 * freq + 35;
                 result.tJs.Add(tJ);
                 result.tSTs.Add(tST);
                 int tADD = 0;
@@ -78,8 +63,8 @@ namespace EKG_Project.Modules.ST_Segment
                 {
                     tADD = 60;
                 }
-                long tJX = tQRS_onset[i] + tADD;
-                int offset = (int)(signal[(int)tJX] - signal[(int)tQRS_onset[i]]);
+                long tJX = tQRS_onset[i] * 1 / 1000 * freq + tADD;
+                int offset = (int)(signal[(int)tJX] - signal[(int)tQRS_onset[i]]); //
                 double tTE = tST;
                 double a = (signal[(int)tTE] - signal[(int)tJ]) / (tTE - tJ);
                 double b = (signal[(int)tJ] * tTE - signal[(int)tTE] * tJ) / (tTE - tJ);
@@ -162,12 +147,9 @@ namespace EKG_Project.Modules.ST_Segment
             return result;
         }
 
-        public void ProcessData(int numberOfSamples)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
-     * */
+    
 }
 
 

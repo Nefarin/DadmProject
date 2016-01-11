@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
+
     public class HRV_DFA_Params : ModuleParams
     {
         //HRV_DFA parameters

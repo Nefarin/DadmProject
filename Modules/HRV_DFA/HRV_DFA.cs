@@ -30,9 +30,9 @@ namespace EKG_Project.Modules.HRV_DFA
 
         private HRV_DFA_Params _params;
 
-        private List<Tuple<string,Vector<double>>> _currentdfaNumberN;
-        private List<Tuple<string, Vector<double>>> _currentdfaValueFn;
-        private List<Tuple<string, Vector<double>>> _currentparamAlpha;
+        private Vector<double> _currentdfaNumberN;
+        private Vector<double> _currentdfaValueFn;
+        private Vector<double> _currentparamAlpha;
 
         private Vector<Double> _currentVector;
 
@@ -59,6 +59,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 InputWorker = new Basic_Data_Worker(Params.AnalysisName);
                 InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
                 InputWorker.Load();
+                InputWorkerRpeaks.Load();
                 InputData = InputWorker.BasicData;
                 InputDataRpeaks = InputWorkerRpeaks.Data;
 
@@ -99,7 +100,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
             if (channel < NumberOfChannels)
             {
-
+                
                 if (startIndex + step > _currentRpeaksLength)
                 {
                     HRV_DFA_Analysis();
@@ -121,7 +122,7 @@ namespace EKG_Project.Modules.HRV_DFA
                         HRV_DFA_Analysis();
                         _currentVector = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, step);
                         _rPeaksProcessed = startIndex + step;
-
+                        
                     }
                 }
                 else
@@ -132,7 +133,7 @@ namespace EKG_Project.Modules.HRV_DFA
             }
 
         }
-        //
+//
         public bool Aborted
         {
             get
@@ -291,9 +292,10 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main()
         {
-            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis2");
+            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis3");
             HRV_DFA testModule = new HRV_DFA();
 
+            testModule.Init(param);
             while (true)
             {
                 //Console.WriteLine("Press key to continue.");
