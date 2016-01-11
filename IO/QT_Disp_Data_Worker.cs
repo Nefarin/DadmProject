@@ -11,10 +11,10 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
-    class QT_Disp_Data_Worker
+    public class QT_Disp_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName;
         private QT_Disp_Data _data;
 
         public QT_Disp_Data Data

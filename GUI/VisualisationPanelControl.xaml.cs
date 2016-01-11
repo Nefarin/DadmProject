@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data;
 
 namespace EKG_Project.GUI
 {
@@ -25,6 +26,7 @@ namespace EKG_Project.GUI
 
         public VisualisationPanelControl()
         {
+
             InitializeComponent();
 
             //VisualisationPlotControl ecgVPControl = new VisualisationPlotControl();
@@ -63,22 +65,70 @@ namespace EKG_Project.GUI
             ecgBaselineTab.Content = ecgVDataControl;
             visulisationDataTabsList.Add(ecgBaselineTab);
 
-            TabItem r_peaksTab = new TabItem();
-            r_peaksTab.Header = "R_Peaks";
-            r_peaksTab.Content = ecgVDataControl;
-            visulisationDataTabsList.Add(r_peaksTab);
+            //TabItem ecgBasicDataTab = new TabItem();
+            //ecgBasicDataTab.Header = "ecgBasicData";
+            //ecgBasicDataTab.Content = ecgVDataControl;
+            //visulisationDataTabsList.Add(ecgBasicDataTab);
 
-            TabItem addInfo = new TabItem();
-            addInfo.Header = "Info";
-            addInfo.Content = "W ten sposób będą dodawane pozostałe moduły";
-            visulisationDataTabsList.Add(addInfo);
+            //TabItem r_peaksTab = new TabItem();
+            //r_peaksTab.Header = "R_Peaks";
+            //r_peaksTab.Content = ecgVDataControl;
+            //visulisationDataTabsList.Add(r_peaksTab);
+
+            //TabItem addInfo = new TabItem();
+            //addInfo.Header = "Info";
+            //addInfo.Content = "W ten sposób będą dodawane pozostałe moduły";
+            //visulisationDataTabsList.Add(addInfo);
 
 
             this.EcgDynamicTab.DataContext = visulisationDataTabsList;
 
-
-
-
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                this.headerTable.ItemsSource = this.CreateHeaderInfoTable().DefaultView;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        public VisualisationPanelControl(List<string> tabNames)
+        {
+            InitializeComponent();
+            ChooseTabDisplay(tabNames);
+        }
+
+        private void ChooseTabDisplay(List<string> tabNames)
+        {
+            visulisationDataTabsList = new List<TabItem>();
+            foreach(string tabName in tabNames)
+            {
+                VisualisationDataControl ecgVDataControl = new VisualisationDataControl(tabName);
+                TabItem tabItem = new TabItem();
+                tabItem.Header = tabName;
+                tabItem.Content = ecgVDataControl;
+                visulisationDataTabsList.Add(tabItem);
+            }
+
+            this.EcgDynamicTab.DataContext = visulisationDataTabsList;
+        }
+
+        public DataTable CreateHeaderInfoTable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add(new DataColumn("Fs", Type.GetType("System.Int32")));
+            table.Columns.Add(new DataColumn("Samples", Type.GetType("System.Int32")));
+            table.Rows.Add(25, 2000);
+
+            return table;
+        }
+
+
+
     }
 }

@@ -10,7 +10,8 @@ namespace EKG_Project.Modules.HRV1
 {
     public class HRV1_Params : ModuleParams
     {
-        
-       //this module have no parameters changeable in GUI
+        public string AnalysisName;
+
+        //this module have no parameters changeable in GUI
     }
 }

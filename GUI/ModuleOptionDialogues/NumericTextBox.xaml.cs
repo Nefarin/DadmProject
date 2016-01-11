@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,12 +51,14 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             this.GotFocus += this.TextBox_GotFocus;
             this.GotKeyboardFocus += this.TextBox_GotKeyboardFocus;
             this.GotMouseCapture += this.TextBox_GotMouseCapture;
+            this.IsEnabledChanged += this.TextBox_IsEnabledChanged;
+            this.TextChanged += this.TextBox_TextChanged;
         }
 
         private bool IsTextAllowed(string text)
         {
             double number;
-            bool result = double.TryParse(text, this.NumberType, null, out number);
+            bool result = double.TryParse(text, this.NumberType, CultureInfo.CurrentCulture, out number);
             if (result)
                 this.Number = number;
             return result;
@@ -63,7 +66,16 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
 
         private void OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            e.Handled = !IsTextAllowed(string.Format("{0}{1}", this.Text, e.Text));
+            var builder = new StringBuilder(this.Text);
+
+            if (string.IsNullOrEmpty(this.Text))
+                builder.Append(e.Text);
+            else if (this.SelectionLength == 0 && this.SelectionStart > 0)
+                builder.Insert(this.SelectionStart, e.Text, 1);
+            else if (this.SelectionLength > 0)
+                builder.Replace(this.SelectedText, e.Text, this.SelectionStart, this.SelectionLength);
+
+            e.Handled = !this.IsTextAllowed(builder.ToString());
         }
 
         // Use the DataObject.Pasting Handler 
@@ -85,7 +97,7 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-                this.SelectAllText();
+            this.SelectAllText();
         }
 
         private void TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -102,6 +114,23 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
         {
             Keyboard.Focus(this);
             this.SelectAll();
+        }
+
+        private void TextBox_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.IsEnabled)
+            {
+                this.Text = this.Number.ToString(CultureInfo.CurrentCulture);
+            }
+            else
+            {
+                this.Text = string.Empty;
+            }
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            this.IsTextAllowed(this.Text);
         }
     }
 }

@@ -14,7 +14,11 @@ namespace EKG_Project.Modules.HRV_DFA
         private List<Tuple<string, Vector<double>>> _dfaValueFn;
         private List<Tuple<string, Vector<double>>> _paramAlpha;
 
-        public HRV_DFA_Data() { }
+        public HRV_DFA_Data() {
+            _dfaNumberN = new List<Tuple<string, Vector<double>>>();
+            _dfaValueFn = new List<Tuple<string, Vector<double>>>();
+            _paramAlpha = new List<Tuple<string, Vector<double>>>();
+        }
 
         public List<Tuple<string, Vector<double>>> DfaNumberN
         {

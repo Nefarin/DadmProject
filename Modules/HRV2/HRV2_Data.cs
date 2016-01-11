@@ -1,17 +1,21 @@
 ﻿using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra;
+using System;
+using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV2
 {
-    class HRV2_Data : ECG_Data
+    public class HRV2_Data : ECG_Data
     {
         private double _tinn;
         private double _triangleIndex;
         private double _sd1;
         private double _sd2;
-        private List<double> _histogramData; //nie do konca wiemy czy to bd lista double
-        private List<double> _poincarePlotData; //nie do konca wiemy czy to bd lista double
+        private Histogram _histogramData;
+        private Tuple<string,Vector<double>> _poincarePlotData_x;
+        private Tuple<string, Vector<double>> _poincarePlotData_y;
 
-        #region Properties
+
         #region Documentation
         /// <summary>
         /// Współczynnik TINN
@@ -94,7 +98,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public List<double> HistogramData
+        public Histogram HistogramData
         {
             get
             {
@@ -109,23 +113,41 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Wykres Poincare
+        /// Wykres Poincare_x
         /// </summary>
         /// 
         #endregion
-        public List<double> PoincarePlotData
+        public Tuple<string, Vector<double>> PoincarePlotData_x 
         {
             get
             {
-                return _poincarePlotData;
+                return _poincarePlotData_x;
             }
 
             set
             {
-                _poincarePlotData = value;
+                _poincarePlotData_x = value;
             }
         }
+
+        #region Documentation
+        /// <summary>
+        /// Wykres Poincare_y
+        /// </summary>
+        /// 
         #endregion
+        public Tuple<string, Vector<double>> PoincarePlotData_y
+        {
+            get
+            {
+                return _poincarePlotData_y;
+            }
+
+            set
+            {
+                _poincarePlotData_y = value;
+            }
+        }
 
         #region Documentation
         /// <summary>
@@ -135,10 +157,7 @@ namespace EKG_Project.Modules.HRV2
         #endregion
         public HRV2_Data()
         {
-            HistogramData = new List<double>(); // Dzięki inicjalizacji, nawet pustej, nie będzie NullPointerException
-            PoincarePlotData = new List<double>(); // Dzięki inicjalizacji, nawet pustej, nie będzie NullPointerException
+            HistogramData = new Histogram();
         }
-
-        // TODO Pewnie będzie trzeba zrobić więcej konstruktorów - kilku elementowych, etc.
     }
 }

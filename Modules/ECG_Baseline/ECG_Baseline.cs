@@ -108,20 +108,71 @@ namespace EKG_Project.Modules.ECG_Baseline
                     switch (Params.Method)
                     {
                         case Filtr_Method.MOVING_AVG:
-                            _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSize, Params.Type);
+                            if (Params.Type == Filtr_Type.LOWPASS)
+                            {
+                                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                            }
+                            if (Params.Type == Filtr_Type.HIGHPASS)
+                            {
+                                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                            }
+                            if (Params.Type == Filtr_Type.BANDPASS)
+                            {
+                                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                            }
                             break;
                         case Filtr_Method.BUTTERWORTH:
-                            _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.Fc, Params.Order, Params.Type);
+                            if (Params.Type == Filtr_Type.LOWPASS)
+                            {
+                                _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                            }
+                            if (Params.Type == Filtr_Type.HIGHPASS)
+                            {
+                                _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                            }
+                            if (Params.Type == Filtr_Type.BANDPASS)
+                            {
+                                _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                                _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                            }
                             break;
                         case Filtr_Method.SAV_GOL:
-                            _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSize, Params.Type);
+                            if (Params.Type == Filtr_Type.LOWPASS)
+                            {
+                                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                            }
+                            if (Params.Type == Filtr_Type.HIGHPASS)
+                            {
+                                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                            }
+                            if (Params.Type == Filtr_Type.BANDPASS)
+                            {
+                                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                            }
                             break;
                         case Filtr_Method.LMS:
-                            _temporaryVector = _currentVector;
-                            _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSize, Params.Type);
-                            _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSize);
+                            if (Params.Type == Filtr_Type.LOWPASS)
+                            {
+                                _temporaryVector = _currentVector;
+                                _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeLow);
+                            }
+                            if (Params.Type == Filtr_Type.HIGHPASS)
+                            {
+                                _temporaryVector = _currentVector;
+                                _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                                _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
+                            }
+                            if (Params.Type == Filtr_Type.BANDPASS)
+                            {
+                                _temporaryVector = _currentVector;
+                                _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                _temporaryVector = _newFilter.savitzky_golay(_temporaryVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                                _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
+                            }
                             break;
-
                     }
 
                     _currentVector.CopySubVectorTo(_temporaryVector2, 0, startIndex, _currentVector.Count);
@@ -147,18 +198,70 @@ namespace EKG_Project.Modules.ECG_Baseline
                     switch (Params.Method)
                     {
                         case Filtr_Method.MOVING_AVG:
-                            _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSize, Params.Type);
+                            if (Params.Type == Filtr_Type.LOWPASS)
+                            {
+                                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                            }
+                            if (Params.Type == Filtr_Type.HIGHPASS)
+                            {
+                                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                            }
+                            if (Params.Type == Filtr_Type.BANDPASS)
+                            {
+                                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                            }
                             break;
                         case Filtr_Method.BUTTERWORTH:
-                            _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.Fc, Params.Order, Params.Type);
+                            if (Params.Type == Filtr_Type.LOWPASS)
+                            {
+                                _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                            }
+                            if (Params.Type == Filtr_Type.HIGHPASS)
+                            {
+                                _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                            }
+                            if (Params.Type == Filtr_Type.BANDPASS)
+                            {
+                                _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                                _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                            }
                             break;
                         case Filtr_Method.SAV_GOL:
-                            _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSize, Params.Type);
+                            if (Params.Type == Filtr_Type.LOWPASS)
+                            {
+                                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                            }
+                            if (Params.Type == Filtr_Type.HIGHPASS)
+                            {
+                                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                            }
+                            if (Params.Type == Filtr_Type.BANDPASS)
+                            {
+                                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                            }
                             break;
                         case Filtr_Method.LMS:
-                            _temporaryVector = _currentVector;
-                            _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSize, Params.Type);
-                            _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSize);
+                            if (Params.Type == Filtr_Type.LOWPASS)
+                            {
+                                _temporaryVector = _currentVector;
+                                _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeLow);
+                            }
+                            if (Params.Type == Filtr_Type.HIGHPASS)
+                            {
+                                _temporaryVector = _currentVector;
+                                _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                                _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
+                            }
+                            if (Params.Type == Filtr_Type.BANDPASS)
+                            {
+                                _temporaryVector = _currentVector;
+                                _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                _temporaryVector = _newFilter.savitzky_golay(_temporaryVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                                _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
+                            }
                             break;
 
                     }
@@ -268,7 +371,7 @@ namespace EKG_Project.Modules.ECG_Baseline
 
         public static void Main()
         {
-            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 9, "TestAnalysis"); //Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 5, "Analysis6");
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 9, "TestAnalysis8"); //Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 5, "Analysis6");
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 5, "Analysis6");
             ECG_Baseline testModule = new ECG_Baseline();
             testModule.Init(param);

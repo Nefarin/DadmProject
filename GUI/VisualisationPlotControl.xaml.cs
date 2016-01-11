@@ -21,13 +21,45 @@ namespace EKG_Project.GUI
     public partial class VisualisationPlotControl : UserControl
     {
         private ECGPlot ecgPlot;
+        private string _plotType; 
+
+
 
         public VisualisationPlotControl()
         {
+            //InitializeComponent();
+            //ecgPlot = new ECGPlot("ECG_BASELINE");
+            //DataContext = ecgPlot;
+            //ecgPlot.DisplayBasicData();
+            ////ecgPlot.DisplayEcgBaseline();
+            ////ecgPlot.DisplayR_Peaks();
+        }
+
+        public VisualisationPlotControl(string moduleName)
+        {
             InitializeComponent();
-            ecgPlot = new ECGPlot("ECG_BASELINE");
+            _plotType = moduleName;
+            ecgPlot = new ECGPlot(moduleName);
             DataContext = ecgPlot;
-            ecgPlot.DisplayAnything();
+            
+            ecgPlot.DisplayControler(_plotType);
+
+            //ecgPlot.DisplayEcgBaseline();
+            //ecgPlot.DisplayBasicData();
+            //ecgPlot.DisplayControler(_plotType);
+        }
+
+        private void PlotForwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            ecgPlot.MovePlot(500);
+            ecgPlot.DisplayControler(_plotType);
+           
+        }
+
+        private void PlotBackwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            ecgPlot.MovePlot(-500);
+            ecgPlot.DisplayControler(_plotType);
         }
     }
 }
