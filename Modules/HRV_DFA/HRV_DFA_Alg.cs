@@ -25,7 +25,8 @@ namespace EKG_Project.Modules.HRV_DFA
         {
             HRV_DFA dfa = new HRV_DFA();
 
-            Vector<double> sig = InputData.Signals[_currentChannelIndex].Item2;
+            
+            Vector<double> sig = _currentVector;
 
             //read data from file
             //TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\DADM\RR_100.txt");
@@ -43,13 +44,13 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> vectorFn = dfa.DfaFluctuationComputation(box, sig);  // F(n)
     
             // Remove all zeros from vector
-            Vector<double> vFn = dfa.ZerosRemove(vectorFn);
-            Vector<double> vn = box.SubVector(0, vFn.Count());
+           // Vector<double> vFn = dfa.ZerosRemove(vectorFn);
+            Vector<double> vn = box.SubVector(0, vectorFn.Count());
 
             // Convert to logarytmic scale
             //Vector<double> vn = box.SubVector(0,vFn.Count());
             Vector<double> logn = dfa.Logarithmize(vn);
-            Vector<double> logFn = dfa.Logarithmize(vFn);
+            Vector<double> logFn = dfa.Logarithmize(vectorFn);
 
             // short-range:long-range fitting bending data proportion
             double proportion = 0.33;
@@ -94,8 +95,8 @@ namespace EKG_Project.Modules.HRV_DFA
 
             veclogn1 = logn1;
             veclogn2 = logn2;
-            veclogFn1 = fittedFn1;
-            veclogFn2 = fittedFn2;
+            veclogFn1 = sig;
+            veclogFn2 = logFn2;
             vecparam1 = p1;
             vecparam2 = p2;
 
@@ -223,7 +224,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 }
                 else
                 {
-                    counter = i;
+                    counter = i+1;
                     break;
                 }
             }
