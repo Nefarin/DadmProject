@@ -15,6 +15,7 @@ using EKG_Project.Modules.Sleep_Apnea;
 using EKG_Project.Modules.ST_Segment;
 using EKG_Project.Modules.T_Wave_Alt;
 using EKG_Project.Modules.Waves;
+using EKG_Project.GUI;
 
 using System.Collections.Generic;
 
@@ -24,7 +25,7 @@ namespace EKG_Project.Architecture
 {
     public class Modules
     {
-        private List<IModule> ecgModules;
+        Dictionary<AvailableOptions, ModuleParams> _moduleParams;
         private int currentAnalysisIndex;
 
         public Modules()
@@ -32,27 +33,15 @@ namespace EKG_Project.Architecture
 
         }
 
-        public void Init()
+        public void Init(Dictionary<AvailableOptions, ModuleParams> moduleParams)
         {
             CurrentAnalysisIndex = -1;
+            ModuleParams = moduleParams;
         }
 
         public int Amount()
         {
-            return ecgModules.Count;
-        }
-
-        public List<IModule> EcgModules
-        {
-            get
-            {
-                return ecgModules;
-            }
-
-            set
-            {
-                ecgModules = value;
-            }
+            return ModuleParams.Count;
         }
 
         public int CurrentAnalysisIndex
@@ -65,6 +54,19 @@ namespace EKG_Project.Architecture
             set
             {
                 currentAnalysisIndex = value;
+            }
+        }
+
+        public Dictionary<AvailableOptions, ModuleParams> ModuleParams
+        {
+            get
+            {
+                return _moduleParams;
+            }
+
+            set
+            {
+                _moduleParams = value;
             }
         }
     }

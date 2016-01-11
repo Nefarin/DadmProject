@@ -52,11 +52,25 @@ namespace EKG_Project.GUI
                 if (option.Set)
                 {
                     moduleParams[option.Code] = modulePanel.ModuleOptionAndParams(option.Code).Item2;
-                    Console.WriteLine(option.Code);
-                    Console.WriteLine(modulePanel.ModuleOptionAndParams(option.Code).Item2);
-                    Console.WriteLine(option.Name + " is set."); 
+                    //Console.WriteLine(moduleParams.Count);
+                    //Console.WriteLine(option.Code);
+                    //Console.WriteLine(modulePanel.ModuleOptionAndParams(option.Code).Item2);
+                    //Console.WriteLine(option.Name + " is set."); 
                 }
+
             }
+
+            if (moduleParams.Count > 0)
+            {
+                BeginAnalysis analysisParams = new BeginAnalysis(moduleParams);
+                Communication.SendGUIMessage(analysisParams);
+            }
+            else
+            {
+                // Nothing is checked - let user know somehow.
+            }
+
+
             MessageBox.Show("Starting Analyses");
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
             tempList.Add("ecgBaseline");
@@ -82,6 +96,16 @@ namespace EKG_Project.GUI
 
             }
 
+        }
+
+        public void processingStarted()
+        {
+            Console.WriteLine("Analysis Started");
+        }
+
+        public void processingEnded()
+        {
+            Console.WriteLine("Analysis Ended");
         }
 
         #region Documentation
