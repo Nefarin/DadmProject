@@ -9,5 +9,10 @@
     public class ModuleParams
     {
         public string AnalysisName { get; set; }
+
+        public ModuleParams()
+        {
+            this.AnalysisName = "undefined";
+        }
     }
 }

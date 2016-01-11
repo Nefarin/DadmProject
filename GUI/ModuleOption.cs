@@ -46,7 +46,7 @@ namespace EKG_Project.GUI
                             this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.AnalysisName);
                             break;
                         case AvailableOptions.WAVES:
-                            this.ModuleParam = new Waves_Params();
+                            this.ModuleParam = new Waves_Params(this.AnalysisName);
                             break;
                         case AvailableOptions.ATRIAL_FIBER:
                             this.ModuleParam = new Atrial_Fibr_Params(Detect_Method.POINCARE);
