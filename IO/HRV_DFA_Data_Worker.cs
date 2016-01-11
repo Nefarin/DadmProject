@@ -76,7 +76,7 @@ namespace EKG_Project.IO
 
                 foreach (var property in Properties)
                 {
-                    List<Tuple<string, Vector<double>>> list = (List<Tuple<string, Vector<double>>>)property;
+                    List<Tuple<string, Vector<double>>> list = new List<Tuple<string, Vector<double>>>();//property;
                     foreach (var tuple in list)
                     {
                         XmlElement moduleNode = file.CreateElement(string.Empty, Names[licznik], string.Empty);

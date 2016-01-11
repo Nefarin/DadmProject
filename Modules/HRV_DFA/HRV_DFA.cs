@@ -59,6 +59,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 InputWorker = new Basic_Data_Worker(Params.AnalysisName);
                 InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
                 InputWorker.Load();
+                InputWorkerRpeaks.Load();
                 InputData = InputWorker.BasicData;
                 InputDataRpeaks = InputWorkerRpeaks.Data;
 
@@ -291,9 +292,10 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main()
         {
-            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis");
+            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis3");
             HRV_DFA testModule = new HRV_DFA();
 
+            testModule.Init(param);
             while (true)
             {
                 //Console.WriteLine("Press key to continue.");
@@ -302,7 +304,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-            Console.ReadKey();
+            //Console.ReadKey();
         }
     }
 }
