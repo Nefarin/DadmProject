@@ -14,8 +14,8 @@ namespace EKG_Project.Modules.ST_Segment
     
     public partial class ST_Segment : IModule
     {
-        public static void Main(string[] args)
-        {
+        //public static void Main(string[] args)
+       // {
             /*
             // wczytywanie pliku
             TempInput.setInputFilePath(@"C:\Users\Ania\Desktop\DADM_Projekt\R_100.txt");
@@ -28,11 +28,11 @@ namespace EKG_Project.Modules.ST_Segment
             Console.WriteLine(fs);
             Console.ReadKey();
             */
-            Console.WriteLine("dziendobry");
-        }
-        
+          //  Console.WriteLine("dziendobry");
+       // }
+
        
-       
+
         public ST_Segment_Data Method(Vector<double> signal, Vector<uint> tQRS_onset, Vector<uint> tQRS_ends, Vector<double> rInterval, int freq)
         {
             ST_Segment_Data result = new ST_Segment_Data();
@@ -63,8 +63,8 @@ namespace EKG_Project.Modules.ST_Segment
                 {
                     tADD = 60;
                 }
-                long tJX = tQRS_onset[i] + tADD;
-                int offset = (int)(signal[(int)tJX] - signal[(int)tQRS_onset[i]]);
+                long tJX = tQRS_onset[i] * 1 / 1000 * freq + tADD;
+                int offset = (int)(signal[(int)tJX] - signal[(int)tQRS_onset[i]]); //
                 double tTE = tST;
                 double a = (signal[(int)tTE] - signal[(int)tJ]) / (tTE - tJ);
                 double b = (signal[(int)tJ] * tTE - signal[(int)tTE] * tJ) / (tTE - tJ);
@@ -147,10 +147,7 @@ namespace EKG_Project.Modules.ST_Segment
             return result;
         }
 
-        public void ProcessData(int numberOfSamples)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
     
 }
