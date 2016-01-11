@@ -49,18 +49,12 @@ namespace EKG_Project.GUI
         {
             foreach (var option in modulePanel.getAllOptions())
             {
-
-                // Tuple<ModuleOption, ModuleParams> test = modulePanel.ModuleOptionAndParams(option.Code);
                 if (option.Set)
                 {
-
-                    if (option.ModuleParam == null) //tylko tymczasowo dopoki nie jest przez was zaimplementowane
-                    {
-
-                        //option.ModuleParam = new ModuleParams();
-                        //moduleParams(option.Code)= option.ModuleParam;
-                        Console.WriteLine(option.Name + " is set.");
-                    }
+                    moduleParams[option.Code] = modulePanel.ModuleOptionAndParams(option.Code).Item2;
+                    Console.WriteLine(option.Code);
+                    Console.WriteLine(modulePanel.ModuleOptionAndParams(option.Code).Item2);
+                    Console.WriteLine(option.Name + " is set."); 
                 }
             }
             MessageBox.Show("Starting Analyses");
