@@ -454,4 +454,7 @@
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
+  <module name="Heart_Axis">
+    <HeartAxis>-0,0637127495280766</HeartAxis>
+  </module>
 </EKG>
