@@ -102,6 +102,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 
                 if (startIndex + step > _currentRpeaksLength)
                 {
+                    HRV_DFA_Analysis();
                     OutputData.DfaNumberN.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentdfaNumberN));
                     OutputData.DfaValueFn.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentdfaValueFn));
                     OutputData.ParamAlpha.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentparamAlpha));
@@ -117,6 +118,7 @@ namespace EKG_Project.Modules.HRV_DFA
                     }
                     else
                     {
+                        HRV_DFA_Analysis();
                         _currentVector = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, step);
                         _rPeaksProcessed = startIndex + step;
                         
@@ -300,7 +302,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-            //Console.ReadKey();
+            Console.ReadKey();
         }
     }
 }

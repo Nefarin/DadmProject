@@ -15,14 +15,16 @@ namespace EKG_Project.Modules.HRV_DFA
     public partial class HRV_DFA : IModule
     {
 
-        public static void Main(string[] args)
+        public void HRV_DFA_Analysis()
         {
             HRV_DFA dfa = new HRV_DFA();
 
+            Vector<double> sig = InputData.Signals[_currentChannelIndex].Item2;
+
             //read data from file
-            TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\DADM\RR_100.txt");
-            uint fs = TempInput.getFrequency();
-            Vector<double> sig = TempInput.getSignal();
+            //TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\DADM\RR_100.txt");
+            //uint fs = TempInput.getFrequency();
+            //Vector<double> sig = TempInput.getSignal();
 
             // DFA box parameters
             int step = 10;
@@ -75,10 +77,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 fittedFn2[k] = fitting2(logn2a[k]);
             }
 
-            Console.WriteLine(logFn.ToString());
-            Console.WriteLine("{0}, {1}", p1[0].ToString(), p1[1].ToString());
-            Console.WriteLine("{0}, {1}", p2[0].ToString(), p2[1].ToString());
-            Console.ReadKey();
+            Console.WriteLine(sig);
 
         }
 
