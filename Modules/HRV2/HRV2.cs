@@ -98,8 +98,8 @@ namespace EKG_Project.Modules.HRV2
                 //Vector<double> rr_intervals_x = Vector<double>.Build.Dense(1);
                 //Vector<double> rr_intervals_y = Vector<double>.Build.Dense(1);
 
-                OutputData.PoincarePlotData_x = new Tuple<string, Vector<double>>("Y", RR_intervals_y);
-                OutputData.PoincarePlotData_y = new Tuple<string, Vector<double>>("Y", RR_intervals_y);
+                OutputData.PoincarePlotData_x = new Tuple<string, Vector<double>>("RR", RR_intervals_x);
+                OutputData.PoincarePlotData_y = new Tuple<string, Vector<double>>("RR+1", RR_intervals_y);
 
                 OutputData.SD1 = SD1();
                 OutputData.SD2 = SD2();
@@ -219,13 +219,13 @@ namespace EKG_Project.Modules.HRV2
         public static void Main()
         {
             
-            HRV2_Params param = new HRV2_Params(-2, 5000, "Analysis6");
+            HRV2_Params param = new HRV2_Params(-2, 5000, "TestAnalysis6");
             //HRV2_Params param = null;
             HRV2 hrv2 = new HRV2();
             hrv2.Init(param);
             while (true)
             {
-               
+                hrv2.makeHistogram();
                 Console.WriteLine("Press key to continue.");
                 Console.ReadLine();
                 if (hrv2.Ended()) break;
