@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.Modules.HRV_DFA.HRV_DFA</StartupObject>
+    <StartupObject>EKG_Project.Modules.Heart_Class.Heart_Class</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -413,6 +413,8 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\temp\train_d_label.txt" />
+    <Resource Include="IO\temp\train_d.txt" />
     <Resource Include="IO\temp\TestAnalysis8_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis6_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis5_Data.xml" />
