@@ -14,7 +14,7 @@ namespace EKG_Project.IO
     public class Sleep_Apnea_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName;
         private Sleep_Apnea_Data _data;
 
         public Sleep_Apnea_Data Data
@@ -100,7 +100,7 @@ namespace EKG_Project.IO
                         item2.AppendChild(item2Value);
                         tupleNode.AppendChild(item2);
                     }
-                    
+
                 }
 
                 List<Tuple<string, List<List<double>>>> list1 = basicData.h_amp;
@@ -129,7 +129,7 @@ namespace EKG_Project.IO
                         XmlText samplesValue = file.CreateTextNode(samplesText);
                         samples.AppendChild(samplesValue);
                         internalListNode.AppendChild(samples);
-                        
+
                     }
                 }
 
@@ -155,6 +155,101 @@ namespace EKG_Project.IO
                 file.Save(System.IO.Path.Combine(directory, fileName));
 
             }
+        }
+
+         public void Load()
+        {
+            Sleep_Apnea_Data basicData = new Sleep_Apnea_Data();
+            XMLConverter converter = new XMLConverter(analysisName);
+
+            XmlDocument file = new XmlDocument();
+            string fileName = analysisName + "_Data.xml";
+            file.Load(System.IO.Path.Combine(directory, fileName));
+
+            XmlNodeList modules = file.SelectNodes("EKG/module");
+
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+
+            foreach (XmlNode module in modules)
+            {
+                if (module.Attributes["name"].Value == moduleName)
+                {
+                    List<Tuple<string, List<Tuple<int, int>>>> Detected_Apnea_List = new List<Tuple<string, List<Tuple<int, int>>>>();
+                    XmlNodeList nodeList = module.SelectNodes("Detected_Apnea");
+                    foreach (XmlNode node in nodeList)
+                    {
+                        XmlNode lead = node["lead"];
+                        string readLead = lead.InnerText;
+
+                        XmlNodeList tupleList = node.SelectNodes("tupleList/tuple");
+                        List<Tuple<int, int>> readTupleList = new List<Tuple<int,int>>();
+                        foreach (XmlNode tuple in tupleList)
+                        {
+                            XmlNode item1 = tuple["item1"];
+                            int convertedItem1 = Convert.ToInt32(item1.InnerText, new System.Globalization.NumberFormatInfo());
+
+                            XmlNode item2 = tuple["item2"];
+                            int convertedItem2 = Convert.ToInt32(item2.InnerText, new System.Globalization.NumberFormatInfo());
+
+                            Tuple<int, int> readTuple = Tuple.Create(convertedItem1, convertedItem2);
+                            readTupleList.Add(readTuple);
+                        }
+                        Tuple<string, List<Tuple<int, int>>> readDetected_Apnea = Tuple.Create(readLead, readTupleList);
+                        Detected_Apnea_List.Add(readDetected_Apnea);
+                    }
+                    basicData.Detected_Apnea = Detected_Apnea_List;
+
+                    List<Tuple<string, List<List<double>>>> h_amp_List = new List<Tuple<string, List<List<double>>>>();
+                    XmlNodeList nodeList1 = module.SelectNodes("h_amp");
+                    foreach (XmlNode node in nodeList1)
+                    {
+                        XmlNode lead = node["lead"];
+                        string readLead = lead.InnerText;
+
+                        XmlNodeList samplesList = node.SelectNodes("samplesList/samples");
+                        List<List<double>> readSamplesList = new List<List<double>>();
+                        foreach (XmlNode samples in samplesList)
+                        {
+                            string readSamples = samples.InnerText;
+                            List<double> readDigits = stringToList(readSamples);
+                            readSamplesList.Add(readDigits);
+                        }
+                        Tuple<string, List<List<double>>> readTuple = Tuple.Create(readLead, readSamplesList);
+                        h_amp_List.Add(readTuple);
+                    }
+                    basicData.h_amp = h_amp_List;
+
+                    List<Tuple<string, double>> il_Apnea_List = new List<Tuple<string, double>>();
+                    XmlNodeList nodeList2 = module.SelectNodes("il_Apnea");
+                    foreach (XmlNode node in nodeList2)
+                    {
+                        XmlNode lead = node["lead"];
+                        string readLead = lead.InnerText;
+
+                        XmlNode item2 = node["item2"];
+                        double convertedItem2 = Convert.ToDouble(item2.InnerText, new System.Globalization.NumberFormatInfo());
+
+                        Tuple<string, double> readTuple = Tuple.Create(readLead, convertedItem2);
+                        il_Apnea_List.Add(readTuple);
+                    }
+                    basicData.il_Apnea = il_Apnea_List;
+
+                }
+            }
+            this.Data = basicData;
+        }
+
+        public static List<double> stringToList(string input)
+        {
+            double[] digits = input
+                              .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                              .Select(digit => Convert.ToDouble(digit, new System.Globalization.NumberFormatInfo()))
+                              .ToArray();
+            List<double> list = new List<double>();
+            for (int i = 0; i < digits.Length; i++ )
+                list.Add(digits[i]);
+            return list;
         }
     }
 }

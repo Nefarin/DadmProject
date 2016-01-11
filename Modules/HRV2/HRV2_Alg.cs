@@ -1,17 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Histogram.Data;
 using System.Collections.ObjectModel;
 using EKG_Project.Modules.R_Peaks;
 
 namespace EKG_Project.Modules.HRV2
 {
+    /*
     public partial class HRV2 : IModule
     {
-        private HRV2_Data HRV2Data;
+        #region
+
+        #endregion
+        private void Analyse()
+        {
+            ;
+        }
+        private HRV2_Data Analyse(R_Peaks_Data RRIntervals)
+        {
+            HRV2_Data hrv2Data = new HRV2_Data();
+
+            int most_often_RR = 0;
+
+
+            hrv2Data.HistogramData = ;
+            return hrv2Data;
+        }
 
         #region Documentation
         /// <summary>
@@ -40,7 +52,7 @@ namespace EKG_Project.Modules.HRV2
         #endregion
         public HRV2()
         {
-            HRV2Data = new HRV2_Data();
         }
     }
+     * */
 }

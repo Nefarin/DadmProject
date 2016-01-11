@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.Modules.Flutter;
+using EKG_Project.Modules.T_Wave_Alt;
 using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
-    public class Flutter_Data_Worker
+    public class T_Wave_Alt_Data_Worker
     {
         string directory;
         string analysisName;
-        private Flutter_Data _data;
+        private T_Wave_Alt_Data _data;
 
-        public Flutter_Data Data
+        public T_Wave_Alt_Data Data
         {
             get
             {
@@ -30,23 +30,23 @@ namespace EKG_Project.IO
             }
         }
 
-        public Flutter_Data_Worker()
+        public T_Wave_Alt_Data_Worker()
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
             Data = null;
         }
 
-        public Flutter_Data_Worker(String analysisName)  : this()
+        public T_Wave_Alt_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
 
         public void Save(ECG_Data data)
         {
-            if (data is Flutter_Data)
+            if (data is T_Wave_Alt_Data)
             {
-                Flutter_Data basicData = data as Flutter_Data;
+                T_Wave_Alt_Data basicData = data as T_Wave_Alt_Data;
 
                 ECG_Worker ew = new ECG_Worker();
                 XmlDocument file = new XmlDocument();
@@ -70,22 +70,18 @@ namespace EKG_Project.IO
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
 
-                List<Tuple<int, int>> flutterAnnotations = basicData.FlutterAnnotations;
-                foreach (var tuple in flutterAnnotations)
+                int[] alternansIndexArray = basicData.AlternansIndexArray;
+
+                XmlElement AlternansIndexArrayNode = file.CreateElement(string.Empty, "AlternansIndexArray", string.Empty);
+                string samplesText = null;
+                foreach (var value in alternansIndexArray)
                 {
-                    XmlElement FlutterAnnotations = file.CreateElement(string.Empty, "FlutterAnnotations", string.Empty);
-                    module.AppendChild(FlutterAnnotations);
-
-                    XmlElement onset = file.CreateElement(string.Empty, "onset", string.Empty);
-                    XmlText onsetValue = file.CreateTextNode(tuple.Item1.ToString());
-                    onset.AppendChild(onsetValue);
-                    FlutterAnnotations.AppendChild(onset);
-
-                    XmlElement end = file.CreateElement(string.Empty, "end", string.Empty);
-                    XmlText endValue = file.CreateTextNode(tuple.Item2.ToString());
-                    end.AppendChild(endValue);
-                    FlutterAnnotations.AppendChild(end);
+                    samplesText += value.ToString() + " ";
                 }
+
+                XmlText samplesValue = file.CreateTextNode(samplesText);
+                AlternansIndexArrayNode.AppendChild(samplesValue);
+                module.AppendChild(AlternansIndexArrayNode);
 
                 ew.InternalXMLFile = file;
 
@@ -96,7 +92,7 @@ namespace EKG_Project.IO
 
         public void Load()
         {
-            Flutter_Data basicData = new Flutter_Data();
+            T_Wave_Alt_Data basicData = new T_Wave_Alt_Data();
 
             XmlDocument file = new XmlDocument();
             string fileName = analysisName + "_Data.xml";
@@ -111,23 +107,13 @@ namespace EKG_Project.IO
             {
                 if (module.Attributes["name"].Value == moduleName)
                 {
-                    List<Tuple<int, int>> FlutterAnnotations = new List<Tuple<int, int>>();
-                    XmlNodeList flutterAnnotations = module.SelectNodes("FlutterAnnotations");
-                    foreach (XmlNode node in flutterAnnotations)
-                    {
-                        XmlNode onset = node["onset"];
-                        string readOnset = onset.InnerText;
-                        int convertedOnset = Convert.ToInt32(readOnset, new System.Globalization.NumberFormatInfo());
-
-                        XmlNode end = node["end"];
-                        string readEnd = onset.InnerText;
-                        int convertedEnd = Convert.ToInt32(readEnd, new System.Globalization.NumberFormatInfo());
-
-                        Tuple<int, int> readFlutterAnnotations = Tuple.Create(convertedOnset, convertedEnd);
-                        FlutterAnnotations.Add(readFlutterAnnotations);
-                    }
-                    basicData.FlutterAnnotations = FlutterAnnotations;
-
+                    XmlNode node = module["AlternansIndexArray"];
+                    string readNode = node.InnerText;
+                    int[] convertedNode = readNode
+                                               .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                                               .Select(point => int.Parse(point))
+                                               .ToArray();
+                    basicData.AlternansIndexArray = convertedNode;
                 }
             }
             this.Data = basicData;

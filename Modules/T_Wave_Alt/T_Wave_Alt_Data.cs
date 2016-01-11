@@ -9,7 +9,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace EKG_Project.Modules.T_Wave_Alt
 {
-    class T_Wave_Alt_Data : ECG_Data
+    public class T_Wave_Alt_Data : ECG_Data
     {
         private int[] _alternansIndexArray;
 
