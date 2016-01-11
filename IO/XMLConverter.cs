@@ -203,8 +203,8 @@ namespace EKG_Project.IO
         public static void Main()
         {
             IECGPath pathBuilder = new DebugECGPath();
-            XMLConverter xml = new XMLConverter("TestAnalysis");
-            xml.ConvertFile(System.IO.Path.Combine(pathBuilder.getDataPath(), "6.xml"));
+            XMLConverter xml = new XMLConverter("TestAnalysis8");
+            xml.ConvertFile(System.IO.Path.Combine(pathBuilder.getDataPath(), "8.xml"));
             xml.SaveResult();
 
             //xml.loadXMLFile(@"C:\temp\6.xml");
