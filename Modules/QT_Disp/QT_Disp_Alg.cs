@@ -32,7 +32,7 @@ namespace EKG_Project.Modules.QT_Disp
             T_End_method = new T_End_Method();
             QT_Calc_method = new QT_Calc_Method();
             Fs = new uint();
-            QT_intervals = new List<double>();
+            QT_intervals = new List<double>(1);
             AllQT_Intervals = new List<List<double>>();
             T_End_local = new List<int>();
 
@@ -55,9 +55,9 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 double[] R_peaks = new double[2];
                 R_peaks[0] = R_Peaks[index];
-                R_peaks[1] = R_Peaks[index + 1];
+                R_peaks[1] = R_Peaks[index+1];
                 Test data = new Test(QRS_onset.ElementAt(index), QRS_End.ElementAt(index), T_End_Global.ElementAt(index), samples, QT_Calc_method, T_End_method, Fs, R_peaks);
-                this.QT_intervals.Add(data.Calc_QT_Interval());
+                this.QT_INTERVALS.Add(data.Calc_QT_Interval());
                 this.T_End_local.Add(data.FindT_End());
                 T_End = data.FindT_End();
             }
@@ -184,13 +184,37 @@ namespace EKG_Project.Modules.QT_Disp
             int MaxSlope = 0;
             if (QRS_End != -1 && T_End_Global != -1)
             {
-                if (samples.ElementAt((int)R_Peak.ElementAt(0)) > 0)
+                if (samples.ElementAt((int)(R_Peak.ElementAt(1)-R_Peak.ElementAt(0))-1) > 0)
                 {
-                    T_Max = samples.SubVector(QRS_End, T_End_Global - QRS_End).MaximumIndex() + QRS_End;
+                    try
+                    {
+                        T_Max = samples.SubVector(QRS_End - (int)R_Peak.ElementAt(0), (T_End_Global - QRS_End)).MaximumIndex() + QRS_End;
+                        
+                    }
+                    catch(IndexOutOfRangeException ex)
+                    {
+                        T_Max = 1;
+                    }
+                    catch (ArgumentOutOfRangeException ex1)
+                    {
+                        T_Max = -1;
+                    }
                 }
                 else
                 {
-                    T_Max = samples.SubVector(QRS_End, T_End_Global - QRS_End).Negate().MaximumIndex() + QRS_End;
+                    try
+                    {
+                        T_Max = samples.SubVector(QRS_End - (int)R_Peak.ElementAt(0), T_End_Global - QRS_End).Negate().MaximumIndex() + QRS_End;
+
+                    }
+                    catch(IndexOutOfRangeException ex)
+                    {
+                        T_Max = -1;
+                    }
+                    catch(ArgumentOutOfRangeException ex1)
+                    {
+                        T_Max = -1;
+                    }
                 }
 
             }
@@ -201,13 +225,13 @@ namespace EKG_Project.Modules.QT_Disp
             }
             if (T_Max != -1)
             {
-                if (samples.ElementAt((int)R_Peak.ElementAt(1)) > 0)
+                if (samples.ElementAt((int)(R_Peak.ElementAt(1) - R_Peak.ElementAt(0)) - 1) > 0)
                 {
-                    MaxSlope = diff(samples.SubVector(T_Max, T_End_Global - T_Max)).MinimumIndex() + T_Max;
+                    MaxSlope = diff(samples.SubVector(T_Max - (int)R_Peak.ElementAt(0), T_End_Global - T_Max)).MinimumIndex() + T_Max;
                 }
                 else
                 {
-                    MaxSlope = diff(samples.SubVector(T_Max, T_End_Global - T_Max)).MaximumIndex() + T_Max;
+                    MaxSlope = diff(samples.SubVector(T_Max-(int)R_Peak.ElementAt(0), T_End_Global - T_Max)).MaximumIndex() + T_Max;
                 }
             }
             else
@@ -224,7 +248,7 @@ namespace EKG_Project.Modules.QT_Disp
 
                 if (MaxSlope != -1)
                 {
-                    vectorToFit = samples.SubVector(MaxSlope - 4, 9);
+                    vectorToFit = samples.SubVector(MaxSlope-(int)R_Peak.ElementAt(0)-5, 9);
                     y = vectorToFit.ToArray();
                     for (int i = -4; i < 5; i++)
                     {
@@ -243,6 +267,10 @@ namespace EKG_Project.Modules.QT_Disp
                     }
 
                 }
+                else
+                {
+                    T_End = -1;
+                }
 
             }
             else
@@ -255,7 +283,7 @@ namespace EKG_Project.Modules.QT_Disp
 
                 if (MaxSlope != -1)
                 {
-                    vectorToFit = samples.SubVector(MaxSlope, 7);
+                    vectorToFit = samples.SubVector(MaxSlope - (int)R_Peak.ElementAt(0), 7);
                     y = vectorToFit.ToArray();
                     for (int i = 0; i < 7; i++)
                     {
@@ -274,6 +302,10 @@ namespace EKG_Project.Modules.QT_Disp
                     }
 
                 }
+                else
+                {
+                    T_End = -1;
+                }
 
             }
 
@@ -283,13 +315,13 @@ namespace EKG_Project.Modules.QT_Disp
         }
         public double Calc_QT_Interval()
         {
-            double QT_Interval = 0;
+            double QT_Interval =2;
             int T_End = FindT_End();
             if (QT_Calc_method == QT_Calc_Method.BAZETTA)
             {
                 if (QRS_onset != -1 && (T_End != -1))
                 {
-                    QT_Interval = ((T_End - QRS_onset / Fs) * 1000) / Math.Sqrt((R_Peak.ElementAt(1) - R_Peak.ElementAt(0)) / Fs);
+                    QT_Interval = ((((double)T_End - (double)QRS_onset) / (double)Fs) * 1000) / (Math.Sqrt((R_Peak.ElementAt(1) - R_Peak.ElementAt(0)) / (double)Fs));
                 }
                 else
                 {
@@ -300,7 +332,7 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 if (QRS_onset != -1 && (T_End != -1))
                 {
-                    QT_Interval = ((T_End - QRS_onset / Fs) * 1000) / Math.Pow(((R_Peak.ElementAt(1) - R_Peak.ElementAt(0)) / Fs), 1 / 3);
+                    QT_Interval = ((((double)T_End - (double)QRS_onset) / (double)Fs) * 1000) / Math.Pow(((R_Peak.ElementAt(1) - R_Peak.ElementAt(0)) / (double)Fs), 1 / 3);
                 }
                 else
                 {
@@ -311,7 +343,7 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 if (QRS_onset != -1 && (T_End != -1))
                 {
-                    QT_Interval = ((T_End - QRS_onset / Fs) * 1000) - 0.154 * (1 - ((R_Peak.ElementAt(1) - R_Peak.ElementAt(0)) / Fs));
+                    QT_Interval = ((((double)T_End - (double)QRS_onset )/ (double)Fs) * 1000.0) - 0.154 * (1 - ((R_Peak.ElementAt(1) - R_Peak.ElementAt(0)) / (double)Fs));
                 }
                 else
                 {

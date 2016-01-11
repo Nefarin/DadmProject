@@ -22,7 +22,7 @@ namespace EKG_Project.Modules.QT_Disp
         private int _numberOfChannels;
 
         int step = 0;
-        int R_Peak_step = 0;
+        int R_Peak_step = 1;
 
         //input workers
         private ECG_Baseline_Data_Worker _inputECGBaselineWorker;
@@ -46,7 +46,7 @@ namespace EKG_Project.Modules.QT_Disp
 
         private Vector<double> _currentVector;
         private List<Tuple<string, List<int>>> _t_end_loacl;
-        private List<int> _t_end_index;
+        private List<int> _t_end_index = new List<int>();
 
 
         public void Abort()
@@ -90,11 +90,14 @@ namespace EKG_Project.Modules.QT_Disp
                 OutputData = new QT_Disp_Data();
 
                 _currentChannelIndex = 0;
-                _samplesProcessed = 0;
+            
+                Console.WriteLine(InputRPeaksData.RPeaks[_currentChannelIndex].Item2.Count);
+                _samplesProcessed = (int)InputRPeaksData.RPeaks[_currentChannelIndex].Item2.ElementAt(0);
                 NumberOfChannels = InputECGBaselineData.SignalsFiltered.Count;
                 _currentChannelLength = InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
+                Console.WriteLine(_currentChannelLength);
                 _currentVector = Vector<double>.Build.Dense(_currentChannelLength);
-                step = (int)InputRPeaksData.RPeaks[_currentChannelIndex].Item2[R_Peak_step];
+                step = (int)InputRPeaksData.RPeaks[_currentChannelIndex].Item2.ElementAt(1)- (int)InputRPeaksData.RPeaks[_currentChannelIndex].Item2.ElementAt(0);
                 TODoInInit(InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.TEnds[_currentChannelIndex].Item2,
                     InputWavesData.QRSEnds[_currentChannelIndex].Item2, InputRPeaksData.RPeaks[_currentChannelIndex].Item2,
                     Params.TEndMethod, Params.QTMethod, InputBasicData.Frequency);
@@ -123,14 +126,16 @@ namespace EKG_Project.Modules.QT_Disp
             int startIndex = _samplesProcessed;
             if (channel < NumberOfChannels)
             {
-                if (startIndex + step > _currentChannelLength)
+                if (R_Peak_step >= InputRPeaksData.RPeaks[_currentChannelIndex].Item2.Count-1)
                 {
+                    Console.WriteLine("Jestem tutraj");
                     int[] temp = new int[R_Peak_step];
                     T_End_Index.CopyTo(temp);
                     OutputData.QT_mean.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getMean()));
                     OutputData.QT_disp_local.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getLocal()));
                     OutputData.QT_std.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getStd()));
                     OutputData.T_End_Local.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, temp.ToList()));
+                    OutputWorker.Save(OutputData);
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)
                     {
@@ -146,7 +151,7 @@ namespace EKG_Project.Modules.QT_Disp
                 {
                     _currentVector = InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, step);
 
-                    T_End_Index.Add(ToDoInProccessData(_currentVector, R_Peak_step));
+                    T_End_Index.Add(ToDoInProccessData(_currentVector, R_Peak_step-1));
                     _samplesProcessed = startIndex + step;
                 }
             }
@@ -157,7 +162,9 @@ namespace EKG_Project.Modules.QT_Disp
                 _ended = true;
             }
             R_Peak_step += 1;
-            step = (int)InputRPeaksData.RPeaks[_currentChannelIndex].Item2[R_Peak_step] - step;
+            //Console.WriteLine(R_Peak_step);
+            //Console.WriteLine(_samplesProcessed);
+            step = (int)InputRPeaksData.RPeaks[_currentChannelIndex].Item2[R_Peak_step] - (int)InputRPeaksData.RPeaks[_currentChannelIndex].Item2[R_Peak_step-1];
 
 
         }
