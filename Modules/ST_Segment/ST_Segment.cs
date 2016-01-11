@@ -11,7 +11,7 @@ using EKG_Project.IO;
 
 namespace EKG_Project.Modules.ST_Segment
 {
-    
+
 
     public partial class ST_Segment : IModule
     {
@@ -23,21 +23,41 @@ namespace EKG_Project.Modules.ST_Segment
         private int _samplesProcessed;
         private int _numberOfChannels;
 
-       // private Basic_Data_Worker _inputWorker; //
-            private R_Peaks_Data_Worker _inputRpeaksWorker;
-            private ST_Segment_Data_Worker _outputWorker;
+        private ECG_Baseline_Data_Worker _inputECGBaselineWorker;
+        private ECG_Baseline_Data _inputECGBaselineData;
 
-            private ST_Segment_Data _outputData;
-            private R_Peaks_Data _inputData;
-            private ST_Segment_Params _params;
+        private Waves_Data_Worker _inputWavesWorker;
+        private Waves_Data _inputWavesData;
 
-            private List<double> _tJs;
-            private List<double> _tSTs;
-            private int _ConcaveCurves;
-            private int _ConvexCurves;
-            private int _IncreasingLines;
-            private int _HorizontalLines;
-            private int _DecreasingLines;
+        private R_Peaks_Data_Worker _inputRpeaksWorker;
+        private ST_Segment_Data_Worker _outputWorker;
+
+        private Basic_Data_Worker _inputBasicDataWorker; //czestotliwosc
+        private Basic_Data _inputBasicData;
+
+        private ST_Segment_Data _outputData;
+        private R_Peaks_Data _inputData;
+        private ST_Segment_Params _params;
+
+
+        private int _fs;
+        private List<double> _tJs;
+        private List<double> _tSTs;
+        private int _ConcaveCurves;
+        private int _ConvexCurves;
+        private int _IncreasingLines;
+        private int _HorizontalLines;
+        private int _DecreasingLines;
+        private int _currentConcaveCurves;
+        private int _currentIncreasingLines;
+        private int _currentDecreasingLines;
+        private int _currentHorizontalLines;
+        private int _currentConvexCurves;
+        private List<long> _currenttST;
+        private List<long> _currenttJ;
+        private int _rPeaksProcessed;
+        private int _currentRpeaksLength;
+        private bool rInterval;
 
         public void Abort()
         {
@@ -60,36 +80,49 @@ namespace EKG_Project.Modules.ST_Segment
             {
                 _ended = false;
 
-                
+                InputWorker = new Basic_Data_Worker(Params.AnalysisName);
+                InputECGworker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
                 InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
+
                 InputWorker.Load();
-                InputData = InputWorker.Data;
+                InputData = InputWorker.BasicData;
+
+                InputECGworker.Load();
+                InputECGData = InputECGworker.Data;
+
+                InputWorkerRpeaks.Load();
                 InputDataRpeaks = InputWorkerRpeaks.Data;
+
 
                 OutputWorker = new ST_Segment_Data_Worker(Params.AnalysisName);
                 OutputData = new ST_Segment_Data();
 
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
+                _rPeaksProcessed = 0;
                 NumberOfChannels = InputData.RPeaks.Count;
                 _currentRPeaksLength = InputData.RPeaks[_currentChannelIndex].Item2.Count;
 
-                _currenttJ = new List<int>();
-                _currenttST = new List<int>(); // tu cos co mamy miec 
-                
-               
-        }
+
+                _currenttJ = new List<long>();
+                _currenttST = new List<long>();
+                _currentConcaveCurves = new int();
+                _currentConvexCurves = new int();
+                _currentIncreasingLines = new int();
+                _currentHorizontalLines = new int();
+                _currentDecreasingLines = new int();
+            }
 
         public void ProcessData(ST_Segment_Params parameters)
         {
-            
-                if (Runnable()) processData();
-                else _ended = true;
-            
+
+            if (Runnable()) processData();
+            else _ended = true;
+
         }
 
         public double Progress()
-       
+
         {
             return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentRPeaksLength));
         }
@@ -111,14 +144,16 @@ namespace EKG_Project.Modules.ST_Segment
             {
                 if (startIndex + step > _currentRpeaksLength)
                 {
-                    analyzeSignalPart();
-                    OutputData.QRSOnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSonsets));
-                    OutputData.QRSEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSends));
+                    Method(Vector < double > signal, Vector < uint > tQRS_onset, Vector < uint > tQRS_ends, Vector < double > rInterval, int freq);
+                    OutputData.tJ.Add(new List<long>(InputData.Signals[_currentChannelIndex].Item1, _tJ));
+                    OutputData.tST.Add(new List<long>(InputData.Signals[_currentChannelIndex].Item1, _tST));
 
-                    OutputData.POnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPonsets));
-                    OutputData.PEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPends));
 
-                    OutputData.TEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentTends));
+                    OutputData.ConcaveCurves.Add(new < int > (InputData.Signals[_currentChannelIndex].Item1, _ConcaveCurves));
+                    OutputData.ConvexCurves.Add(new < int > (InputData.Signals[_currentChannelIndex].Item1, _ConvexCurves));
+                    OutputData.IncreasingLines.Add(new < int > (InputData.Signals[_currentChannelIndex].Item1, _IncreasingLines));
+                    OutputData.HorizontalLines.Add(new < int > (InputData.Signals[_currentChannelIndex].Item1, _HorizontalLines));
+                    OutputData.DecreasingLines.Add(new < int > (InputData.Signals[_currentChannelIndex].Item1, _DecreasingLines));
 
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)
@@ -127,34 +162,64 @@ namespace EKG_Project.Modules.ST_Segment
 
                         _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
 
-                        _currentQRSonsets = new List<int>();
-                        _currentQRSends = new List<int>();
-                        _currentPonsets = new List<int>();
-                        _currentPends = new List<int>();
-                        _currentTends = new List<int>();
+                        _currenttJ = new List<long>();
+                        _currenttST = new List<long>();
+                        _currentConcaveCurves = new int();
+                        _currentConvexCurves = new int();
+                        _currentIncreasingLines = new int();
+                        _currentHorizontalLines = new int();
+                        _currentDecreasingLines = new int();
                     }
 
 
                 }
+
                 else
                 {
-                    analyzeSignalPart();
-                    _rPeaksProcessed = startIndex + step;
-                    Console.WriteLine("Jedna sesja poszla!");
-                    Console.WriteLine(_rPeaksProcessed);
+                    OutputWorker.Save(OutputData);
+                    _ended = true;
                 }
-            }
-            else
-            {
-                OutputWorker.Save(OutputData);
-                _ended = true;
+
+
+
             }
 
-
-
+        private void Method(bool v1, bool v2, bool v3, bool v4, int v5, object freq)
+        {
+            throw new NotImplementedException();
         }
 
-        public Basic_Data InputData
+        public ST_Segment_Data 
+            {
+            get
+            {
+            return _outputData;
+            }
+    set
+        {
+                _outputData = value;
+            }
+        }
+
+       
+public ST_Segment_Params Params
+{
+    get
+    {
+        return _params;
+    }
+
+    set
+    {
+        _params = value;
+    }
+}
+
+
+
+
+
+public Basic_Data InputData
         {
             get
             {
@@ -268,32 +333,77 @@ namespace EKG_Project.Modules.ST_Segment
             {
                 _outputWorker = value;
             }
-        }
-
-        public static void Main()
-        {
-            Waves_Params param = new Waves_Params(Wavelet_Type.haar, 2, "Analysis6", 100);
-
-            //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
-            //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
-            //Vector<double> ecg = TempInput.getSignal();
-
-            //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");
-            //Vector<double> rpeaks = TempInput.getSignal();
-
-            Waves testModule = new Waves();
-            //testModule.InitForTestsOnly(ecg, rpeaks, param);
-            testModule.Init(param);
-            while (true)
+    public ST_Segment_Data_Worker OutputWorker
+    {
+        get;
             {
-                //Console.WriteLine("Press key to continue.");
-                //Console.Read();
-                if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress());
-                testModule.ProcessData();
-            }
+            return _outputWorker;
+        }
 
+        set;
+            {
+            _outputWorker = value;
+        }
+
+
+
+
+
+
+    }
+
+    //testowanie
+
+    public static void Main()
+        {
+
+        ST_Segment _Params param = new ST_Segment _Params("Analysis6");
+
+
+        //TestModule3_Params param = null;
+
+
+        ST_Segment testModule = new ST_Segment();
+
+
+        testModule.Init(param);
+
+
+        while (true)
+
+
+        {
+
+
+
+
+            Console.WriteLine("Press key to continue.");
+
+
+            Console.Read();
+
+
+            if (testModule.Ended()) break;
+
+
+            Console.WriteLine(testModule.Progress());
+
+
+            testModule.ProcessData();
+
+
+            Console.WriteLine(testModule.OutputData.HeartAxis);
+
+
+            Console.WriteLine("Press key to continue.");
+
+
+            Console.Read();
 
         }
+
+
+
     }
+}
 }
