@@ -36,9 +36,9 @@ namespace EKG_Project.Modules.Sleep_Apnea
             {
                 RR[0].Add((double)(R_detected[i]));
             }
-            for (int i = 0; i < R_detected.Count(); i++)
+            for (int i = 0; i < R_detected.Count()-1; i++)
             {
-                RR[1].Add((double)((R_detected[i + 1] - R_detected[i]) / freq));
+                RR[1].Add((((double)R_detected[i + 1] - R_detected[i]) / freq));
             }
 
             RR[1].Add(0.0);
