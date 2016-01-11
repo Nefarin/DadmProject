@@ -17,12 +17,14 @@ namespace EKG_Project.Modules.HRV_DFA
         private Plot_Breakpoint _breakpoint;
         private Box_Max_Size _boxSize;
         private Box_StepSize _stepSize;
+        private string _analysisName;
 
-        public HRV_DFA_Params(Plot_Breakpoint breakpoint, Box_Max_Size boxSize, Box_StepSize stepSize)
+        public HRV_DFA_Params(Plot_Breakpoint breakpoint, Box_Max_Size boxSize, Box_StepSize stepSize, string analysisName)
         {
             this.Breakpoint = breakpoint;
             this.BoxSize = boxSize;
             this.StepSize = stepSize;
+            this.AnalysisName = analysisName;
         }
 
         public void CopyParametersFrom(HRV_DFA_Params parameters)
@@ -72,5 +74,17 @@ namespace EKG_Project.Modules.HRV_DFA
             }
         }
 
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+
+            set
+            {
+                _analysisName = value;
+            }
+        }
     }
 }
