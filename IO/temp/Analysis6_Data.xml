@@ -167,59 +167,6 @@
       <intervals>1 2 3 4 5 6 7 8 9 </intervals>
     </RRInterval>
   </module>
-  <module name="Waves">
-    <QRSOnsets>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </QRSOnsets>
-    <QRSOnsets>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
-    </QRSOnsets>
-    <QRSEnds>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </QRSEnds>
-    <QRSEnds>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
-    </QRSEnds>
-    <POnsets>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </POnsets>
-    <POnsets>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
-    </POnsets>
-    <PEnds>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </PEnds>
-    <PEnds>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
-    </PEnds>
-    <TEnds>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </TEnds>
-    <TEnds>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
-    </TEnds>
-  </module>
-  <module name="Heart_Class">
-    <ClassificationResult>
-      <item1>1</item1>
-      <item2>2</item2>
-    </ClassificationResult>
-    <ClassificationResult>
-      <item1>1</item1>
-      <item2>2</item2>
-    </ClassificationResult>
-    <ChannelMliiDetected>True</ChannelMliiDetected>
-  </module>
   <module name="QT_Disp">
     <QT_disp_local>
       <lead>V1</lead>
@@ -247,87 +194,63 @@
     </QT_std>
     <QT_disp_global>78</QT_disp_global>
   </module>
-  <module name="T_Wave_Alt">
-    <AlternansIndexArray>1 2 3 4 5 6 7 8 9 </AlternansIndexArray>
+  <module name="Heart_Class">
+    <ClassificationResult>
+      <item1>1</item1>
+      <item2>2</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>1</item1>
+      <item2>2</item2>
+    </ClassificationResult>
+    <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
-  <module name="Sleep_Apnea">
-    <Detected_Apnea>
-      <lead>V1</lead>
-      <tupleList>
-        <tuple>
-          <item1>1</item1>
-          <item2>2</item2>
-        </tuple>
-        <tuple>
-          <item1>3</item1>
-          <item2>4</item2>
-        </tuple>
-      </tupleList>
-    </Detected_Apnea>
-    <Detected_Apnea>
-      <lead>MLII</lead>
-      <tupleList>
-        <tuple>
-          <item1>1</item1>
-          <item2>2</item2>
-        </tuple>
-        <tuple>
-          <item1>3</item1>
-          <item2>4</item2>
-        </tuple>
-      </tupleList>
-    </Detected_Apnea>
-    <h_amp>
-      <lead>V1</lead>
-      <samplesList>
-        <samples>1 2 3 4 5 </samples>
-        <samples>6 7 8 9 10 </samples>
-      </samplesList>
-    </h_amp>
-    <h_amp>
-      <lead>MLII</lead>
-      <samplesList>
-        <samples>1 2 3 4 5 </samples>
-        <samples>6 7 8 9 10 </samples>
-      </samplesList>
-    </h_amp>
-    <il_Apnea>
-      <lead>V1</lead>
-      <item2>30,09</item2>
-    </il_Apnea>
-    <il_Apnea>
-      <lead>MLII</lead>
-      <item2>54</item2>
-    </il_Apnea>
-  </module>
-  <module name="HRT">
-    <TurbulenceOnset>1 2 3 4 5 6 7 8 9 </TurbulenceOnset>
-    <TurbulenceSlope>1 2 3 4 5 6 7 8 9 </TurbulenceSlope>
-    <VPCtachogram>1 2 3 4 5 6 7 8 9 </VPCtachogram>
-    <TurbulenceOnsetMean>1 2 3 4 5 6 7 8 9 </TurbulenceOnsetMean>
-    <TurbulenceSlopeMean>1 2 3 4 5 6 7 8 9 </TurbulenceSlopeMean>
-    <VPCcount>1</VPCcount>
-  </module>
-  <module name="HRV2">
-    <HistogramData>
-      <lead>V1</lead>
-      <samples>0 0 0 0 0 0 0 0 0 </samples>
-    </HistogramData>
-    <HistogramData>
-      <lead>MLII</lead>
-      <samples>0 0 0 0 0 0 0 0 0 </samples>
-    </HistogramData>
-    <PoincarePlotData_x>
-      <item1>Y</item1>
-      <samples>-8 -7 -6 -5 -4 -3 -2 -1 0 </samples>
-    </PoincarePlotData_x>
-    <PoincarePlotData_y>
-      <item1>Y</item1>
-      <samples>-8 -7 -6 -5 -4 -3 -2 -1 0 </samples>
-    </PoincarePlotData_y>
-    <Tinn>8</Tinn>
-    <TriangleIndex>8</TriangleIndex>
-    <SD1>2</SD1>
-    <SD2>3,87298334620742</SD2>
+  <module name="Waves">
+    <QRSOnsets>
+      <lead>I</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>II</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </QRSOnsets>
+    <QRSEnds>
+      <lead>I</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>II</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </QRSEnds>
+    <POnsets>
+      <lead>I</lead>
+      <samples>
+      </samples>
+    </POnsets>
+    <POnsets>
+      <lead>II</lead>
+      <samples>
+      </samples>
+    </POnsets>
+    <PEnds>
+      <lead>I</lead>
+      <samples>
+      </samples>
+    </PEnds>
+    <PEnds>
+      <lead>II</lead>
+      <samples>
+      </samples>
+    </PEnds>
+    <TEnds>
+      <lead>I</lead>
+      <samples>
+      </samples>
+    </TEnds>
+    <TEnds>
+      <lead>II</lead>
+      <samples>
+      </samples>
+    </TEnds>
   </module>
 </EKG>

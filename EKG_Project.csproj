@@ -46,7 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.Modules.HRV2.HRV2</StartupObject>
+    <StartupObject>EKG_Project.Modules.Atrial_Fibr.Atrial_Fibr</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -114,6 +114,10 @@
     <Page Include="GUI\Flutter.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\ModuleOptionDialogues\Dialogue_Atrial_fibr_Options.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml">
       <SubType>Designer</SubType>
@@ -212,6 +216,9 @@
       <DependentUpon>Flutter.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ModuleOption.cs" />
+    <Compile Include="GUI\ModuleOptionDialogues\Dialogue_Atrial_fibr_Options.xaml.cs">
+      <DependentUpon>Dialogue_Atrial_fibr_Options.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml.cs">
       <DependentUpon>Dialogue_ECG_Baseline_Options.xaml</DependentUpon>
     </Compile>
@@ -279,6 +286,7 @@
     <Compile Include="IO\ReleaseECGPath.cs" />
     <Compile Include="IO\R_Peaks_Data_Worker.cs" />
     <Compile Include="IO\Sleep_Apnea_Data_Worker.cs" />
+    <Compile Include="IO\ST_Segment_Data_Worker.cs" />
     <Compile Include="IO\TempInput.cs" />
     <Compile Include="IO\TestModule3_Data_Worker.cs" />
     <Compile Include="IO\T_Wave_Alt_Data_Worker.cs" />
@@ -405,6 +413,12 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\temp\TestAnalysis8_Data.xml" />
+    <Resource Include="IO\temp\TestAnalysis6_Data.xml" />
+    <Resource Include="IO\temp\TestAnalysis5_Data.xml" />
+    <Resource Include="IO\temp\TestAnalysis3_Data.xml" />
+    <Resource Include="IO\temp\TestAnalysis2_Data.xml" />
+    <Resource Include="IO\temp\TestAnalysis_Data.xml" />
     <Resource Include="IO\temp\Analysis6_Data.xml" />
     <Resource Include="IO\temp\Analysis6_TestModule3.xml" />
     <Resource Include="IO\data\2.xml" />
