@@ -29,6 +29,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         List<DataPoint> _ClusteredData;
         Tuple<bool, Vector<double>, double> _wynik;
         Atrial_Fibr_Params param;
+
         public Atrial_Fibr()
         {
             Param = new Atrial_Fibr_Params();
@@ -49,32 +50,34 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         //public static void Main()
         //{
-        //    Atrial_Fibr af = new Atrial_Fibr();
-        //    Tuple<bool, Vector<double>, double> Wynik = new Tuple<bool, Vector<double>, double>(false, af.pointsDetected, 0);
-        //    TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\int3.txt");
-        //    af.Fs = 250;
-        //    //af.Param.Method = Detect_Method.POINCARE;
-        //    af.RR_intervals = TempInput.getSignal();
-        //    TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\qrs3.txt");
-        //    af.R_Peaks = TempInput.getSignal();
+            //Atrial_Fibr af = new Atrial_Fibr();
+            //Tuple<bool, Vector<double>, double> Wynik = new Tuple<bool, Vector<double>, double>(false, af.pointsDetected, 0);
+            ////TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\int3.txt");
+            //TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\int3.txt");
+            //af.Fs = 250;
+            //af.Param.Method = Detect_Method.POINCARE;
+            //af.RR_intervals = TempInput.getSignal();
+            ////TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\qrs3.txt");
+            //TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\qrs3.txt");
+            //af.R_Peaks = TempInput.getSignal();
 
-        //    Wynik = af.detectAF(af.RR_intervals, af.R_Peaks, af.Fs, af.Param);
+            //Wynik = af.detectAF(af.RR_intervals, af.R_Peaks, af.Fs, af.Param);
 
-        //    if (Wynik.Item1)
-        //    {
-        //        Console.WriteLine("MIGOTANIE PRZEDSIONKOW");
-        //        Console.ReadLine();
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("BRAK MIGOTANIA");
-        //        Console.ReadLine();
-        //    }
-        //    Console.WriteLine(Wynik.Item2.ToString());
-        //    Console.ReadLine();
-        //    Console.WriteLine(Wynik.Item2.Count());
+            //if (Wynik.Item1)
+            //{
+            //    Console.WriteLine("MIGOTANIE PRZEDSIONKOW");
+            //    Console.ReadLine();
+            //}
+            //else
+            //{
+            //    Console.WriteLine("BRAK MIGOTANIA");
+            //    Console.ReadLine();
+            //}
+            //Console.WriteLine(Wynik.Item2.ToString());
+            //Console.ReadLine();
+            //Console.WriteLine(Wynik.Item2.Count());
 
-        //    Console.ReadLine();
+            //Console.ReadLine();
 
 
         //}
@@ -478,18 +481,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 counter = 0;
                 RawData = InitilizeRawData(Ii, Ii1);
                 NormalizedData = NormalizeData(RawData);
-                for (amountOfCluster = 2; amountOfCluster < 5; amountOfCluster++)
+                for (amountOfCluster = 2; amountOfCluster < 6; amountOfCluster++)
                 {
                     RawData = Cluster(RawData, NormalizedData, ClusteredData);
-                    //var group = RawData.GroupBy(s => s.Cluster).OrderBy(s => s.Key);
                     sil[counter] = SilhouetteCoefficient(RawData);
                     counter++;
                 }
 
-
                 if (sil.Max() < 0.92) AF = true;
                 else AF = false;
-
             }
             return AF;
         }
@@ -508,11 +508,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
 
             public DataPoint()
-            {
-                //A = 0;
-                //B = 0;
-                //Cluster = 0;
-            }
+            { }
         }
 
         #region Documentation
@@ -595,7 +591,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             Random random = new Random();
             for (int i = amountOfCluster; i < _normalizedDataToCluster.Count; i++)
             {
-                _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = random.Next(0, (amountOfCluster-1));
+                _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = random.Next(0, amountOfCluster);
             }
             Tuple<List<DataPoint>, List<DataPoint>> result = new Tuple<List<DataPoint>, List<DataPoint>> (_normalizedDataToCluster, _rawDataToCluster);
             return result;
@@ -656,20 +652,21 @@ namespace EKG_Project.Modules.Atrial_Fibr
         #endregion
         private bool EmptyCluster(List<DataPoint> data)
         {
-            var emptyCluster =
-            data.GroupBy(s => s.Cluster).OrderBy(s => s.Key).Select(g => new { Cluster = g.Key, Count = g.Count() });
             bool result = new bool();
             result = false;
 
-            foreach (var item in emptyCluster)
+            for (int i = 0; i < amountOfCluster; i++)
             {
-                if (item.Count == 0)
+                if (!data.Exists(x => x.Cluster == i))
                 {
                     result = true;
+                    break;
                 }
-            }
+            }            
+            
             return result;
         }
+
 
         #region Documentation
         /// <summary>
@@ -699,14 +696,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private Tuple<bool, List<DataPoint>,List<DataPoint>> UpdateClusterMembership(List<DataPoint> _rawDataToCluster, List<DataPoint> _normalizedDataToCluster, List<DataPoint> _clusters)
         {
             bool changed = false;
-            //int _numberOfClusters = 3;
-
             double[] distances = new double[amountOfCluster];
 
-            for (int i = 0; i < _normalizedDataToCluster.Count; i++)
+            for (int i = 0; i < _normalizedDataToCluster.Count; ++i)
             {
 
-                for (int k = 0; k < amountOfCluster; k++)
+                for (int k = 0; k < amountOfCluster; ++k)
                     distances[k] = ElucidanDistance(_normalizedDataToCluster[i], _clusters[k]);
 
                 int newClusterId = MinIndex(distances);
