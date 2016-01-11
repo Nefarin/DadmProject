@@ -12,7 +12,7 @@ namespace EKG_Project.Modules.HRV2
         private double _sd1;
         private double _sd2;
         private List<Tuple<string, Vector<double>>> _histogramData;
-        private Tuple<string,Vector<double>> _poincarePlotData_x;
+        private Tuple<string, Vector<double>> _poincarePlotData_x;
         private Tuple<string, Vector<double>> _poincarePlotData_y;
 
 

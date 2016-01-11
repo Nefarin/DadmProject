@@ -11,14 +11,19 @@ namespace EKG_Project.Modules.HRV2
 {
     public partial class HRV2 : IModule
     {
-        //public Histogram makeHistogram(Vector <double> RRIntervals)
-        //{
-        //    RRIntervals = InputData.RPeaks[_currentChannelIndex].Item2;
-        //    int binAmount = (int)((RRIntervals.Max() - RRIntervals.Min()) / 7.8125); //the amount of the bins
-        //    Histogram histogram = new Histogram(RRIntervals, binAmount);
+        public Histogram makeHistogram()
+        {
+            Vector<double> RRIntervals = InputData.RPeaks[_currentChannelIndex].Item2;
+            int binAmount = (int)((RRIntervals.Max() - RRIntervals.Min()) / 7.8125); //the amount of the bins
+            Console.WriteLine(RRIntervals.Max());
+            Console.ReadLine();
+            Histogram histogram = new Histogram(RRIntervals, binAmount);
 
-        //    return histogram;
-        //}
+            return histogram;
+        }
+
+
+
         public class Sample
         {
             public float Count { get; set; }
