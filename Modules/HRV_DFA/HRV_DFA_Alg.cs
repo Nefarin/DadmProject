@@ -11,7 +11,7 @@ using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
-    /*
+    
     public partial class HRV_DFA : IModule
     {
         Vector<double> veclogn1;
@@ -232,5 +232,5 @@ namespace EKG_Project.Modules.HRV_DFA
         }
  
     }
-     * */
+     
 }
