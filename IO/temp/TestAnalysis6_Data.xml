@@ -442,4 +442,23 @@
       <samples>850 1791 2298 3991 4699 5451 6186 7438 4708 -1 -1 -1 -1 -1 2809 4695 -1 3077 3766 4500 5237 5983 6426 8938 1111 1812 2317 -1 4742 -1 5982 7457 -1 4708 5460 -1 -1 -1 -1 -1 -1 1804 -1 -1 -1 </samples>
     </TEnds>
   </module>
+  <module name="Heart_Class">
+    <ClassificationResult>
+      <item1>2209</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>4386</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>4386</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>4386</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ChannelMliiDetected>True</ChannelMliiDetected>
+  </module>
 </EKG>

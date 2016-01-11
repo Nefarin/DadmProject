@@ -443,4 +443,31 @@
     </TEnds>
   </module>
   <module name="HRV_DFA" />
+  <module name="Heart_Class">
+    <ClassificationResult>
+      <item1>164</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>601</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>1145</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>1442</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>2177</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>2721</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ChannelMliiDetected>True</ChannelMliiDetected>
+  </module>
 </EKG>
