@@ -8,5 +8,6 @@
     #endregion
     public class ModuleParams
     {
+        public string AnalysisName { get; set; }
     }
 }

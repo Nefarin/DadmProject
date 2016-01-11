@@ -19,7 +19,6 @@ namespace EKG_Project.Modules.ECG_Baseline
         private int _windowSizeHigh;              //szerokość okna filtracji górnoprzepustowy
         private int _orderLow;                    //rząd filtru dolnoprzepustowy
         private int _orderHigh;                   //rząd filtru górnoprzepustowy
-        private string _analysisName;             //analysisName
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -90,19 +89,6 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.OrderHigh = parameters.OrderHigh;
             this.WindowSizeLow = parameters.WindowSizeLow;
             this.WindowSizeHigh = parameters.WindowSizeHigh;
-        }
-
-        public string AnalysisName
-        {
-            get
-            {
-                return _analysisName;
-            }
-
-            set
-            {
-                _analysisName = value;
-            }
         }
 
         public Filtr_Method Method

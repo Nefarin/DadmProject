@@ -18,7 +18,6 @@ namespace EKG_Project.GUI
 
         private bool _set = false;
         private List<ModuleOption> _suboptions = null;
-        private String _analysisName;
 
         #endregion
 
@@ -38,6 +37,32 @@ namespace EKG_Project.GUI
                 this._set = value;
                 if (this._set)
                 {
+                    switch (this.Code)
+                    {
+                        case AvailableOptions.ECG_BASELINE:
+                            this.ModuleParam = new ECG_Baseline_Params();
+                            break;
+                        case AvailableOptions.R_PEAKS:
+                            this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.getAnalysisName());
+                            break;
+                        case AvailableOptions.WAVES:
+                            this.ModuleParam = new Waves_Params();
+                            break;
+                        case AvailableOptions.ATRIAL_FIBER:
+                            this.ModuleParam = new Atrial_Fibr_Params(Detect_Method.POINCARE);
+                            break;
+                        default:
+                            this.ModuleParam = null;
+                            break;
+                    }
+
+                    if (this.ModuleParam != null)
+                    {
+                        this.Panel.OptionParams[this] = this.ModuleParam;
+                        this.Panel.Params[this.Code] = this.ModuleParam;
+                        this.ModuleParam.AnalysisName = this.AnalysisName;
+                    }
+
                     if (this.Parent != null)
                         this.Parent.Set = true;
                 }
@@ -45,8 +70,18 @@ namespace EKG_Project.GUI
                 {
                     foreach (ModuleOption option in this.Suboptions)
                         option.Set = false;
+
+                    this.ModuleParam = null;
+
+                    if (this.Panel != null)
+                    {
+                        this.Panel.OptionParams.Remove(this);
+                        this.Panel.Params.Remove(this.Code);
+                    }
                 }
+
                 this.OnPropertyChanged("Set");
+                this.OnPropertyChanged("ParametersAvailable");
             }
         }
 
@@ -71,12 +106,7 @@ namespace EKG_Project.GUI
         {
             get
             {
-                return _analysisName;
-            }
-
-            set
-            {
-                _analysisName = value;
+                return this.Panel != null ? this.Panel.AnalysisName : string.Empty;
             }
         }
 
@@ -97,34 +127,6 @@ namespace EKG_Project.GUI
             this.Set = false;
             this.Parent = parent;
             this.Panel = panel;
-            this.AnalysisName = panel.AnalysisName;
-
-            switch (this.Code)
-            {
-                case AvailableOptions.ECG_BASELINE:
-                    this.ModuleParam = new ECG_Baseline_Params();
-                    panel.OptionParams[this] = this.ModuleParam;
-                    panel.Params[this.Code] = this.ModuleParam;
-                    break;
-                case AvailableOptions.R_PEAKS:
-                    this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.getAnalysisName());
-                    panel.OptionParams[this] = this.ModuleParam;
-                    panel.Params[this.Code] = this.ModuleParam;
-                    break;
-                case AvailableOptions.WAVES:
-                    this.ModuleParam = new Waves_Params();
-                    panel.OptionParams[this] = this.ModuleParam;
-                    panel.Params[this.Code] = this.ModuleParam;
-                    break;
-                case AvailableOptions.ATRIAL_FIBER:
-                    this.ModuleParam = new Atrial_Fibr_Params(Detect_Method.POINCARE, this.getAnalysisName());
-                    panel.OptionParams[this] = this.ModuleParam;
-                    panel.Params[this.Code] = this.ModuleParam;
-                    break;
-                default:
-                    this.ModuleParam = null;
-                    break;
-            }
         }
 
         #endregion
@@ -133,14 +135,7 @@ namespace EKG_Project.GUI
 
         private String getAnalysisName()
         {
-            if (this.Parent == null)
-            {
-                return this.AnalysisName;
-            }
-            else
-            {
-                return Parent.getAnalysisName();
-            }
+            return this.AnalysisName;
         }
 
         public ModuleOption AddSuboption(AvailableOptions code)
