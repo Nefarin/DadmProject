@@ -1,18 +1,18 @@
-﻿<Window x:Class="EKG_Project.GUI.ModuleOptionDialogues.Dialogue_R_Peaks_Options"
+﻿<Window x:Class="EKG_Project.GUI.ModuleOptionDialogues.Dialogue_Atrial_fibr_Options"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EKG_Project.GUI.ModuleOptionDialogues"
-        xmlns:System="clr-namespace:System;assembly=mscorlib"
-        xmlns:params="clr-namespace:EKG_Project.Modules.R_Peaks"
+              xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:params="clr-namespace:EKG_Project.Modules.Atrial_Fibr"
         mc:Ignorable="d"
-        Title="Opcje R_Peaks" Height="110" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize">
+        Title="Opcje Atrial_Fibr" Height="110" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Window.Resources>
         <ObjectDataProvider x:Key="availableMethods" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="params:R_Peaks_Method"/>
+                <x:Type TypeName="params:Detect_Method"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>

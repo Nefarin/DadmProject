@@ -9,23 +9,28 @@ namespace EKG_Project.Modules.Atrial_Fibr
     public enum Detect_Method { STATISTIC, POINCARE };
     public class Atrial_Fibr_Params : ModuleParams
     {
-        private Detect_Method _method;
-      
-        public Detect_Method Method
-        {
-            get { return _method; }
-            set { _method = value; }
-        }
+        private Detect_Method _method;                 //metoda detekcji
 
         public Atrial_Fibr_Params(Detect_Method method)
         {
-            this.Method = method;
+            _method = method;
         }
 
-        public Atrial_Fibr_Params()
+        public Detect_Method Method
         {
-            this.Method = Detect_Method.STATISTIC;
+            get
+            {
+                return _method;
+            }
+            set
+            {
+                _method = value;
+            }
         }
 
+        public void CopyParametersFrom(Atrial_Fibr_Params parameters)
+        {
+            this.Method = parameters.Method;
+        }
     }
 }

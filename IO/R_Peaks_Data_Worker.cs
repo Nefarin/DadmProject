@@ -8,13 +8,14 @@ using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules;
+using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
     public class R_Peaks_Data_Worker
     {
         string directory;
-        string analysisName;
+        string analysisName = "TestAnalysis";
         private R_Peaks_Data _data;
 
         public R_Peaks_Data Data
@@ -177,5 +178,24 @@ namespace EKG_Project.IO
             }
             this.Data = basicData;
         }
+
+        //public static void Main()
+        //{
+        //    R_Peaks_Data_Worker worker = new R_Peaks_Data_Worker();
+        //    worker.Load();
+
+        //    foreach (var signal in worker.Data.RPeaks)
+        //    {
+                
+        //        //Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //        Debug.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //        //Debug.
+        //    }
+
+
+        //    //Console.Read();
+
+        //}
+
     }
 }

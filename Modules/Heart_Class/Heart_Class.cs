@@ -248,12 +248,12 @@ namespace EKG_Project.Modules.Heart_Class
 
         public static void Main()
         {
-            Heart_Class_Params param = new Heart_Class_Params("Analysis6"); // "Analysis6");
+            Heart_Class_Params param = new Heart_Class_Params("TestAnalysis2"); // "Analysis6");
             Heart_Class testModule = new Heart_Class();
             testModule.Init(param);
             while (true)
             {
-                Console.WriteLine("Press key to continue.");
+                //Console.WriteLine("Press key to continue.");
                 Console.Read();
                 if (testModule.Ended()) break;
                 Console.WriteLine(testModule.Progress());

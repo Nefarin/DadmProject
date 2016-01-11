@@ -8,6 +8,7 @@ using EKG_Project.Modules;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Waves;
+using EKG_Project.Modules.Atrial_Fibr;
 
 namespace EKG_Project.GUI
 {
@@ -25,6 +26,7 @@ namespace EKG_Project.GUI
 
         public string Name { get; set; }
         public AvailableOptions Code { get; set; }
+
         public bool Set
         {
             get
@@ -47,7 +49,9 @@ namespace EKG_Project.GUI
                 this.OnPropertyChanged("Set");
             }
         }
+
         public ModuleOption Parent { get; set; }
+
         public List<ModuleOption> Suboptions
         {
             get
@@ -57,7 +61,10 @@ namespace EKG_Project.GUI
                 return this._suboptions;
             }
         }
+
         public ModuleParams ModuleParam { get; set; }
+        public ModulePanel Panel;
+
         public bool ParametersAvailable { get { return this.ModuleParam != null; } }
 
         public string AnalysisName
@@ -83,28 +90,41 @@ namespace EKG_Project.GUI
 
         #region Constructors
 
-        public ModuleOption(AvailableOptions code, ModuleOption parent = null)
+        public ModuleOption(AvailableOptions code, ModulePanel panel, ModuleOption parent = null)
         {
             this.Code = code;
             this.Name = code.ToString();
             this.Set = false;
             this.Parent = parent;
+            this.Panel = panel;
+            this.AnalysisName = panel.AnalysisName;
 
             switch (this.Code)
             {
                 case AvailableOptions.ECG_BASELINE:
-                    this.ModuleParam = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS);            
+                    this.ModuleParam = new ECG_Baseline_Params();
+                    panel.OptionParams[this] = this.ModuleParam;
+                    panel.Params[this.Code] = this.ModuleParam;
                     break;
                 case AvailableOptions.R_PEAKS:
                     this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.getAnalysisName());
+                    panel.OptionParams[this] = this.ModuleParam;
+                    panel.Params[this.Code] = this.ModuleParam;
                     break;
                 case AvailableOptions.WAVES:
                     this.ModuleParam = new Waves_Params();
+                    panel.OptionParams[this] = this.ModuleParam;
+                    panel.Params[this.Code] = this.ModuleParam;
+                    break;
+                case AvailableOptions.ATRIAL_FIBER:
+                    this.ModuleParam = new Atrial_Fibr_Params(Detect_Method.POINCARE);
+                    panel.OptionParams[this] = this.ModuleParam;
+                    panel.Params[this.Code] = this.ModuleParam;
                     break;
                 default:
                     this.ModuleParam = null;
                     break;
-            }        
+            }
         }
 
         #endregion
@@ -125,18 +145,20 @@ namespace EKG_Project.GUI
 
         public ModuleOption AddSuboption(AvailableOptions code)
         {
-            this.Suboptions.Add(new ModuleOption(code, this));
+            this.Suboptions.Add(new ModuleOption(code, this.Panel, this));
             return this;
         }
+
         public ModuleOption AddSuboptionAndMoveDown(AvailableOptions code)
         {
-            var suboption = new ModuleOption(code, this);
+            var suboption = new ModuleOption(code, this.Panel, this);
             this.Suboptions.Add(suboption);
             return suboption;
         }
+
         public ModuleOption AddSuboptionAndMoveUp(AvailableOptions code)
         {
-            this.Suboptions.Add(new ModuleOption(code, this));
+            this.Suboptions.Add(new ModuleOption(code, this.Panel, this));
             return this.Parent;
         }
 
@@ -147,6 +169,7 @@ namespace EKG_Project.GUI
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
 
         #endregion
     }

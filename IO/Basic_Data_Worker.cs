@@ -7,13 +7,14 @@ using System.Xml;
 using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules;
+using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
     public class Basic_Data_Worker : IECG_Worker
     {
         string directory;
-        string analysisName;
+        string analysisName = "Analysis6";
         private Basic_Data basicData;
 
         public Basic_Data BasicData
@@ -144,15 +145,19 @@ namespace EKG_Project.IO
             this.BasicData = basicData;
         }
 
-        public static void Main()
-        {
-            Basic_Data_Worker worker = new Basic_Data_Worker();
-            worker.Load();
-            Console.WriteLine(worker.BasicData.ToString());
+        //public static void Main()
+        //{
+        //    Basic_Data_Worker worker = new Basic_Data_Worker();
+        //    worker.Load();
 
+        //    foreach (var signal in worker.BasicData.Signals)
+        //    {
+        //        //Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //        Debug.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //    }
 
-            Console.Read();
+        //    //Console.Read();
 
-        }
+        //}
     }
 }
