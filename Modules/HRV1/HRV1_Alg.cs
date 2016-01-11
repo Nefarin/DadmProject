@@ -59,7 +59,7 @@ namespace EKG_Project.Modules.HRV1
         /// This methods calculates vector rInstants based on values of Fs and rSamples
         /// </summary>
         #endregion
-        private void samplesToInstants(vector<double> rSamples, private double Fs )
+        private void samplesToInstants(Vector<double> rSamples, double Fs )
         {
           ;
         }
@@ -169,40 +169,39 @@ namespace EKG_Project.Modules.HRV1
 /// This function calculates frequency-based parameters
 /// </summary>
 #endregion
-private void calculateFreqBased(double HF, double LF, double VLF, double LFHF)
+private void calculateFreqBased()
 {
+        var temp_vec = Vector<double>.Build.Dense(f.Count, 1);
     //Obliczenie mocy widma w zakresie wysokich częstotliwości (0,15-0,4Hz)
-        for (int i = 0; i < f.size(); i++)
+        for (int i = 0; i < f.Count; i++)
         {
+
         if (f[i] >= 0.15 && f[i] < 0.4)
         {
             HF = temp_vec[i] + HF;
         }
     }
-    return (HF);
 
     //Wyznaczenie mocy widma w zakresie niskich częstotliwości (0,04-0,15Hz)
-        for (int i = 0; i < f.size(); i++)
+        for (int i = 0; i < f.Count; i++)
     {
         if (f[i] > 0.04 && f[i] < 0.15)
         {
             LF = temp_vec[i] + LF;
         }
     }
-    return (LF);
 
     //Obliczenie mocy widma w zakresie bardzo niskich częstotliwości (0,003-0,04Hz)
-       for (int i = 0; i < f.size(); i++)
+       for (int i = 0; i < f.Count; i++)
     {
         if (f[i] > 0.003 && f[i] < 0.04)
         {
             VLF = temp_vec[i] + VLF;
         }
     }
-    return (VLF);
 
-    //Obliczenie stosunku mocy widm niskich częstotliwości do mocy widm wysokich częstotliwości
-    return (LF / HF);
+            //Obliczenie stosunku mocy widm niskich częstotliwości do mocy widm wysokich częstotliwości
+            LFHF = LF / HF;
 
 }
 
@@ -222,8 +221,8 @@ public static void Main()
 
             // do testowania nalezy odkomentowac odpowiednia linijke, a zakomentowac pozostale
             //string dataPath = "F:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na duzym komputerze Michala
-            string dataPath = "C:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na laptopie Michala
-            // string dataPath = "...\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na komputerze Matyldy
+           // string dataPath = "C:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na laptopie Michala
+            string dataPath = "...\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na komputerze Matyldy
             string filename = "NSR001.txt"; // plik zawiera 'ladny' wycinek z tachogramu RR sygnalu NSR001
             dataPath = dataPath + filename;
 
@@ -235,8 +234,8 @@ public static void Main()
             hrv.Fs = TempInput.getFrequency();
             hrv.dt = 1 / hrv.Fs;
 
-            hrv.samplesToInstants();
-            hrv.instantsToIntervals();
+            //hrv.samplesToInstants();
+            //hrv.instantsToIntervals();
             hrv.f = hrv.gnerateFreqVector(0, 1, (double)1/1000);
             //Console.WriteLine(hrv.f);
 
