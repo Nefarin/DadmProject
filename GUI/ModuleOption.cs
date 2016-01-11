@@ -43,7 +43,7 @@ namespace EKG_Project.GUI
                             this.ModuleParam = new ECG_Baseline_Params();
                             break;
                         case AvailableOptions.R_PEAKS:
-                            this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.getAnalysisName());
+                            this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.AnalysisName);
                             break;
                         case AvailableOptions.WAVES:
                             this.ModuleParam = new Waves_Params();
