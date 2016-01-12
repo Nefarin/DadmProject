@@ -443,4 +443,22 @@
     </TEnds>
   </module>
   <module name="HRV_DFA" />
+  <module name="HRV2">
+    <HistogramData>
+      <lead>II</lead>
+      <samples>0 0 0 0 0 0 </samples>
+    </HistogramData>
+    <PoincarePlotData_x>
+      <item1>RR</item1>
+      <samples>1478 1482 4428 1494 1148 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_y>
+      <item1>RR+1</item1>
+      <samples>4354 1478 1482 4428 1494 </samples>
+    </PoincarePlotData_y>
+    <Tinn>3280</Tinn>
+    <TriangleIndex>5</TriangleIndex>
+    <SD1>1733,27112131945</SD1>
+    <SD2>2035,40816054176</SD2>
+  </module>
 </EKG>

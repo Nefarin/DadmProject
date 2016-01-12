@@ -12,7 +12,7 @@ namespace EKG_Project.Modules.HRV2
       
         public double TriangleIndex()
         {
-            Vector <double> RRIntervaals = InputData.RPeaks[_currentChannelIndex].Item2;
+            Vector <double> RRIntervaals = InputData.RRInterval[_outputIndex].Item2;
             double triangleIndex = 30/_currentRPeaksLength;
             return triangleIndex;
         }

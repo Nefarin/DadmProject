@@ -454,4 +454,22 @@
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
+  <module name="HRV2">
+    <HistogramData>
+      <lead>II</lead>
+      <samples>0 0 0 0 0 0 </samples>
+    </HistogramData>
+    <PoincarePlotData_x>
+      <item1>RR</item1>
+      <samples>0 0 0 0 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_y>
+      <item1>RR+1</item1>
+      <samples>0 0 0 0 </samples>
+    </PoincarePlotData_y>
+    <Tinn>0</Tinn>
+    <TriangleIndex>5</TriangleIndex>
+    <SD1>0</SD1>
+    <SD2>0</SD2>
+  </module>
 </EKG>
