@@ -20,14 +20,19 @@ namespace EKG_Project.Modules.HRV_DFA
         Vector<double> veclogFn2;
         Vector<double> vecparam1;
         Vector<double> vecparam2;
+        int boxVal;
+        int stepVal;
 
         public void HRV_DFA_Analysis(Vector<double> rRRIntervals)
         {
             HRV_DFA dfa = new HRV_DFA();
 
-
             Vector<double> sig = rRRIntervals;
-           
+
+           for(int i = 0; i < sig.Count(); i++)
+            {
+                sig[i] = Math.Abs(sig[i]);
+            }
 
             //read data from file
             //TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\DADM\RR_100.txt");
@@ -35,9 +40,9 @@ namespace EKG_Project.Modules.HRV_DFA
             //Vector<double> sig = TempInput.getSignal();
 
             // DFA box parameters
-            int step = 10;
+            int step = stepVal;
             int start = 10;
-            int stop = 1000; 
+            int stop = boxVal; 
 
             // DFA - fluctuation funcion computation
             double[] boxRanged = Generate.LinearRange(start, step, stop);       // set of box sizes
@@ -96,8 +101,8 @@ namespace EKG_Project.Modules.HRV_DFA
 
             veclogn1 = logn1;
             veclogn2 = logn2;
-            veclogFn1 = sig;
-            veclogFn2 = logFn2;
+            veclogFn1 = fittedFn1;
+            veclogFn2 = fittedFn2;
             vecparam1 = p1;
             vecparam2 = p2;
 

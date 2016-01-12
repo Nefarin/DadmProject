@@ -98,21 +98,39 @@ namespace EKG_Project.Modules.HRV_DFA
         {
             int channel = _currentChannelIndex;
             int startIndex = _rPeaksProcessed;
-            int step = 100000;
+            int step = 1000;
 
             if (channel < NumberOfChannels)
             {
 
+                if (_currentRpeaksLength > 100 && _currentRpeaksLength < 300)
+                {
+                    boxVal = 100;
+                    stepVal = 10;
+                }
+                if (_currentRpeaksLength > 300)
+                {
+                    boxVal = (_currentRpeaksLength/2);
+                    stepVal = 20;
+                }
+                if (_currentRpeaksLength < 20)
+                {
+                    throw new InvalidOperationException("Number of R - Peaks is too short");
+                }
+
+
                 if (startIndex + step > _currentRpeaksLength)
                 {
-                    HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2);
-                    Tuple<string, Vector<double>, Vector<double>> numberN = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogn1 ,veclogn2);
-                    Tuple<string, Vector<double>, Vector<double>> fnValue = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogFn1 , veclogFn2);
-                    Tuple<string, Vector<double>, Vector<double>> pAlpha = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, vecparam1 , vecparam2);
-                    OutputData.DfaNumberN.Add(numberN);
-                    OutputData.DfaValueFn.Add(fnValue);
-                    OutputData.ParamAlpha.Add(pAlpha);
 
+                        HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2);
+                        Tuple<string, Vector<double>, Vector<double>> numberN = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogn1, veclogn2);
+                        Tuple<string, Vector<double>, Vector<double>> fnValue = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogFn1, veclogFn2);
+                        Tuple<string, Vector<double>, Vector<double>> pAlpha = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, vecparam1, vecparam2);
+                        OutputData.DfaNumberN.Add(numberN);
+                        OutputData.DfaValueFn.Add(fnValue);
+                        OutputData.ParamAlpha.Add(pAlpha);
+
+                   
                     _currentChannelIndex++;
 
                     if (_currentChannelIndex < NumberOfChannels)
