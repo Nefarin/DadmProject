@@ -42,6 +42,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;

@@ -37,5 +37,11 @@ namespace EKG_Project.Modules.SIG_EDR
         {
             throw new NotImplementedException();
         }
+
+        public bool IsAborted()
+        {
+            return true;
+            //return Aborted;
+        }
     }
 }
