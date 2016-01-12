@@ -443,4 +443,14 @@
     </TEnds>
   </module>
   <module name="HRV_DFA" />
+  <module name="Flutter">
+    <FlutterAnnotations>
+      <onset>0</onset>
+      <end>0</end>
+    </FlutterAnnotations>
+    <FlutterAnnotations>
+      <onset>3</onset>
+      <end>3</end>
+    </FlutterAnnotations>
+  </module>
 </EKG>

@@ -454,4 +454,5 @@
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
+  <module name="Flutter" />
 </EKG>

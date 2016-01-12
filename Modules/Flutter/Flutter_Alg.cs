@@ -124,7 +124,7 @@ namespace EKG_Project.Modules.Flutter
                     {
                         start = i;
                     }
-                    else if (start != -1 && i == aflDetected.Length)
+                    else if (start != -1 && i == aflDetected.Length-1)
                     {
                         aflAnnotations.Add(new Tuple<int, int>(start, i));
                     }
@@ -253,17 +253,53 @@ namespace EKG_Project.Modules.Flutter
         private List<double[]> GetEcgPart()
         {
             List<double[]> t2qrsEkgParts = new List<double[]>();
+            _Tends = _Tends.Where(x => x > 0).ToList();
+            _QRSonsets = _QRSonsets.Where(x => x > 0).ToList();
 
-            for (int i = 1; i < _QRSonsets.Count || i < _Tends.Count; i++)
+            for (int i = 0, j = 0; i < _QRSonsets.Count && j < _Tends.Count; j++)
             {
                 List<double> tmpEkgPart = new List<double>(1000);
-                int start = (int)_Tends[i - 1];
-                while (start <= _QRSonsets[i])
+                int start = (int)_Tends[j];
+                int end = (int)_QRSonsets[i];
+                while(start >= end)
+                {
+                    i++;
+                    if(i >= _QRSonsets.Count)
+                    {
+                        break;
+                    }
+                    end = (int)_QRSonsets[i];                   
+                }
+                while(true)
+                {
+                    if(j+1 >= _Tends.Count)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        if (end - start > end - _Tends[j + 1] && end - _Tends[j + 1] > 0)
+                        {
+                            j++;
+                            start = (int)_Tends[j];
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                
+                while (i < _QRSonsets.Count && start < _samples.Count && start <= _QRSonsets[i] )
                 {
                     tmpEkgPart.Add(_samples[start]);
                     start++;
                 }
-                t2qrsEkgParts.Add(tmpEkgPart.ToArray());
+                if (tmpEkgPart.Count > 2)
+                {
+                    t2qrsEkgParts.Add(tmpEkgPart.ToArray());
+                }
+                
             }
 
             return t2qrsEkgParts;

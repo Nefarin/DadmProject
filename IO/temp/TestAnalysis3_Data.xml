@@ -470,4 +470,10 @@
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
+  <module name="Flutter">
+    <FlutterAnnotations>
+      <onset>5</onset>
+      <end>6</end>
+    </FlutterAnnotations>
+  </module>
 </EKG>

@@ -494,4 +494,10 @@
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
+  <module name="Flutter">
+    <FlutterAnnotations>
+      <onset>8</onset>
+      <end>9</end>
+    </FlutterAnnotations>
+  </module>
 </EKG>

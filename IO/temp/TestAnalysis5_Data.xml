@@ -141,4 +141,5 @@
       </timeofAF>
     </detectedAF>
   </module>
+  <module name="Flutter" />
 </EKG>
