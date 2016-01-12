@@ -29,7 +29,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.Type = Filtr_Type.BANDPASS;
             this.AnalysisName = "Analysis6";
             this._fcLow = 50;
-            this._fcHigh = 1;
+            this._fcHigh = 0.5;
             this.OrderLow = 3;
             this.OrderHigh = 3;
         }
