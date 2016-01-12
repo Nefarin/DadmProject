@@ -21,12 +21,13 @@ namespace EKG_Project.Modules.HRV_DFA
         Vector<double> vecparam1;
         Vector<double> vecparam2;
 
-        public void HRV_DFA_Analysis()
+        public void HRV_DFA_Analysis(Vector<double> rRRIntervals)
         {
             HRV_DFA dfa = new HRV_DFA();
 
-            
-            Vector<double> sig = _currentVector;
+
+            Vector<double> sig = rRRIntervals;
+           
 
             //read data from file
             //TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\DADM\RR_100.txt");
