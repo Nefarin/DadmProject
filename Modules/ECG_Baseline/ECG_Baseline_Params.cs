@@ -22,11 +22,10 @@ namespace EKG_Project.Modules.ECG_Baseline
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ECG_Baseline_Params() // konstruktor domyślny
+        public ECG_Baseline_Params() : base() // konstruktor domyślny
         {
             this.Method = Filtr_Method.BUTTERWORTH;
             this.Type = Filtr_Type.BANDPASS;
-            this.AnalysisName = "Analysis6";
             this._fcLow = 50;
             this._fcHigh = 0.5;
             this.OrderLow = 3;
