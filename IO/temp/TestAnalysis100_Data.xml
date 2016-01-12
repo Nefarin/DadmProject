@@ -40,6 +40,38 @@
       <intervals>827,844 794,508 783,396 788,952 791,73 819,51 647,274 1000,08 861,18 788,952 791,73 788,952 822,288 875,07 819,51 827,844 825,066 777,84 791,73 813,954 16979,136 808,398 794,508 869,514 855,624 841,734 783,396 797,286 788,952 808,398 825,066 833,4 844,512 813,954 786,174 761,172 827,844 844,512 813,954 850,068 </intervals>
     </RRInterval>
   </module>
+  <module name="HRV_DFA">
+    <DfaNumberN>
+      <lead>MLII</lead>
+      <samples>1 1,30102999566398 1,47712125471966 </samples>
+      <samples1>1,60205999132796 1,69897000433602 1,77815125038364 1,84509804001426 1,90308998699194 1,95424250943932 2 </samples1>
+    </DfaNumberN>
+    <DfaNumberN>
+      <lead>V5</lead>
+      <samples>1 1,30102999566398 1,47712125471966 </samples>
+      <samples1>1,60205999132796 1,69897000433602 1,77815125038364 1,84509804001426 1,90308998699194 1,95424250943932 2 </samples1>
+    </DfaNumberN>
+    <DfaValueFn>
+      <lead>MLII</lead>
+      <samples>nie jest liczbą nie jest liczbą nie jest liczbą </samples>
+      <samples1>nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą </samples1>
+    </DfaValueFn>
+    <DfaValueFn>
+      <lead>V5</lead>
+      <samples>nie jest liczbą nie jest liczbą nie jest liczbą </samples>
+      <samples1>nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą </samples1>
+    </DfaValueFn>
+    <ParamAlpha>
+      <lead>MLII</lead>
+      <samples>nie jest liczbą nie jest liczbą </samples>
+      <samples1>nie jest liczbą nie jest liczbą </samples1>
+    </ParamAlpha>
+    <ParamAlpha>
+      <lead>V5</lead>
+      <samples>nie jest liczbą nie jest liczbą </samples>
+      <samples1>nie jest liczbą nie jest liczbą </samples1>
+    </ParamAlpha>
+  </module>
   <module name="HRV2">
     <HistogramData>
       <lead>MLII</lead>

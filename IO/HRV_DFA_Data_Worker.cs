@@ -88,22 +88,28 @@ namespace EKG_Project.IO
                         moduleNode.AppendChild(lead);
 
                         XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-                        string samplesText = null;
+                        
+                        StringBuilder builder = new StringBuilder();
                         foreach (var value in tuple.Item2)
                         {
-                            samplesText += value.ToString() + " ";
+                            builder.Append(value.ToString());
+                            builder.Append(" ");
                         }
+                        string samplesText = builder.ToString();
 
                         XmlText samplesValue = file.CreateTextNode(samplesText);
                         samples.AppendChild(samplesValue);
                         moduleNode.AppendChild(samples);
 
                         XmlElement samples1 = file.CreateElement(string.Empty, "samples1", string.Empty);
-                        string samplesText1 = null;
+                        
+                        StringBuilder builder1 = new StringBuilder();
                         foreach (var value in tuple.Item3)
                         {
-                            samplesText1 += value.ToString() + " ";
+                            builder1.Append(value.ToString());
+                            builder1.Append(" ");
                         }
+                        string samplesText1 = builder1.ToString();
 
                         XmlText samplesValue1 = file.CreateTextNode(samplesText1);
                         samples1.AppendChild(samplesValue1);
