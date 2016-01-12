@@ -73,11 +73,14 @@ namespace EKG_Project.IO
                 int[] alternansIndexArray = basicData.AlternansIndexArray;
 
                 XmlElement AlternansIndexArrayNode = file.CreateElement(string.Empty, "AlternansIndexArray", string.Empty);
-                string samplesText = null;
+                
+                StringBuilder builder = new StringBuilder();
                 foreach (var value in alternansIndexArray)
                 {
-                    samplesText += value.ToString() + " ";
+                    builder.Append(value.ToString());
+                    builder.Append(" ");
                 }
+                string samplesText = builder.ToString();
 
                 XmlText samplesValue = file.CreateTextNode(samplesText);
                 AlternansIndexArrayNode.AppendChild(samplesValue);
