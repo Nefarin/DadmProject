@@ -15,6 +15,11 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Atrial_Fibr
 {
+    #region Documentation
+    /// <summary>
+    /// Class which detect Atrial Fibrillation in ECG signal.
+    /// </summary>
+    #endregion
     public partial class Atrial_Fibr : IModule
     {
         private uint fs;
@@ -30,6 +35,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
         Tuple<bool, Vector<double>, double> _wynik;
         Atrial_Fibr_Params param;
 
+        #region Documentation
+        /// <summary>
+        /// Declaration of fields of class Atrial_Fibr
+        /// </summary>
+        #endregion
         public Atrial_Fibr()
         {
             Param = new Atrial_Fibr_Params();
@@ -50,37 +60,39 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         //public static void Main()
         //{
-            //Atrial_Fibr af = new Atrial_Fibr();
-            //Tuple<bool, Vector<double>, double> Wynik = new Tuple<bool, Vector<double>, double>(false, af.pointsDetected, 0);
-            ////TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\int3.txt");
-            //TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\int3.txt");
-            //af.Fs = 250;
-            //af.Param.Method = Detect_Method.POINCARE;
-            //af.RR_intervals = TempInput.getSignal();
-            ////TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\qrs3.txt");
-            //TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\qrs3.txt");
-            //af.R_Peaks = TempInput.getSignal();
+        //    Atrial_Fibr af = new Atrial_Fibr();
+        //    Tuple<bool, Vector<double>, double> Wynik = new Tuple<bool, Vector<double>, double>(false, af.pointsDetected, 0);
+        //    //TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\int3.txt");
+        //    TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\int3.txt");
+        //    af.Fs = 250;
+        //    af.Param.Method = Detect_Method.POINCARE;
+        //    af.RR_intervals = TempInput.getSignal();
+        //    //TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\qrs3.txt");
+        //    TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\qrs3.txt");
+        //    af.R_Peaks = TempInput.getSignal();
 
-            //Wynik = af.detectAF(af.RR_intervals, af.R_Peaks, af.Fs, af.Param);
+        //    Wynik = af.detectAF(af.RR_intervals, af.R_Peaks, af.Fs, af.Param);
 
-            //if (Wynik.Item1)
-            //{
-            //    Console.WriteLine("MIGOTANIE PRZEDSIONKOW");
-            //    Console.ReadLine();
-            //}
-            //else
-            //{
-            //    Console.WriteLine("BRAK MIGOTANIA");
-            //    Console.ReadLine();
-            //}
-            //Console.WriteLine(Wynik.Item2.ToString());
-            //Console.ReadLine();
-            //Console.WriteLine(Wynik.Item2.Count());
+        //    if (Wynik.Item1)
+        //    {
+        //        Console.WriteLine("MIGOTANIE PRZEDSIONKOW");
+        //        Console.ReadLine();
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("BRAK MIGOTANIA");
+        //        Console.ReadLine();
+        //    }
+        //    Console.WriteLine(Wynik.Item2.ToString());
+        //    Console.ReadLine();
+        //    Console.WriteLine(Wynik.Item2.Count());
 
-            //Console.ReadLine();
+        //    Console.ReadLine();
 
 
         //}
+
+        //Getery i setery////////////////////////////////////////////////////////////////////////////////////////
         public Atrial_Fibr_Params Param
         {
             get { return param; }
@@ -131,16 +143,16 @@ namespace EKG_Project.Modules.Atrial_Fibr
             set { _ClusteredData = value; }
         }
 
-
+        //Glowna metoda/////////////////////////////////////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// TODO
+        /// Detection of Atrial Fibrillation.
         /// </summary>
-        /// <param name="_rrIntervals" </param>
-        /// <param name="_rPeaks" </param>
-        /// <param name="fs" </param>
-        /// <param name="_method" </param>
-        /// <returns></returns>
+        /// <param name="_rrIntervals"> Intervals between R peaks</param>
+        /// <param name="_rPeaks"> R peaks found in ECG signal </param>
+        /// <param name="fs"> Frequency of sampling for ECG siganl</param>
+        /// <param name="_method"> Paramethers of detection </param>
+        /// <returns>Boolean inforamtion if AF was detected, vector of points with AF detected, length of detected AF in s.</returns>
         #endregion
         private Tuple<bool, Vector<double>, double> detectAF(Vector<double> _rrIntervals, Vector<double> _rPeaks, uint fs, Atrial_Fibr_Params _method)
         {
@@ -167,11 +179,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 _rrIntervals.CopySubVectorTo(partOfRrIntervals, i * dividingFactor, 0, dividingFactor);
                 if (_method.Method == Detect_Method.STATISTIC)
                 {
-                    detectedPart = detectAFStat(partOfRrIntervals, fs);
+                    detectedPart = detectAFStat(partOfRrIntervals);
                 }
                 else
                 {
-                    detectedPart = detectAFPoin(partOfRrIntervals, fs);
+                    detectedPart = detectAFPoin(partOfRrIntervals);
                 }
                 
                 for (int j = 0; j < dividingFactor; j++)
@@ -189,8 +201,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     afDetected = true;
                 }
             }
-            //string afDetectedS;
-            //string afDetectionDescription="";
             if (afDetected)
             {
                 pointsDetected= Vector<Double>.Build.Dense(Convert.ToInt32(lengthOfDetectedIntervals));
@@ -207,30 +217,21 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         lastIndex += j;
                     }
                 }
-                //afDetectedS = "Wykryto migotanie przedsionków.";
                 double lengthOfSignal = (_rPeaks.At(_rPeaks.Count-1) - _rPeaks.At(0)) / fs;
-                //lengthOfDetection = lengthOfDetectedIntervals / fs;
-                //percentOfDetection = (lengthOfDetection / lengthOfSignal) * 100;
-                //afDetectionDescription += "Wykryto migotanie trwające ";
-                //afDetectionDescription += lengthOfDetection.ToString("F1", CultureInfo.InvariantCulture);
-                //afDetectionDescription += "s. Stanowi to ";
-                //afDetectionDescription += percentOfDetection.ToString("F1", CultureInfo.InvariantCulture);
-                //afDetectionDescription += "% trwania sygnału.";
             }
             else
             {
                 pointsDetected=Vector<Double>.Build.Dense(1);
-                //afDetectedS="Nie wykryto migotania przedsionków";
             }
             Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetection);
             return result;
         }
-
+        //Funkcje pomocnicze do metody statystycznej///////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// TODO
+        /// Calculation of turning point ratio.
         /// </summary>
-        /// <param name="_RR"></param>
+        /// <param name="_RR"> Intervals between R peaks</param>
         /// <returns></returns>
         #endregion
         double TPR(Vector<double> _RR)
@@ -248,9 +249,9 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// Calculation of Shannon entropy.
         /// </summary>
-        /// <param name="_RR"></param>
+        /// <param name="_RR"> Intervals between R peaks</param>
         /// <returns></returns>
         #endregion
         double SE(Vector<double> _RR)
@@ -303,9 +304,9 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// Calculation of root mean square of successive differences.
         /// </summary>
-        /// <param name="_RR"></param>
+        /// <param name="_RR"> Intervals between R peaks</param>
         /// <returns></returns>
         #endregion
         double RMSSD(Vector<double> _RR)
@@ -321,16 +322,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
             rmssd = Math.Sqrt(rmssd);
             return (rmssd = rmssd / _RR.Average());
         }
-
+        //Funkcja staytstyczna///////////////////////////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// TODO
+        /// Detection of Atrial Fibrilation using Statistic method.
         /// </summary>
-        /// <param name="_RR"></param>
-        /// <param name="fs"></param>
-        /// <returns></returns>
+        /// <param name="_RR"> Intervals between R peaks</param>
+        /// <returns> Boolean information if AF was detected.</returns>
         #endregion
-        bool detectAFStat(Vector<double> _RR, uint fs )
+        bool detectAFStat(Vector<double> _RR)
         {
            bool AF, tprD, seD, rmssdD;
 
@@ -376,16 +376,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
            }
            return migotanie = AF;
         }
-
+        //Funkcja Poincare///////////////////////////////////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// TODO
+        /// Detection of Atrial Fibrilation using Poincare method.
         /// </summary>
-        /// <param name="_RR"></param>
-        /// <param name="fs"></param>
-        /// <returns></returns>
+        /// <param name="_RR">Intervals between R peaks</param>
+        /// <returns>Boolean information if AF was detected.</returns>
         #endregion
-        bool detectAFPoin(Vector<double> _RR, uint fs)
+        bool detectAFPoin(Vector<double> _RR)
         {
             bool AF = false;
             double[] Ii;
@@ -494,7 +493,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return AF;
         }
 
-   
+        //Funkcje i klasy pomocnicze do funkcji Poincare////////////////////////////////////////////////////////////////
+        #region Documentation
+        /// <summary>
+        /// Data point in clustering. Contain information about coordinates and number of cluster.
+        /// </summary>
+        #endregion
         public class DataPoint
         {
             public double A { get; set; }
@@ -513,11 +517,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// Create list of data points for clusterization.
         /// </summary>
-        /// <param name="Vector1"></param>
-        /// <param name="Vector2"></param>
-        /// <returns></returns>
+        /// <param name="Vector1">First coordinate</param>
+        /// <param name="Vector2">Second coordinate</param>
+        /// <returns>List of data points for clusterization</returns>
         #endregion
 
         private List<DataPoint> InitilizeRawData(double[] Vector1, double[] Vector2)
@@ -535,10 +539,10 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// Normalize list of data point
         /// </summary>
-        /// <param name="_rawDataToCluster"></param>
-        /// <returns></returns>
+        /// <param name="_rawDataToCluster">List of data point</param>
+        /// <returns>Normalized list of data point</returns>
         #endregion
 
         private List<DataPoint> NormalizeData(List <DataPoint> _rawDataToCluster)
@@ -576,7 +580,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// TODO
+        /// Initialize centroinds for clusterization
         /// </summary>
         /// <param name="_rawDataToCluster"></param>
         /// <param name="_normalizedDataToCluster"></param>
