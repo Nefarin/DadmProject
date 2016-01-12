@@ -11,7 +11,6 @@ namespace EKG_Project.Modules.HRT
    /// i które są wczytywane do mojego modułu z GUI</Summary>
     public class HRT_Params : ModuleParams
     {
-
-        enum RodzajWykresu { LINIOWY, SCHODKOWY };
+        //Ten moduł nie potrzebuje żadnych informacji podanych bezpośrednio z GUI
     }
 }
