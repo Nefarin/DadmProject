@@ -16,7 +16,8 @@ namespace EKG_Project.Modules.Waves
         private List<Tuple<string, List<int>>> _Pends;
         private List<Tuple<string, List<int>>> _Tends;
 
-        public Waves_Data() {
+        public Waves_Data()
+        {
 
             _QRSends = new List<Tuple<string, List<int>>>();
             _QRSonsets = new List<Tuple<string, List<int>>>();
