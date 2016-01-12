@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
-    public class ECG_Baseline_Data_Worker
+    public class ECG_Baseline_Data_Worker : IECG_Worker
     {
         string directory;
         string analysisName = "TestAnalysis";

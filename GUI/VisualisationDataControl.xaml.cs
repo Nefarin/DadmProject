@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EKG_Project.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,11 @@ namespace EKG_Project.GUI
     public partial class VisualisationDataControl : UserControl
     {
         private List<TabItem> visulisationDataTabsList;
+
+        //private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
+        //private Basic_Data_Worker _ecg_Basic_Data_Worker;
+        //private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
+
 
         //0 - plot
         //1 - plot and table

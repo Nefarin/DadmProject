@@ -147,6 +147,47 @@ namespace EKG_Project.GUI
 
         }
 
+        public void DisplayBasicData(List<Tuple<string, Vector<double>>> data)
+        {
+            if (first)
+            {
+                first = false;
+                var lineraYAxis = new LinearAxis();
+                lineraYAxis.Position = AxisPosition.Left;
+                lineraYAxis.Minimum = -100.0;
+                lineraYAxis.Maximum = 80.0;
+                lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+                lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+                lineraYAxis.Title = "Voltage [mV]";
+
+                CurrentPlot.Axes.Add(lineraYAxis);
+            }
+            else
+            {
+                ClearPlot();
+            }
+
+            foreach (var signal in data)
+            {
+                Vector<double> signalVector = signal.Item2;
+                LineSeries ls = new LineSeries();
+                ls.Title = signal.Item1;
+
+                ls.MarkerStrokeThickness = 1;
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                }
+
+                CurrentPlot.Series.Add(ls);
+                
+            }
+           
+            RefreshPlot();
+
+        }
+
         public void ClearPlot()
         {
             CurrentPlot.Series.Clear();
@@ -249,6 +290,53 @@ namespace EKG_Project.GUI
 
         }
 
+        public void DisplayEcgBaseline(List<Tuple<string, Vector<double>>> data)
+        {
+            if (first)
+            {
+                first = false;
+                var lineraYAxis = new LinearAxis();
+                lineraYAxis.Position = AxisPosition.Left;
+                lineraYAxis.Minimum = -100.0;
+                lineraYAxis.Maximum = 80.0;
+                lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+                lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+                lineraYAxis.Title = "Voltage [mV]";
+
+                CurrentPlot.Axes.Add(lineraYAxis);
+            }
+            else
+            {
+                ClearPlot();
+            }
+
+            foreach (var signal in data)
+            {
+
+                Vector<double> signalVector = signal.Item2;
+                LineSeries ls = new LineSeries();
+                ls.Title = signal.Item1;
+
+
+                ls.MarkerStrokeThickness = 1;
+
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                }
+
+
+                CurrentPlot.Series.Add(ls);
+
+            }
+
+            RefreshPlot();
+                 
+        }
+
+
+
         public void MovePlot(int amount)
         {
             _beginingPoint = _beginingPoint + amount;
@@ -349,6 +437,59 @@ namespace EKG_Project.GUI
             RefreshPlot();
         }
 
+        public void DisplayR_Peaks(List<Tuple<string, Vector<double>>> data)
+        {
+            if (first)
+            {
+                first = false;
+            }
+            else
+            {
+                ClearPlot();
+            }
+
+            //wyśiwtlenie ecgBaseline
+            foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
+            {
+
+                Vector<double> signalVector = signal.Item2;
+                //var r_Peaks = _r_Peaks_Data_Worker.Data.RPeaks.Where(sig => sig.Item1 == signal.Item1);
+                //var r_Peaks = _r_Peaks_Data_Worker.Data.RPeaks.Find(sig => sig.Item1 == signal.Item1);
+                var r_Peaks = data.Find(sig => sig.Item1 == signal.Item1);
+                Vector<double> r_PeaksVector = r_Peaks.Item2;
+                bool addR_Peak = false;
+
+                LineSeries ls = new LineSeries();
+                ls.Title = signal.Item1;
+                ScatterSeries rPeaksSeries = new ScatterSeries();
+                rPeaksSeries.Title = "R_Peak_" + signal.Item1;
+                //rPeaksSeries.MarkerType = MarkerType.Star;
+
+
+                ls.MarkerStrokeThickness = 1;
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                    if (r_PeaksVector.Contains(i))
+                    {
+                        rPeaksSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+
+                        addR_Peak = true;
+                    }
+                }
+
+                CurrentPlot.Series.Add(ls);
+                if (addR_Peak)
+                {
+                    CurrentPlot.Series.Add(rPeaksSeries);
+                }
+            }
+
+            RefreshPlot();
+        }
+
+
         public ScatterSeries DisplayR_Peaks(double x, double y)
         {
             ScatterSeries series = new ScatterSeries();
@@ -377,6 +518,68 @@ namespace EKG_Project.GUI
                     break;
             }
 
+        }
+
+        public void DisplayControler(string whatToDisplay, List<Tuple<string,Vector<double>>> dataToDisplay)
+        {
+            switch (whatToDisplay)
+            {
+                case "ecgBaseline":
+                    DisplayEcgBaseline(dataToDisplay);
+                    break;
+
+                case "ecgBasic":
+                    DisplayBasicData(dataToDisplay);
+                    break;
+
+                case "r_Peaks":
+                    DisplayR_Peaks(dataToDisplay);
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+
+        public void UploadControler(string whatToDisplay, List<Tuple<string, Vector<double>>> dataToDisplay)
+        {
+            switch (whatToDisplay)
+            {
+                case "ecgBaseline":
+                    //DisplayEcgBaseline(dataToDisplay);
+                    break;
+
+                case "ecgBasic":
+                    //DisplayBasicData(dataToDisplay);
+                    break;
+
+                case "r_Peaks":
+                    _ecg_Baseline_Data_worker = new ECG_Baseline_Data_Worker();
+                    _ecg_Baseline_Data_worker.Load();
+                    _ecg_Baseline_Data_worker.Data.SignalsFiltered = dataToDisplay;
+                    //_ecg_Baseline_Data_worker.Data.SignalsFiltered = dataToDisplay; 
+                    //DisplayR_Peaks(dataToDisplay);
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+
+
+        public void SeriesControler(string seriesName, bool visible)
+        {
+            try
+            {
+                CurrentPlot.Series.First(a => a.Title == seriesName).IsVisible = visible;
+                RefreshPlot();
+            }
+            catch(Exception ex)
+            {
+
+            }
         }
 
         //Annotations
