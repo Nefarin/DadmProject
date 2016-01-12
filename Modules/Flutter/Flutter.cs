@@ -178,7 +178,7 @@ namespace EKG_Project.Modules.Flutter
 
         public static void Main()
         {
-            Flutter_Params param = new Flutter_Params("TestAnalysis8");
+            Flutter_Params param = new Flutter_Params("TestAnalysis6");
             Flutter flutter = new Flutter();
             flutter.Init(param);
             while(true)
