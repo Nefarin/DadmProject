@@ -780,7 +780,7 @@ namespace EKG_Project.Modules.R_Peaks
 #endregion
         public Vector<double>[] EmpipricalModeDecomposition(Vector<double> signal)
         {
-            int numOfImfs = 3;
+            int numOfImfs = 2;
             Vector<double>[] imfs = new Vector<double>[numOfImfs];
             Vector<double> res = Vector<double>.Build.DenseOfVector(signal);
             for (int i = 0; i < numOfImfs; i++)
