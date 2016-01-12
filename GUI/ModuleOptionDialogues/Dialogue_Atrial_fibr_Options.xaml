@@ -7,7 +7,7 @@
               xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:params="clr-namespace:EKG_Project.Modules.Atrial_Fibr"
         mc:Ignorable="d"
-        Title="Opcje Atrial_Fibr" Height="110" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize">
+        Title="Atrial_Fibr Options" Height="110" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Window.Resources>
         <ObjectDataProvider x:Key="availableMethods" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">

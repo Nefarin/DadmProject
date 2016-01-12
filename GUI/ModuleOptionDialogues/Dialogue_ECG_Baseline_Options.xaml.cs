@@ -23,10 +23,8 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
     /// </summary>
     public partial class Dialogue_ECG_Baseline_Options : Window
     {
-        // muszę znać typ (nie mogę użyć samgo ModuleParams), ponieważ klasa bazowa (a nie np. interface), 
-        // nie udostępnia żadnych metod kopiujących itp.
-        public ECG_Baseline_Params returnParameters { get; set; }
-        public ECG_Baseline_Params PendingParameters { get; set; }
+        public ModuleParams returnParameters { get; set; }
+        public ModuleParams PendingParameters { get; set; }
         ModulePanel panel;
 
         public static CultureInfo CurrentCulture
@@ -43,14 +41,14 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             this.returnParameters = parameters;
 
             this.PendingParameters = new ECG_Baseline_Params();
-            this.PendingParameters.CopyParametersFrom(parameters);
+            this.PendingParameters.CopyFrom(parameters);
             this.DataContext = this.PendingParameters;
             InitializeComponent();
         }
 
         private void ApplyParameterChanges(object sender, RoutedEventArgs e)
         {
-            this.returnParameters.CopyParametersFrom(this.PendingParameters);
+            this.returnParameters.CopyFrom(this.PendingParameters);
             this.Close();
         }
 

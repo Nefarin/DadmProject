@@ -9,6 +9,9 @@ using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Waves;
 using EKG_Project.Modules.Atrial_Fibr;
+using EKG_Project.Modules.Heart_Class;
+using EKG_Project.Modules.Heart_Axis;
+using EKG_Project.Modules.Sleep_Apnea;
 
 namespace EKG_Project.GUI
 {
@@ -54,6 +57,18 @@ namespace EKG_Project.GUI
                         case AvailableOptions.ATRIAL_FIBER:
                             this.ModuleParam = new Atrial_Fibr_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = true;
+                            break;
+                        case AvailableOptions.HEART_CLASS:
+                            this.ModuleParam = new Heart_Class_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = false;
+                            break;
+                        case AvailableOptions.HEART_AXIS:
+                            this.ModuleParam = new Heart_Axis_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = false;
+                            break;
+                        case AvailableOptions.SLEEP_APNEA:
+                            this.ModuleParam = new Sleep_Apnea_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = false;
                             break;
                         default:
                             this.ModuleParam = null;

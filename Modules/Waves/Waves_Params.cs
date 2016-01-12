@@ -66,12 +66,5 @@ namespace EKG_Project.Modules.Waves
         {
             this.AnalysisName = analysisName;
         }
-
-        public void CopyParametersFrom(Waves_Params parameters)
-        {
-            this.WaveType = parameters.WaveType;
-            this.DecompositionLevel = parameters.DecompositionLevel;
-            this.RpeaksStep = parameters.RpeaksStep;
-        }
     }
 }

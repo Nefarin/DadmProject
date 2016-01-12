@@ -32,13 +32,5 @@ namespace EKG_Project.Modules.Atrial_Fibr
         {
             this.Method = Detect_Method.STATISTIC;
         }
-
-        public void CopyParametersFrom(Atrial_Fibr_Params parameters)
-        {
-            this.Method = parameters.Method;
-            this.AnalysisName = parameters.AnalysisName;
-
-        }
-
     }
 }

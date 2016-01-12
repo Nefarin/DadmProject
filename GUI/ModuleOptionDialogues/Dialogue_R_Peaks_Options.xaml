@@ -7,7 +7,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:params="clr-namespace:EKG_Project.Modules.R_Peaks"
         mc:Ignorable="d"
-        Title="Opcje R_Peaks" Height="110" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize">
+        Title="R_Peaks Options" Height="110" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Window.Resources>
         <ObjectDataProvider x:Key="availableMethods" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">

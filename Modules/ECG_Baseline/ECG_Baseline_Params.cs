@@ -79,18 +79,6 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.WindowSizeHigh = windowSizeHigh;
         }
 
-        public void CopyParametersFrom(ECG_Baseline_Params parameters)
-        {
-            this.Method = parameters.Method;
-            this.Type = parameters.Type;
-            this.FcLow = parameters.FcLow;
-            this.FcHigh = parameters.FcHigh;
-            this.OrderLow = parameters.OrderLow;
-            this.OrderHigh = parameters.OrderHigh;
-            this.WindowSizeLow = parameters.WindowSizeLow;
-            this.WindowSizeHigh = parameters.WindowSizeHigh;
-        }
-
         public Filtr_Method Method
         {
             get
