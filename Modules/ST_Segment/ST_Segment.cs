@@ -12,9 +12,9 @@ using MathNet.Numerics;
 using System.Windows;
 
 namespace EKG_Project.Modules.ST_Segment
+
+
 {
-
-
     public partial class ST_Segment : IModule
     {
         private bool _ended;
@@ -40,10 +40,10 @@ namespace EKG_Project.Modules.ST_Segment
         private Basic_Data _inputBasicData;
 
         private ST_Segment_Data _outputData;
-        private R_Peaks_Data _inputData;
+        private Basic_Data _inputData;
         private ST_Segment_Params _params;
 
-
+        private int _chanel12;//
         private int _fs;
         private List<long> _tJs;
         private List<long> _tSTs;
@@ -62,27 +62,25 @@ namespace EKG_Project.Modules.ST_Segment
         private int _rPeaksProcessed;
         private int _currentRpeaksLength;
         private bool rInterval;
-        private Basic_Data_Worker InputWorker;
-        private bool Aborted;
+        //private Basic_Data_Worker InputWorker;
+        //private bool Aborted;
         private ECG_Baseline_Data_Worker InputECGWorker;
         private R_Peaks_Data_Worker InputRpeaksWorker;
         private Waves_Data_Worker InputWavesWorker;
-        //private InputWorker.BasicData InputData;
-       // private InputECGWorker.Data InputECGData;
-        private int NumberOfChannels;
+        // private InputECGWorker.Data InputECGData;
+        //private int NumberOfChannels;
         //private InputRpeaksWorker.Data InputRpeaksData;
         private Waves_Data InputWavesData;
-        private ST_Segment_Data_Worker OutputWorker;
+        //private ST_Segment_Data_Worker OutputWorker;
         private ST_Segment_Data OutputData;
         // InputData.Signals.Count NumberOfChannels;
-        private Basic_Data InputData;
+        //private Basic_Data InputData;
         private ECG_Baseline_Data InputECGData;
-        private R_Peaks_Data InputRpeaksData;
-
-
-
-
-
+        //private R_Peaks_Data InputRpeaksData;
+        private int _channel2;
+        private int _numberOfSteps;
+        private bool _ml2Processed;
+        private R_Peaks_Data _inputRpeaksData;
 
         public void Abort()
         {
@@ -131,7 +129,7 @@ namespace EKG_Project.Modules.ST_Segment
                 _rPeaksProcessed = 0;
                 //startIndex = _samplesProcessed;
                 NumberOfChannels = InputData.Signals.Count;
-               
+
                 _currentRPeaksLength = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count;
 
 
@@ -168,7 +166,7 @@ namespace EKG_Project.Modules.ST_Segment
         private void processData()
         {
             //OutputData = Method(argumenty);
-
+            //Analasiys ST_Segment (Method);
             int channel = _currentChannelIndex;
             int startIndex = _rPeaksProcessed;
             int step = Params.RpeaksStep;
@@ -177,261 +175,285 @@ namespace EKG_Project.Modules.ST_Segment
             {
                 if (startIndex + step > _currentRpeaksLength)
                 {
-                   // Method(Vector<double>signal, Vector < uint > tQRS_onset, Vector < uint > tQRS_ends, Vector < double > rInterval, int freq);
-                    OutputData.tJs.Add(_tJs);
-                    OutputData.tSTs.Add(new List<long>(InputData.Signals[_currentChannelIndex].Item1, _tSTs));
+                    int QRSOnSet = InputWavesData.QRSOnsets[_channel2].Item2[_samplesProcessed];
+                    int QRSEnds = InputWavesData.QRSEnds[].Item2[_samplesProcessed];
+                    double rInterval = InputRpeaksData.RPeaks[_channel2].Item2[_samplesProcessed];
 
-                    //OutputData.ConcaveCurves.Add(new Tuple<string, int> (InputData.Signals[_currentChannelIndex].Item1, _ConcaveCurves));
-                    //OutputData.ConcaveCurves.Add(new Tuple<string, int>(InputData.Signals[_currentChannelIndex].Item1, _ConcaveCurves));
-                    OutputData.ConvexCurves=_ConvexCurves;
-                    //OutputData.IncreasingLines.Add(new < int > (InputData.Signals[_currentChannelIndex].Item1, _IncreasingLines));
-                    OutputData.IncreasingLines=_IncreasingLines;
-                    OutputData.HorizontalLines=_HorizontalLines;
-                    OutputData.DecreasingLines=_DecreasingLines;
+                    if (QRSEnds == -1 || QRSEnds == -1)
 
-                    _currentChannelIndex++;
-                    if (_currentChannelIndex < NumberOfChannels)
-                    {
-                        _rPeaksProcessed = 0;
-
-                        _currentRpeaksLength = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count;
-
-                        _currenttJ = new List<long>();
-                        _currenttST = new List<long>();
-                        _currentConcaveCurves = new int();
-                        _currentConvexCurves = new int();
-                        _currentIncreasingLines = new int();
-                        _currentHorizontalLines = new int();
-                        _currentDecreasingLines = new int();
-                    }
-
-
+                        _samplesProcessed++;
                 }
 
-                else
+                if (_samplesProcessed >= _numberOfSteps)
                 {
+                    _ml2Processed = true;
+                }
+            }
+            // Method (InputData.RRInterval[_currentChannelIndex].Item2);
+            // Method(Vector<double>signal, Vector < uint > tQRS_onset, Vector < uint > tQRS_ends, Vector < double > rInterval, int freq);
+            // OutputData.tJs.Add(_tJs); //
+            //OutputData.tSTs.Add(new List<long>(InputData.Signals[_currentChannelIndex].Item1, _tSTs));
+
+            //OutputData.ConcaveCurves.Add(new Tuple<string, int> (InputData.Signals[_currentChannelIndex].Item1, _ConcaveCurves));
+            //OutputData.ConcaveCurves.Add(new Tuple<string, int>(InputData.Signals[_currentChannelIndex].Item1, _ConcaveCurves));
+            // OutputData.ConvexCurves = _ConvexCurves;//
+            //OutputData.IncreasingLines.Add(new < int > (InputData.Signals[_currentChannelIndex].Item1, _IncreasingLines));
+            // OutputData.IncreasingLines = _IncreasingLines;
+            //  OutputData.HorizontalLines = _HorizontalLines;//
+            //  OutputData.DecreasingLines = _DecreasingLines; //
+
+            //d _currentChannelIndex++;
+            //d if (_currentChannelIndex < NumberOfChannels)
+            
+
+                    /*dobre
+                    _rPeaksProcessed = 0;
+
+                    _currentRpeaksLength = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count;
+
+                    _currenttJ = new List<long>();
+                    _currenttST = new List<long>();
+                    _currentConcaveCurves = new int();
+                    _currentConvexCurves = new int();
+                    _currentIncreasingLines = new int();
+                    _currentHorizontalLines = new int();
+                    _currentDecreasingLines = new int();
+                    }}
+                    */
+
+             
+
+            else
+            {
                     OutputWorker.Save(OutputData);
                     _ended = true;
                 }
 
 
 
+            
+        }
+
+
+
+
+
+
+
+
+        public ST_Segment_Params Params
+        {
+            get
+            {
+                return _params;
+            }
+
+            set
+            {
+                _params = value;
             }
         }
 
 
+        //public st_segment_data outputdata
+        //{
+        //    get
+        //    {
+        //        return _outputdata;
+        //    }
+        //    set
+        //    {
+        //        _outputdata = value;
+        //    }
+        //}
 
-
-
-  
-
-       
-public ST_Segment_Params Params
-{
-    get
-    {
-        return _params;
-    }
-
-    set
-    {
-        _params = value;
-    }
-}
-
-
-public ST_Segment_Data 
-           {
-         get
-       {
-     return _outputData;
-   }
-    set
+        public Basic_Data InputData
         {
-                _outputData = value;
+            get
+            {
+                return _inputData;
             }
-        
-} 
 
-public Basic_Data InputData
-{
-    get
-    {
-        return _inputData;
-    }
-
-    set
-    {
-        _inputData = value;
-    }
-}
-
-public R_Peaks_Data InputRpeaksData
-{
-    get
-    {
-        return _inputRpeaksData;
-    }
-
-    set
-    {
-        _inputRpeaksData = value;
-    }
-}
-
-
-public int NumberOfChannels
-{
-    get
-    {
-        return _numberOfChannels;
-    }
-
-    set
-    {
-        _numberOfChannels = value;
-    }
-}
-
-public bool Aborted
-{
-    get
-    {
-        return _aborted;
-    }
-
-    set
-    {
-        _aborted = value;
-    }
-}
-
-public Waves_Params Params
-{
-    get
-    {
-        return _params;
-    }
-
-    set
-    {
-        _params = value;
-    }
-}
-
-public Waves_Data OutputData
-{
-    get
-    {
-        return _outputData;
-    }
-    set
-    {
-        _outputData = value;
-    }
-}
-
-public Basic_Data_Worker InputWorker
-{
-    get
-    {
-        return _inputWorker;
-    }
-
-    set
-    {
-        _inputWorker = value;
-    }
-}
-
-public R_Peaks_Data_Worker InputWorkerRpeaks
-{
-    get
-    {
-        return _inputRpeaksWorker;
-    }
-    set
-    {
-        _inputRpeaksWorker = value;
-    }
-}
-
-public Waves_Data_Worker OutputWorker
-{
-    get
-    {
-        return _outputWorker;
-    }
-
-    set
-    {
-        _outputWorker = value;
-    }
-    public ST_Segment_Data_Worker OutputWorker
-    {
-        get;
-        {
-            return _outputWorker;
+            set
+            {
+                _inputData = value;
+            }
         }
-
-        set;
+        public R_Peaks_Data InputRpeaksData
         {
-            _outputWorker = value;
+            get
+            {
+                return _inputRpeaksData;
+            }
+
+            set
+            {
+                _inputRpeaksData = value;
+            }
         }
 
 
-   
+        public int NumberOfChannels
+        {
+            get
+            {
+                return _numberOfChannels;
+            }
+
+            set
+            {
+                _numberOfChannels = value;
+            }
+        }
+
+        public bool Aborted
+        {
+            get
+            {
+                return _aborted;
+            }
+
+            set
+            {
+                _aborted = value;
+            }
+        }
+
+        //public Waves_Params Params
+        //{
+        //    get
+        //    {
+        //        return _params;
+        //    }
+
+        //    set
+        //    {
+        //        _params = value;
+        //    }
+        //}
+
+        //public Waves_Data OutputData
+        //{
+        //    get
+        //    {
+        //        return _outputData;
+        //    }
+        //    set
+        //    {
+        //        _outputData = value;
+        //    }
+        //}
+
+        public Basic_Data_Worker InputWorker
+        {
+            get
+            {
+                return _inputWorker;
+            }
+
+            set
+            {
+                _inputWorker = value;
+            }
+        }
+
+        public R_Peaks_Data_Worker InputWorkerRpeaks
+        {
+            get
+            {
+                return _inputRpeaksWorker;
+            }
+            set
+            {
+                _inputRpeaksWorker = value;
+            }
+        }
+
+        //public Waves_Data_Worker OutputWorker
+        //{
+        //    get
+        //    {
+        //        return _outputWorker;
+        //    }
+
+        //    set
+        //    {
+        //        _outputWorker = value;
+        //    }
+        //}
+
+        public ST_Segment_Data_Worker OutputWorker
+        {
+            get
+            {
+                return _outputWorker;
+            }
+
+            set
+            {
+                _outputWorker = value;
+            }
+        }
+
+        public static void Main()
+        {
+
+            ST_Segment_Params param = new ST_Segment_Params("Analysis6");
+
+
+            //TestModule3_Params param = null;
+
+
+            ST_Segment testModule = new ST_Segment();
+
+
+            testModule.Init(param);
+
+
+            while (true)
+
+
+            {
+
+                Console.WriteLine("Press key to continue.");
+
+
+                Console.Read();
+
+
+                if (testModule.Ended()) break;
+
+
+                Console.WriteLine(testModule.Progress());
+
+
+                testModule.ProcessData(param);
+
+
+                Console.WriteLine(testModule.OutputData.ConcaveCurves);
+
+
+                Console.WriteLine("Press key to continue.");
+
+
+                Console.Read();
+
+            }
+
+
+
+        }
     }
+}
+
+
+
+
 
     //testowanie
 
-    public static void Main()
-        {
+    
 
-        ST_Segment _Params param = new ST_Segment_Params("Analysis6"); 
+ 
 
-
-        //TestModule3_Params param = null;
-
-
-        ST_Segment testModule = new ST_Segment();
-
-
-        testModule.Init(param);
-
-
-        while (true)
-
-
-        {
-            
-            Console.WriteLine("Press key to continue.");
-
-
-            Console.Read();
-
-
-            if (testModule.Ended()) break;
-
-
-            Console.WriteLine(testModule.Progress());
-
-
-            testModule.ProcessData();
-
-
-            Console.WriteLine(testModule.OutputData.HeartAxis);
-
-
-            Console.WriteLine("Press key to continue.");
-
-
-            Console.Read();
-
-        }
-
-
-
-    }
-}
 
