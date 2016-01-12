@@ -87,11 +87,11 @@ namespace EKG_Project.Modules.HRV1
 
         public static void Main()
         {
-            HRV1.AlgoTest();
+            //HRV1.AlgoTest();
 
 
-            var param = new HRV1_Params("Uwolnic orke!");
-            param = null;
+            var param = new HRV1_Params("Analysis3");
+            //param = null;
             HRV1 Hrv1 = new HRV1();
             Hrv1.Init(param);
             while (true)
