@@ -1,0 +1,80 @@
+﻿<Window x:Class="EKG_Project.GUI.ModuleOptionDialogues.Dialogue_ECG_Baseline_Options"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EKG_Project.GUI.ModuleOptionDialogues"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:params="clr-namespace:EKG_Project.Modules.ECG_Baseline"
+        mc:Ignorable="d"
+        Title="Opcje ECG Baseline" Height="310" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="availableFilterMethods" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="params:Filtr_Method"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="availableFilterTypes" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="params:Filtr_Type"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+    <Grid HorizontalAlignment="Left">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="110"></ColumnDefinition>
+            <ColumnDefinition Width="150"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Grid.Column="0">Filter method</Label>
+        <Label Grid.Row="1" Grid.Column="0">Filter type</Label>
+        <Label Grid.Row="2" Grid.Column="0">FC low</Label>
+        <Label Grid.Row="3" Grid.Column="0">FC high</Label>
+        <Label Grid.Row="4" Grid.Column="0">Window size low</Label>
+        <Label Grid.Row="5" Grid.Column="0">Window size high</Label>
+        <Label Grid.Row="6" Grid.Column="0">Order low</Label>
+        <Label Grid.Row="7" Grid.Column="0">Order high</Label>
+        <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,5" x:Name="filterMethod" ItemsSource="{Binding Source={StaticResource availableFilterMethods}}" SelectedItem="{Binding Path=Method}" ></ComboBox>
+        <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,5" x:Name="filterType" ItemsSource="{Binding Source={StaticResource availableFilterTypes}}" SelectedItem="{Binding Path=Type}" ></ComboBox>
+        <local:NumericTextBox Grid.Row="2" Grid.Column="1" Margin="0,5" x:Name="fcLow" NumberType="Float" Language="{Binding CurrentCulture}"
+                              Number="{Binding Path=FcLow, Mode=TwoWay}" 
+                              Text="{Binding Path=FcLow, Mode=OneTime, ConverterCulture={x:Static local:Dialogue_ECG_Baseline_Options.CurrentCulture}}"
+                              IsEnabled="{Binding Path=IsButterworthLowPass}"></local:NumericTextBox>
+        <local:NumericTextBox Grid.Row="3" Grid.Column="1" Margin="0,5" x:Name="fcHigh" NumberType="Float"
+                              Number="{Binding Path=FcHigh, Mode=TwoWay}" 
+                              Text="{Binding Path=FcHigh, Mode=OneTime, ConverterCulture={x:Static local:Dialogue_ECG_Baseline_Options.CurrentCulture}}"
+                              IsEnabled="{Binding Path=IsButterworthHighPass}"></local:NumericTextBox>
+        <local:NumericTextBox Grid.Row="4" Grid.Column="1" Margin="0,5" x:Name="windowSizeLow" NumberType="Integer" 
+                              Number="{Binding Path=WindowSizeLow, Mode=TwoWay}" 
+                              Text="{Binding Path=WindowSizeLow, Mode=OneTime}"
+                              IsEnabled="{Binding Path=IsOtherLowPass}"></local:NumericTextBox>
+        <local:NumericTextBox Grid.Row="5" Grid.Column="1" Margin="0,5" x:Name="windowSizeHigh" NumberType="Integer" 
+                              Number="{Binding Path=WindowSizeHigh, Mode=TwoWay}" 
+                              Text="{Binding Path=WindowSizeHigh, Mode=OneTime}"
+                              IsEnabled="{Binding Path=IsOtherHighPass}"></local:NumericTextBox>
+        <local:NumericTextBox Grid.Row="6" Grid.Column="1" Margin="0,5" x:Name="orderLow" NumberType="Integer" 
+                              Number="{Binding Path=OrderLow, Mode=TwoWay}" 
+                              Text="{Binding Path=OrderLow, Mode=OneTime}"
+                              IsEnabled="{Binding Path=IsButterworthLowPass}"></local:NumericTextBox>
+        <local:NumericTextBox Grid.Row="7" Grid.Column="1" Margin="0,5" x:Name="orderHigh" NumberType="Integer" 
+                              Number="{Binding Path=OrderHigh, Mode=TwoWay}" 
+                              Text="{Binding Path=OrderHigh, Mode=OneTime}"
+                              IsEnabled="{Binding Path=IsButterworthHighPass}"></local:NumericTextBox>
+        <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal" Margin="0,5" VerticalAlignment="Center">
+            <Button Margin="3" Width="69" Click="ApplyParameterChanges" VerticalAlignment="Center">OK</Button>
+            <Button Margin="3" Width="69" Click="RejectParameterChanges" VerticalAlignment="Center">Cancel</Button>
+        </StackPanel>
+    </Grid>
+</Window>
