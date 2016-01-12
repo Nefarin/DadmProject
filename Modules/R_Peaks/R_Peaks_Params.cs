@@ -9,9 +9,10 @@ namespace EKG_Project.Modules.R_Peaks
         private R_Peaks_Method _method;
         //Metoda detekcji zalamków R
 
-        public R_Peaks_Params(R_Peaks_Method method)
+        public R_Peaks_Params() //konstruktor domyślny
         {
-            this.Method = method;
+            this.Method = R_Peaks_Method.PANTOMPKINS;
+            this.AnalysisName = "Analysis6";
         }
 
         public R_Peaks_Params(R_Peaks_Method method, string analysisName)
