@@ -40,4 +40,46 @@
       <intervals>650,052 652,83 641,718 655,608 655,608 658,386 644,496 641,718 650,052 658,386 672,276 641,718 641,718 661,164 666,72 675,054 636,162 644,496 658,386 650,052 680,61 638,94 638,94 647,274 669,498 16795,788 663,942 650,052 627,828 658,386 677,832 647,274 661,164 611,16 644,496 627,828 647,274 658,386 625,05 616,716 647,274 </intervals>
     </RRInterval>
   </module>
+  <module name="Sleep_Apnea">
+    <Detected_Apnea>
+      <lead>MLII</lead>
+      <tupleList>
+        <tuple>
+          <item1>0</item1>
+          <item2>0</item2>
+        </tuple>
+      </tupleList>
+    </Detected_Apnea>
+    <Detected_Apnea>
+      <lead>V1</lead>
+      <tupleList>
+        <tuple>
+          <item1>0</item1>
+          <item2>0</item2>
+        </tuple>
+      </tupleList>
+    </Detected_Apnea>
+    <h_amp>
+      <lead>MLII</lead>
+      <samplesList>
+        <samples>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 </samples>
+        <samples>1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 </samples>
+      </samplesList>
+    </h_amp>
+    <h_amp>
+      <lead>V1</lead>
+      <samplesList>
+        <samples>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 </samples>
+        <samples>1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 </samples>
+      </samplesList>
+    </h_amp>
+    <il_Apnea>
+      <lead>MLII</lead>
+      <item2>0</item2>
+    </il_Apnea>
+    <il_Apnea>
+      <lead>V1</lead>
+      <item2>0</item2>
+    </il_Apnea>
+  </module>
 </EKG>
