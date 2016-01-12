@@ -87,6 +87,9 @@ namespace EKG_Project.Modules.HRV1
 
         public static void Main()
         {
+            HRV1.AlgoTest();
+
+
             var param = new HRV1_Params("Uwolnic orke!");
             param = null;
             HRV1 Hrv1 = new HRV1();
