@@ -106,7 +106,6 @@ namespace EKG_Project.Modules.HRV_DFA
             vecparam1 = p1;
             vecparam2 = p2;
 
-
             //Tuple<string, Vector<double>, Vector<double>> _currentdfaNumberN = Tuple.Create<string, Vector<double>, Vector<double>>("logn1 and logn2", logn1, logn2);
             //Tuple<string, Vector<double>, Vector<double>> _currentdfaValueFn = Tuple.Create<string, Vector<double>, Vector<double>>("lognF1 and logFn2", fittedFn1, fittedFn2);
             //Tuple<string, Vector<double>, Vector<double>> _currentparamAlpha = Tuple.Create<string, Vector<double>, Vector<double>>("alpha1,b1 and alpha2,b2", p1 ,p2 );
