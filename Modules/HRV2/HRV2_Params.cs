@@ -8,36 +8,27 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
-
     public class HRV2_Params : ModuleParams
-    {
-        private double _binLength;
-        public double binLength
+{
+        private string _analysisName;
+
+        public string AnalysisName
         {
             get
             {
-                return _binLength;
+                return _analysisName;
             }
 
             set
             {
-                _binLength = value;
+                _analysisName = value;
             }
         }
 
-        private Vector<int> _RRintervals;
-
-        public Vector<int> RRintervals
+        public HRV2_Params(int scale, int step, string analysisName)
         {
-            get
-            {
-                return _RRintervals;
-            }
+            this.AnalysisName = analysisName;
 
-            set
-            {
-                _RRintervals = value;
-            }
         }
     }
 }

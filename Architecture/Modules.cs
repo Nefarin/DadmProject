@@ -15,6 +15,9 @@ using EKG_Project.Modules.Sleep_Apnea;
 using EKG_Project.Modules.ST_Segment;
 using EKG_Project.Modules.T_Wave_Alt;
 using EKG_Project.Modules.Waves;
+using EKG_Project.GUI;
+
+using System;
 
 using System.Collections.Generic;
 
@@ -24,16 +27,157 @@ namespace EKG_Project.Architecture
 {
     public class Modules
     {
-        public List<IModule> ECG_IModules;
-
-        public Modules(SortedList<IModule, ModuleParams> modulesList)
+        public static AvailableOptions[] MODULE_ORDER =
         {
-            foreach (KeyValuePair<IModule, ModuleParams> modulesData in modulesList)
+            AvailableOptions.ECG_BASELINE,
+            AvailableOptions.R_PEAKS,
+            AvailableOptions.WAVES,
+            AvailableOptions.HEART_CLASS,
+            AvailableOptions.HRV1,
+            AvailableOptions.HRV2,
+            AvailableOptions.HRV_DFA,
+            AvailableOptions.FLUTTER,
+            AvailableOptions.SIG_EDR,
+            AvailableOptions.ST_SEGMENT,
+            AvailableOptions.SLEEP_APNEA,
+            AvailableOptions.ATRIAL_FIBER,
+            AvailableOptions.QT_DISP,
+            AvailableOptions.FLUTTER,
+            AvailableOptions.HRT,
+            AvailableOptions.HEART_AXIS,
+            AvailableOptions.TEST_MODULE
+        };
+
+        Dictionary<AvailableOptions, ModuleParams> _moduleParams;
+        private string _analysisName;
+        private int _currentModuleIndex;
+        private AvailableOptions _currentOption;
+        private bool _fileLoaded = false;
+        IModule _currentModule;
+
+        public Modules(string analysisName)
+        {
+            AnalysisName = analysisName;
+        }
+
+        public void Init(Dictionary<AvailableOptions, ModuleParams> moduleParams)
+        {
+            CurrentModuleIndex = -1;
+            ModuleParams = moduleParams;
+        }
+
+        public void initNextModule()
+        {
+            try
             {
-                IModule module = modulesData.Key;
-                ModuleParams parameters = modulesData.Value;
-                module.Init(parameters);
-                ECG_IModules.Add(module);
+                CurrentModule = nextModule();
+                CurrentOption = MODULE_ORDER[CurrentModuleIndex];
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        private IModule nextModule()
+        {
+            CurrentModuleIndex++;
+            AvailableOptions option = MODULE_ORDER[CurrentModuleIndex];
+            Console.WriteLine(option);
+            ModuleParams param;
+            try
+            {
+                param = ModuleParams[option];
+                IModule module = ModuleFactory.NewModule(option);
+                module.Init(param);
+                return module;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
+
+        public int Amount()
+        {
+            return ModuleParams.Count;
+        }
+
+        public int CurrentModuleIndex
+        {
+            get
+            {
+                return _currentModuleIndex;
+            }
+
+            set
+            {
+                _currentModuleIndex = value;
+            }
+        }
+
+        public Dictionary<AvailableOptions, ModuleParams> ModuleParams
+        {
+            get
+            {
+                return _moduleParams;
+            }
+
+            set
+            {
+                _moduleParams = value;
+            }
+        }
+
+        public IModule CurrentModule
+        {
+            get
+            {
+                return _currentModule;
+            }
+
+            set
+            {
+                _currentModule = value;
+            }
+        }
+
+        public AvailableOptions CurrentOption
+        {
+            get
+            {
+                return _currentOption;
+            }
+
+            set
+            {
+                _currentOption = value;
+            }
+        }
+
+        public bool FileLoaded
+        {
+            get
+            {
+                return _fileLoaded;
+            }
+
+            set
+            {
+                _fileLoaded = value;
+            }
+        }
+
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+
+            set
+            {
+                _analysisName = value;
             }
         }
     }

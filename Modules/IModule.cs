@@ -26,10 +26,9 @@ namespace EKG_Project.Modules
         /// <summary>
         /// As name says.
         /// </summary>
-        /// <param name="numberOfSamples"></param>
         /// 
         #endregion
-        void ProcessData(int numberOfSamples);
+        void ProcessData();
 
         #region Documentation
         /// <summary>
@@ -48,6 +47,15 @@ namespace EKG_Project.Modules
         /// 
         #endregion
         bool Ended();
+
+        #region Documentation
+        /// <summary>
+        /// Check if module was aborted.
+        /// </summary>
+        /// <returns></returns>
+        /// 
+        #endregion
+        bool IsAborted();
 
         #region Documentation
         /// <summary>

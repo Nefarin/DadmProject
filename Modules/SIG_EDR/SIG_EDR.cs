@@ -23,7 +23,7 @@ namespace EKG_Project.Modules.SIG_EDR
             throw new NotImplementedException();
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
             throw new NotImplementedException();
         }
@@ -36,6 +36,12 @@ namespace EKG_Project.Modules.SIG_EDR
         public bool Runnable()
         {
             throw new NotImplementedException();
+        }
+
+        public bool IsAborted()
+        {
+            return true;
+            //return Aborted;
         }
     }
 }

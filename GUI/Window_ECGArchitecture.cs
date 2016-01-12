@@ -89,6 +89,7 @@ namespace EKG_Project.GUI
             analysisTabControl.DataContext = null;
             _tabContainer.TabItems.RemoveAt(tabIndex);
             analysisTabControl.DataContext = _tabContainer.TabItems;
+            _tabContainer.AnalysisNames.RemoveAt(tabIndex);
 
             analysisTabControl.SelectedIndex = tabIndex - 1;
 
@@ -106,10 +107,13 @@ namespace EKG_Project.GUI
             if (addSelected)
             {
                 addSelected = false;
-                addTabItem();
-                analysisTabControl.DataContext = null;
-                analysisTabControl.DataContext = _tabContainer.TabItems;
-                analysisTabControl.SelectedIndex = _tabContainer.TabItems.Count - 2;
+                TabItem tab = addTabItem();
+                if (tab != null)
+                {
+                    analysisTabControl.DataContext = null;
+                    analysisTabControl.DataContext = _tabContainer.TabItems;
+                    analysisTabControl.SelectedIndex = _tabContainer.TabItems.Count - 2;
+                }
             }
             addSelected = true;
         }
@@ -131,35 +135,56 @@ namespace EKG_Project.GUI
             NewAnalysisDialogBox analysisNameDialogBox = new NewAnalysisDialogBox(string.Format("Analysis {0}", count));
             analysisNameDialogBox.ShowDialog();
 
-            TabItem tab = tab = new TabItem();
-            tab.Header = analysisNameDialogBox.Answer;
-            tab.Name = string.Format("analysis{0}", count);
-            tab.HeaderTemplate = analysisTabControl.FindResource("tabHeader") as DataTemplate;
+            if (analysisNameDialogBox.DialogResult == true)
+            {     
+                if (!_tabContainer.AnalysisNames.Contains(analysisNameDialogBox.Answer))
+                {
+                    TabItem tab = tab = new TabItem();
+                    tab.Header = analysisNameDialogBox.Answer;
+                    tab.Name = string.Format("analysis{0}", count);
+                    tab.HeaderTemplate = analysisTabControl.FindResource("tabHeader") as DataTemplate;
 
-            ProcessSync communication = new ProcessSync();
-            _tabContainer.CommunicationList.Insert(count - 1, communication);
+                    _tabContainer.AnalysisNames.Add(analysisNameDialogBox.Answer);
 
-            UserControl analysisControl = new AnalysisControl(communication, this, tab, _context);
-            _tabContainer.AnalysisControlList.Insert(count - 1, analysisControl);
-            tab.Content = analysisControl;
+                    ProcessSync communication = new ProcessSync();
+                    _tabContainer.CommunicationList.Insert(count - 1, communication);
 
-            Processing ecgAnalysis = new Processing(communication);
-            Thread analysisThread = new Thread(ecgAnalysis.run);
-            _tabContainer.ThreadList.Insert(count - 1, analysisThread);
-            analysisThread.Start();
+                    UserControl analysisControl = new AnalysisControl(communication, this, tab, _context, analysisNameDialogBox.Answer);
+                    _tabContainer.AnalysisControlList.Insert(count - 1, analysisControl);
+                    tab.Content = analysisControl;
 
-            _tabContainer.TabItems.Insert(count - 1, tab);
-            return tab;
+                    Processing ecgAnalysis = new Processing(communication, analysisNameDialogBox.Answer);
+                    Thread analysisThread = new Thread(ecgAnalysis.run);
+                    analysisThread.Priority = ThreadPriority.Highest;
+                    _tabContainer.ThreadList.Insert(count - 1, analysisThread);
+                    analysisThread.Start();
 
+                    _tabContainer.TabItems.Insert(count - 1, tab);
+                    return tab;
+                }
+                else
+                {
+                    MessageBox.Show("Same analysis already exists.");
+                    addSelected = false; 
+                    return null;
+                }
+
+
+            }
+            else
+            {
+                addSelected = false;
+                return null;
+
+            }
         }
 
         private void analysisTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             TabItem tab = analysisTabControl.SelectedItem as TabItem;
-            
-            if (tab != null && tab.Header != null)
+
+            if (tab != null && tab.Header != null && addSelected == true)
             {
-                addSelected = false;
                 if (tab.Header.Equals("+"))
                 {
                     addSelected = true;

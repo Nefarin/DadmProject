@@ -15,6 +15,12 @@ namespace EKG_Project.Modules.TestModule2
             throw new NotImplementedException();
         }
 
+        public bool IsAborted()
+        {
+            return true;
+            //return Aborted;
+        }
+
         public bool Ended()
         {
             throw new NotImplementedException();
@@ -25,7 +31,7 @@ namespace EKG_Project.Modules.TestModule2
             _moduleParams = (Test_Module2_Param)parameters;
         }
 
-        public void ProcessData(int numberOfSamples)
+        public void ProcessData()
         {
             throw new NotImplementedException();
         }

@@ -35,6 +35,11 @@ namespace EKG_Project.GUI
             this.DialogResult = true;
         }
 
+        protected void OnClosing()
+        {
+            this.DialogResult = false;
+        }
+
         private void Window_ContentRendered(object sender, EventArgs e)
         {
             txtAnswer.SelectAll();

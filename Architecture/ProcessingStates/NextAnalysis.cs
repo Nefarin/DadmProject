@@ -1,14 +1,14 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace EKG_Project.Architecture.ProcessingStates
 {
-    #region Documentation
-    /// <summary>
-    /// 
-    /// </summary>
-    /// 
-    #endregion
-    public class Init : IProcessingState
+    public class NextAnalysis : IProcessingState
     {
+
         #region Documentation
         /// <summary>
         /// 
@@ -21,6 +21,5 @@ namespace EKG_Project.Architecture.ProcessingStates
         {
             timeoutState = new Idle(5);
         }
-
     }
 }

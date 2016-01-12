@@ -15,16 +15,23 @@ namespace EKG_Project.Modules.QT_Disp
 
 
         //Input which can be modify in GUI
-        public QT_Calc_Method _qt_method;
-        public T_End_Method _t_end_method;
-        public bool _alldrains; // determinate if we calculate QT_disp for all drains or only one
-
+        private QT_Calc_Method _qt_method;
+        private T_End_Method _t_end_method;
+        private bool _alldrains; // determinate if we calculate QT_disp for all drains or only one
+        private string _analysisName;
+        public QT_Disp_Params()
+        {
+            this._alldrains = false;
+            this._qt_method = QT_Calc_Method.BAZETTA;
+            this._t_end_method = T_End_Method.TANGENT;
+            this._analysisName = "Analysis6";
+        }
 
         public QT_Calc_Method QTMethod
         {
             get
             {
-               return _qt_method;
+                return _qt_method;
             }
             set
             {
@@ -53,90 +60,20 @@ namespace EKG_Project.Modules.QT_Disp
                 _alldrains = value;
             }
         }
-            
-        /*
-        //Output this will be shown in GUI
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+            set
+            {
+                _analysisName = value;
+            }
 
-        //This parameters are statistics 
-        public Vector<double> qt_disp;
-        public Vector<double> qt_mean;
-        public Vector<double> qt_std;
-        public double qt_disp_global;    
+        }
 
-        //These matrix contatin Q_Onset and T_End index to select it on graph
-        Matrix<double> t_endindex;
-        Matrix<double> qrs_onsetindex;
-        //The next rows of this matrix is a T_end indexes of next drains
-        //Ex
-        // T_end index of V1
-        // T_end index of V2       
 
-        //Getters and setters - Output
-        public Vector<double> QT_Disp
-        {
-            get
-            {
-                return qt_disp;
-            }
-            set
-            {
-                qt_disp = value;
-            }
-        }
-        public Vector<double> QT_Mean
-        {
-            get
-            {
-                return qt_mean;
-            }
-            set
-            {
-                qt_mean = value;
-            }
-        }
-        public Vector<double> QT_Std
-        {
-            get
-            {
-                return qt_std;
-            }
-            set
-            {
-                qt_std = value;
-            }
-        }
-        public double QT_Disp_Global
-        {
-            get
-            {
-                return qt_disp_global;
-            }
-            set
-            {
-                qt_disp_global = value;
-            }
-        }
-        public Matrix<double> T_EndIndex{
-            get
-            {
-                return t_endindex;
-            }
-            set
-            {
-                t_endindex = value;
-            }
-        }
-        public Matrix<double> QRS_OnsetIndex
-        {
-            get
-            {
-                return qrs_onsetindex;
-            }
-            set
-            {
-                qrs_onsetindex = value;
-            }
-        }*/
 
 
     }

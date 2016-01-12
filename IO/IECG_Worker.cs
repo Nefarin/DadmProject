@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EKG_Project.Modules;
 
-namespace EKG_Project.Modules.SIG_EDR
+namespace EKG_Project.IO
 {
-    class SIG_EDR_Data : ECG_Data
+    public interface IECG_Worker
     {
+        void Save(ECG_Data data);
+        void Load();
     }
 }

@@ -10,14 +10,23 @@ namespace EKG_Project.Modules.Heart_Class
 {
     public class Heart_Class_Params : ModuleParams
     {
+        private string _analysisName;
         //HEART_CLASS Module input parameters - to podobno idzie kaj indziej
         //private Vector<double> _ecg;
         //private Vector<uint> _QRSonsets;
         //private Vector<uint> _QRSends;
 
+        public Heart_Class_Params()
+        {
+            this.AnalysisName = "Analysis6";
+        }
 
+        public Heart_Class_Params(string analysisName)
+        {
+            this.AnalysisName = analysisName;
+        }
 
-        //HEART_CLASS Module output parameters
+        /*HEART_CLASS Module output parameters
         private Vector<int> _qrsComplexLabel;
         private uint _totalNumberOfQrsComplex;
         private uint _numberOfClass;
@@ -91,7 +100,7 @@ namespace EKG_Project.Modules.Heart_Class
             }
 
         }
-        */
+        
 
         public Vector<int> QrsComplexLabel
         {
@@ -134,8 +143,13 @@ namespace EKG_Project.Modules.Heart_Class
 
         }
 
+    */
 
 
-
+        public string AnalysisName
+        {
+            get { return _analysisName; }
+            set { _analysisName = value; }
+        }
     }
 }

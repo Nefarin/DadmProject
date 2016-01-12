@@ -8,15 +8,24 @@ namespace EKG_Project.Modules.Heart_Axis
 {
     public class Heart_Axis_Params : ModuleParams
     {
-        //Heart_Axis Module output parameters
-        private double _heartAxis;
+        private string _analysisName;
+        public Heart_Axis_Params(string analysisName)
+        {
+            this.AnalysisName = analysisName;
+        }
 
-        public double HeartAxis { get; set; }
-
-        public Heart_Axis_Params(double heartAxis)
+        public string AnalysisName
+        {
+            get
             {
-            _heartAxis = heartAxis;
+                return _analysisName;
             }
+
+            set
+            {
+                _analysisName = value;
+            }
+        }
     }
 }
 

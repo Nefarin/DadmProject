@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using EKG_Project.Architecture.ProcessingStates;
+using EKG_Project.Modules;
 
 namespace EKG_Project.Architecture
 {
@@ -28,6 +29,10 @@ namespace EKG_Project.Architecture
         #endregion
         public Modules Modules
         {
+            set
+            {
+                _modules = value;
+            }
             get
             {
                 return _modules;
@@ -94,9 +99,10 @@ namespace EKG_Project.Architecture
         /// <param name="communication"></param>
         /// 
         #endregion
-        public Processing(ProcessSync communication)
+        public Processing(ProcessSync communication, String analysisName)
         {
             this._communication = communication;
+            Modules = new Modules(analysisName);
             TimeoutState = new Idle(5);
             Stop = false;
         }
