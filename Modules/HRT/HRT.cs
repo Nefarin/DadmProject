@@ -69,22 +69,27 @@ namespace EKG_Project.Modules.HRT
 
                 OutputWorker = new HRT_Data_Worker(Params.AnalysisName);
                 OutputData = new HRT_Data();
+
+                _currentChannelIndex = 0;
+                _samplesProcessed = 0;
+               
             }
         }
 
         public void ProcessData(int numberOfSamples)
         {
-            throw new NotImplementedException();
+            if (Runnable()) processData();
+            else _ended = true;
         }
 
         public double Progress()
         {
-            throw new NotImplementedException();
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
         }
 
         public bool Runnable()
         {
-            throw new NotImplementedException();
+            return Params != null;
         }
 
         //gettery i settery
