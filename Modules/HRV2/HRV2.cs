@@ -33,6 +33,10 @@ namespace EKG_Project.Modules.HRV2
         //private int _currentBinAmout;
         private Vector<double> _currentPoincare;
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
         public void Abort()
         {
             Aborted = true;
@@ -219,7 +223,7 @@ namespace EKG_Project.Modules.HRV2
 
         public static void Main()
         {
-            HRV2_Params param = new HRV2_Params(3, 9, "TestAnalysis6"); 
+            HRV2_Params param = new HRV2_Params(3, 9, "TestAnalysis100"); 
             HRV2 testModule = new HRV2();
             testModule.Init(param);
             while (true)
