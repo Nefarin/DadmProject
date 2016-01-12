@@ -22,11 +22,10 @@ namespace EKG_Project.Modules.ECG_Baseline
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ECG_Baseline_Params() // konstruktor domyślny
+        public ECG_Baseline_Params() : base() // konstruktor domyślny
         {
             this.Method = Filtr_Method.BUTTERWORTH;
             this.Type = Filtr_Type.BANDPASS;
-            this.AnalysisName = "Analysis6";
             this._fcLow = 50;
             this._fcHigh = 0.5;
             this.OrderLow = 3;
@@ -77,18 +76,6 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.Type = type;
             this.WindowSizeLow = windowSizeLow;
             this.WindowSizeHigh = windowSizeHigh;
-        }
-
-        public void CopyParametersFrom(ECG_Baseline_Params parameters)
-        {
-            this.Method = parameters.Method;
-            this.Type = parameters.Type;
-            this.FcLow = parameters.FcLow;
-            this.FcHigh = parameters.FcHigh;
-            this.OrderLow = parameters.OrderLow;
-            this.OrderHigh = parameters.OrderHigh;
-            this.WindowSizeLow = parameters.WindowSizeLow;
-            this.WindowSizeHigh = parameters.WindowSizeHigh;
         }
 
         public Filtr_Method Method
@@ -143,8 +130,23 @@ namespace EKG_Project.Modules.ECG_Baseline
             }
         }
 
-        public bool IsOtherLowPass { get { return this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS; } }
-        public bool IsOtherHighPass { get { return this.Type == Filtr_Type.HIGHPASS || this.Type == Filtr_Type.BANDPASS; } }
+        public bool IsOtherLowPass
+        {
+            get
+            {
+                return (this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS) &&
+                    this.Method != Filtr_Method.BUTTERWORTH;
+            }
+        }
+
+        public bool IsOtherHighPass
+        {
+            get
+            {
+                return (this.Type == Filtr_Type.HIGHPASS || this.Type == Filtr_Type.BANDPASS) &&
+                    this.Method != Filtr_Method.BUTTERWORTH;
+            }
+        }
 
         public double FcLow
         {

@@ -1,4 +1,5 @@
-﻿using EKG_Project.Modules.R_Peaks;
+﻿using EKG_Project.Modules;
+using EKG_Project.Modules.R_Peaks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,8 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
     /// </summary>
     public partial class Dialogue_R_Peaks_Options : Window
     {
-
-
-        public R_Peaks_Params returnParameters { get; set; }
-        public R_Peaks_Params PendingParameters { get; set; }
+        public ModuleParams returnParameters { get; set; }
+        public ModuleParams PendingParameters { get; set; }
         ModulePanel panel;
 
         public Dialogue_R_Peaks_Options(Object parent, R_Peaks_Params parameters)
@@ -32,14 +31,14 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             this.returnParameters = parameters;
 
             this.PendingParameters = new R_Peaks_Params(R_Peaks_Method.EMD, parameters.AnalysisName);
-            this.PendingParameters.CopyParametersFrom(parameters);
+            this.PendingParameters.CopyFrom(parameters);
             this.DataContext = this.PendingParameters;
             InitializeComponent();
         }
 
         private void ApplyParameterChanges(object sender, RoutedEventArgs e)
         {
-            this.returnParameters.CopyParametersFrom(this.PendingParameters);
+            this.returnParameters.CopyFrom(this.PendingParameters);
             this.Close();
         }
 
