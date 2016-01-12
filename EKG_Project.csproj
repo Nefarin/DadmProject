@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{EFE339A0-2E66-496C-8A74-F84B670D3DA9}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EKG_Project</RootNamespace>
     <AssemblyName>EKG_Project</AssemblyName>
@@ -182,7 +182,14 @@
     <Compile Include="Architecture\Delegates.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEnded.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEndedTest.cs" />
+    <Compile Include="Architecture\GUIMessages\AnalysisStarted.cs" />
+    <Compile Include="Architecture\GUIMessages\EndedModule.cs" />
+    <Compile Include="Architecture\GUIMessages\FileLoaded.cs" />
+    <Compile Include="Architecture\GUIMessages\FileLoadingError.cs" />
+    <Compile Include="Architecture\GUIMessages\FileNotLoaded.cs" />
     <Compile Include="Architecture\GUIMessages\IGUIMessage.cs" />
+    <Compile Include="Architecture\GUIMessages\ModuleProgress.cs" />
+    <Compile Include="Architecture\GUIMessages\ProcessingEnded.cs" />
     <Compile Include="Architecture\GUIMessages\TestMessage.cs" />
     <Compile Include="Architecture\Modules.cs" />
     <Compile Include="Architecture\ProcessingStates\Abort.cs" />
@@ -191,8 +198,13 @@
     <Compile Include="Architecture\ProcessingStates\Idle.cs" />
     <Compile Include="Architecture\ProcessingStates\Init.cs" />
     <Compile Include="Architecture\ProcessingStates\IProcessingState.cs" />
+    <Compile Include="Architecture\ProcessingStates\LoadFile.cs" />
+    <Compile Include="Architecture\ProcessingStates\ModuleEnded.cs" />
     <Compile Include="Architecture\ProcessingStates\NextAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\NextModule.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\ProcessingEnded.cs" />
+    <Compile Include="Architecture\ProcessingStates\ProcessModule.cs" />
     <Compile Include="Architecture\ProcessingStates\TestState.cs" />
     <Compile Include="Architecture\TabContainer.cs" />
     <Compile Include="Architecture\Processing.cs" />
@@ -274,7 +286,9 @@
     <Compile Include="IO\Flutter_Data_Worker.cs" />
     <Compile Include="IO\Heart_Axis_Data_Worker.cs" />
     <Compile Include="IO\Heart_Class_Data_Worker.cs" />
+    <Compile Include="IO\HRT_Data_Worker.cs" />
     <Compile Include="IO\HRV1_Data_Worker.cs" />
+    <Compile Include="IO\HRV2_Data_Worker.cs" />
     <Compile Include="IO\HRV_DFA_Data_Worker.cs" />
     <Compile Include="IO\IECGConverter.cs" />
     <Compile Include="IO\IECGPath.cs" />
@@ -283,8 +297,11 @@
     <Compile Include="IO\QT_Disp_Data_Worker.cs" />
     <Compile Include="IO\ReleaseECGPath.cs" />
     <Compile Include="IO\R_Peaks_Data_Worker.cs" />
+    <Compile Include="IO\Sleep_Apnea_Data_Worker.cs" />
+    <Compile Include="IO\ST_Segment_Data_Worker.cs" />
     <Compile Include="IO\TempInput.cs" />
     <Compile Include="IO\TestModule3_Data_Worker.cs" />
+    <Compile Include="IO\T_Wave_Alt_Data_Worker.cs" />
     <Compile Include="IO\Waves_Data_Worker.cs" />
     <Compile Include="IO\WFDBTest.cs" />
     <Compile Include="IO\XMLConverter.cs" />
@@ -318,11 +335,12 @@
     <Compile Include="Modules\HRV1\HRV1_Alg.cs" />
     <Compile Include="Modules\HRV1\HRV1_Data.cs" />
     <Compile Include="Modules\HRV1\HRV1_Params.cs" />
+    <Compile Include="Modules\HRV2\Histogram.cs" />
     <Compile Include="Modules\HRV2\HRV2.cs" />
     <Compile Include="Modules\HRV2\HRV2_Alg.cs" />
     <Compile Include="Modules\HRV2\HRV2_Data.cs" />
     <Compile Include="Modules\HRV2\HRV2_Params.cs" />
-    <Compile Include="Modules\HRV2\SampleDataSource.cs" />
+    <Compile Include="Modules\HRV2\Poincare.cs" />
     <Compile Include="Modules\HRV2\Tinn.cs" />
     <Compile Include="Modules\HRV2\TriangleIndex.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA.cs" />
@@ -330,6 +348,7 @@
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Data.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
     <Compile Include="Modules\IModule.cs" />
+    <Compile Include="Modules\ModuleFactory.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
@@ -385,6 +404,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="IO\data\100.atr" />
     <None Include="IO\data\100.dat" />
     <None Include="IO\data\100.hea" />
@@ -407,6 +427,13 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\temp\train_d_label.txt" />
+    <Resource Include="IO\temp\train_d.txt" />
+    <Resource Include="IO\temp\TestAnalysis8_Data.xml" />
+    <Resource Include="IO\temp\TestAnalysis6_Data.xml" />
+    <Resource Include="IO\temp\TestAnalysis5_Data.xml" />
+    <Resource Include="IO\temp\TestAnalysis3_Data.xml" />
+    <Resource Include="IO\temp\TestAnalysis2_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis_Data.xml" />
     <Resource Include="IO\temp\Analysis6_Data.xml" />
     <Resource Include="IO\temp\Analysis6_TestModule3.xml" />

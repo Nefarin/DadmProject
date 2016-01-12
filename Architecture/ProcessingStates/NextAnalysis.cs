@@ -19,16 +19,7 @@ namespace EKG_Project.Architecture.ProcessingStates
         #endregion
         public void Process(Processing process, out IProcessingState timeoutState)
         {
-            process.Modules.CurrentAnalysisIndex++;
-            if (process.Modules.CurrentAnalysisIndex < process.Modules.Amount())
-            {
-                timeoutState = new ProcessAnalysis();
-            }
-            else
-            {
-                timeoutState = new Idle(5);
-            }
-            
+            timeoutState = new Idle(5);
         }
     }
 }

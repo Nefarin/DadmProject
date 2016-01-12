@@ -116,6 +116,9 @@ namespace EKG_Project.GUI
             _parent = parent;
             _parentTab = parentTab;
             InitializeComponent();
+            startAnalyseButton.IsEnabled = false;
+            moduleParams = new Dictionary<AvailableOptions, ModuleParams>();
+            isComputed = new Dictionary<AvailableOptions, bool>();
         }
 
         public AnalysisControl(ProcessSync communication, Window_ECG parent, TabItem parentTab, SynchronizationContext context, string analysisName)

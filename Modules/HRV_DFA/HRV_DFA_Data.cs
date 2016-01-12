@@ -10,13 +10,17 @@ namespace EKG_Project.Modules.HRV_DFA
     public class HRV_DFA_Data : ECG_Data
     {
         // outputs
-        private List<Tuple<string, Vector<double>>> _dfaNumberN;
-        private List<Tuple<string, Vector<double>>> _dfaValueFn;
-        private List<Tuple<string, Vector<double>>> _paramAlpha;
+        private List<Tuple<string, Vector<double>, Vector<double>>> _dfaNumberN;
+        private List<Tuple<string, Vector<double>, Vector<double>>> _dfaValueFn;
+        private List<Tuple<string, Vector<double>,Vector<double>>> _paramAlpha;
 
-        public HRV_DFA_Data() { }
+        public HRV_DFA_Data() {
+            _dfaNumberN = new List<Tuple<string, Vector<double>, Vector<double>>>();
+            _dfaValueFn = new List<Tuple<string, Vector<double>, Vector<double>>>();
+            _paramAlpha = new List<Tuple<string, Vector<double>, Vector<double>>>();
+        }
 
-        public List<Tuple<string, Vector<double>>> DfaNumberN
+        public List<Tuple<string, Vector<double>, Vector<double>>> DfaNumberN
         {
             get
             {
@@ -28,7 +32,7 @@ namespace EKG_Project.Modules.HRV_DFA
             }
         }
 
-        public List<Tuple<string, Vector<double>>> DfaValueFn
+        public List<Tuple<string, Vector<double>, Vector<double>>> DfaValueFn
         {
             get
             {
@@ -39,7 +43,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 _dfaValueFn = value;
             }
         }
-        public List<Tuple<string, Vector<double>>> ParamAlpha
+        public List<Tuple<string, Vector<double>, Vector<double>>> ParamAlpha
         {
             get
             {

@@ -14,7 +14,7 @@ namespace EKG_Project.IO
     public class Flutter_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName;
         private Flutter_Data _data;
 
         public Flutter_Data Data

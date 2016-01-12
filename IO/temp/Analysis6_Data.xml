@@ -89,32 +89,6 @@
   <module name="Heart_Axis">
     <HeartAxis>67</HeartAxis>
   </module>
-  <module name="HRV_DFA">
-    <DfaNumberN>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </DfaNumberN>
-    <DfaNumberN>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </DfaNumberN>
-    <DfaValueFn>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </DfaValueFn>
-    <DfaValueFn>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </DfaValueFn>
-    <ParamAlpha>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </ParamAlpha>
-    <ParamAlpha>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </ParamAlpha>
-  </module>
   <module name="HRV1">
     <FreqBasedParams>
       <lead>V1</lead>
@@ -167,48 +141,6 @@
       <intervals>1 2 3 4 5 6 7 8 9 </intervals>
     </RRInterval>
   </module>
-  <module name="Waves">
-    <QRSOnsets>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </QRSOnsets>
-    <QRSOnsets>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
-    </QRSOnsets>
-    <QRSEnds>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </QRSEnds>
-    <QRSEnds>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
-    </QRSEnds>
-    <POnsets>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </POnsets>
-    <POnsets>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
-    </POnsets>
-    <PEnds>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </PEnds>
-    <PEnds>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
-    </PEnds>
-    <TEnds>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </TEnds>
-    <TEnds>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 10 11 12 13 </samples>
-    </TEnds>
-  </module>
   <module name="QT_Disp">
     <QT_disp_local>
       <lead>V1</lead>
@@ -246,5 +178,85 @@
       <item2>2</item2>
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
+  </module>
+  <module name="Waves">
+    <QRSOnsets>
+      <lead>I</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>II</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </QRSOnsets>
+    <QRSEnds>
+      <lead>I</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>II</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 </samples>
+    </QRSEnds>
+    <POnsets>
+      <lead>I</lead>
+      <samples>
+      </samples>
+    </POnsets>
+    <POnsets>
+      <lead>II</lead>
+      <samples>
+      </samples>
+    </POnsets>
+    <PEnds>
+      <lead>I</lead>
+      <samples>
+      </samples>
+    </PEnds>
+    <PEnds>
+      <lead>II</lead>
+      <samples>
+      </samples>
+    </PEnds>
+    <TEnds>
+      <lead>I</lead>
+      <samples>
+      </samples>
+    </TEnds>
+    <TEnds>
+      <lead>II</lead>
+      <samples>
+      </samples>
+    </TEnds>
+  </module>
+  <module name="HRV_DFA">
+    <DfaNumberN>
+      <lead>V1</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </DfaNumberN>
+    <DfaNumberN>
+      <lead>MLII</lead>
+      <samples>7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </DfaNumberN>
+    <DfaValueFn>
+      <lead>V1</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </DfaValueFn>
+    <DfaValueFn>
+      <lead>MLII</lead>
+      <samples>7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </DfaValueFn>
+    <ParamAlpha>
+      <lead>V1</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </ParamAlpha>
+    <ParamAlpha>
+      <lead>MLII</lead>
+      <samples>7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </ParamAlpha>
   </module>
 </EKG>

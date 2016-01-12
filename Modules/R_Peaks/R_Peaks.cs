@@ -45,6 +45,11 @@ namespace EKG_Project.Modules.R_Peaks
             return _ended;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public void Init(ModuleParams parameters)
         {
             Params = parameters as R_Peaks_Params;
@@ -312,7 +317,7 @@ namespace EKG_Project.Modules.R_Peaks
 
         public static void Main()
         {
-            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "TestAnalysis");
+            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "TestAnalysis8");
             //R_Peaks_Params param = null;
             R_Peaks testModule = new R_Peaks();
             testModule.Init(param);

@@ -43,6 +43,11 @@ namespace EKG_Project.Modules.ECG_Baseline
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;
@@ -371,7 +376,7 @@ namespace EKG_Project.Modules.ECG_Baseline
 
         public static void Main()
         {
-            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 9, "TestAnalysis"); //Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 5, "Analysis6");
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 9, "TestAnalysis8"); //Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 5, "Analysis6");
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 5, "Analysis6");
             ECG_Baseline testModule = new ECG_Baseline();
             testModule.Init(param);

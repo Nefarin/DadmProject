@@ -1,8 +1,10 @@
-using MathNet.Numerics;
+﻿using MathNet.Numerics;
+using MathNet.Numerics.IntegralTransforms;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,31 +22,12 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
     public partial class Sleep_Apnea : IModule
     {
-        static Vector<double> _ecg;
-        static List<int> _Rpeaks;
 
-        static void Main(string[] args)
-        {
-            //read data from file
-            _Rpeaks = new List<int>();
-            TempInput.setInputFilePath(@"D:\studia nowe\dadm\projekt\matlabfunkcje\R_det.txt");
-            TempInput.getFrequency();
-            Vector<double> rpeaks = TempInput.getSignal();
-            foreach (double singlePeak in rpeaks)
-            {
-                _Rpeaks.Add((int)singlePeak);
-            }
-            TempInput.setInputFilePath(@"D:\studia nowe\dadm\projekt\matlabfunkcje\ECG.txt");
-            Vector<double> _ecg = TempInput.getSignal();
-            uint freq = 100;
-            TempInput.setOutputFilePath(@"D:\studia nowe\dadm\projekt\matlabfunkcje\is_apnea.txt");
-
-        }
 
         //function that finds interval between RR peaks [s]
         List<List<double>> findIntervals(List<uint> R_detected, int freq)
         {
-            double inter;
+
             List<List<double>> RR = new List<List<double>>(2);
             RR.Add(new List<double>(R_detected.Count));
             RR.Add(new List<double>(R_detected.Count));
@@ -53,9 +36,9 @@ namespace EKG_Project.Modules.Sleep_Apnea
             {
                 RR[0].Add((double)(R_detected[i]));
             }
-            for (int i = 0; i < R_detected.Count(); i++)
+            for (int i = 0; i < R_detected.Count()-1; i++)
             {
-                RR[1].Add((double)((R_detected[i + 1] - R_detected[i]) / freq));
+                RR[1].Add((((double)R_detected[i + 1] - R_detected[i]) / freq));
             }
 
             RR[1].Add(0.0);
@@ -123,7 +106,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             {
                 if (RR[1][i] > 0.4 && RR[1][i] < 2.0)
                 {
-                    sum += RR[1][ i];
+                    sum += RR[1][i];
                     licznik += 1;
                 }
             }
@@ -273,148 +256,72 @@ namespace EKG_Project.Modules.Sleep_Apnea
         }
 
 
-        //Żanety..................................................
 
-                void hilbert(List<List<double>> RR_HPLP, ref List<List<double>> h_amp, ref List<List<double>> h_freq)
+
+        void hilbert(List<List<double>> RR_HPLP, ref List<List<double>> h_amp, ref List<List<double>> h_freq)
         {
-            int i, l, npt, lfilt, LMAX = RR_HPLP[0].Count - 1;
-            lfilt = 32;
-            int LFILT=lfilt;
-            //defining local arrays
-            double[] x = new double[LMAX + 1];
-            double[] xh = new double[LMAX + 1];
-            double[] phase = new double[LMAX + 1];
-            double[] ampl = new double[LMAX + 1];
-            double[] time = new double[LMAX + 1];
-            double[] freq = new double[LMAX + 1];
-            double[] hilb = new double[LFILT + 1];
-            double pi, pi2, xt, xht;
+            Complex[] hilb = MatlabHilbert(RR_HPLP[1].ToArray());
 
-            pi = 3.1415; pi2 = 2 * pi;
+            double Fs = 1.0 / (RR_HPLP[0][1] - RR_HPLP[0][0]);
 
-            for (i = 1; i <= lfilt; i++)
-            {
-                hilb[i] = 1 / ((i - lfilt / 2.0) - 0.5) / pi;
-            }
+            h_amp.Add(new List<double>(RR_HPLP[0].Count));
+            h_freq.Add(new List<double>(RR_HPLP[0].Count));
+            h_amp.Add(new List<double>(RR_HPLP[0].Count));
+            h_freq.Add(new List<double>(RR_HPLP[0].Count));
 
-            for (i = 1; i <= LMAX; i++)
+            //Writing time and values
+            for (int i = 0; i < hilb.Length; i++)
             {
-                time[i] = RR_HPLP[0][i];
-                x[i] = RR_HPLP[1][i];
-                xh[i] = 0.0;
-                ampl[i] = 0.0;
-            }
-            npt = LMAX + 1;
+                h_amp[0].Add(RR_HPLP[0][i]);
+                h_freq[0].Add(RR_HPLP[0][i]);
 
-            //hilbert transform
-            double yt;
-            for (l = 1; l < npt - lfilt + 1; l++)
-            {
-                yt = 0.0;
-                for (i = 1; i <= lfilt; i++)
-                    yt = yt + x[l + i - 1] * hilb[lfilt + 1 - i];
-                xh[l] = yt;
-            }
-            /* shifting lfilt/1+1/2 points */
-            for (i = 1; i <= npt - lfilt; i++)
-            {
-                xh[i] = 0.5 * (xh[i] + xh[i + 1]);
-            }
-            for (i = npt - lfilt; i >= 1; i--)
-            {
-                xh[i + lfilt / 2] = xh[i];
-            }
-            /* writing zeros */
-            for (i = 1; i <= lfilt / 2; i++)
-            {
-                xh[i] = 0.0;
-                xh[npt - i] = 0.0;
-            }
+                h_amp[1].Add(Complex.Abs(hilb[i]));
 
-            // Ampl and phase
-            for (i = lfilt / 2 + 1; i <= npt - lfilt / 2; i++)
-            {
-                xt = x[i];
-                xht = xh[i];
-                ampl[i] = Math.Sqrt(xt * xt + xht * xht);
-                phase[i] = Math.Atan2(xht, xt);
-                if (phase[i] < phase[i - 1])
+                if (i < hilb.Length - 1)
                 {
-                    freq[i] = phase[i] - phase[i - 1] + pi2;
+                    double phase = hilb[i].Phase;
+                    if (phase < 0) phase = Math.PI * 2 + phase;
+                    double phase2 = hilb[i + 1].Phase;
+                    if (phase2 < 0) phase2 = Math.PI * 2 + phase2;
+
+                    double freq = Fs / (2 * Math.PI) * (phase2 - phase);
+                    h_freq[1].Add(freq);
                 }
                 else
                 {
-                    freq[i] = phase[i] - phase[i - 1];
-                }
-            }
-
-
-            //writing output arrays
-            int id_start = (LFILT / 2) + 1;
-            int id_stop = LMAX - (LFILT / 2);
-            int size1 = id_stop - id_start + 1;
-            //resizing
-
-            h_amp.Add(new List<double>(size1));
-            h_freq.Add(new List<double>(size1));
-            h_amp.Add(new List<double>(size1));
-            h_freq.Add(new List<double>(size1));
-
-            //writing time and values
-            int j = 0;
-            for (int k = id_start; k <= id_stop; k++)
-            {
-                if (j < size1)
-                {
-                    h_amp[0].Add(time[k]);
-                    h_amp[1].Add(ampl[k]);
-
-                    h_freq[0].Add(time[k]);
-                    h_freq[1].Add(freq[k]);
-                    j++;
+                    h_freq[1].Add(0.0);
                 }
             }
         }
 
-        void freq_amp_filter(List<List<double>> h_freq, List<List<double>> h_amp)
+        private static Complex[] MatlabHilbert(double[] xr)
         {
-            double diff, t1, t2, f1, f2, a, b; int i;
-
-            double maxi = 0;
-            //calculating treshold value for filter
-            for (i = 0; i < h_freq[0].Count - 1; i++)
+            var x = (from sample in xr select new Complex(sample, 0)).ToArray();
+            Fourier.BluesteinForward(x, FourierOptions.Default);
+            var h = new double[x.Length];
+            var fftLengthIsOdd = (x.Length | 1) == 1;
+            if (fftLengthIsOdd)
             {
-                diff = Math.Abs(h_freq[1][i] - h_freq[1][i + 1]);
-                if (diff > maxi)
-                    maxi = diff;
+                h[0] = 1;
+                for (var i = 1; i < xr.Length / 2; i++) h[i] = 2;
             }
-            double limit = maxi * 0.2;
-
-
-            for (i = 1; i < h_freq[0].Count - 1; i++)
+            else
             {
-                if (Math.Abs(h_freq[1][i]) > limit)
-                {
-                    t1 = h_freq[0][i - 1]; f1 = h_freq[1][i - 1];
-                    t2 = h_freq[0][i + 1]; f2 = h_freq[1][i + 1];
-                    a = (f1 - f2) / (t1 - t2);
-                    b = f1 - a * t1;
-                    h_freq[1][i] = a * h_freq[0][i] + b;
-                }
+                h[0] = 1;
+                h[(xr.Length / 2)] = 1;
+                for (var i = 1; i < xr.Length / 2; i++) h[i] = 2;
             }
-
-            //normalization of amplitude signal
-            double sum = 0;
-            for (i = 0; i < h_amp[0].Count; i++)
-                sum += h_amp[1][i];
-            double mean = sum / h_amp[0].Count;
-            //writing values to output array
-            for (i = 0; i < h_amp[0].Count; i++)
+            for (var i = 0; i < x.Length; i++)
             {
-                h_amp[1][i] = h_amp[1][i] * (1 / mean);
+                x[i] *= h[i];
             }
+            Fourier.BluesteinInverse(x, FourierOptions.Default);
+
+
+            return x;
         }
 
+        // Median Filtering using a moving window of 60 points
         void median_filter(List<List<double>> h_freq, List<List<double>> h_amp)
         {
             int window_median = 60;
@@ -423,12 +330,12 @@ namespace EKG_Project.Modules.Sleep_Apnea
             int i, j, k, l;
             double median_amp = 0, median_freq = 0;
 
+            //Filter for samples divisible by 60
             for (i = 0; i < h_freq[0].Count; i++)
             {
                 if (i % window_median == 0 && i > 0)
                 {
                     k = (i / window_median) - 1;
-                    //filling arrays
                     l = 0;
                     for (j = 0 + window_median * k; j < window_median + window_median * k; j++)
                     {
@@ -436,10 +343,10 @@ namespace EKG_Project.Modules.Sleep_Apnea
                         amp[l] = h_amp[1][j];
                         l++;
                     }
-                    //sorting arrays                    
+                    //Sorting arrays                    
                     Array.Sort(freq);
                     Array.Sort(amp);
-                    //finding median_elements
+                    //Finding the median of the arrays
                     if (freq.Length % 2 != 0)
                     {
                         median_freq = freq[(int)((freq.Length - 1) / 2)];
@@ -450,7 +357,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                         median_freq = (freq[(int)(Math.Floor(((double)freq.Length - 1) / 2))] + freq[(int)(Math.Floor(((double)freq.Length - 1) / 2)) + 1]) * 0.5;
                         median_amp = (amp[(int)(Math.Floor(((double)amp.Length - 1) / 2))] + amp[(int)(Math.Floor(((double)amp.Length - 1) / 2)) + 1]) * 0.5;
                     }
-                    //writing output arrays
+                    //Writing filtered samples in output arrays
                     for (j = 0 + window_median * k; j < window_median + window_median * k; j++)
                     {
                         h_freq[1][j] = median_freq;
@@ -459,14 +366,13 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 }
             }
 
-            //loop for last elements
+            //Filter for another samples
             if (h_freq[0].Count() % window_median != 0)
             {
                 int start_id = (int)(Math.Floor((double)h_freq[0].Count / window_median) * window_median);
                 int stop_id = h_freq[0].Count - 1;
                 double[] amp1 = new double[stop_id - start_id + 1];
                 double[] freq1 = new double[stop_id - start_id + 1];
-                //filling arrays
                 j = start_id;
                 for (i = 0; i < freq1.Length; i++)
                 {
@@ -474,10 +380,10 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     amp1[i] = h_amp[1][j];
                     j++;
                 }
-                //sorting arrays
-                Array.Sort(freq);
-                Array.Sort(amp);
-                //finding median_elements
+                //Sorting arrays
+                Array.Sort(freq1);
+                Array.Sort(amp1);
+                //Finding the median of the arrays
                 if (freq1.Length % 2 != 0)
                 {
                     median_freq = freq1[(int)((freq1.Length - 1) / 2)];
@@ -488,7 +394,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     median_freq = (freq1[(int)(Math.Floor(((double)freq1.Length - 1) / 2))] + freq1[(int)(Math.Floor(((double)freq1.Length - 1) / 2)) + 1]) * 0.5;
                     median_amp = (amp1[(int)(Math.Floor(((double)amp1.Length - 1) / 2))] + amp1[(int)(Math.Floor(((double)amp1.Length - 1) / 2)) + 1]) * 0.5;
                 }
-                //writing output arrays
+                //Writing filtered samples to output arrays
                 for (i = start_id; i <= stop_id; i++)
                 {
                     h_freq[1][i] = median_freq;
@@ -497,62 +403,103 @@ namespace EKG_Project.Modules.Sleep_Apnea
             }
         }
 
-        List<Tuple<ulong, ulong>> apnea_detection(List<List<double>> tab_amp, List<List<double>> tab_freq)
+        //Normalization of amplitude signal
+        void amp_filter(List<List<double>> h_amp)
         {
-            List<Tuple<ulong, ulong>> apnea_out = new List<Tuple<ulong, ulong>>();
+            double sum = 0;
+            for (int i = 0; i < h_amp[0].Count; i++)
+                sum += h_amp[1][i];
+            double mean = sum / h_amp[0].Count;
 
-            //treshold value for amplitude
-            int i; double a, b, mini_amp, mini_freq, maxi_amp, maxi_freq, mid, y_amp, y_freq;
-            mini_amp = 99999; mini_freq = 99999;
-            maxi_amp = 0; maxi_freq = 0;
-            for (i = 0; i < tab_amp[0].Count(); i++)
+            //Writing values to output array
+            for (int i = 0; i < h_amp[0].Count; i++)
             {
-                if (tab_amp[1][i] > maxi_amp) maxi_amp = tab_amp[1][i];
-                if (tab_amp[1][i] < mini_amp) mini_amp = tab_amp[1][i];
-                if (tab_freq[1][i] > maxi_freq) maxi_freq = tab_freq[1][i];
-                if (tab_freq[1][i] < mini_freq) mini_freq = tab_freq[1][i];
+                h_amp[1][i] = h_amp[1][i] * (1 / mean);
             }
-            a = -0.18; b = 1; mid = (maxi_amp + mini_amp) * 0.5;
+
+            //Changing the field from samples numbers to time
+            double[] time = new double[h_amp[0].Count];
+            for (int i = 0; i < h_amp[0].Count(); i++)
+            {
+                time[i] = (h_amp[0][i] - h_amp[0][0]) / (h_amp[0][1] - h_amp[0][0]);
+            }
+
+            for (int i = 0; i < h_amp[0].Count(); i++)
+            {
+                h_amp[0][i] = time[i];
+            }
+        }
+
+        // Apnoea detection (if the frequency goes below 0,06 Hz and the amplitude goes above max amplitude the same time)
+        List<Tuple<int, int>> apnea_detection(List<List<double>> h_amp, List<List<double>> h_freq, out double il_Apnea)
+        {
+
+
+            //Finding the minimum and maximum Hilbert amplitudes
+            int i;
+            double a, b, min_amp, max_amp, mid, y_amp, y_freq;
+            min_amp = 9999;
+            max_amp = 0;
+
+            for (i = 0; i < h_amp[0].Count(); i++)
+            {
+                if (h_amp[1][i] > max_amp) max_amp = h_amp[1][i];
+                if (h_amp[1][i] < min_amp) min_amp = h_amp[1][i];
+            }
+            //The minimum Hilbert amplitude threshold (a linear function of the minimum and maximum Hilbert amplitudes):
+            a = -0.555; b = 1.3;
+            //mid = the midpoint of the minimum and maximum amplitudes
+            mid = (max_amp + min_amp) * 0.5;
             y_amp = a + b * (mid + 1) * 0.5;
 
-            //treshold value for frequency
-            y_freq = (maxi_freq + mini_freq) * 0.4;
+            //The maximum Hilbert frequency threshold [Hz]:
+            y_freq = 0.06;
 
-            //apnea detection
-            bool[] detect = new bool[tab_amp[0].Count];
-            for (i = 0; i < tab_amp[0].Count; i++)
+            //Apnea detection
+            bool[] detect = new bool[h_amp[0].Count];
+            for (i = 0; i < h_amp[0].Count; i++)
             {
-                if (tab_amp[1][i] >= y_amp) detect[i] = true;
+                if (h_amp[1][i] >= y_amp && h_freq[1][i] <= y_freq) detect[i] = true;
                 else detect[i] = false;
             }
 
-            bool added = false;
-            ulong item1 = 0;
-            for (i = 0; i < tab_amp[0].Count; i++)
+            //Checking if the duration of sleep apnea is longer than 60 seconds
+            List<Tuple<int, int>> Detected_Apnea = new List<Tuple<int, int>>();
+            int counter = 0;
+            int counter2 = 0;
+            for (i = 0; i < detect.Length; i++)
             {
-                if (detect[i] == true && added == false)
+                if (detect[i] == false)
                 {
-                    item1 = (ulong)tab_amp[0][i];
-                    added = true;
+                    if (counter >= 60)
+                    {
+                        Detected_Apnea.Add(new Tuple<int, int>(i - 1 - counter, i - 1));
+                        counter2 = counter2 + counter;
+                    }
+                    counter = 0;
                 }
-                if (((detect[i] == false) && (added == true)) || (i == tab_amp[0].Count - 1 && item1 != 0))
+                else
                 {
-                    ulong item2 = (ulong)tab_amp[0][i];
-                    apnea_out.Add(new Tuple<ulong, ulong>(item1, item2));
-                    item1 = 0;
-                    added = false;
+                    counter = counter + 1;
                 }
             }
 
-            if (apnea_out.Count == 0)
+            //Calculating the percentage of sleep apnea         
+
+            il_Apnea = (counter2 / detect.Length) * 100;
+
+
+
+            if (Detected_Apnea.Count == 0)
             {
-                //apnea_out.append(BeginEndPair(0, 0));
-                apnea_out.Add(new Tuple<ulong, ulong>(0, 0));
+                Detected_Apnea.Add(new Tuple<int, int>(0, 0));
             }
 
-            return apnea_out;
 
+            return Detected_Apnea;
         }
-    }
 
+
+    }
 }
+
