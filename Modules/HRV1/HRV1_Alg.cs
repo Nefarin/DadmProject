@@ -215,7 +215,7 @@ private void calculateFreqBased()
 /// 'Main' mehod used for code debugging and testing
 /// </summary>
 #endregion
-public static void Main()
+public static void AlgoTsest()
         {
             Console.WriteLine("Hello Matylda!");
 

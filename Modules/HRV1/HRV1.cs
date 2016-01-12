@@ -84,5 +84,21 @@ namespace EKG_Project.Modules.HRV1
         {
             return Params != null;
         }
+
+        public static void Main()
+        {
+            var param = new HRV1_Params("Uwolnic orke!");
+            param = null;
+            HRV1 Hrv1 = new HRV1();
+            Hrv1.Init(param);
+            while (true)
+            {
+                //Console.WriteLine("Press key to continue.");
+                //Console.Read();
+                if (Hrv1.Ended()) break;
+                Console.WriteLine(Hrv1.Progress());
+                Hrv1.ProcessData();
+            }
+        }
     }
 }
