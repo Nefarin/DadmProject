@@ -40,6 +40,7 @@ namespace EKG_Project.GUI
             CurrentPlot.LegendOrientation = LegendOrientation.Horizontal;
             CurrentPlot.LegendPlacement = LegendPlacement.Outside;
             CurrentPlot.LegendPosition = LegendPosition.RightMiddle;
+            //CurrentPlot.le
             _windowSize = 1000;
             _beginingPoint = 0;
             first = true;
@@ -209,9 +210,10 @@ namespace EKG_Project.GUI
                 Vector<double> signalVector = signal.Item2;
                 LineSeries ls = new LineSeries();
                 ls.Title = signal.Item1;
+                
 
                 ls.MarkerStrokeThickness = 1;
-
+                
 
                 for (int i = _beginingPoint; (i <= (_beginingPoint+_windowSize) && i< signalVector.Count()) ; i++)
                 {

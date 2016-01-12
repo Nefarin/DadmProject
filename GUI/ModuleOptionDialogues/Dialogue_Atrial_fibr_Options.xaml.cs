@@ -1,4 +1,5 @@
-﻿using EKG_Project.Modules.Atrial_Fibr;
+﻿using EKG_Project.Modules;
+using EKG_Project.Modules.Atrial_Fibr;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,8 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
     /// </summary>
     public partial class Dialogue_Atrial_fibr_Options : Window
     {
-        public Atrial_Fibr_Params returnParameters { get; set; }
-        public Atrial_Fibr_Params PendingParameters { get; set; }
+        public ModuleParams returnParameters { get; set; }
+        public ModuleParams PendingParameters { get; set; }
         ModulePanel panel;
 
         public Dialogue_Atrial_fibr_Options(Object parent, Atrial_Fibr_Params parameters)
@@ -29,15 +30,15 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             panel = parent as ModulePanel;
             this.returnParameters = parameters;
 
-            this.PendingParameters = new Atrial_Fibr_Params(Detect_Method.POINCARE, panel.AnalysisName);
-            this.PendingParameters.CopyParametersFrom(parameters);
+            this.PendingParameters = new Atrial_Fibr_Params(parameters.AnalysisName);
+            this.PendingParameters.CopyFrom(parameters);
             this.DataContext = this.PendingParameters;
             InitializeComponent();
         }
 
         private void ApplyParameterChanges(object sender, RoutedEventArgs e)
         {
-            this.returnParameters.CopyParametersFrom(this.PendingParameters);
+            this.returnParameters.CopyFrom(this.PendingParameters);
             this.Close();
         }
 

@@ -79,11 +79,14 @@ namespace EKG_Project.IO
                     Vector<double> vector = (Vector<double>) property;
                     XmlElement moduleNode = file.CreateElement(string.Empty, Names[licznik], string.Empty);
                     
-                    string samplesText = null;
+                    StringBuilder builder = new StringBuilder();
                     foreach (var value in vector)
                     {
-                        samplesText += value.ToString() + " ";
+                        builder.Append(value.ToString());
+                        builder.Append(" ");
                     }
+                    string samplesText = builder.ToString();
+
                     XmlText samplesValue = file.CreateTextNode(samplesText);
                     moduleNode.AppendChild(samplesValue);
                     module.AppendChild(moduleNode);
@@ -100,11 +103,14 @@ namespace EKG_Project.IO
                     double[] array = (double[])property;
                     XmlElement moduleNode = file.CreateElement(string.Empty, aNames[alicznik], string.Empty);
 
-                    string samplesText = null;
+                    StringBuilder builder = new StringBuilder();
                     foreach (var value in array)
                     {
-                        samplesText += value.ToString() + " ";
+                        builder.Append(value.ToString());
+                        builder.Append(" ");
                     }
+                    string samplesText = builder.ToString();
+
                     XmlText samplesValue = file.CreateTextNode(samplesText);
                     moduleNode.AppendChild(samplesValue);
                     module.AppendChild(moduleNode);
