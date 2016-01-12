@@ -130,8 +130,23 @@ namespace EKG_Project.Modules.ECG_Baseline
             }
         }
 
-        public bool IsOtherLowPass { get { return this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS; } }
-        public bool IsOtherHighPass { get { return this.Type == Filtr_Type.HIGHPASS || this.Type == Filtr_Type.BANDPASS; } }
+        public bool IsOtherLowPass
+        {
+            get
+            {
+                return (this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS) &&
+                    this.Method != Filtr_Method.BUTTERWORTH;
+            }
+        }
+
+        public bool IsOtherHighPass
+        {
+            get
+            {
+                return (this.Type == Filtr_Type.HIGHPASS || this.Type == Filtr_Type.BANDPASS) &&
+                    this.Method != Filtr_Method.BUTTERWORTH;
+            }
+        }
 
         public double FcLow
         {
