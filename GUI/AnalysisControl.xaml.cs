@@ -73,12 +73,7 @@ namespace EKG_Project.GUI
             }
 
 
-            MessageBox.Show("Starting Analyses");
-            System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
-            tempList.Add("ecgBaseline");
-            tempList.Add("ecgBasic");
-            tempList.Add("r_Peaks");
-            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(tempList);
+            //MessageBox.Show("Starting Analyses");
             //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
 
         }
@@ -108,6 +103,11 @@ namespace EKG_Project.GUI
         public void processingEnded()
         {
             Console.WriteLine("Analysis Ended");
+            System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
+            tempList.Add("ecgBaseline");
+            tempList.Add("ecgBasic");
+            tempList.Add("r_Peaks");
+            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(tempList);
         }
 
         public void updateProgress(AvailableOptions module, double progress)
