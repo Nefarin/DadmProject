@@ -114,7 +114,7 @@ namespace EKG_Project.Modules.HRV_DFA
                     {
                         _rPeaksProcessed = 0;
 
-                        _currentRpeaksLength = InputData.RPeaks[_currentChannelIndex].Item2.Count;
+                        _currentRpeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
                         _currentVector = Vector<double>.Build.Dense(_currentRpeaksLength);
                     }
                 }
