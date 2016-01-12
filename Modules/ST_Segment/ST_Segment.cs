@@ -154,7 +154,7 @@ namespace EKG_Project.Modules.ST_Segment
         public double Progress()
 
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / (NumberOfChannels) * ((double)_rPeaksProcessed / (double)_currentRpeaksLength));
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / (NumberOfChannels) * ((double)_rPeaksProcessed / (double)_currentRpeaksLength)));
         }
 
         public bool Runnable()
@@ -176,7 +176,7 @@ namespace EKG_Project.Modules.ST_Segment
                 if (startIndex + step > _currentRpeaksLength)
                 {
                     int QRSOnSet = InputWavesData.QRSOnsets[_channel2].Item2[_samplesProcessed];
-                    int QRSEnds = InputWavesData.QRSEnds[].Item2[_samplesProcessed];
+                    int QRSEnds = InputWavesData.QRSEnds[_channel2].Item2[_samplesProcessed];
                     double rInterval = InputRpeaksData.RPeaks[_channel2].Item2[_samplesProcessed];
 
                     if (QRSEnds == -1 || QRSEnds == -1)
@@ -227,11 +227,7 @@ namespace EKG_Project.Modules.ST_Segment
             {
                     OutputWorker.Save(OutputData);
                     _ended = true;
-                }
-
-
-
-            
+             }      
         }
 
 
