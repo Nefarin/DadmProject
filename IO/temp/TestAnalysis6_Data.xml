@@ -652,4 +652,14 @@
       <item2>0</item2>
     </il_Apnea>
   </module>
+  <module name="Flutter">
+    <FlutterAnnotations>
+      <onset>0</onset>
+      <end>0</end>
+    </FlutterAnnotations>
+    <FlutterAnnotations>
+      <onset>3</onset>
+      <end>3</end>
+    </FlutterAnnotations>
+  </module>
 </EKG>
