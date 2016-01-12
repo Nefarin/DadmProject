@@ -55,6 +55,11 @@ namespace EKG_Project.Modules.QT_Disp
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;

@@ -41,6 +41,11 @@ namespace EKG_Project.Modules.HRV2
             return _ended;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public void Init(ModuleParams parameters)
         {
             Params = parameters as HRV2_Params;

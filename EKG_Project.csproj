@@ -183,7 +183,12 @@
     <Compile Include="Architecture\GUIMessages\AnalysisEnded.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEndedTest.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisStarted.cs" />
+    <Compile Include="Architecture\GUIMessages\EndedModule.cs" />
+    <Compile Include="Architecture\GUIMessages\FileLoaded.cs" />
+    <Compile Include="Architecture\GUIMessages\FileLoadingError.cs" />
+    <Compile Include="Architecture\GUIMessages\FileNotLoaded.cs" />
     <Compile Include="Architecture\GUIMessages\IGUIMessage.cs" />
+    <Compile Include="Architecture\GUIMessages\ModuleProgress.cs" />
     <Compile Include="Architecture\GUIMessages\ProcessingEnded.cs" />
     <Compile Include="Architecture\GUIMessages\TestMessage.cs" />
     <Compile Include="Architecture\Modules.cs" />
@@ -193,9 +198,13 @@
     <Compile Include="Architecture\ProcessingStates\Idle.cs" />
     <Compile Include="Architecture\ProcessingStates\Init.cs" />
     <Compile Include="Architecture\ProcessingStates\IProcessingState.cs" />
+    <Compile Include="Architecture\ProcessingStates\LoadFile.cs" />
+    <Compile Include="Architecture\ProcessingStates\ModuleEnded.cs" />
     <Compile Include="Architecture\ProcessingStates\NextAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\NextModule.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessingEnded.cs" />
+    <Compile Include="Architecture\ProcessingStates\ProcessModule.cs" />
     <Compile Include="Architecture\ProcessingStates\TestState.cs" />
     <Compile Include="Architecture\TabContainer.cs" />
     <Compile Include="Architecture\Processing.cs" />
@@ -339,6 +348,7 @@
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Data.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
     <Compile Include="Modules\IModule.cs" />
+    <Compile Include="Modules\ModuleFactory.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
@@ -417,6 +427,8 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\temp\train_d_label.txt" />
+    <Resource Include="IO\temp\train_d.txt" />
     <Resource Include="IO\temp\TestAnalysis8_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis6_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis5_Data.xml" />

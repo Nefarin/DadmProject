@@ -31,6 +31,11 @@ namespace EKG_Project.Modules.TestModule3
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;

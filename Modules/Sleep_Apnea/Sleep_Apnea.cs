@@ -25,6 +25,11 @@ namespace EKG_Project.Modules.Sleep_Apnea
             Finished
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         private SleepApneaAlgStates _currentState;
 
         private double _actualProgress;

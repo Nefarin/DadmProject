@@ -15,6 +15,12 @@ namespace EKG_Project.Modules.TestModule2
             throw new NotImplementedException();
         }
 
+        public bool IsAborted()
+        {
+            return true;
+            //return Aborted;
+        }
+
         public bool Ended()
         {
             throw new NotImplementedException();

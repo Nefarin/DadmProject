@@ -80,6 +80,11 @@ namespace EKG_Project.Modules.Heart_Axis
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;

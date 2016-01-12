@@ -10,8 +10,6 @@ namespace EKG_Project.Architecture.ProcessingStates
     {
         private Dictionary<AvailableOptions, ModuleParams> _moduleParams;
 
-
-
         public BeginAnalysis(Dictionary<AvailableOptions, ModuleParams> moduleParams)
         {
             ModuleParams = moduleParams;
@@ -30,14 +28,21 @@ namespace EKG_Project.Architecture.ProcessingStates
             }
         }
 
+
         public void Process(Processing process, out IProcessingState timeoutState)
         {
-            process.Modules = new Modules();
-            process.Modules.Init(ModuleParams);
+            if (process.Modules.FileLoaded)
+            {
+                process.Modules.Init(ModuleParams);
+                process.Communication.SendProcessingEvent(new AnalysisStarted());
+                timeoutState = new NextModule();
+            }
+            else
+            {
+                process.Communication.SendProcessingEvent(new FileNotLoaded());
+                timeoutState = new Idle(5);
+            }
 
-            process.Communication.SendProcessingEvent(new AnalysisStarted());
-
-            timeoutState = new SProcessingEnded();
         }
     }
 }

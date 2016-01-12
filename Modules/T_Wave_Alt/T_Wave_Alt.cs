@@ -41,6 +41,11 @@ namespace EKG_Project.Modules.T_Wave_Alt
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;

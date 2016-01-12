@@ -17,6 +17,8 @@ using EKG_Project.Modules.T_Wave_Alt;
 using EKG_Project.Modules.Waves;
 using EKG_Project.GUI;
 
+using System;
+
 using System.Collections.Generic;
 
 
@@ -25,18 +27,75 @@ namespace EKG_Project.Architecture
 {
     public class Modules
     {
-        Dictionary<AvailableOptions, ModuleParams> _moduleParams;
-        private int currentAnalysisIndex;
-
-        public Modules()
+        public static AvailableOptions[] MODULE_ORDER =
         {
+            AvailableOptions.ECG_BASELINE,
+            AvailableOptions.R_PEAKS,
+            AvailableOptions.WAVES,
+            AvailableOptions.HEART_CLASS,
+            AvailableOptions.HRV1,
+            AvailableOptions.HRV2,
+            AvailableOptions.HRV_DFA,
+            AvailableOptions.FLUTTER,
+            AvailableOptions.SIG_EDR,
+            AvailableOptions.ST_SEGMENT,
+            AvailableOptions.SLEEP_APNEA,
+            AvailableOptions.ATRIAL_FIBER,
+            AvailableOptions.QT_DISP,
+            AvailableOptions.FLUTTER,
+            AvailableOptions.HRT,
+            AvailableOptions.HEART_AXIS,
+            AvailableOptions.TEST_MODULE
+        };
 
+        Dictionary<AvailableOptions, ModuleParams> _moduleParams;
+        private string _analysisName;
+        private int _currentModuleIndex;
+        private AvailableOptions _currentOption;
+        private bool _fileLoaded = false;
+        IModule _currentModule;
+
+        public Modules(string analysisName)
+        {
+            AnalysisName = analysisName;
         }
 
         public void Init(Dictionary<AvailableOptions, ModuleParams> moduleParams)
         {
-            CurrentAnalysisIndex = -1;
+            CurrentModuleIndex = -1;
             ModuleParams = moduleParams;
+        }
+
+        public void initNextModule()
+        {
+            try
+            {
+                CurrentModule = nextModule();
+                CurrentOption = MODULE_ORDER[CurrentModuleIndex];
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        private IModule nextModule()
+        {
+            CurrentModuleIndex++;
+            AvailableOptions option = MODULE_ORDER[CurrentModuleIndex];
+            Console.WriteLine(option);
+            ModuleParams param;
+            try
+            {
+                param = ModuleParams[option];
+                IModule module = ModuleFactory.NewModule(option);
+                module.Init(param);
+                return module;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
         }
 
         public int Amount()
@@ -44,16 +103,16 @@ namespace EKG_Project.Architecture
             return ModuleParams.Count;
         }
 
-        public int CurrentAnalysisIndex
+        public int CurrentModuleIndex
         {
             get
             {
-                return currentAnalysisIndex;
+                return _currentModuleIndex;
             }
 
             set
             {
-                currentAnalysisIndex = value;
+                _currentModuleIndex = value;
             }
         }
 
@@ -67,6 +126,58 @@ namespace EKG_Project.Architecture
             set
             {
                 _moduleParams = value;
+            }
+        }
+
+        public IModule CurrentModule
+        {
+            get
+            {
+                return _currentModule;
+            }
+
+            set
+            {
+                _currentModule = value;
+            }
+        }
+
+        public AvailableOptions CurrentOption
+        {
+            get
+            {
+                return _currentOption;
+            }
+
+            set
+            {
+                _currentOption = value;
+            }
+        }
+
+        public bool FileLoaded
+        {
+            get
+            {
+                return _fileLoaded;
+            }
+
+            set
+            {
+                _fileLoaded = value;
+            }
+        }
+
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+
+            set
+            {
+                _analysisName = value;
             }
         }
     }
