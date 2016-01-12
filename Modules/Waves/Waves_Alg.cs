@@ -183,7 +183,13 @@ namespace EKG_Project.Modules.Waves
             if (maxRInd >= _currentRpeaksLength)
                 maxRInd = _currentRpeaksLength - 1;
 
-            _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[startInd] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[ startInd+1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
+            Console.Write("Rpeaks Size ");
+            Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
+
+            Console.Write("Aktualny kanal: ");
+            Console.WriteLine(_rPeaksProcessed);
+            if( _rPeaksProcessed == 0)
+                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
 
             for (int middleR = _rPeaksProcessed +1 ; middleR < maxRInd; middleR++)
             {
@@ -195,7 +201,8 @@ namespace EKG_Project.Modules.Waves
 
             int Rlast = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count- 1;
 
-            _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[Rlast - 1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[Rlast] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
+            if (_rPeaksProcessed + Params.RpeaksStep > Rlast)
+                _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[Rlast - 1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[Rlast] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
 
             if (endInd >= (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 2)
             {

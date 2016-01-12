@@ -414,7 +414,7 @@ namespace EKG_Project.Modules.Waves
             //}
             //Console.WriteLine(onsets);
             ////TempInput.writeFile(360, onsets);
-            Console.Read();
+            //Console.Read();
 
             //POKI CO BIERZEMY DANE Z NASZYCH GOWNIANYCH PLIKOW
 
