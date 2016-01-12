@@ -55,8 +55,10 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 double[] R_peaks = new double[2];
                 R_peaks[0] = R_Peaks[index];
-                R_peaks[1] = R_Peaks[index+1];
-                Test data = new Test(QRS_onset.ElementAt(index), QRS_End.ElementAt(index), T_End_Global.ElementAt(index), samples, QT_Calc_method, T_End_method, Fs, R_peaks);
+                R_peaks[1] = R_Peaks[index+1];                
+               
+               Test data = new Test(QRS_onset.ElementAt(index), QRS_End.ElementAt(index), T_End_Global.ElementAt(index), samples, QT_Calc_method, T_End_method, Fs, R_peaks);             
+               
                 this.QT_INTERVALS.Add(data.Calc_QT_Interval());
                 this.T_End_local.Add(data.FindT_End());
                 T_End = data.FindT_End();
@@ -68,7 +70,15 @@ namespace EKG_Project.Modules.QT_Disp
             List<double> zero = new List<double>(1);
             zero.Add(0);
             double mean;
-            mean = QT_intervals.Sum() / QT_intervals.Except(zero).Count();
+            if(QT_INTERVALS.Except(zero).Count() == 0)
+            {
+                mean = 0;
+            }
+            else
+            {
+                mean = QT_intervals.Sum() / QT_intervals.Except(zero).Count();
+            }
+           
             return mean;
         }
         public double getStd()
@@ -76,7 +86,14 @@ namespace EKG_Project.Modules.QT_Disp
             double std;
             List<double> zero = new List<double>(1);
             zero.Add(0);
-            std = QT_intervals.Except(zero).StandardDeviation();
+            if(QT_INTERVALS.Except(zero).Count() == 0)
+            {
+                std = 0;
+            }
+            else
+            {
+                std = QT_intervals.Except(zero).StandardDeviation();
+            }           
             return std;
         }
         public double getLocal()
@@ -84,15 +101,24 @@ namespace EKG_Project.Modules.QT_Disp
             double local;
             List<double> zero = new List<double>(1);
             zero.Add(0);
-            local = QT_intervals.Max() - QT_intervals.Except(zero).Min();
+            try
+            {
+                local = QT_intervals.Max() - QT_intervals.Except(zero).Min();
+            }
+            catch(System.InvalidOperationException ex)
+            {
+                local = 0;
+            }
+            
             return local;
 
         }
         public void DeleteQT_Intervals()
         {
             List<double> temp = new List<double>(QT_INTERVALS.Count);
-            QT_INTERVALS.CopyTo(temp.ToArray());
-            ALL_QT_INTERVALS.Add(temp.ToList());
+            double[] temp_ar = new double[QT_INTERVALS.Count]; 
+            QT_INTERVALS.CopyTo(temp_ar);
+            ALL_QT_INTERVALS.Add(temp_ar.ToList());
             QT_INTERVALS.Clear();
 
         }
@@ -105,7 +131,7 @@ namespace EKG_Project.Modules.QT_Disp
             List<double> globalQT = new List<double>();
             List<List<double>> QTIntervalsAll = new List<List<double>>();
             QTIntervalsAll = this.ALL_QT_INTERVALS;
-            for (int i = 0; i < QTIntervalsAll.ElementAt(0).Count; i++)
+            /*for (int i = 0; i < QTIntervalsAll.ElementAt(0).Count; i++)
             {
                 foreach (List<double> onedrain in QTIntervalsAll)
                 {
@@ -120,7 +146,7 @@ namespace EKG_Project.Modules.QT_Disp
             }
             QT_Disp = globalQT.Mean();
             globalQT.Clear();
-            temp.Clear();
+            temp.Clear();*/
 
             return QT_Disp;
         }
@@ -175,6 +201,18 @@ namespace EKG_Project.Modules.QT_Disp
             this.Fs = Fs;
             this.R_Peak = R_Peak;
         }
+        public Test()
+        {
+            this.QRS_onset = -1;
+            this.QRS_End = -1;
+            this.QT_Calc_method = QT_Calc_Method.BAZETTA;
+            this.R_Peak = new double[2];
+            this.Fs = 360;
+            this.T_End_Global = -1;
+            this.samples = Vector<double>.Build.Dense(1);
+            this.T_End_method = T_End_Method.TANGENT;
+        }
+
 
 
         public int FindT_End()
@@ -184,21 +222,25 @@ namespace EKG_Project.Modules.QT_Disp
             int MaxSlope = 0;
             if (QRS_End != -1 && T_End_Global != -1)
             {
-                if (samples.ElementAt((int)(R_Peak.ElementAt(1)-R_Peak.ElementAt(0))-1) > 0)
+                if (samples.ElementAt((int)(R_Peak.ElementAt(1) - R_Peak.ElementAt(0)) - 1) > 0)
                 {
                     try
                     {
                         T_Max = samples.SubVector(QRS_End - (int)R_Peak.ElementAt(0), (T_End_Global - QRS_End)).MaximumIndex() + QRS_End;
-                        
+
                     }
-                    catch(IndexOutOfRangeException ex)
+                    catch (Exception ex)
                     {
-                        T_Max = 1;
+                        if (ex is IndexOutOfRangeException || ex is ArgumentOutOfRangeException)
+                        {
+                            T_Max = -1;
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
-                    catch (ArgumentOutOfRangeException ex1)
-                    {
-                        T_Max = -1;
-                    }
+
                 }
                 else
                 {
@@ -207,15 +249,19 @@ namespace EKG_Project.Modules.QT_Disp
                         T_Max = samples.SubVector(QRS_End - (int)R_Peak.ElementAt(0), T_End_Global - QRS_End).Negate().MaximumIndex() + QRS_End;
 
                     }
-                    catch(IndexOutOfRangeException ex)
+                    catch (Exception ex)
                     {
-                        T_Max = -1;
-                    }
-                    catch(ArgumentOutOfRangeException ex1)
-                    {
-                        T_Max = -1;
+                        if (ex is IndexOutOfRangeException || ex is ArgumentOutOfRangeException)
+                        {
+                            T_Max = -1;
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                 }
+                
 
             }
             else
