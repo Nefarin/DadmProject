@@ -25,69 +25,288 @@
   <module name="R_Peaks">
     <RPeaks>
       <lead>MLII</lead>
-      <indices>75 373 659 941 1225 1510 1805 2038 2398 2708 2992 3277 3561 3857 4172 4467 4765 5062 5342 5627 5920 6178 6491 6790 7074 7374 7633 7918 8214 8503 8803 9114 9401 9675 9962 10255 10555 10858 11162 11446 11745 11726 12002 12293 12579 12892 13200 13503 13785 14072 14356 14647 14944 15244 15548 15841 16124 16398 16696 17000 17293 17599 </indices>
+      <indices>75 368 661 944 1229 1513 1807 2042 2401 2704 2995 3280 3557 3860 4168 4463 4762 5058 5344 5632 5916 6212 6525 7104 7390 7667 7951 8244 8537 8835 9139 9430 9708 9996 10280 10589 10892 11189 11478 11779 12064 12348 12642 12947 13264 13560 13840 14129 14420 14708 15009 15308 15605 15897 16181 16463 16753 17056 17356 17655 17944 18225 18511 18793 19078 19386 19691 19987 20269 20552 20835 21129 21421 </indices>
     </RPeaks>
     <RPeaks>
       <lead>V5</lead>
-      <indices>-15 283 569 851 1135 1420 1715 1948 2308 2618 2902 3187 3471 3767 4082 4377 4675 4972 5252 5537 5830 11942 12233 12519 12832 13140 13443 13725 14012 14296 14587 14884 15184 15488 15781 16064 16338 16636 16940 17233 17539 </indices>
+      <indices>75 368 661 944 1229 1513 1807 2042 2401 2704 2995 3280 3557 3860 4168 4463 4762 5058 5344 5632 5916 6212 6525 7104 7390 7667 7951 8244 8537 8835 9139 9430 9708 9996 10280 10589 10892 11189 11478 11779 12064 12348 12642 12947 13264 13560 13840 14129 14420 14708 15009 15308 15605 15897 16181 16463 16753 17056 17356 17655 17944 18225 18511 18793 19078 19386 19691 19987 20269 20552 20835 21129 21421 </indices>
     </RPeaks>
     <RRInterval>
       <lead>MLII</lead>
-      <intervals>827,844 794,508 783,396 788,952 791,73 819,51 647,274 1000,08 861,18 788,952 791,73 788,952 822,288 875,07 819,51 827,844 825,066 777,84 791,73 813,954 716,724 869,514 830,622 788,952 833,4 719,502 791,73 822,288 802,842 833,4 863,958 797,286 761,172 797,286 813,954 833,4 841,734 844,512 788,952 830,622 -52,782 766,728 808,398 794,508 869,514 855,624 841,734 783,396 797,286 788,952 808,398 825,066 833,4 844,512 813,954 786,174 761,172 827,844 844,512 813,954 850,068 </intervals>
+      <intervals>813,954 813,954 786,174 791,73 788,952 816,732 652,83 997,302 841,734 808,398 791,73 769,506 841,734 855,624 819,51 830,622 822,288 794,508 800,064 788,952 822,288 869,514 1608,462 794,508 769,506 788,952 813,954 813,954 827,844 844,512 808,398 772,284 800,064 788,952 858,402 841,734 825,066 802,842 836,178 791,73 788,952 816,732 847,29 880,626 822,288 777,84 802,842 808,398 800,064 836,178 830,622 825,066 811,176 788,952 783,396 805,62 841,734 833,4 830,622 802,842 780,618 794,508 783,396 791,73 855,624 847,29 822,288 783,396 786,174 786,174 816,732 811,176 </intervals>
     </RRInterval>
     <RRInterval>
       <lead>V5</lead>
-      <intervals>827,844 794,508 783,396 788,952 791,73 819,51 647,274 1000,08 861,18 788,952 791,73 788,952 822,288 875,07 819,51 827,844 825,066 777,84 791,73 813,954 16979,136 808,398 794,508 869,514 855,624 841,734 783,396 797,286 788,952 808,398 825,066 833,4 844,512 813,954 786,174 761,172 827,844 844,512 813,954 850,068 </intervals>
+      <intervals>813,954 813,954 786,174 791,73 788,952 816,732 652,83 997,302 841,734 808,398 791,73 769,506 841,734 855,624 819,51 830,622 822,288 794,508 800,064 788,952 822,288 869,514 1608,462 794,508 769,506 788,952 813,954 813,954 827,844 844,512 808,398 772,284 800,064 788,952 858,402 841,734 825,066 802,842 836,178 791,73 788,952 816,732 847,29 880,626 822,288 777,84 802,842 808,398 800,064 836,178 830,622 825,066 811,176 788,952 783,396 805,62 841,734 833,4 830,622 802,842 780,618 794,508 783,396 791,73 855,624 847,29 822,288 783,396 786,174 786,174 816,732 811,176 </intervals>
     </RRInterval>
   </module>
-  <module name="HRV_DFA">
-    <DfaNumberN>
+  <module name="Waves">
+    <QRSOnsets>
       <lead>MLII</lead>
-      <samples>1 1,30102999566398 1,47712125471966 </samples>
-      <samples1>1,60205999132796 1,69897000433602 1,77815125038364 1,84509804001426 1,90308998699194 1,95424250943932 2 </samples1>
-    </DfaNumberN>
-    <DfaNumberN>
+      <samples>48 344 632 920 1152 1488 1608 -1 2376 2680 2968 3256 3536 -1 4136 4264 -1 5032 5320 5600 5888 6184 6496 7080 7360 -1 -1 -1 8512 8808 9112 9392 -1 9968 10256 10560 10864 -1 -1 11752 12040 12320 12616 12920 13232 13528 13816 14104 14392 14672 14984 15280 15568 15872 16152 -1 -1 17032 17328 17624 -1 18208 18272 -1 18848 19360 19664 19960 -1 20528 20808 21104 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
       <lead>V5</lead>
-      <samples>1 1,30102999566398 1,47712125471966 </samples>
-      <samples1>1,60205999132796 1,69897000433602 1,77815125038364 1,84509804001426 1,90308998699194 1,95424250943932 2 </samples1>
-    </DfaNumberN>
-    <DfaValueFn>
+      <samples>48 344 632 920 1152 1488 1608 -1 2376 2680 2968 3256 3536 -1 4136 4264 -1 5032 5320 5600 5888 6184 6496 7080 7360 -1 -1 -1 8512 8808 9112 9392 -1 9968 10256 10560 10864 -1 -1 11752 12040 12320 12616 12920 13232 13528 13816 14104 14392 14672 14984 15280 15568 15872 16152 -1 -1 17032 17328 17624 -1 18208 18272 -1 18848 19360 19664 19960 -1 20528 20808 21104 </samples>
+    </QRSOnsets>
+    <QRSEnds>
       <lead>MLII</lead>
-      <samples>nie jest liczbą nie jest liczbą nie jest liczbą </samples>
-      <samples1>nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą </samples1>
-    </DfaValueFn>
-    <DfaValueFn>
+      <samples>384 672 952 1232 1536 1816 2056 2416 2720 3000 3304 3568 3864 4184 4472 4776 5064 5352 5648 5920 6224 6536 7112 7400 7704 7960 8264 8552 8848 9152 9440 9712 10008 10288 10600 10904 11200 11488 11784 12080 12360 12656 12952 13280 13568 13848 14144 14424 14712 15016 15320 15616 15912 16200 16472 16760 17072 17360 17664 17968 18240 18520 18816 19088 19392 19704 20008 20280 20576 20848 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
       <lead>V5</lead>
-      <samples>nie jest liczbą nie jest liczbą nie jest liczbą </samples>
-      <samples1>nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą nie jest liczbą </samples1>
-    </DfaValueFn>
-    <ParamAlpha>
+      <samples>384 672 952 1232 1536 1816 2056 2416 2720 3000 3304 3568 3864 4184 4472 4776 5064 5352 5648 5920 6224 6536 7112 7400 7704 7960 8264 8552 8848 9152 9440 9712 10008 10288 10600 10904 11200 11488 11784 12080 12360 12656 12952 13280 13568 13848 14144 14424 14712 15016 15320 15616 15912 16200 16472 16760 17072 17360 17664 17968 18240 18520 18816 19088 19392 19704 20008 20280 20576 20848 -1 </samples>
+    </QRSEnds>
+    <POnsets>
       <lead>MLII</lead>
-      <samples>nie jest liczbą nie jest liczbą </samples>
-      <samples1>nie jest liczbą nie jest liczbą </samples1>
-    </ParamAlpha>
-    <ParamAlpha>
+      <samples>178 603 885 1071 1453 1503 2326 2643 2937 3218 3489 3999 4157 5000 5289 5571 5859 6147 6460 7041 7329 8475 8769 9076 9370 9926 10216 10520 10821 11709 11999 12286 12579 12886 13198 13492 13773 13935 14355 14650 14944 15249 15526 15827 16125 16990 17295 17590 18154 18212 18780 19318 19624 19924 20482 20770 20932 </samples>
+    </POnsets>
+    <POnsets>
       <lead>V5</lead>
-      <samples>nie jest liczbą nie jest liczbą </samples>
-      <samples1>nie jest liczbą nie jest liczbą </samples1>
-    </ParamAlpha>
+      <samples>178 603 885 1071 1453 1503 2326 2643 2937 3218 3489 3999 4157 5000 5289 5571 5859 6147 6460 7041 7329 8475 8769 9076 9370 9926 10216 10520 10821 11709 11999 12286 12579 12886 13198 13492 13773 13935 14355 14650 14944 15249 15526 15827 16125 16990 17295 17590 18154 18212 18780 19318 19624 19924 20482 20770 20932 </samples>
+    </POnsets>
+    <PEnds>
+      <lead>MLII</lead>
+      <samples>226 617 899 1078 1467 1518 2355 2656 2956 3238 3519 4024 4174 5014 5302 5584 5871 6166 6478 7060 7348 8489 8788 9093 9389 9953 10228 10545 10847 11734 12017 12304 12592 12910 13216 13516 13799 14000 14381 14663 14963 15262 15557 15851 -1 17000 17311 17609 18196 18231 18799 19336 19642 19942 20507 20789 21005 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V5</lead>
+      <samples>226 617 899 1078 1467 1518 2355 2656 2956 3238 3519 4024 4174 5014 5302 5584 5871 6166 6478 7060 7348 8489 8788 9093 9389 9953 10228 10545 10847 11734 12017 12304 12592 12910 13216 13516 13799 14000 14381 14663 14963 15262 15557 15851 -1 17000 17311 17609 18196 18231 18799 19336 19642 19942 20507 20789 21005 </samples>
+    </PEnds>
+    <TEnds>
+      <lead>MLII</lead>
+      <samples>533 790 1085 1234 1659 1993 2188 2572 2848 3129 3411 3718 3867 4312 4612 4906 5200 5475 5764 6040 6346 6652 7245 7521 7809 8116 8386 8685 8986 9280 9568 9714 10131 10449 10744 11039 11314 11631 11914 12196 12478 12790 12954 13414 13763 14000 14272 14426 14842 15154 15443 15747 16043 16325 16600 16906 17199 17362 17801 18088 18358 18646 18916 19253 19552 19834 20134 20405 20759 21005 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V5</lead>
+      <samples>533 790 1085 1234 1659 1993 2188 2572 2848 3129 3411 3718 3867 4312 4612 4906 5200 5475 5764 6040 6346 6652 7245 7521 7809 8116 8386 8685 8986 9280 9568 9714 10131 10449 10744 11039 11314 11631 11914 12196 12478 12790 12954 13414 13763 14000 14272 14426 14842 15154 15443 15747 16043 16325 16600 16906 17199 17362 17801 18088 18358 18646 18916 19253 19552 19834 20134 20405 20759 21005 </samples>
+    </TEnds>
   </module>
-  <module name="HRV2">
-    <HistogramData>
-      <lead>MLII</lead>
-      <samples>0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </samples>
-    </HistogramData>
-    <PoincarePlotData_x>
-      <item1>RR</item1>
-      <samples>794,508 783,396 788,952 791,73 819,51 647,274 1000,08 861,18 788,952 791,73 788,952 822,288 875,07 819,51 827,844 825,066 777,84 791,73 813,954 716,724 869,514 830,622 788,952 833,4 719,502 791,73 822,288 802,842 833,4 863,958 797,286 761,172 797,286 813,954 833,4 841,734 844,512 788,952 830,622 -52,782 766,728 808,398 794,508 869,514 855,624 841,734 783,396 797,286 788,952 808,398 825,066 833,4 844,512 813,954 786,174 761,172 827,844 844,512 813,954 850,068 </samples>
-    </PoincarePlotData_x>
-    <PoincarePlotData_y>
-      <item1>RR+1</item1>
-      <samples>827,844 794,508 783,396 788,952 791,73 819,51 647,274 1000,08 861,18 788,952 791,73 788,952 822,288 875,07 819,51 827,844 825,066 777,84 791,73 813,954 716,724 869,514 830,622 788,952 833,4 719,502 791,73 822,288 802,842 833,4 863,958 797,286 761,172 797,286 813,954 833,4 841,734 844,512 788,952 830,622 -52,782 766,728 808,398 794,508 869,514 855,624 841,734 783,396 797,286 788,952 808,398 825,066 833,4 844,512 813,954 786,174 761,172 827,844 844,512 813,954 </samples>
-    </PoincarePlotData_y>
-    <Tinn>1052,862</Tinn>
-    <TriangleIndex>0</TriangleIndex>
-    <SD1>121,30739456308</SD1>
-    <SD2>189,63555985335</SD2>
+  <module name="Heart_Class">
+    <ClassificationResult>
+      <item1>75</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>368</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>661</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>944</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>1229</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>1513</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>1807</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>2401</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>2704</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>2995</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>3280</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>3557</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>4168</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>4463</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>5058</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>5344</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>5632</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>5916</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>6212</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>6525</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7104</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7390</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>8537</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>8835</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>9139</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>9430</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>9996</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>10280</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>10589</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>10892</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11779</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>12064</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>12348</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>12642</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>12947</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>13264</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>13560</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>13840</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14129</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14420</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14708</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>15009</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>15308</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>15605</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>15897</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>16181</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>17056</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>17356</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>17655</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>18225</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>18511</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>19078</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>19386</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>19691</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>19987</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>20552</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
 </EKG>
