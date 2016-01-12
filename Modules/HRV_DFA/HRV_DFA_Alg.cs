@@ -36,8 +36,8 @@ namespace EKG_Project.Modules.HRV_DFA
 
             // DFA box parameters
             int step = 10;
-            int start = 100;
-            int stop = 10000; 
+            int start = 10;
+            int stop = 1000; 
 
             // DFA - fluctuation funcion computation
             double[] boxRanged = Generate.LinearRange(start, step, stop);       // set of box sizes

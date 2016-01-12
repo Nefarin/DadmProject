@@ -141,139 +141,38 @@ namespace EKG_Project.Modules.HRV_DFA
         }
 //
         public bool Aborted
-        {
-            get
-            {
-                return _aborted;
-            }
-
-            set
-            {
-                _aborted = value;
-            }
-        }
+        { get{ return _aborted; }set {_aborted = value;} }
 
         public int CurrentChannelIndex
-        {
-            get
-            {
-                return _currentChannelIndex;
-            }
-
-            set
-            {
-                _currentChannelIndex = value;
-            }
-        }
+        { get {return _currentChannelIndex;} set{ _currentChannelIndex = value;}}
 
         public int CurrentRpeaksLength
-        {
-            get
-            {
-                return _currentRpeaksLength;
-            }
-
-            set
-            {
-                _currentRpeaksLength = value;
-            }
-        }
+        { get{return _currentRpeaksLength;} set{ _currentRpeaksLength = value;}}
 
         public int RPeaksProcessed
-        {
-            get
-            {
-                return _rPeaksProcessed;
-            }
-
-            set
-            {
-                _rPeaksProcessed = value;
-            }
-        }
+        { get{return _rPeaksProcessed; } set { _rPeaksProcessed = value; }}
 
         public int NumberOfChannels
-        {
-            get
-            {
-                return _numberOfChannels;
-            }
-
-            set
-            {
-                _numberOfChannels = value;
-            }
-        }
+        {get{ return _numberOfChannels;}set {_numberOfChannels = value;} }
 
         public HRV_DFA_Data_Worker OutputWorker
-        {
-            get
-            {
-                return _outputWorker;
-            }
-
-            set
-            {
-                _outputWorker = value;
-            }
-        }
+        { get {return _outputWorker;}set { _outputWorker = value;}}
 
         public HRV_DFA_Data OutputData
-        {
-            get
-            {
-                return _outputData;
-            }
-
-            set
-            {
-                _outputData = value;
-            }
-        }
-
-
+        {get{ return _outputData;}set {_outputData = value;}}
+        
         public HRV_DFA_Params Params
-        {
-            get
-            {
-                return _params;
-            }
-
-            set
-            {
-                _params = value;
-            }
-        }
+        {get {return _params;} set{_params = value;}}
 
         public R_Peaks_Data_Worker InputWorker
-        {
-            get
-            {
-                return _inputWorker;
-            }
-
-            set
-            {
-                _inputWorker = value;
-            }
-        }
+        {get {return _inputWorker; }set { _inputWorker = value;}}
 
         public R_Peaks_Data InputData
-        {
-            get
-            {
-                return _inputData;
-            }
-
-            set
-            {
-                _inputData = value;
-            }
-        }
+        { get { return _inputData; } set{ _inputData = value;} }
 
         public static void Main()
         {
-            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis3");
+            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis100");
             HRV_DFA testModule = new HRV_DFA();
 
             testModule.Init(param);

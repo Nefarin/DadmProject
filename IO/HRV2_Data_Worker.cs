@@ -69,8 +69,8 @@ namespace EKG_Project.IO
 
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
-                //List<Tuple<string, Vector<double>>> list = basicData.HistogramData;
-                List<Tuple<string, Vector<double>>> list = null;
+                List<Tuple<string, Vector<double>>> list = basicData.HistogramData;
+                //List<Tuple<string, Vector<double>>> list = null;
                 foreach (var tuple in list)
                 {
                     XmlElement histogramData = file.CreateElement(string.Empty, "HistogramData", string.Empty);
