@@ -7,7 +7,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:params="clr-namespace:EKG_Project.Modules.Waves"
         mc:Ignorable="d"
-        Title="Opcje Waves" Height="180" Width="270" WindowStyle="ToolWindow" ResizeMode="NoResize">
+        Title="Waves Options" Height="180" Width="270" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Window.Resources>
         <ObjectDataProvider x:Key="availableWaveType" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">

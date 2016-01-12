@@ -9,6 +9,9 @@ using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Waves;
 using EKG_Project.Modules.Atrial_Fibr;
+using EKG_Project.Modules.Heart_Class;
+using EKG_Project.Modules.Heart_Axis;
+using EKG_Project.Modules.Sleep_Apnea;
 
 namespace EKG_Project.GUI
 {
@@ -41,15 +44,31 @@ namespace EKG_Project.GUI
                     {
                         case AvailableOptions.ECG_BASELINE:
                             this.ModuleParam = new ECG_Baseline_Params();
+                            this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.R_PEAKS:
-                            this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.getAnalysisName());
+                            this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.WAVES:
-                            this.ModuleParam = new Waves_Params();
+                            this.ModuleParam = new Waves_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.ATRIAL_FIBER:
-                            this.ModuleParam = new Atrial_Fibr_Params(Detect_Method.POINCARE, this.getAnalysisName());
+                            this.ModuleParam = new Atrial_Fibr_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = true;
+                            break;
+                        case AvailableOptions.HEART_CLASS:
+                            this.ModuleParam = new Heart_Class_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = false;
+                            break;
+                        case AvailableOptions.HEART_AXIS:
+                            this.ModuleParam = new Heart_Axis_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = false;
+                            break;
+                        case AvailableOptions.SLEEP_APNEA:
+                            this.ModuleParam = new Sleep_Apnea_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = false;
                             break;
                         default:
                             this.ModuleParam = null;
@@ -100,7 +119,13 @@ namespace EKG_Project.GUI
         public ModuleParams ModuleParam { get; set; }
         public ModulePanel Panel;
 
-        public bool ParametersAvailable { get { return this.ModuleParam != null; } }
+        public bool ParametersAvailable
+        {
+            get
+            {
+                return this.ModuleParam != null ? this.ModuleParam.GUIParametersAvailable : false;
+            }
+        }
 
         public string AnalysisName
         {

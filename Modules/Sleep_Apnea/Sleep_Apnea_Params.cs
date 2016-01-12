@@ -8,11 +8,9 @@ namespace EKG_Project.Modules.Sleep_Apnea
 {
     public class Sleep_Apnea_Params : ModuleParams
     {
-        public string AnalysisName { get; set; }
-
         public Sleep_Apnea_Params(string analysisName)
         {
-            AnalysisName = analysisName;
+            this.AnalysisName = analysisName;
         }
     }
 }
