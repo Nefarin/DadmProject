@@ -232,7 +232,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// Calculation of turning point ratio.
         /// </summary>
         /// <param name="_RR"> Intervals between R peaks</param>
-        /// <returns></returns>
+        /// <returns>Turning point ratio</returns>
         #endregion
         double TPR(Vector<double> _RR)
         {
@@ -252,7 +252,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// Calculation of Shannon entropy.
         /// </summary>
         /// <param name="_RR"> Intervals between R peaks</param>
-        /// <returns></returns>
+        /// <returns>Shannon entropy</returns>
         #endregion
         double SE(Vector<double> _RR)
         {
@@ -307,7 +307,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// Calculation of root mean square of successive differences.
         /// </summary>
         /// <param name="_RR"> Intervals between R peaks</param>
-        /// <returns></returns>
+        /// <returns>Root mean square of successive differences</returns>
         #endregion
         double RMSSD(Vector<double> _RR)
         {
