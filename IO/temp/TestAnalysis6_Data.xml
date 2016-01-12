@@ -443,4 +443,7 @@
     </TEnds>
   </module>
   <module name="HRV_DFA" />
+  <module name="Heart_Axis">
+    <HeartAxis>-0,179957708666279</HeartAxis>
+  </module>
 </EKG>

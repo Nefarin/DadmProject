@@ -50,6 +50,15 @@ namespace EKG_Project.Modules
 
         #region Documentation
         /// <summary>
+        /// Check if module was aborted.
+        /// </summary>
+        /// <returns></returns>
+        /// 
+        #endregion
+        bool IsAborted();
+
+        #region Documentation
+        /// <summary>
         /// Aborts current module.
         /// </summary>
         /// 

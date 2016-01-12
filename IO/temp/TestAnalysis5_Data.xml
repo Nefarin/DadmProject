@@ -141,4 +141,7 @@
       </timeofAF>
     </detectedAF>
   </module>
+  <module name="Heart_Axis">
+    <HeartAxis>-1,49296842053404</HeartAxis>
+  </module>
 </EKG>

@@ -40,9 +40,14 @@ namespace EKG_Project.Modules.ST_Segment
 
         public void Abort()
         {
-            //Aborted = true;
+            Aborted = true;
             _ended = true;
 
+        }
+
+        public bool IsAborted()
+        {
+            return Aborted;
         }
 
         public bool Ended()
@@ -196,18 +201,18 @@ namespace EKG_Project.Modules.ST_Segment
         //    }
         //}
 
-        //public bool Aborted
-        //{
-        //    get
-        //    {
-        //        return _aborted;
-        //    }
+        public bool Aborted
+        {
+            get
+            {
+                return _aborted;
+            }
 
-        //    set
-        //    {
-        //        _aborted = value;
-        //    }
-        //}
+            set
+            {
+                _aborted = value;
+            }
+        }
 
         //public Waves_Params Params
         //{

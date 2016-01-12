@@ -39,6 +39,7 @@ namespace EKG_Project.GUI
             {
                 inputFilePath = fileDialog.FileName;
                 checkPlayButton();
+                Communication.SendGUIMessage(new LoadFile(inputFilePath));
             }
 
         }
@@ -49,20 +50,29 @@ namespace EKG_Project.GUI
         {
             foreach (var option in modulePanel.getAllOptions())
             {
-
-                // Tuple<ModuleOption, ModuleParams> test = modulePanel.ModuleOptionAndParams(option.Code);
                 if (option.Set)
                 {
-
-                    if (option.ModuleParam == null) //tylko tymczasowo dopoki nie jest przez was zaimplementowane
-                    {
-
-                        //option.ModuleParam = new ModuleParams();
-                        //moduleParams(option.Code)= option.ModuleParam;
-                        Console.WriteLine(option.Name + " is set.");
-                    }
+                    moduleParams[option.Code] = modulePanel.ModuleOptionAndParams(option.Code).Item2;
+                    Console.WriteLine(moduleParams.Count);
+                    Console.WriteLine(option.Code);
+                    Console.WriteLine(moduleParams);
+                    //Console.WriteLine(modulePanel.ModuleOptionAndParams(option.Code).Item2);
+                    Console.WriteLine(option.Name + " is set."); 
                 }
+
             }
+
+            if (moduleParams.Count > 0)
+            {
+                BeginAnalysis analysisParams = new BeginAnalysis(moduleParams);
+                Communication.SendGUIMessage(analysisParams);
+            }
+            else
+            {
+                // Nothing is checked - let user know somehow.
+            }
+
+
             MessageBox.Show("Starting Analyses");
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
             tempList.Add("ecgBaseline");
@@ -90,6 +100,52 @@ namespace EKG_Project.GUI
 
         }
 
+        public void processingStarted()
+        {
+            Console.WriteLine("Analysis Started");
+        }
+
+        public void processingEnded()
+        {
+            Console.WriteLine("Analysis Ended");
+        }
+
+        public void updateProgress(AvailableOptions module, double progress)
+        {
+            Console.WriteLine(module.ToString() + " progress: " + progress);
+        }
+
+        public void moduleEnded(AvailableOptions module, bool aborted)
+        {
+            if (aborted)
+            {
+                Console.WriteLine(module.ToString() + " aborted.");
+            }
+            else
+            {
+                isComputed[module] = true;
+                Console.WriteLine(module.ToString() + " completed.");
+            }
+        }
+
+        public void fileLoaded()
+        {
+            startAnalyseButton.IsEnabled = true;
+            Console.WriteLine("File loaded sucessfully.");
+        }
+
+        public void fileError()
+        {
+            startAnalyseButton.IsEnabled = false;
+            Console.WriteLine("File could not be loaded sucessfully.");
+        }
+
+        public void fileNotLoaded()
+        {
+            startAnalyseButton.IsEnabled = false;
+            Console.WriteLine("File is not loaded.");
+        }
+
         #region Documentation
         /// <summary>
         /// analyzeEvent - do not delete - just develop - will be used by both GUI and Architects
@@ -104,7 +160,8 @@ namespace EKG_Project.GUI
 
         private void checkPlayButton()
         {
-           startAnalyseButton.IsEnabled = File.Exists(inputFilePath) && Directory.Exists(Path.GetDirectoryName(outputPdfPath));
+           // this method does not make sense - analysis should be performed even if the user does not want to save pdf.
+           //startAnalyseButton.IsEnabled = File.Exists(inputFilePath) && Directory.Exists(Path.GetDirectoryName(outputPdfPath));
         }
 
 
