@@ -47,7 +47,7 @@ namespace EKG_Project.GUI
                             this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.R_PEAKS:
-                            this.ModuleParam = new R_Peaks_Params(R_Peaks_Method.EMD, this.AnalysisName);
+                            this.ModuleParam = new R_Peaks_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.WAVES:

@@ -15,6 +15,16 @@ namespace EKG_Project.Modules.R_Peaks
             this.AnalysisName = analysisName;
         }
 
+        public R_Peaks_Params() : base()
+        {
+            this.Method = R_Peaks_Method.PANTOMPKINS;
+        }
+
+        public R_Peaks_Params(string analysisName) : this()
+        {
+            this.AnalysisName = analysisName;
+        }
+
         public R_Peaks_Method Method
         {
             get
