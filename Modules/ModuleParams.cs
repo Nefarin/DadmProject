@@ -8,5 +8,13 @@
     #endregion
     public class ModuleParams
     {
+        public string AnalysisName { get; set; }
+        public bool GUIParametersAvailable { get; set; }
+
+        public ModuleParams()
+        {
+            this.AnalysisName = "undefined";
+            this.GUIParametersAvailable = false;
+        }
     }
 }

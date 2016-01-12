@@ -29,7 +29,7 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             panel= parent as ModulePanel;
             this.returnParameters = parameters;
 
-            this.PendingParameters = new Waves_Params();
+            this.PendingParameters = new Waves_Params(parameters.AnalysisName);
             this.PendingParameters.CopyParametersFrom(parameters);
             this.DataContext = this.PendingParameters;
             InitializeComponent();
