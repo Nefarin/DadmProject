@@ -960,6 +960,7 @@ namespace EKG_Project.Modules.R_Peaks
             //subtract delay
             locsR = locsR.Subtract(Delay);
 
+            Delay = 0;
             return locsR;
         }
 
