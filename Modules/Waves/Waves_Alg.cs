@@ -183,15 +183,23 @@ namespace EKG_Project.Modules.Waves
             if (maxRInd >= _currentRpeaksLength)
                 maxRInd = _currentRpeaksLength - 1;
 
-            for (int middleR = _rPeaksProcessed + 1; middleR < maxRInd; middleR++)
+            _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[0] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[ 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
+
+            for (int middleR = _rPeaksProcessed +1 ; middleR < maxRInd; middleR++)
             {
                 _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR - 1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
                 _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
             }
 
-            if (endInd == (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1)
-                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[rSize] - startInd, InputData.Signals[_currentChannelIndex].Item2.Count - 1, dwt[decLev - 1], _params.DecompositionLevel));
+            int Rlast = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count- 1;
 
+            _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[Rlast - 1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[Rlast] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
+
+            if (endInd >= (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 2)
+            {
+                //Console.WriteLine("uga buga");
+                _currentQRSendsPart.Add(FindQRSEnd(endInd - startInd, endInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
+            }
         }
 
         public int FindQRSOnset(double drightEnd, double dmiddleR, Vector<double> dwt, int decompLevel)
