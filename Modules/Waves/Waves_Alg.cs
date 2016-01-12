@@ -27,6 +27,10 @@ namespace EKG_Project.Modules.Waves
                 throw new InvalidOperationException("Empty vector");
             }
 
+            _currentPendsPart.Clear();
+            _currentPonsetsPart.Clear();
+            _currentTendsPart.Clear();
+
             DetectQRS();
             FindP();
             FindT();
