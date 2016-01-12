@@ -49,6 +49,11 @@ namespace EKG_Project.Modules.Waves
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;

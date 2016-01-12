@@ -53,6 +53,11 @@ namespace EKG_Project.Modules.Heart_Class
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;
@@ -145,7 +150,7 @@ namespace EKG_Project.Modules.Heart_Class
                 int QRSEnds = InputWavesData.QRSEnds[_channel2].Item2[_samplesProcessed];
                 double R = InputRpeaksData.RPeaks[_channel2].Item2[_samplesProcessed];
 
-                if (QRSEnds == -1 || QRSEnds == -1)
+                if (QRSOnSet == -1 || QRSEnds == -1)
                 {
                     _samplesProcessed++;
                 }

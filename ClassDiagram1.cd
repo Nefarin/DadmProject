@@ -1,0 +1,1055 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="EKG_Project.App" Collapsed="true">
+    <Position X="54.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Architecture.Modules" Collapsed="true">
+    <Position X="50.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAABAAAAAAAACAAAAAAACAAAAAAACAAAACAAAAAAA=</HashCode>
+      <FileName>Architecture\Modules.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Architecture.Processing" Collapsed="true">
+    <Position X="59.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAgAAAAEAAACAAAgAAAAQAAAAAAAAIAAAAAIAAgA=</HashCode>
+      <FileName>Architecture\Processing.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Architecture.ProcessSync" Collapsed="true">
+    <Position X="43.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAQAAAAAAAQAgAAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\ProcessSync.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Architecture.TabContainer" Collapsed="true">
+    <Position X="56" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAABBAAAAQAAAEQCAAEIIAACAAAAAA=</HashCode>
+      <FileName>Architecture\TabContainer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Architecture.GUIMessages.AnalysisEnded" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="50.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\GUIMessages\AnalysisEnded.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Architecture.GUIMessages.AnalysisEndedTest" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="52.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\GUIMessages\AnalysisEndedTest.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Architecture.GUIMessages.TestMessage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="45.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\GUIMessages\TestMessage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Architecture.ProcessingStates.Abort" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="43.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\ProcessingStates\Abort.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Architecture.ProcessingStates.AbortTest" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="45.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\ProcessingStates\AbortTest.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Architecture.ProcessingStates.BeginAnalysis" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="45.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\ProcessingStates\BeginAnalysis.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Architecture.ProcessingStates.Idle" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="59.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\ProcessingStates\Idle.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Architecture.ProcessingStates.Init" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="43.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\ProcessingStates\Init.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Architecture.ProcessingStates.NextAnalysis" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="54.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\ProcessingStates\NextAnalysis.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Architecture.ProcessingStates.ProcessAnalysis" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="57.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\ProcessingStates\ProcessAnalysis.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Architecture.ProcessingStates.TestState" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="52.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\ProcessingStates\TestState.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.AnalysisControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="47.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>JECAQAAAAAAARAAgAAAFQBIQAAAAAAAAAABAKAIAEgQ=</HashCode>
+      <FileName>GUI\AnalysisControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.AnalysisControlTest" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="49" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IEKAAAAAgAAARAAAAAAAQAAQAAAAAAAAAABACAIAAgQ=</HashCode>
+      <FileName>GUI\AnalysisControlTest.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.ChooseModule" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="47.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgACAAAAAAABAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GUI\ChooseModule.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.ECG_BASELINE" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="59.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAABAAAAgAAAQAAACAAqA=</HashCode>
+      <FileName>GUI\ECG_BASELINE.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.ECGPlot" Collapsed="true">
+    <Position X="47.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEACACAABIEAAIAAAEAAAAACAmAAgAAAAABgwCiAAQ=</HashCode>
+      <FileName>GUI\ECGPlot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.GUI.Flutter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="52.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GUI\Flutter.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.ModuleOption" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="47.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAQCAAAAQJBAAJAAgQBRAgAAAAAABAAAAAAAAAgA=</HashCode>
+      <FileName>GUI\ModuleOption.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.ModulePanel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="49" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAIAAAQBAAAAAAAAABAIAAAAAAAAAAAAIABAQAA=</HashCode>
+      <FileName>GUI\ModulePanel.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.NewAnalysisDialogBox" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="52.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAgAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>GUI\NewAnalysisDialogBox.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.R_peaks" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="49" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>GUI\R_peaks.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.SaveButton" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="57.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GUI\SaveButton.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.VisualisationDataControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="54.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAIAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GUI\VisualisationDataControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.VisualisationHistogramControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="56" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GUI\VisualisationHistogramControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.VisualisationPanelControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="57.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAIAAAAAAAAAAAAAAAAgBAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GUI\VisualisationPanelControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.VisualisationPlotControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="59.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAQAAAAIAAA=</HashCode>
+      <FileName>GUI\VisualisationPlotControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.VisualisationTableControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="43.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GUI\VisualisationTableControl.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.Window_ECG" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="50.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABBAHAAAAgEAAAAAAAAQEggAgCAAAACA=</HashCode>
+      <FileName>GUI\Window_ECG.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.ModuleOptionDialogues.Dialogue_Atrial_fibr_Options" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="50.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAARAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>GUI\ModuleOptionDialogues\Dialogue_Atrial_fibr_Options.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.ModuleOptionDialogues.Dialogue_ECG_Baseline_Options" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="52.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAARAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQAAAIA=</HashCode>
+      <FileName>GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.ModuleOptionDialogues.Dialogue_R_Peaks_Options" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="54.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAARAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>GUI\ModuleOptionDialogues\Dialogue_R_Peaks_Options.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.ModuleOptionDialogues.Dialogue_Waves_Options" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="56" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAARAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>GUI\ModuleOptionDialogues\Dialogue_Waves_Options.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.GUI.ModuleOptionDialogues.NumericTextBox" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="56" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAkAAAAIAAAAEEAAGgAAAAAAEAAAABAEAAACAAA=</HashCode>
+      <FileName>GUI\ModuleOptionDialogues\NumericTextBox.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.IO.ASCIIConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="56" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAABAAQAAAQEAAAAAgCAAIAABAACIAQBAAAAAA=</HashCode>
+      <FileName>IO\ASCIIConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.IO.Atrial_Fibr_Data_Worker" Collapsed="true">
+    <Position X="59.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\Atrial_Fibr_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.Basic_Data_Worker" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="43.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAQQAAAEEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\Basic_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.IO.DebugECGPath" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="49" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAABAAAAIAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\DebugECGPath.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.IO.ECG_Baseline_Data_Worker" Collapsed="true">
+    <Position X="43.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\ECG_Baseline_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.ECG_Worker" Collapsed="true">
+    <Position X="45.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAQAAAAAAAAAAAAAAAAABAAAoAA=</HashCode>
+      <FileName>IO\ECG_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.FileLoader" Collapsed="true">
+    <Position X="49" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAgAAAAACAAAAAEAAAAAAAAAAAAAAAAAEABAAAAAA=</HashCode>
+      <FileName>IO\FileLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.Flutter_Data_Worker" Collapsed="true">
+    <Position X="54.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\Flutter_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.Heart_Axis_Data_Worker" Collapsed="true">
+    <Position X="57.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\Heart_Axis_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.Heart_Class_Data_Worker" Collapsed="true">
+    <Position X="43.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\Heart_Class_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.HRT_Data_Worker" Collapsed="true">
+    <Position X="47.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\HRT_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.HRV_DFA_Data_Worker" Collapsed="true">
+    <Position X="50.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\HRV_DFA_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.HRV1_Data_Worker" Collapsed="true">
+    <Position X="54.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\HRV1_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.HRV2_Data_Worker" Collapsed="true">
+    <Position X="57.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\HRV2_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.MITBIHConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="45.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAQAAAAEAAAAAgCAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\MITBIHConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.IO.QT_Disp_Data_Worker" Collapsed="true">
+    <Position X="47.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\QT_Disp_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.R_Peaks_Data_Worker" Collapsed="true">
+    <Position X="52.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\R_Peaks_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.ReleaseECGPath" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="54.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAABAAAAIAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\ReleaseECGPath.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.IO.Sleep_Apnea_Data_Worker" Collapsed="true">
+    <Position X="47.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAgAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\Sleep_Apnea_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.ST_Segment_Data_Worker" Collapsed="true">
+    <Position X="50.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAgAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\ST_Segment_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.T_Wave_Alt_Data_Worker" Collapsed="true">
+    <Position X="54.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\T_Wave_Alt_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.TempInput" Collapsed="true">
+    <Position X="57.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAEAAAAQEAAAAAAAAAAIAAAAAAIAABAEACAg=</HashCode>
+      <FileName>IO\TempInput.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.TestModule3_Data_Worker" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="50.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\TestModule3_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.IO.Waves_Data_Worker" Collapsed="true">
+    <Position X="47.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAABAAQAAAAEAAAAAAAAgAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\Waves_Data_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.WFDBTest" Collapsed="true">
+    <Position X="49" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAABAAAAAA=</HashCode>
+      <FileName>IO\WFDBTest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.IO.XMLConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="52.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAABAAQgAAEEAAAAAiCAAAgABBAAYAQBAAAAAA=</HashCode>
+      <FileName>IO\XMLConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.Atrial_Fibr.Atrial_Fibr" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="57.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UikUABoMiAAKhGFEABWEFUQYSoRhwIQqRKAGTEKABgA=</HashCode>
+      <FileName>Modules\Atrial_Fibr\Atrial_Fibr.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.Atrial_Fibr.Atrial_Fibr_Data" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Modules\Atrial_Fibr\Atrial_Fibr_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.Atrial_Fibr.Atrial_Fibr_Params" Collapsed="true">
+    <Position X="9.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABgABAAAAAAAAAAgAAAIAAAAAA=</HashCode>
+      <FileName>Modules\Atrial_Fibr\Atrial_Fibr_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.Basic_Data" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAEABEAAAAAAIAAAgIAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\Basic_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.ECG_Data" Collapsed="true">
+    <Position X="19.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\ECG_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.ModuleParams" Collapsed="true">
+    <Position X="21" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\ModuleParams.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.TestModule" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="47.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAEAAAEAAAAACEAAACAAAAAAAAAAAACAAACBACAEAA=</HashCode>
+      <FileName>Modules\TestModule\TestModule.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.TestModule_Params" Collapsed="true">
+    <Position X="32.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Modules\TestModule\TestModule_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.ECG_Baseline.ECG_Baseline" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="57.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EgASABpEiAAAACEEAAKBAQAAAIAAAAAiQAACBAKIAgI=</HashCode>
+      <FileName>Modules\ECG_Baseline\ECG_Baseline.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.ECG_Baseline.ECG_Baseline_Data" Collapsed="true">
+    <Position X="36.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\ECG_Baseline\ECG_Baseline_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.ECG_Baseline.ECG_Baseline_Params" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEIDAAAAAAACQIQAAABkEAkggAJAAAgAgQgAAAAAEAA=</HashCode>
+      <FileName>Modules\ECG_Baseline\ECG_Baseline_Params.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="EKG_Project.Modules.Flutter.Flutter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="50.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAACEAAAAAAAAAAAAAAAACAAACBACAAAA=</HashCode>
+      <FileName>Modules\Flutter\Flutter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.Flutter.Flutter_Data" Collapsed="true">
+    <Position X="14" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Modules\Flutter\Flutter_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.Flutter.Flutter_Params" Collapsed="true">
+    <Position X="16.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\Flutter\Flutter_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.Heart_Axis.Heart_Axis" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="56" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EoOAgBIHmAAMCCEESCCSASBAQEAggAICBQIqDAKgAog=</HashCode>
+      <FileName>Modules\Heart_Axis\Heart_Axis.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.Heart_Axis.Heart_Axis_Data" Collapsed="true">
+    <Position X="23" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAQAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\Heart_Axis\Heart_Axis_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.Heart_Axis.Heart_Axis_Params" Collapsed="true">
+    <Position X="27.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Modules\Heart_Axis\Heart_Axis_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.Heart_Class.Heart_Class" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="59.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>VuoVABpEmUB8CCEEgMW41YI8wILwQQZzZMPCTAeghwI=</HashCode>
+      <FileName>Modules\Heart_Class\Heart_Class.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.Heart_Class.Heart_Class_Data" Collapsed="true">
+    <Position X="32" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAACAAAEAAkAAAAAAAACAAAAACBAAAAAAAgDAA=</HashCode>
+      <FileName>Modules\Heart_Class\Heart_Class_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.Heart_Class.Heart_Class_Params" Collapsed="true">
+    <Position X="39" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Modules\Heart_Class\Heart_Class_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.HRT.HRT" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="45.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAIAAAAACEEACCAAAAAAAAAAAADAAAKBACAAAA=</HashCode>
+      <FileName>Modules\HRT\HRT.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.HRT.HRT_Data" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAACAAAAAAAAABCAAAAAAAAAAAAIEA=</HashCode>
+      <FileName>Modules\HRT\HRT_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.HRT.HRT_Params" Collapsed="true">
+    <Position X="7.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\HRT\HRT_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.HRV_DFA.HRV_DFA" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="49" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ECACABpEiAIkQCEEAAiAiQBIAIAAAAgSQAACRAOMAoI=</HashCode>
+      <FileName>Modules\HRV_DFA\HRV_DFA.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.HRV_DFA.HRV_DFA_Data" Collapsed="true">
+    <Position X="16.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAIAAAgAEA=</HashCode>
+      <FileName>Modules\HRV_DFA\HRV_DFA_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.HRV_DFA.HRV_DFA_Params" Collapsed="true">
+    <Position X="18.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Modules\HRV_DFA\HRV_DFA_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.HRV1.HRV1" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="52.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>GAQCAANVzAAIAiEAEACAEQAAAAgBgIASwAQCRAiAAgI=</HashCode>
+      <FileName>Modules\HRV1\HRV1.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.HRV1.HRV1_Data" Collapsed="true">
+    <Position X="25.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAQAAAMAAAAAAAAAAAAAAABAAAAAEIAAAI=</HashCode>
+      <FileName>Modules\HRV1\HRV1_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.HRV1.HRV1_Params" Collapsed="true">
+    <Position X="30" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\HRV1\HRV1_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.HRV2.HRV2" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="56" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EgICAB5EiAIAADEEAACAQQAAABAEAAAGQAACDgKIAgI=</HashCode>
+      <FileName>Modules\HRV2\Histogram.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.HRV2.HRV2_Data" Collapsed="true">
+    <Position X="34.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAgAAAAYAAAAIgEQAAEAAAAAAAAAAgAAgg=</HashCode>
+      <FileName>Modules\HRV2\HRV2_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.HRV2.HRV2_Params" Collapsed="true">
+    <Position X="41.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Modules\HRV2\HRV2_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.QT_Disp.QT_Disp" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="45.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>lgIwADoFvACACCkEABGQQQAAAJCoiSBCzQKCDA6AAgk=</HashCode>
+      <FileName>Modules\QT_Disp\QT_Disp.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.QT_Disp.Test" Collapsed="true">
+    <Position X="59.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAACAAAAAAACAAAAAACIAgAAAgACBgAQAAAA=</HashCode>
+      <FileName>Modules\QT_Disp\QT_Disp_Alg.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.QT_Disp.QT_Disp_Data" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABCAAAAAAAAAAAIAAAAAAAIAAAAEAAAAEAAAACkAwAA=</HashCode>
+      <FileName>Modules\QT_Disp\QT_Disp_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.QT_Disp.QT_Disp_Params" Collapsed="true">
+    <Position X="21" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAABAAAAAAAABQAAAAIAAAAAAAAIABAAgA=</HashCode>
+      <FileName>Modules\QT_Disp\QT_Disp_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.R_Peaks.R_Peaks" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="50.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>GggWAR5MnAEAACEGAQmAISAACoCIAIBLQEACBiqOAgI=</HashCode>
+      <FileName>Modules\R_Peaks\R_Peaks.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.R_Peaks.R_Peaks_Data" Collapsed="true">
+    <Position X="27.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAABAAAAAAAAAAAEAAAAAAAQAAA=</HashCode>
+      <FileName>Modules\R_Peaks\R_Peaks_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.R_Peaks.R_Peaks_Params" Collapsed="true">
+    <Position X="34.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Modules\R_Peaks\R_Peaks_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.SIG_EDR.SIG_EDR" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="43.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAACEAAAAAAAAAAAAAAAACAAACAACAAAA=</HashCode>
+      <FileName>Modules\SIG_EDR\SIG_EDR.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.SIG_EDR.SIG_EDR_Data" Collapsed="true">
+    <Position X="38.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\SIG_EDR\SIG_EDR_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.SIG_EDR.SIG_EDR_Params" Collapsed="true">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\SIG_EDR\SIG_EDR_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.Sleep_Apnea.Sleep_Apnea" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="45.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UACWAhpEigEIACkAMICCAUAACgAgAIACgBASBAKJAhI=</HashCode>
+      <FileName>Modules\Sleep_Apnea\Sleep_Apnea.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.Sleep_Apnea.Sleep_Apnea_Data" Collapsed="true">
+    <Position X="7.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAgAEAAAAAAAAAAgAAAAAEAAAAAgAAA=</HashCode>
+      <FileName>Modules\Sleep_Apnea\Sleep_Apnea_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.Sleep_Apnea.Sleep_Apnea_Params" Collapsed="true">
+    <Position X="12" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\Sleep_Apnea\Sleep_Apnea_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.ST_Segment.ST_Segment" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="49" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EiAAABkEgAAEACEEgACgAQAAABAAAAADAAACBEKIABI=</HashCode>
+      <FileName>Modules\ST_Segment\ST_Segment.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.ST_Segment.ST_Segment_Data" Collapsed="true">
+    <Position X="18.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAABAAAAAABAAAAAAQAAAABAAAIAABAAAAA=</HashCode>
+      <FileName>Modules\ST_Segment\ST_Segment_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.ST_Segment.ST_Segment_Params" Collapsed="true">
+    <Position X="23.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\ST_Segment\ST_Segment_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.T_Wave_Alt.T_Wave_Alt" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="52.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UgAQAJoEiACACiEMAACAAQAAAIAAAQAKQABCAAKABiA=</HashCode>
+      <FileName>Modules\T_Wave_Alt\T_Wave_Alt.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.T_Wave_Alt.T_Wave_Alt_Data" Collapsed="true">
+    <Position X="29.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Modules\T_Wave_Alt\T_Wave_Alt_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.T_Wave_Alt.T_Wave_Alt_Params" Collapsed="true">
+    <Position X="36.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\T_Wave_Alt\T_Wave_Alt_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.TestModule2.Test_Module2" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="43.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAECEAAAAAAJAAAAAAAAACQAQCBACAAAA=</HashCode>
+      <FileName>Modules\TestModule2\Test_Module2.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.TestModule2.Test_Module2_Param" Collapsed="true">
+    <Position X="3" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\TestModule2\Test_Module2_Param.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.TestModule3.TestModule3" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="49" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EgASABpEiAAAACUEAACAAQAAAIAAAAACQAACBAKIAgI=</HashCode>
+      <FileName>Modules\TestModule3\TestModule3.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.TestModule3.TestModule3_Data" Collapsed="true">
+    <Position X="9.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAIAAAAAJAAAgIAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\TestModule3\TestModule3_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.TestModule3.TestModule3_Params" Collapsed="true">
+    <Position X="14.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAIAABAAAAAAAAAAIAAAIAAAACA=</HashCode>
+      <FileName>Modules\TestModule3\TestModule3_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.Waves.Waves" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="45.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UCASABpFiAAgACEECgqqAQCJAAAABCQSQAAqRAKYQmI=</HashCode>
+      <FileName>Modules\Waves\Waves.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="EKG_Project.Modules.Waves.Waves_Data" Collapsed="true">
+    <Position X="20.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAgAAAAIAAAIAAAAIQIAAAAAAAAAAAAAAAAAIAgQA=</HashCode>
+      <FileName>Modules\Waves\Waves_Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Modules.Waves.Waves_Params" Collapsed="true">
+    <Position X="25.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAQAAAAAAAAAAAAABABgAAAAAAAAAgAAAIAAAAAA=</HashCode>
+      <FileName>Modules\Waves\Waves_Params.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Properties.Resources" Collapsed="true">
+    <Position X="56" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EKG_Project.Properties.Settings" Collapsed="true">
+    <Position X="59.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="EKG_Project.Architecture.GUIMessages.IGUIMessage" Collapsed="true">
+    <Position X="50.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\GUIMessages\IGUIMessage.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="EKG_Project.Architecture.ProcessingStates.IProcessingState" Collapsed="true">
+    <Position X="54.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\ProcessingStates\IProcessingState.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="EKG_Project.IO.IECG_Worker" Collapsed="true">
+    <Position X="43.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\IECG_Worker.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="EKG_Project.IO.IECGConverter" Collapsed="true">
+    <Position X="45.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\IECGConverter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="EKG_Project.IO.IECGPath" Collapsed="true">
+    <Position X="47.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAABAAAAIAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\IECGPath.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="EKG_Project.IO.IEleganckiTestDLL" Collapsed="true">
+    <Position X="49" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IO\WFDBTest.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="EKG_Project.Modules.IModule" Collapsed="true">
+    <Position X="52.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAACEAAAAAAAAAAAAAAAACAAACAACAAAA=</HashCode>
+      <FileName>Modules\IModule.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="EKG_Project.GUI.AvailableOptions" Collapsed="true">
+    <Position X="43.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAIAAAEQQAACCAACBAAABAAAAAEBCBAIBAQE=</HashCode>
+      <FileName>GUI\ModuleOption.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EKG_Project.Modules.Atrial_Fibr.Detect_Method" Collapsed="true">
+    <Position X="45.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\Atrial_Fibr\Atrial_Fibr_Params.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EKG_Project.Modules.ECG_Baseline.Filtr_Method" Collapsed="true">
+    <Position X="49" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABCAAAAAAAAAAAAAEAAAAAQAAA=</HashCode>
+      <FileName>Modules\ECG_Baseline\ECG_Baseline_Params.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EKG_Project.Modules.ECG_Baseline.Filtr_Type" Collapsed="true">
+    <Position X="50.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\ECG_Baseline\ECG_Baseline_Params.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EKG_Project.Modules.QT_Disp.QT_Calc_Method" Collapsed="true">
+    <Position X="52.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAAAABAAAAAAAgAAAA=</HashCode>
+      <FileName>Modules\QT_Disp\QT_Disp_Params.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EKG_Project.Modules.QT_Disp.T_End_Method" Collapsed="true">
+    <Position X="56" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\QT_Disp\QT_Disp_Params.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EKG_Project.Modules.R_Peaks.R_Peaks_Method" Collapsed="true">
+    <Position X="54.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAAAAEAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\R_Peaks\R_Peaks_Params.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EKG_Project.Modules.TestModule2.Fibonacci_Mode" Collapsed="true">
+    <Position X="47.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Modules\TestModule2\Test_Module2_Param.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EKG_Project.Modules.Waves.Wavelet_Type" Collapsed="true">
+    <Position X="57.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\Waves\Waves_Params.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Delegate Name="EKG_Project.Architecture.ToGUIDelegate" Collapsed="true">
+    <Position X="43.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Architecture\Delegates.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

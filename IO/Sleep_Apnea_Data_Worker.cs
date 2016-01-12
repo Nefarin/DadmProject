@@ -121,11 +121,15 @@ namespace EKG_Project.IO
                     foreach (var secondInternalList in internalList)
                     {
                         XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-                        string samplesText = null;
+                        
+                        StringBuilder builder = new StringBuilder();
                         foreach (var value in secondInternalList)
                         {
-                            samplesText += value.ToString() + " ";
+                            builder.Append(value.ToString());
+                            builder.Append(" ");
                         }
+                        string samplesText = builder.ToString();
+
                         XmlText samplesValue = file.CreateTextNode(samplesText);
                         samples.AppendChild(samplesValue);
                         internalListNode.AppendChild(samples);

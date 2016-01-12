@@ -45,6 +45,11 @@ namespace EKG_Project.Modules.R_Peaks
             return _ended;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public void Init(ModuleParams parameters)
         {
             Params = parameters as R_Peaks_Params;

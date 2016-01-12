@@ -118,4 +118,30 @@
       <samples>296 526 765 1001 1462 1706 1930 2826 296 543 775 1947 2167 2378 2840 3332 3578 553 786 1027 1255 1717 2377 2605 2846 3092 </samples>
     </TEnds>
   </module>
+  <module name="Atrial_Fibr">
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+    <detectedAF>
+      <detected>False</detected>
+      <detectedPoints>0 </detectedPoints>
+      <detectedS>Nie wykryto migotania przedsionków.</detectedS>
+      <timeofAF>
+      </timeofAF>
+    </detectedAF>
+  </module>
+  <module name="Heart_Axis">
+    <HeartAxis>-1,49296842053404</HeartAxis>
+  </module>
 </EKG>
