@@ -90,13 +90,26 @@ namespace EKG_Project.IO
        public uint getFrequency()
         {
             uint frequency = 0;
-            //TimeSpan startTime = TimeSpan.Parse(columns[0][3]);
-            //TimeSpan stopTime = TimeSpan.Parse(columns[0][columns.Length]);
+
+            List<Tuple<string, Vector<double>>> signals = getSignals();
+
+            string readStartTime = columns[0][2];
+            string cleanedStartTime = System.Text.RegularExpressions.Regex.Replace(readStartTime, @"\s+", "");
+            DateTime startTime = DateTime.ParseExact(cleanedStartTime, "m:ss.fff", CultureInfo.InvariantCulture);
+
+            string readStopTime = columns[0][lines.Length - 1].ToString();
+            string cleanedStopTime = System.Text.RegularExpressions.Regex.Replace(readStopTime, @"\s+", "");
+            DateTime stopTime = DateTime.ParseExact(cleanedStopTime, "m:ss.fff", CultureInfo.InvariantCulture);
+
+            TimeSpan totalTime = stopTime - startTime;
+            uint totalTimeValue = Convert.ToUInt32(totalTime.TotalSeconds);
+            frequency = sampleAmount / totalTimeValue;
+
             return frequency;
         }
 
 
-        public List<Tuple<string, Vector<double>>> getSignals()
+       public List<Tuple<string, Vector<double>>> getSignals()
        {
            List<Tuple<string, Vector<double>>> Signals = new List<Tuple<string, Vector<double>>>();
            
@@ -104,6 +117,7 @@ namespace EKG_Project.IO
            for (int i = 1; i < columns.Count(); i++)
            {
                string leadName = columns[i][0];
+               string cleanedLeadName = System.Text.RegularExpressions.Regex.Replace(leadName, @"\s+", "");
 
                for (int j = 2; j < lines.Count()-2; j++)
                {
@@ -113,56 +127,19 @@ namespace EKG_Project.IO
                }
 
                getSampleAmount(signal);
-               Tuple<string, Vector<double>> readedSignal = Tuple.Create(leadName, signal);
+               Tuple<string, Vector<double>> readedSignal = Tuple.Create(cleanedLeadName, signal);
                Signals.Add(readedSignal);
            }
 
            return Signals;
 
        }
+       public uint getSampleAmount(Vector<double> signal)
+       {
+           if (signal != null)
+               sampleAmount = (uint)signal.Count;
+           return sampleAmount;
+       }
 
-
-        public uint getSampleAmount(Vector<double> signal)
-        {
-            if (signal != null)
-                sampleAmount = (uint)signal.Count;
-            return sampleAmount;
-        }
-
-        static void Main()
-        {
-            
-                ASCIIConverter ascii = new ASCIIConverter("Analysis1");
-                ascii.ConvertFile(@"C:\temp\234.txt");
-
-                ascii.loadASCIIFile(@"C:\temp\234.txt");
-            /*
-                Console.WriteLine("File name: 234.txt");
-                Console.WriteLine();
-
-                List<Tuple<string, Vector<double>>> signals = ascii.getSignals();
-
-                uint f = ascii.getFrequency();
-                Console.WriteLine("Frequency: " + f + " Hz");
-
-                uint samples = ascii.sampleAmount;
-                Console.WriteLine("Sample amount: " + samples.ToString());
-                Console.WriteLine();
-
-                foreach (var tuple in signals)
-                {
-                    Console.WriteLine("Lead name: " + tuple.Item1);
-                    Console.WriteLine("Signal Vector in mV: " + tuple.Item2);
-                    Console.WriteLine();
-
-                }
-             * */
-
-                TimeSpan dateTime = TimeSpan.ParseExact("16:23:01", "HH:mm:ss",
-                                        CultureInfo.InvariantCulture);
-                Console.WriteLine("DateTime: " + dateTime);
-            
-            Console.Read();
-        }
     }
 }

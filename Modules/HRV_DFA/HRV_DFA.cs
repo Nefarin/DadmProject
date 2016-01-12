@@ -10,6 +10,7 @@ using MathNet.Numerics;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
+    /*
     public partial class HRV_DFA : IModule
     {
         private bool _ended;
@@ -313,4 +314,5 @@ namespace EKG_Project.Modules.HRV_DFA
             Console.Read();
         }
     }
+     * */
 }
