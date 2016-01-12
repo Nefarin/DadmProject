@@ -384,7 +384,7 @@ namespace EKG_Project.Modules.Waves
 
         public static void Main()
         {
-            Waves_Params param = new Waves_Params(Wavelet_Type.haar, 2, "TestAnalysis8", 100);
+            Waves_Params param = new Waves_Params(Wavelet_Type.haar, 2, "TestAnalysis100", 500);
 
             //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
             //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
