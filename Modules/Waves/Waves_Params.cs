@@ -75,11 +75,17 @@ namespace EKG_Project.Modules.Waves
             _waveType = Wavelet_Type.haar;
         }
 
+        public Waves_Params(String analysisName) : this()
+        {
+            AnalysisName = analysisName;
+        }
+
         public void CopyParametersFrom(Waves_Params parameters)
         {
             this.WaveType = parameters.WaveType;
             this.DecompositionLevel = parameters.DecompositionLevel;
             this.RpeaksStep = parameters.RpeaksStep;
+            this.AnalysisName = parameters.AnalysisName;
         }
     }
 }

@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{EFE339A0-2E66-496C-8A74-F84B670D3DA9}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EKG_Project</RootNamespace>
     <AssemblyName>EKG_Project</AssemblyName>
@@ -46,38 +46,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.IO.ASCIIConverter</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RunApp|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\RunApp\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
+    <StartupObject>EKG_Project.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -213,7 +182,14 @@
     <Compile Include="Architecture\Delegates.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEnded.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEndedTest.cs" />
+    <Compile Include="Architecture\GUIMessages\AnalysisStarted.cs" />
+    <Compile Include="Architecture\GUIMessages\EndedModule.cs" />
+    <Compile Include="Architecture\GUIMessages\FileLoaded.cs" />
+    <Compile Include="Architecture\GUIMessages\FileLoadingError.cs" />
+    <Compile Include="Architecture\GUIMessages\FileNotLoaded.cs" />
     <Compile Include="Architecture\GUIMessages\IGUIMessage.cs" />
+    <Compile Include="Architecture\GUIMessages\ModuleProgress.cs" />
+    <Compile Include="Architecture\GUIMessages\ProcessingEnded.cs" />
     <Compile Include="Architecture\GUIMessages\TestMessage.cs" />
     <Compile Include="Architecture\Modules.cs" />
     <Compile Include="Architecture\ProcessingStates\Abort.cs" />
@@ -222,8 +198,13 @@
     <Compile Include="Architecture\ProcessingStates\Idle.cs" />
     <Compile Include="Architecture\ProcessingStates\Init.cs" />
     <Compile Include="Architecture\ProcessingStates\IProcessingState.cs" />
+    <Compile Include="Architecture\ProcessingStates\LoadFile.cs" />
+    <Compile Include="Architecture\ProcessingStates\ModuleEnded.cs" />
     <Compile Include="Architecture\ProcessingStates\NextAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\NextModule.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\ProcessingEnded.cs" />
+    <Compile Include="Architecture\ProcessingStates\ProcessModule.cs" />
     <Compile Include="Architecture\ProcessingStates\TestState.cs" />
     <Compile Include="Architecture\TabContainer.cs" />
     <Compile Include="Architecture\Processing.cs" />
@@ -367,6 +348,7 @@
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Data.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
     <Compile Include="Modules\IModule.cs" />
+    <Compile Include="Modules\ModuleFactory.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
@@ -422,6 +404,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="IO\data\100.atr" />
     <None Include="IO\data\100.dat" />
     <None Include="IO\data\100.hea" />
@@ -444,9 +427,8 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
-    <Resource Include="IO\data\210.txt" />
-    <Resource Include="IO\data\100.txt" />
-    <Resource Include="IO\data\234.txt" />
+    <Resource Include="IO\temp\train_d_label.txt" />
+    <Resource Include="IO\temp\train_d.txt" />
     <Resource Include="IO\temp\TestAnalysis8_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis6_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis5_Data.xml" />

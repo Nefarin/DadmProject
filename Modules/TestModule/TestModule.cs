@@ -26,6 +26,12 @@ namespace EKG_Project.Modules
             _ended = false;
         }
 
+        public bool IsAborted()
+        {
+            return true;
+            //return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;

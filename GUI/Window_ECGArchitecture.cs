@@ -153,8 +153,9 @@ namespace EKG_Project.GUI
                     _tabContainer.AnalysisControlList.Insert(count - 1, analysisControl);
                     tab.Content = analysisControl;
 
-                    Processing ecgAnalysis = new Processing(communication);
+                    Processing ecgAnalysis = new Processing(communication, analysisNameDialogBox.Answer);
                     Thread analysisThread = new Thread(ecgAnalysis.run);
+                    analysisThread.Priority = ThreadPriority.Highest;
                     _tabContainer.ThreadList.Insert(count - 1, analysisThread);
                     analysisThread.Start();
 

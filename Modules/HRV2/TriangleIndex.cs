@@ -10,10 +10,10 @@ namespace EKG_Project.Modules.HRV2
     public partial class HRV2 : IModule
     {
       
-        public double TriangleIndex(Vector<double> RRIntervaals)
+        public double TriangleIndex()
         {
-            RRIntervaals = InputData.RPeaks[_currentChannelIndex].Item2;
-            double triangleIndex = 0;
+            Vector <double> RRIntervaals = InputData.RRInterval[_outputIndex].Item2;
+            double triangleIndex = 30/_currentRPeaksLength;
             return triangleIndex;
         }
     }

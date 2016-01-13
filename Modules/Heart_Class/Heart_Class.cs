@@ -53,6 +53,11 @@ namespace EKG_Project.Modules.Heart_Class
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;

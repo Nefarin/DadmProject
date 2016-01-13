@@ -10,9 +10,10 @@ using MathNet.Numerics;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
-    /*
+    
     public partial class HRV_DFA : IModule
     {
+        
         private bool _ended;
         private bool _aborted;
 
@@ -41,6 +42,11 @@ namespace EKG_Project.Modules.HRV_DFA
         {
             Aborted = true;
             _ended = true;
+        }
+
+        public bool IsAborted()
+        {
+            return Aborted;
         }
 
         public bool Ended()
@@ -105,9 +111,9 @@ namespace EKG_Project.Modules.HRV_DFA
                 if (startIndex + step > _currentRpeaksLength)
                 {
                     HRV_DFA_Analysis();
-                    OutputData.DfaNumberN.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentdfaNumberN));
-                    OutputData.DfaValueFn.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentdfaValueFn));
-                    OutputData.ParamAlpha.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentparamAlpha));
+                    //OutputData.DfaNumberN.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentdfaNumberN));
+                    //OutputData.DfaValueFn.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentdfaValueFn));
+                    //OutputData.ParamAlpha.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentparamAlpha));
 
                     _currentChannelIndex++;
 
@@ -309,5 +315,4 @@ namespace EKG_Project.Modules.HRV_DFA
             Console.Read();
         }
     }
-     * */
 }
