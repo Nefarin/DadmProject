@@ -13,7 +13,7 @@ namespace EKG_Project.Modules.HRV2
         public double TriangleIndex()
         {
             Vector <double> RRIntervaals = InputData.RRInterval[_outputIndex].Item2;
-            double triangleIndex = 30/_currentRPeaksLength;
+            double triangleIndex = _currentHistogram.MaxCount/_currentRPeaksLength;
             return triangleIndex;
         }
     }

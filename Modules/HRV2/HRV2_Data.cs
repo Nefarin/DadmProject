@@ -11,11 +11,11 @@ namespace EKG_Project.Modules.HRV2
         private List<double> _triangleIndex;
         private List<double> _sd1;
         private List<double> _sd2;
-        private List<Tuple<string, Vector<double>>> _histogramData;
+        private List<Tuple<string, HRV2.Histogram2>> _histogramData;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_x;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_y;
         private List<double> _elipseCenter;
-
+        
 
         #region Documentation
         /// <summary>
@@ -99,7 +99,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public List<Tuple<string, Vector<double>>> HistogramData
+        public List<Tuple<string, HRV2.Histogram2>> HistogramData
         {
             get
             {
@@ -170,7 +170,7 @@ namespace EKG_Project.Modules.HRV2
         #endregion
         public HRV2_Data()
         {
-            HistogramData = new List<Tuple<string, Vector<double>>>();
+            HistogramData = new List<Tuple<string, HRV2.Histogram2>>();
         }
     }
 }
