@@ -344,8 +344,8 @@ namespace EKG_Project.Modules.Waves
             double pmax_val, thr;
             int window, break_window, pmax_loc, ponset, pend;
 
-            window = Convert.ToInt32(InputData.Frequency * 0.5);
-            break_window = Convert.ToInt32(InputData.Frequency * 0.6);
+            window = Convert.ToInt32(InputData.Frequency * 0.25);
+            break_window = Convert.ToInt32(InputData.Frequency * 0.3);
 
             foreach (int onset_loc in _currentQRSonsetsPart)
             {
@@ -355,6 +355,10 @@ namespace EKG_Project.Modules.Waves
                 }
                 else
                 {
+                    ponset = -1;
+                    pend = -1;
+                    _currentPonsetsPart.Add(ponset);
+                    _currentPendsPart.Add(pend);
                     continue;
                 }
 
@@ -398,8 +402,8 @@ namespace EKG_Project.Modules.Waves
             int window, break_window, tmax_loc, tend;
 
 
-            window = Convert.ToInt32(InputData.Frequency * 0.5);
-            break_window = Convert.ToInt32(InputData.Frequency * 0.55);
+            window = Convert.ToInt32(InputData.Frequency * 0.3);
+            break_window = Convert.ToInt32(InputData.Frequency * 0.35);
 
             foreach (int ends_loc in _currentQRSendsPart)
             {
@@ -409,6 +413,8 @@ namespace EKG_Project.Modules.Waves
                 }
                 else
                 {
+                    tend = -1;
+                    _currentTendsPart.Add(tend);
                     continue;
                 }
 
