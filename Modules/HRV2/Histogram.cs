@@ -9,7 +9,7 @@ using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV2
 {
-   /*
+   
     public partial class HRV2 : IModule
     {
         private const float binLength = 7.8125f;
@@ -176,6 +176,5 @@ namespace EKG_Project.Modules.HRV2
             #endregion
         }
     }
-     */
 }
 
