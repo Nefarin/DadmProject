@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.Modules.Waves;
 using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.Waves;
 using MathNet.Numerics;
 
 namespace EKG_Project.Modules.T_Wave_Alt
@@ -53,30 +53,30 @@ namespace EKG_Project.Modules.T_Wave_Alt
 
         public void Init(ModuleParams parameters)
         {
-            //Params = parameters as T_Wave_Alt_Params;
-            //Aborted = false;
-            //if (!Runnable()) _ended = true;
-            //else
-            //{
-            //    _ended = false;
+            Params = parameters as T_Wave_Alt_Params;
+            Aborted = false;
+            if (!Runnable()) _ended = true;
+            else
+            {
+                _ended = false;
 
-            //    InputWorkerECG = new ECG_Baseline_Data_Worker(Params.AnalysisName);
-            //    InputWorkerECG.Load();
-            //    InputDataECG = InputWorkerECG.OutputData;
+                //InputWorkerECG = new ECG_Baseline_Data_Worker(Params.AnalysisName);
+                //InputWorkerECG.Load();
+                //InputDataECG = InputWorkerECG.OutputData;
 
-            //    InputWorkerWaves = new Waves_Data_Worker(Params.AnalysisName);
-            //    InputWorkerWaves.Load();
-            //    InputDataWaves = InputWorkerWaves.OutputData;
+                //InputWorkerWaves = new Waves_Data_Worker(Params.AnalysisName);
+                //InputWorkerWaves.Load();
+                //InputDataWaves = InputWorkerWaves.OutputData;
 
-            //    OutputWorker = new T_Wave_Alt_Data_Worker(Params.AnalysisName);
-            //    OutputData = new T_Wave_Alt_Data();
+                //OutputWorker = new T_Wave_Alt_Data_Worker(Params.AnalysisName);
+                //OutputData = new T_Wave_Alt_Data();
 
-            //    _currentChannelIndex = 0;
-            //    _samplesProcessed = 0;
-            //    NumberOfChannels = InputDataECG.Signals.Count;
-            //    _currentChannelLength = InputDataECG.Signals[_currentChannelIndex].Item2.Count;
-            //    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-            //}
+                //_currentChannelIndex = 0;
+                //_samplesProcessed = 0;
+                //NumberOfChannels = InputDataECG.Signals.Count;
+                //_currentChannelLength = InputDataECG.Signals[_currentChannelIndex].Item2.Count;
+                //_currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+            }
         }
 
         public void ProcessData()
@@ -97,31 +97,31 @@ namespace EKG_Project.Modules.T_Wave_Alt
 
         private void processData()
         {
-            //int channel = _currentChannelIndex;
-            //int startIndex = _samplesProcessed;
+            int channel = _currentChannelIndex;
+            int startIndex = _samplesProcessed;
 
-            //if (channel < NumberOfChannels)
-            //{
-            //    _currentVector = InputDataECG.Signals[_currentChannelIndex].Item2.SubVector(0, _currentChannelLength);
-            //    _currentTEnds = InputDataWaves.TEndss[_currentChannelIndex].Item2;
+            if (channel < NumberOfChannels)
+            {
+                //_currentVector = InputDataECG.Signals[_currentChannelIndex].Item2.SubVector(0, _currentChannelLength);
+                //_currentTEnds = InputDataWaves.TEndss[_currentChannelIndex].Item2;
 
-            //    _alternansIndexArray = findAlternans(_currentTEnds, _currentVector, 360);
+                //_alternansIndexArray = findAlternans(_currentTEnds, _currentVector, 360);
 
-            //    OutputData.Output.Add(new Tuple<string, Vector<double>>(InputDataECG.Signals[_currentChannelIndex].Item1, _alternansIndexArray));
-            //    _currentChannelIndex++;
-            //    if (_currentChannelIndex < NumberOfChannels)
-            //        {
-            //            _samplesProcessed = 0;
-            //            _currentChannelLength = InputDataECG.Signals[_currentChannelIndex].Item2.Count;
-            //            _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-            //        }
+                //OutputData.Output.Add(new Tuple<string, Vector<double>>(InputDataECG.Signals[_currentChannelIndex].Item1, _alternansIndexArray));
+                //_currentChannelIndex++;
+                //if (_currentChannelIndex < NumberOfChannels)
+                //    {
+                //        _samplesProcessed = 0;
+                //        _currentChannelLength = InputDataECG.Signals[_currentChannelIndex].Item2.Count;
+                //        _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                //    }
 
-            //}
-            //else
-            //{
-            //    OutputWorker.Save(OutputData);
-            //    _ended = true;
-            //}
+            }
+            else
+            {
+                OutputWorker.Save(OutputData);
+                _ended = true;
+            }
 
 
 

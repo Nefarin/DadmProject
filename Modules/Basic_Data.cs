@@ -27,6 +27,8 @@ namespace EKG_Project.Modules
             }
         }
 
+        public object RPeaks { get; internal set; }
+
         public uint SampleAmount
         {
             get

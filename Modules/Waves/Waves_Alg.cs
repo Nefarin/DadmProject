@@ -14,8 +14,8 @@ namespace EKG_Project.Modules.Waves
 
     public partial class Waves : IModule
     {
-        
-        public void analyzeSignalPart(  )
+
+        public void analyzeSignalPart()
         {
             if (InputData.Signals[_currentChannelIndex].Item2.Count == 0)
             {
@@ -27,6 +27,11 @@ namespace EKG_Project.Modules.Waves
                 throw new InvalidOperationException("Empty vector");
             }
 
+
+            _currentPendsPart.Clear();
+            _currentPonsetsPart.Clear();
+            _currentTendsPart.Clear();
+
             DetectQRS();
             FindP();
             FindT();
@@ -37,7 +42,7 @@ namespace EKG_Project.Modules.Waves
             _currentPends.AddRange(_currentPendsPart);
             _currentTends.AddRange(_currentTendsPart);
         }
-        
+
         public Vector<double> HaarDWT(Vector<double> signal, int n)
         {
             //Work just like wavedec but use only haar wavelet
@@ -83,54 +88,55 @@ namespace EKG_Project.Modules.Waves
                 listOut.Add(outVec.SubVector(decompSize, decompSize));
             }
             return listOut;
-            
+
         }
 
         public List<Vector<double>> ListDWT(Vector<double> signal, int n, Wavelet_Type waveType)
         {
-            double[] Hfilter =  { 0 };
+            double[] Hfilter = { 0 };
             double[] Lfilter = { 0 };
             int filterSize = 0;
-                //generated from wfilters Matlab function
-                switch (waveType)
-                {
+            //generated from wfilters Matlab function
+            //byle zrobic commita
+            switch (waveType)
+            {
                 case Wavelet_Type.haar:
                     return ListHaarDWT(signal, n);
 
                 case Wavelet_Type.db2:
-                    Hfilter = new double []{ -0.482962913144690 ,    0.836516303737469, -0.224143868041857 ,-0.129409522550921};
+                    Hfilter = new double[] { -0.482962913144690, 0.836516303737469, -0.224143868041857, -0.129409522550921 };
                     Lfilter = new double[] { -0.129409522550921, 0.224143868041857, 0.836516303737469, 0.482962913144690 };
                     filterSize = 4;
                     break;
 
                 case Wavelet_Type.db3:
-                    Hfilter = new double[] { -0.332670552950957,  0.806891509313339, - 0.459877502119331, - 0.135011020010391,  0.0854412738822415,  0.0352262918821007 };
-                    Lfilter = new double[] { 0.0352262918821007, - 0.0854412738822415, - 0.135011020010391,  0.459877502119331,   0.806891509313339,   0.332670552950957 };
+                    Hfilter = new double[] { -0.332670552950957, 0.806891509313339, -0.459877502119331, -0.135011020010391, 0.0854412738822415, 0.0352262918821007 };
+                    Lfilter = new double[] { 0.0352262918821007, -0.0854412738822415, -0.135011020010391, 0.459877502119331, 0.806891509313339, 0.332670552950957 };
                     filterSize = 6;
                     break;
-                }
-                int decompSize = signal.Count();
-                Vector<double> outVec = Vector<double>.Build.Dense(decompSize);
-                Vector<double> signalTemp = signal;
-                List<Vector<double>> listOut = new List<Vector<double>>();
-                for (int i = 0; i < n; i++)
+            }
+            int decompSize = signal.Count();
+            Vector<double> outVec = Vector<double>.Build.Dense(decompSize);
+            Vector<double> signalTemp = signal;
+            List<Vector<double>> listOut = new List<Vector<double>>();
+            for (int i = 0; i < n; i++)
+            {
+                decompSize /= 2;
+                for (int dataInd = 0; dataInd < decompSize; dataInd++)
                 {
-                    decompSize /= 2;
-                    for (int dataInd = 0; dataInd < decompSize; dataInd++)
+                    outVec[dataInd] = 0;
+                    outVec[decompSize + dataInd] = 0;
+                    for (int filtIt = 0; filtIt < filterSize && (2 * dataInd + filtIt) < signalTemp.Count; filtIt++)
                     {
-                        outVec[dataInd] = 0;
-                        outVec[decompSize + dataInd] = 0;
-                        for( int filtIt = 0; filtIt < filterSize && (2*dataInd + filtIt) < signalTemp.Count ; filtIt++)
-                        {
-                            outVec[dataInd] += signalTemp[2 * dataInd + filtIt]*Lfilter[filterSize - filtIt - 1] ;
-                            outVec[decompSize + dataInd] += signalTemp[2 * dataInd + filtIt]* Hfilter[filterSize - filtIt - 1];
-                        }
-                        
+                        outVec[dataInd] += signalTemp[2 * dataInd + filtIt] * Lfilter[filterSize - filtIt - 1];
+                        outVec[decompSize + dataInd] += signalTemp[2 * dataInd + filtIt] * Hfilter[filterSize - filtIt - 1];
                     }
-                    signalTemp = outVec.SubVector(0, decompSize);
-                    listOut.Add(outVec.SubVector(decompSize, decompSize));
+
                 }
-                return listOut;
+                signalTemp = outVec.SubVector(0, decompSize);
+                listOut.Add(outVec.SubVector(decompSize, decompSize));
+            }
+            return listOut;
 
         }
 
@@ -147,7 +153,7 @@ namespace EKG_Project.Modules.Waves
                 //Console.WriteLine(startInd);
             }
             int endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1;
-            
+
             if (_rPeaksProcessed + _params.RpeaksStep + 1 < endInd)
             {
                 endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + _params.RpeaksStep + 1];
@@ -163,32 +169,32 @@ namespace EKG_Project.Modules.Waves
                 dwtLen = endInd - startInd;
             //Console.WriteLine(endInd);
             //Console.WriteLine(dwtLen);
-            
-            dwt = ListDWT(InputECGData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startInd, dwtLen), _params.DecompositionLevel , _params.WaveType);
-            
+
+            dwt = ListDWT(InputECGData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startInd, dwtLen), _params.DecompositionLevel, _params.WaveType);
+
             int d2size = dwt[_params.DecompositionLevel - 1].Count();
             int rSize = _params.RpeaksStep;
             int decLev = _params.DecompositionLevel;
 
             if (startInd == 0)
-                 _currentQRSonsetsPart.Add(FindQRSOnset(0, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[0], dwt[decLev-1], _params.DecompositionLevel));
+                _currentQRSonsetsPart.Add(FindQRSOnset(0, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[0], dwt[decLev - 1], _params.DecompositionLevel));
 
             int maxRInd = _rPeaksProcessed + rSize;
             if (maxRInd >= _currentRpeaksLength)
                 maxRInd = _currentRpeaksLength - 1;
 
-            for (int middleR = _rPeaksProcessed+1; middleR < maxRInd ; middleR++ )
+            for (int middleR = _rPeaksProcessed + 1; middleR < maxRInd; middleR++)
             {
-                _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR-1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, dwt[decLev - 1], _params.DecompositionLevel)+ startInd);
-                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel)+ startInd);
+                _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR - 1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
+                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
             }
 
             if (endInd == (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1)
-                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[rSize] -startInd, InputData.Signals[_currentChannelIndex].Item2.Count - 1, dwt[decLev - 1], _params.DecompositionLevel));
+                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[rSize] - startInd, InputData.Signals[_currentChannelIndex].Item2.Count - 1, dwt[decLev - 1], _params.DecompositionLevel));
 
         }
 
-        public int FindQRSOnset( double drightEnd, double dmiddleR, Vector<double> dwt, int decompLevel)
+        public int FindQRSOnset(double drightEnd, double dmiddleR, Vector<double> dwt, int decompLevel)
         {
             int rightEnd = (int)drightEnd;
             int middleR = (int)dmiddleR;
@@ -208,7 +214,7 @@ namespace EKG_Project.Modules.Waves
                 return -1;
 
             int qrsOnsetInd = dwt.SubVector(sectionStart, len).MinimumIndex() + sectionStart;
-            double treshold = Math.Abs(dwt[qrsOnsetInd])*0.05; 
+            double treshold = Math.Abs(dwt[qrsOnsetInd]) * 0.05;
 
             while (Math.Abs(dwt[qrsOnsetInd]) > treshold && qrsOnsetInd > sectionStart)
                 qrsOnsetInd--;
@@ -219,15 +225,15 @@ namespace EKG_Project.Modules.Waves
                 return (qrsOnsetInd << decompLevel);
         }
 
-        public int FindQRSEnd( double dmiddleR, double dleftEnd, Vector<double> dwt, int decompLevel)
+        public int FindQRSEnd(double dmiddleR, double dleftEnd, Vector<double> dwt, int decompLevel)
         {
             int middleR = (int)dmiddleR;
             int leftEnd = (int)dleftEnd;
-            int sectionEnd = (leftEnd >> decompLevel) ;
+            int sectionEnd = (leftEnd >> decompLevel);
             int qrsEndInd = (middleR >> decompLevel);
             int len = (leftEnd >> decompLevel) - qrsEndInd;
 
-            if ( len < 1)
+            if (len < 1)
                 len = 1;
 
             //Console.WriteLine("qrsEndzik");
@@ -240,7 +246,7 @@ namespace EKG_Project.Modules.Waves
                 return -1;
                 //Console.WriteLine("Brak enda");
             }
-                
+
 
             double treshold = Math.Abs(dwt.SubVector(qrsEndInd, len).Minimum()) * 0.08;
 
@@ -309,10 +315,10 @@ namespace EKG_Project.Modules.Waves
         #endregion
         public void FindP()
         {
-            double pmax_val,thr;
-            int window,break_window,pmax_loc,ponset,pend;
+            double pmax_val, thr;
+            int window, break_window, pmax_loc, ponset, pend;
 
-            window = Convert.ToInt32(InputData.Frequency*0.5);
+            window = Convert.ToInt32(InputData.Frequency * 0.5);
             break_window = Convert.ToInt32(InputData.Frequency * 0.6);
 
             foreach (int onset_loc in _currentQRSonsetsPart)
@@ -328,7 +334,7 @@ namespace EKG_Project.Modules.Waves
 
                 ponset = pmax_loc;
                 thr = (pmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[onset_loc]) * 0.4;
-                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset-1] || Math.Abs(pmax_val- InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset]) < thr) //dawniej 70
+                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset - 1] || Math.Abs(pmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ponset]) < thr) //dawniej 70
                 {
                     ponset--;
                     if (ponset < onset_loc - break_window)
@@ -341,7 +347,7 @@ namespace EKG_Project.Modules.Waves
 
                 pend = pmax_loc;
                 thr = (pmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[onset_loc]) * 0.4;
-                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend+1] || (pmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] < thr))
+                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend + 1] || (pmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[pend] < thr))
                 {
                     pend++;
                     if (pend > onset_loc)
@@ -362,8 +368,8 @@ namespace EKG_Project.Modules.Waves
         #endregion
         public void FindT()
         {
-            double tmax_val,thr;
-            int window,break_window,tmax_loc, tend;
+            double tmax_val, thr;
+            int window, break_window, tmax_loc, tend;
 
 
             window = Convert.ToInt32(InputData.Frequency * 0.5);
@@ -382,10 +388,10 @@ namespace EKG_Project.Modules.Waves
 
                 tend = tmax_loc;
                 thr = (tmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[ends_loc]) * 0.25;
-                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend + 1] || ((tmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] < thr) && (tmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] > -(tmax_val*0.01))))
+                while (InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] > InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend + 1] || ((tmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] < thr) && (tmax_val - InputECGData.SignalsFiltered[_currentChannelIndex].Item2[tend] > -(tmax_val * 0.01))))
                 {
                     tend++;
-                    if(tend > ends_loc+break_window)
+                    if (tend > ends_loc + break_window)
                     {
                         tend = -1;
                         break;
@@ -395,6 +401,6 @@ namespace EKG_Project.Modules.Waves
             }
         }
     }
-    
+
 
 }

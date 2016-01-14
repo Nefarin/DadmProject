@@ -132,7 +132,12 @@ namespace EKG_Project.Modules.R_Peaks
                         //no idea what logic put in this- no need any
                         //Console.WriteLine("No detected R peaks in final part of signal");
                     }
-                    if (_numRPeaks != 0)
+                    if (_numRPeaks == 1)
+                    {
+                        _currentVector = _totalVector.SubVector(0, 1);
+                        _currentVectorRRInterval = _totalVector.SubVector(1, 1);
+                    }
+                    else if (_numRPeaks != 0)
                     {
                         _currentVector = _totalVector.SubVector(0, _numRPeaks);
                         _currentVectorRRInterval = RRinMS(_currentVector, InputData_basic.Frequency);
@@ -317,7 +322,7 @@ namespace EKG_Project.Modules.R_Peaks
 
         public static void Main()
         {
-            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "TestAnalysis8");
+            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.EMD, "TestAnalysis2");
             //R_Peaks_Params param = null;
             R_Peaks testModule = new R_Peaks();
             testModule.Init(param);
@@ -329,7 +334,7 @@ namespace EKG_Project.Modules.R_Peaks
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-            //Console.ReadKey();
+            Console.ReadKey();
         }
     }
 }

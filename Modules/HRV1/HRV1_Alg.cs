@@ -171,11 +171,10 @@ namespace EKG_Project.Modules.HRV1
 #endregion
 private void calculateFreqBased()
 {
-        var temp_vec = Vector<double>.Build.Dense(f.Count, 1);
+    var temp_vec = Vector<double>.Build.Dense(f.Count, 1);
     //Obliczenie mocy widma w zakresie wysokich częstotliwości (0,15-0,4Hz)
-        for (int i = 0; i < f.Count; i++)
-        {
-
+    for (int i = 0; i < f.Count; i++)
+    {
         if (f[i] >= 0.15 && f[i] < 0.4)
         {
             HF = temp_vec[i] + HF;
@@ -202,7 +201,6 @@ private void calculateFreqBased()
 
             //Obliczenie stosunku mocy widm niskich częstotliwości do mocy widm wysokich częstotliwości
             LFHF = LF / HF;
-
 }
 
 
@@ -215,7 +213,7 @@ private void calculateFreqBased()
 /// 'Main' mehod used for code debugging and testing
 /// </summary>
 #endregion
-public static void Main()
+public static void AlgoTest()
         {
             Console.WriteLine("Hello Matylda!");
 
@@ -250,6 +248,8 @@ public static void Main()
             Console.WriteLine(hrv.PSD);
 
             //dalej heja
+
+
 
         }
     }
