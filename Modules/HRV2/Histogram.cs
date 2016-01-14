@@ -9,6 +9,7 @@ using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV2
 {
+   /*
     public partial class HRV2 : IModule
     {
         //public Histogram makeHistogram()
@@ -154,5 +155,6 @@ namespace EKG_Project.Modules.HRV2
         //    #endregion
         //}
     }
+     */
 }
 
