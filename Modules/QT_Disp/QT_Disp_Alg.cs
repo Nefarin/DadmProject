@@ -64,7 +64,7 @@ namespace EKG_Project.Modules.QT_Disp
         /// <returns>T End local index</returns>
         public int ToDoInProccessData(Vector<double> samples, int index)
         {
-            int T_End = 0;
+            int T_End = -1;
             //check if we exceed a size of R _ Peaks
             if (index < (R_Peaks.Count - 2))
             {
