@@ -36,9 +36,14 @@ namespace EKG_Project.GUI
         {
             {"ecgBaseline", 1 },
             {"ecgBasic", 0 },
-            { "r_Peaks", 3 }
+            {"r_Peaks", 3 },
+            {"waves", 0 },
+            { "heart_Class" ,0},
+            { "sleep_Apnea", 0 },
+            { "flutter", 0 },
+            { "heart_Axis", 0 },
+            {"artrial_Fibr", 0 }
         };
-
 
         public VisualisationDataControl()
         {

@@ -1,4 +1,5 @@
 ﻿using EKG_Project.IO;
+using MathNet.Numerics.LinearAlgebra;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -36,6 +37,8 @@ namespace EKG_Project.GUI
         private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
         private Basic_Data_Worker _ecg_Basic_Data_Worker;
         private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
+        private Waves_Data_Worker _waves_Data_Worker;
+        private Dictionary<string, List<Tuple<string, Vector<double>>>> _wholeDataToDisplay; 
 
 
         public VisualisationPlotControl()
@@ -157,14 +160,62 @@ namespace EKG_Project.GUI
                     ecgPlot.UploadControler(_plotType, _ecg_Baseline_Data_worker.Data.SignalsFiltered);
                     ecgPlot.DisplayControler(_plotType, _r_Peaks_Data_Worker.Data.RPeaks);
                     break;
+                //case "waves":
+                //    _waves_Data_Worker = new Waves_Data_Worker();
+                //    _waves_Data_Worker.Load();
+                //    foreach (var a in _waves_Data_Worker.Data.PEnds)
+                //    {
 
+                //    }
+                //    foreach (var sig in _waves_Data_Worker.Data.)
+                //        break;
                 default:
-                    break;
+                    {
+                        bool first = true; 
+                        _wholeDataToDisplay = new Dictionary<string, List<Tuple<string, Vector<double>>>>();
+
+                        _ecg_Baseline_Data_worker = new ECG_Baseline_Data_Worker();
+                        _ecg_Baseline_Data_worker.Load();
+                        foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
+                        {
+                            _seriesName.Add(signal.Item1);
+                            CheckBox cB = new CheckBox();
+                            cB.IsChecked = first;
+                            first = false;
+                            cB.Name = signal.Item1;
+                            cB.Content = signal.Item1;
+                            cB.Checked += CheckBox_Checked;
+                            cB.Unchecked += CheckBox_Unchecked;
+                            _seriesChecbox.Add(cB);
+                            //Debug.WriteLine(signal.Item1);
+                        }
+                        _wholeDataToDisplay.Add("ecgBaseline", _ecg_Baseline_Data_worker.Data.SignalsFiltered);
+                        //ecgPlot.DisplayControler(_plotType, _ecg_Baseline_Data_worker.Data.SignalsFiltered);
+
+                        _r_Peaks_Data_Worker = new R_Peaks_Data_Worker();
+                        _r_Peaks_Data_Worker.Load();
+                        CheckBox rPCB = new CheckBox();
+                        rPCB.IsChecked = first;
+                        rPCB.Name = "R_Peaks";
+                        rPCB.Content = "R_Peaks";
+                        rPCB.Checked += CheckBox_Checked;
+                        rPCB.Unchecked += CheckBox_Unchecked;
+                        _seriesChecbox.Add(rPCB);
+                        _wholeDataToDisplay.Add("r_Peaks", _r_Peaks_Data_Worker.Data.RPeaks);
+
+                        ecgPlot.DisplayControler(_wholeDataToDisplay);
+                 
+
+
+
+                        break;
+                    }
             }
 
 
 
             this.CheckBoxList.DataContext = _seriesChecbox;
+
 
 
         }

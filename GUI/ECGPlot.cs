@@ -9,6 +9,9 @@ using OxyPlot.Series;
 using OxyPlot.Axes;
 using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra;
+using EKG_Project.Modules;
+using EKG_Project.Modules.R_Peaks;
+using EKG_Project.Modules.ECG_Baseline;
 
 namespace EKG_Project.GUI
 {
@@ -21,12 +24,34 @@ namespace EKG_Project.GUI
         private Basic_Data_Worker _ecg_Basic_Data_Worker;
         private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
         private bool first;
+        private bool _visible; 
+        private R_Peaks_Data _r_PeaksData;
+        private ECG_Baseline_Data _ecg_Baseline_Data;
+        private List<string> _displayedSeries;
+
 
         private Dictionary<string, uint> modulesVisualisationNeeds = new Dictionary<string, uint>()
         {
             {"ecgBaseline",1 },
             {"ecgBasic", 0 },
             { "r_Peaks", 3 }
+        };
+
+        private Dictionary<string, bool> _baselineDisplayedSeries = new Dictionary<string, bool>()
+        {
+            { "I",false },
+            { "II", false },
+            { "III", false },
+            { "aVR", false },
+            { "aVL", false },
+            { "aVF", false },
+            { "V1", false },
+            { "V2", false },
+            { "V3", false },
+            { "V4", false },
+            { "V5", false },
+            { "V6", false },
+            { "R_Peaks", false}
         };
 
 
@@ -44,6 +69,8 @@ namespace EKG_Project.GUI
             _windowSize = 1000;
             _beginingPoint = 0;
             first = true;
+            _visible = true;
+            _displayedSeries = new List<string>();
             
             //CurrentPlot.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
             //CurrentPlot.LegendBorder = OxyColors.Black;
@@ -223,72 +250,72 @@ namespace EKG_Project.GUI
 
         }
 
-        public void DisplayEcgBaseline()
-        {
-            if (first)
-            {
-                _ecg_Baseline_Data_worker = new ECG_Baseline_Data_Worker();
-                _ecg_Baseline_Data_worker.Load();
-                first = false;
-                var lineraYAxis = new LinearAxis();
-                lineraYAxis.Position = AxisPosition.Left;
-                lineraYAxis.Minimum = -100.0;
-                lineraYAxis.Maximum = 80.0;
-                lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
-                lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
-                lineraYAxis.Title = "Voltage [mV]";
+        //public void DisplayEcgBaseline()
+        //{
+        //    if (first)
+        //    {
+        //        _ecg_Baseline_Data_worker = new ECG_Baseline_Data_Worker();
+        //        _ecg_Baseline_Data_worker.Load();
+        //        first = false;
+        //        var lineraYAxis = new LinearAxis();
+        //        lineraYAxis.Position = AxisPosition.Left;
+        //        lineraYAxis.Minimum = -100.0;
+        //        lineraYAxis.Maximum = 80.0;
+        //        lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+        //        lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+        //        lineraYAxis.Title = "Voltage [mV]";
 
-                CurrentPlot.Axes.Add(lineraYAxis);
-            }
-            else
-            {
-                ClearPlot();
-            }
+        //        CurrentPlot.Axes.Add(lineraYAxis);
+        //    }
+        //    else
+        //    {
+        //        ClearPlot();
+        //    }
 
-            foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
-            {
+        //    foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
+        //    {
 
-                Vector<double> signalVector = signal.Item2;
-                LineSeries ls = new LineSeries();
-                ls.Title = signal.Item1;
+        //        Vector<double> signalVector = signal.Item2;
+        //        LineSeries ls = new LineSeries();
+        //        ls.Title = signal.Item1;
                 
 
-                ls.MarkerStrokeThickness = 1;
+        //        ls.MarkerStrokeThickness = 1;
                 
 
-                for (int i = _beginingPoint; (i <= (_beginingPoint+_windowSize) && i< signalVector.Count()) ; i++)
-                {
-                    ls.Points.Add(new DataPoint(i, signalVector[i]));
-                }
+        //        for (int i = _beginingPoint; (i <= (_beginingPoint+_windowSize) && i< signalVector.Count()) ; i++)
+        //        {
+        //            ls.Points.Add(new DataPoint(i, signalVector[i]));
+        //        }
 
 
-                CurrentPlot.Series.Add(ls);
+        //        CurrentPlot.Series.Add(ls);
                 
                 
-            }
+        //    }
 
-            RefreshPlot();
+        //    RefreshPlot();
 
-            //foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
-            //{
+        //    //foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
+        //    //{
 
-            //    Vector<double> signalVector = signal.Item2;
-            //    LineSeries ls = new LineSeries();
-            //    ls.Title = signal.Item1;
+        //    //    Vector<double> signalVector = signal.Item2;
+        //    //    LineSeries ls = new LineSeries();
+        //    //    ls.Title = signal.Item1;
 
-            //    ls.MarkerStrokeThickness = 1;
-
-
-            //    for (int i = 0; i < signalVector.Count; i++)
-            //    {
-            //        ls.Points.Add(new DataPoint(i, signalVector[i]));
-            //    }
+        //    //    ls.MarkerStrokeThickness = 1;
 
 
-            //    CurrentPlot.Series.Add(ls);
-            //}
+        //    //    for (int i = 0; i < signalVector.Count; i++)
+        //    //    {
+        //    //        ls.Points.Add(new DataPoint(i, signalVector[i]));
+        //    //    }
 
-        }
+
+        //    //    CurrentPlot.Series.Add(ls);
+        //    //}
+
+        //}
 
         public void DisplayEcgBaseline(List<Tuple<string, Vector<double>>> data)
         {
@@ -335,7 +362,50 @@ namespace EKG_Project.GUI
                  
         }
 
+        public void DisplayEcgBaseline(List<Tuple<string, Vector<double>>> data, bool whole)
+        {
+            if (first)
+            {
+                first = false;
+                var lineraYAxis = new LinearAxis();
+                lineraYAxis.Position = AxisPosition.Left;
+                lineraYAxis.Minimum = -100.0;
+                lineraYAxis.Maximum = 80.0;
+                lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+                lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+                lineraYAxis.Title = "Voltage [mV]";
 
+                CurrentPlot.Axes.Add(lineraYAxis);
+            }
+            else
+            {
+                ClearPlot();
+            }
+
+            foreach (var signal in data)
+            {
+
+                Vector<double> signalVector = signal.Item2;
+                LineSeries ls = new LineSeries();
+                ls.Title = signal.Item1;
+
+
+                ls.MarkerStrokeThickness = 1;
+
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                }
+
+
+                CurrentPlot.Series.Add(ls);
+
+            }
+
+            RefreshPlot();
+
+        }
 
         public void MovePlot(int amount)
         {
@@ -346,96 +416,96 @@ namespace EKG_Project.GUI
             }
         }
 
-        public void DisplayR_Peaks()
-        {
-            if (first)
-            {
-                _r_Peaks_Data_Worker = new R_Peaks_Data_Worker();
-                _r_Peaks_Data_Worker.Load();
+        //public void DisplayR_Peaks()
+        //{
+        //    if (first)
+        //    {
+        //        _r_Peaks_Data_Worker = new R_Peaks_Data_Worker();
+        //        _r_Peaks_Data_Worker.Load();
 
-                //tutaj potrzebne do naniesienia na coś tych naszych r_peaksów
-                _ecg_Baseline_Data_worker = new ECG_Baseline_Data_Worker();
-                _ecg_Baseline_Data_worker.Load();
-                //
+        //        //tutaj potrzebne do naniesienia na coś tych naszych r_peaksów
+        //        _ecg_Baseline_Data_worker = new ECG_Baseline_Data_Worker();
+        //        _ecg_Baseline_Data_worker.Load();
+        //        //
 
-                first = false;
+        //        first = false;
 
-                //var lineraYAxis = new LinearAxis();
-                //lineraYAxis.Position = AxisPosition.Left;
-                //lineraYAxis.Minimum = -100.0;
-                //lineraYAxis.Maximum = 80.0;
-                //lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
-                //lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
-                //lineraYAxis.Title = "Voltage [mV]";
+        //        //var lineraYAxis = new LinearAxis();
+        //        //lineraYAxis.Position = AxisPosition.Left;
+        //        //lineraYAxis.Minimum = -100.0;
+        //        //lineraYAxis.Maximum = 80.0;
+        //        //lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+        //        //lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+        //        //lineraYAxis.Title = "Voltage [mV]";
 
-                //CurrentPlot.Axes.Add(lineraYAxis);
-            }
-            else
-            {
-                ClearPlot();
-            }
+        //        //CurrentPlot.Axes.Add(lineraYAxis);
+        //    }
+        //    else
+        //    {
+        //        ClearPlot();
+        //    }
 
-            //wyśiwtlenie ecgBaseline
-            foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
-            {
+        //    //wyśiwtlenie ecgBaseline
+        //    foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
+        //    {
 
-                Vector<double> signalVector = signal.Item2;
-                //var r_Peaks = _r_Peaks_Data_Worker.Data.RPeaks.Where(sig => sig.Item1 == signal.Item1);
-                var r_Peaks = _r_Peaks_Data_Worker.Data.RPeaks.Find(sig => sig.Item1 == signal.Item1);
-                Vector<double> r_PeaksVector = r_Peaks.Item2;
-                bool addR_Peak = false;
+        //        Vector<double> signalVector = signal.Item2;
+        //        //var r_Peaks = _r_Peaks_Data_Worker.Data.RPeaks.Where(sig => sig.Item1 == signal.Item1);
+        //        var r_Peaks = _r_Peaks_Data_Worker.Data.RPeaks.Find(sig => sig.Item1 == signal.Item1);
+        //        Vector<double> r_PeaksVector = r_Peaks.Item2;
+        //        bool addR_Peak = false;
 
-                LineSeries ls = new LineSeries();
-                ls.Title = signal.Item1;
-                ScatterSeries rPeaksSeries = new ScatterSeries();
-                rPeaksSeries.Title = "R_Peak_" + signal.Item1;
-                //rPeaksSeries.MarkerType = MarkerType.Star;
+        //        LineSeries ls = new LineSeries();
+        //        ls.Title = signal.Item1;
+        //        ScatterSeries rPeaksSeries = new ScatterSeries();
+        //        rPeaksSeries.Title = "R_Peak_" + signal.Item1;
+        //        //rPeaksSeries.MarkerType = MarkerType.Star;
                 
 
-                ls.MarkerStrokeThickness = 1;
+        //        ls.MarkerStrokeThickness = 1;
 
-                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
-                {
-                    ls.Points.Add(new DataPoint(i, signalVector[i]));
-                    if(r_PeaksVector.Contains(i))
-                    {
-                        rPeaksSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3});
+        //        for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+        //        {
+        //            ls.Points.Add(new DataPoint(i, signalVector[i]));
+        //            if(r_PeaksVector.Contains(i))
+        //            {
+        //                rPeaksSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3});
                         
-                        addR_Peak = true;
-                    }
-                }
+        //                addR_Peak = true;
+        //            }
+        //        }
 
-                CurrentPlot.Series.Add(ls);
-                if (addR_Peak)
-                {
-                    CurrentPlot.Series.Add(rPeaksSeries);
-                }
-            }
+        //        CurrentPlot.Series.Add(ls);
+        //        if (addR_Peak)
+        //        {
+        //            CurrentPlot.Series.Add(rPeaksSeries);
+        //        }
+        //    }
 
-            ////R_Peaks
-            //foreach (var signal in _r_Peaks_Data_Worker.Data.RPeaks)
-            //{
+        //    ////R_Peaks
+        //    //foreach (var signal in _r_Peaks_Data_Worker.Data.RPeaks)
+        //    //{
 
-            //    Vector<double> signalVector = signal.Item2;
-            //    LineSeries ls = new LineSeries();
-            //    ls.Title = signal.Item1;
+        //    //    Vector<double> signalVector = signal.Item2;
+        //    //    LineSeries ls = new LineSeries();
+        //    //    ls.Title = signal.Item1;
 
-            //    ls.MarkerStrokeThickness = 1;
-
-
-            //    for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
-            //    {
-            //        ls.Points.Add(new DataPoint(i, signalVector[i]));
-            //    }
+        //    //    ls.MarkerStrokeThickness = 1;
 
 
-            //    CurrentPlot.Series.Add(ls);
+        //    //    for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+        //    //    {
+        //    //        ls.Points.Add(new DataPoint(i, signalVector[i]));
+        //    //    }
 
 
-            //}
+        //    //    CurrentPlot.Series.Add(ls);
 
-            RefreshPlot();
-        }
+
+        //    //}
+
+        //    RefreshPlot();
+        //}
 
         public void DisplayR_Peaks(List<Tuple<string, Vector<double>>> data)
         {
@@ -489,6 +559,55 @@ namespace EKG_Project.GUI
             RefreshPlot();
         }
 
+        public void DisplayR_Peaks(List<Tuple<string, Vector<double>>> data, bool whole)
+        {
+            if (first)
+            {
+                first = false;
+            }
+            else
+            {
+                //ClearPlot();
+            }
+
+            //wyśiwtlenie ecgBaseline
+            foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
+            {
+
+                Vector<double> signalVector = signal.Item2;
+                var r_Peaks = data.Find(sig => sig.Item1 == signal.Item1);
+                Vector<double> r_PeaksVector = r_Peaks.Item2;
+                bool addR_Peak = false;
+
+                LineSeries ls = new LineSeries();
+                ls.Title = signal.Item1;
+                ScatterSeries rPeaksSeries = new ScatterSeries();
+                rPeaksSeries.Title = "R_Peak_" + signal.Item1;
+                //rPeaksSeries.MarkerType = MarkerType.Star;
+
+
+                ls.MarkerStrokeThickness = 1;
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                    if (r_PeaksVector.Contains(i))
+                    {
+                        rPeaksSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+
+                        addR_Peak = true;
+                    }
+                }
+
+                CurrentPlot.Series.Add(ls);
+                if (addR_Peak)
+                {
+                    CurrentPlot.Series.Add(rPeaksSeries);
+                }
+            }
+
+            RefreshPlot();
+        }
 
         public ScatterSeries DisplayR_Peaks(double x, double y)
         {
@@ -542,6 +661,249 @@ namespace EKG_Project.GUI
 
         }
 
+
+
+
+       
+
+
+
+
+
+        //ostatnio developowana wersja begining
+
+
+
+
+
+
+
+        public void DisplayControler(Dictionary<string, List<Tuple<string, Vector<double>>>> dataToDisplay)
+        {
+            bool wasEcgBaselineSet = false;
+            List<string> modulesToDisplay = new List<string>();
+            foreach(var data in dataToDisplay)
+            {
+                switch (data.Key)
+                {
+                    case "ecgBaseline":
+                        _ecg_Baseline_Data = new ECG_Baseline_Data();
+                        _ecg_Baseline_Data.SignalsFiltered = dataToDisplay[data.Key];
+                        wasEcgBaselineSet = true;
+                        modulesToDisplay.Add(data.Key);
+                        //DisplayEcgBaseline(dataToDisplay[data.Key], true);
+                        break;
+                    case "r_Peaks":
+                        _r_PeaksData = new R_Peaks_Data();
+                        _r_PeaksData.RPeaks = dataToDisplay[data.Key];
+                        if(wasEcgBaselineSet)
+                            modulesToDisplay.Add(data.Key);
+                        //DisplayR_Peaks(dataToDisplay[data.Key], true);
+                        break;
+                    default:
+                        break;
+                }
+                
+            }
+
+            DisplayListedPlots(modulesToDisplay);
+
+        }
+
+        private void DisplayListedPlots(List<string> whatToDisplay)
+        {
+            foreach(string dis in whatToDisplay)
+            {
+                switch (dis)
+                {
+                    case "ecgBaseline":
+                        DisplayEcgBaseline();
+                        break;
+                    case "r_Peaks":
+                        DisplayR_Peaks();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void DisplayEcgBaseline()
+        {
+            if (first)
+            {
+                first = false;
+                var lineraYAxis = new LinearAxis();
+                lineraYAxis.Position = AxisPosition.Left;
+                lineraYAxis.Minimum = -100.0;
+                lineraYAxis.Maximum = 80.0;
+                lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+                lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+                lineraYAxis.Title = "Voltage [mV]";
+
+                CurrentPlot.Axes.Add(lineraYAxis);
+            }
+            else
+            {
+                ClearPlot();
+            }
+
+            foreach (var signal in _ecg_Baseline_Data.SignalsFiltered)
+            {
+
+                Vector<double> signalVector = signal.Item2;
+                LineSeries ls = new LineSeries();
+                ls.Title = signal.Item1;
+                ls.IsVisible = _visible;
+                if (_visible)
+                    _baselineDisplayedSeries[signal.Item1] = true;
+                _visible = false;
+
+
+                ls.MarkerStrokeThickness = 1;
+
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                }
+
+
+                CurrentPlot.Series.Add(ls);
+
+            }
+
+            RefreshPlot();
+        }
+
+        private void DisplayR_Peaks()
+        {
+            if (first)
+            {
+                first = false;
+            }
+            else
+            {
+                //ClearPlot();
+            }
+
+            //wyśiwtlenie ecgBaseline var signal in _ecg_Baseline_Data.Data.SignalsFiltered
+            foreach (var signal in _ecg_Baseline_Data.SignalsFiltered)
+            {
+
+                Vector<double> signalVector = signal.Item2;
+                var r_Peaks = _r_PeaksData.RPeaks.Find(sig => sig.Item1 == signal.Item1);
+                Vector<double> r_PeaksVector = r_Peaks.Item2;
+                bool addR_Peak = false;
+
+                ScatterSeries rPeaksSeries = new ScatterSeries();
+                rPeaksSeries.Title = "R_Peaks_" + signal.Item1;
+                rPeaksSeries.IsVisible = _visible;
+                //rPeaksSeries.DataFieldTag = "R_Peak_" + signal.Item1;
+
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+                    if (r_PeaksVector.Contains(i))
+                    {
+                        rPeaksSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+
+                        addR_Peak = true;
+                    }
+                }
+
+                if (addR_Peak)
+                {
+                    CurrentPlot.Series.Add(rPeaksSeries);
+                }
+            }
+
+            RefreshPlot();
+        }
+
+
+
+
+
+
+
+        public void SeriesControler(string seriesName, bool visible)
+        {
+
+            try
+            {
+                if (seriesName == "R_Peaks")
+                {
+                    _baselineDisplayedSeries[seriesName] = visible;
+
+                    foreach(var sig in _baselineDisplayedSeries)
+                    {
+                        if(sig.Value!=visible)
+                        {
+                            CurrentPlot.Series.First(a => a.Title == sig.Key).IsVisible = visible;
+                            _baselineDisplayedSeries[sig.Key] = visible;
+                        }
+                    }
+
+
+
+
+                    //foreach (var ser in CurrentPlot.Series)
+                    //{
+                    //    if (ser.Title.StartsWith(seriesName) && _baselineDisplayedSeries[ser.Title])
+                    //    {
+                    //        ser.IsVisible = visible;
+                    //    }
+                    //}
+
+                }
+                else
+                {
+                    foreach (var ser in CurrentPlot.Series)
+                    {
+                        if (_baselineDisplayedSeries["R_Peaks"])
+                        {
+                            if (ser.Title == seriesName || ser.Title == "R_Peaks_" + seriesName)
+                            {
+                                ser.IsVisible = visible;
+                                _baselineDisplayedSeries[seriesName] = visible;
+                            }
+                        }
+                        else
+                        {
+                            if (ser.Title == seriesName)
+                            {
+                                ser.IsVisible = visible;
+                                _baselineDisplayedSeries[seriesName] = visible;
+                            }
+                        }
+                    }
+                }
+
+                RefreshPlot();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        //ostatnio developowana wersja end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public void UploadControler(string whatToDisplay, List<Tuple<string, Vector<double>>> dataToDisplay)
         {
             switch (whatToDisplay)
@@ -568,19 +930,31 @@ namespace EKG_Project.GUI
 
         }
 
+        //public void UploadControler(string whatToDisplay, List<Tuple<string, Vector<double>>> dataToDisplay)
+        //{
+        //    switch (whatToDisplay)
+        //    {
+        //        case "ecgBaseline":
+        //            //DisplayEcgBaseline(dataToDisplay);
+        //            break;
 
-        public void SeriesControler(string seriesName, bool visible)
-        {
-            try
-            {
-                CurrentPlot.Series.First(a => a.Title == seriesName).IsVisible = visible;
-                RefreshPlot();
-            }
-            catch(Exception ex)
-            {
+        //        case "ecgBasic":
+        //            //DisplayBasicData(dataToDisplay);
+        //            break;
 
-            }
-        }
+        //        case "r_Peaks":
+        //            _ecg_Baseline_Data_worker = new ECG_Baseline_Data_Worker();
+        //            _ecg_Baseline_Data_worker.Load();
+        //            _ecg_Baseline_Data_worker.Data.SignalsFiltered = dataToDisplay;
+        //            //_ecg_Baseline_Data_worker.Data.SignalsFiltered = dataToDisplay; 
+        //            //DisplayR_Peaks(dataToDisplay);
+        //            break;
+
+        //        default:
+        //            break;
+        //    }
+
+        //}
 
         //Annotations
         private ArrowAnnotation AddArrowAnnotation()
