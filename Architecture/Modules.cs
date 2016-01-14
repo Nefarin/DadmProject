@@ -51,6 +51,7 @@ namespace EKG_Project.Architecture
         Dictionary<AvailableOptions, ModuleParams> _moduleParams;
         private string _analysisName;
         private int _currentModuleIndex;
+        private int _currentModuleProcessed;
         private AvailableOptions _currentOption;
         private bool _fileLoaded = false;
         IModule _currentModule;
@@ -63,6 +64,7 @@ namespace EKG_Project.Architecture
         public void Init(Dictionary<AvailableOptions, ModuleParams> moduleParams)
         {
             CurrentModuleIndex = -1;
+            CurrentModuleProcessed = 0;
             ModuleParams = moduleParams;
         }
 
@@ -178,6 +180,19 @@ namespace EKG_Project.Architecture
             set
             {
                 _analysisName = value;
+            }
+        }
+
+        public int CurrentModuleProcessed
+        {
+            get
+            {
+                return _currentModuleProcessed;
+            }
+
+            set
+            {
+                _currentModuleProcessed = value;
             }
         }
     }

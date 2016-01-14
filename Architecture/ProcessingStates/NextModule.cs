@@ -17,7 +17,7 @@ namespace EKG_Project.Architecture.ProcessingStates
         #endregion
         public void Process(Processing process, out IProcessingState timeoutState)
         {
-            if (process.Modules.CurrentModuleIndex + 1 < process.Modules.Amount())
+            if (process.Modules.CurrentModuleProcessed < process.Modules.Amount())
             {
                 try {
                     process.Modules.initNextModule();

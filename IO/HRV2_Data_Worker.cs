@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.Statistics;
 using EKG_Project.Modules.HRV2;
 using EKG_Project.Modules;
 
@@ -70,13 +69,29 @@ namespace EKG_Project.IO
 
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
-                
-                /*
-                Histogram histogram = basicData.HistogramData;
-                XmlElement histogramData = file.CreateElement(string.Empty, "HistogramData", string.Empty);
-                histogramData.AppendChild(samples);
-                module.AppendChild(histogramData);
-                 * */
+                List<Tuple<string, Vector<double>>> list = basicData.HistogramData;
+                //List<Tuple<string, Vector<double>>> list = null;
+                foreach (var tuple in list)
+                {
+                    XmlElement histogramData = file.CreateElement(string.Empty, "HistogramData", string.Empty);
+                    module.AppendChild(histogramData);
+
+                    XmlElement lead = file.CreateElement(string.Empty, "lead", string.Empty);
+                    XmlText leadValue = file.CreateTextNode(tuple.Item1);
+                    lead.AppendChild(leadValue);
+                    histogramData.AppendChild(lead);
+
+                    XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
+                    string samplesText = null;
+                    foreach (var value in tuple.Item2)
+                    {
+                        samplesText += value.ToString() + " ";
+                    }
+
+                    XmlText samplesValue = file.CreateTextNode(samplesText);
+                    samples.AppendChild(samplesValue);
+                    histogramData.AppendChild(samples);
+                }
 
                 object[] Properties = {basicData.PoincarePlotData_x, basicData.PoincarePlotData_y};
                 string[] Names = { "PoincarePlotData_x", "PoincarePlotData_y"};
@@ -94,14 +109,11 @@ namespace EKG_Project.IO
                     moduleNode.AppendChild(lead);
 
                     XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-
-                    StringBuilder builder = new StringBuilder();
+                    string samplesText = null;
                     foreach (var value in tuple.Item2)
                     {
-                        builder.Append(value.ToString());
-                        builder.Append(" ");
+                        samplesText += value.ToString() + " ";
                     }
-                    string samplesText = builder.ToString();
 
                     XmlText samplesValue = file.CreateTextNode(samplesText);
                     samples.AppendChild(samplesValue);
@@ -154,7 +166,6 @@ namespace EKG_Project.IO
                 if (module.Attributes["name"].Value == moduleName)
                 {
                     List<Tuple<string, Vector<double>>> list = new List<Tuple<string, Vector<double>>>();
-                    /*
                     XmlNodeList histogramData = module.SelectNodes("HistogramData");
                     foreach (XmlNode node in histogramData)
                     {
@@ -170,7 +181,6 @@ namespace EKG_Project.IO
                     }
                     //basicData.HistogramData = list;
                     basicData.HistogramData = null;
-                     * */
 
                     XmlNode PoincarePlotData_x = module["PoincarePlotData_x"];
 

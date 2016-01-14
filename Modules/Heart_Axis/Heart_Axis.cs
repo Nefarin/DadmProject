@@ -560,7 +560,7 @@ namespace EKG_Project.Modules.Heart_Axis
         {
 
         
-            Heart_Axis_Params param = new Heart_Axis_Params("TestAnalysis2");
+            Heart_Axis_Params param = new Heart_Axis_Params("TestAnalysis6");
             //TestModule3_Params param = null;
             Heart_Axis testModule = new Heart_Axis();
             testModule.Init(param);
