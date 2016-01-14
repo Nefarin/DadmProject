@@ -41,13 +41,20 @@ namespace EKG_Project.Architecture.ProcessingStates
             FileLoader fileLoader = new FileLoader();
             try
             {
+                Console.WriteLine("where");
                 fileLoader.AnalysisName = process.Modules.AnalysisName;
+                Console.WriteLine("where1");
                 fileLoader.Validate(Path);
+                Console.WriteLine("where2");
                 fileLoader.Load(Path);
+                Console.WriteLine("where4");
 
                 IECGConverter converter = fileLoader.Converter;
+                Console.WriteLine("where5");
                 converter.ConvertFile(Path);
+                Console.WriteLine("where6");
                 converter.SaveResult();
+                Console.WriteLine("where7");
                 process.Modules.FileLoaded = true;
 
                 process.Communication.SendProcessingEvent(new FileLoaded());
