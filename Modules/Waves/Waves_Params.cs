@@ -59,12 +59,19 @@ namespace EKG_Project.Modules.Waves
 
         public Waves_Params() : base()
         {
-            _waveType = Wavelet_Type.db2;
+            _waveType = Wavelet_Type.haar;
         }
 
         public Waves_Params(string analysisName) : this()
         {
             this.AnalysisName = analysisName;
+        }
+
+        public void CopyParametersFrom(Waves_Params parameters)
+        {
+            this.WaveType = parameters.WaveType;
+            this.DecompositionLevel = parameters.DecompositionLevel;
+            this.RpeaksStep = parameters.RpeaksStep;
         }
     }
 }

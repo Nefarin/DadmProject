@@ -104,9 +104,11 @@ namespace EKG_Project.GUI
         {
             Console.WriteLine("Analysis Ended");
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
-            tempList.Add("ecgBaseline");
-            tempList.Add("ecgBasic");
-            tempList.Add("r_Peaks");
+            //tempList.Add("ecgBaseline");
+            //tempList.Add("ecgBasic");
+            //tempList.Add("r_Peaks");
+            tempList.Add("waves");
+            //tempList.Add("whole");
             VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(tempList);
         }
 
