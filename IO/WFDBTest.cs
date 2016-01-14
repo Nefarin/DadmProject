@@ -21,7 +21,7 @@ namespace EKG_Project.IO
     {
         public static void Main()
         {
-            WfdbCsharpWrapper.
+            //WfdbCsharpWrapper.
             IECGPath pathBuilder = new DebugECGPath();
             string datFileName = "100.dat";
             string heaFileName = "100.hea";

@@ -379,7 +379,7 @@ namespace EKG_Project.Modules.QT_Disp
         public static void Main()
         {
             QT_Disp_Params param = new QT_Disp_Params();
-            param.AnalysisName = "QtTest";
+            param.AnalysisName = "QtTest2";
             QT_Disp testModule = new QT_Disp();
             testModule.Init(param);
             while (true)
