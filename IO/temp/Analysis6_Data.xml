@@ -141,33 +141,6 @@
       <intervals>1 2 3 4 5 6 7 8 9 </intervals>
     </RRInterval>
   </module>
-  <module name="QT_Disp">
-    <QT_disp_local>
-      <lead>V1</lead>
-      <samples>2</samples>
-    </QT_disp_local>
-    <QT_disp_local>
-      <lead>MLII</lead>
-      <samples>23</samples>
-    </QT_disp_local>
-    <QT_mean>
-      <lead>V1</lead>
-      <samples>2</samples>
-    </QT_mean>
-    <QT_mean>
-      <lead>MLII</lead>
-      <samples>23</samples>
-    </QT_mean>
-    <QT_std>
-      <lead>V1</lead>
-      <samples>2</samples>
-    </QT_std>
-    <QT_std>
-      <lead>MLII</lead>
-      <samples>23</samples>
-    </QT_std>
-    <QT_disp_global>78</QT_disp_global>
-  </module>
   <module name="Heart_Class">
     <ClassificationResult>
       <item1>1</item1>
@@ -310,5 +283,36 @@
     <ElipseCenter>6</ElipseCenter>
     <ElipseCenter>5</ElipseCenter>
     <ElipseCenter>4</ElipseCenter>
+  </module>
+  <module name="QT_Disp">
+    <QT_disp_local>
+      <lead>V1</lead>
+      <samples>2</samples>
+    </QT_disp_local>
+    <QT_disp_local>
+      <lead>MLII</lead>
+      <samples>23</samples>
+    </QT_disp_local>
+    <QT_mean>
+      <lead>V1</lead>
+      <samples>2</samples>
+    </QT_mean>
+    <QT_mean>
+      <lead>MLII</lead>
+      <samples>23</samples>
+    </QT_mean>
+    <QT_std>
+      <lead>V1</lead>
+      <samples>2</samples>
+    </QT_std>
+    <QT_std>
+      <lead>MLII</lead>
+      <samples>23</samples>
+    </QT_std>
+    <QT_disp_global>78</QT_disp_global>
+    <T_End_Local>
+      <lead>MLII</lead>
+      <samples>1 2 3 4 5 6 7 8 9 0 </samples>
+    </T_End_Local>
   </module>
 </EKG>
