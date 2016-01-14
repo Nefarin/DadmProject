@@ -20,6 +20,7 @@ using EKG_Project.Modules.HRV_DFA;
 using EKG_Project.Modules.ST_Segment;
 using EKG_Project.Modules.T_Wave_Alt;
 using EKG_Project.Modules.SIG_EDR;
+using EKG_Project.Modules.HRT;
 
 
 
@@ -129,6 +130,11 @@ namespace EKG_Project.GUI
                             break;
                         case AvailableOptions.SIG_EDR:
                             this.ModuleParam = new SIG_EDR_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = false;
+                            FillDictionaries();
+                            break;
+                        case AvailableOptions.HRT:
+                            this.ModuleParam = new HRT_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
