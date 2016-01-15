@@ -3,17 +3,16 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
-  
+
     public partial class HRV2 : IModule
     {
-      
-        public double TriangleIndex()
+
+        double triangleIndex;
+        public void TriangleIndex()
         {
-            Vector <double> RRIntervaals = InputData.RRInterval[_outputIndex].Item2;
-            double triangleIndex = _currentHistogram.MaxCount/_currentRPeaksLength;
-            return triangleIndex;
+            Vector<double> RRIntervaals = InputData.RRInterval[_outputIndex].Item2;
+            triangleIndex = _currentHistogram.MaxCount / _currentRPeaksLength;
         }
     }
 
 }
-

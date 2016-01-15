@@ -5,14 +5,14 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
-    
+
     public partial class HRV2 : IModule
 
     {
         private Vector<double> RR_intervals_x;
         private Vector<double> RR_intervals_y;
 
-        private void PoincarePlot_x ()
+        private void PoincarePlot_x()
         {
             Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2.Clone();
             Vector<double> rr_intervals_x = Vector<double>.Build.Dense(RRIntervals.Count - 1);
@@ -55,8 +55,7 @@ namespace EKG_Project.Modules.HRV2
             return SD2;
         }
     }
-   
+
 }
-    
 
 
