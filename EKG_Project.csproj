@@ -47,7 +47,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.App</StartupObject>
+    <StartupObject>EKG_Project.IO.WFDBTest</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -443,11 +443,13 @@
   <ItemGroup>
     <Resource Include="Architecture\README.TXT" />
   </ItemGroup>
+  <PropertyGroup>
+    <ReferencePath>
+        DLL\
+    </ReferencePath>
+  </PropertyGroup>
   <ItemGroup>
     <Content Include="DLL\Placeholder.txt" />
-    <Content Include="DLL\wfdb.dll">
-      <CustomToolNamespace>WfdbCsharpWrapper</CustomToolNamespace>
-    </Content>
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
     <Resource Include="IO\temp\train_d_label.txt" />

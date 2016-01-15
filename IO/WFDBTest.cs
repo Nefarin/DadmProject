@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using WfdbCsharpWrapper;
+using System.Reflection;
+using System.Runtime.InteropServices;
+
 
 
 namespace EKG_Project.IO
@@ -21,8 +24,10 @@ namespace EKG_Project.IO
     {
         public static void Main()
         {
-            //WfdbCsharpWrapper.
+
             IECGPath pathBuilder = new DebugECGPath();
+            Console.WriteLine(Path.Combine(pathBuilder.getBasePath(), "DLL\\"));
+            //Assembly.LoadFrom(Path.Combine(pathBuilder.getBasePath(), "DLL", "wfdb.dll"));
             string datFileName = "100.dat";
             string heaFileName = "100.hea";
             string atrFileName = "100.atr";
@@ -33,14 +38,10 @@ namespace EKG_Project.IO
             Console.WriteLine(".hea file exists: " + File.Exists(System.IO.Path.Combine(directory, heaFileName)));
             Console.WriteLine(".atr file exists: " + File.Exists(System.IO.Path.Combine(directory, atrFileName)));
             
-            Console.WriteLine(System.IO.Path.Combine(directory, datFileName));
             String name = System.IO.Path.Combine(directory, recordName);
 
-            Console.WriteLine(WfdbCsharpWrapper.Wfdb.WfdbPath);
             Wfdb.WfdbPath = directory;
-            Console.WriteLine(WfdbCsharpWrapper.Wfdb.WfdbPath);
-            //int nsig = PInvoke.isigopen(name, null, 0);
-            //Console.WriteLine(nsig);
+            int nsig = PInvoke.isigopen(name, null, 0);
             Record record;
             unsafe
             {
