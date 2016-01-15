@@ -54,24 +54,36 @@ namespace EKG_Project.GUI
                     switch (this.Code)
                     {
                         case AvailableOptions.ECG_BASELINE:
-                            this.ModuleParam = new ECG_Baseline_Params();
-                            this.ModuleParam.GUIParametersAvailable = true;
-                            FillDictionaries();
+                            if (this.ModuleParam == null)
+                            {
+                                this.ModuleParam = new ECG_Baseline_Params();
+                                this.ModuleParam.GUIParametersAvailable = true;
+                                FillDictionaries();
+                            }
                             break;
                         case AvailableOptions.R_PEAKS:
-                            this.ModuleParam = new R_Peaks_Params(this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = true;
-                            FillDictionaries();
+                            if (this.ModuleParam == null)
+                            {
+                                this.ModuleParam = new R_Peaks_Params(this.AnalysisName);
+                                this.ModuleParam.GUIParametersAvailable = true;
+                                FillDictionaries();
+                            }
                             break;
                         case AvailableOptions.WAVES:
-                            this.ModuleParam = new Waves_Params(Wavelet_Type.haar, 3, this.AnalysisName, 500);
-                            this.ModuleParam.GUIParametersAvailable = true;
-                            FillDictionaries();
+                            if (this.ModuleParam == null)
+                            {
+                                this.ModuleParam = new Waves_Params(Wavelet_Type.haar, 3, this.AnalysisName, 500);
+                                this.ModuleParam.GUIParametersAvailable = true;
+                                FillDictionaries();
+                            }
                             break;
                         case AvailableOptions.ATRIAL_FIBER:
-                            this.ModuleParam = new Atrial_Fibr_Params(this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = true;
-                            FillDictionaries();
+                            if (this.ModuleParam == null)
+                            {
+                                this.ModuleParam = new Atrial_Fibr_Params(this.AnalysisName);
+                                this.ModuleParam.GUIParametersAvailable = true;
+                                FillDictionaries();
+                            }
                             break;
                         case AvailableOptions.HEART_CLASS:
                             this.ModuleParam = new Heart_Class_Params(this.AnalysisName);
@@ -99,14 +111,20 @@ namespace EKG_Project.GUI
                             FillDictionaries();
                             break;
                         case AvailableOptions.HRV2:
-                            this.ModuleParam = new HRV2_Params(2, 2, this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = true;
-                            FillDictionaries();
+                            if (this.ModuleParam == null)
+                            {
+                                this.ModuleParam = new HRV2_Params(2, 2, this.AnalysisName);
+                                this.ModuleParam.GUIParametersAvailable = true;
+                                FillDictionaries();
+                            }
                             break;
                         case AvailableOptions.QT_DISP:
-                            this.ModuleParam = new QT_Disp_Params(this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = true;
-                            FillDictionaries();
+                            if (this.ModuleParam == null)
+                            {
+                                this.ModuleParam = new QT_Disp_Params(this.AnalysisName);
+                                this.ModuleParam.GUIParametersAvailable = true;
+                                FillDictionaries();
+                            }
                             break;
                         case AvailableOptions.FLUTTER:
                             this.ModuleParam = new Flutter_Params(this.AnalysisName);
