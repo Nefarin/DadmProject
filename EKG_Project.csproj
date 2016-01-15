@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -444,6 +445,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DLL\Placeholder.txt" />
+    <Content Include="DLL\wfdb.dll">
+      <CustomToolNamespace>WfdbCsharpWrapper</CustomToolNamespace>
+    </Content>
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
     <Resource Include="IO\temp\train_d_label.txt" />

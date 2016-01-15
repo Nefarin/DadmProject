@@ -32,9 +32,24 @@ namespace EKG_Project.IO
             Console.WriteLine(".dat file exists: " + File.Exists(System.IO.Path.Combine(directory, datFileName)));
             Console.WriteLine(".hea file exists: " + File.Exists(System.IO.Path.Combine(directory, heaFileName)));
             Console.WriteLine(".atr file exists: " + File.Exists(System.IO.Path.Combine(directory, atrFileName)));
+            
+            Console.WriteLine(System.IO.Path.Combine(directory, datFileName));
+            String name = System.IO.Path.Combine(directory, recordName);
 
-            Record record = new Record(System.IO.Path.Combine(directory, recordName));
-            record.Open();
+            Console.WriteLine(WfdbCsharpWrapper.Wfdb.WfdbPath);
+            Wfdb.WfdbPath = directory;
+            Console.WriteLine(WfdbCsharpWrapper.Wfdb.WfdbPath);
+            //int nsig = PInvoke.isigopen(name, null, 0);
+            //Console.WriteLine(nsig);
+            Record record;
+            unsafe
+            {
+                record = new Record(recordName);
+                Console.WriteLine(record.ToString());
+                Console.WriteLine(record.Name);
+                record.Open();
+            }
+
 
             Console.WriteLine("Record Name : " + record.Name);
             Console.WriteLine("Record Info : " + record.Info);
