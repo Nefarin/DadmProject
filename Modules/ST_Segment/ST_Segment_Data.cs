@@ -9,7 +9,7 @@ namespace EKG_Project.Modules.ST_Segment
 {
     public class ST_Segment_Data : ECG_Data
     {
-        public ST_Segment_Data()
+        public ST_Segment_Data ()
         {
             tJs = new List<long>();
             tSTs = new List<long>();
@@ -24,6 +24,8 @@ namespace EKG_Project.Modules.ST_Segment
         public int DecreasingLines { get; set; }
     }
 }
+
+
 
 
 

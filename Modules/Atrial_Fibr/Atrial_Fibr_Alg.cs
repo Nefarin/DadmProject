@@ -15,11 +15,6 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Atrial_Fibr
 {
-    #region Documentation
-    /// <summary>
-    /// Class which detect Atrial Fibrillation in ECG signal.
-    /// </summary>
-    #endregion
     public partial class Atrial_Fibr : IModule
     {
         private uint fs;
@@ -34,12 +29,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
         List<DataPoint> _ClusteredData;
         Tuple<bool, Vector<double>, double> _wynik;
         Atrial_Fibr_Params param;
-
-        #region Documentation
-        /// <summary>
-        /// Declaration of fields of class Atrial_Fibr
-        /// </summary>
-        #endregion
         public Atrial_Fibr()
         {
             Param = new Atrial_Fibr_Params();
@@ -62,13 +51,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
         //{
         //    Atrial_Fibr af = new Atrial_Fibr();
         //    Tuple<bool, Vector<double>, double> Wynik = new Tuple<bool, Vector<double>, double>(false, af.pointsDetected, 0);
-        //    //TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\int3.txt");
-        //    TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\int3.txt");
+        //    TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\int3.txt");
         //    af.Fs = 250;
-        //    af.Param.Method = Detect_Method.POINCARE;
+        //    //af.Param.Method = Detect_Method.POINCARE;
         //    af.RR_intervals = TempInput.getSignal();
-        //    //TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\qrs3.txt");
-        //    TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\qrs3.txt");
+        //    TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\qrs3.txt");
         //    af.R_Peaks = TempInput.getSignal();
 
         //    Wynik = af.detectAF(af.RR_intervals, af.R_Peaks, af.Fs, af.Param);
@@ -91,8 +78,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
 
         //}
-
-        //Getery i setery////////////////////////////////////////////////////////////////////////////////////////
         public Atrial_Fibr_Params Param
         {
             get { return param; }
@@ -143,16 +128,16 @@ namespace EKG_Project.Modules.Atrial_Fibr
             set { _ClusteredData = value; }
         }
 
-        //Główna metoda/////////////////////////////////////////////////////////////////////////////////////////////////
+
         #region Documentation
         /// <summary>
-        /// Detection of Atrial Fibrillation.
+        /// TODO
         /// </summary>
-        /// <param name="_rrIntervals"> Intervals between R peaks</param>
-        /// <param name="_rPeaks"> R peaks found in ECG signal </param>
-        /// <param name="fs"> Frequency of sampling for ECG siganl</param>
-        /// <param name="_method"> Paramethers of detection </param>
-        /// <returns>Boolean inforamtion if AF was detected, vector of points with AF detected, length of detected AF in s.</returns>
+        /// <param name="_rrIntervals" </param>
+        /// <param name="_rPeaks" </param>
+        /// <param name="fs" </param>
+        /// <param name="_method" </param>
+        /// <returns></returns>
         #endregion
         private Tuple<bool, Vector<double>, double> detectAF(Vector<double> _rrIntervals, Vector<double> _rPeaks, uint fs, Atrial_Fibr_Params _method)
         {
@@ -179,11 +164,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 _rrIntervals.CopySubVectorTo(partOfRrIntervals, i * dividingFactor, 0, dividingFactor);
                 if (_method.Method == Detect_Method.STATISTIC)
                 {
-                    detectedPart = detectAFStat(partOfRrIntervals);
+                    detectedPart = detectAFStat(partOfRrIntervals, fs);
                 }
                 else
                 {
-                    detectedPart = detectAFPoin(partOfRrIntervals);
+                    detectedPart = detectAFPoin(partOfRrIntervals, fs);
                 }
                 
                 for (int j = 0; j < dividingFactor; j++)
@@ -201,6 +186,8 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     afDetected = true;
                 }
             }
+            //string afDetectedS;
+            //string afDetectionDescription="";
             if (afDetected)
             {
                 pointsDetected= Vector<Double>.Build.Dense(Convert.ToInt32(lengthOfDetectedIntervals));
@@ -217,22 +204,31 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         lastIndex += j;
                     }
                 }
+                //afDetectedS = "Wykryto migotanie przedsionków.";
                 double lengthOfSignal = (_rPeaks.At(_rPeaks.Count-1) - _rPeaks.At(0)) / fs;
+                //lengthOfDetection = lengthOfDetectedIntervals / fs;
+                //percentOfDetection = (lengthOfDetection / lengthOfSignal) * 100;
+                //afDetectionDescription += "Wykryto migotanie trwające ";
+                //afDetectionDescription += lengthOfDetection.ToString("F1", CultureInfo.InvariantCulture);
+                //afDetectionDescription += "s. Stanowi to ";
+                //afDetectionDescription += percentOfDetection.ToString("F1", CultureInfo.InvariantCulture);
+                //afDetectionDescription += "% trwania sygnału.";
             }
             else
             {
                 pointsDetected=Vector<Double>.Build.Dense(1);
+                //afDetectedS="Nie wykryto migotania przedsionków";
             }
             Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetection);
             return result;
         }
-        //Funkcje pomocnicze do metody statystycznej///////////////////////////////////////////////////////////////////
+
         #region Documentation
         /// <summary>
-        /// Calculation of turning point ratio.
+        /// TODO
         /// </summary>
-        /// <param name="_RR"> Intervals between R peaks</param>
-        /// <returns>Turning point ratio</returns>
+        /// <param name="_RR"></param>
+        /// <returns></returns>
         #endregion
         double TPR(Vector<double> _RR)
         {
@@ -249,10 +245,10 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// Calculation of Shannon entropy.
+        /// TODO
         /// </summary>
-        /// <param name="_RR"> Intervals between R peaks</param>
-        /// <returns>Shannon entropy</returns>
+        /// <param name="_RR"></param>
+        /// <returns></returns>
         #endregion
         double SE(Vector<double> _RR)
         {
@@ -304,10 +300,10 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// Calculation of root mean square of successive differences.
+        /// TODO
         /// </summary>
-        /// <param name="_RR"> Intervals between R peaks</param>
-        /// <returns>Root mean square of successive differences</returns>
+        /// <param name="_RR"></param>
+        /// <returns></returns>
         #endregion
         double RMSSD(Vector<double> _RR)
         {
@@ -322,15 +318,16 @@ namespace EKG_Project.Modules.Atrial_Fibr
             rmssd = Math.Sqrt(rmssd);
             return (rmssd = rmssd / _RR.Average());
         }
-        //Metoda statystyczna///////////////////////////////////////////////////////////////////////////////////////
+
         #region Documentation
         /// <summary>
-        /// Detection of Atrial Fibrilation using Statistic method.
+        /// TODO
         /// </summary>
-        /// <param name="_RR"> Intervals between R peaks</param>
-        /// <returns> Boolean information if AF was detected.</returns>
+        /// <param name="_RR"></param>
+        /// <param name="fs"></param>
+        /// <returns></returns>
         #endregion
-        bool detectAFStat(Vector<double> _RR)
+        bool detectAFStat(Vector<double> _RR, uint fs )
         {
            bool AF, tprD, seD, rmssdD;
 
@@ -376,15 +373,16 @@ namespace EKG_Project.Modules.Atrial_Fibr
            }
            return migotanie = AF;
         }
-        //Metoda nieliniowa///////////////////////////////////////////////////////////////////////////////////////////////
+
         #region Documentation
         /// <summary>
-        /// Detection of Atrial Fibrilation using Poincare method.
+        /// TODO
         /// </summary>
-        /// <param name="_RR">Intervals between R peaks</param>
-        /// <returns>Boolean information if AF was detected.</returns>
+        /// <param name="_RR"></param>
+        /// <param name="fs"></param>
+        /// <returns></returns>
         #endregion
-        bool detectAFPoin(Vector<double> _RR)
+        bool detectAFPoin(Vector<double> _RR, uint fs)
         {
             bool AF = false;
             double[] Ii;
@@ -475,30 +473,28 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 AF = false;
             else
             {
-                double[] sil = new double[4];
+                double[] sil = new double[5];
                 int counter = new int();
                 counter = 0;
                 RawData = InitilizeRawData(Ii, Ii1);
                 NormalizedData = NormalizeData(RawData);
-                for (amountOfCluster = 2; amountOfCluster < 6; amountOfCluster++)
+                for (amountOfCluster = 2; amountOfCluster < 5; amountOfCluster++)
                 {
                     RawData = Cluster(RawData, NormalizedData, ClusteredData);
+                    //var group = RawData.GroupBy(s => s.Cluster).OrderBy(s => s.Key);
                     sil[counter] = SilhouetteCoefficient(RawData);
                     counter++;
                 }
 
+
                 if (sil.Max() < 0.92) AF = true;
                 else AF = false;
+
             }
             return AF;
         }
 
-        //Funkcje i klasy pomocnicze do metody nieliniowej////////////////////////////////////////////////////////////////
-        #region Documentation
-        /// <summary>
-        /// Data point in clustering. Contain information about coordinates and number of cluster.
-        /// </summary>
-        #endregion
+   
         public class DataPoint
         {
             public double A { get; set; }
@@ -512,17 +508,20 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
 
             public DataPoint()
-            { }
+            {
+                //A = 0;
+                //B = 0;
+                //Cluster = 0;
+            }
         }
 
-        //Inicjalizacja////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// Create list of data points for clusterization.
+        /// TODO
         /// </summary>
-        /// <param name="Vector1">First coordinate</param>
-        /// <param name="Vector2">Second coordinate</param>
-        /// <returns>List of data points for clusterization</returns>
+        /// <param name="Vector1"></param>
+        /// <param name="Vector2"></param>
+        /// <returns></returns>
         #endregion
 
         private List<DataPoint> InitilizeRawData(double[] Vector1, double[] Vector2)
@@ -538,14 +537,14 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return _rawDataToCluster;
         }
 
-        //Normalizacja danych////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// Normalize list of data point
+        /// TODO
         /// </summary>
-        /// <param name="_rawDataToCluster">List of data points</param>
-        /// <returns>Normalized list of data points</returns>
+        /// <param name="_rawDataToCluster"></param>
+        /// <returns></returns>
         #endregion
+
         private List<DataPoint> NormalizeData(List <DataPoint> _rawDataToCluster)
         {
             List<DataPoint> _normalizedDataToCluster = new List<DataPoint>();
@@ -579,16 +578,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return _normalizedDataToCluster;
         }
 
-        //Przypisanie punktów do klastrów////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// Initialize centroids for clusterization
+        /// TODO
         /// </summary>
-        /// <param name="_rawDataToCluster">List of data points</param>
-        /// <param name="_normalizedDataToCluster">List of normalized data points</param>
+        /// <param name="_rawDataToCluster"></param>
+        /// <param name="_normalizedDataToCluster"></param>
         /// <returns></returns>
         #endregion
-        private void InitializeCentroids(List<DataPoint> _rawDataToCluster, List<DataPoint> _normalizedDataToCluster)
+        private Tuple<List<DataPoint>,List<DataPoint>> InitializeCentroids(List<DataPoint> _rawDataToCluster, List<DataPoint> _normalizedDataToCluster)
         {
             for (int i = 0; i < amountOfCluster; ++i)
             {
@@ -597,18 +595,21 @@ namespace EKG_Project.Modules.Atrial_Fibr
             Random random = new Random();
             for (int i = amountOfCluster; i < _normalizedDataToCluster.Count; i++)
             {
-                _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = random.Next(0, amountOfCluster);
+                _normalizedDataToCluster[i].Cluster = _rawDataToCluster[i].Cluster = random.Next(0, (amountOfCluster-1));
             }
-         }
+            Tuple<List<DataPoint>, List<DataPoint>> result = new Tuple<List<DataPoint>, List<DataPoint>> (_normalizedDataToCluster, _rawDataToCluster);
+            return result;
+        }
 
-        //Wyznaczenie środków ciężkości poszczególnych klastrów////////////////////////////////////////////////////////////////
+        List<DataPoint> _clusters = new List<DataPoint>();
+
         #region Documentation
         /// <summary>
-        /// Update means of data points in each cluster
+        /// TODO
         /// </summary>
-        /// <param name="_normalizedDataToCluster">List of normalized data points</param>
-        /// <param name="_clusters">List of means of data points in each cluster</param>
-        /// <returns>result testing the clusters if each cluster has at least one member, list of new means of data points </returns>
+        /// <param name="_normalizedDataToCluster"></param>
+        /// <param name="_clusters"></param>
+        /// <returns></returns>
         #endregion
         private Tuple<bool, List<DataPoint>> UpdateDataPointMeans(List<DataPoint> _normalizedDataToCluster,List<DataPoint> _clusters)
         {
@@ -646,39 +647,37 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return result;
         }
 
-        //Sprawdzenie, czy każdy klaster ma co najmniej jeden element////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// Tests the clusters if each cluster has at least one member
+        /// TODO
         /// </summary>
-        /// <param name="data">list of data points</param>
-        /// <returns>true if at least one cluster is empty</returns>
+        /// <param name="data"></param>
+        /// <returns></returns>
         #endregion
         private bool EmptyCluster(List<DataPoint> data)
         {
+            var emptyCluster =
+            data.GroupBy(s => s.Cluster).OrderBy(s => s.Key).Select(g => new { Cluster = g.Key, Count = g.Count() });
             bool result = new bool();
             result = false;
 
-            for (int i = 0; i < amountOfCluster; i++)
+            foreach (var item in emptyCluster)
             {
-                if (!data.Exists(x => x.Cluster == i))
+                if (item.Count == 0)
                 {
                     result = true;
-                    break;
                 }
-            }            
-            
+            }
             return result;
         }
 
-        //Obliczenie odległości pomiędzy punktem a środkiem ciężkości klastra ////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// Counting difference between an item and the mean of the current members of a cluster
+        /// TODO
         /// </summary>
-        /// <param name="dataPoint">Data point</param>
-        /// <param name="mean">Mean of data points in cluster</param>
-        /// <returns>Difference between an item and the mean of the current members of a cluster</returns>
+        /// <param name="dataPoint"></param>
+        /// <param name="mean"></param>
+        /// <returns></returns>
         #endregion
         private double ElucidanDistance(DataPoint dataPoint, DataPoint mean)
         {
@@ -688,25 +687,26 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return Math.Sqrt(_diffs);
         }
 
-        //Zmiana przynależności punktu do klastra, jeżeli jego odległość do środka ciężkości innego klastra jest mniejsza////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// Choose the cluster with the minimum difference and move the data point to that cluster
+        /// TODO
         /// </summary>
-        /// <param name="_rawDataToCluster">List of data points</param>
-        /// <param name="_normalizedDataToCluster">List of normalized data points</param>
-        /// <param name="_clusters">List of means of data points in each cluster</param>
-        /// <returns>true if ID of cluster is changed, list of normalized data points, list of data points</returns>
+        /// <param name="_rawDataToCluster"></param>
+        /// <param name="_normalizedDataToCluster"></param>
+        /// <param name="_clusters"></param>
+        /// <returns></returns>
         #endregion
         private Tuple<bool, List<DataPoint>,List<DataPoint>> UpdateClusterMembership(List<DataPoint> _rawDataToCluster, List<DataPoint> _normalizedDataToCluster, List<DataPoint> _clusters)
         {
             bool changed = false;
+            //int _numberOfClusters = 3;
+
             double[] distances = new double[amountOfCluster];
 
-            for (int i = 0; i < _normalizedDataToCluster.Count; ++i)
+            for (int i = 0; i < _normalizedDataToCluster.Count; i++)
             {
 
-                for (int k = 0; k < amountOfCluster; ++k)
+                for (int k = 0; k < amountOfCluster; k++)
                     distances[k] = ElucidanDistance(_normalizedDataToCluster[i], _clusters[k]);
 
                 int newClusterId = MinIndex(distances);
@@ -722,13 +722,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return result;
         }
 
-        //Szuka minimum w tablicy i zwraca indeks////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// Find the cluster with the minimum difference
+        /// TODO
         /// </summary>
-        /// <param name="distances">Array of distances between point and means of clusters</param>
-        /// <returns>Index of cluster with the minimum difference </returns>
+        /// <param name="distances"></param>
+        /// <returns></returns>
         #endregion
         private int MinIndex(double[] distances)
         {
@@ -745,15 +744,14 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return _indexOfMin;
         }
 
-        //Algorytm k-średnich////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// K-Means Clustering Algorithm
+        /// TODO
         /// </summary>
-        /// <param name="_rawDataToCluster">List of data points</param>
-        /// <param name="_normalizedDataToCluster">List of normalized data points</param>
-        /// <param name="_clusters">List of means of data points in each cluster</param>
-        /// <returns>New list of data points</returns>
+        /// <param name="_rawDataToCluster"></param>
+        /// <param name="_normalizedDataToCluster"></param>
+        /// <param name="_clusters"></param>
+        /// <returns></returns>
         #endregion
         public List<DataPoint> Cluster(List<DataPoint> _rawDataToCluster, List<DataPoint> _normalizedDataToCluster, List<DataPoint> _clusters)
         {
@@ -773,13 +771,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return _rawDataToCluster;
         }
 
-        //Obliczenie współczynnika dokładności dopasowania klasteryzacji////////////////////////////////////////////////////////////////
         #region Documentation
         /// <summary>
-        /// Counts Silhouette Coefficient
+        /// TODO
         /// </summary>
-        /// <param name="_rawDataToCluster">List of data points</param>
-        /// <returns>Silhouette Coefficient </returns>
+        /// <param name="_rawDataToCluster"></param>
+        /// <returns></returns>
         #endregion
         private double SilhouetteCoefficient(List<DataPoint> _rawDataToCluster)
         {
@@ -788,13 +785,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
             List<double> distanceIn_b = new List<double>();
             List<double> distanceOut_a = new List<double>();
             List<double> distanceOut_b = new List<double>();
+            List<double> a_mean_In = new List<double>();
+            List<double> b_mean_In = new List<double>();
+            List<double> a_mean_Out = new List<double>();
+            List<double> b_mean_Out = new List<double>();
+            List<double> dist_In = new List<double>();
+            List<double> dist_Out = new List<double>();
             List<double> Silh = new List<double>();
-            double a_mean_In = new double();
-            double b_mean_In = new double();
-            double a_mean_Out = new double();
-            double b_mean_Out = new double();
-            double dist_In = new double();
-            double dist_Out = new double();
 
             for (int i = 0; i < _rawDataToCluster.Count; i++)
             {
@@ -817,51 +814,56 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
                 if (distanceIn_a.Count == 0)
                 {
-                    a_mean_In =0.0;
-                    b_mean_In = 0.0;
-                    a_mean_Out = distanceOut_a.Average();
-                    b_mean_Out = distanceOut_b.Average();
+                    a_mean_In.Add(0.0);
+                    b_mean_In.Add(0.0);
+                    a_mean_Out.Add(distanceOut_a.Average());
+                    b_mean_Out.Add(distanceOut_b.Average());
                 }
-
                 else if (distanceOut_a.Count == 0)
                 {
-                    a_mean_Out = 0.0;
-                    b_mean_Out = 0.0;
-                    a_mean_In = distanceIn_a.Average();
-                    b_mean_In = distanceIn_b.Average();
+                    a_mean_Out.Add(0.0);
+                    b_mean_Out.Add(0.0);
+                    a_mean_In.Add(distanceIn_a.Average());
+                    b_mean_In.Add(distanceIn_b.Average());
+                    //dist_Out.Add(0.0);
                 }
-
                 else
                 {
-                    a_mean_In = distanceIn_a.Average();
-                    b_mean_In = distanceIn_b.Average();
-                    a_mean_Out = distanceOut_a.Average();
-                    b_mean_Out = distanceOut_b.Average();
-                }
 
-                if (a_mean_In == 0.0)
+                    a_mean_In.Add(distanceIn_a.Average());
+                    b_mean_In.Add(distanceIn_b.Average());
+                    a_mean_Out.Add(distanceOut_a.Average());
+                    b_mean_Out.Add(distanceOut_b.Average());
+
+                }
+                if (a_mean_In.Count == 1 && a_mean_In[0] == 0.0)
                 {
-                    dist_In = 0.0;
-                    dist_Out = (Math.Sqrt(Math.Pow(a_mean_Out, 2) + Math.Pow(b_mean_Out, 2)));
-                }
+                    dist_In.Add(0.0);
+                    dist_Out.Add(Math.Sqrt(Math.Pow(a_mean_Out[0], 2) + Math.Pow(b_mean_Out[0], 2)));
 
-                else if (a_mean_Out == 0.0)
+                }
+                else if (a_mean_Out.Count == 1 && a_mean_Out[0] == 0.0)
                 {
-                    dist_Out = 0.0;
-                    dist_In = (Math.Sqrt(Math.Pow(a_mean_In, 2) + Math.Pow(b_mean_In, 2)));
-                }
+                    dist_Out.Add(0.0);
+                    dist_In.Add(Math.Sqrt(Math.Pow(a_mean_In[0], 2) + Math.Pow(b_mean_In[0], 2)));
 
+                }
                 else
                 {
-                    dist_In = (Math.Sqrt(Math.Pow(a_mean_In, 2) + Math.Pow(b_mean_In, 2)));
-                    dist_Out = (Math.Sqrt(Math.Pow(a_mean_Out, 2) + Math.Pow(b_mean_Out, 2)));
+                    dist_In.Add(Math.Sqrt(Math.Pow(a_mean_In[0], 2) + Math.Pow(b_mean_In[0], 2)));
+                    dist_Out.Add(Math.Sqrt(Math.Pow(a_mean_Out[0], 2) + Math.Pow(b_mean_Out[0], 2)));
                 }
-
-                Silh.Add(Math.Abs(dist_Out - dist_In) / Math.Max(dist_Out, dist_In));
+                Silh.Add(Math.Abs(dist_Out[0] - dist_In[0]) / Math.Max(dist_Out[0], dist_In[0]));
                 distanceIn_a.Clear();
                 distanceIn_b.Clear();
                 distanceOut_a.Clear();
                 distanceOut_b.Clear();
+                a_mean_In.Clear();
+                b_mean_In.Clear();
+                a_mean_Out.Clear();
+                b_mean_Out.Clear();
+                dist_In.Clear();
+                dist_Out.Clear();
             }
             SilhouetteCoeff = Silh.Average();
 

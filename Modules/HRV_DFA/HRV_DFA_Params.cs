@@ -17,7 +17,7 @@ namespace EKG_Project.Modules.HRV_DFA
             this.AnalysisName = analysisName;
         }
 
-        public string AnalysisName1
+        public string AnalysisName
         {
             get
             {

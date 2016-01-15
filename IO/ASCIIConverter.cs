@@ -43,7 +43,7 @@ namespace EKG_Project.IO
 
                 if (property.GetValue(Data, null) == null)
                 {
-                    //throw new Exception(); // < - robić coś takiego?
+                    throw new Exception(); // < - robić coś takiego?
 
                 }
                 else
@@ -112,13 +112,14 @@ namespace EKG_Project.IO
        public List<Tuple<string, Vector<double>>> getSignals()
        {
            List<Tuple<string, Vector<double>>> Signals = new List<Tuple<string, Vector<double>>>();
+           
+           Vector<double> signal = Vector<double>.Build.Dense(lines.Length - 2);
            for (int i = 1; i < columns.Count(); i++)
            {
                string leadName = columns[i][0];
                string cleanedLeadName = System.Text.RegularExpressions.Regex.Replace(leadName, @"\s+", "");
 
-               Vector<double> signal = Vector<double>.Build.Dense(lines.Length - 2);
-               for (int j = 2; j < lines.Count(); j++)
+               for (int j = 2; j < lines.Count()-2; j++)
                {
                    double value = Convert.ToDouble(columns[i][j], new System.Globalization.NumberFormatInfo());
                    int index = j - 2;

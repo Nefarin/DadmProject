@@ -12,9 +12,9 @@ namespace EKG_Project.Modules.T_Wave_Alt
 {
     public partial class T_Wave_Alt : IModule
     {
-        private int[] findAlternans(List<int> t_end_List, Vector<double> ecg, uint fs)
+        private int[] findAlternans(Vector<int> t_end_Vec, Vector<double> ecg, uint fs)
         {
-            int[] t_end = t_end_List.ToArray();
+            int[] t_end = t_end_Vec.ToArray();
 
             // t-wave length calculation
             // assuming t-wave length of 150ms

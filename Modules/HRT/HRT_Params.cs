@@ -8,11 +8,5 @@ namespace EKG_Project.Modules.HRT
     {
 
         enum RodzajWykresu { LINIOWY, SCHODKOWY};
-        public string AnalysisName;
-
-        public HRT_Params(string analysisname)
-        {
-            this.AnalysisName = analysisname;
-        }
     }
 }

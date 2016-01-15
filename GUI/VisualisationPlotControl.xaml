@@ -16,16 +16,10 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="90"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
 
-        <oxy:PlotView Model="{Binding CurrentPlot}" x:Name="ECGPlotView" Grid.Row="0" Grid.Column="1" Margin="0,0,0,0"/>
-        <ListBox Name="CheckBoxList" ItemsSource="{Binding}" Grid.Column="0"/>
+        <oxy:PlotView Model="{Binding CurrentPlot}" x:Name="ECGPlotView" Grid.Row="0" Margin="0,0,0,0"/>
 
-
-        <UniformGrid Grid.Row="1" Grid.Column="1"  Rows="1" Columns="2" Margin="5,0,5,0">
+        <UniformGrid Grid.Row="1"  Rows="1" Columns="2" Margin="5,0,5,0">
             <Button x:Name="PlotBackwardButton" Click="PlotBackwardButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="images/backward.png"/>

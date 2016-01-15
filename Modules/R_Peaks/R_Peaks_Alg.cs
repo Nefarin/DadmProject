@@ -17,33 +17,73 @@ namespace EKG_Project.Modules.R_Peaks
     /// </summary>
     #endregion
     public partial class R_Peaks : IModule
-    {      
+    {
+        /* nie działa kanalia - wężyk sobie spacuje po locsR
+        #region
+        /// <summary>
+        /// Detects R peaks using chosen method
+        /// </summary>
+        /// <returns> numbers of indexes where are located R peaks as vector </returns>
+        #endregion
+        public Vector<double> detectRPeaks2()
+        {
+            //Vector<double> locsR;  jaka długość?
+            switch (Params.Method)
+            {
+                // no idea what I'm doing
+                // skąd _currentVector wie, że jest sygnałem?
+                case R_Peaks_Method.PANTOMPKINS:
+                    locsR = Hilbert(_currentVector, InputData.Frequency);
+                    break;
+                case R_Peaks_Method.HILBERT:
+                    locsR = PanTompkins(_currentVector, InputData.Frequency);
+                    break;
+                case R_Peaks_Method.EMD:
+                    //locsR = EMD(_currentVector, InputData.Frequency);
+                    break;
+            }
+            return locsR;
+        }*/
+        
         /*static void Main(string[] args)
         {
-            #region readData            
-            //read data from dat file
-            TempInput.setInputFilePath(@"D:\biomed\DADM\C#\100.txt");
-            uint fs = TempInput.getFrequency();
-            Vector<double> signal = TempInput.getSignal();
-            #endregion
+            //#region readData
+            //read data from ecg_baseline (TO DO!)
+            //List<Tuple<string, Vector<double>>> R_Peaks = new List<Tuple<string, Vector<double>>>();
+            // Vector<double> sigs = ECG_Baseline_Data.SignalFiltered ;
+            //Tuple<string, Vector <double>> sig_data = sigs.Item[0];
+            //  string channel = sig_data.Item1;
+            // Vector<double> sig = sig_data.Item2;
 
-            //Vector<double> signal = sig.SubVector(0, 6000);
+            
+            //read data from dat file
+            TempInput.setInputFilePath(@"D:\biomed\DADM\C#\baseline.txt");
+            uint fs = TempInput.getFrequency();
+            Vector<double> sig = TempInput.getSignal();
+            #endregion
 
             R_Peaks emd = new R_Peaks();
 
-            Vector<double> locsR = emd.EMD(signal, fs);
+            Vector<double> locsR = emd.EMD(sig, fs);
             emd.LocsR = locsR;
             
-           #region writeData
+
+            // RR in ms zostało przerobione na funkcję i jest pod LPFiltering
+
+           // #region writeData
+            //write result to DATA
+            //Tuple<string, Vector<double>> r_data = Tuple.Create<channel, Vector<int> rPeaks>;
+            // R_Peaks.Add(r_data);
+
             //write result to dat file
-            //TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baserr.txt");
-            //TempInput.writeFile(fs, RRms);
-            TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\210out.txt");
+            TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baserr.txt");
+            TempInput.writeFile(fs, RRms);
+            TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baser.txt");
             TempInput.writeFile(fs, emd.LocsR);
-            #endregion
+            //#endregion
 
             //TEST-Console
-            Console.WriteLine("done");
+            //Console.WriteLine();
             //foreach (double sth in emd.LocsR) { Console.WriteLine(sth); }
             //Console.ReadKey();
         }*/
@@ -753,9 +793,6 @@ namespace EKG_Project.Modules.R_Peaks
                     for (int j = 0; j < iMin.Count; j++)
                     {
                         ampMin[j] = d[Convert.ToInt16(iMin[j])];
-                    }
-                    for(int j =0; j < iMax.Count; j++)
-                    {
                         ampMax[j] = d[Convert.ToInt16(iMax[j])];
                     }
                     //envelopes
@@ -780,7 +817,7 @@ namespace EKG_Project.Modules.R_Peaks
 #endregion
         public Vector<double>[] EmpipricalModeDecomposition(Vector<double> signal)
         {
-            int numOfImfs = 2;
+            int numOfImfs = 1;
             Vector<double>[] imfs = new Vector<double>[numOfImfs];
             Vector<double> res = Vector<double>.Build.DenseOfVector(signal);
             for (int i = 0; i < numOfImfs; i++)
@@ -947,7 +984,6 @@ namespace EKG_Project.Modules.R_Peaks
 
         public Vector<double> EMD(Vector<double> signalECG, uint samplingFrequency)
         {
-            Delay = 0;
             //emd
             Vector<double>[] imfs = EmpipricalModeDecomposition(signalECG);
             //non linear tranform imfs

@@ -9,29 +9,21 @@ namespace EKG_Project.Modules.T_Wave_Alt
 {
     public class T_Wave_Alt_Params : ModuleParams
     {
-        private string _analysisName;
+        private uint _fs;
 
-        public T_Wave_Alt_Params()
+        public T_Wave_Alt_Params(uint fs)
         {
-            this.AnalysisName = "Analysis0";
+            _fs = fs;
         }
 
-        public T_Wave_Alt_Params(string analysisName)
-        {
-            this.AnalysisName = analysisName;
-        }
-
-        public string AnalysisName
+        public uint Fs
         {
             get
             {
-                return _analysisName;
-            }
-
-            set
-            {
-                _analysisName = value;
+                return _fs;
             }
         }
     }
+
+    // de facto w naszym module nie ma do podania dodatkowych informacji z GUI...
 }

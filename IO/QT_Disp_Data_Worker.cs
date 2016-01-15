@@ -101,33 +101,6 @@ namespace EKG_Project.IO
                 QT_disp_global.AppendChild(value);
                 module.AppendChild(QT_disp_global);
 
-                List<Tuple<String, List<int>>> list2 = basicData.T_End_Local;
-                foreach (var tuple in list2)
-                {
-                    XmlElement moduleNode = file.CreateElement(string.Empty, "T_End_Local", string.Empty);
-                    module.AppendChild(moduleNode);
-
-                    XmlElement lead = file.CreateElement(string.Empty, "lead", string.Empty);
-                    XmlText leadValue = file.CreateTextNode(tuple.Item1);
-                    lead.AppendChild(leadValue);
-                    moduleNode.AppendChild(lead);
-
-                    XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-
-                    StringBuilder builder = new StringBuilder();
-                    List<int> samplesList = tuple.Item2;
-                    foreach(var sample in samplesList)
-                    {
-                        builder.Append(sample.ToString());
-                        builder.Append(" ");
-                    }
-                    string samplesText = builder.ToString();
-                    XmlText samplesValue = file.CreateTextNode(samplesText);
-
-                    samples.AppendChild(samplesValue);
-                    moduleNode.AppendChild(samples);
-                }
-
                 ew.InternalXMLFile = file;
 
                 file.Save(System.IO.Path.Combine(directory, fileName));
@@ -203,37 +176,9 @@ namespace EKG_Project.IO
 
                     XmlNode qt_disp_global = module["QT_disp_global"];
                     basicData.QT_disp_global = Convert.ToDouble(qt_disp_global.InnerText, new System.Globalization.NumberFormatInfo());
-
-                    List<Tuple<String, List<int>>> list3 = new List<Tuple<String, List<int>>>();
-                    XmlNodeList nodes3 = module.SelectNodes("T_End_Local");
-                    foreach (XmlNode node in nodes3)
-                    {
-                        XmlNode lead = node["lead"];
-                        string readLead = lead.InnerText;
-
-                        XmlNode samples = node["samples"];
-                        string readSamples = samples.InnerText;
-                        List<int> convertedSamples = stringToList(readSamples);
-
-                        Tuple<String, List<int>> read = Tuple.Create(readLead, convertedSamples);
-                        list3.Add(read);
-                    }
-                    basicData.T_End_Local = list3;
                 }
             }
             this.Data = basicData;
-        }
-
-        public static List<int> stringToList(string input)
-        {
-            int[] digits = input
-                              .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                              .Select(digit => Convert.ToInt32(digit, new System.Globalization.NumberFormatInfo()))
-                              .ToArray();
-            List<int> list = new List<int>();
-            for (int i = 0; i < digits.Length; i++)
-                list.Add(digits[i]);
-            return list;
         }
     }
 }
