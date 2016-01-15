@@ -64,7 +64,7 @@ namespace EKG_Project.Modules.QT_Disp
         /// <returns>T End local index</returns>
         public int ToDoInProccessData(Vector<double> samples, int index)
         {
-            int T_End = 0;
+            int T_End = -1;
             //check if we exceed a size of R _ Peaks
             if (index < (R_Peaks.Count - 2))
             {
@@ -75,13 +75,37 @@ namespace EKG_Project.Modules.QT_Disp
                 R_peaks_loc[1] = R_Peaks[index+1];                
                 // create new object that stores a indexes of points from a Waves module
                 // need this point to find T_end
-                Test data = new Test(QRS_onset.ElementAt(index), QRS_End.ElementAt(index), T_End_Global.ElementAt(index), samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);             
-                //here we add a QT interval to a list
-                this.QT_INTERVALS.Add(data.Calc_QT_Interval());
-                //here we add a T_End index to a list
-                this.T_End_local.Add(data.FindT_End());
-                // we return a T_End index to save it to the output
-                T_End = data.FindT_End();
+                if(index<T_End_Global.Count)
+                {                   
+                    int onset = QRS_onset.ElementAt(1);
+                    int end = QRS_End.ElementAt(0);                   
+                    if (onset > end )
+                    {
+                        Test data = new Test(QRS_onset.ElementAt(index), QRS_End.ElementAt(index), T_End_Global.ElementAt(index), samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);
+                        //here we add a QT interval to a list
+                        this.QT_INTERVALS.Add(data.Calc_QT_Interval());
+                        //here we add a T_End index to a list
+                        this.T_End_local.Add(data.FindT_End());
+                        // we return a T_End index to save it to the output
+                        T_End = data.FindT_End();
+                    }                   
+                    else
+                    {
+                        if (index > 1)
+                        {                           
+                            Test data = new Test(QRS_onset.ElementAt(index), QRS_End.ElementAt(index-1), T_End_Global.ElementAt(index-1), samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);
+                            //here we add a QT interval to a list
+                            this.QT_INTERVALS.Add(data.Calc_QT_Interval());
+                            //here we add a T_End index to a list
+                            this.T_End_local.Add(data.FindT_End());
+                            // we return a T_End index to save it to the output
+                            T_End = data.FindT_End();
+                        }
+                        
+                    }
+                   
+                }
+                
             }
             // return a T_End index if bad recognition assign -1
             return T_End;
