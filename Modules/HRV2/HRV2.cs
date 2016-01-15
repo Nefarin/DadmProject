@@ -106,15 +106,16 @@ namespace EKG_Project.Modules.HRV2
 
         private void processData()
         {
-            
-           // OutputData.Tinn.Add(makeTinn());
-           // OutputData.TriangleIndex.Add(TriangleIndex());
-           // OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
+           makeTinn();
+           OutputData.Tinn.Add(tinn);
+           //TriangleIndex();
+           //OutputData.TriangleIndex.Add(triangleIndex);
+           //OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
 
             PoincarePlot_x();
             PoincarePlot_y();
-            //OutputData.SD1.Add( SD1());
-            //OutputData.SD2.Add(SD2());
+            OutputData.SD1.Add(SD1());
+            OutputData.SD2.Add(SD2());
 
             OutputData.PoincarePlotData_x.Add( new Tuple<string, Vector<double>>("RR", RR_intervals_x));
             OutputData.PoincarePlotData_y.Add( new Tuple<string, Vector<double>>("RR+1", RR_intervals_y));
