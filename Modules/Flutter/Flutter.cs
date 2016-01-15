@@ -183,18 +183,18 @@ namespace EKG_Project.Modules.Flutter
 
         public static void Main()
         {
-            Flutter_Params param = new Flutter_Params("TestAnalysis3");
-            Flutter flutter = new Flutter();
-            flutter.Init(param);
-            while(true)
+            Flutter_Stats stats = new Flutter_Stats();
+            stats.Init("Analysis6");
+            while (true)
             {
-                if(flutter.Ended())
-                {
-                    break;
-                }
-                Console.WriteLine(flutter.Progress());
-                flutter.ProcessData();
+                if (stats.Ended()) break;
+                stats.ProcessStats();
             }
+            foreach (var key in stats.GetStatsAsString().Keys)
+            {
+                Console.WriteLine(key + stats.GetStatsAsString()[key]);
+            }
+            Console.Read();
         }
     }
 }

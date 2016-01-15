@@ -62,16 +62,6 @@
       <samples>1 2 3 4 5 6 7 8 9 </samples>
     </signalFiltered>
   </module>
-  <module name="Flutter">
-    <FlutterAnnotations>
-      <onset>3</onset>
-      <end>3</end>
-    </FlutterAnnotations>
-    <FlutterAnnotations>
-      <onset>4</onset>
-      <end>4</end>
-    </FlutterAnnotations>
-  </module>
   <module name="Atrial_Fibr">
     <detectedAF>
       <detected>True</detected>
@@ -315,4 +305,5 @@
       <samples>1 2 3 4 5 6 7 8 9 0 </samples>
     </T_End_Local>
   </module>
+  <module name="Flutter" />
 </EKG>
