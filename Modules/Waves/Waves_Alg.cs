@@ -188,10 +188,10 @@ namespace EKG_Project.Modules.Waves
 
             Console.Write("Aktualny kanal: ");
             Console.WriteLine(_rPeaksProcessed);
-            if( _rPeaksProcessed == 0)
+            if (_rPeaksProcessed == 0)
                 _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
 
-            for (int middleR = _rPeaksProcessed +1 ; middleR < maxRInd; middleR++)
+            for (int middleR = _rPeaksProcessed + 1; middleR < maxRInd; middleR++)
             {
                 Console.Write("start ");
                 Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR - 1]);
@@ -199,7 +199,7 @@ namespace EKG_Project.Modules.Waves
                 _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
             }
 
-            int Rlast = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count- 1;
+            int Rlast = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1;
 
             if (_rPeaksProcessed + Params.RpeaksStep > Rlast)
                 _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[Rlast - 1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[Rlast] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
@@ -227,7 +227,7 @@ namespace EKG_Project.Modules.Waves
             //Console.WriteLine((middleR >> decompLevel) - (rightEnd >> decompLevel) + 1);
             //Console.WriteLine(dwt.Count);
 
-            if (sectionStart + len >= dwt.Count || len<1 || sectionStart<0)
+            if (sectionStart + len >= dwt.Count || len < 1 || sectionStart < 0)
                 return -1;
 
             int qrsOnsetInd = dwt.SubVector(sectionStart, len).MinimumIndex() + sectionStart;
@@ -258,7 +258,7 @@ namespace EKG_Project.Modules.Waves
             //Console.WriteLine(qrsEndInd);
             //Console.WriteLine(dwt.Count);
 
-            if (qrsEndInd + len >= dwt.Count || len < 1 || qrsEndInd<0)
+            if (qrsEndInd + len >= dwt.Count || len < 1 || qrsEndInd < 0)
             {
                 return -1;
                 //Console.WriteLine("Brak enda");
