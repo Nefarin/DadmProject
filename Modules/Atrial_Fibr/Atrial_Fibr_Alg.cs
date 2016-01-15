@@ -390,42 +390,18 @@ namespace EKG_Project.Modules.Atrial_Fibr
             double[] Ii;
             double[] Ii1;
             int length = _RR.Count;
-            if (length % 2 == 0)
+            int tmp = length - 1 ;
+            Ii = new double[tmp];
+            Ii1 = new double[tmp];
+            int j=0;
+
+            for (int i = 0; i < tmp; i = i + 1)
             {
-                int tmp = length / 2;
-                Ii = new double[tmp];
-                Ii1 = new double[tmp];
-                int j=0;
-
-                for (int i = 0; i < 2* tmp; i = i + 2)
-                {
-                    Ii[j] = _RR.At(i);
-                    Ii1[j] = _RR.At(i+1);
-                    j++;    
-                }
+                 Ii[j] = _RR.At(i);
+                 Ii1[j] = _RR.At(i+1);
+                 j++;    
             }
-            else
-            {
-                double tmp = length / 2;
-                int size = Convert.ToInt32(Math.Ceiling(tmp));
-                Ii = new double[size];
-                Ii1 = new double[size];
-                int j = 0;
-
-                for (int i = 0; i < size; i = i + 2)
-                {
-                    Ii[j] = _RR.At(i);
-                    j++;
-                }
-
-                j = 0;
-
-                for (int i = 1; i < (size-1); i = i + 2)
-                {
-                    Ii1[j] = _RR.At(i);
-                    j++;
-                }
-            }
+            
             double[] A1 = new double[Ii.Length];
             for (int i = 0; i < Ii.Length;i++)
             {
