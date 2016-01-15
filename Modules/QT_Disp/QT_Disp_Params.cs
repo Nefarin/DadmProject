@@ -12,15 +12,12 @@ namespace EKG_Project.Modules.QT_Disp
     public enum QT_Calc_Method { BAZETTA, FRIDERICA, FRAMIGHAMA };
     public enum T_End_Method { TANGENT, PARABOLA };
 
-    public class QT_Disp_Params : ModuleParams, INotifyPropertyChanged
+    public class QT_Disp_Params : ModuleParams
     {
-
-
         //Input which can be modify in GUI
         private QT_Calc_Method _qt_method;
         private T_End_Method _t_end_method;
         private bool _alldrains; // determinate if we calculate QT_disp for all drains or only one
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public QT_Disp_Params()
         {
@@ -69,8 +66,6 @@ namespace EKG_Project.Modules.QT_Disp
             set
             {
                 _alldrains = value;
-                this.NotifyPropertyChanged("AllDrains");
-                this.NotifyPropertyChanged("SingleDrain");
             }
         }
 
@@ -83,14 +78,6 @@ namespace EKG_Project.Modules.QT_Disp
             set
             {
                 _alldrains = !value;
-            }
-        }
-
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

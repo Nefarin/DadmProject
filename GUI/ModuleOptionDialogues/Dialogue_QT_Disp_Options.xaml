@@ -39,7 +39,7 @@
         <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,5" x:Name="tEndMethod" ItemsSource="{Binding Source={StaticResource availableTEndMethods}}" SelectedItem="{Binding Path=TEndMethod}" ></ComboBox>
         <Label Grid.Row="2" Grid.Column="0">Number of leads</Label>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,5,0,0">
-            <RadioButton  x:Name="radioButtoOne" GroupName="Group1" Content="One" 
+            <RadioButton  x:Name="radioButtoOne" GroupName="Group1" Content="One"
              IsChecked="{Binding Path=SingleDrain, Mode=TwoWay}" />
             <RadioButton x:Name="radioButtonMultiple" Margin="10,0,0,0" GroupName="Group1"  Content="Multiple" 
              IsChecked="{Binding Path=AllDrains, Mode=TwoWay}" />
