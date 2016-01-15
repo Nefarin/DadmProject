@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
 using MathNet.Numerics.LinearAlgebra;
@@ -80,13 +79,13 @@ namespace EKG_Project.Modules.HRV2
         private void findOutput()
         {
             for (int i = 0; i < InputData.RRInterval.Count; i++)
-                if (InputData.RRInterval[i].Item1 == "II" || InputData.RRInterval[i].Item1 == "MLII")
-                {
+            if (InputData.RRInterval[i].Item1 == "II" || InputData.RRInterval[i].Item1 == "MLII")
+            {
                     _outputFound = true;
                     _outputIndex = i;
                     return;
-                }
-
+            }
+            
         }
 
         public void ProcessData()
@@ -107,19 +106,19 @@ namespace EKG_Project.Modules.HRV2
 
         private void processData()
         {
-            makeTinn();
-            OutputData.Tinn.Add(tinn);
-            //TriangleIndex();
-            //OutputData.TriangleIndex.Add(triangleIndex);
-            //OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
+           makeTinn();
+           OutputData.Tinn.Add(tinn);
+           //TriangleIndex();
+           //OutputData.TriangleIndex.Add(triangleIndex);
+           //OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
 
             PoincarePlot_x();
             PoincarePlot_y();
             OutputData.SD1.Add(SD1());
             OutputData.SD2.Add(SD2());
 
-            OutputData.PoincarePlotData_x.Add(new Tuple<string, Vector<double>>("RR", RR_intervals_x));
-            OutputData.PoincarePlotData_y.Add(new Tuple<string, Vector<double>>("RR+1", RR_intervals_y));
+            OutputData.PoincarePlotData_x.Add( new Tuple<string, Vector<double>>("RR", RR_intervals_x));
+            OutputData.PoincarePlotData_y.Add( new Tuple<string, Vector<double>>("RR+1", RR_intervals_y));
 
 
             OutputWorker.Save(OutputData);
@@ -219,7 +218,7 @@ namespace EKG_Project.Modules.HRV2
 
         public static void Main()
         {
-            HRV2_Params param = new HRV2_Params(3, 9, "TestAnalysis100");
+            HRV2_Params param = new HRV2_Params(3, 9, "TestAnalysis100"); 
             HRV2 testModule = new HRV2();
             testModule.Init(param);
             while (true)
