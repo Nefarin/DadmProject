@@ -449,8 +449,6 @@
     </ReferencePath>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="bin\Debug\wfdb.dll" />
-    <Content Include="bin\Release\wfdb.dll" />
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
@@ -482,6 +480,8 @@
     <Resource Include="Resources\TextFile1.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="bin\Debug\" />
+    <Folder Include="bin\Release\" />
     <Folder Include="GUI\Converters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
