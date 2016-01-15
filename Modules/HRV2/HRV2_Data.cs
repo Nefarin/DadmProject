@@ -170,6 +170,13 @@ namespace EKG_Project.Modules.HRV2
         public HRV2_Data()
         {
             HistogramData = new List<Tuple<string, HRV2.Histogram2>>();
+            PoincarePlotData_x = new List<Tuple<string, Vector<double>>>();
+            PoincarePlotData_y = new List<Tuple<string, Vector<double>>>();
+            SD1 = new List<double>();
+            SD2 = new List<double>();
+            Tinn = new List<double>();
+            TriangleIndex = new List<double>();
+            ElipseCenter = new List<double>();
         }
     }
 }
