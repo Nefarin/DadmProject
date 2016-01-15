@@ -446,6 +446,16 @@
   <module name="Heart_Axis">
     <HeartAxis>-0,179957708666279</HeartAxis>
   </module>
+  <module name="Flutter">
+    <FlutterAnnotations>
+      <onset>0</onset>
+      <end>0</end>
+    </FlutterAnnotations>
+    <FlutterAnnotations>
+      <onset>3</onset>
+      <end>3</end>
+    </FlutterAnnotations>
+  </module>
   <module name="Sleep_Apnea">
     <Detected_Apnea>
       <lead>I</lead>
@@ -651,15 +661,5 @@
       <lead>V6</lead>
       <item2>0</item2>
     </il_Apnea>
-  </module>
-  <module name="Flutter">
-    <FlutterAnnotations>
-      <onset>0</onset>
-      <end>0</end>
-    </FlutterAnnotations>
-    <FlutterAnnotations>
-      <onset>3</onset>
-      <end>3</end>
-    </FlutterAnnotations>
   </module>
 </EKG>
