@@ -371,7 +371,7 @@ namespace EKG_Project.Modules.QT_Disp
                 _params = value;
             }
         }
-        public static void Main()
+        /*public static void Main()
         {
             QT_Disp_Params param = new QT_Disp_Params();
             QT_Disp testModule = new QT_Disp();
@@ -386,6 +386,25 @@ namespace EKG_Project.Modules.QT_Disp
             }
             Console.WriteLine("Finish");
             Console.ReadKey();         
+
+        }*/
+        public static void Main(String[] args)
+        {
+            QT_Disp_Stats stats = new QT_Disp_Stats();
+            stats.Init("TestAnalysis100");
+
+
+            while (true)
+            {
+                if (stats.Ended()) break;
+                stats.ProcessStats();
+            }
+
+            foreach (var key in stats.GetStatsAsString().Keys)
+            {
+                Console.WriteLine(key + stats.GetStatsAsString()[key]);
+            }
+            Console.Read();
 
         }
 
