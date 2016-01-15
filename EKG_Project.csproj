@@ -47,7 +47,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.App</StartupObject>
+    <StartupObject>EKG_Project.IO.WFDBTest</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -85,7 +85,7 @@
     </Reference>
     <Reference Include="WfdbCsharpLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>DLL\WfdbCsharpLib.dll</HintPath>
+      <HintPath>..\DLL\WfdbCsharpLib.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
