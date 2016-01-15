@@ -470,6 +470,9 @@
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
+  <module name="Heart_Axis">
+    <HeartAxis>-0,433421837964341</HeartAxis>
+  </module>
   <module name="Flutter">
     <FlutterAnnotations>
       <onset>5</onset>

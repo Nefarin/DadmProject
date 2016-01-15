@@ -89,32 +89,6 @@
   <module name="Heart_Axis">
     <HeartAxis>67</HeartAxis>
   </module>
-  <module name="HRV_DFA">
-    <DfaNumberN>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </DfaNumberN>
-    <DfaNumberN>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </DfaNumberN>
-    <DfaValueFn>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </DfaValueFn>
-    <DfaValueFn>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </DfaValueFn>
-    <ParamAlpha>
-      <lead>V1</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </ParamAlpha>
-    <ParamAlpha>
-      <lead>MLII</lead>
-      <samples>1 2 3 4 5 6 7 8 9 </samples>
-    </ParamAlpha>
-  </module>
   <module name="HRV1">
     <FreqBasedParams>
       <lead>V1</lead>
@@ -166,33 +140,6 @@
       <lead>MLII</lead>
       <intervals>1 2 3 4 5 6 7 8 9 </intervals>
     </RRInterval>
-  </module>
-  <module name="QT_Disp">
-    <QT_disp_local>
-      <lead>V1</lead>
-      <samples>2</samples>
-    </QT_disp_local>
-    <QT_disp_local>
-      <lead>MLII</lead>
-      <samples>23</samples>
-    </QT_disp_local>
-    <QT_mean>
-      <lead>V1</lead>
-      <samples>2</samples>
-    </QT_mean>
-    <QT_mean>
-      <lead>MLII</lead>
-      <samples>23</samples>
-    </QT_mean>
-    <QT_std>
-      <lead>V1</lead>
-      <samples>2</samples>
-    </QT_std>
-    <QT_std>
-      <lead>MLII</lead>
-      <samples>23</samples>
-    </QT_std>
-    <QT_disp_global>78</QT_disp_global>
   </module>
   <module name="Heart_Class">
     <ClassificationResult>
@@ -252,5 +199,120 @@
       <samples>
       </samples>
     </TEnds>
+  </module>
+  <module name="HRV_DFA">
+    <DfaNumberN>
+      <lead>V1</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </DfaNumberN>
+    <DfaNumberN>
+      <lead>MLII</lead>
+      <samples>7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </DfaNumberN>
+    <DfaValueFn>
+      <lead>V1</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </DfaValueFn>
+    <DfaValueFn>
+      <lead>MLII</lead>
+      <samples>7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </DfaValueFn>
+    <ParamAlpha>
+      <lead>V1</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </ParamAlpha>
+    <ParamAlpha>
+      <lead>MLII</lead>
+      <samples>7 8 9 </samples>
+      <samples1>1 2 3 </samples1>
+    </ParamAlpha>
+  </module>
+  <module name="HRV2">
+    <HistogramData>
+      <lead>MLII</lead>
+      <samples>Average value: 5, lowest value: 1, highest value: 9, count: 9</samples>
+    </HistogramData>
+    <PoincarePlotData_x>
+      <lead>V1</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>MLII</lead>
+      <samples>1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 4 3 2 8 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_y>
+      <lead>V1</lead>
+      <samples>1 2 3 4 5 6 7 8 9 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>MLII</lead>
+      <samples>1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 4 3 2 8 </samples>
+    </PoincarePlotData_y>
+    <Tinn>9</Tinn>
+    <Tinn>8</Tinn>
+    <Tinn>7</Tinn>
+    <Tinn>6</Tinn>
+    <Tinn>5</Tinn>
+    <Tinn>4</Tinn>
+    <TriangleIndex>9</TriangleIndex>
+    <TriangleIndex>8</TriangleIndex>
+    <TriangleIndex>7</TriangleIndex>
+    <TriangleIndex>6</TriangleIndex>
+    <TriangleIndex>5</TriangleIndex>
+    <TriangleIndex>4</TriangleIndex>
+    <SD1>9</SD1>
+    <SD1>8</SD1>
+    <SD1>7</SD1>
+    <SD1>6</SD1>
+    <SD1>5</SD1>
+    <SD1>4</SD1>
+    <SD2>9</SD2>
+    <SD2>8</SD2>
+    <SD2>7</SD2>
+    <SD2>6</SD2>
+    <SD2>5</SD2>
+    <SD2>4</SD2>
+    <ElipseCenter>9</ElipseCenter>
+    <ElipseCenter>8</ElipseCenter>
+    <ElipseCenter>7</ElipseCenter>
+    <ElipseCenter>6</ElipseCenter>
+    <ElipseCenter>5</ElipseCenter>
+    <ElipseCenter>4</ElipseCenter>
+  </module>
+  <module name="QT_Disp">
+    <QT_disp_local>
+      <lead>V1</lead>
+      <samples>2</samples>
+    </QT_disp_local>
+    <QT_disp_local>
+      <lead>MLII</lead>
+      <samples>23</samples>
+    </QT_disp_local>
+    <QT_mean>
+      <lead>V1</lead>
+      <samples>2</samples>
+    </QT_mean>
+    <QT_mean>
+      <lead>MLII</lead>
+      <samples>23</samples>
+    </QT_mean>
+    <QT_std>
+      <lead>V1</lead>
+      <samples>2</samples>
+    </QT_std>
+    <QT_std>
+      <lead>MLII</lead>
+      <samples>23</samples>
+    </QT_std>
+    <QT_disp_global>78</QT_disp_global>
+    <T_End_Local>
+      <lead>MLII</lead>
+      <samples>1 2 3 4 5 6 7 8 9 0 </samples>
+    </T_End_Local>
   </module>
 </EKG>

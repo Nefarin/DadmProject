@@ -494,10 +494,7 @@
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
-  <module name="Flutter">
-    <FlutterAnnotations>
-      <onset>8</onset>
-      <end>9</end>
-    </FlutterAnnotations>
+  <module name="Heart_Axis">
+    <HeartAxis>0,646468438999416</HeartAxis>
   </module>
 </EKG>

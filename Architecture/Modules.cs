@@ -15,6 +15,9 @@ using EKG_Project.Modules.Sleep_Apnea;
 using EKG_Project.Modules.ST_Segment;
 using EKG_Project.Modules.T_Wave_Alt;
 using EKG_Project.Modules.Waves;
+using EKG_Project.GUI;
+
+using System;
 
 using System.Collections.Generic;
 
@@ -24,47 +27,172 @@ namespace EKG_Project.Architecture
 {
     public class Modules
     {
-        private List<IModule> ecgModules;
-        private int currentAnalysisIndex;
-
-        public Modules()
+        public static AvailableOptions[] MODULE_ORDER =
         {
+            AvailableOptions.ECG_BASELINE,
+            AvailableOptions.R_PEAKS,
+            AvailableOptions.WAVES,
+            AvailableOptions.HEART_CLASS,
+            AvailableOptions.HRV1,
+            AvailableOptions.HRV2,
+            AvailableOptions.HRV_DFA,
+            AvailableOptions.FLUTTER,
+            AvailableOptions.SIG_EDR,
+            AvailableOptions.ST_SEGMENT,
+            AvailableOptions.SLEEP_APNEA,
+            AvailableOptions.ATRIAL_FIBER,
+            AvailableOptions.QT_DISP,
+            AvailableOptions.FLUTTER,
+            AvailableOptions.HRT,
+            AvailableOptions.HEART_AXIS,
+            AvailableOptions.TEST_MODULE
+        };
 
+        Dictionary<AvailableOptions, ModuleParams> _moduleParams;
+        private string _analysisName;
+        private int _currentModuleIndex;
+        private int _currentModuleProcessed;
+        private AvailableOptions _currentOption;
+        private bool _fileLoaded = false;
+        IModule _currentModule;
+
+        public Modules(string analysisName)
+        {
+            AnalysisName = analysisName;
         }
 
-        public void Init()
+        public void Init(Dictionary<AvailableOptions, ModuleParams> moduleParams)
         {
-            CurrentAnalysisIndex = -1;
+            CurrentModuleIndex = -1;
+            CurrentModuleProcessed = 0;
+            ModuleParams = moduleParams;
+        }
+
+        public void initNextModule()
+        {
+            try
+            {
+                CurrentModule = nextModule();
+                CurrentOption = MODULE_ORDER[CurrentModuleIndex];
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        private IModule nextModule()
+        {
+            CurrentModuleIndex++;
+            AvailableOptions option = MODULE_ORDER[CurrentModuleIndex];
+            Console.WriteLine(option);
+            ModuleParams param;
+            try
+            {
+                param = ModuleParams[option];
+                IModule module = ModuleFactory.NewModule(option);
+                module.Init(param);
+                return module;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
         }
 
         public int Amount()
         {
-            return ecgModules.Count;
+            return ModuleParams.Count;
         }
 
-        public List<IModule> EcgModules
+        public int CurrentModuleIndex
         {
             get
             {
-                return ecgModules;
+                return _currentModuleIndex;
             }
 
             set
             {
-                ecgModules = value;
+                _currentModuleIndex = value;
             }
         }
 
-        public int CurrentAnalysisIndex
+        public Dictionary<AvailableOptions, ModuleParams> ModuleParams
         {
             get
             {
-                return currentAnalysisIndex;
+                return _moduleParams;
             }
 
             set
             {
-                currentAnalysisIndex = value;
+                _moduleParams = value;
+            }
+        }
+
+        public IModule CurrentModule
+        {
+            get
+            {
+                return _currentModule;
+            }
+
+            set
+            {
+                _currentModule = value;
+            }
+        }
+
+        public AvailableOptions CurrentOption
+        {
+            get
+            {
+                return _currentOption;
+            }
+
+            set
+            {
+                _currentOption = value;
+            }
+        }
+
+        public bool FileLoaded
+        {
+            get
+            {
+                return _fileLoaded;
+            }
+
+            set
+            {
+                _fileLoaded = value;
+            }
+        }
+
+        public string AnalysisName
+        {
+            get
+            {
+                return _analysisName;
+            }
+
+            set
+            {
+                _analysisName = value;
+            }
+        }
+
+        public int CurrentModuleProcessed
+        {
+            get
+            {
+                return _currentModuleProcessed;
+            }
+
+            set
+            {
+                _currentModuleProcessed = value;
             }
         }
     }

@@ -49,6 +49,11 @@ namespace EKG_Project.Modules.Flutter
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return _aborted;
+        }
+
         public bool Ended()
         {
             return _ended;
@@ -178,7 +183,7 @@ namespace EKG_Project.Modules.Flutter
 
         public static void Main()
         {
-            Flutter_Params param = new Flutter_Params("TestAnalysis8");
+            Flutter_Params param = new Flutter_Params("TestAnalysis3");
             Flutter flutter = new Flutter();
             flutter.Init(param);
             while(true)

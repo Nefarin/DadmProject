@@ -116,14 +116,15 @@ namespace EKG_Project.GUI
             _parent = parent;
             _parentTab = parentTab;
             InitializeComponent();
-
-            modulePanel.AnalysisName = AnalysisName;
+            startAnalyseButton.IsEnabled = false;
+            moduleParams = new Dictionary<AvailableOptions, ModuleParams>();
+            isComputed = new Dictionary<AvailableOptions, bool>();
         }
 
         public AnalysisControl(ProcessSync communication, Window_ECG parent, TabItem parentTab, SynchronizationContext context, string analysisName)
             : this(communication, parent, parentTab, context)
         {
-            this.AnalysisName = analysisName;
+            this.AnalysisName = this.modulePanel.AnalysisName = analysisName;
         }
 
         private void analysisEventHandler(object sender, IGUIMessage message)

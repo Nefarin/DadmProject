@@ -49,7 +49,7 @@ namespace EKG_Project.IO
 
             XmlDocument file = new XmlDocument();
             string fileName = analysisName + "_TestModule3.xml";
-            file.Load(directory + fileName);
+            file.Load(System.IO.Path.Combine(directory, fileName));
 
             XmlNodeList modules = file.SelectNodes("EKG/module");
 

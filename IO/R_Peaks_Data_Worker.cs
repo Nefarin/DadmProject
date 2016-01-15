@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
-    public class R_Peaks_Data_Worker
+    public class R_Peaks_Data_Worker : IECG_Worker
     {
         string directory;
         string analysisName = "TestAnalysis";
@@ -84,11 +84,14 @@ namespace EKG_Project.IO
                     RPeaks.AppendChild(lead);
 
                     XmlElement indices = file.CreateElement(string.Empty, "indices", string.Empty);
-                    string indicesText = null;
+
+                    StringBuilder builder = new StringBuilder();
                     foreach (var value in tuple.Item2)
                     {
-                        indicesText += value.ToString() + " ";
+                        builder.Append(value.ToString());
+                        builder.Append(" ");
                     }
+                    string indicesText = builder.ToString();
 
                     XmlText indicesValue = file.CreateTextNode(indicesText);
                     indices.AppendChild(indicesValue);
@@ -107,11 +110,14 @@ namespace EKG_Project.IO
                     RRInterval.AppendChild(lead);
 
                     XmlElement intervals = file.CreateElement(string.Empty, "intervals", string.Empty);
-                    string intervalsText = null;
+                    
+                    StringBuilder builder = new StringBuilder();
                     foreach (var value in tuple.Item2)
                     {
-                        intervalsText += value.ToString() + " ";
+                        builder.Append(value.ToString());
+                        builder.Append(" ");
                     }
+                    string intervalsText = builder.ToString();
 
                     XmlText intervalsValue = file.CreateTextNode(intervalsText);
                     intervals.AppendChild(intervalsValue);
