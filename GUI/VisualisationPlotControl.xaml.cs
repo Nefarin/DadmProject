@@ -478,6 +478,7 @@ namespace EKG_Project.GUI
         {
             var c = sender as CheckBox;
             ecgPlot.SeriesControler(c.Name, false);
+            
 
         }
     }
