@@ -947,7 +947,7 @@ namespace EKG_Project.Modules.R_Peaks
 
         public Vector<double> EMD(Vector<double> signalECG, uint samplingFrequency)
         {
-            uint fs1 = 360;
+            Delay = 0;
             //emd
             Vector<double>[] imfs = EmpipricalModeDecomposition(signalECG);
             //non linear tranform imfs
@@ -960,7 +960,6 @@ namespace EKG_Project.Modules.R_Peaks
             //subtract delay
             locsR = locsR.Subtract(Delay);
 
-            Delay = 0;
             return locsR;
         }
 
