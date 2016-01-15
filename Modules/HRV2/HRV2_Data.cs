@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
 using System;
-using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV2
 {
