@@ -91,6 +91,7 @@ namespace EKG_Project.GUI
                         peaks_dialogue.ShowDialog();
                         Params[option.Code] = peaks_dialogue.returnParameters;
                         OptionParams[option] = peaks_dialogue.returnParameters;
+
                     break;
                 case AvailableOptions.WAVES:
                         var waves_dialogue = new Dialogue_Waves_Options(this, (Waves_Params)option.ModuleParam);

@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using WfdbCsharpWrapper;
-using System.Reflection;
-using System.Runtime.InteropServices;
+
 
 namespace EKG_Project.IO
 {
@@ -22,10 +21,7 @@ namespace EKG_Project.IO
     {
         public static void Main()
         {
-
             IECGPath pathBuilder = new DebugECGPath();
-            Console.WriteLine(Path.Combine(pathBuilder.getBasePath(), "DLL\\"));
-            //Assembly.LoadFrom(Path.Combine(pathBuilder.getBasePath(), "DLL", "wfdb.dll"));
             string datFileName = "100.dat";
             string heaFileName = "100.hea";
             string atrFileName = "100.atr";
@@ -35,20 +31,9 @@ namespace EKG_Project.IO
             Console.WriteLine(".dat file exists: " + File.Exists(System.IO.Path.Combine(directory, datFileName)));
             Console.WriteLine(".hea file exists: " + File.Exists(System.IO.Path.Combine(directory, heaFileName)));
             Console.WriteLine(".atr file exists: " + File.Exists(System.IO.Path.Combine(directory, atrFileName)));
-            
-            String name = System.IO.Path.Combine(directory, recordName);
 
-            Wfdb.WfdbPath = directory;
-            int nsig = PInvoke.isigopen(name, null, 0);
-            Record record;
-            unsafe
-            {
-                record = new Record(recordName);
-                Console.WriteLine(record.ToString());
-                Console.WriteLine(record.Name);
-                record.Open();
-            }
-
+            Record record = new Record(System.IO.Path.Combine(directory, recordName));
+            record.Open();
 
             Console.WriteLine("Record Name : " + record.Name);
             Console.WriteLine("Record Info : " + record.Info);

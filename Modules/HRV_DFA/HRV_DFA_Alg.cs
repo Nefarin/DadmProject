@@ -14,25 +14,12 @@ namespace EKG_Project.Modules.HRV_DFA
     
     public partial class HRV_DFA : IModule
     {
-        Vector<double> veclogn1;
-        Vector<double> veclogn2;
-        Vector<double> veclogFn1;
-        Vector<double> veclogFn2;
-        Vector<double> vecparam1;
-        Vector<double> vecparam2;
-        private int boxVal;
-        private int stepVal;
 
-        public void HRV_DFA_Analysis(Vector<double> rRRIntervals)
+        public void HRV_DFA_Analysis()
         {
-            //HRV_DFA dfa = new HRV_DFA();
+            HRV_DFA dfa = new HRV_DFA();
 
-            Vector<double> sig = rRRIntervals;
-
-           for(int i = 0; i < sig.Count(); i++)
-            {
-                sig[i] = Math.Abs(sig[i]);
-            }
+            Vector<double> sig = InputData.Signals[_currentChannelIndex].Item2;
 
             //read data from file
             //TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\DADM\RR_100.txt");
@@ -40,23 +27,23 @@ namespace EKG_Project.Modules.HRV_DFA
             //Vector<double> sig = TempInput.getSignal();
 
             // DFA box parameters
-            int step = stepVal;
-            int start = 10;
-            int stop = boxVal; 
+            int step = 10;
+            int start = 100;
+            int stop = 10000; 
 
             // DFA - fluctuation funcion computation
             double[] boxRanged = Generate.LinearRange(start, step, stop);       // set of box sizes
             Vector<double> box = Vector<double>.Build.DenseOfArray(boxRanged);  // n
-            Vector<double> vectorFn = DfaFluctuationComputation(box, sig);  // F(n)
+            Vector<double> vectorFn = dfa.DfaFluctuationComputation(box, sig);  // F(n)
     
             // Remove all zeros from vector
-           // Vector<double> vFn = dfa.ZerosRemove(vectorFn);
-            Vector<double> vn = box.SubVector(0, vectorFn.Count());
+            Vector<double> vFn = dfa.ZerosRemove(vectorFn);
+            Vector<double> vn = box.SubVector(0, vFn.Count());
 
             // Convert to logarytmic scale
             //Vector<double> vn = box.SubVector(0,vFn.Count());
-            Vector<double> logn = Logarithmize(vn);
-            Vector<double> logFn = Logarithmize(vectorFn);
+            Vector<double> logn = dfa.Logarithmize(vn);
+            Vector<double> logFn = dfa.Logarithmize(vFn);
 
             // short-range:long-range fitting bending data proportion
             double proportion = 0.33;
@@ -64,13 +51,9 @@ namespace EKG_Project.Modules.HRV_DFA
             // short - range correlations
             Vector<double> logn1 = logn.SubVector(0, q);
             Vector<double> logFn1 = logFn.SubVector(0, q);
-
             double[] logn1a = logn1.ToArray();
             double[] logFn1a = logFn1.ToArray();
-            double[] p01 = Fit.Polynomial(logn1a, logFn1a, 1);
-            Vector<double> p1 = Vector<double>.Build.Dense(2);
-            p1[0] = p01[0];
-            p1[1] = p01[1];
+            double[] p1 = Fit.Polynomial(logn1a, logFn1a, 1);
 
             Vector<double> fittedFn1 = Vector<double>.Build.Dense(logn1.Count());
             Func<double, double> fitting1 = Fit.PolynomialFunc(logn1a, logFn1a, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.QR);
@@ -84,10 +67,7 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> logFn2 = logFn.SubVector(q, logFn.Count() - q );
             double[] logn2a = logn2.ToArray();
             double[] logFn2a = logFn2.ToArray();
-            double[] p02 = Fit.Polynomial(logn2a, logFn2a, 1);
-            Vector<double> p2 = Vector<double>.Build.Dense(2);
-            p2[0] = p02[0];
-            p2[1] = p02[1];
+            double[] p2 = Fit.Polynomial(logn2a, logFn2a, 1);
 
             Vector<double> fittedFn2 = Vector<double>.Build.Dense(logFn2.Count());
             Func<double, double> fitting2 = Fit.PolynomialFunc(logn2a, logFn2a, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.QR);
@@ -97,20 +77,9 @@ namespace EKG_Project.Modules.HRV_DFA
                 fittedFn2[k] = fitting2(logn2a[k]);
             }
 
-            //Console.WriteLine(sig);
+            Console.WriteLine(sig);
 
-            veclogn1 = logn1;
-            veclogn2 = logn2;
-            veclogFn1 = fittedFn1;
-            veclogFn2 = fittedFn2;
-            vecparam1 = p1;
-            vecparam2 = p2;
-
-            //Tuple<string, Vector<double>, Vector<double>> _currentdfaNumberN = Tuple.Create<string, Vector<double>, Vector<double>>("logn1 and logn2", logn1, logn2);
-            //Tuple<string, Vector<double>, Vector<double>> _currentdfaValueFn = Tuple.Create<string, Vector<double>, Vector<double>>("lognF1 and logFn2", fittedFn1, fittedFn2);
-            //Tuple<string, Vector<double>, Vector<double>> _currentparamAlpha = Tuple.Create<string, Vector<double>, Vector<double>>("alpha1,b1 and alpha2,b2", p1 ,p2 );
-
-    }
+        }
 
         // METHODS:
 
@@ -166,19 +135,18 @@ namespace EKG_Project.Modules.HRV_DFA
         public double InBoxFluctuations(Vector<double> y_integrated, Vector<double> y_fitted, double box_quantity)
         {
 
-            Vector<double> y_sub = Vector<double>.Build.Dense(y_fitted.Count());
-
-            double vector_add = 0;
-            vector_add = Math.Pow(y_integrated[0] - y_fitted[0], 2);
-            y_sub[0] = vector_add;
-
-            for (int i = 1; i < y_integrated.Count()-1; i++)
+            Vector<double> y_subtracted = Vector<double>.Build.Dense(y_fitted.Count());
+            for (int i = 0; i < y_integrated.Count(); i++)
             {
-                y_sub[i] = Math.Pow(y_integrated[i] - y_fitted[i],2);
-                vector_add = y_sub[i];
+                y_subtracted[i] = y_integrated[i] - y_fitted[i];
             }
 
-            double fn = Math.Sqrt(y_sub[y_sub.Count()-1] / box_quantity);
+            Vector<double> y_sub_pow = Vector<double>.Build.Dense(y_subtracted.Count());
+            for (int i = 0; i < y_subtracted.Count(); i++)
+            {
+                y_sub_pow[i] = y_subtracted[i] * y_subtracted[i];
+            }
+            double fn = Math.Sqrt(y_sub_pow.Sum() / box_quantity);
 
             return fn;
         }
@@ -187,22 +155,16 @@ namespace EKG_Project.Modules.HRV_DFA
         public Vector<double> Integrate(Vector<double> signal_rr)
         {
             Vector<double> signal_integrated = Vector<double>.Build.Dense(signal_rr.Count(), 0);
-            double signal_add = 0; 
 
             //Average
             double rr_avg = signal_rr.Sum() / signal_rr.Count;
 
-            signal_add = Math.Abs(signal_rr[0] - rr_avg);
-            signal_integrated[0] = signal_add;
-
-            for (int i = 1; i < signal_rr.Count - 1 ; i++)
+            for (int i = 0; i < signal_rr.Count - 1 ; i++)
             {
-                signal_integrated[i] = Math.Abs(signal_rr[i] - rr_avg)+ signal_add;
-                signal_add = signal_integrated[i];
-                /*signal_integrated[0] = 0;
+                signal_integrated[0] = 0;
                 signal_integrated[i + 1] = signal_rr[i] - rr_avg;
                 signal_integrated[i + 1] += signal_integrated[i];
-                signal_integrated[i + 1] = Math.Abs(signal_integrated[i + 1]);*/
+                signal_integrated[i + 1] = Math.Abs(signal_integrated[i + 1]);
             }
 
             return signal_integrated;
@@ -229,7 +191,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 }
                 else
                 {
-                    counter = i+1;
+                    counter = i;
                     break;
                 }
             }
@@ -238,5 +200,4 @@ namespace EKG_Project.Modules.HRV_DFA
         }
  
     }
-     
 }

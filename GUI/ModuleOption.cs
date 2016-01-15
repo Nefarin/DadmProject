@@ -12,17 +12,6 @@ using EKG_Project.Modules.Atrial_Fibr;
 using EKG_Project.Modules.Heart_Class;
 using EKG_Project.Modules.Heart_Axis;
 using EKG_Project.Modules.Sleep_Apnea;
-using EKG_Project.Modules.HRV1;
-using EKG_Project.Modules.HRV2;
-using EKG_Project.Modules.QT_Disp;
-using EKG_Project.Modules.Flutter;
-using EKG_Project.Modules.HRV_DFA;
-using EKG_Project.Modules.ST_Segment;
-using EKG_Project.Modules.T_Wave_Alt;
-using EKG_Project.Modules.SIG_EDR;
-using EKG_Project.Modules.HRT;
-
-
 
 namespace EKG_Project.GUI
 {
@@ -54,107 +43,32 @@ namespace EKG_Project.GUI
                     switch (this.Code)
                     {
                         case AvailableOptions.ECG_BASELINE:
-                            if (this.ModuleParam == null)
-                            {
-                                this.ModuleParam = new ECG_Baseline_Params();
-                                this.ModuleParam.GUIParametersAvailable = true;
-                                FillDictionaries();
-                            }
+                            this.ModuleParam = new ECG_Baseline_Params();
+                            this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.R_PEAKS:
-                            if (this.ModuleParam == null)
-                            {
-                                this.ModuleParam = new R_Peaks_Params(this.AnalysisName);
-                                this.ModuleParam.GUIParametersAvailable = true;
-                                FillDictionaries();
-                            }
+                            this.ModuleParam = new R_Peaks_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.WAVES:
-                            if (this.ModuleParam == null)
-                            {
-                                this.ModuleParam = new Waves_Params(Wavelet_Type.haar, 3, this.AnalysisName, 500);
-                                this.ModuleParam.GUIParametersAvailable = true;
-                                FillDictionaries();
-                            }
+                            this.ModuleParam = new Waves_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.ATRIAL_FIBER:
-                            if (this.ModuleParam == null)
-                            {
-                                this.ModuleParam = new Atrial_Fibr_Params(this.AnalysisName);
-                                this.ModuleParam.GUIParametersAvailable = true;
-                                FillDictionaries();
-                            }
+                            this.ModuleParam = new Atrial_Fibr_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = true;
                             break;
                         case AvailableOptions.HEART_CLASS:
                             this.ModuleParam = new Heart_Class_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
-                            FillDictionaries();
                             break;
                         case AvailableOptions.HEART_AXIS:
                             this.ModuleParam = new Heart_Axis_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
-                            FillDictionaries();
                             break;
                         case AvailableOptions.SLEEP_APNEA:
                             this.ModuleParam = new Sleep_Apnea_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
-                            FillDictionaries();
-                            break;
-                        case AvailableOptions.TEST_MODULE:
-                            this.ModuleParam = new TestModule_Params(500);
-                            this.ModuleParam.GUIParametersAvailable = true;
-                            FillDictionaries();
-                            break;
-                        case AvailableOptions.HRV1:
-                            this.ModuleParam = new HRV1_Params(this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = false;
-                            FillDictionaries();
-                            break;
-                        case AvailableOptions.HRV2:
-                            if (this.ModuleParam == null)
-                            {
-                                this.ModuleParam = new HRV2_Params(2, 2, this.AnalysisName);
-                                this.ModuleParam.GUIParametersAvailable = true;
-                                FillDictionaries();
-                            }
-                            break;
-                        case AvailableOptions.QT_DISP:
-                            if (this.ModuleParam == null)
-                            {
-                                this.ModuleParam = new QT_Disp_Params(this.AnalysisName);
-                                this.ModuleParam.GUIParametersAvailable = true;
-                                FillDictionaries();
-                            }
-                            break;
-                        case AvailableOptions.FLUTTER:
-                            this.ModuleParam = new Flutter_Params(this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = false;
-                            FillDictionaries();
-                            break;
-                        case AvailableOptions.HRV_DFA:
-                            this.ModuleParam = new HRV_DFA_Params(this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = false;
-                            FillDictionaries();
-                            break;
-                        case AvailableOptions.ST_SEGMENT:
-                            this.ModuleParam = new ST_Segment_Params(this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = false;
-                            FillDictionaries();
-                            break;
-                        case AvailableOptions.T_WAVE_ALT:
-                            this.ModuleParam = new T_Wave_Alt_Params(this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = false;
-                            FillDictionaries();
-                            break;
-                        case AvailableOptions.SIG_EDR:
-                            this.ModuleParam = new SIG_EDR_Params(this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = false;
-                            FillDictionaries();
-                            break;
-                        case AvailableOptions.HRT:
-                            this.ModuleParam = new HRT_Params(this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = false;
-                            FillDictionaries();
                             break;
                         default:
                             this.ModuleParam = null;
@@ -274,12 +188,6 @@ namespace EKG_Project.GUI
             {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
-        }
-
-        public void FillDictionaries()
-        {
-            this.Panel.Params[this.Code] = this.ModuleParam;
-            this.Panel.OptionParams[this] = this.ModuleParam;
         }
 
 

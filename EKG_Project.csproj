@@ -24,7 +24,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -85,7 +84,7 @@
     </Reference>
     <Reference Include="WfdbCsharpLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DLL\WfdbCsharpLib.dll</HintPath>
+      <HintPath>DLL\WfdbCsharpLib.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -310,45 +309,37 @@
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Data.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Params.cs" />
-    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Stats.cs" />
     <Compile Include="Modules\Basic_Data.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Alg.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Data.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Params.cs" />
-    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Stats.cs" />
     <Compile Include="Modules\ECG_Data.cs" />
     <Compile Include="Modules\Flutter\Flutter.cs" />
     <Compile Include="Modules\Flutter\Flutter_Alg.cs" />
     <Compile Include="Modules\Flutter\Flutter_Data.cs" />
     <Compile Include="Modules\Flutter\Flutter_Params.cs" />
-    <Compile Include="Modules\Flutter\Flutter_Stats.cs" />
     <Compile Include="Modules\Heart_Axis\Heart_Axis.cs" />
     <Compile Include="Modules\Heart_Axis\Heart_Axis_Alg.cs" />
     <Compile Include="Modules\Heart_Axis\Heart_Axis_Data.cs" />
     <Compile Include="Modules\Heart_Axis\Heart_Axis_Params.cs" />
-    <Compile Include="Modules\Heart_Axis\Heart_Axis_Stats.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Alg.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Data.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Params.cs" />
-    <Compile Include="Modules\Heart_Class\Heart_Class_Stats.cs" />
     <Compile Include="Modules\HRT\HRT.cs" />
     <Compile Include="Modules\HRT\HRT_Alg.cs" />
     <Compile Include="Modules\HRT\HRT_Data.cs" />
     <Compile Include="Modules\HRT\HRT_Params.cs" />
-    <Compile Include="Modules\HRT\HRT_Stats.cs" />
     <Compile Include="Modules\HRV1\HRV1.cs" />
     <Compile Include="Modules\HRV1\HRV1_Alg.cs" />
     <Compile Include="Modules\HRV1\HRV1_Data.cs" />
     <Compile Include="Modules\HRV1\HRV1_Params.cs" />
-    <Compile Include="Modules\HRV1\HRV1_Stats.cs" />
     <Compile Include="Modules\HRV2\Histogram.cs" />
     <Compile Include="Modules\HRV2\HRV2.cs" />
     <Compile Include="Modules\HRV2\HRV2_Alg.cs" />
     <Compile Include="Modules\HRV2\HRV2_Data.cs" />
     <Compile Include="Modules\HRV2\HRV2_Params.cs" />
-    <Compile Include="Modules\HRV2\HRV2_Stats.cs" />
     <Compile Include="Modules\HRV2\Poincare.cs" />
     <Compile Include="Modules\HRV2\Tinn.cs" />
     <Compile Include="Modules\HRV2\TriangleIndex.cs" />
@@ -356,37 +347,29 @@
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Alg.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Data.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
-    <Compile Include="Modules\HRV_DFA\HRV_DFA_Stats.cs" />
     <Compile Include="Modules\IModule.cs" />
-    <Compile Include="Modules\IModuleStats.cs" />
     <Compile Include="Modules\ModuleFactory.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Data.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Params.cs" />
-    <Compile Include="Modules\QT_Disp\QT_Disp_Stats.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Alg.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Data.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Params.cs" />
-    <Compile Include="Modules\R_Peaks\R_Peaks_Stats.cs" />
     <Compile Include="Modules\SIG_EDR\SIG_EDR.cs" />
     <Compile Include="Modules\SIG_EDR\SIG_EDR_Alg.cs" />
     <Compile Include="Modules\SIG_EDR\SIG_EDR_Data.cs" />
     <Compile Include="Modules\SIG_EDR\SIG_EDR_Params.cs" />
-    <Compile Include="Modules\SIG_EDR\SIG_EDR_Stats.cs" />
     <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea.cs" />
     <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Alg.cs" />
     <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Data.cs" />
     <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Params.cs" />
-    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Stats.cs" />
-    <Compile Include="Modules\StatsFactory.cs" />
     <Compile Include="Modules\ST_Segment\ST_Segment.cs" />
     <Compile Include="Modules\ST_Segment\ST_Segment_Alg.cs" />
     <Compile Include="Modules\ST_Segment\ST_Segment_Data.cs" />
     <Compile Include="Modules\ST_Segment\ST_Segment_Params.cs" />
-    <Compile Include="Modules\ST_Segment\ST_Segment_Stats.cs" />
     <Compile Include="Modules\TestModule2\Test_Module2_Alg.cs" />
     <Compile Include="Modules\TestModule2\Test_Module2.cs" />
     <Compile Include="Modules\TestModule2\Test_Module2_Param.cs" />
@@ -394,19 +377,16 @@
     <Compile Include="Modules\TestModule3\TestModule3_Alg.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Data.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Params.cs" />
-    <Compile Include="Modules\TestModule3\TestModule3_Stats.cs" />
     <Compile Include="Modules\TestModule\TestModule.cs" />
     <Compile Include="Modules\TestModule\TestModule_Params.cs" />
     <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt.cs" />
     <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Alg.cs" />
     <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Data.cs" />
     <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Params.cs" />
-    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Stats.cs" />
     <Compile Include="Modules\Waves\Waves.cs" />
     <Compile Include="Modules\Waves\Waves_Alg.cs" />
     <Compile Include="Modules\Waves\Waves_Data.cs" />
     <Compile Include="Modules\Waves\Waves_Params.cs" />
-    <Compile Include="Modules\Waves\Waves_Stats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -443,11 +423,6 @@
   <ItemGroup>
     <Resource Include="Architecture\README.TXT" />
   </ItemGroup>
-  <PropertyGroup>
-    <ReferencePath>
-        DLL\
-    </ReferencePath>
-  </PropertyGroup>
   <ItemGroup>
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
@@ -480,8 +455,6 @@
     <Resource Include="Resources\TextFile1.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bin\Debug\" />
-    <Folder Include="bin\Release\" />
     <Folder Include="GUI\Converters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

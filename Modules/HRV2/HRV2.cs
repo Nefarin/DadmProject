@@ -6,7 +6,6 @@ using MathNet.Numerics.Statistics;
 using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
 using MathNet.Numerics.LinearAlgebra;
-using System.Collections.ObjectModel;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -30,7 +29,8 @@ namespace EKG_Project.Modules.HRV2
         private bool _outputFound;
         private int _outputIndex;
 
-        private Histogram2 _currentHistogram;
+        private Vector<double> _currentHistogram;
+        //private int _currentBinAmout;
         private Vector<double> _currentPoincare;
 
         public bool IsAborted()
@@ -68,7 +68,7 @@ namespace EKG_Project.Modules.HRV2
                     OutputData = new HRV2_Data();
 
                     _currentRPeaksLength = InputData.RRInterval[_outputIndex].Item2.Count;
-                    //_currentHistogram = Vector<Double>.Build.Dense(_currentRPeaksLength);
+                    _currentHistogram = Vector<Double>.Build.Dense(_currentRPeaksLength);
                     _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
                 }
                 else
@@ -111,18 +111,19 @@ namespace EKG_Project.Modules.HRV2
 
         private void processData()
         {
-            
-            //OutputData.Tinn = makeTinn();
-            //OutputData.TriangleIndex = TriangleIndex();
-            OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
-
+            //OutputData.HistogramData = new Histogram (_currentHistogram, _currentBinAmout);
+            OutputData.Tinn = makeTinn();
+            OutputData.TriangleIndex = TriangleIndex();
+            OutputData.HistogramData.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
+            //Vector<double> rr_intervals_x = Vector<double>.Build.Dense(1);
+            //Vector<double> rr_intervals_y = Vector<double>.Build.Dense(1);
             PoincarePlot_x();
             PoincarePlot_y();
-            //OutputData.SD1 = SD1();
-            //OutputData.SD2 = SD2();
+            OutputData.SD1 = SD1();
+            OutputData.SD2 = SD2();
 
-            //OutputData.PoincarePlotData_x = new Tuple<string, Vector<double>>("RR", RR_intervals_x);
-            //OutputData.PoincarePlotData_y = new Tuple<string, Vector<double>>("RR+1", RR_intervals_y);
+            OutputData.PoincarePlotData_x = new Tuple<string, Vector<double>>("RR", RR_intervals_x);
+            OutputData.PoincarePlotData_y = new Tuple<string, Vector<double>>("RR+1", RR_intervals_y);
 
 
             OutputWorker.Save(OutputData);

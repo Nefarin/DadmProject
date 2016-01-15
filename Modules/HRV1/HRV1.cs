@@ -89,24 +89,5 @@ namespace EKG_Project.Modules.HRV1
         {
             return Params != null;
         }
-
-        public static void Main()
-        {
-            //HRV1.AlgoTest();
-
-
-            var param = new HRV1_Params("Analysis3");
-            //param = null;
-            HRV1 Hrv1 = new HRV1();
-            Hrv1.Init(param);
-            while (true)
-            {
-                //Console.WriteLine("Press key to continue.");
-                //Console.Read();
-                if (Hrv1.Ended()) break;
-                Console.WriteLine(Hrv1.Progress());
-                Hrv1.ProcessData();
-            }
-        }
     }
 }
