@@ -202,7 +202,7 @@ namespace EKG_Project.IO
                     basicData.QT_std = list2;
 
                     XmlNode qt_disp_global = module["QT_disp_global"];
-                    basicData.QT_disp_global = Convert.ToDouble(qt_disp_global.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.QT_disp_global = Convert.ToDouble(qt_disp_global.InnerText);
 
                     List<Tuple<String, List<int>>> list3 = new List<Tuple<String, List<int>>>();
                     XmlNodeList nodes3 = module.SelectNodes("T_End_Local");
