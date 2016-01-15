@@ -72,7 +72,7 @@ namespace EKG_Project.GUI
                         case AvailableOptions.WAVES:
                             if (this.ModuleParam == null)
                             {
-                                this.ModuleParam = new Waves_Params(Wavelet_Type.haar, 3, this.AnalysisName, 500);
+                                this.ModuleParam = new Waves_Params(this.AnalysisName);
                                 this.ModuleParam.GUIParametersAvailable = true;
                                 FillDictionaries();
                             }
