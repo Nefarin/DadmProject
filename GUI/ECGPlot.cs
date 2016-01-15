@@ -12,6 +12,7 @@ using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.Waves;
 
 namespace EKG_Project.GUI
 {
@@ -25,8 +26,11 @@ namespace EKG_Project.GUI
         private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
         private bool first;
         private bool _visible; 
+
         private R_Peaks_Data _r_PeaksData;
         private ECG_Baseline_Data _ecg_Baseline_Data;
+        private Waves_Data _waves_Data;
+
         private List<string> _displayedSeries;
 
 
@@ -51,7 +55,12 @@ namespace EKG_Project.GUI
             { "V4", false },
             { "V5", false },
             { "V6", false },
-            { "R_Peaks", false}
+            { "R_Peaks", false},
+            { "QRSOnsets", false },
+            { "QRSEnds", false },
+            { "POnsets", false },
+            { "PEnds", false },
+            { "TEnds", false }
         };
 
 
@@ -705,6 +714,71 @@ namespace EKG_Project.GUI
                 }
                 
             }
+
+            DisplayListedPlots(modulesToDisplay);
+
+        }
+
+        public void DisplayControler(Dictionary<string, List<Tuple<string, Vector<double>>>> dataToDisplayV, Dictionary<string, List<Tuple<string, List<int>>>> dataToDisplayL)
+        {
+            bool wasEcgBaselineSet = false;
+            List<string> modulesToDisplay = new List<string>();
+            foreach (var data in dataToDisplayV)
+            {
+                switch (data.Key)
+                {
+                    case "ecgBaseline":
+                        _ecg_Baseline_Data = new ECG_Baseline_Data();
+                        _ecg_Baseline_Data.SignalsFiltered = dataToDisplayV[data.Key];
+                        wasEcgBaselineSet = true;
+                        modulesToDisplay.Add(data.Key);
+                        //DisplayEcgBaseline(dataToDisplay[data.Key], true);
+                        break;
+                    case "r_Peaks":
+                        _r_PeaksData = new R_Peaks_Data();
+                        _r_PeaksData.RPeaks = dataToDisplayV[data.Key];
+                        if (wasEcgBaselineSet)
+                            modulesToDisplay.Add(data.Key);
+                        //DisplayR_Peaks(dataToDisplay[data.Key], true);
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+            _waves_Data = new Waves_Data();
+
+            foreach (var data in dataToDisplayL)
+            {
+                switch (data.Key)
+                {
+                    case "QRSOnsets":
+                        _waves_Data.QRSOnsets = dataToDisplayL[data.Key];
+                        modulesToDisplay.Add(data.Key);
+                        break;
+                    case "QRSEnds":
+                        _waves_Data.QRSEnds= dataToDisplayL[data.Key];
+                        modulesToDisplay.Add(data.Key);
+                        break;
+                    case "POnsets":
+                        _waves_Data.POnsets = dataToDisplayL[data.Key];
+                        modulesToDisplay.Add(data.Key);
+                        break;
+                    case "PEnds":
+                        _waves_Data.PEnds = dataToDisplayL[data.Key];
+                        modulesToDisplay.Add(data.Key);
+                        break;
+                    case "TEnds":
+                        _waves_Data.TEnds = dataToDisplayL[data.Key];
+                        modulesToDisplay.Add(data.Key);
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
 
             DisplayListedPlots(modulesToDisplay);
 

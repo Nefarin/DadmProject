@@ -28,34 +28,6 @@ namespace EKG_Project.GUI
         {
 
             InitializeComponent();
-
-            //VisualisationPlotControl ecgVPControl = new VisualisationPlotControl();
-            //VisualisationTableControl ecgVTControl = new VisualisationTableControl();
-
-
-            //visulisationTabsList = new List<TabItem>();
-
-            //TabItem ecgBaselineTab = new TabItem();
-            //ecgBaselineTab.Header = "ECGBaseline";
-            //ecgBaselineTab.Content = ecgVPControl;
-            //visulisationTabsList.Add(ecgBaselineTab);
-
-            //TabItem r_peaksTab = new TabItem();
-            //r_peaksTab.Header = "R_Peaks";
-            //visulisationTabsList.Add(r_peaksTab);
-
-            //TabItem addInfo = new TabItem();
-            //addInfo.Header = "Read This";
-            //addInfo.Content = "Tab będzie dodawany zgodnie z tym co po lewej stronie";
-            //visulisationTabsList.Add(addInfo);
-
-            //TabItem tableControl = new TabItem();
-            //tableControl.Header = "Table";
-            //tableControl.Content = ecgVTControl;
-            //visulisationTabsList.Add(tableControl);
-
-            //this.EcgDynamicTab.DataContext = visulisationTabsList;
-
             VisualisationDataControl ecgVDataControl = new VisualisationDataControl();
 
             visulisationDataTabsList = new List<TabItem>();
@@ -65,24 +37,7 @@ namespace EKG_Project.GUI
             ecgBaselineTab.Content = ecgVDataControl;
             visulisationDataTabsList.Add(ecgBaselineTab);
 
-            //TabItem ecgBasicDataTab = new TabItem();
-            //ecgBasicDataTab.Header = "ecgBasicData";
-            //ecgBasicDataTab.Content = ecgVDataControl;
-            //visulisationDataTabsList.Add(ecgBasicDataTab);
-
-            //TabItem r_peaksTab = new TabItem();
-            //r_peaksTab.Header = "R_Peaks";
-            //r_peaksTab.Content = ecgVDataControl;
-            //visulisationDataTabsList.Add(r_peaksTab);
-
-            //TabItem addInfo = new TabItem();
-            //addInfo.Header = "Info";
-            //addInfo.Content = "W ten sposób będą dodawane pozostałe moduły";
-            //visulisationDataTabsList.Add(addInfo);
-
-
             this.EcgDynamicTab.DataContext = visulisationDataTabsList;
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -97,20 +52,55 @@ namespace EKG_Project.GUI
             }
         }
 
-        public VisualisationPanelControl(List<string> tabNames)
+        public VisualisationPanelControl(string analyseName, List<string> tabNames)
         {
             InitializeComponent();
-            ChooseTabDisplay(tabNames);
+            ChooseTabDisplay(analyseName,tabNames);
         }
 
-        private void ChooseTabDisplay(List<string> tabNames)
+        private void ChooseTabDisplay(string analysN, List<string> tabNames)
         {
-            visulisationDataTabsList = new List<TabItem>();
-            foreach(string tabName in tabNames)
+            //List<string> _endDisplay = new List<string>();
+            Dictionary<string, int> _endDisplay = new Dictionary<string, int>();
+
+            //_endDisplay["ECG_BASELINE"] = 1; tylko baseline
+            // 2 - baseline i r_peaksy
+            // 3 - baseline, r_peaksy, waves
+            // 4 - baseline, waves
+
+            if (tabNames.Contains("ECG_BASELINE"))
             {
-                VisualisationDataControl ecgVDataControl = new VisualisationDataControl(tabName);
+                _endDisplay["ECG_BASELINE"] = 1;
+                if(tabNames.Contains("R_PEAKS"))
+                {
+                    _endDisplay["ECG_BASELINE"] = 2;
+                    if(tabNames.Contains("WAVES"))
+                    {
+                        _endDisplay["ECG_BASELINE"] = 3;
+                    }
+                }
+                else if(tabNames.Contains("WAVES"))
+                {
+                    _endDisplay["ECG_BASELINE"] = 4;
+                }
+            }
+
+
+            visulisationDataTabsList = new List<TabItem>();
+            //foreach(string tabName in tabNames)
+            //{
+            //    VisualisationDataControl ecgVDataControl = new VisualisationDataControl(analysN, tabName);
+            //    TabItem tabItem = new TabItem();
+            //    tabItem.Header = tabName;
+            //    tabItem.Content = ecgVDataControl;
+            //    visulisationDataTabsList.Add(tabItem);
+            //}
+
+            foreach(var dic in _endDisplay)
+            {
+                VisualisationDataControl ecgVDataControl = new VisualisationDataControl(analysN, dic.Key, dic);
                 TabItem tabItem = new TabItem();
-                tabItem.Header = tabName;
+                tabItem.Header = dic.Key;
                 tabItem.Content = ecgVDataControl;
                 visulisationDataTabsList.Add(tabItem);
             }

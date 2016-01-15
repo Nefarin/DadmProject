@@ -50,12 +50,19 @@ namespace EKG_Project.GUI
         {
             foreach (var option in modulePanel.getAllOptions())
             {
+                //modulePa
+                Console.WriteLine("#");
+                Console.WriteLine(option.Name);
+                Console.WriteLine("#");
+
                 if (option.Set)
                 {
                     moduleParams[option.Code] = modulePanel.ModuleOptionAndParams(option.Code).Item2;
                     Console.WriteLine(moduleParams.Count);
                     Console.WriteLine(option.Code);
                     Console.WriteLine(moduleParams);
+                    Console.WriteLine(modulePanel.AnalysisName);
+                    
                     //Console.WriteLine(modulePanel.ModuleOptionAndParams(option.Code).Item2);
                     Console.WriteLine(option.Name + " is set."); 
                 }
@@ -104,12 +111,22 @@ namespace EKG_Project.GUI
         {
             Console.WriteLine("Analysis Ended");
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
+            foreach (var option in modulePanel.getAllOptions())
+            {
+                if (option.Set)
+                {
+                    tempList.Add(option.Name);
+                }
+            }
             //tempList.Add("ecgBaseline");
             //tempList.Add("ecgBasic");
             //tempList.Add("r_Peaks");
-            tempList.Add("waves");
+            //tempList.Add("waves");
             //tempList.Add("whole");
-            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(tempList);
+            //moduleParams.
+            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName,tempList);
+
+
         }
 
         public void updateProgress(AvailableOptions module, double progress)
