@@ -31,6 +31,7 @@ namespace EKG_Project.Modules.HRV1
     public partial class HRV1 : IModule
     {
         // Declaration of time parameters
+        private double AVNN;
         private double SDNN;
         private double RMSSD;
         private double SDSD;
@@ -59,12 +60,12 @@ namespace EKG_Project.Modules.HRV1
         /// This methods calculates vector rInstants based on values of Fs and rSamples
         /// </summary>
         #endregion
-        private void samplesToInstants(Vector<double> rSamples, double Fs )
+        private void samplesToInstants()
         {
-          ;
+          this.rInstants = Vector<double>.Build.Dense(this.rSamples.Count, (i) => this.rSamples[i] * dt);
         }
 
-        
+       
 
         #region
         /// <summary>
@@ -73,10 +74,32 @@ namespace EKG_Project.Modules.HRV1
         #endregion
         private void instantsToIntervals()
         {
-    ;
+            this.rrIntervals = Vector<double>.Build.Dense(this.rInstants.Count-1, (i) => this.rSamples[i+1] - this.rSamples[i]);
         }
 
-        
+
+        #region
+        /// <summary>
+        /// Function for correcting instants vector for vaulty beats
+        /// </summary>
+        #endregion
+        private void intervalsCorection()
+        {
+            double ectoThreshHi = 2000;
+            double ectoThreshLo = 5;
+            var rrIntervals2 = this.rrIntervals;
+
+            for (int i = 0; i < this.rrIntervals.Count; ++i)
+            {
+                if (this.rrIntervals[i] < ectoThreshLo || this.rrIntervals[i] > ectoThreshHi)
+                {
+                    ;
+                }
+            }
+
+        }
+
+
         #region
         /// <summary>
         /// This method calculates time-based parameters
@@ -84,18 +107,20 @@ namespace EKG_Project.Modules.HRV1
         #endregion
         private void calculateTimeBased()
         {
-    
+            AVNN = this.rrIntervals.Sum() / this.rrIntervals.Count;
+            SDNN = Statistics.StandardDeviation(this.rrIntervals);
+            RMSSD = Statistics.RootMeanSquare(this.rrIntervals);
 
-    SDNN = 0;
-            RMSSD = 0;
-            SDSD = 0;
-            NN50 = 0;
-            pNN50 = 0;
+            var sdL= this.rrIntervals.SubVector(0, this.rrIntervals.Count - 1);
+            var sdR = this.rrIntervals.SubVector(1, this.rrIntervals.Count - 1);
+            var succesiveDiffs = sdR.Subtract(sdL);
+            succesiveDiffs.MapInplace(x => Math.Abs(x));
+
+            SDSD = Statistics.StandardDeviation(succesiveDiffs);
+            NN50 = this.rrIntervals.Map(x => x > 50 ? 1 : 0).Sum();
+            pNN50 = 100 * NN50 / this.rrIntervals.Count;
         }
-
-
        
-
 
         #region
         /// <summary>
@@ -107,11 +132,10 @@ namespace EKG_Project.Modules.HRV1
         /// <param name="step"></param>
         /// <returns></returns>
         #endregion
-        private Vector<double> gnerateFreqVector(double fMin, double fMax, double step)
+        private void generateFreqVector(double fMin, double fMax, double step)
         {
             var elementsCount = (int)Math.Ceiling((fMax - fMin) / step) + 1;
-            var f = Vector<double>.Build.Dense(elementsCount, (i) => fMin + i*step);
-            return f;
+            f = Vector<double>.Build.Dense(elementsCount, (i) => fMin + i*step);
         }
 
 
