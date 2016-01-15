@@ -106,10 +106,10 @@ namespace EKG_Project.GUI
                         OptionParams[option] = atrial_dialogue.returnParameters;
                     break;
                 case AvailableOptions.QT_DISP:
-                    var qt_dialogue = new Dialogue_QT_Disp_Options(this, (QT_Disp_Params)option.ModuleParam);
-                    qt_dialogue.ShowDialog();
-                    Params[option.Code] = qt_dialogue.returnParameters;
-                    OptionParams[option] = qt_dialogue.returnParameters;
+                        var qt_dialogue = new Dialogue_QT_Disp_Options(this, (QT_Disp_Params)option.ModuleParam);
+                        qt_dialogue.ShowDialog();
+                        Params[option.Code] = qt_dialogue.returnParameters;
+                        OptionParams[option] = qt_dialogue.returnParameters;
                     break;
                 default:
                     break;

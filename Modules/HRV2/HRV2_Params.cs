@@ -25,6 +25,12 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
+        public HRV2_Params(string analysisName)
+        {
+            this.AnalysisName = analysisName;
+
+        }
+
         public HRV2_Params(int scale, int step, string analysisName)
         {
             this.AnalysisName = analysisName;

@@ -111,12 +111,9 @@ namespace EKG_Project.GUI
                             FillDictionaries();
                             break;
                         case AvailableOptions.HRV2:
-                            if (this.ModuleParam == null)
-                            {
-                                this.ModuleParam = new HRV2_Params(2, 2, this.AnalysisName);
-                                this.ModuleParam.GUIParametersAvailable = true;
-                                FillDictionaries();
-                            }
+                            this.ModuleParam = new HRV2_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = false;
+                            FillDictionaries();
                             break;
                         case AvailableOptions.QT_DISP:
                             if (this.ModuleParam == null)
