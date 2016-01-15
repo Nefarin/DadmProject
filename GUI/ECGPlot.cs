@@ -723,6 +723,7 @@ namespace EKG_Project.GUI
         {
             bool wasEcgBaselineSet = false;
             List<string> modulesToDisplay = new List<string>();
+           
             foreach (var data in dataToDisplayV)
             {
                 switch (data.Key)
@@ -741,6 +742,7 @@ namespace EKG_Project.GUI
                             modulesToDisplay.Add(data.Key);
                         //DisplayR_Peaks(dataToDisplay[data.Key], true);
                         break;
+               
                     default:
                         break;
                 }
@@ -795,6 +797,21 @@ namespace EKG_Project.GUI
                         break;
                     case "r_Peaks":
                         DisplayR_Peaks();
+                        break;
+                    case "QRSOnsets":
+                        DisplayWaves(dis);
+                        break;
+                    case "QRSEnds":
+                        DisplayWaves(dis);
+                        break;
+                    case "POnsets":
+                        DisplayWaves(dis);
+                        break;
+                    case "PEnds":
+                        DisplayWaves(dis);
+                        break;
+                    case "TEnds":
+                        DisplayWaves(dis);
                         break;
                     default:
                         break;
@@ -895,7 +912,60 @@ namespace EKG_Project.GUI
             RefreshPlot();
         }
 
+        private void DisplayWaves(string wavePart)
+        {
+            foreach (var signal in _ecg_Baseline_Data.SignalsFiltered)
+            {
 
+                Vector<double> signalVector = signal.Item2;
+                List<int> waveList = new List<int>();
+                switch (wavePart)
+                {
+                    case "QRSOnsets":
+                        waveList = _waves_Data.QRSOnsets.Find(sig => sig.Item1 == signal.Item1).Item2;                     
+                        break;
+                    case "QRSEnds":
+                        waveList = _waves_Data.QRSEnds.Find(sig => sig.Item1 == signal.Item1).Item2;
+                        break;
+                    case "POnsets":
+                        waveList = _waves_Data.POnsets.Find(sig => sig.Item1 == signal.Item1).Item2;
+                        break;
+                    case "PEnds":
+                        waveList = _waves_Data.PEnds.Find(sig => sig.Item1 == signal.Item1).Item2;
+                        break;
+                    case "TEnds":
+                        waveList = _waves_Data.TEnds.Find(sig => sig.Item1 == signal.Item1).Item2;
+                        break;
+                    default:
+                        break;
+                }
+
+                bool addWave = false;
+
+                ScatterSeries waveSeries = new ScatterSeries();
+                waveSeries.Title = wavePart + "_" + signal.Item1;
+                waveSeries.IsVisible = _visible;
+
+
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+                    if (waveList.Contains(i))
+                    {
+                        waveSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+
+                        addWave = true;
+                    }
+                }
+
+                if (addWave)
+                {
+                    CurrentPlot.Series.Add(waveSeries);
+                }
+            }
+
+            RefreshPlot();
+        }
 
 
 
