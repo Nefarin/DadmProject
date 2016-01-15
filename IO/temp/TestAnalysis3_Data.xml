@@ -473,4 +473,10 @@
   <module name="Heart_Axis">
     <HeartAxis>-0,433421837964341</HeartAxis>
   </module>
+  <module name="Flutter">
+    <FlutterAnnotations>
+      <onset>5</onset>
+      <end>6</end>
+    </FlutterAnnotations>
+  </module>
 </EKG>

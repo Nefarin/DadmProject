@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EKG_Project.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,11 @@ namespace EKG_Project.GUI
     {
         private List<TabItem> visulisationDataTabsList;
 
+        //private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
+        //private Basic_Data_Worker _ecg_Basic_Data_Worker;
+        //private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
+
+
         //0 - plot
         //1 - plot and table
         //2 - plot and histogram
@@ -30,9 +36,14 @@ namespace EKG_Project.GUI
         {
             {"ecgBaseline", 1 },
             {"ecgBasic", 0 },
-            { "r_Peaks", 3 }
+            {"r_Peaks", 3 },
+            {"waves", 0 },
+            { "heart_Class" ,0},
+            { "sleep_Apnea", 0 },
+            { "flutter", 0 },
+            { "heart_Axis", 0 },
+            {"artrial_Fibr", 0 }
         };
-
 
         public VisualisationDataControl()
         {

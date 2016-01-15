@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace EKG_Project.Modules.Waves
 {
-    
+
     public partial class Waves : IModule
     {
         private bool _ended;
@@ -28,7 +28,7 @@ namespace EKG_Project.Modules.Waves
         private Basic_Data _inputData;
         private ECG_Baseline_Data _inputECGData;
         private R_Peaks_Data _inputRpeaksData;
-        
+
         private Waves_Params _params;
 
         private List<int> _currentQRSonsetsPart;
@@ -111,7 +111,7 @@ namespace EKG_Project.Modules.Waves
 
         }
 
-        public void InitForTestsOnly( Vector<double> ecg, Vector<double> rPeaks, Waves_Params parameters)
+        public void InitForTestsOnly(Vector<double> ecg, Vector<double> rPeaks, Waves_Params parameters)
         {
             Params = parameters as Waves_Params;
             Aborted = false;
@@ -129,7 +129,7 @@ namespace EKG_Project.Modules.Waves
                 InputDataRpeaks = new R_Peaks_Data();
 
                 InputDataRpeaks.RPeaks = new List<Tuple<string, Vector<double>>>();
-                InputDataRpeaks.RPeaks.Add(new Tuple < string, Vector<double>>("dupa", rPeaks));
+                InputDataRpeaks.RPeaks.Add(new Tuple<string, Vector<double>>("dupa", rPeaks));
 
                 OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
                 OutputData = new Waves_Data();
@@ -183,11 +183,29 @@ namespace EKG_Project.Modules.Waves
                     analyzeSignalPart();
                     OutputData.QRSOnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSonsets));
                     OutputData.QRSEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSends));
-                    
+
                     OutputData.POnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPonsets));
                     OutputData.PEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPends));
 
                     OutputData.TEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentTends));
+
+                    Console.Write("Rpeaks: ");
+                    Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
+
+                    Console.Write("QRSonset: ");
+                    Console.WriteLine(_currentQRSonsets.Count);
+
+                    Console.Write("QRSend: ");
+                    Console.WriteLine(_currentQRSends.Count);
+
+                    Console.Write("Ponsets: ");
+                    Console.WriteLine(_currentPonsets.Count);
+
+                    Console.Write("Pends: ");
+                    Console.WriteLine(_currentPends.Count);
+
+                    Console.Write("Tends: ");
+                    Console.WriteLine(_currentTends.Count);
 
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)
@@ -207,7 +225,7 @@ namespace EKG_Project.Modules.Waves
                 }
                 else
                 {
-                    analyzeSignalPart( );
+                    analyzeSignalPart();
                     _rPeaksProcessed = startIndex + step;
                     //Console.WriteLine("Jedna sesja poszla!");
                     //Console.WriteLine(_rPeaksProcessed);
@@ -366,7 +384,7 @@ namespace EKG_Project.Modules.Waves
 
         public static void Main()
         {
-            Waves_Params param = new Waves_Params( Wavelet_Type.haar, 2, "TestAnalysis8", 100);
+            Waves_Params param = new Waves_Params(Wavelet_Type.haar, 2, "TestAnalysis100", 500);
 
             //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
             //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
@@ -386,17 +404,17 @@ namespace EKG_Project.Modules.Waves
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-            
-            Vector<double> onsets = Vector<double>.Build.Dense(testModule.OutputData.QRSEnds[0].Item2.Count);
-            Console.WriteLine("fajrant");
-            for (int i = 0; i < onsets.Count; i++)
-            {
-                onsets[i] = (double)testModule.OutputData.QRSEnds[0].Item2[i];
-
-            }
-            Console.WriteLine(onsets);
-            //TempInput.writeFile(360, onsets);
             Console.Read();
+            //Vector<double> onsets = Vector<double>.Build.Dense(testModule.OutputData.QRSEnds[0].Item2.Count);
+            //Console.WriteLine("fajrant");
+            //for (int i = 0; i < onsets.Count; i++)
+            //{
+            //    onsets[i] = (double)testModule.OutputData.QRSEnds[0].Item2[i];
+
+            //}
+            //Console.WriteLine(onsets);
+            ////TempInput.writeFile(360, onsets);
+            //Console.Read();
 
             //POKI CO BIERZEMY DANE Z NASZYCH GOWNIANYCH PLIKOW
 
@@ -481,5 +499,5 @@ namespace EKG_Project.Modules.Waves
         }
 
     }
-     
+
 }
