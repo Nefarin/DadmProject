@@ -81,9 +81,14 @@ namespace EKG_Project.GUI
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 2:
+                    Get_ECG_BASELINE_Data(analyseName);
+                    Get_R_PEAKS_Data(analyseName);
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 3:
+                    Get_ECG_BASELINE_Data(analyseName);
+                    Get_R_PEAKS_Data(analyseName);
+                    Get_WAVES_Data(analyseName);
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 4:
@@ -313,6 +318,7 @@ namespace EKG_Project.GUI
 
 
             this.CheckBoxList.DataContext = _seriesChecbox;
+            ecgPlot.DisplayControler(_wholeDataToDisplay, _wholeDataToDisplayList);
 
         }
 

@@ -75,7 +75,7 @@ namespace EKG_Project.GUI
             CurrentPlot.LegendPlacement = LegendPlacement.Outside;
             CurrentPlot.LegendPosition = LegendPosition.RightMiddle;
             //CurrentPlot.le
-            _windowSize = 1000;
+            _windowSize = 3000;
             _beginingPoint = 0;
             first = true;
             _visible = true;
