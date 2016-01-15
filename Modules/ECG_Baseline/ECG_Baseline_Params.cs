@@ -157,7 +157,10 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             set
             {
-                _fcLow = value;
+                if (_fcLow >= 0)
+                    _fcLow = value;
+                else
+                    _fcLow = 0;
             }
         }
 
@@ -170,7 +173,10 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             set
             {
-                _fcHigh = value;
+                if (_fcHigh >= 0)
+                    _fcHigh = value;
+                else
+                    _fcHigh = 0;
             }
         }
 
@@ -183,7 +189,10 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             set
             {
-                _windowSizeLow = value;
+                if (_windowSizeLow >= 0)
+                    _windowSizeLow = value;
+                else
+                    _windowSizeLow = 0;
             }
         }
 
@@ -196,7 +205,10 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             set
             {
-                _windowSizeHigh = value;
+                if (_windowSizeHigh >= 0)
+                    _windowSizeHigh = value;
+                else
+                    _windowSizeHigh = 0;
             }
         }
 
@@ -209,7 +221,10 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             set
             {
-                _orderLow = value;
+                if (_orderLow >= 0)
+                    _orderLow = value;
+                else
+                    _orderLow = 0;
             }
         }
 
@@ -222,7 +237,10 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             set
             {
-                _orderHigh = value;
+                if (_orderHigh >= 0)
+                    _orderHigh = value;
+                else
+                    _orderHigh = 0;
             }
         }
 

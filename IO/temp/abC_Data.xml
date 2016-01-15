@@ -43,43 +43,43 @@
   <module name="Waves">
     <QRSOnsets>
       <lead>MLII</lead>
-      <samples>120 344 584 -1 -1 -1 -1 -1 2504 2672 -1 -1 -1 -1 -1 4144 4352 4616 4760 -1 -1 -1 -1 -1 -1 -1 6688 6960 -1 7432 -1 7880 8128 -1 -1 -1 -1 -1 -1 9792 9888 -1 10464 10728 10952 -1 -1 -1 -1 -1 -1 -1 12832 12920 -1 -1 13768 13864 -1 -1 -1 -1 -1 -1 -1 -1 -1 16312 16544 -1 -1 -1 17480 -1 -1 18008 -1 -1 -1 -1 19392 19624 19816 20064 -1 -1 -1 -1 21216 </samples>
+      <samples>120 -1 -1 -1 -1 -1 -1 -1 2512 -1 -1 3208 -1 -1 -1 4144 4376 -1 4856 -1 -1 -1 -1 -1 -1 -1 -1 -1 7188 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 11884 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 14700 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 18912 -1 -1 -1 19836 -1 -1 -1 20748 -1 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>V1</lead>
-      <samples>120 344 584 -1 -1 -1 -1 -1 2504 2672 -1 -1 -1 -1 -1 4144 4352 4616 4760 -1 -1 -1 -1 -1 -1 -1 6688 6960 -1 7432 -1 7880 8128 -1 -1 -1 -1 -1 -1 9792 9888 -1 10464 10728 10952 -1 -1 -1 -1 -1 -1 -1 12832 12920 -1 -1 13768 13864 -1 -1 -1 -1 -1 -1 -1 -1 -1 16312 16544 -1 -1 -1 17480 -1 -1 18008 -1 -1 -1 -1 19392 19624 19816 20064 -1 -1 -1 -1 21216 </samples>
+      <samples>120 -1 -1 -1 -1 -1 -1 -1 2512 -1 -1 3208 -1 -1 -1 4144 4376 -1 4856 -1 -1 -1 -1 -1 -1 -1 -1 -1 7188 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 11884 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 14700 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 18912 -1 -1 -1 19836 -1 -1 -1 20748 -1 -1 </samples>
     </QRSOnsets>
     <QRSEnds>
       <lead>MLII</lead>
-      <samples>384 872 1096 1352 1576 1816 2312 2552 2792 3008 3248 3488 3728 3944 4232 4424 4696 4896 5120 5360 5584 5824 6048 6304 6544 6752 7024 7232 7464 7696 7936 8168 8392 8704 8872 9096 9344 9584 9840 10056 10288 10520 10760 11016 11224 11456 11696 11928 12160 12392 12616 12888 13088 13328 13560 13864 14024 14264 14624 14736 14976 15200 15456 15664 15904 16136 16368 16600 16848 17096 17304 17568 17776 18008 18256 18488 18728 18968 19184 19424 19656 19880 20112 20408 20568 20800 21032 -1 </samples>
+      <samples>380 884 1096 1340 1576 1820 2316 2548 2780 3008 3248 3476 3728 4044 4192 4408 4664 4888 5124 5352 5584 5820 6044 6292 6524 6756 6988 7224 7472 7704 7928 8156 8392 8636 8868 9096 9336 9592 9836 10056 10292 10520 10760 11000 11224 11464 11688 11924 12160 12392 12624 12864 13088 13324 13560 13804 14024 14264 14504 14732 14960 15208 15428 15660 15916 16148 16364 16600 16844 17076 17304 17528 17764 18008 18252 18472 18712 18952 19184 19428 19652 19876 20108 20340 20576 20800 21036 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V1</lead>
-      <samples>384 872 1096 1352 1576 1816 2312 2552 2792 3008 3248 3488 3728 3944 4232 4424 4696 4896 5120 5360 5584 5824 6048 6304 6544 6752 7024 7232 7464 7696 7936 8168 8392 8704 8872 9096 9344 9584 9840 10056 10288 10520 10760 11016 11224 11456 11696 11928 12160 12392 12616 12888 13088 13328 13560 13864 14024 14264 14624 14736 14976 15200 15456 15664 15904 16136 16368 16600 16848 17096 17304 17568 17776 18008 18256 18488 18728 18968 19184 19424 19656 19880 20112 20408 20568 20800 21032 -1 </samples>
+      <samples>380 884 1096 1340 1576 1820 2316 2548 2780 3008 3248 3476 3728 4044 4192 4408 4664 4888 5124 5352 5584 5820 6044 6292 6524 6756 6988 7224 7472 7704 7928 8156 8392 8636 8868 9096 9336 9592 9836 10056 10292 10520 10760 11000 11224 11464 11688 11924 12160 12392 12624 12864 13088 13324 13560 13804 14024 14264 14504 14732 14960 15208 15428 15660 15916 16148 16364 16600 16844 17076 17304 17528 17764 18008 18252 18472 18712 18952 19184 19428 19652 19876 20108 20340 20576 20800 21036 -1 </samples>
     </QRSEnds>
     <POnsets>
       <lead>MLII</lead>
-      <samples>303 542 2464 2523 4104 4171 4579 4640 6500 6907 7376 7846 8080 9738 9800 10438 10676 10917 12778 12840 13715 13776 16294 16519 17456 17988 19342 19578 19633 19957 21175 </samples>
+      <samples>2464 3162 4104 4336 4817 7147 11855 14658 18865 19800 20725 </samples>
     </POnsets>
     <POnsets>
       <lead>V1</lead>
-      <samples>303 542 2464 2523 4104 4171 4579 4640 6500 6907 7376 7846 8080 9738 9800 10438 10676 10917 12778 12840 13715 13776 16294 16519 17456 17988 19342 19578 19633 19957 21175 </samples>
+      <samples>2464 3162 4104 4336 4817 7147 11855 14658 18865 19800 20725 2464 3162 4104 4336 4817 7147 11855 14658 18865 19800 20725 </samples>
     </POnsets>
     <PEnds>
       <lead>MLII</lead>
-      <samples>320 556 2478 2537 4122 4175 4594 4655 6515 6925 7399 7867 8097 9756 9815 10457 10701 10932 12790 12854 13735 13790 16307 16537 17473 18002 19359 19597 19647 20001 21194 </samples>
+      <samples>2478 3180 4122 4351 4832 7160 11867 14676 18880 19818 20739 </samples>
     </PEnds>
     <PEnds>
       <lead>V1</lead>
-      <samples>320 556 2478 2537 4122 4175 4594 4655 6515 6925 7399 7867 8097 9756 9815 10457 10701 10932 12790 12854 13735 13790 16307 16537 17473 18002 19359 19597 19647 20001 21194 </samples>
+      <samples>2478 3180 4122 4351 4832 7160 11867 14676 18880 19818 20739 2478 3180 4122 4351 4832 7160 11867 14676 18880 19818 20739 </samples>
     </PEnds>
     <TEnds>
       <lead>MLII</lead>
-      <samples>556 1037 1280 1517 1746 1990 2478 2708 2947 3180 3416 3655 3892 3947 4410 4594 4832 5061 5301 5528 5755 5996 6225 6452 6690 6919 7160 7399 7628 7867 8097 8337 8578 8863 9035 9275 9527 9756 9995 10220 10450 10694 10932 11158 11397 11627 11867 12107 12335 12563 12790 13032 13260 13501 13735 14020 14204 14447 14734 14902 15081 15371 15606 15840 16071 16307 16537 16778 16942 17245 17467 17714 17941 18181 18419 18654 18880 19120 19359 19597 19818 19976 20274 20564 20739 20967 21194 </samples>
+      <samples>556 1037 1280 1517 1746 2002 2478 2708 2947 3180 3416 3655 3892 4175 4351 4594 4832 5061 5289 5528 5755 5984 6225 6452 6690 6919 7160 7399 7628 7867 8097 8337 8578 8804 9035 9275 9527 9756 9995 10220 10457 10694 10932 11170 11397 11627 11867 12107 12335 12563 12790 13032 13260 13501 13735 13958 14204 14447 14676 14902 15081 15371 15606 15840 16071 16307 16537 16778 16942 17245 17467 17714 17941 18181 18419 18654 18880 19120 19359 19597 19818 19982 20274 20511 20739 20967 21194 </samples>
     </TEnds>
     <TEnds>
       <lead>V1</lead>
-      <samples>556 1037 1280 1517 1746 1990 2478 2708 2947 3180 3416 3655 3892 3947 4410 4594 4832 5061 5301 5528 5755 5996 6225 6452 6690 6919 7160 7399 7628 7867 8097 8337 8578 8863 9035 9275 9527 9756 9995 10220 10450 10694 10932 11158 11397 11627 11867 12107 12335 12563 12790 13032 13260 13501 13735 14020 14204 14447 14734 14902 15081 15371 15606 15840 16071 16307 16537 16778 16942 17245 17467 17714 17941 18181 18419 18654 18880 19120 19359 19597 19818 19976 20274 20564 20739 20967 21194 </samples>
+      <samples>556 1037 1280 1517 1746 2002 2478 2708 2947 3180 3416 3655 3892 4175 4351 4594 4832 5061 5289 5528 5755 5984 6225 6452 6690 6919 7160 7399 7628 7867 8097 8337 8578 8804 9035 9275 9527 9756 9995 10220 10457 10694 10932 11170 11397 11627 11867 12107 12335 12563 12790 13032 13260 13501 13735 13958 14204 14447 14676 14902 15081 15371 15606 15840 16071 16307 16537 16778 16942 17245 17467 17714 17941 18181 18419 18654 18880 19120 19359 19597 19818 19982 20274 20511 20739 20967 21194 556 1037 1280 1517 1746 2002 2478 2708 2947 3180 3416 3655 3892 4175 4351 4594 4832 5061 5289 5528 5755 5984 6225 6452 6690 6919 7160 7399 7628 7867 8097 8337 8578 8804 9035 9275 9527 9756 9995 10220 10457 10694 10932 11170 11397 11627 11867 12107 12335 12563 12790 13032 13260 13501 13735 13958 14204 14447 14676 14902 15081 15371 15606 15840 16071 16307 16537 16778 16942 17245 17467 17714 17941 18181 18419 18654 18880 19120 19359 19597 19818 19982 20274 20511 20739 20967 21194 </samples>
     </TEnds>
   </module>
   <module name="Heart_Class">
@@ -88,11 +88,31 @@
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>369</item1>
+      <item1>137</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>844</item1>
+      <item1>137</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>137</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>137</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>137</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>137</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>137</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
@@ -100,7 +120,27 @@
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>2762</item1>
+      <item1>2530</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>2530</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>3229</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>3229</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>3229</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>3229</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
@@ -112,7 +152,7 @@
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>4648</item1>
+      <item1>4403</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
@@ -120,83 +160,255 @@
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>6739</item1>
+      <item1>4883</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>6976</item1>
+      <item1>4883</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>7448</item1>
+      <item1>4883</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>7912</item1>
+      <item1>4883</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>8145</item1>
+      <item1>4883</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>9808</item1>
+      <item1>4883</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>10037</item1>
+      <item1>4883</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>10505</item1>
+      <item1>4883</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>10744</item1>
+      <item1>4883</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>10985</item1>
-      <item2>0</item2>
-    </ClassificationResult>
-    <ClassificationResult>
-      <item1>12848</item1>
-      <item2>0</item2>
-    </ClassificationResult>
-    <ClassificationResult>
-      <item1>13076</item1>
-      <item2>0</item2>
-    </ClassificationResult>
-    <ClassificationResult>
-      <item1>13784</item1>
+      <item1>7213</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>14013</item1>
+      <item1>7213</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>16352</item1>
+      <item1>7213</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>16585</item1>
+      <item1>7213</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>17522</item1>
+      <item1>7213</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>18234</item1>
+      <item1>7213</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>19408</item1>
+      <item1>7213</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>19640</item1>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7213</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>11919</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>14727</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>18931</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>18931</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>18931</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>18931</item1>
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
@@ -204,8 +416,20 @@
       <item2>1</item2>
     </ClassificationResult>
     <ClassificationResult>
-      <item1>20098</item1>
+      <item1>19866</item1>
       <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>19866</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>19866</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>20789</item1>
+      <item2>0</item2>
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>

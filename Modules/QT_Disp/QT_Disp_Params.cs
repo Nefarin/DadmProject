@@ -24,7 +24,16 @@ namespace EKG_Project.Modules.QT_Disp
             this._alldrains = false;
             this._qt_method = QT_Calc_Method.BAZETTA;
             this._t_end_method = T_End_Method.TANGENT;
-            this._analysisName = "Analysis6";
+            this._analysisName = "TestAnalysis100";
+        }
+
+
+        public QT_Disp_Params(string analysisName)
+        {
+            this._alldrains = false;
+            this._qt_method = QT_Calc_Method.BAZETTA;
+            this._t_end_method = T_End_Method.TANGENT;
+            this._analysisName = analysisName;
         }
 
         public QT_Calc_Method QTMethod
