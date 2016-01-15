@@ -161,7 +161,7 @@ namespace EKG_Project.IO
 
                         XmlNode samples = node["samples"];
                         string readSamples = samples.InnerText;
-                        double convertedSamples = Convert.ToDouble(readSamples, new System.Globalization.NumberFormatInfo());
+                        double convertedSamples = Convert.ToDouble(readSamples);
 
                         Tuple<String, double> read = Tuple.Create(readLead, convertedSamples);
                         list.Add(read);
@@ -178,7 +178,7 @@ namespace EKG_Project.IO
 
                         XmlNode samples = node["samples"];
                         string readSamples = samples.InnerText;
-                        double convertedSamples = Convert.ToDouble(readSamples, new System.Globalization.NumberFormatInfo());
+                        double convertedSamples = Convert.ToDouble(readSamples);
 
                         Tuple<String, double> read = Tuple.Create(readLead, convertedSamples);
                         list1.Add(read);
@@ -194,7 +194,7 @@ namespace EKG_Project.IO
 
                         XmlNode samples = node["samples"];
                         string readSamples = samples.InnerText;
-                        double convertedSamples = Convert.ToDouble(readSamples, new System.Globalization.NumberFormatInfo());
+                        double convertedSamples = Convert.ToDouble(readSamples);
 
                         Tuple<String, double> read = Tuple.Create(readLead, convertedSamples);
                         list2.Add(read);
@@ -228,7 +228,7 @@ namespace EKG_Project.IO
         {
             int[] digits = input
                               .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                              .Select(digit => Convert.ToInt32(digit, new System.Globalization.NumberFormatInfo()))
+                              .Select(digit => Convert.ToInt32(digit))
                               .ToArray();
             List<int> list = new List<int>();
             for (int i = 0; i < digits.Length; i++)
