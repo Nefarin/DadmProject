@@ -8,8 +8,6 @@ using WfdbCsharpWrapper;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-
-
 namespace EKG_Project.IO
 {
 
