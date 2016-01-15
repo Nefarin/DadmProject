@@ -124,6 +124,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\ModuleOptionDialogues\Dialogue_QT_Disp_Options.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\ModuleOptionDialogues\Dialogue_R_Peaks_Options.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -234,6 +238,9 @@
     </Compile>
     <Compile Include="GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml.cs">
       <DependentUpon>Dialogue_ECG_Baseline_Options.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ModuleOptionDialogues\Dialogue_QT_Disp_Options.xaml.cs">
+      <DependentUpon>Dialogue_QT_Disp_Options.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ModuleOptionDialogues\Dialogue_R_Peaks_Options.xaml.cs">
       <DependentUpon>Dialogue_R_Peaks_Options.xaml</DependentUpon>

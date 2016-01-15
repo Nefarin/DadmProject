@@ -3,6 +3,7 @@ using EKG_Project.Modules.Atrial_Fibr;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Waves;
+using EKG_Project.Modules.QT_Disp;
 using EKG_Project.Modules;
 using System;
 using System.Collections.Generic;
@@ -103,6 +104,12 @@ namespace EKG_Project.GUI
                         atrial_dialogue.ShowDialog();
                         Params[option.Code] = atrial_dialogue.returnParameters;
                         OptionParams[option] = atrial_dialogue.returnParameters;
+                    break;
+                case AvailableOptions.QT_DISP:
+                    var qt_dialogue = new Dialogue_QT_Disp_Options(this, (QT_Disp_Params)option.ModuleParam);
+                    qt_dialogue.ShowDialog();
+                    Params[option.Code] = qt_dialogue.returnParameters;
+                    OptionParams[option] = qt_dialogue.returnParameters;
                     break;
                 default:
                     break;
