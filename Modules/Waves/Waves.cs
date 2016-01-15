@@ -404,7 +404,7 @@ namespace EKG_Project.Modules.Waves
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-
+            Console.Read();
             //Vector<double> onsets = Vector<double>.Build.Dense(testModule.OutputData.QRSEnds[0].Item2.Count);
             //Console.WriteLine("fajrant");
             //for (int i = 0; i < onsets.Count; i++)
