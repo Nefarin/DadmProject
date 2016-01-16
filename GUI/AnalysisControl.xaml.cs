@@ -77,7 +77,7 @@ namespace EKG_Project.GUI
             }
             else
             {
-                // Nothing is checked - let user know somehow.
+                MessageBox.Show("No analysis selected. Please select at least one analysis.", "Cannot start calculations", MessageBoxButton.OK);
             }
 
 
