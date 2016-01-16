@@ -10,6 +10,11 @@
     </UserControl.Resources>
     <Grid>
         <TreeView x:Name="treeViewModules" Width="310" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="True"></Setter>
+                </Style>
+            </TreeView.ItemContainerStyle>
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:ModuleOption}" ItemsSource="{Binding Path=Suboptions}">
                     <DockPanel LastChildFill="True" Width="150">
