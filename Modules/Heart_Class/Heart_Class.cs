@@ -12,37 +12,20 @@ namespace EKG_Project.Modules.Heart_Class
     public partial class Heart_Class : IModule
     {
         private bool _ended;
-        private bool _aborted;
 
         private int _currentChannelIndex;
         private int _currentChannelLength;
         private int _samplesProcessed;
-        private int _numberOfChannels;
-        private int _channel2;
-        private int startIndex;
+        //private int startIndex;
         private bool _ml2Processed;
         private int _numberOfSteps;
 
         // Czy te zmienne muszą być private? 
-        int qrsEndStep;// o tyle qrs się przesuwamy 
-        int i; //do inkrementacji co 10
-        int step; // ilość próbek o którą sie przesuwamy
+        //int qrsEndStep;// o tyle qrs się przesuwamy 
+        //int i; //do inkrementacji co 10
+        //int step; // ilość próbek o którą sie przesuwamy
 
-        private ECG_Baseline_Data_Worker _inputECGbaselineWorker;
-        private R_Peaks_Data_Worker _inputRpeaksWorker;
-        private Waves_Data_Worker _inputWavesWorker;
-        private Heart_Class_Data_Worker _outputWorker;
-        private Basic_Data_Worker _basicDataWorker;
-
-        private ECG_Baseline_Data _inputECGbaselineData;
-        private R_Peaks_Data _inputRpeaksData;
-        private Waves_Data _inputWavesData;
-        private Heart_Class_Data _outputData;
-        private Basic_Data _basicData;
-
-        private Heart_Class_Params _params;
-
-        private Vector<Double> _currentVector;
+        //private Vector<Double> _currentVector;
         private Tuple<int, int> _tempClassResult;
 
 
@@ -65,9 +48,9 @@ namespace EKG_Project.Modules.Heart_Class
 
         public void Init(ModuleParams parameters)
         {
-            
+
             Params = parameters as Heart_Class_Params;
-            
+
 
             Aborted = false;
             if (!Runnable()) _ended = true;
@@ -89,38 +72,38 @@ namespace EKG_Project.Modules.Heart_Class
                     BasicDataWorker = new Basic_Data_Worker(Params.AnalysisName);
                     BasicDataWorker.Load();
                     BasicData = BasicDataWorker.BasicData;
-                    fs = BasicData.Frequency;
+                    _fs = BasicData.Frequency;
 
                     InputWavesWorker = new Waves_Data_Worker(Params.AnalysisName);
                     InputWavesWorker.Load();
                     InputWavesData = InputWavesWorker.Data;
-                    _currentRVector = InputRpeaksData.RPeaks[_channel2].Item2;
-                    _currentECGBaselineVector = InputECGbaselineData.SignalsFiltered[_channel2].Item2;
-                   
+                    //_currentRVector = InputRpeaksData.RPeaks[_channel2].Item2;
+                    //_currentECGBaselineVector = InputECGbaselineData.SignalsFiltered[_channel2].Item2;
+
                     OutputWorker = new Heart_Class_Data_Worker(Params.AnalysisName);
-              
+
                     _currentChannelIndex = 0;
                     _samplesProcessed = 0;
-                    startIndex = _samplesProcessed;
+                    //startIndex = _samplesProcessed;
                     NumberOfChannels = InputECGbaselineData.SignalsFiltered.Count;
                     _currentChannelLength = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
-                    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                    qrsEndStep = 10;
-                    i = 10;
-                    _numberOfSteps = InputWavesData.QRSEnds[_channel2].Item2.Count;
-                    step = 1;
+                    //_currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                    //qrsEndStep = 10;
+                    //i = 10;
+                    _numberOfSteps = InputWavesData.QRSEnds[Channel2].Item2.Count;
+                    //step = 1;
                     //ilośc próbek, aż do indeksu końca 10 załamka
-                    _tempClassResult = new Tuple<int, int>(0,0);
+                    _tempClassResult = new Tuple<int, int>(0, 0);
                     _ml2Processed = false;
 
                 }
                 else
                 {
                     _ended = true;
-                    _aborted = true;
+                    Aborted = true;
                 }
             }
-            
+
         }
 
         public void ProcessData()
@@ -128,13 +111,13 @@ namespace EKG_Project.Modules.Heart_Class
             if (Runnable()) processData();
             else _ended = true;
         }
-        
+
         public double Progress()
         {
 
-            return 100.0*_samplesProcessed/_numberOfSteps;
+            return 100.0 * _samplesProcessed / _numberOfSteps;
         }
-        
+
         public bool Runnable()
         {
             return Params != null;
@@ -146,18 +129,17 @@ namespace EKG_Project.Modules.Heart_Class
             if (!_ml2Processed)
             {
 
-                int QRSOnSet = InputWavesData.QRSOnsets[_channel2].Item2[_samplesProcessed];
-                int QRSEnds = InputWavesData.QRSEnds[_channel2].Item2[_samplesProcessed];
-                double R = InputRpeaksData.RPeaks[_channel2].Item2[_samplesProcessed];
+                int qrsOnSet = InputWavesData.QRSOnsets[Channel2].Item2[_samplesProcessed];
+                int qrsEnds = InputWavesData.QRSEnds[Channel2].Item2[_samplesProcessed];
+                double R = InputRpeaksData.RPeaks[Channel2].Item2[_samplesProcessed];
 
-                if (QRSOnSet == -1 || QRSEnds == -1)
+                if (qrsOnSet == -1 || qrsEnds == -1)
                 {
                     _samplesProcessed++;
                 }
                 else
                 {
-                    _tempClassResult = ClassificationOneQrs(InputECGbaselineData.SignalsFiltered[_channel2].Item2,
-                                        QRSOnSet, QRSEnds, R);
+                    _tempClassResult = ClassificationOneQrs(InputECGbaselineData.SignalsFiltered[Channel2].Item2, qrsOnSet, qrsEnds, R);
                     OutputData.ClassificationResult.Add(_tempClassResult);
 
                     _samplesProcessed++;
@@ -179,7 +161,7 @@ namespace EKG_Project.Modules.Heart_Class
         private bool findChannel()
         {
             int i = 0;
-            
+
             foreach (var tuple in InputECGbaselineData.SignalsFiltered)
             {
                 string name = tuple.Item1;
@@ -195,91 +177,34 @@ namespace EKG_Project.Modules.Heart_Class
             return false;
         }
 
-        public Heart_Class_Data_Worker OutputWorker
-        {
-            get { return _outputWorker; }
-            set { _outputWorker = value; }
-        }
-        
-        public bool Aborted
-        {
-            get { return _aborted; }
-            set { _aborted = value; }
-        }
+        public Heart_Class_Data_Worker OutputWorker { get; set; }
 
-        public Heart_Class_Params Params
-        {
-            get { return _params; }
-            set { _params = value; }
-        }
-       
-        public Heart_Class_Data OutputData
-        {
-            get { return _outputData; }
-            set { _outputData = value; }
-        }
-        
+        public bool Aborted { get; set; }
+
+        public Heart_Class_Params Params { get; set; }
+
+        public Heart_Class_Data OutputData { get; set; }
 
 
-        public ECG_Baseline_Data_Worker InputEcGbaselineWorker
-        {
-            get { return _inputECGbaselineWorker; }
-            set { _inputECGbaselineWorker = value; }
-        }
+        public ECG_Baseline_Data_Worker InputEcGbaselineWorker { get; set; }
 
-        public R_Peaks_Data_Worker InputRpeaksWorker
-        {
-            get { return _inputRpeaksWorker; }
-            set { _inputRpeaksWorker = value; }
-        }
+        public R_Peaks_Data_Worker InputRpeaksWorker { get; set; }
 
-        public Waves_Data_Worker InputWavesWorker
-        {
-            get { return _inputWavesWorker; }
-            set { _inputWavesWorker = value; }
-        }
+        public Waves_Data_Worker InputWavesWorker { get; set; }
 
-        public ECG_Baseline_Data InputECGbaselineData
-        {
-            get { return _inputECGbaselineData; }
-            set { _inputECGbaselineData = value; }
-        }
+        public ECG_Baseline_Data InputECGbaselineData { get; set; }
 
-        public R_Peaks_Data InputRpeaksData
-        {
-            get { return _inputRpeaksData; }
-            set { _inputRpeaksData = value; }
-        }
+        public R_Peaks_Data InputRpeaksData { get; set; }
 
-        public Waves_Data InputWavesData
-        {
-            get { return _inputWavesData; }
-            set { _inputWavesData = value; }
-        }
+        public Waves_Data InputWavesData { get; set; }
 
-        public int NumberOfChannels
-        {
-            get { return _numberOfChannels; }
-            set { _numberOfChannels = value; }
-        }
+        public int NumberOfChannels { get; set; }
 
-        public int Channel2
-        {
-            get { return _channel2; }
-            set { _channel2 = value; }
-        }
+        public int Channel2 { get; set; }
 
-        public Basic_Data_Worker BasicDataWorker
-        {
-            get { return _basicDataWorker; }
-            set { _basicDataWorker = value; }
-        }
+        public Basic_Data_Worker BasicDataWorker { get; set; }
 
-        public Basic_Data BasicData
-        {
-            get { return _basicData; }
-            set { _basicData = value; }
-        }
+        public Basic_Data BasicData { get; set; }
 
 
         public static void Main()
