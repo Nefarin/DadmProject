@@ -8,13 +8,14 @@ using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules;
+using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
     public class ECG_Baseline_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName = "TestAnalysis";
         private ECG_Baseline_Data _data;
 
         public ECG_Baseline_Data Data
@@ -83,11 +84,14 @@ namespace EKG_Project.IO
                     signalFiltered.AppendChild(lead);
 
                     XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-                    string samplesText = null;
+                    
+                    StringBuilder builder = new StringBuilder();
                     foreach (var value in tuple.Item2)
                     {
-                        samplesText += value.ToString() + " ";
+                        builder.Append(value.ToString());
+                        builder.Append(" ");
                     }
+                    string samplesText = builder.ToString();
 
                     XmlText samplesValue = file.CreateTextNode(samplesText);
                     samples.AppendChild(samplesValue);
@@ -138,5 +142,23 @@ namespace EKG_Project.IO
             }
             this.Data = basicData;
         }
+
+
+        //public static void Main()
+        //{
+        //    ECG_Baseline_Data_Worker worker = new ECG_Baseline_Data_Worker();
+        //    worker.Load();
+
+        //    foreach (var signal in worker.Data.SignalsFiltered)
+        //    {
+        //        //Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //        Debug.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //        //Debug.
+        //    }
+
+            
+        //    //Console.Read();
+
+        //}
     }
 }

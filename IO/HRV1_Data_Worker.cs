@@ -14,7 +14,7 @@ namespace EKG_Project.IO
     public class HRV1_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName;
         private HRV1_Data _data;
 
         public HRV1_Data Data
@@ -88,11 +88,14 @@ namespace EKG_Project.IO
                         moduleNode.AppendChild(lead);
 
                         XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-                        string samplesText = null;
+                        
+                        StringBuilder builder = new StringBuilder();
                         foreach (var value in tuple.Item2)
                         {
-                            samplesText += value.ToString() + " ";
+                            builder.Append(value.ToString());
+                            builder.Append(" ");
                         }
+                        string samplesText = builder.ToString();
 
                         XmlText samplesValue = file.CreateTextNode(samplesText);
                         samples.AppendChild(samplesValue);

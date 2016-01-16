@@ -8,13 +8,14 @@ using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules;
+using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
     public class R_Peaks_Data_Worker
     {
         string directory;
-        string analysisName = "Analysis6";
+        string analysisName = "TestAnalysis";
         private R_Peaks_Data _data;
 
         public R_Peaks_Data Data
@@ -83,11 +84,14 @@ namespace EKG_Project.IO
                     RPeaks.AppendChild(lead);
 
                     XmlElement indices = file.CreateElement(string.Empty, "indices", string.Empty);
-                    string indicesText = null;
+
+                    StringBuilder builder = new StringBuilder();
                     foreach (var value in tuple.Item2)
                     {
-                        indicesText += value.ToString() + " ";
+                        builder.Append(value.ToString());
+                        builder.Append(" ");
                     }
+                    string indicesText = builder.ToString();
 
                     XmlText indicesValue = file.CreateTextNode(indicesText);
                     indices.AppendChild(indicesValue);
@@ -106,11 +110,14 @@ namespace EKG_Project.IO
                     RRInterval.AppendChild(lead);
 
                     XmlElement intervals = file.CreateElement(string.Empty, "intervals", string.Empty);
-                    string intervalsText = null;
+                    
+                    StringBuilder builder = new StringBuilder();
                     foreach (var value in tuple.Item2)
                     {
-                        intervalsText += value.ToString() + " ";
+                        builder.Append(value.ToString());
+                        builder.Append(" ");
                     }
+                    string intervalsText = builder.ToString();
 
                     XmlText intervalsValue = file.CreateTextNode(intervalsText);
                     intervals.AppendChild(intervalsValue);
@@ -177,5 +184,24 @@ namespace EKG_Project.IO
             }
             this.Data = basicData;
         }
+
+        //public static void Main()
+        //{
+        //    R_Peaks_Data_Worker worker = new R_Peaks_Data_Worker();
+        //    worker.Load();
+
+        //    foreach (var signal in worker.Data.RPeaks)
+        //    {
+                
+        //        //Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //        Debug.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
+        //        //Debug.
+        //    }
+
+
+        //    //Console.Read();
+
+        //}
+
     }
 }

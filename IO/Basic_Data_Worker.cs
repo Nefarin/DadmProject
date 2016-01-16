@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules;
+using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
@@ -79,11 +80,14 @@ namespace EKG_Project.IO
                     signal.AppendChild(lead);
 
                     XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-                    string samplesText = null;
+                    
+                    StringBuilder builder = new StringBuilder();
                     foreach (var value in tuple.Item2)
                     {
-                        samplesText += value.ToString() + " ";
+                        builder.Append(value.ToString());
+                        builder.Append(" ");
                     }
+                    string samplesText = builder.ToString();
 
                     XmlText samplesValue = file.CreateTextNode(samplesText);
                     samples.AppendChild(samplesValue);
@@ -94,7 +98,6 @@ namespace EKG_Project.IO
                 ew.InternalXMLFile = file;
 
                 string fileName = analysisName + "_Data.xml";
-                //Console.WriteLine(System.IO.Path.Combine(directory, fileName));
                 file.Save(System.IO.Path.Combine(directory, fileName));
 
             }
@@ -142,17 +145,6 @@ namespace EKG_Project.IO
                 }
             }
             this.BasicData = basicData;
-        }
-
-        public static void Main()
-        {
-            Basic_Data_Worker worker = new Basic_Data_Worker();
-            worker.Load();
-            Console.WriteLine(worker.BasicData.ToString());
-
-
-            Console.Read();
-
         }
     }
 }

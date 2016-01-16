@@ -14,24 +14,46 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
 
         <oxy:PlotView Model="{Binding CurrentPlot}" x:Name="ECGPlotView" Grid.Row="0" Margin="0,0,0,0"/>
 
         <UniformGrid Grid.Row="1"  Rows="1" Columns="2" Margin="5,0,5,0">
-            <Button x:Name="PlotBackwardButton">
+            <Button x:Name="PlotBackwardButton" Click="PlotBackwardButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="images/backward.png"/>
                     <Label Padding="0">Backwards Plot</Label>
                 </StackPanel>
             </Button>
-            <Button x:Name="PlotForwardButton">
+            <Button x:Name="PlotForwardButton" Click="PlotForwardButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="images/forward.png"/>
                     <Label Padding="0">Forwards Plot</Label>
                 </StackPanel>
             </Button>
         </UniformGrid>
+
+        <!--<UniformGrid Grid.Row="2"  Rows="1" Columns="10" Margin="5,0,5,0">
+            <Button x:Name="nic">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="images/backward.png"/>
+                    <Label Padding="0">Backwards Plot</Label>
+                </StackPanel>
+            </Button>
+            <Button x:Name="nic2">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="images/forward.png"/>
+                    <Label Padding="0">Forwards Plot</Label>
+                </StackPanel>
+            </Button>
+            <CheckBox>
+                <StackPanel Orientation="Horizontal">
+                    <Label>R_Peaks</Label>
+                </StackPanel>
+            </CheckBox>
+        </UniformGrid>-->
+
         <!--<oxy:PlotView Model="{Binding CurrentPlot}" x:Name="ECGPlotView"/>-->
     </Grid>
 </UserControl>
