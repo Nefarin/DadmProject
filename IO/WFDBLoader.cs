@@ -19,19 +19,35 @@ namespace EKG_Project.IO
 
         private void AddToPath(IECGPath pathBuilder)
         {
-            var environmentVariableName = "PATH";
-            var valueToAdd = Path.Combine(pathBuilder.getBasePath(), "DLL");
-            var finalValue = _oldEnvironmentVariables + ";" + valueToAdd;
-            Console.WriteLine(finalValue);
-            var target = EnvironmentVariableTarget.Machine;
-            Environment.SetEnvironmentVariable(environmentVariableName, finalValue, target);
+            //var environmentVariableName = "PATH";
+            //var valueToAdd = Path.Combine(pathBuilder.getBasePath(), "DLL");
+            //var finalValue = _oldEnvironmentVariables + ";" + valueToAdd;
+            //Console.WriteLine(finalValue);
+            //var target = EnvironmentVariableTarget.Machine;
+            //Environment.SetEnvironmentVariable(environmentVariableName, finalValue, target);
+            string path = Path.Combine(pathBuilder.getBasePath(), "DLL\\");
+            path = path.Substring(0, path.Length - 1);
+            Process cmd = new Process();
+            cmd.StartInfo.FileName = @"cmd.exe";
+            cmd.StartInfo.Arguments = @"/K SET PATH = %PATH%;" + path;
+            cmd.Start();
+            cmd.WaitForExit();
         }
 
         private void RemoveFromPath()
         {
-            var environmentVariableName = "PATH";
-            var target = EnvironmentVariableTarget.Machine;
-            Environment.SetEnvironmentVariable(environmentVariableName, _oldEnvironmentVariables, target);
+            //var environmentVariableName = "PATH";
+            //var target = EnvironmentVariableTarget.Machine;
+            //Environment.SetEnvironmentVariable(environmentVariableName, _oldEnvironmentVariables, target);
+            Process cmd = new Process();
+            cmd.StartInfo.FileName = @"cmd.exe";
+            cmd.StartInfo.Arguments = @"/K echo %PATH%";
+            cmd.Start();
+            cmd.WaitForExit();
+            cmd.StartInfo.FileName = @"cmd.exe";
+            cmd.StartInfo.Arguments = @"/K SET PATH = " + _oldEnvironmentVariables;
+            cmd.Start();
+            cmd.WaitForExit();
         }
 
         private void RestartExplorer(IECGPath pathBuilder)
@@ -41,14 +57,8 @@ namespace EKG_Project.IO
                 if (exe.ProcessName == "explorer")
                     exe.Kill();
             }
-            string path = Path.Combine(pathBuilder.getBasePath(), "DLL\\");
-            path = path.Substring(0, path.Length - 1);
-            Process cmd = new Process();
-            cmd.StartInfo.FileName = @"cmd.exe";
-            cmd.StartInfo.Arguments = @"/K " + path + @"/resetvars.bat";
-            cmd.Start();
-            cmd.WaitForExit();
-            Process.Start(Path.Combine(Environment.GetEnvironmentVariable("windir"), "explorer.exe"));
+            
+            //Process.Start(Path.Combine(Environment.GetEnvironmentVariable("windir"), "explorer.exe"));
         }
 
         /// <summary>
@@ -81,7 +91,7 @@ namespace EKG_Project.IO
 
             WFDBLoader wfdbinstance = new WFDBLoader();
             wfdbinstance.AddToPath(pathBuilder);
-            wfdbinstance.RestartExplorer(pathBuilder);
+            //wfdbinstance.RestartExplorer(pathBuilder);
             WFDBLoader.EnvironmentalVariableCheck("Path");
 
             //Assembly.LoadFrom(Path.Combine(pathBuilder.getBasePath(), "DLL", "wfdb.dll"));
@@ -97,7 +107,7 @@ namespace EKG_Project.IO
             Console.WriteLine(".atr file exists: " + File.Exists(Path.Combine(directory, atrFileName)));
 
             wfdbinstance.RemoveFromPath();
-            wfdbinstance.RestartExplorer(pathBuilder);
+            //wfdbinstance.RestartExplorer(pathBuilder);
             WFDBLoader.EnvironmentalVariableCheck("Path");
             Console.ReadLine();
         }
