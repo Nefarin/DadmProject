@@ -8,11 +8,9 @@ namespace EKG_Project.Modules.Flutter
 {
     public class Flutter_Params : ModuleParams
     {
-        public string AnalysisName { get; set; }
-
         public Flutter_Params(string analysisName)
         {
-            AnalysisName = analysisName;
+            this.AnalysisName = analysisName;
         }
     }
 }
