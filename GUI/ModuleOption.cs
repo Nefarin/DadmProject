@@ -26,6 +26,12 @@ using EKG_Project.Modules.HRT;
 
 namespace EKG_Project.GUI
 {
+    /// <summary>
+    /// Handle treeView,
+    /// set contructors of Params Classes,
+    /// Set analysis name in all options,
+    /// Set options dialogBox where needed.
+    /// </summary>
     public class ModuleOption : INotifyPropertyChanged
     {
         #region Private fields
@@ -100,16 +106,6 @@ namespace EKG_Project.GUI
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
-                        case AvailableOptions.TEST_MODULE:
-                            this.ModuleParam = new TestModule_Params(500);
-                            this.ModuleParam.GUIParametersAvailable = true;
-                            FillDictionaries();
-                            break;
-                        case AvailableOptions.HRV1:
-                            this.ModuleParam = new HRV1_Params(this.AnalysisName);
-                            this.ModuleParam.GUIParametersAvailable = false;
-                            FillDictionaries();
-                            break;
                         case AvailableOptions.HRV2:
                             this.ModuleParam = new HRV2_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
@@ -133,6 +129,17 @@ namespace EKG_Project.GUI
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
+                        /*
+                        case AvailableOptions.TEST_MODULE:
+                            this.ModuleParam = new TestModule_Params(500);
+                            this.ModuleParam.GUIParametersAvailable = true;
+                            FillDictionaries();
+                            break;s
+                        case AvailableOptions.HRV1:
+                            this.ModuleParam = new HRV1_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = false;
+                            FillDictionaries();
+                            break;
                         case AvailableOptions.ST_SEGMENT:
                             this.ModuleParam = new ST_Segment_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
@@ -152,7 +159,7 @@ namespace EKG_Project.GUI
                             this.ModuleParam = new HRT_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
-                            break;
+                            break;*/
                         default:
                             this.ModuleParam = null;
                             break;

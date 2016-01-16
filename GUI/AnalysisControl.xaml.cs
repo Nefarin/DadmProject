@@ -12,7 +12,8 @@ namespace EKG_Project.GUI
 {
     #region Documentation
     /// <summary>
-    /// Interaction logic for AnalysisControl.xaml - class for GUI developers
+    /// Interaction logic for AnalysisControl.xaml
+    /// Handling buttons
     /// </summary>
     /// 
     #endregion
