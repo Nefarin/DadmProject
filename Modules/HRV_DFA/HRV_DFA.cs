@@ -119,10 +119,10 @@ namespace EKG_Project.Modules.HRV_DFA
                 }
 
 
-                if (startIndex + stepVal > _currentRpeaksLength)
+                if (startIndex + step > _currentRpeaksLength)
                 {
 
-                        HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2);
+                        HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
                         Tuple<string, Vector<double>, Vector<double>> numberN = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogn1, veclogn2);
                         Tuple<string, Vector<double>, Vector<double>> fnValue = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogFn1, veclogFn2);
                         Tuple<string, Vector<double>, Vector<double>> pAlpha = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, vecparam1, vecparam2);
@@ -143,7 +143,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 }
                 else
                 {
-                    HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2);
+                    HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
                     _currentVector = InputData.RRInterval[_currentChannelIndex].Item2.SubVector(0, stepVal);
                     _rPeaksProcessed = startIndex + stepVal;
 
@@ -190,7 +190,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main()
         {
-            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis100");
+            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis210");
             HRV_DFA testModule = new HRV_DFA();
 
             testModule.Init(param);
