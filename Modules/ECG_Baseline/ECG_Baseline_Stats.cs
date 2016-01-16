@@ -81,7 +81,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                     //_strToStr.Add(_currentName + " mean value: ", mean.ToString()); 
                     //_strToObj.Add(_currentName + " mean value: ", mean);      
                          
-                    //Tak jak napisał Marek - żadne statystyki nam nie przychodzą do głowy                                                                
+                    // Tak jak napisał Marek - żadne statystyki nam nie przychodzą do głowy                                                                
                                                                                     
                                                                                     
                                                                                     
