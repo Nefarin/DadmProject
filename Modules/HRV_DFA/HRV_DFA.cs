@@ -115,11 +115,11 @@ namespace EKG_Project.Modules.HRV_DFA
                 }
                 if (_currentRpeaksLength < 20)
                 {
-                    throw new InvalidOperationException("Number of R - Peaks is too short");
+                    Console.WriteLine("Number of R - Peaks is too short");
+                    _aborted = true;
                 }
-
-
-                if (startIndex + step > _currentRpeaksLength)
+              
+                if (startIndex + step > _currentRpeaksLength && _aborted != true)
                 {
 
                         HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
@@ -143,9 +143,13 @@ namespace EKG_Project.Modules.HRV_DFA
                 }
                 else
                 {
-                    HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
-                    _currentVector = InputData.RRInterval[_currentChannelIndex].Item2.SubVector(0, stepVal);
-                    _rPeaksProcessed = startIndex + stepVal;
+                    if (_aborted != true)
+                    {
+                        HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
+                        _currentVector = InputData.RRInterval[_currentChannelIndex].Item2.SubVector(0, stepVal);
+                        _rPeaksProcessed = startIndex + stepVal;
+                    }
+                    else _ended = true;
 
                 }
             }
@@ -190,7 +194,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main()
         {
-            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis210");
+            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis234");
             HRV_DFA testModule = new HRV_DFA();
 
             testModule.Init(param);

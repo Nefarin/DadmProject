@@ -47,9 +47,14 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> vectorFn = DfaFluctuationComputation(box, sig);  // F(n)
     
             // Remove all zeros from vector
-            Vector<double> vFn = ZerosRemove(vectorFn);
-            Vector<double> vn = box.SubVector(0, vFn.Count());
-
+            Vector<double> vFn0 = ZerosRemove(vectorFn);
+            Vector<double> vn = box.SubVector(0, vFn0.Count());
+            Vector<double> vFn = Vector<double>.Build.Dense(vFn0.Count());
+            for(int i = 0; i < vFn0.Count(); i++)
+            {
+                int counter = vFn0.Count() - 1 - i;
+                vFn[i] = vFn0[counter];
+            }
             // Convert to logarytmic scale
             //Vector<double> vn = box.SubVector(0,vFn.Count());
             Vector<double> logn = Logarithmize(vn);
@@ -99,7 +104,7 @@ namespace EKG_Project.Modules.HRV_DFA
             veclogn1 = logn;
             veclogn2 = logn;
             veclogFn1 = fittedFn1;
-            veclogFn2 = fittedFn1;
+            veclogFn2 = vFn;
             vecparam1 = p1;
             vecparam2 = p1;
 
@@ -129,50 +134,56 @@ namespace EKG_Project.Modules.HRV_DFA
             
             int box_length = dfabox.Count();    // number of all boxes
             int sig_length = signal.Count();    // signal length
+
             Vector<double> fn = Vector<double>.Build.Dense(box_length);
-            Vector<double> yk = Integrate(signal);
-            Vector<double> yn = Vector<double>.Build.Dense(yk.Count());
 
             for (int i = 0; i < box_length - 1; i++)
             {
                 double boxVal = dfabox[i];
-                double box_number = sig_length / boxVal;   // number of boxes
-                //double box_qtyD = box_number * boxVal;      // quantity of samples in boxes
                 int boxValint = Convert.ToInt32(boxVal);
-                int box_qty = Convert.ToInt32(sig_length);
-                int boxNumber = Convert.ToInt32(box_number);
+                int nWin = sig_length / boxValint;
+                int winCount = nWin * Convert.ToInt32(boxVal);
 
-                   // Signal integration
 
-                for (int j = 0; j < boxNumber - 1; j++)
+                if (boxValint > sig_length)
+                   {
+                    fn[i] = 0;
+                    
+                   }
+                else
                 {
-                    // Least-Square Fitting
-                    int ykIndex = j * boxValint;
-                    /*if (ykIndex + boxValint > sig_length)
+                    Vector<double> yk = Vector<double>.Build.Dense(winCount, 1);
+                    Vector<double> yn = Vector<double>.Build.Dense(winCount, 1);
+
+                    yk = Integrate(signal.SubVector(0, winCount));
+
+                    for (int j = 0; j < nWin - 1; j++)
                     {
-                        break;
-                    }*/
-                    int ykCount = boxValint;
-                    double[] x = Generate.LinearRange(1, boxValint);
-                    Vector<double> y = yk.SubVector(ykIndex, boxValint);
-                    double[] y1 = y.ToArray();
-                    double[] p = Polyfit(x, y1, 1);     //fitting coefficients
-                    Tuple<double,double> p1 = Fit.Line(x,y1);
-                    
-                    // Fitting method: QR                                        
-                    Func<double, double> fitting = Fit.PolynomialFunc(x, y1, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.QR);
-                    //Vector<double> yn  = Vector<double>.Build.Dense(yk.Count());
-                    
-                   
-                    //fitting curve obtaining
-                    
-                    for (int k = 0; k < y.Count(); k++)
-                    {
-                        yn[k] = fitting(x[k]);
+                        // Least-Square Fitting
+                        int ykIndex = j * boxValint;
+
+                        double[] x = Generate.LinearRange(1, 1, boxValint);
+                        double[] y = yk.SubVector(ykIndex, boxValint).ToArray();
+                        double[] p = Polyfit(x, y, 1);     //fitting coefficients
+                        Tuple<double, double> p1 = Fit.Line(x, y);
+
+                        // Fitting method: QR                                        
+                        Func<double, double> fitting = Fit.PolynomialFunc(x, y, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.QR);
+                        //Vector<double> yn  = Vector<double>.Build.Dense(yk.Count());
+
+
+                        //fitting curve obtaining
+
+                        for (int k = 0; k < y.Count() - 1; k++)
+                        {
+                            yn[k] = fitting(x[k]);
+                        }
+                        // dfa fluctuation function F(n)
+                        fn[i] = InBoxFluctuations(yk, yn, winCount);
                     }
-                    // dfa fluctuation function F(n)
-                    fn[i] = InBoxFluctuations(yk, yn, boxValint);
                 }
+
+               
             }
             return fn;
         }
@@ -180,20 +191,22 @@ namespace EKG_Project.Modules.HRV_DFA
         // Method that computates in-box fluctuations F in given box size 
         public double InBoxFluctuations(Vector<double> y_integrated, Vector<double> y_fitted, int box_quantity)
         {
+            Vector<double> y_k = y_integrated.SubVector(0, box_quantity);
+            Vector<double> y_n = y_fitted.SubVector(0, box_quantity);
 
-            Vector<double> y_sub = Vector<double>.Build.Dense(y_fitted.Count());
+            Vector<double> y_sub = Vector<double>.Build.Dense(y_n.Count());
 
             double vector_add = 0;
-            vector_add = Math.Pow(y_integrated[0] - y_fitted[0], 2);
+            vector_add = Math.Pow(y_k[0] - y_n[0], 2);
             y_sub[0] = vector_add;
 
-            for (int i = 1; i < y_integrated.Count()-1; i++)
+            for (int i = 1; i < y_k.Count()-1; i++)
             {
-                y_sub[i] = Math.Pow(y_integrated[i] - y_fitted[i],2);
+                y_sub[i] = Math.Pow(y_k[i] - y_n[i],2);
                 vector_add = y_sub[i];
             }
 
-            double fn = Math.Sqrt(y_sub.Sum() / box_quantity);
+            double fn = Math.Sqrt(y_sub.Sum() / y_integrated.Count());
 
             return fn;
         }
