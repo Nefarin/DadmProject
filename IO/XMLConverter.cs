@@ -42,7 +42,7 @@ namespace EKG_Project.IO
 
                 if (property.GetValue(Data, null) == null)
                 {
-                    throw new Exception(); // < - robić coś takiego?
+                    //throw new Exception(); // < - robić coś takiego?
 
                 }
                 else

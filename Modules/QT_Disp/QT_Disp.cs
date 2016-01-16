@@ -129,6 +129,7 @@ namespace EKG_Project.Modules.QT_Disp
                 //here we check if we get the last element in R peak
                 if (R_Peak_step >= InputRPeaksData.RPeaks[_currentChannelIndex].Item2.Count-1)
                 {
+
                     // here we creat a temp array to store a T_End index
                     int[] temp = new int[R_Peak_step];
                     //coping
@@ -378,7 +379,7 @@ namespace EKG_Project.Modules.QT_Disp
         public static void Main()
         {
             QT_Disp_Params param = new QT_Disp_Params();
-            param.AnalysisName = "TestAnalysis210";
+            param.AnalysisName = "QtTest2";
             QT_Disp testModule = new QT_Disp();
             testModule.Init(param);
             while (true)
