@@ -78,15 +78,18 @@ namespace EKG_Project.GUI
 
                 case 1:
                     Get_ECG_BASELINE_Data(analyseName);
+                    Get_ECG_BASIC_Data(analyseName);
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 2:
                     Get_ECG_BASELINE_Data(analyseName);
+                    Get_ECG_BASIC_Data(analyseName);
                     Get_R_PEAKS_Data(analyseName);
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 3:
                     Get_ECG_BASELINE_Data(analyseName);
+                    Get_ECG_BASIC_Data(analyseName);
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
@@ -339,6 +342,23 @@ namespace EKG_Project.GUI
                 _seriesChecbox.Add(cB);
             }
             _wholeDataToDisplay.Add("ecgBaseline", _ecg_Baseline_Data_worker.Data.SignalsFiltered);
+        }
+
+        private void Get_ECG_BASIC_Data(string currentAnalyseName)
+        {
+            _ecg_Basic_Data_Worker = new Basic_Data_Worker(currentAnalyseName);
+            _ecg_Basic_Data_Worker.Load();
+
+            CheckBox cB = new CheckBox();
+            cB.IsChecked = first;
+            first = false;
+            cB.Name = "Basic";
+            cB.Content = "Basic";
+            cB.Checked += CheckBox_Checked;
+            cB.Unchecked += CheckBox_Unchecked;
+            _seriesChecbox.Add(cB);
+
+            _wholeDataToDisplay.Add("ecgBasic", _ecg_Basic_Data_Worker.BasicData.Signals);
         }
 
 
