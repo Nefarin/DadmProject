@@ -8,6 +8,7 @@ using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Statistics;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
@@ -29,10 +30,6 @@ namespace EKG_Project.Modules.HRV_DFA
 
             Vector<double> sig = rRRIntervals;
 
-           for(int i = 0; i < sig.Count(); i++)
-            {
-                sig[i] = Math.Abs(sig[i]);
-            }
 
             //read data from file
             //TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\DADM\RR_100.txt");
@@ -67,7 +64,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
             double[] logn1a = logn1.ToArray();
             double[] logFn1a = logFn1.ToArray();
-            double[] p01 = Fit.Polynomial(logn1a, logFn1a, 1);
+            double[] p01 = Polyfit(logn1a, logFn1a, 1);
             Vector<double> p1 = Vector<double>.Build.Dense(2);
             p1[0] = p01[0];
             p1[1] = p01[1];
@@ -114,6 +111,18 @@ namespace EKG_Project.Modules.HRV_DFA
 
         // METHODS:
 
+        public double[] Polyfit(double[] x, double[] y, int degree)
+        {
+            // build matrices
+            // Vandermonde matrix
+            var X = new DenseMatrix(x.Length, degree + 1); ;
+            var yy = new DenseVector(y);
+
+            // solve
+            var p = X.QR().Solve(yy);
+           
+            return p.ToArray();
+        }
         // Method that returs vector F(n) of Fluctuation Analysis results 
         public Vector<double> DfaFluctuationComputation(Vector<double> dfabox, Vector<double> signal)
         {
@@ -145,16 +154,20 @@ namespace EKG_Project.Modules.HRV_DFA
                     double[] x = Generate.LinearRange(1, boxValint);
                     Vector<double> y = yk.SubVector(ykIndex, boxValint);
                     double[] y1 = y.ToArray();
-                    double[] p = Fit.Polynomial(x, y1, 1);     //fitting coefficients
-                    // Fitting method: NormalEquations                                         
+                    double[] p = Polyfit(x, y1, 1);     //fitting coefficients
+                    Tuple<double,double> p1 = Fit.Line(x,y1);
+                    
+                    // Fitting method: QR                                        
                     Func<double, double> fitting = Fit.PolynomialFunc(x, y1, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.QR);
-
+                    double[] yn  = Vector<double>.Build.Dense(yk.Count()).ToArray();
+                    
+                   
                     //fitting curve obtaining
-                    Vector<double> yn = Vector<double>.Build.Dense(yk.Count());
+                   /* Vector<double> yn = Vector<double>.Build.Dense(yk.Count());
                     for (int k = 0; k < y.Count(); k++)
                     {
                         yn[k] = fitting(x[k]);
-                    }
+                    }*/
                     // dfa fluctuation function F(n)
                     fn[i] = dfaFn.InBoxFluctuations(yk, yn, box_qtyD);
                 }
