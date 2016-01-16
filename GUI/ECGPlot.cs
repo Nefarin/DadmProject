@@ -88,6 +88,29 @@ namespace EKG_Project.GUI
             CurrentPlot.LegendOrientation = LegendOrientation.Horizontal;
             CurrentPlot.LegendPlacement = LegendPlacement.Outside;
             CurrentPlot.LegendPosition = LegendPosition.RightMiddle;
+            CurrentPlot.MouseDown += (sender, evArg) =>
+            {
+                if (evArg.ChangedButton == OxyMouseButton.Right)
+                {
+                    string filename;
+                    Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                    dlg.DefaultExt = ".svg";
+                    dlg.Filter = "SVG documents (.svg)|*.svg";
+                    if (dlg.ShowDialog() == true)
+                    {
+                        filename = dlg.FileName;
+
+                        using (var stream = System.IO.File.Create(filename))
+                        {
+                            var exporter = new SvgExporter() { Width = 600, Height = 400 };
+                            exporter.Export(CurrentPlot, stream);
+                        }
+
+                    }
+                }
+
+            };
+
             //CurrentPlot.le
             _windowSize = 3000;
             _beginingPoint = 0;
@@ -1084,6 +1107,7 @@ namespace EKG_Project.GUI
 
         public void SeriesControler(string seriesName, bool visible)
         {
+            //SavePlot();
             try
             {
 
@@ -1207,6 +1231,28 @@ namespace EKG_Project.GUI
             RefreshPlot();
         }
 
+
+        private void SavePlot(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string filename;
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.DefaultExt = ".svg";
+            //dlg.Filter = "Text documents (.txt)|*.txt";
+            if (dlg.ShowDialog() == true)
+            {
+                filename = dlg.FileName;
+
+                using (var stream = System.IO.File.Create(filename))
+                {
+                    var exporter = new SvgExporter() { Width = 600, Height = 400 };
+                    exporter.Export(CurrentPlot, stream);
+                }
+
+            }
+
+
+
+        }
 
         //ostatnio developowana wersja end
 
