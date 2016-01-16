@@ -11,20 +11,23 @@ namespace EKG_Project.Modules.HRV1
 {
     public partial class HRV1 : IModule
     {
-        private HRV1_Data _outputData;
-        private R_Peaks_Data _inputData;
-        public HRV1_Data OutputData;
-        public R_Peaks_Data InputData;
-
-        public HRV1_Params Params;
-
         private bool _ended;
         private bool _aborted;
-        public bool Aborted;
 
-        public R_Peaks_Data_Worker InputWorker;
-        public HRV1_Data_Worker OutputWorker;
+        private int _currentChannelIndex;
+        private int _currentChannelLength;
+        private int _samplesProcessed;
+        private int _numberOfChannels;
+        private int _currentRPeaksLength;
 
+        private R_Peaks_Data_Worker _inputWorker;
+        private HRV1_Data_Worker _outputWorker;
+
+        private HRV1_Data _outputData;
+        private R_Peaks_Data _inputData;
+        private HRV1_Params _params;
+
+        private Vector<Double> _currentVector;
 
         public void Abort()
         {
@@ -45,8 +48,8 @@ namespace EKG_Project.Modules.HRV1
         public void Init(ModuleParams parameters)
         {
             Params = parameters as HRV1_Params;
-            OutputData = new HRV1_Data();
             Aborted = false;
+
             if (!Runnable()) _ended = true;
             else
             {
@@ -57,34 +60,25 @@ namespace EKG_Project.Modules.HRV1
 
                 OutputWorker = new HRV1_Data_Worker(Params.AnalysisName);
                 OutputData = new HRV1_Data();
+
+                _currentChannelIndex = 0;
+                _samplesProcessed = 0;
+                //_currentRPeaksLength = InputData.RRInterval[_outputIndex].Item2.Count;
+                //_numberOfChannels = InputData.Signals.Count;
+                //_currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+                //_currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
             }
         }
 
         public void ProcessData()
         {
-            if (Runnable())
-            {
-                var instants = InputData.RPeaks[1].Item2;
-                var intervals = InputData.RRInterval[1].Item2;
-                rrIntervals = intervals;
-                rInstants = instants;
-                calculateTimeBased();
-                calculateFreqBased();
-                var tparams = Vector<double>.Build.Dense(new double[] {HF, LF, VLF, LFHF });
-                var fparams = Vector<double>.Build.Dense(new double[] { SDNN, RMSSD, SDSD, NN50, pNN50 });
-
-                OutputData.TimeBasedParams.Add(new Tuple<string, Vector<double>>(" ", tparams));
-                OutputData.FreqBasedParams.Add(new Tuple<string, Vector<double>>(" ", fparams));
-
-                OutputData.RInstants.Add(new Tuple<string, Vector<double>>(" ", instants));
-                OutputData.RRIntervals.Add(new Tuple<string, Vector<double>>(" ", intervals));
-            }
+            if (Runnable()) processData();
             else _ended = true;
         }
 
         public double Progress()
         {
-            return 50;
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
         }
 
         public bool Runnable()
@@ -92,10 +86,72 @@ namespace EKG_Project.Modules.HRV1
             return Params != null;
         }
 
+        private void processData()
+        {
+            rInstants = InputData.RPeaks[1].Item2;
+            rrIntervals = InputData.RRInterval[1].Item2;
+
+            calculateTimeBased();
+            calculateFreqBased();
+            var tparams = Vector<double>.Build.Dense(new double[] { HF, LF, VLF, LFHF });
+            var fparams = Vector<double>.Build.Dense(new double[] { SDNN, RMSSD, SDSD, NN50, pNN50 });
+
+            OutputData.TimeBasedParams.Add(new Tuple<string, Vector<double>>("Time-based params", tparams));
+            OutputData.FreqBasedParams.Add(new Tuple<string, Vector<double>>("Frequency-based params", fparams));
+
+            OutputData.RInstants.Add(new Tuple<string, Vector<double>>("TachoX", rInstants));
+            OutputData.RRIntervals.Add(new Tuple<string, Vector<double>>("TachoY", rrIntervals));
+
+            OutputWorker.Save(OutputData);
+            _ended = true;
+        }
+
+        public HRV1_Data OutputData
+        {
+            get { return _outputData; }
+            set { _outputData = value; }
+        }
+
+        public HRV1_Params Params
+        {
+            get { return _params; }
+            set { _params = value; }
+        }
+
+        public int NumberOfChannels
+        {
+            get { return _numberOfChannels; }
+            set { _numberOfChannels = value; }
+        }
+
+        public bool Aborted
+        {
+            get { return _aborted; }
+            set { _aborted = value; }
+        }
+
+        public R_Peaks_Data InputData
+        {
+            get { return _inputData; }
+            set { _inputData = value; }
+        }
+
+        public R_Peaks_Data_Worker InputWorker
+        {
+            get { return _inputWorker; }
+            set { _inputWorker = value; }
+        }
+
+        public HRV1_Data_Worker OutputWorker
+        {
+            get { return _outputWorker; }
+            set { _outputWorker = value; }
+        }
+        
+
         public static void Main()
         {
             //HRV1.AlgoTest();
-
 
             var param = new HRV1_Params("Analysis3");
             //param = null;
