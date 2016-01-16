@@ -98,19 +98,19 @@ namespace EKG_Project.Modules.HRV_DFA
         {
             int channel = _currentChannelIndex;
             int startIndex = _rPeaksProcessed;
-            int step = 1000;
+            int step = 100;
 
             if (channel < NumberOfChannels)
             {
                 Console.WriteLine("Len: " +_currentRpeaksLength);
-                if (_currentRpeaksLength > 20 && _currentRpeaksLength < 300)
+                if (_currentRpeaksLength > 20 && _currentRpeaksLength < 100)
                 {
                     this.boxVal = 100;
-                    this.stepVal = 10;
+                    this.stepVal = 5;
                 }
-                if (_currentRpeaksLength > 300)
+                if (_currentRpeaksLength > 100)
                 {
-                    this.boxVal = (_currentRpeaksLength/2);
+                    this.boxVal = 100;
                     this.stepVal = 20;
                 }
                 if (_currentRpeaksLength < 20)
