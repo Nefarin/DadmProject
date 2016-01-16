@@ -19,8 +19,7 @@ namespace EKG_Project.Modules.Heart_Axis
         private string _analysisName;
         private Heart_Axis_Data _data;
         private State _currentState;
-        private int _currentChannelIndex;
-        private string _currentName;
+        //private string _currentName;
 
 
         public void Abort()
