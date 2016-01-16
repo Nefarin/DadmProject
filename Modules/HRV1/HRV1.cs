@@ -66,6 +66,8 @@ namespace EKG_Project.Modules.HRV1
             {
                 var instants = InputData.RPeaks[1].Item2;
                 var intervals = InputData.RRInterval[1].Item2;
+                rrIntervals = intervals;
+                rInstants = instants;
                 calculateTimeBased();
                 calculateFreqBased();
                 var tparams = Vector<double>.Build.Dense(new double[] {HF, LF, VLF, LFHF });

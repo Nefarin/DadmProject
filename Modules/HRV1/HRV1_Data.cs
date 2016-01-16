@@ -15,6 +15,13 @@ namespace EKG_Project.Modules.HRV1
         private List<Tuple<string, Vector<double>>> _rInstants;
         private List<Tuple<string, Vector<double>>> _rrIntervals;
 
+        public HRV1_Data()
+        {
+            TimeBasedParams = new List<Tuple<string, Vector<double>>>();
+            FreqBasedParams = new List<Tuple<string, Vector<double>>>();
+            RInstants = new List<Tuple<string, Vector<double>>>();
+            RRIntervals = new List<Tuple<string, Vector<double>>>();
+        }
 
         public List<Tuple<string, Vector<double>>> TimeBasedParams
         {

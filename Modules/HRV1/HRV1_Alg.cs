@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MathNet;
 using MathNet.Numerics.LinearAlgebra;
@@ -111,13 +112,15 @@ namespace EKG_Project.Modules.HRV1
             SDNN = Statistics.StandardDeviation(this.rrIntervals);
             RMSSD = Statistics.RootMeanSquare(this.rrIntervals);
 
-            var sdL= this.rrIntervals.SubVector(0, this.rrIntervals.Count - 1);
+            var sdL = this.rrIntervals.SubVector(0, this.rrIntervals.Count - 1);
             var sdR = this.rrIntervals.SubVector(1, this.rrIntervals.Count - 1);
             var succesiveDiffs = sdR.Subtract(sdL);
             succesiveDiffs.MapInplace(x => Math.Abs(x));
 
             SDSD = Statistics.StandardDeviation(succesiveDiffs);
-            NN50 = this.rrIntervals.Map(x => x > 50 ? 1 : 0).Sum();
+            //            Vector<int> overFifty = this.rrIntervals.Map(x => (x > 50) ? 1 : 0);
+            NN50 = 0;
+            foreach (double x in this.rrIntervals) { NN50 = x > 50 ? NN50 + 1 : NN50; }
             pNN50 = 100 * NN50 / this.rrIntervals.Count;
         }
        
@@ -149,9 +152,11 @@ namespace EKG_Project.Modules.HRV1
         /// <param name="x"></param>
         /// <returns></returns>
         #endregion
-        public static Vector<double> lombScargle(Vector<double> f, Vector<double> t, Vector<double> x)
+        public void lombScargle()
         {
             // TODO: upewnic sie ze wektory maja sensowna dlugosc
+            var t = rInstants;
+            var x = rrIntervals;
 
             var lsLen = f.Count;  // periodogram length equal to the length of frequenies vector
             var pi = Math.PI;
@@ -184,48 +189,52 @@ namespace EKG_Project.Modules.HRV1
                 P = (1 / (2 * std2)) * ((Math.Pow(PN1, 2) / PD1) + Math.Pow(PN2, 2) / PD2);
                 LS[i] = P;
             }
-            return LS;
+            this.PSD = LS;
         }
 
 
-#region
-/// <summary>
-/// This function calculates frequency-based parameters
-/// </summary>
-#endregion
-private void calculateFreqBased()
-{
-    var temp_vec = Vector<double>.Build.Dense(f.Count, 1);
-    //Obliczenie mocy widma w zakresie wysokich częstotliwości (0,15-0,4Hz)
-    for (int i = 0; i < f.Count; i++)
-    {
-        if (f[i] >= 0.15 && f[i] < 0.4)
+        #region
+        /// <summary>
+        /// This function calculates frequency-based parameters
+        /// </summary>
+        #endregion
+        private void calculateFreqBased()
         {
-            HF = temp_vec[i] + HF;
-        }
-    }
+            generateFreqVector(0, 1, 0.1);
+            lombScargle();
 
-    //Wyznaczenie mocy widma w zakresie niskich częstotliwości (0,04-0,15Hz)
-        for (int i = 0; i < f.Count; i++)
-    {
-        if (f[i] > 0.04 && f[i] < 0.15)
-        {
-            LF = temp_vec[i] + LF;
-        }
-    }
+            //var temp_vec = Vector<double>.Build.Dense(f.Count, 1);
+            var temp_vec = this.PSD;
+            //Obliczenie mocy widma w zakresie wysokich częstotliwości (0,15-0,4Hz)
+            for (int i = 0; i < f.Count; i++)
+            {
+                if (f[i] >= 0.15 && f[i] < 0.4)
+                {
+                    HF = temp_vec[i] + HF;
+                }
+            }
 
-    //Obliczenie mocy widma w zakresie bardzo niskich częstotliwości (0,003-0,04Hz)
-       for (int i = 0; i < f.Count; i++)
-    {
-        if (f[i] > 0.003 && f[i] < 0.04)
-        {
-            VLF = temp_vec[i] + VLF;
-        }
-    }
+            //Wyznaczenie mocy widma w zakresie niskich częstotliwości (0,04-0,15Hz)
+            for (int i = 0; i < f.Count; i++)
+            {
+                if (f[i] > 0.04 && f[i] < 0.15)
+                {
+                    LF = temp_vec[i] + LF;
+                }
+            }
 
-            //Obliczenie stosunku mocy widm niskich częstotliwości do mocy widm wysokich częstotliwości
-            LFHF = LF / HF;
-}
+            //Obliczenie mocy widma w zakresie bardzo niskich częstotliwości (0,003-0,04Hz)
+               for (int i = 0; i < f.Count; i++)
+            {
+                if (f[i] > 0.003 && f[i] < 0.04)
+                {
+                    VLF = temp_vec[i] + VLF;
+                }
+            }
+
+                    //Obliczenie stosunku mocy widm niskich częstotliwości do mocy widm wysokich częstotliwości
+                    LFHF = LF / HF;
+        }
 
 
 
@@ -258,7 +267,7 @@ public static void AlgoTest()
 
             //hrv.samplesToInstants();
             //hrv.instantsToIntervals();
-            hrv.f = hrv.gnerateFreqVector(0, 1, (double)1/1000);
+            hrv.generateFreqVector(0, 1, (double)1/1000);
             //Console.WriteLine(hrv.f);
 
             // testowanie lomba
@@ -268,8 +277,8 @@ public static void AlgoTest()
             var x = Vector<double>.Build.Dense(xSrc);
             var ySrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
             var y = Vector<double>.Build.Dense(ySrc);
-            hrv.PSD = lombScargle(f, x, y);
-            Console.WriteLine(hrv.PSD);
+            //hrv.PSD = lombScargle();
+           // Console.WriteLine(hrv.PSD);
 
             //dalej heja
 
