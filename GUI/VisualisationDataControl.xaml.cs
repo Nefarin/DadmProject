@@ -34,7 +34,7 @@ namespace EKG_Project.GUI
         //3 - plot and table and histogram 
         private Dictionary<string, uint> modulesVisualisationNeeds = new Dictionary<string, uint>()
         {
-            {"ECG_BASELINE", 1 },
+            {"ECG_BASELINE", 0 },
             {"ecgBasic", 0 },
             {"R_PEAKS", 3 },
             {"WAVES", 0 },
@@ -108,43 +108,6 @@ namespace EKG_Project.GUI
 
         }
 
-
-        //public VisualisationDataControl(string analyseName, KeyValuePair<string, int> moduleDict)
-        //{
-        //    InitializeComponent();
-        //    visulisationDataTabsList = new List<TabItem>();
-
-
-        //    //if needed and what where needed? 
-        //    switch (modulesVisualisationNeeds[moduleName])
-        //    {
-        //        case 0:
-        //            StartPlot(moduleName);
-        //            break;
-
-        //        case 1:
-        //            StartPlot(moduleName);
-        //            StartTable(moduleName);
-        //            break;
-        //        case 2:
-        //            StartPlot(moduleName);
-        //            StartHistogram(moduleName);
-        //            break;
-        //        case 3:
-        //            StartPlot(moduleName);
-        //            StartTable(moduleName);
-        //            StartHistogram(moduleName);
-        //            break;
-
-        //        default:
-        //            break;
-
-        //    }
-
-
-        //    this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
-
-        //}
 
         public void StartPlot(string anName,string modName, KeyValuePair<string, int> moduleDic)
         {

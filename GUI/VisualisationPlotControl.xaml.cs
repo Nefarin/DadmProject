@@ -39,6 +39,7 @@ namespace EKG_Project.GUI
         private Basic_Data_Worker _ecg_Basic_Data_Worker;
         private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
         private Waves_Data_Worker _waves_Data_Worker;
+        private Heart_Class_Data_Worker _hear_Class_Data_Worker; 
         private Dictionary<string, List<Tuple<string, Vector<double>>>> _wholeDataToDisplay;
         private Dictionary<string, List<Tuple<string, List<int>>>> _wholeDataToDisplayList;
         private bool first;
@@ -95,6 +96,11 @@ namespace EKG_Project.GUI
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 4:
+                    Get_ECG_BASELINE_Data(analyseName);
+                    Get_ECG_BASIC_Data(analyseName);
+                    Get_R_PEAKS_Data(analyseName);
+                    Get_WAVES_Data(analyseName);
+                    Get_HEART_CLASS_Data(analyseName);
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
 
@@ -428,7 +434,39 @@ namespace EKG_Project.GUI
             _wholeDataToDisplayList.Add("TEnds", _waves_Data_Worker.Data.TEnds);
         }
 
+        
 
+        private void Get_HEART_CLASS_Data(string currentAnalyseName)
+        {
+            _hear_Class_Data_Worker = new Heart_Class_Data_Worker(currentAnalyseName);
+            _hear_Class_Data_Worker.Load();
+            List<Tuple<string, List<int>>> outList = new List<Tuple<string, List<int>>>();
+            List<Tuple<int, int>> tempList = _hear_Class_Data_Worker.Data.ClassificationResult;
+            foreach(var t in tempList)
+            {
+                List<int> tempIntList = new List<int>();
+                if (t.Item2==0)
+                {
+                    tempIntList.Add(t.Item1);
+                    outList.Add(new Tuple<string, List<int>>("SE", tempIntList));
+                }
+                else
+                {
+                    tempIntList.Add(t.Item1);
+                    outList.Add(new Tuple<string, List<int>>("VE", tempIntList));
+                }
+            }
+
+  
+            CheckBox rPCB = new CheckBox();
+            rPCB.IsChecked = first;
+            rPCB.Name = "HeartClass";
+            rPCB.Content = "HeartClass";
+            rPCB.Checked += CheckBox_Checked;
+            rPCB.Unchecked += CheckBox_Unchecked;
+            _seriesChecbox.Add(rPCB);
+            _wholeDataToDisplayList.Add("HeartClass",outList);
+        }
 
 
 
