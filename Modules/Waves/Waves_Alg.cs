@@ -39,13 +39,13 @@ namespace EKG_Project.Modules.Waves
             }
             else if (_params.WaveType == Wavelet_Type.db2)
             {
-                _qrsEndTresh = 0.15;
-                _qrsOnsTresh = 0.15;
+                _qrsEndTresh = 0.12;
+                _qrsOnsTresh = 0.12;
             }
             else
             {
                 _qrsEndTresh = 0.15;
-                _qrsOnsTresh = 0.15;
+                _qrsOnsTresh = 0.22;
             }
 
             DetectQRS();
