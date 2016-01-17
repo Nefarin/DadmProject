@@ -223,6 +223,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 if (vectorIn[i] != 0)
                 {
                     vectorIn[i] = vectorIn[i];
+                    counter = i;
                 }
                 else
                 {
@@ -230,6 +231,7 @@ namespace EKG_Project.Modules.HRV_DFA
                     break;
                 }
             }
+            
             Vector<double> vectorOut = vectorIn.SubVector(0,counter);
             return vectorOut;
         }
