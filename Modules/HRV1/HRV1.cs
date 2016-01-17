@@ -63,6 +63,7 @@ namespace EKG_Project.Modules.HRV1
 
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
+                
                 //_currentRPeaksLength = InputData.RRInterval[_outputIndex].Item2.Count;
                 //_numberOfChannels = InputData.Signals.Count;
                 //_currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
@@ -104,6 +105,22 @@ namespace EKG_Project.Modules.HRV1
 
             OutputWorker.Save(OutputData);
             _ended = true;
+
+            bool debug = true;
+            if (debug){
+                Console.WriteLine("RR no:", rInstants.Count);
+                Console.WriteLine("Time:");
+                Console.WriteLine("SDNN: ", SDNN);
+                Console.WriteLine("RMSSD: ", RMSSD);
+                Console.WriteLine("SDSD: ", SDSD);
+                Console.WriteLine("NN50: ", NN50);
+                Console.WriteLine("pNN50: ", pNN50);
+                Console.WriteLine("Freq:");
+                Console.WriteLine("HF: ", HF);
+                Console.WriteLine("LF: ", LF);
+                Console.WriteLine("VLF: ", VLF);
+                Console.WriteLine("LFHF: ", LFHF);
+            }
         }
 
         public HRV1_Data OutputData
