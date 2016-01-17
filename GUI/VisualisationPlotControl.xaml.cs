@@ -43,7 +43,8 @@ namespace EKG_Project.GUI
         private Sleep_Apnea_Data_Worker _sleep_Apnea_Data_Worker;
         private Atrial_Fibr_Data_Worker _atrial_Fibr_Data_Worker;
         private Flutter_Data_Worker _flutter_Data_Worker;
-        private QT_Disp_Data_Worker _qt_Disp_Data_Worker; 
+        private QT_Disp_Data_Worker _qt_Disp_Data_Worker;
+        private Heart_Axis_Data_Worker _hear_Axis_Data_Worker;
         private Dictionary<string, List<Tuple<string, Vector<double>>>> _wholeDataToDisplay;
         private Dictionary<string, List<Tuple<string, List<int>>>> _wholeDataToDisplayList;
         private bool first;
@@ -140,6 +141,11 @@ namespace EKG_Project.GUI
                     Get_QT_DISP_Data(analyseName);
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
+                case 9 :
+                    Get_HEART_AXIS_Data(analyseName);
+                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    break;
+
 
                 default:
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
@@ -362,9 +368,11 @@ namespace EKG_Project.GUI
             //}
 
 
-
-            this.CheckBoxList.DataContext = _seriesChecbox;
-            ecgPlot.DisplayControler(_wholeDataToDisplay, _wholeDataToDisplayList);
+            if (moduleInfo.Value != 9)
+            {
+                this.CheckBoxList.DataContext = _seriesChecbox;
+                ecgPlot.DisplayControler(_wholeDataToDisplay, _wholeDataToDisplayList);
+            }
 
         }
 
@@ -576,7 +584,13 @@ namespace EKG_Project.GUI
             _wholeDataToDisplayList.Add("TEnd_local", _qt_Disp_Data_Worker.Data.T_End_Local);
         }
 
+        private void Get_HEART_AXIS_Data(string currentAnalyseName)
+        {
+            _hear_Axis_Data_Worker = new Heart_Axis_Data_Worker(currentAnalyseName);
+            _hear_Axis_Data_Worker.Load();
+            ecgPlot.DisplayHeartAxis(_hear_Axis_Data_Worker.Data.HeartAxis);
 
+        }
 
 
 

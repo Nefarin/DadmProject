@@ -88,7 +88,11 @@ namespace EKG_Project.GUI
                         if (tabNames.Contains("HEART_CLASS"))
                         {
                             _endDisplay["ECG_BASELINE"] = 4;
-                            hC = true; 
+                            hC = true;
+                            if (tabNames.Contains("HEART_AXIS"))
+                            {
+                                _endDisplay["HEART_AXIS"] = 9;
+                            }
                         }
 
                         if (sA==true && hC == true)
@@ -133,6 +137,7 @@ namespace EKG_Project.GUI
                 tabItem.Header = dic.Key;
                 tabItem.Content = ecgVDataControl;
                 visulisationDataTabsList.Add(tabItem);
+                //MessageBox.Show(dic.Key);
             }
 
             this.EcgDynamicTab.DataContext = visulisationDataTabsList;

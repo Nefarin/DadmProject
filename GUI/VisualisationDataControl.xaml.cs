@@ -38,7 +38,7 @@ namespace EKG_Project.GUI
             {"ecgBasic", 0 },
             {"R_PEAKS", 3 },
             {"WAVES", 0 },
-            { "HEART_CLASS",0 },
+            { "HEART_CLASS", 0 },
             { "HEART_AXIS", 0 },
             {"ARTRIAL_FIBER", 0 }
         };
@@ -82,6 +82,8 @@ namespace EKG_Project.GUI
 
             }
 
+
+
             //if needed and what where needed? 
             switch (modulesVisualisationNeeds[moduleName])
             {
@@ -106,6 +108,11 @@ namespace EKG_Project.GUI
                 default:
                     break;
                             
+            }
+
+            if (moduleDict.Value == 9)
+            {
+                //StartPlot(analyseName, "HEART_AXIS", new KeyValuePair<string, int>( "HEART_AXIS", 9 ) );
             }
 
 
