@@ -169,6 +169,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Architecture\Delegates.cs" />
+    <Compile Include="Architecture\DLLLoader.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEnded.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEndedTest.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisStarted.cs" />
@@ -283,6 +284,7 @@
     <Compile Include="IO\TestModule3_Data_Worker.cs" />
     <Compile Include="IO\T_Wave_Alt_Data_Worker.cs" />
     <Compile Include="IO\Waves_Data_Worker.cs" />
+    <Compile Include="IO\WFDBLoader.cs" />
     <Compile Include="IO\WFDBTest.cs" />
     <Compile Include="IO\XMLConverter.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr.cs" />
@@ -404,6 +406,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
+    <None Include="DLL\resetvars.bat" />
     <None Include="IO\data\100.atr" />
     <None Include="IO\data\100.dat" />
     <None Include="IO\data\100.hea" />
@@ -429,6 +432,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="DLL\Placeholder.txt" />
+    <Content Include="DLL\resetvars.vbs" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
     <Resource Include="IO\temp\train_d_label.txt" />

@@ -26,6 +26,12 @@ namespace EKG_Project.IO
             IECGPath pathBuilder = new DebugECGPath();
             Console.WriteLine(Path.Combine(pathBuilder.getBasePath(), "DLL\\"));
             //Assembly.LoadFrom(Path.Combine(pathBuilder.getBasePath(), "DLL", "wfdb.dll"));
+
+            //var name = "PATH";
+            //var value = Path.Combine(pathBuilder.getBasePath(), "DLL");
+            //var target = EnvironmentVariableTarget.Machine;
+            //System.Environment.SetEnvironmentVariable(name, value, target);
+
             string datFileName = "100.dat";
             string heaFileName = "100.hea";
             string atrFileName = "100.atr";
@@ -36,10 +42,10 @@ namespace EKG_Project.IO
             Console.WriteLine(".hea file exists: " + File.Exists(System.IO.Path.Combine(directory, heaFileName)));
             Console.WriteLine(".atr file exists: " + File.Exists(System.IO.Path.Combine(directory, atrFileName)));
             
-            String name = System.IO.Path.Combine(directory, recordName);
+            String name1 = System.IO.Path.Combine(directory, recordName);
 
             Wfdb.WfdbPath = directory;
-            int nsig = PInvoke.isigopen(name, null, 0);
+            int nsig = PInvoke.isigopen(name1, null, 0);
             Record record;
             unsafe
             {

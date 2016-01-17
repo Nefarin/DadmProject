@@ -117,11 +117,11 @@ namespace EKG_Project.IO
                     {
                         XmlNode onset = node["onset"];
                         string readOnset = onset.InnerText;
-                        int convertedOnset = Convert.ToInt32(readOnset, new System.Globalization.NumberFormatInfo());
+                        int convertedOnset = Convert.ToInt32(readOnset);
 
                         XmlNode end = node["end"];
                         string readEnd = onset.InnerText;
-                        int convertedEnd = Convert.ToInt32(readEnd, new System.Globalization.NumberFormatInfo());
+                        int convertedEnd = Convert.ToInt32(readEnd);
 
                         Tuple<int, int> readFlutterAnnotations = Tuple.Create(convertedOnset, convertedEnd);
                         FlutterAnnotations.Add(readFlutterAnnotations);
