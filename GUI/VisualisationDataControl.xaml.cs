@@ -75,7 +75,12 @@ namespace EKG_Project.GUI
         {
             InitializeComponent();
             visulisationDataTabsList = new List<TabItem>();
-            
+
+            if (moduleDict.Value == 8)
+            {
+                modulesVisualisationNeeds[moduleName] = 1;
+
+            }
 
             //if needed and what where needed? 
             switch (modulesVisualisationNeeds[moduleName])
@@ -121,7 +126,7 @@ namespace EKG_Project.GUI
 
         public void StartTable(string anName, string modName, KeyValuePair<string, int> moduleDict)
         {
-            VisualisationTableControl ecgVTControl = new VisualisationTableControl();
+            VisualisationTableControl ecgVTControl = new VisualisationTableControl(anName, modName, moduleDict);
 
             TabItem tableControl = new TabItem();
             tableControl.Header = "Table";

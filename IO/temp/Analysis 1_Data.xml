@@ -203,243 +203,266 @@
   <module name="Waves">
     <QRSOnsets>
       <lead>I</lead>
-      <samples>1000 3024 5032 7040 9048 </samples>
+      <samples>1000 3024 5032 7040 9048 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>II</lead>
-      <samples>1008 3016 5032 7040 9048 11056 </samples>
+      <samples>1008 3016 5032 7040 9048 11056 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>III</lead>
-      <samples>1008 3016 5032 7032 9048 11056 </samples>
+      <samples>1008 3016 5032 7032 9048 11056 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>aVR</lead>
+      <samples>1008 3024 5032 7040 9048 11056 -1 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>aVL</lead>
+      <samples>960 3024 5032 7040 9048 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>aVF</lead>
+      <samples>1008 3016 7040 9048 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V1</lead>
+      <samples>1000 3016 5032 7024 9040 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V2</lead>
+      <samples>1000 3024 5032 7024 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V3</lead>
+      <samples>1000 3024 5032 7040 9040 11040 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V4</lead>
+      <samples>1008 3024 5032 7040 9040 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V5</lead>
+      <samples>1008 5032 7040 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V6</lead>
       <samples>1008 3024 5032 7040 9048 11056 -1 </samples>
     </QRSOnsets>
-    <QRSOnsets>
-      <lead>aVL</lead>
-      <samples>960 3024 5032 7040 9048 </samples>
-    </QRSOnsets>
-    <QRSOnsets>
-      <lead>aVF</lead>
-      <samples>1008 3016 7040 9048 </samples>
-    </QRSOnsets>
-    <QRSOnsets>
-      <lead>V1</lead>
-      <samples>1000 3016 5032 7024 9040 </samples>
-    </QRSOnsets>
-    <QRSOnsets>
-      <lead>V2</lead>
-      <samples>1000 3024 5032 7024 </samples>
-    </QRSOnsets>
-    <QRSOnsets>
-      <lead>V3</lead>
-      <samples>1000 3024 5032 7040 9040 11040 </samples>
-    </QRSOnsets>
-    <QRSOnsets>
-      <lead>V4</lead>
-      <samples>1008 3024 5032 7040 9040 </samples>
-    </QRSOnsets>
-    <QRSOnsets>
-      <lead>V5</lead>
-      <samples>1008 5032 7040 </samples>
-    </QRSOnsets>
-    <QRSOnsets>
-      <lead>V6</lead>
-      <samples>1008 3024 5032 7040 9048 11056 </samples>
-    </QRSOnsets>
     <QRSEnds>
       <lead>I</lead>
-      <samples>3088 5096 7120 -1 </samples>
+      <samples>1064 3088 5096 7120 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>II</lead>
-      <samples>3088 5104 7112 9120 -1 </samples>
+      <samples>1080 3088 5104 7112 9120 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>III</lead>
-      <samples>3088 5104 7128 9120 -1 </samples>
+      <samples>1080 3088 5104 7128 9120 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>aVR</lead>
-      <samples>3088 5096 7112 9120 11136 -1 </samples>
+      <samples>1064 3088 5096 7112 9120 11136 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>aVL</lead>
-      <samples>3088 5176 7072 -1 </samples>
+      <samples>1104 3088 5176 7072 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>aVF</lead>
-      <samples>3088 7112 -1 </samples>
+      <samples>1080 3088 7112 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V1</lead>
-      <samples>3088 5096 7136 -1 </samples>
+      <samples>1064 3088 5096 7136 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V2</lead>
-      <samples>3088 5096 -1 </samples>
+      <samples>1064 3088 5096 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V3</lead>
-      <samples>3088 5096 7128 9120 -1 </samples>
+      <samples>1080 3088 5096 7128 9120 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V4</lead>
-      <samples>3088 5096 7112 -1 </samples>
+      <samples>1080 3088 5096 7112 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V5</lead>
-      <samples>5096 -1 </samples>
+      <samples>3088 5096 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V6</lead>
-      <samples>3088 5104 7112 9120 -1 </samples>
+      <samples>1080 3088 5104 7112 9120 -1 -1 </samples>
     </QRSEnds>
     <POnsets>
       <lead>I</lead>
-      <samples>875 2837 4863 6877 8872 </samples>
+      <samples>875 2837 4863 6877 8872 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>II</lead>
-      <samples>817 2855 4845 6861 8875 10876 </samples>
+      <samples>817 2855 4845 6861 8875 10876 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>III</lead>
-      <samples>860 2857 4849 6883 8893 10896 </samples>
+      <samples>860 2857 4849 6883 8893 10896 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>aVR</lead>
-      <samples>806 3017 5000 7036 9010 11034 </samples>
+      <samples>806 3017 5000 7036 9010 11034 -1 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>aVL</lead>
-      <samples>875 2567 4884 6900 8883 </samples>
+      <samples>875 2891 4884 6900 8883 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>aVF</lead>
-      <samples>838 2856 6864 8876 </samples>
+      <samples>838 2856 6864 8876 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>V1</lead>
-      <samples>876 2889 4884 6918 8952 </samples>
+      <samples>876 2889 4884 6918 8952 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>V2</lead>
-      <samples>876 2867 4884 6918 </samples>
+      <samples>876 2867 4884 6918 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>V3</lead>
-      <samples>853 2869 4862 6878 8914 10906 </samples>
+      <samples>853 2869 4862 6878 8914 10906 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>V4</lead>
-      <samples>855 2856 4876 6878 8891 </samples>
+      <samples>855 2856 4876 6878 8891 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>V5</lead>
-      <samples>834 4862 6877 </samples>
+      <samples>834 4862 6877 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>V6</lead>
-      <samples>857 2869 4854 6877 8866 10876 </samples>
+      <samples>857 2869 4854 6877 8866 10876 -1 </samples>
     </POnsets>
     <PEnds>
       <lead>I</lead>
-      <samples>918 2952 4978 6962 8993 </samples>
+      <samples>918 2952 4978 6962 8993 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>II</lead>
-      <samples>963 2974 4978 6985 8994 10997 </samples>
+      <samples>963 2974 4978 6985 8994 10997 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>III</lead>
-      <samples>929 2933 4960 6969 8963 10984 </samples>
+      <samples>929 2933 4960 6969 8963 10984 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>aVR</lead>
-      <samples>826 3024 5022 7040 9029 11056 </samples>
+      <samples>826 3024 5022 7040 9029 11056 -1 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>aVL</lead>
-      <samples>897 2586 4905 6958 8951 </samples>
+      <samples>897 2909 4905 6958 8951 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>aVF</lead>
-      <samples>950 2960 6986 8995 </samples>
+      <samples>950 2960 6986 8995 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>V1</lead>
-      <samples>895 2909 4904 6940 8974 </samples>
+      <samples>895 2909 4904 6940 8974 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>V2</lead>
-      <samples>897 2931 4904 6940 </samples>
+      <samples>897 2931 4904 6940 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>V3</lead>
-      <samples>937 2951 4947 6959 8954 10991 </samples>
+      <samples>937 2951 4947 6959 8954 10991 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>V4</lead>
-      <samples>942 2962 4968 6960 8963 </samples>
+      <samples>942 2962 4968 6960 8963 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>V5</lead>
-      <samples>956 4966 6981 </samples>
+      <samples>956 4966 6981 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>V6</lead>
-      <samples>945 2964 4952 6953 8964 10977 </samples>
+      <samples>945 2964 4952 6953 8964 10977 -1 </samples>
     </PEnds>
     <TEnds>
       <lead>I</lead>
-      <samples>3535 5549 7555 </samples>
+      <samples>1364 3394 5396 7420 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>II</lead>
-      <samples>3538 5545 7558 9567 </samples>
+      <samples>1381 3389 5405 7413 9421 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>III</lead>
-      <samples>3529 5500 7560 9574 </samples>
+      <samples>1385 3389 5405 7431 9426 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>aVR</lead>
-      <samples>3091 5101 7135 9185 11267 </samples>
+      <samples>1083 3091 5101 7135 9185 11267 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>aVL</lead>
-      <samples>3473 5468 7098 </samples>
+      <samples>1404 3393 5468 7098 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>aVF</lead>
-      <samples>3541 7560 </samples>
+      <samples>1381 3389 7413 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V1</lead>
-      <samples>3453 5468 7484 </samples>
+      <samples>1366 3392 5396 7450 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V2</lead>
-      <samples>3476 5488 </samples>
+      <samples>1364 3399 5396 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V3</lead>
-      <samples>3534 5490 7554 9558 </samples>
+      <samples>1381 3388 5396 7428 9420 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V4</lead>
-      <samples>3488 5542 7552 </samples>
+      <samples>1385 3389 5399 7413 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V5</lead>
-      <samples>5549 </samples>
+      <samples>3389 5397 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V6</lead>
-      <samples>3536 5543 7554 9561 </samples>
+      <samples>1382 3389 5409 7413 9421 -1 -1 </samples>
     </TEnds>
+  </module>
+  <module name="Heart_Class">
+    <ClassificationResult>
+      <item1>1045</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>3055</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>5065</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>7074</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>9084</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
 </EKG>

@@ -14,6 +14,7 @@ using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.Waves;
 using EKG_Project.Modules.Heart_Class;
+using EKG_Project.Modules.QT_Disp;
 
 namespace EKG_Project.GUI
 {
@@ -32,6 +33,7 @@ namespace EKG_Project.GUI
         private ECG_Baseline_Data _ecg_Baseline_Data;
         private Waves_Data _waves_Data;
         private Heart_Class_Data _heart_Class_Data;
+        private QT_Disp_Data _qt_Disp_Data; 
         List<Tuple<string, List<int>>> _hear_Class_Data_Trans;
         private Basic_Data _basic_Data;
 
@@ -77,8 +79,9 @@ namespace EKG_Project.GUI
             { "POnsets", false },
             { "PEnds", false },
             { "TEnds", false },
-            { "Basic", false }
-            
+            { "Basic", false },
+            { "TEnd_local", false }
+           
         };
 
         
@@ -793,8 +796,8 @@ namespace EKG_Project.GUI
                         _basic_Data = new Basic_Data();
                         _basic_Data.Signals = dataToDisplayV[data.Key];
                         modulesToDisplay.Add(data.Key); 
-
                         break; 
+
 
                     default:
                         break;
@@ -833,6 +836,11 @@ namespace EKG_Project.GUI
                         _hear_Class_Data_Trans = new List<Tuple<string, List<int>>>();
                         _hear_Class_Data_Trans = data.Value;   
                         modulesToDisplay.Add("HeartClass");
+                        break;
+                    case "TEnd_local":
+                        _qt_Disp_Data = new QT_Disp_Data();
+                        _qt_Disp_Data.T_End_Local = data.Value; 
+                        modulesToDisplay.Add("TEnd_local");
                         break;
                     default:
                         break;
@@ -877,6 +885,9 @@ namespace EKG_Project.GUI
                         break;
                     case "HeartClass":
                         //DisplayHeartClass();
+                        break;
+                    case "TEnd_local":
+                        DisplayQt_Disp();
                         break;
                     default:
                         break;
@@ -1119,7 +1130,45 @@ namespace EKG_Project.GUI
 
             RefreshPlot();
         }
+        
+        private void DisplayQt_Disp()
+        {
+            foreach (var signal in _ecg_Baseline_Data.SignalsFiltered)
+            {
 
+                Vector<double> signalVector = signal.Item2;
+                List<int> waveList = new List<int>();
+
+                var _t_EndLocal = _qt_Disp_Data.T_End_Local.Find(a => a.Item1 == signal.Item1).Item2;
+
+                bool addWave = false;
+
+                ScatterSeries waveSeries = new ScatterSeries();
+                //waveSeries.Title = wavePart + "_" + signal.Item1;
+                waveSeries.Title = "TEnd_local" + signal.Item1; 
+                waveSeries.IsVisible = _visible;
+
+
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+
+                    if (_t_EndLocal.Contains(i) && i>0)
+                    {
+                        waveSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+
+                        addWave = true;
+                    }
+                }
+
+                if (addWave)
+                {
+                    CurrentPlot.Series.Add(waveSeries);
+                }
+            }
+
+            RefreshPlot();
+        }
 
 
         //public void SeriesControler(string seriesName, bool visible)

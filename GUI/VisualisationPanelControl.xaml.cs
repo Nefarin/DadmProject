@@ -101,9 +101,14 @@ namespace EKG_Project.GUI
                             _endDisplay["ECG_BASELINE"] = 7;
                         }
 
-                        if (tabNames.Contains("ATRIAL_FIBER"))
+                        //if (tabNames.Contains("ATRIAL_FIBER"))
+                        //{
+                        //    _endDisplay["ECG_BASELINE"] = 8;
+                        //}
+
+                        if (tabNames.Contains("QT_DISP"))
                         {
-                            _endDisplay["FLUTTER"] = 8;
+                            _endDisplay["ECG_BASELINE"] = 8;
                         }
 
                     }

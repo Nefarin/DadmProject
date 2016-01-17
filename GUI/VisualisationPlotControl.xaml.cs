@@ -42,7 +42,8 @@ namespace EKG_Project.GUI
         private Heart_Class_Data_Worker _hear_Class_Data_Worker;
         private Sleep_Apnea_Data_Worker _sleep_Apnea_Data_Worker;
         private Atrial_Fibr_Data_Worker _atrial_Fibr_Data_Worker;
-        private Flutter_Data_Worker _flutter_Data_Worker; 
+        private Flutter_Data_Worker _flutter_Data_Worker;
+        private QT_Disp_Data_Worker _qt_Disp_Data_Worker; 
         private Dictionary<string, List<Tuple<string, Vector<double>>>> _wholeDataToDisplay;
         private Dictionary<string, List<Tuple<string, List<int>>>> _wholeDataToDisplayList;
         private bool first;
@@ -129,6 +130,14 @@ namespace EKG_Project.GUI
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
                     //ATRIAL_FIBER
+                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    break;
+                case 8:
+                    Get_ECG_BASELINE_Data(analyseName);
+                    Get_ECG_BASIC_Data(analyseName);
+                    Get_R_PEAKS_Data(analyseName);
+                    Get_WAVES_Data(analyseName);
+                    Get_QT_DISP_Data(analyseName);
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
 
@@ -359,6 +368,8 @@ namespace EKG_Project.GUI
 
         }
 
+
+        //methodes to get data for plotting
         private void Get_ECG_BASELINE_Data(string currentAnalyseName)
         {
             _ecg_Baseline_Data_worker = new ECG_Baseline_Data_Worker(currentAnalyseName);
@@ -394,7 +405,6 @@ namespace EKG_Project.GUI
 
             _wholeDataToDisplay.Add("ecgBasic", _ecg_Basic_Data_Worker.BasicData.Signals);
         }
-
 
         private void Get_R_PEAKS_Data(string currentAnalyseName)
         {
@@ -461,9 +471,7 @@ namespace EKG_Project.GUI
             _seriesChecbox.Add(tEnds);
             _wholeDataToDisplayList.Add("TEnds", _waves_Data_Worker.Data.TEnds);
         }
-
-        
-
+     
         private void Get_HEART_CLASS_Data(string currentAnalyseName)
         {
             _hear_Class_Data_Worker = new Heart_Class_Data_Worker(currentAnalyseName);
@@ -551,6 +559,25 @@ namespace EKG_Project.GUI
 
             //_wholeDataToDisplay.Add("ecgBasic", _ecg_Basic_Data_Worker.BasicData.Signals);
         }
+
+        private void Get_QT_DISP_Data(string currentAnalyseName)
+        {
+            _qt_Disp_Data_Worker = new QT_Disp_Data_Worker(currentAnalyseName);
+            _qt_Disp_Data_Worker.Load();
+
+            CheckBox rPCB = new CheckBox();
+            rPCB.IsChecked = first;
+            rPCB.Name = "TEnd_local";
+            rPCB.Content = "TEnd_local";
+            rPCB.Checked += CheckBox_Checked;
+            rPCB.Unchecked += CheckBox_Unchecked;
+            _seriesChecbox.Add(rPCB);
+
+            _wholeDataToDisplayList.Add("TEnd_local", _qt_Disp_Data_Worker.Data.T_End_Local);
+        }
+
+
+
 
 
         private void PlotForwardButton_Click(object sender, RoutedEventArgs e)
