@@ -254,7 +254,7 @@ namespace EKG_Project.IO
                     foreach (XmlNode node in nodes2)
                     {
                         string readVariable = node.InnerText;
-                        double convertedVariable = Convert.ToDouble(readVariable, new System.Globalization.NumberFormatInfo());
+                        double convertedVariable = Convert.ToDouble(readVariable);
 
                         list1.Add(convertedVariable);
                     }
@@ -265,7 +265,7 @@ namespace EKG_Project.IO
                     foreach (XmlNode node in nodes3)
                     {
                         string readVariable = node.InnerText;
-                        double convertedVariable = Convert.ToDouble(readVariable, new System.Globalization.NumberFormatInfo());
+                        double convertedVariable = Convert.ToDouble(readVariable);
 
                         list2.Add(convertedVariable);
                     }
@@ -276,7 +276,7 @@ namespace EKG_Project.IO
                     foreach (XmlNode node in nodes4)
                     {
                         string readVariable = node.InnerText;
-                        double convertedVariable = Convert.ToDouble(readVariable, new System.Globalization.NumberFormatInfo());
+                        double convertedVariable = Convert.ToDouble(readVariable);
 
                         list3.Add(convertedVariable);
                     }
@@ -287,7 +287,7 @@ namespace EKG_Project.IO
                     foreach (XmlNode node in nodes5)
                     {
                         string readVariable = node.InnerText;
-                        double convertedVariable = Convert.ToDouble(readVariable, new System.Globalization.NumberFormatInfo());
+                        double convertedVariable = Convert.ToDouble(readVariable);
 
                         list4.Add(convertedVariable);
                     }
@@ -298,7 +298,7 @@ namespace EKG_Project.IO
                     foreach (XmlNode node in nodes6)
                     {
                         string readVariable = node.InnerText;
-                        double convertedVariable = Convert.ToDouble(readVariable, new System.Globalization.NumberFormatInfo());
+                        double convertedVariable = Convert.ToDouble(readVariable);
 
                         list5.Add(convertedVariable);
                     }
