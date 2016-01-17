@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
@@ -107,7 +108,8 @@ namespace EKG_Project.Modules.Heart_Class
                     _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
                     qrsEndStep = 10;
                     i = 10;
-                    _numberOfSteps = InputWavesData.QRSEnds[_channel2].Item2.Count;
+                    //_numberOfSteps = InputWavesData.QRSEnds[_channel2].Item2.Count;
+                    _numberOfSteps = InputRpeaksData.RPeaks[_channel2].Item2.Count;
                     step = 1;
                     //ilośc próbek, aż do indeksu końca 10 załamka
                     _tempClassResult = new Tuple<int, int>(0,0);
@@ -145,7 +147,6 @@ namespace EKG_Project.Modules.Heart_Class
 
             if (!_ml2Processed)
             {
-
                 int QRSOnSet = InputWavesData.QRSOnsets[_channel2].Item2[_samplesProcessed];
                 int QRSEnds = InputWavesData.QRSEnds[_channel2].Item2[_samplesProcessed];
                 double R = InputRpeaksData.RPeaks[_channel2].Item2[_samplesProcessed];
@@ -281,12 +282,14 @@ namespace EKG_Project.Modules.Heart_Class
             set { _basicData = value; }
         }
 
-
+        
         public static void Main()
         {
-            Heart_Class_Params param = new Heart_Class_Params("TestAnalysis2"); // "Analysis6");
+            Heart_Class_Params param = new Heart_Class_Params("TestAnalysis100"); // "Analysis6");
             Heart_Class testModule = new Heart_Class();
             testModule.Init(param);
+
+
             while (true)
             {
                 Console.WriteLine("Press key to continue.");
@@ -297,5 +300,6 @@ namespace EKG_Project.Modules.Heart_Class
             }
 
         }
+        
     }
 }

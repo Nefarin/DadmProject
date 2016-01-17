@@ -47,7 +47,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.App</StartupObject>
+    <StartupObject>EKG_Project.Modules.Heart_Class.Heart_Class_Stats</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
