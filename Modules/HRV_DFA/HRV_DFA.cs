@@ -103,15 +103,15 @@ namespace EKG_Project.Modules.HRV_DFA
             if (channel < NumberOfChannels)
             {
                 Console.WriteLine("Len: " +_currentRpeaksLength);
-                if (_currentRpeaksLength > 20 && _currentRpeaksLength < 100)
+                if (_currentRpeaksLength > 20 && _currentRpeaksLength < 500)
                 {
                     this.boxVal = 100;
-                    this.stepVal = 5;
+                    this.stepVal = 10;
                 }
-                if (_currentRpeaksLength > 100)
+                if (_currentRpeaksLength > 500)
                 {
-                    this.boxVal = 100;
-                    this.stepVal = 20;
+                    this.boxVal = 500;
+                    this.stepVal = 50;
                 }
                 if (_currentRpeaksLength < 20)
                 {
