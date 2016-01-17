@@ -77,9 +77,33 @@ namespace EKG_Project.GUI
                     if(tabNames.Contains("WAVES"))
                     {
                         _endDisplay["ECG_BASELINE"] = 3;
+                        bool sA = false;
+                        bool hC = false; 
+                        if(tabNames.Contains("SLEEP_APNEA"))
+                        {
+                            _endDisplay["ECG_BASELINE"] = 5;
+                            sA = true;
+                            
+                        }
                         if (tabNames.Contains("HEART_CLASS"))
                         {
                             _endDisplay["ECG_BASELINE"] = 4;
+                            hC = true; 
+                        }
+
+                        if (sA==true && hC == true)
+                        {
+                            _endDisplay["ECG_BASELINE"] = 6;
+                        }
+
+                        if(tabNames.Contains("ATRIAL_FIBER"))
+                        {
+                            _endDisplay["ECG_BASELINE"] = 7;
+                        }
+
+                        if (tabNames.Contains("ATRIAL_FIBER"))
+                        {
+                            _endDisplay["FLUTTER"] = 8;
                         }
 
                     }

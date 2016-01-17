@@ -39,7 +39,10 @@ namespace EKG_Project.GUI
         private Basic_Data_Worker _ecg_Basic_Data_Worker;
         private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
         private Waves_Data_Worker _waves_Data_Worker;
-        private Heart_Class_Data_Worker _hear_Class_Data_Worker; 
+        private Heart_Class_Data_Worker _hear_Class_Data_Worker;
+        private Sleep_Apnea_Data_Worker _sleep_Apnea_Data_Worker;
+        private Atrial_Fibr_Data_Worker _atrial_Fibr_Data_Worker;
+        private Flutter_Data_Worker _flutter_Data_Worker; 
         private Dictionary<string, List<Tuple<string, Vector<double>>>> _wholeDataToDisplay;
         private Dictionary<string, List<Tuple<string, List<int>>>> _wholeDataToDisplayList;
         private bool first;
@@ -101,6 +104,31 @@ namespace EKG_Project.GUI
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
                     Get_HEART_CLASS_Data(analyseName);
+                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    break;
+                case 5:
+                    Get_ECG_BASELINE_Data(analyseName);
+                    Get_ECG_BASIC_Data(analyseName);
+                    Get_R_PEAKS_Data(analyseName);
+                    Get_WAVES_Data(analyseName);
+                    Get_SLEEP_APNEA_Data(analyseName);
+                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    break;
+                case 6:
+                    Get_ECG_BASELINE_Data(analyseName);
+                    Get_ECG_BASIC_Data(analyseName);
+                    Get_R_PEAKS_Data(analyseName);
+                    Get_WAVES_Data(analyseName);
+                    Get_HEART_CLASS_Data(analyseName);
+                    Get_SLEEP_APNEA_Data(analyseName);
+                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    break;
+                case 7:
+                    Get_ECG_BASELINE_Data(analyseName);
+                    Get_ECG_BASIC_Data(analyseName);
+                    Get_R_PEAKS_Data(analyseName);
+                    Get_WAVES_Data(analyseName);
+                    //ATRIAL_FIBER
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
 
@@ -468,6 +496,61 @@ namespace EKG_Project.GUI
             _wholeDataToDisplayList.Add("HeartClass",outList);
         }
 
+        private void Get_SLEEP_APNEA_Data(string currentAnalyseName)
+        {
+            _sleep_Apnea_Data_Worker = new Sleep_Apnea_Data_Worker(currentAnalyseName);
+            _sleep_Apnea_Data_Worker.Load();
+
+            CheckBox cB = new CheckBox();
+            cB.IsChecked = first;
+            first = false;
+            cB.Name = "SleepApnea";
+            cB.Content = "SleepApnea";
+            cB.Checked += CheckBox_Checked;
+            cB.Unchecked += CheckBox_Unchecked;
+            _seriesChecbox.Add(cB);
+
+        }
+
+        private void Get_ATRIAL_FIBER_Data(string currentAnalyseName)
+        {
+            _ecg_Basic_Data_Worker = new Basic_Data_Worker(currentAnalyseName);
+            _ecg_Basic_Data_Worker.Load();
+            _atrial_Fibr_Data_Worker = new Atrial_Fibr_Data_Worker();
+            _atrial_Fibr_Data_Worker.Load();
+
+            //_atrial_Fibr_Data_Worker.Data.
+            CheckBox cB = new CheckBox();
+            cB.IsChecked = first;
+            first = false;
+            cB.Name = "AtrialF";
+            cB.Content = "AtrialF";
+            cB.Checked += CheckBox_Checked;
+            cB.Unchecked += CheckBox_Unchecked;
+            _seriesChecbox.Add(cB);
+
+            //_wholeDataToDisplay.Add("ecgBasic", _ecg_Basic_Data_Worker.BasicData.Signals);
+        }
+
+        private void Get_FLUTTER_Data(string currentAnalyseName)
+        {
+            _flutter_Data_Worker = new Flutter_Data_Worker(currentAnalyseName);
+            _flutter_Data_Worker.Load();
+
+            //_flutter_Data_Worker.Data.
+
+            //_atrial_Fibr_Data_Worker.Data.
+            CheckBox cB = new CheckBox();
+            cB.IsChecked = first;
+            first = false;
+            cB.Name = "Flutter";
+            cB.Content = "Flutter";
+            cB.Checked += CheckBox_Checked;
+            cB.Unchecked += CheckBox_Unchecked;
+            _seriesChecbox.Add(cB);
+
+            //_wholeDataToDisplay.Add("ecgBasic", _ecg_Basic_Data_Worker.BasicData.Signals);
+        }
 
 
         private void PlotForwardButton_Click(object sender, RoutedEventArgs e)
