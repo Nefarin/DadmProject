@@ -43,16 +43,10 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> vectorFn = DfaFluctuationComputation(box, sig);          // F(n)
     
             // Remove all zeros from vector
-            Vector<double> vFn0 = ZerosRemove(vectorFn);
-            Vector<double> vn = box.SubVector(0, vFn0.Count());
+            Vector<double> vFn = ZerosRemove(vectorFn);
+            Vector<double> vn = box.SubVector(0, vFn.Count());
 
-            // Vector invertion
-            Vector<double> vFn = Vector<double>.Build.Dense(vFn0.Count());
-            for (int i = 0; i < vFn0.Count(); i++)
-            {
-                int counter = vFn0.Count() - 1 - i;
-                vFn[i] = vFn0[counter];
-            }
+        
             // Convert to logarytmic scale
             Vector<double> logn = Logarithmize(vn);
             Vector<double> logFn = Logarithmize(vFn);

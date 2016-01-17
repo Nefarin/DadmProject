@@ -98,7 +98,7 @@ namespace EKG_Project.Modules.HRV_DFA
         {
             int channel = _currentChannelIndex;
             int startIndex = _rPeaksProcessed;
-            int step = 100;
+            int step = 10000;
 
             if (channel < NumberOfChannels)
             {
