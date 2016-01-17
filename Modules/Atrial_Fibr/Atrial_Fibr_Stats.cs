@@ -82,8 +82,8 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 case (State.CALCULATE):
                     string currentDetected= _data.AfDetection[_currentChannelIndex].Item3;
                     string currentDescription= _data.AfDetection[_currentChannelIndex].Item4;
-                    _strToStr.Add(_currentName, currentDetected + " " +currentDescription);
-                    _strToObj.Add(_currentName, currentDetected + " " + currentDescription);                                                         
+                    _strToStr.Add(_currentName, " " + currentDetected + " " +currentDescription);
+                    _strToObj.Add(_currentName, " " + currentDetected + " " + currentDescription);                                                         
                     _currentState = State.NEXT_CHANNEL;
                     break;
                 case (State.NEXT_CHANNEL):
@@ -102,7 +102,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         public static void Main(String[] args)
         {
             Atrial_Fibr_Stats stats = new Atrial_Fibr_Stats();
-            stats.Init("Analysis6");
+            stats.Init("Test_analisys_111");
 
 
             while (true)
