@@ -214,7 +214,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         {
                             pointsDetected.At(j + lastIndex, _rPeaks.At(i) + j);
                         }
-                        lastIndex += j;
+                        lastIndex += j-1;
                     }
                 }
                 double lengthOfSignal = (_rPeaks.At(_rPeaks.Count-1) - _rPeaks.At(0)) / fs;
