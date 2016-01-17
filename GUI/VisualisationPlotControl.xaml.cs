@@ -143,6 +143,9 @@ namespace EKG_Project.GUI
                     break;
                 case 9 :
                     Get_HEART_AXIS_Data(analyseName);
+                    this.PlotForwardButton.Visibility = Visibility.Collapsed;
+                    this.PlotBackwardButton.Visibility = Visibility.Collapsed;
+                    this.CheckBoxList.Visibility = Visibility.Collapsed;
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
 
