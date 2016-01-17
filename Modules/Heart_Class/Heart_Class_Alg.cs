@@ -16,9 +16,7 @@ namespace EKG_Project.Modules.Heart_Class
     public partial class Heart_Class : IModule
     {
         private Vector<double> _signal;          // inicjalizacja przez wczytanie Vector z pliku
-        //private Vector<double> _qrsOnset;        // inicjalizacja przez wczytanie Vector z pliku
         private List<int> _qrsOnset;
-        //private Vector<double> _qrsEnd;          // inicjalizacja przez wczytanie Vector z pliku
         private List<int> _qrsEnd;
         private int _qrsNumber;                  // inicjalizacja przez zliczenie elementów _qrsOnset
         private Vector<double> _qrsR;            // inicjalizacja przez wczytanie Vector z pliku
@@ -43,16 +41,13 @@ namespace EKG_Project.Modules.Heart_Class
         private int qrsLength; 
         private Heart_Class_Data HeartClassData;
         private List<Vector<double>> coefficients; //lista współczynników kształtu dla zbioru treningowego
-        //List<Tuple<int, int>> classificationResult; // pierwszy int - nr zespołu (nr R), drugi int - klasa zespołu
-        private Tuple<int, int> _classificationResultOne;
+        private Tuple<int, int> _classificationResultOne; // pierwszy int - nr zespołu (nr R), drugi int - klasa zespołu
 
         public Heart_Class()
         {
 
             _signal = Vector<double>.Build.Dense(1);
-            //_qrsOnset = Vector<double>.Build.Dense(1);
             _qrsOnset = new List<int>();
-            //_qrsEnd = Vector<double>.Build.Dense(1);
             _qrsEnd = new List<int>();
             _qrsNumber = new int();
             _qrsR = Vector<double>.Build.Dense(1);
@@ -69,11 +64,8 @@ namespace EKG_Project.Modules.Heart_Class
             qRSTime = new double();
             fs = new uint();
             qrsLength = _qrssignal.Count();
-            //_qrsCoefficients = new List<Tuple<int, Vector<double>>> ();
             HeartClassData = new Heart_Class_Data();
-            // nie wiem czemu ale poniższe wywołanie obiektu nie działa, musi byc w metodzie loadFile ;/
             List<Vector<double>> coefficients = new List<Vector<double>>();
-            //classificationResult = new List<Tuple<int, int>>();
         }
 
 
@@ -409,7 +401,7 @@ namespace EKG_Project.Modules.Heart_Class
                 singleCoeffVect[1] = PnRatio(data.Item2);
                 singleCoeffVect[2] = SpeedAmpRatio(data.Item2);
                 singleCoeffVect[3] = FastSampleCount(data.Item2);
-                //singleCoeffVect[4] = QrsDuration(data.Item2, fs);
+                //singleCoeffVect[4] = QrsDuration(data.Item2, fs); //brak uzycia w projekcie
                 
                 coeffTuple = new Tuple<int, Vector<double>>(singleQrsR, singleCoeffVect.Clone());
                 
@@ -591,7 +583,7 @@ namespace EKG_Project.Modules.Heart_Class
 
 
 
-        // Metody wczytujące zbior treningowy i testowy od Ani Metz:
+        // Metody wczytujące zbior treningowy i testowy
         #region Documentation
         /// <summary>
         /// 
@@ -650,34 +642,7 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _signal; }
             set { _signal = value; }
         }
-        /*
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-        public Vector<double> QrsOnset
-        {
-            get { return _qrsOnset; }
-            set
-            {
-                //powinien byc typ int! ale to pozniej, bo klasa TempInut nie wczytuje int
-                _qrsOnset = value;
-                QrsNumber = _qrsOnset.Count();
-            }
-        }
-
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
-        public Vector<double> QrsEnd
-        {
-            get { return _qrsEnd; }
-            set { _qrsEnd = value; }
-        }
-        */
+ 
         #region Documentation
         /// <summary>
         /// TODO
