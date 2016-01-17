@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
 using System;
-using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -15,7 +14,7 @@ namespace EKG_Project.Modules.HRV2
         private List<Tuple<string, Vector<double>>> _poincarePlotData_x;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_y;
         private List<double> _elipseCenter;
-        
+
 
         #region Documentation
         /// <summary>
@@ -118,7 +117,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public List<Tuple<string, Vector<double>>> PoincarePlotData_x 
+        public List<Tuple<string, Vector<double>>> PoincarePlotData_x
         {
             get
             {
@@ -171,6 +170,13 @@ namespace EKG_Project.Modules.HRV2
         public HRV2_Data()
         {
             HistogramData = new List<Tuple<string, HRV2.Histogram2>>();
+            PoincarePlotData_x = new List<Tuple<string, Vector<double>>>();
+            PoincarePlotData_y = new List<Tuple<string, Vector<double>>>();
+            SD1 = new List<double>();
+            SD2 = new List<double>();
+            Tinn = new List<double>();
+            TriangleIndex = new List<double>();
+            ElipseCenter = new List<double>();
         }
     }
 }

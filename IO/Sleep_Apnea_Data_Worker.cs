@@ -191,10 +191,10 @@ namespace EKG_Project.IO
                         foreach (XmlNode tuple in tupleList)
                         {
                             XmlNode item1 = tuple["item1"];
-                            int convertedItem1 = Convert.ToInt32(item1.InnerText, new System.Globalization.NumberFormatInfo());
+                            int convertedItem1 = Convert.ToInt32(item1.InnerText);
 
                             XmlNode item2 = tuple["item2"];
-                            int convertedItem2 = Convert.ToInt32(item2.InnerText, new System.Globalization.NumberFormatInfo());
+                            int convertedItem2 = Convert.ToInt32(item2.InnerText);
 
                             Tuple<int, int> readTuple = Tuple.Create(convertedItem1, convertedItem2);
                             readTupleList.Add(readTuple);
@@ -232,7 +232,7 @@ namespace EKG_Project.IO
                         string readLead = lead.InnerText;
 
                         XmlNode item2 = node["item2"];
-                        double convertedItem2 = Convert.ToDouble(item2.InnerText, new System.Globalization.NumberFormatInfo());
+                        double convertedItem2 = Convert.ToDouble(item2.InnerText);
 
                         Tuple<string, double> readTuple = Tuple.Create(readLead, convertedItem2);
                         il_Apnea_List.Add(readTuple);
@@ -248,7 +248,7 @@ namespace EKG_Project.IO
         {
             double[] digits = input
                               .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                              .Select(digit => Convert.ToDouble(digit, new System.Globalization.NumberFormatInfo()))
+                              .Select(digit => Convert.ToDouble(digit))
                               .ToArray();
             List<double> list = new List<double>();
             for (int i = 0; i < digits.Length; i++ )

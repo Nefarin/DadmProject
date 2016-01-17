@@ -81,10 +81,10 @@ namespace EKG_Project.Modules.Waves
                 InputWorkerRpeaks.Load();
                 InputDataRpeaks = InputWorkerRpeaks.Data;
                 //Console.Write(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
-                Console.Write("ilosc kanalow ECG ");
-                Console.WriteLine(InputECGData.SignalsFiltered.Count);
-                Console.WriteLine("Ilosc kanalow Rpeaks");
-                Console.WriteLine(InputDataRpeaks.RPeaks.Count);
+                //Console.Write("ilosc kanalow ECG ");
+                //Console.WriteLine(InputECGData.SignalsFiltered.Count);
+                //Console.WriteLine("Ilosc kanalow Rpeaks");
+                //Console.WriteLine(InputDataRpeaks.RPeaks.Count);
 
                 OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
                 OutputData = new Waves_Data();
@@ -404,98 +404,8 @@ namespace EKG_Project.Modules.Waves
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-
-            //Vector<double> onsets = Vector<double>.Build.Dense(testModule.OutputData.QRSEnds[0].Item2.Count);
-            //Console.WriteLine("fajrant");
-            //for (int i = 0; i < onsets.Count; i++)
-            //{
-            //    onsets[i] = (double)testModule.OutputData.QRSEnds[0].Item2[i];
-
-            //}
-            //Console.WriteLine(onsets);
-            ////TempInput.writeFile(360, onsets);
-            //Console.Read();
-
-            //POKI CO BIERZEMY DANE Z NASZYCH GOWNIANYCH PLIKOW
-
-
-            //
-            //TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG.txt");
-            //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSonsets.txt");
-            //uint fs = TempInput.getFrequency();
-            //Vector<double> ecg = TempInput.getSignal();
-            ////Vector<double> dwt = ListDWT(_ecg, 3, Wavelet_Type.db2)[1];
-            //Vector<double> temp = Vector<double>.Build.Dense(2);
-
-            //
-            ////TempInput.setInputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKG3Rpeaks.txt");
-
-            //List<int> Rpeaks = new List<int>();
-            //Vector<double> rpeaks = TempInput.getSignal();
-            //foreach (double singlePeak in rpeaks)
-            //{
-            //    Rpeaks.Add((int)singlePeak);
-            //}
-
-
-            //Waves_Params param = new Waves_Params(Wavelet_Type.haar , 2 , "Analysis6");
-            //Waves_Data data = new Waves_Data(ecg, Rpeaks, fs);
-
-
-            //Waves testModule = new Waves();
-
-            //testModule.Init(param, data);
-            //testModule.ProcessData();
-            //data = testModule.Data;
-
-            //Vector<double> onsets = Vector<double>.Build.Dense(data.QRSOnsets.Count);
-            //for (int i = 0; i < data.QRSOnsets.Count; i++)
-            //{
-            //    //onsets[i] = (double)data.QRSOnsets[i];
-
-            //}
-
-            //TempInput.writeFile(360, onsets);
-            //Vector<double> ends = Vector<double>.Build.Dense(_QRSends.Count);
-            //for (int i = 0; i < _QRSends.Count; i++)
-            //{
-            //    ends[i] = (double)_QRSends[i];
-
-            //}
-            //FindP();
-            //Vector<double> ponset = Vector<double>.Build.Dense(_Ponsets.Count);
-            //for (int i = 0; i < _Ponsets.Count; i++)
-            //{
-            //    ponset[i] = (double)_Ponsets[i];
-
-            //}
-            //Vector<double> pends = Vector<double>.Build.Dense(_Pends.Count);
-            //for (int i = 0; i < _Pends.Count; i++)
-            //{
-            //    pends[i] = (double)_Pends[i];
-
-            //}
-            //FindT();
-            //Vector<double> tends = Vector<double>.Build.Dense(_Tends.Count);
-            //for (int i = 0; i < _Tends.Count; i++)
-            //{
-            //    tends[i] = (double)_Tends[i];
-
-            //}
-
-            //TempInput.writeFile(360, onsets);
-            //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGQRSends.txt");
-            //TempInput.writeFile(360, ends);
-            //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGPonsets.txt");
-            //TempInput.writeFile(360, ponset);
-            //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGPends.txt");
-            //TempInput.writeFile(360, pends);
-            //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\EKGTends.txt");
-            //TempInput.writeFile(360, tends);
-            //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\d2ekg.txt");
-            //TempInput.setOutputFilePath(@"C:\Users\Phantom\Desktop\DADM Project\Nowy folder\d2ekg.txt");
-            //TempInput.writeFile(360, dwt);
-            //Console.Read();
+            Console.Read();
+            
         }
 
     }

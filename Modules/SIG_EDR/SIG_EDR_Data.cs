@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.SIG_EDR
 {
-    class SIG_EDR_Data : ECG_Data
+    public class SIG_EDR_Data : ECG_Data
     {
     }
 }
