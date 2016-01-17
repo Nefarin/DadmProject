@@ -1211,10 +1211,11 @@ namespace EKG_Project.GUI
             CurrentPlot.Annotations.Add(new TextAnnotation { Text = "-90", TextPosition = new DataPoint(-1, 102), StrokeThickness = 0 });
             CurrentPlot.Annotations.Add(new TextAnnotation { Text = "90", TextPosition = new DataPoint(0, -107),StrokeThickness = 0 });
 
-            ArrowAnnotation arrow = new ArrowAnnotation 
+            ArrowAnnotation arrow = new ArrowAnnotation
             {
                 StartPoint = new DataPoint(0, 0),
-                EndPoint = new DataPoint(100*Math.Cos(heartAxis), 100*Math.Sin(heartAxis)),
+                EndPoint = new DataPoint(100 * Math.Cos(heartAxis), -100 * Math.Sin(heartAxis)),
+                Text = heartAxis.ToString("0.000") + "rad"
             };
 
             ArrowAnnotation yup = new ArrowAnnotation
@@ -1503,6 +1504,25 @@ namespace EKG_Project.GUI
         }
 
 
+
+        public void SavePlot()
+        {
+            string filename;
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.DefaultExt = ".svg";
+            dlg.Filter = "SVG documents (.svg)|*.svg";
+            if (dlg.ShowDialog() == true)
+            {
+                filename = dlg.FileName;
+
+                using (var stream = System.IO.File.Create(filename))
+                {
+                    var exporter = new SvgExporter() { Width = 600, Height = 400 };
+                    exporter.Export(CurrentPlot, stream);
+                }
+
+            }
+        }
 
         private void SavePlot(object sender, System.Windows.Input.MouseEventArgs e)
         {

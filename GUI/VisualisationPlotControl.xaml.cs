@@ -493,7 +493,7 @@ namespace EKG_Project.GUI
             foreach(var t in tempList)
             {
                 List<int> tempIntList = new List<int>();
-                if (t.Item2==0)
+                if (t.Item2==1)
                 {
                     tempIntList.Add(t.Item1);
                     outList.Add(new Tuple<string, List<int>>("SE", tempIntList));
@@ -501,7 +501,7 @@ namespace EKG_Project.GUI
                 else
                 {
                     tempIntList.Add(t.Item1);
-                    outList.Add(new Tuple<string, List<int>>("VE", tempIntList));
+                    outList.Add(new Tuple<string, List<int>>("V", tempIntList));
                 }
             }
 
@@ -676,6 +676,11 @@ namespace EKG_Project.GUI
             ecgPlot.SeriesControler(c.Name, false);
             
 
+        }
+
+        private void SavePlotButton_Click(object sender, RoutedEventArgs e)
+        {
+            ecgPlot.SavePlot();
         }
     }
 }
