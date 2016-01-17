@@ -203,39 +203,39 @@
   <module name="Waves">
     <QRSOnsets>
       <lead>I</lead>
-      <samples>24 744 1456 2192 3632 4376 5104 5848 7328 -1 </samples>
+      <samples>24 744 1464 2192 3640 4376 5112 5856 7336 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>II</lead>
-      <samples>-1 720 1528 -1 4440 5128 6280 -1 -1 -1 </samples>
+      <samples>8 760 1528 -1 4440 5128 6296 -1 8136 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>III</lead>
-      <samples>-1 -1 -1 -1 3616 -1 6272 8040 -1 </samples>
+      <samples>-1 -1 -1 -1 3616 -1 6280 8048 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>aVR</lead>
-      <samples>8 1440 2624 3616 4328 5096 5840 6288 -1 8792 9360 -1 </samples>
+      <samples>8 1448 2624 3632 4360 5112 5840 6288 -1 8800 9360 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>aVL</lead>
-      <samples>8 728 1464 2192 4352 5096 5856 7336 8072 8816 -1 </samples>
+      <samples>32 744 1464 2192 4376 5112 5856 7336 8072 8816 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>aVF</lead>
-      <samples>-1 -1 -1 -1 2656 5064 -1 </samples>
+      <samples>8 80 -1 1520 2656 5168 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>V1</lead>
-      <samples>-1 720 -1 </samples>
+      <samples>-1 784 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>V2</lead>
-      <samples>-1 712 -1 </samples>
+      <samples>-1 784 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>V3</lead>
-      <samples>-1 5896 6264 -1 7376 -1 </samples>
+      <samples>-1 5896 6280 -1 7376 -1 </samples>
     </QRSOnsets>
     <QRSOnsets>
       <lead>V4</lead>
@@ -247,71 +247,71 @@
     </QRSOnsets>
     <QRSOnsets>
       <lead>V6</lead>
-      <samples>-1 -1 -1 -1 -1 5816 8048 -1 </samples>
+      <samples>-1 -1 -1 2248 -1 5864 8128 -1 </samples>
     </QRSOnsets>
     <QRSEnds>
       <lead>I</lead>
-      <samples>128 848 1576 2296 3744 4416 5216 5952 -1 -1 </samples>
+      <samples>128 848 1708 2296 3894 4446 5355 5952 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>II</lead>
-      <samples>88 1480 2320 4440 5128 5992 7344 8080 -1 -1 </samples>
+      <samples>140 1501 2345 4484 5147 6030 7364 8103 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>III</lead>
-      <samples>152 872 1592 2192 5240 6008 6520 -1 -1 </samples>
+      <samples>219 880 1592 2208 5244 6016 6589 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>aVR</lead>
-      <samples>112 2280 2664 3728 4496 5200 5944 -1 6432 8896 -1 -1 </samples>
+      <samples>150 2316 2735 3778 4564 5235 5965 -1 6457 8953 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>aVL</lead>
-      <samples>72 864 1512 2312 4496 5232 5976 7456 8120 -1 -1 </samples>
+      <samples>108 864 1549 2312 4663 5403 5976 7673 8152 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>aVF</lead>
-      <samples>32 872 1592 2312 4504 -1 -1 </samples>
+      <samples>63 909 1634 2315 4504 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V1</lead>
-      <samples>64 -1 -1 </samples>
+      <samples>104 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V2</lead>
-      <samples>24 -1 -1 </samples>
+      <samples>40 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V3</lead>
-      <samples>24 6096 -1 6504 -1 -1 </samples>
+      <samples>36 6144 -1 6597 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V4</lead>
-      <samples>64 1504 -1 -1 </samples>
+      <samples>124 1551 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V5</lead>
-      <samples>152 872 4504 5240 -1 -1 </samples>
+      <samples>370 872 4517 5259 -1 -1 </samples>
     </QRSEnds>
     <QRSEnds>
       <lead>V6</lead>
-      <samples>40 1592 2248 3768 4432 7456 -1 -1 </samples>
+      <samples>65 1653 2292 3833 4479 7510 -1 -1 </samples>
     </QRSEnds>
     <POnsets>
       <lead>I</lead>
-      <samples>-1 601 1315 2062 3490 4231 -1 -1 7187 -1 </samples>
+      <samples>-1 601 1325 2062 3492 4231 -1 -1 7187 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>II</lead>
-      <samples>-1 593 -1 -1 -1 5099 6144 -1 -1 -1 </samples>
+      <samples>-1 724 -1 -1 -1 5099 6165 -1 -1 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>III</lead>
-      <samples>-1 -1 -1 -1 3605 -1 6138 7984 -1 </samples>
+      <samples>-1 -1 -1 -1 3605 -1 6150 7984 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>aVR</lead>
-      <samples>-1 1393 2615 3603 4323 5077 5765 6276 -1 8729 9341 -1 </samples>
+      <samples>-1 1393 2615 3592 4331 5036 5765 6276 -1 8710 9341 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>aVL</lead>
@@ -319,19 +319,19 @@
     </POnsets>
     <POnsets>
       <lead>aVF</lead>
-      <samples>-1 -1 -1 -1 2609 5003 -1 </samples>
+      <samples>-1 -1 -1 -1 2609 -1 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>V1</lead>
-      <samples>-1 712 -1 </samples>
+      <samples>-1 -1 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>V2</lead>
-      <samples>-1 584 -1 </samples>
+      <samples>-1 -1 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>V3</lead>
-      <samples>-1 -1 6125 -1 -1 -1 </samples>
+      <samples>-1 -1 6148 -1 -1 -1 </samples>
     </POnsets>
     <POnsets>
       <lead>V4</lead>
@@ -343,7 +343,7 @@
     </POnsets>
     <POnsets>
       <lead>V6</lead>
-      <samples>-1 -1 -1 -1 -1 -1 7989 -1 </samples>
+      <samples>-1 -1 -1 -1 -1 5825 -1 -1 </samples>
     </POnsets>
     <PEnds>
       <lead>I</lead>
@@ -351,7 +351,7 @@
     </PEnds>
     <PEnds>
       <lead>II</lead>
-      <samples>-1 618 -1 -1 -1 -1 6185 -1 -1 -1 </samples>
+      <samples>-1 -1 -1 -1 -1 -1 6185 -1 -1 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>III</lead>
@@ -359,7 +359,7 @@
     </PEnds>
     <PEnds>
       <lead>aVR</lead>
-      <samples>-1 1431 2624 3616 -1 -1 5795 6285 -1 8741 9352 -1 </samples>
+      <samples>-1 1431 2624 3623 4344 -1 5795 6285 -1 8741 9352 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>aVL</lead>
@@ -367,15 +367,15 @@
     </PEnds>
     <PEnds>
       <lead>aVF</lead>
-      <samples>-1 -1 -1 -1 -1 5018 -1 </samples>
+      <samples>-1 -1 -1 -1 -1 -1 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>V1</lead>
-      <samples>-1 -1 -1 </samples>
+      <samples>-1 782 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>V2</lead>
-      <samples>-1 618 -1 </samples>
+      <samples>-1 779 -1 </samples>
     </PEnds>
     <PEnds>
       <lead>V3</lead>
@@ -391,55 +391,55 @@
     </PEnds>
     <PEnds>
       <lead>V6</lead>
-      <samples>-1 -1 -1 -1 -1 5722 8004 -1 </samples>
+      <samples>-1 -1 -1 -1 -1 5864 -1 -1 </samples>
     </PEnds>
     <TEnds>
       <lead>I</lead>
-      <samples>278 1001 1726 2448 3894 4482 5366 6105 -1 -1 </samples>
+      <samples>278 1001 1791 2448 3976 4482 5439 6105 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>II</lead>
-      <samples>239 1530 -1 4592 5130 -1 7400 8142 -1 -1 </samples>
+      <samples>-1 1652 -1 -1 5298 6185 7515 8254 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>III</lead>
-      <samples>-1 1000 -1 2244 -1 -1 6677 -1 -1 </samples>
+      <samples>357 1000 -1 2361 -1 6184 -1 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>aVR</lead>
-      <samples>116 2317 2691 3767 4500 5238 5983 -1 6434 8938 -1 -1 </samples>
+      <samples>161 2330 2751 3788 4566 5238 5983 -1 6548 8955 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>aVL</lead>
-      <samples>151 1003 1589 2462 4646 5242 6005 7482 8204 -1 -1 </samples>
+      <samples>151 1003 1589 2462 4763 5477 6005 7721 8204 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>aVF</lead>
-      <samples>84 1000 -1 -1 -1 -1 -1 </samples>
+      <samples>214 1000 1797 -1 -1 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V1</lead>
-      <samples>215 -1 -1 </samples>
+      <samples>-1 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V2</lead>
-      <samples>61 -1 -1 </samples>
+      <samples>191 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V3</lead>
-      <samples>54 6196 -1 6655 -1 -1 </samples>
+      <samples>187 6196 -1 6754 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V4</lead>
-      <samples>215 1655 -1 -1 </samples>
+      <samples>-1 -1 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V5</lead>
-      <samples>-1 1000 -1 -1 -1 -1 </samples>
+      <samples>527 1000 -1 -1 -1 -1 </samples>
     </TEnds>
     <TEnds>
       <lead>V6</lead>
-      <samples>87 -1 2399 -1 4583 -1 -1 -1 </samples>
+      <samples>216 1811 2448 3992 -1 -1 -1 -1 </samples>
     </TEnds>
   </module>
 </EKG>

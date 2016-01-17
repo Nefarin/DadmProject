@@ -31,6 +31,9 @@ namespace EKG_Project.Modules.Waves
 
         private Waves_Params _params;
 
+        private double _qrsOnsTresh;
+        private double _qrsEndTresh;
+        private int _currentStep;
         private List<int> _currentQRSonsetsPart;
         private List<int> _currentQRSendsPart;
         private List<int> _currentPonsetsPart;
@@ -85,6 +88,7 @@ namespace EKG_Project.Modules.Waves
                 //Console.WriteLine(InputECGData.SignalsFiltered.Count);
                 //Console.WriteLine("Ilosc kanalow Rpeaks");
                 //Console.WriteLine(InputDataRpeaks.RPeaks.Count);
+                _currentStep = _params.RpeaksStep;
 
                 OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
                 OutputData = new Waves_Data();
@@ -94,6 +98,7 @@ namespace EKG_Project.Modules.Waves
                 //NumberOfChannels = InputData.Signals.Count;
                 //najwyrazniej liczba tych kanalow nie byla rowna w trakcie pierwszych testow
                 NumberOfChannels = InputDataRpeaks.RPeaks.Count;
+                _params.RpeaksStep = _inputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count + 100;
                 _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
                 _currentQRSonsetsPart = new List<int>();
                 _currentQRSendsPart = new List<int>();
