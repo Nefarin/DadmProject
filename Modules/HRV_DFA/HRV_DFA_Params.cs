@@ -10,24 +10,10 @@ namespace EKG_Project.Modules.HRV_DFA
     public class HRV_DFA_Params : ModuleParams
     {
         //HRV_DFA parameters
-        private string _analysisName;
 
         public HRV_DFA_Params(string analysisName)
         {
             this.AnalysisName = analysisName;
-        }
-
-        public string AnalysisName1
-        {
-            get
-            {
-                return _analysisName;
-            }
-
-            set
-            {
-                _analysisName = value;
-            }
         }
     }
 }

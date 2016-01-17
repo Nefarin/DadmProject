@@ -16,6 +16,7 @@ namespace EKG_Project.GUI
 {
     /// <summary>
     /// Interaction logic for NewAnalysisDialogBox.xaml
+    /// Create an analysis name
     /// </summary>
     public partial class NewAnalysisDialogBox : Window
     {

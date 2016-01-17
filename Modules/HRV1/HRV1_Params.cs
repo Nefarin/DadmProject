@@ -14,9 +14,5 @@ namespace EKG_Project.Modules.HRV1
         {
             this.AnalysisName = analysisname;
         }
-
-        public string AnalysisName;
-
-        //this module have no parameters changeable in GUI
     }
 }

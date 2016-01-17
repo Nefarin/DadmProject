@@ -146,6 +146,7 @@ namespace EKG_Project.Modules.Waves
             _currentQRSendsPart.Clear();
             List<Vector<double>> dwt = new List<Vector<double>>();
             int startInd = 0;
+            _params.RpeaksStep = _inputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count+10;
             if (_rPeaksProcessed > 1)
             {
                 startInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed - 1];
@@ -183,20 +184,15 @@ namespace EKG_Project.Modules.Waves
             if (maxRInd >= _currentRpeaksLength)
                 maxRInd = _currentRpeaksLength - 1;
 
-            Console.Write("Rpeaks Size ");
-            Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
-
-            Console.Write("Aktualny kanal: ");
-            Console.WriteLine(_rPeaksProcessed);
             if (_rPeaksProcessed == 0)
                 _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
 
             for (int middleR = _rPeaksProcessed + 1; middleR < maxRInd; middleR++)
             {
-                Console.Write("start ");
-                Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR - 1]);
+               
                 _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR - 1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
                 _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
+                _rPeaksProcessed++;
             }
 
             int Rlast = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1;
@@ -222,10 +218,6 @@ namespace EKG_Project.Modules.Waves
             if (len < 1)
                 len = 1;
 
-            //Console.WriteLine("nadupcamy!");
-            //Console.WriteLine(sectionStart);
-            //Console.WriteLine((middleR >> decompLevel) - (rightEnd >> decompLevel) + 1);
-            //Console.WriteLine(dwt.Count);
 
             if (sectionStart + len >= dwt.Count || len < 1 || sectionStart < 0)
                 return -1;
@@ -253,41 +245,23 @@ namespace EKG_Project.Modules.Waves
             if (len < 1)
                 len = 1;
 
-            //Console.WriteLine("qrsEndzik");
-            //Console.WriteLine(len);
-            //Console.WriteLine(qrsEndInd);
-            //Console.WriteLine(dwt.Count);
+
 
             if (qrsEndInd + len >= dwt.Count || len < 1 || qrsEndInd < 0)
             {
                 return -1;
-                //Console.WriteLine("Brak enda");
             }
 
-            Console.WriteLine("QRS chuje muje");
-            Console.Write("dwt. Count ");
-            Console.WriteLine(dwt.Count);
-            Console.Write("starcik ");
-            Console.WriteLine(qrsEndInd);
-            Console.Write("dlugosc subwektowa ");
-            Console.WriteLine(len);
 
-            Console.Write("middleR ");
-            Console.WriteLine(middleR);
             double treshold = Math.Abs(dwt.SubVector(qrsEndInd, len).Minimum()) * 0.08;
 
-            //Console.WriteLine("szczegoliki:");
-            //Console.WriteLine(qrsEndInd);
-            //Console.WriteLine(dwt.Count);
+
             if (!(qrsEndInd + 1 < dwt.Count))
             {
                 return -1;
-                //Console.WriteLine("brak enda");
+
             }
-            //while (dwt[qrsEndInd] < dwt[qrsEndInd + 1])
-            //    qrsEndInd++;
-            Console.WriteLine(dwt.Count);
-            Console.WriteLine(qrsEndInd);
+
             while (dwt[qrsEndInd] > dwt[qrsEndInd + 1] && qrsEndInd < sectionEnd)
                 qrsEndInd++;
             while (Math.Abs(dwt[qrsEndInd]) > treshold && qrsEndInd < sectionEnd)

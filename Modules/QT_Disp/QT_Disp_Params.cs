@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace EKG_Project.Modules.QT_Disp
 {
@@ -12,19 +14,16 @@ namespace EKG_Project.Modules.QT_Disp
 
     public class QT_Disp_Params : ModuleParams
     {
-
-
         //Input which can be modify in GUI
         private QT_Calc_Method _qt_method;
         private T_End_Method _t_end_method;
         private bool _alldrains; // determinate if we calculate QT_disp for all drains or only one
-        private string _analysisName;
+
         public QT_Disp_Params()
         {
             this._alldrains = false;
             this._qt_method = QT_Calc_Method.FRAMIGHAMA;
             this._t_end_method = T_End_Method.TANGENT;
-            this._analysisName = "TestAnalysis100";
         }
 
 
@@ -33,7 +32,7 @@ namespace EKG_Project.Modules.QT_Disp
             this._alldrains = false;
             this._qt_method = QT_Calc_Method.BAZETTA;
             this._t_end_method = T_End_Method.TANGENT;
-            this._analysisName = analysisName;
+            this.AnalysisName = analysisName;
         }
 
         public QT_Calc_Method QTMethod
@@ -69,21 +68,17 @@ namespace EKG_Project.Modules.QT_Disp
                 _alldrains = value;
             }
         }
-        public string AnalysisName
+
+        public bool SingleDrain
         {
             get
             {
-                return _analysisName;
+                return !_alldrains;
             }
             set
             {
-                _analysisName = value;
+                _alldrains = !value;
             }
-
         }
-
-
-
-
     }
 }

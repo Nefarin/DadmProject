@@ -194,7 +194,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main()
         {
-            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis234");
+            HRV_DFA_Params param = new HRV_DFA_Params("testest");
             HRV_DFA testModule = new HRV_DFA();
 
             testModule.Init(param);
@@ -206,7 +206,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-            Console.Read();
+            //Console.Read();
         }
     }
      

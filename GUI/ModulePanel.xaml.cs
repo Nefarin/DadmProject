@@ -3,6 +3,7 @@ using EKG_Project.Modules.Atrial_Fibr;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Waves;
+using EKG_Project.Modules.QT_Disp;
 using EKG_Project.Modules;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace EKG_Project.GUI
 {
     /// <summary>
     /// Interaction logic for ModulePanel.xaml
+    /// Add suboptions to TreeView (parent -> child)
+    /// Set and bind modules options
     /// </summary>
     public partial class ModulePanel : UserControl
     {
@@ -41,24 +44,24 @@ namespace EKG_Project.GUI
 
             ecgBaseline.
                 AddSuboptionAndMoveDown(AvailableOptions.R_PEAKS).
-                    AddSuboption(AvailableOptions.HRV1).
+                    //AddSuboption(AvailableOptions.HRV1).
                     AddSuboption(AvailableOptions.HRV2).
                     AddSuboptionAndMoveDown(AvailableOptions.WAVES).
-                        AddSuboption(AvailableOptions.ST_SEGMENT).
-                        AddSuboption(AvailableOptions.T_WAVE_ALT).
+                        //AddSuboption(AvailableOptions.ST_SEGMENT).
+                        //AddSuboption(AvailableOptions.T_WAVE_ALT).
                         AddSuboption(AvailableOptions.SLEEP_APNEA).
                         AddSuboptionAndMoveDown(AvailableOptions.HEART_CLASS).
-                            AddSuboption(AvailableOptions.HRT).
+                            //AddSuboption(AvailableOptions.HRT).
                             AddSuboptionAndMoveUp(AvailableOptions.HEART_AXIS).
                         AddSuboption(AvailableOptions.ATRIAL_FIBER).
                         AddSuboption(AvailableOptions.QT_DISP).
                         AddSuboptionAndMoveUp(AvailableOptions.FLUTTER).
-                    AddSuboption(AvailableOptions.HRV_DFA).
-                    AddSuboptionAndMoveUp(AvailableOptions.SIG_EDR);
+                    AddSuboption(AvailableOptions.HRV_DFA);
+                    //AddSuboptionAndMoveUp(AvailableOptions.SIG_EDR);
 
-            var testModule = new ModuleOption(AvailableOptions.TEST_MODULE, this);
+            //var testModule = new ModuleOption(AvailableOptions.TEST_MODULE, this);
             Options.Add(ecgBaseline);
-            Options.Add(testModule);
+            //Options.Add(testModule);
             this.treeViewModules.ItemsSource = this.Options;
         }
 
@@ -104,6 +107,12 @@ namespace EKG_Project.GUI
                         Params[option.Code] = atrial_dialogue.returnParameters;
                         OptionParams[option] = atrial_dialogue.returnParameters;
                     break;
+                case AvailableOptions.QT_DISP:
+                        var qt_dialogue = new Dialogue_QT_Disp_Options(this, (QT_Disp_Params)option.ModuleParam);
+                        qt_dialogue.ShowDialog();
+                        Params[option.Code] = qt_dialogue.returnParameters;
+                        OptionParams[option] = qt_dialogue.returnParameters;
+                    break;
                 default:
                     break;
             }
@@ -117,9 +126,7 @@ namespace EKG_Project.GUI
             foreach (var option in Options)
             {
                 AllOptions = getSuboptions(option, AllOptions);
-
             }
-
             return AllOptions;
         }
 
@@ -139,23 +146,15 @@ namespace EKG_Project.GUI
 
         public Tuple<ModuleOption, ModuleParams> ModuleOptionAndParams(AvailableOptions code)
         {
-
             foreach (KeyValuePair<ModuleOption, ModuleParams> entry in OptionParams)
             {
                 if (entry.Key.Code == code && entry.Key.Set == true)
                 {
                     Tuple<ModuleOption, ModuleParams> correctOptionParams = new Tuple<ModuleOption, ModuleParams>(entry.Key, entry.Value);
-
-                        return correctOptionParams;
+                    return correctOptionParams;
                 }
-
             }
-
-            return null;
-                
+            return null;           
         }
-
-
     }
-
 }
