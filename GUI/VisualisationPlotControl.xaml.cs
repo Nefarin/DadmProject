@@ -143,8 +143,9 @@ namespace EKG_Project.GUI
                     break;
                 case 9 :
                     Get_HEART_AXIS_Data(analyseName);
-                    this.PlotForwardButton.Visibility = Visibility.Collapsed;
-                    this.PlotBackwardButton.Visibility = Visibility.Collapsed;
+                    //this.PlotForwardButton.Visibility = Visibility.Collapsed;
+                    //this.PlotBackwardButton.Visibility = Visibility.Collapsed;
+                    this.PlotSlider.Visibility = Visibility.Collapsed;
                     this.CheckBoxList.Visibility = Visibility.Collapsed;
                     MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
@@ -596,6 +597,16 @@ namespace EKG_Project.GUI
         }
 
 
+
+        private void Slider_ValueChanged(object sender,RoutedPropertyChangedEventArgs<double> e)
+        {
+
+            var slider = sender as Slider;
+            double value = slider.Value;
+            ecgPlot.XAxesControl(value / 10);
+            //MessageBox.Show(value.ToString());
+      
+        }
 
         private void PlotForwardButton_Click(object sender, RoutedEventArgs e)
         {

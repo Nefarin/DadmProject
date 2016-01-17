@@ -97,32 +97,33 @@ namespace EKG_Project.GUI
         {
             CurrentPlot = new PlotModel();
             CurrentPlot.Title = plotTitle;
+            CurrentPlot.TitleFontSize = 16;
             //CurrentPlot.LegendTitle = "Legend";
             CurrentPlot.LegendOrientation = LegendOrientation.Horizontal;
             CurrentPlot.LegendPlacement = LegendPlacement.Outside;
             CurrentPlot.LegendPosition = LegendPosition.RightMiddle;
-            CurrentPlot.MouseDown += (sender, evArg) =>
-            {
-                if (evArg.ChangedButton == OxyMouseButton.Right)
-                {
-                    string filename;
-                    Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-                    dlg.DefaultExt = ".svg";
-                    dlg.Filter = "SVG documents (.svg)|*.svg";
-                    if (dlg.ShowDialog() == true)
-                    {
-                        filename = dlg.FileName;
+            //CurrentPlot.MouseDown += (sender, evArg) =>
+            //{
+            //    if (evArg.ChangedButton == OxyMouseButton.Right)
+            //    {
+            //        string filename;
+            //        Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            //        dlg.DefaultExt = ".svg";
+            //        dlg.Filter = "SVG documents (.svg)|*.svg";
+            //        if (dlg.ShowDialog() == true)
+            //        {
+            //            filename = dlg.FileName;
 
-                        using (var stream = System.IO.File.Create(filename))
-                        {
-                            var exporter = new SvgExporter() { Width = 600, Height = 400 };
-                            exporter.Export(CurrentPlot, stream);
-                        }
+            //            using (var stream = System.IO.File.Create(filename))
+            //            {
+            //                var exporter = new SvgExporter() { Width = 600, Height = 400 };
+            //                exporter.Export(CurrentPlot, stream);
+            //            }
 
-                    }
-                }
+            //        }
+            //    }
 
-            };
+            //};
 
             //CurrentPlot.le
             _windowSize = 3000;
@@ -937,13 +938,14 @@ namespace EKG_Project.GUI
                 first = false;
                 var lineraYAxis = new LinearAxis();
                 lineraYAxis.Position = AxisPosition.Left;
-                lineraYAxis.Minimum = -100.0;
-                lineraYAxis.Maximum = 80.0;
+                //lineraYAxis.Minimum = -100.0;
+                //lineraYAxis.Maximum = 80.0;
                 lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
                 lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
                 lineraYAxis.Title = "Voltage [mV]";
 
                 CurrentPlot.Axes.Add(lineraYAxis);
+                _windowSize = _ecg_Baseline_Data.SignalsFiltered.First().Item2.Count;
             }
             else
             {
@@ -974,6 +976,16 @@ namespace EKG_Project.GUI
                 CurrentPlot.Series.Add(ls);
 
             }
+
+            var lineraXAxis = new LinearAxis();
+            lineraXAxis.Position = AxisPosition.Bottom;
+            lineraXAxis.Minimum = 0;
+            lineraXAxis.Maximum = 1000.0;
+            lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
+            lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
+            lineraXAxis.Title = "X";
+
+            CurrentPlot.Axes.Add(lineraXAxis);
 
             RefreshPlot();
         }
@@ -1244,6 +1256,8 @@ namespace EKG_Project.GUI
         }
 
 
+
+
         //public void SeriesControler(string seriesName, bool visible)
         //{
 
@@ -1451,6 +1465,43 @@ namespace EKG_Project.GUI
 
             RefreshPlot();
         }
+
+
+
+        public void XAxesControl(double slide)
+        {
+            CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "X"));
+            double min;
+            double max;
+            double windowsSize = (int)(_windowSize / 10);
+            if(slide == 0)
+            {
+                min = 0;
+                max = windowsSize;
+            }
+            else if(slide > 0.9)
+            {
+                max = _windowSize;
+                min = max - windowsSize;
+            }
+            else
+            {
+                min = _windowSize*slide;
+                max = min + windowsSize;
+            }
+            
+            var lineraXAxis = new LinearAxis();
+            lineraXAxis.Position = AxisPosition.Bottom;
+            lineraXAxis.Minimum = min;
+            lineraXAxis.Maximum = max;
+            lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
+            lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
+            lineraXAxis.Title = "X";
+
+            CurrentPlot.Axes.Add(lineraXAxis);
+            RefreshPlot();
+        }
+
 
 
         private void SavePlot(object sender, System.Windows.Input.MouseEventArgs e)
