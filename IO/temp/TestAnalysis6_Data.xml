@@ -662,4 +662,138 @@
       <end>3</end>
     </FlutterAnnotations>
   </module>
+  <module name="HRV2">
+    <PoincarePlotData_x>
+      <lead>I</lead>
+      <samples>1438 1450 2906 1464 1478 1480 2966 1470 2614 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>II</lead>
+      <samples>1478 1482 4428 1494 1148 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>III</lead>
+      <samples>1444 2422 3666 3690 1958 2956 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>aVR</lead>
+      <samples>102 2032 1458 1484 1484 792 104 5006 1142 858 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>aVL</lead>
+      <samples>1438 1450 2908 1484 1478 1458 2960 1500 1452 1140 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>aVF</lead>
+      <samples>1478 1472 4438 2626 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>V1</lead>
+      <samples>246 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>V2</lead>
+      <samples>6994 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>V3</lead>
+      <samples>5918 3666 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>V4</lead>
+      <samples>4374 5920 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>V5</lead>
+      <samples>7258 2956 2964 1474 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_x>
+      <lead>V6</lead>
+      <samples>1456 2900 1464 2954 7060 </samples>
+    </PoincarePlotData_x>
+    <PoincarePlotData_y>
+      <lead>I</lead>
+      <samples>1436 1438 1450 2906 1464 1478 1480 2966 1470 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>II</lead>
+      <samples>4354 1478 1482 4428 1494 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>III</lead>
+      <samples>1432 1444 2422 3666 3690 1958 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>aVR</lead>
+      <samples>782 102 2032 1458 1484 1484 792 104 5006 1142 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>aVL</lead>
+      <samples>1440 1438 1450 2908 1484 1478 1458 2960 1500 1452 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>aVF</lead>
+      <samples>5820 1478 1472 4438 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>V1</lead>
+      <samples>2880 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>V2</lead>
+      <samples>122 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>V3</lead>
+      <samples>8738 5918 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>V4</lead>
+      <samples>4324 4374 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>V5</lead>
+      <samples>1442 7258 2956 2964 </samples>
+    </PoincarePlotData_y>
+    <PoincarePlotData_y>
+      <lead>V6</lead>
+      <samples>2878 1456 2900 1464 2954 </samples>
+    </PoincarePlotData_y>
+    <Tinn>1530</Tinn>
+    <Tinn>3280</Tinn>
+    <Tinn>2258</Tinn>
+    <Tinn>4904</Tinn>
+    <Tinn>1820</Tinn>
+    <Tinn>4348</Tinn>
+    <Tinn>2634</Tinn>
+    <Tinn>6872</Tinn>
+    <Tinn>5072</Tinn>
+    <Tinn>1596</Tinn>
+    <Tinn>5816</Tinn>
+    <Tinn>5604</Tinn>
+    <SD1>783,323878981559</SD1>
+    <SD1>1733,27112131945</SD1>
+    <SD1>786,001781168465</SD1>
+    <SD1>1572,5050107675</SD1>
+    <SD1>692,550680054857</SD1>
+    <SD1>2199,2685621209</SD1>
+    <SD1>+nieskończoność</SD1>
+    <SD1>+nieskończoność</SD1>
+    <SD1>1815,57263693855</SD1>
+    <SD1>936,966381467339</SD1>
+    <SD1>3015,32286828459</SD1>
+    <SD1>1675,20118791744</SD1>
+    <SD2>1070,21504848325</SD2>
+    <SD2>2035,40816054176</SD2>
+    <SD2>1978,08164082724</SD2>
+    <SD2>1373,848136521</SD2>
+    <SD2>997,849558912676</SD2>
+    <SD2>2759,22722424232</SD2>
+    <SD2>+nieskończoność</SD2>
+    <SD2>+nieskończoność</SD2>
+    <SD2>8937,47704892158</SD2>
+    <SD2>6761,93847945987</SD2>
+    <SD2>3514,22509239235</SD2>
+    <SD2>2639,24413042826</SD2>
+  </module>
 </EKG>
