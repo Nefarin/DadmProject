@@ -12,6 +12,7 @@ using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.ECG_Baseline;
+using EKG_Project.Modules.Waves;
 
 namespace EKG_Project.GUI
 {
@@ -25,8 +26,11 @@ namespace EKG_Project.GUI
         private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
         private bool first;
         private bool _visible; 
+
         private R_Peaks_Data _r_PeaksData;
         private ECG_Baseline_Data _ecg_Baseline_Data;
+        private Waves_Data _waves_Data;
+
         private List<string> _displayedSeries;
 
 
@@ -51,7 +55,22 @@ namespace EKG_Project.GUI
             { "V4", false },
             { "V5", false },
             { "V6", false },
-            { "R_Peaks", false}
+            { "R_Peaks", false},
+            { "QRSOnsets", false },
+            { "QRSEnds", false },
+            { "POnsets", false },
+            { "PEnds", false },
+            { "TEnds", false }
+        };
+
+        private Dictionary<string, bool> _otherDisplayedSeries = new Dictionary<string, bool>()
+        {
+            { "R_Peaks", false},
+            { "QRSOnsets", false },
+            { "QRSEnds", false },
+            { "POnsets", false },
+            { "PEnds", false },
+            { "TEnds", false }
         };
 
 
@@ -66,7 +85,7 @@ namespace EKG_Project.GUI
             CurrentPlot.LegendPlacement = LegendPlacement.Outside;
             CurrentPlot.LegendPosition = LegendPosition.RightMiddle;
             //CurrentPlot.le
-            _windowSize = 1000;
+            _windowSize = 3000;
             _beginingPoint = 0;
             first = true;
             _visible = true;
@@ -710,6 +729,73 @@ namespace EKG_Project.GUI
 
         }
 
+        public void DisplayControler(Dictionary<string, List<Tuple<string, Vector<double>>>> dataToDisplayV, Dictionary<string, List<Tuple<string, List<int>>>> dataToDisplayL)
+        {
+            bool wasEcgBaselineSet = false;
+            List<string> modulesToDisplay = new List<string>();
+           
+            foreach (var data in dataToDisplayV)
+            {
+                switch (data.Key)
+                {
+                    case "ecgBaseline":
+                        _ecg_Baseline_Data = new ECG_Baseline_Data();
+                        _ecg_Baseline_Data.SignalsFiltered = dataToDisplayV[data.Key];
+                        wasEcgBaselineSet = true;
+                        modulesToDisplay.Add(data.Key);
+                        //DisplayEcgBaseline(dataToDisplay[data.Key], true);
+                        break;
+                    case "r_Peaks":
+                        _r_PeaksData = new R_Peaks_Data();
+                        _r_PeaksData.RPeaks = dataToDisplayV[data.Key];
+                        if (wasEcgBaselineSet)
+                            modulesToDisplay.Add(data.Key);
+                        //DisplayR_Peaks(dataToDisplay[data.Key], true);
+                        break;
+               
+                    default:
+                        break;
+                }
+
+            }
+
+            _waves_Data = new Waves_Data();
+
+            foreach (var data in dataToDisplayL)
+            {
+                switch (data.Key)
+                {
+                    case "QRSOnsets":
+                        _waves_Data.QRSOnsets = dataToDisplayL[data.Key];
+                        modulesToDisplay.Add(data.Key);
+                        break;
+                    case "QRSEnds":
+                        _waves_Data.QRSEnds= dataToDisplayL[data.Key];
+                        modulesToDisplay.Add(data.Key);
+                        break;
+                    case "POnsets":
+                        _waves_Data.POnsets = dataToDisplayL[data.Key];
+                        modulesToDisplay.Add(data.Key);
+                        break;
+                    case "PEnds":
+                        _waves_Data.PEnds = dataToDisplayL[data.Key];
+                        modulesToDisplay.Add(data.Key);
+                        break;
+                    case "TEnds":
+                        _waves_Data.TEnds = dataToDisplayL[data.Key];
+                        modulesToDisplay.Add(data.Key);
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+
+            DisplayListedPlots(modulesToDisplay);
+
+        }
+
         private void DisplayListedPlots(List<string> whatToDisplay)
         {
             foreach(string dis in whatToDisplay)
@@ -721,6 +807,21 @@ namespace EKG_Project.GUI
                         break;
                     case "r_Peaks":
                         DisplayR_Peaks();
+                        break;
+                    case "QRSOnsets":
+                        DisplayWaves(dis);
+                        break;
+                    case "QRSEnds":
+                        DisplayWaves(dis);
+                        break;
+                    case "POnsets":
+                        DisplayWaves(dis);
+                        break;
+                    case "PEnds":
+                        DisplayWaves(dis);
+                        break;
+                    case "TEnds":
+                        DisplayWaves(dis);
                         break;
                     default:
                         break;
@@ -797,7 +898,7 @@ namespace EKG_Project.GUI
                 bool addR_Peak = false;
 
                 ScatterSeries rPeaksSeries = new ScatterSeries();
-                rPeaksSeries.Title = "R_Peaks_" + signal.Item1;
+                rPeaksSeries.Title = "R_Peaks" + signal.Item1;
                 rPeaksSeries.IsVisible = _visible;
                 //rPeaksSeries.DataFieldTag = "R_Peak_" + signal.Item1;
 
@@ -821,64 +922,209 @@ namespace EKG_Project.GUI
             RefreshPlot();
         }
 
+        private void DisplayWaves(string wavePart)
+        {
+            foreach (var signal in _ecg_Baseline_Data.SignalsFiltered)
+            {
+
+                Vector<double> signalVector = signal.Item2;
+                List<int> waveList = new List<int>();
+                switch (wavePart)
+                {
+                    case "QRSOnsets":
+                        waveList = _waves_Data.QRSOnsets.Find(sig => sig.Item1 == signal.Item1).Item2;                     
+                        break;
+                    case "QRSEnds":
+                        waveList = _waves_Data.QRSEnds.Find(sig => sig.Item1 == signal.Item1).Item2;
+                        break;
+                    case "POnsets":
+                        waveList = _waves_Data.POnsets.Find(sig => sig.Item1 == signal.Item1).Item2;
+                        break;
+                    case "PEnds":
+                        waveList = _waves_Data.PEnds.Find(sig => sig.Item1 == signal.Item1).Item2;
+                        break;
+                    case "TEnds":
+                        waveList = _waves_Data.TEnds.Find(sig => sig.Item1 == signal.Item1).Item2;
+                        break;
+                    default:
+                        break;
+                }
+
+                bool addWave = false;
+
+                ScatterSeries waveSeries = new ScatterSeries();
+                //waveSeries.Title = wavePart + "_" + signal.Item1;
+                waveSeries.Title = wavePart + signal.Item1;
+                waveSeries.IsVisible = _visible;
+
+
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+                    if (waveList.Contains(i))
+                    {
+                        waveSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+
+                        addWave = true;
+                    }
+                }
+
+                if (addWave)
+                {
+                    CurrentPlot.Series.Add(waveSeries);
+                }
+            }
+
+            RefreshPlot();
+        }
 
 
 
 
 
+        //public void SeriesControler(string seriesName, bool visible)
+        //{
+
+        //    try
+        //    {
+
+        //        if (seriesName == "R_Peaks")
+        //        {
+        //            _baselineDisplayedSeries[seriesName] = visible;
+
+        //            foreach(var sig in _baselineDisplayedSeries)
+        //            {
+        //                if(sig.Value!=visible)
+        //                {
+        //                    CurrentPlot.Series.First(a => a.Title == sig.Key).IsVisible = visible;
+        //                    _baselineDisplayedSeries[sig.Key] = visible;
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            foreach (var ser in CurrentPlot.Series)
+        //            {
+        //                if (_baselineDisplayedSeries["R_Peaks"])
+        //                {
+        //                    if (ser.Title == seriesName || ser.Title == "R_Peaks_" + seriesName)
+        //                    {
+        //                        ser.IsVisible = visible;
+        //                        _baselineDisplayedSeries[seriesName] = visible;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    if (ser.Title == seriesName)
+        //                    {
+        //                        ser.IsVisible = visible;
+        //                        _baselineDisplayedSeries[seriesName] = visible;
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        RefreshPlot();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+
+        
 
         public void SeriesControler(string seriesName, bool visible)
         {
-
             try
             {
-                if (seriesName == "R_Peaks")
+
+                foreach (var oS in _otherDisplayedSeries)
                 {
-                    _baselineDisplayedSeries[seriesName] = visible;
-
-                    foreach(var sig in _baselineDisplayedSeries)
+                    if (oS.Key == seriesName)
                     {
-                        if(sig.Value!=visible)
-                        {
-                            CurrentPlot.Series.First(a => a.Title == sig.Key).IsVisible = visible;
-                            _baselineDisplayedSeries[sig.Key] = visible;
-                        }
-                    }
-
-
-
-
-                    //foreach (var ser in CurrentPlot.Series)
-                    //{
-                    //    if (ser.Title.StartsWith(seriesName) && _baselineDisplayedSeries[ser.Title])
-                    //    {
-                    //        ser.IsVisible = visible;
-                    //    }
-                    //}
-
-                }
-                else
-                {
-                    foreach (var ser in CurrentPlot.Series)
-                    {
-                        if (_baselineDisplayedSeries["R_Peaks"])
-                        {
-                            if (ser.Title == seriesName || ser.Title == "R_Peaks_" + seriesName)
-                            {
-                                ser.IsVisible = visible;
-                                _baselineDisplayedSeries[seriesName] = visible;
-                            }
-                        }
-                        else
-                        {
-                            if (ser.Title == seriesName)
-                            {
-                                ser.IsVisible = visible;
-                                _baselineDisplayedSeries[seriesName] = visible;
-                            }
-                        }
+                        _otherDisplayedSeries[seriesName] = visible;
                     }
                 }
+
+                foreach (var bS in _baselineDisplayedSeries)
+                {
+                    if(bS.Key == seriesName)
+                    {
+                        MainSeries(seriesName, visible);
+                    }
+                }
+
+
+
+
+                //switch (seriesName)
+                //{
+                //    case "I":                    
+                //        break;
+                //    case "II":
+                //        break;                 
+                //    case "III":                   
+                //        break;
+                //    case "aVR":                       
+                //        break;
+                //    case "aVL":                       
+                //        break;
+                //    case "aVF":
+                //        break;
+                //    case "V1":
+                //        break;
+                //    case "V2":
+                //        break;
+                //    case "V3":
+                //        break;
+                //    case "V4":
+                //        break;
+                //    case "V5":
+                //        break;
+                //    case "V6":
+                //        break;
+                //    default:
+                //        break;
+                //}
+
+
+
+                //if (seriesName == "R_Peaks")
+                //{
+                //    _baselineDisplayedSeries[seriesName] = visible;
+
+                //    foreach (var sig in _baselineDisplayedSeries)
+                //    {
+                //        if (sig.Value != visible)
+                //        {
+                //            CurrentPlot.Series.First(a => a.Title == sig.Key).IsVisible = visible;
+                //            _baselineDisplayedSeries[sig.Key] = visible;
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    foreach (var ser in CurrentPlot.Series)
+                //    {
+                //        if (_baselineDisplayedSeries["R_Peaks"])
+                //        {
+                //            if (ser.Title == seriesName || ser.Title == "R_Peaks_" + seriesName)
+                //            {
+                //                ser.IsVisible = visible;
+                //                _baselineDisplayedSeries[seriesName] = visible;
+                //            }
+                //        }
+                //        else
+                //        {
+                //            if (ser.Title == seriesName)
+                //            {
+                //                ser.IsVisible = visible;
+                //                _baselineDisplayedSeries[seriesName] = visible;
+                //            }
+                //        }
+                //    }
+                //}
 
                 RefreshPlot();
             }
@@ -887,6 +1133,35 @@ namespace EKG_Project.GUI
 
             }
         }
+
+
+        private void MainSeries(string seriesN, bool isvisible)
+        {
+
+            foreach(var oS in _otherDisplayedSeries.Where(a => a.Value != isvisible))
+            {
+                foreach(var ser in CurrentPlot.Series)
+                {
+                    if(ser.Title == seriesN || ser.Title == (oS.Key + seriesN))
+                    {
+                        ser.IsVisible = isvisible;
+                        _baselineDisplayedSeries[seriesN] = isvisible;
+                    }
+                }
+            }
+
+            foreach (var ser in CurrentPlot.Series)
+            {
+                if (ser.Title == seriesN)
+                {
+                    ser.IsVisible = isvisible;
+                    _baselineDisplayedSeries[seriesN] = isvisible;
+                }
+            }
+
+            RefreshPlot();      
+        }
+
 
         //ostatnio developowana wersja end
 
