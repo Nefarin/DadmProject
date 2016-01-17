@@ -336,11 +336,13 @@
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Data.cs" />
     <Compile Include="Modules\HRV_DFA\HRV_DFA_Params.cs" />
     <Compile Include="Modules\IModule.cs" />
+    <Compile Include="Modules\IModuleStats.cs" />
     <Compile Include="Modules\ModuleParams.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Alg.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Data.cs" />
     <Compile Include="Modules\QT_Disp\QT_Disp_Params.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Stats.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Alg.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Data.cs" />
@@ -413,9 +415,13 @@
     <Content Include="DLL\Placeholder.txt" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\temp\QtTest_Data.xml" />
+    <Resource Include="IO\temp\TestAnalysis100_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis8_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis6_Data.xml" />
-    <Resource Include="IO\temp\TestAnalysis5_Data.xml" />
+    <Resource Include="IO\temp\TestAnalysis5_Data.xml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Resource Include="IO\temp\TestAnalysis3_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis2_Data.xml" />
     <Resource Include="IO\temp\TestAnalysis_Data.xml" />
