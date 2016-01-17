@@ -566,7 +566,7 @@ namespace EKG_Project.Modules.R_Peaks
                 }
                 Vector<double> tempI = Vector<double>.Build.DenseOfArray(tempV);
                 double tempIndex = tempI.MaximumIndex();
-                locsR.Add(tempIndex + leftLimit[i] - 10);
+                locsR.Add(tempIndex + leftLimit[i]);
             }
 
             return locsR.ToArray();
