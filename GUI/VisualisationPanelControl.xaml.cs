@@ -77,11 +77,12 @@ namespace EKG_Project.GUI
                     if(tabNames.Contains("WAVES"))
                     {
                         _endDisplay["ECG_BASELINE"] = 3;
+                        if (tabNames.Contains("HEART_CLASS"))
+                        {
+                            _endDisplay["ECG_BASELINE"] = 4;
+                        }
+
                     }
-                }
-                else if(tabNames.Contains("WAVES"))
-                {
-                    _endDisplay["ECG_BASELINE"] = 4;
                 }
             }
 

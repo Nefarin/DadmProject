@@ -26,6 +26,7 @@ namespace EKG_Project.GUI
         #endregion
         public Window_ECG(App app)
         {
+            DLLLoader.CopyWFDBDLL();
             initMembers(app);
             InitializeComponent();
             initWindow();

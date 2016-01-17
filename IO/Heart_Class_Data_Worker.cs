@@ -122,11 +122,11 @@ namespace EKG_Project.IO
                     {
                         XmlNode item1 = node["item1"];
                         string readItem1 = item1.InnerText;
-                        int convertedItem1 = Convert.ToInt32(readItem1, new System.Globalization.NumberFormatInfo());
+                        int convertedItem1 = Convert.ToInt32(readItem1);
 
                         XmlNode item2 = node["item2"];
                         string readItem2 = item1.InnerText;
-                        int convertedItem2 = Convert.ToInt32(readItem2, new System.Globalization.NumberFormatInfo());
+                        int convertedItem2 = Convert.ToInt32(readItem2);
 
                         Tuple<int, int> read = Tuple.Create(convertedItem1, convertedItem2);
                         list.Add(read);

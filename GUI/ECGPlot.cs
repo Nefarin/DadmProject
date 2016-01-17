@@ -13,6 +13,7 @@ using EKG_Project.Modules;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.Waves;
+using EKG_Project.Modules.Heart_Class;
 
 namespace EKG_Project.GUI
 {
@@ -30,6 +31,9 @@ namespace EKG_Project.GUI
         private R_Peaks_Data _r_PeaksData;
         private ECG_Baseline_Data _ecg_Baseline_Data;
         private Waves_Data _waves_Data;
+        private Heart_Class_Data _heart_Class_Data;
+        List<Tuple<string, List<int>>> _hear_Class_Data_Trans;
+        private Basic_Data _basic_Data;
 
         private List<string> _displayedSeries;
 
@@ -63,6 +67,8 @@ namespace EKG_Project.GUI
             { "TEnds", false }
         };
 
+
+
         private Dictionary<string, bool> _otherDisplayedSeries = new Dictionary<string, bool>()
         {
             { "R_Peaks", false},
@@ -70,7 +76,15 @@ namespace EKG_Project.GUI
             { "QRSEnds", false },
             { "POnsets", false },
             { "PEnds", false },
-            { "TEnds", false }
+            { "TEnds", false },
+            { "Basic", false }
+            
+        };
+
+        
+        private Dictionary<string, bool> _annotations = new Dictionary<string, bool>()
+        {
+            { "HeartClass", false }
         };
 
 
@@ -84,6 +98,29 @@ namespace EKG_Project.GUI
             CurrentPlot.LegendOrientation = LegendOrientation.Horizontal;
             CurrentPlot.LegendPlacement = LegendPlacement.Outside;
             CurrentPlot.LegendPosition = LegendPosition.RightMiddle;
+            CurrentPlot.MouseDown += (sender, evArg) =>
+            {
+                if (evArg.ChangedButton == OxyMouseButton.Right)
+                {
+                    string filename;
+                    Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                    dlg.DefaultExt = ".svg";
+                    dlg.Filter = "SVG documents (.svg)|*.svg";
+                    if (dlg.ShowDialog() == true)
+                    {
+                        filename = dlg.FileName;
+
+                        using (var stream = System.IO.File.Create(filename))
+                        {
+                            var exporter = new SvgExporter() { Width = 600, Height = 400 };
+                            exporter.Export(CurrentPlot, stream);
+                        }
+
+                    }
+                }
+
+            };
+
             //CurrentPlot.le
             _windowSize = 3000;
             _beginingPoint = 0;
@@ -752,7 +789,13 @@ namespace EKG_Project.GUI
                             modulesToDisplay.Add(data.Key);
                         //DisplayR_Peaks(dataToDisplay[data.Key], true);
                         break;
-               
+                    case "ecgBasic":
+                        _basic_Data = new Basic_Data();
+                        _basic_Data.Signals = dataToDisplayV[data.Key];
+                        modulesToDisplay.Add(data.Key); 
+
+                        break; 
+
                     default:
                         break;
                 }
@@ -760,6 +803,7 @@ namespace EKG_Project.GUI
             }
 
             _waves_Data = new Waves_Data();
+            
 
             foreach (var data in dataToDisplayL)
             {
@@ -785,6 +829,11 @@ namespace EKG_Project.GUI
                         _waves_Data.TEnds = dataToDisplayL[data.Key];
                         modulesToDisplay.Add(data.Key);
                         break;
+                    case "HeartClass":
+                        _hear_Class_Data_Trans = new List<Tuple<string, List<int>>>();
+                        _hear_Class_Data_Trans = data.Value;   
+                        modulesToDisplay.Add("HeartClass");
+                        break;
                     default:
                         break;
                 }
@@ -805,6 +854,9 @@ namespace EKG_Project.GUI
                     case "ecgBaseline":
                         DisplayEcgBaseline();
                         break;
+                    case "ecgBasic":
+                        DisplayEcgBasic();
+                        break;
                     case "r_Peaks":
                         DisplayR_Peaks();
                         break;
@@ -823,10 +875,48 @@ namespace EKG_Project.GUI
                     case "TEnds":
                         DisplayWaves(dis);
                         break;
+                    case "HeartClass":
+                        //DisplayHeartClass();
+                        break;
                     default:
                         break;
                 }
             }
+        }
+
+
+        private void DisplayEcgBasic()
+        {
+            if (first)
+            {
+                first = false;
+            }
+            else
+            {
+                //ClearPlot();
+            }
+
+            foreach (var signal in _basic_Data.Signals)
+            {
+
+                Vector<double> signalVector = signal.Item2;
+                LineSeries ls = new LineSeries();
+                ls.Title = "Basic" + signal.Item1;
+                ls.IsVisible = _visible;
+
+                ls.MarkerStrokeThickness = 1;
+
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                }
+
+                CurrentPlot.Series.Add(ls);
+
+            }
+
+            RefreshPlot();
         }
 
         private void DisplayEcgBaseline()
@@ -978,7 +1068,57 @@ namespace EKG_Project.GUI
             RefreshPlot();
         }
 
+        private void DisplayHeartClass()
+        {
+            if (first)
+            {
+                first = false;
+            }
+            else
+            {
+                //ClearPlot();
+            }
 
+            //wyśiwtlenie ecgBaseline var signal in _ecg_Baseline_Data.Data.SignalsFiltered
+            
+
+            //List<Tuple<string, List<int>>> _hear_Class_Data_Trans;
+
+            //ScatterSeries heartClassSeries = new ScatterSeries();
+            //heartClassSeries.Title = "HeartClassII";
+            //heartClassSeries.IsVisible = _visible;
+
+
+            //bool addHeartClass = false;
+            foreach (var t in _hear_Class_Data_Trans)
+            {
+                
+                foreach (int val in t.Item2)
+                {
+                    if (val <= (_beginingPoint + _windowSize))
+                    {
+                        Double yvalue = _ecg_Baseline_Data.SignalsFiltered.First(a => a.Item1 == "II").Item2[val];
+                        if (yvalue > 0)
+                        {
+                            yvalue += 3;
+                        }
+                        else
+                        {
+                            yvalue -= 6;
+                        }
+                        CurrentPlot.Annotations.Add(new TextAnnotation { Text = t.Item1, TextPosition = new DataPoint(val, yvalue) });                       
+                        //heartClassSeries.Points.Add(new ScatterPoint { X = val, Y = yvalue, Size = 3 });
+                        //addHeartClass = true;
+                    }
+                }
+            }
+            //if(addHeartClass)
+            //{
+             //   CurrentPlot.Series.Add(heartClassSeries);
+            //}
+
+            RefreshPlot();
+        }
 
 
 
@@ -1036,14 +1176,32 @@ namespace EKG_Project.GUI
 
         public void SeriesControler(string seriesName, bool visible)
         {
+            //SavePlot();
             try
             {
+                if(seriesName == "HeartClass")
+                {
+                    if (visible)
+                    {
+                        _annotations[seriesName] = true;
+                        if (_baselineDisplayedSeries["II"])
+                        {
+                            DisplayHeartClass();                          
+                        }
+                    }
+                    else
+                    {
+                        CurrentPlot.Annotations.Clear();
+                        _annotations[seriesName] = false;
+                    }
+                }
 
                 foreach (var oS in _otherDisplayedSeries)
                 {
                     if (oS.Key == seriesName)
                     {
                         _otherDisplayedSeries[seriesName] = visible;
+                        OtherSeries(seriesName, visible);
                     }
                 }
 
@@ -1055,76 +1213,6 @@ namespace EKG_Project.GUI
                     }
                 }
 
-
-
-
-                //switch (seriesName)
-                //{
-                //    case "I":                    
-                //        break;
-                //    case "II":
-                //        break;                 
-                //    case "III":                   
-                //        break;
-                //    case "aVR":                       
-                //        break;
-                //    case "aVL":                       
-                //        break;
-                //    case "aVF":
-                //        break;
-                //    case "V1":
-                //        break;
-                //    case "V2":
-                //        break;
-                //    case "V3":
-                //        break;
-                //    case "V4":
-                //        break;
-                //    case "V5":
-                //        break;
-                //    case "V6":
-                //        break;
-                //    default:
-                //        break;
-                //}
-
-
-
-                //if (seriesName == "R_Peaks")
-                //{
-                //    _baselineDisplayedSeries[seriesName] = visible;
-
-                //    foreach (var sig in _baselineDisplayedSeries)
-                //    {
-                //        if (sig.Value != visible)
-                //        {
-                //            CurrentPlot.Series.First(a => a.Title == sig.Key).IsVisible = visible;
-                //            _baselineDisplayedSeries[sig.Key] = visible;
-                //        }
-                //    }
-                //}
-                //else
-                //{
-                //    foreach (var ser in CurrentPlot.Series)
-                //    {
-                //        if (_baselineDisplayedSeries["R_Peaks"])
-                //        {
-                //            if (ser.Title == seriesName || ser.Title == "R_Peaks_" + seriesName)
-                //            {
-                //                ser.IsVisible = visible;
-                //                _baselineDisplayedSeries[seriesName] = visible;
-                //            }
-                //        }
-                //        else
-                //        {
-                //            if (ser.Title == seriesName)
-                //            {
-                //                ser.IsVisible = visible;
-                //                _baselineDisplayedSeries[seriesName] = visible;
-                //            }
-                //        }
-                //    }
-                //}
 
                 RefreshPlot();
             }
@@ -1138,20 +1226,54 @@ namespace EKG_Project.GUI
         private void MainSeries(string seriesN, bool isvisible)
         {
 
-            foreach(var oS in _otherDisplayedSeries.Where(a => a.Value != isvisible))
+            if (isvisible)
             {
-                foreach(var ser in CurrentPlot.Series)
+                if (seriesN == "II")
                 {
-                    if(ser.Title == seriesN || ser.Title == (oS.Key + seriesN))
+                    if (_annotations["HeartClass"] == true)
+                        DisplayHeartClass();
+                }
+
+                foreach (var oS in _otherDisplayedSeries.Where(a => a.Value == isvisible))
+                {
+                   
+                    foreach (var ser in CurrentPlot.Series)
                     {
-                        ser.IsVisible = isvisible;
-                        _baselineDisplayedSeries[seriesN] = isvisible;
+                        if (ser.Title == seriesN || ser.Title == (oS.Key + seriesN))
+                        {
+                            ser.IsVisible = isvisible;
+                            _baselineDisplayedSeries[seriesN] = isvisible;
+
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (seriesN == "II")
+                {
+                    if (_annotations["HeartClass"] == true)
+                        CurrentPlot.Annotations.Clear();
+                }
+
+                foreach (var oS in _otherDisplayedSeries)
+                {
+                    foreach (var ser in CurrentPlot.Series)
+                    {
+                        if (ser.Title == seriesN || ser.Title == (oS.Key + seriesN))
+                        {
+                            ser.IsVisible = isvisible;
+                            _baselineDisplayedSeries[seriesN] = isvisible;
+
+                        }
                     }
                 }
             }
 
+
             foreach (var ser in CurrentPlot.Series)
             {
+
                 if (ser.Title == seriesN)
                 {
                     ser.IsVisible = isvisible;
@@ -1162,6 +1284,74 @@ namespace EKG_Project.GUI
             RefreshPlot();      
         }
 
+        private void OtherSeries(string seriesN, bool isvisible)
+        {
+            if (isvisible)
+            {
+               
+                foreach (var mS in _baselineDisplayedSeries)
+                {
+                    if (mS.Value == isvisible)
+                    {
+                        foreach (var ser in CurrentPlot.Series)
+                        {
+                            if (ser.Title.StartsWith(seriesN) && ser.Title.EndsWith(mS.Key))
+                            {
+                                if (ser.Title.IndexOf(mS.Key) == ser.Title.LastIndexOf(mS.Key))
+                                {
+                                    ser.IsVisible = isvisible;
+                                }
+                            }
+                        }
+
+
+                    }
+                }
+            }
+            else
+            {
+                foreach (var mS in _baselineDisplayedSeries)
+                {
+                    
+                        foreach (var ser in CurrentPlot.Series)
+                        {
+                            if (ser.Title.StartsWith(seriesN) && ser.Title.EndsWith(mS.Key))
+                            {
+                                if (ser.Title.IndexOf(mS.Key) == ser.Title.LastIndexOf(mS.Key))
+                                {
+                                    ser.IsVisible = isvisible;
+                                }
+                            }
+                        }
+                    
+                }
+            }
+
+            RefreshPlot();
+        }
+
+
+        private void SavePlot(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            string filename;
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.DefaultExt = ".svg";
+            //dlg.Filter = "Text documents (.txt)|*.txt";
+            if (dlg.ShowDialog() == true)
+            {
+                filename = dlg.FileName;
+
+                using (var stream = System.IO.File.Create(filename))
+                {
+                    var exporter = new SvgExporter() { Width = 600, Height = 400 };
+                    exporter.Export(CurrentPlot, stream);
+                }
+
+            }
+
+
+
+        }
 
         //ostatnio developowana wersja end
 
