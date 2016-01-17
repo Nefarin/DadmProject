@@ -14,6 +14,11 @@ namespace EKG_Project.IO
                 (System.IO.Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory)));
         }
 
+        public string getCurrentPath()
+        {
+            return System.IO.Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
+        }
+
         public string getDataPath()
         {
             return System.IO.Path.Combine(getBasePath(), "IO", "data");

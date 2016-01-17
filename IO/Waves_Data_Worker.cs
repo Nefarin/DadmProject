@@ -217,7 +217,7 @@ namespace EKG_Project.IO
         {
             int[] digits = input
                               .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                              .Select(digit => Convert.ToInt32(digit, new System.Globalization.NumberFormatInfo()))
+                              .Select(digit => Convert.ToInt32(digit))
                               .ToArray();
             List<int> list = new List<int>();
             for (int i = 0; i < digits.Length; i++ )
