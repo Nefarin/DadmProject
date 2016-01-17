@@ -209,4 +209,36 @@
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
+  <module name="HRV_DFA">
+    <DfaNumberN>
+      <lead>MLII</lead>
+      <samples>1 1,17609125905568 1,30102999566398 1,39794000867204 1,47712125471966 1,54406804435028 1,60205999132796 </samples>
+      <samples1>0 0 0 0 0 0 0 </samples1>
+    </DfaNumberN>
+    <DfaNumberN>
+      <lead>V1</lead>
+      <samples>1 1,17609125905568 1,30102999566398 1,39794000867204 1,47712125471966 1,54406804435028 1,60205999132796 </samples>
+      <samples1>0 0 0 0 0 0 0 </samples1>
+    </DfaNumberN>
+    <DfaValueFn>
+      <lead>MLII</lead>
+      <samples>3,21281722290951 3,2433838559149 3,26507122717082 3,28189325921289 3,2956378601762 3,3072587547084 3,31732523143212 </samples>
+      <samples1>0 0 0 0 0 0 0 </samples1>
+    </DfaValueFn>
+    <DfaValueFn>
+      <lead>V1</lead>
+      <samples>3,21281722290951 3,2433838559149 3,26507122717082 3,28189325921289 3,2956378601762 3,3072587547084 3,31732523143212 </samples>
+      <samples1>0 0 0 0 0 0 0 </samples1>
+    </DfaValueFn>
+    <ParamAlpha>
+      <lead>MLII</lead>
+      <samples>3,03923317808353 0,173584044825985 </samples>
+      <samples1>0 0 </samples1>
+    </ParamAlpha>
+    <ParamAlpha>
+      <lead>V1</lead>
+      <samples>3,03923317808353 0,173584044825985 </samples>
+      <samples1>0 0 </samples1>
+    </ParamAlpha>
+  </module>
 </EKG>

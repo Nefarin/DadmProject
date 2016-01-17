@@ -98,31 +98,31 @@ namespace EKG_Project.Modules.HRV_DFA
         {
             int channel = _currentChannelIndex;
             int startIndex = _rPeaksProcessed;
-            int step = 1000;
+            int step = 100;
 
             if (channel < NumberOfChannels)
             {
                 Console.WriteLine("Len: " +_currentRpeaksLength);
-                if (_currentRpeaksLength > 20 && _currentRpeaksLength < 300)
+                if (_currentRpeaksLength > 20 && _currentRpeaksLength < 100)
                 {
                     this.boxVal = 100;
-                    this.stepVal = 10;
+                    this.stepVal = 5;
                 }
-                if (_currentRpeaksLength > 300)
+                if (_currentRpeaksLength > 100)
                 {
-                    this.boxVal = (_currentRpeaksLength/2);
+                    this.boxVal = 100;
                     this.stepVal = 20;
                 }
                 if (_currentRpeaksLength < 20)
                 {
-                    throw new InvalidOperationException("Number of R - Peaks is too short");
+                    Console.WriteLine("Number of R - Peaks is too short");
+                    _aborted = true;
                 }
-
-
-                if (startIndex + stepVal > _currentRpeaksLength)
+              
+                if (startIndex + step > _currentRpeaksLength && _aborted != true)
                 {
 
-                        HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2);
+                        HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
                         Tuple<string, Vector<double>, Vector<double>> numberN = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogn1, veclogn2);
                         Tuple<string, Vector<double>, Vector<double>> fnValue = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogFn1, veclogFn2);
                         Tuple<string, Vector<double>, Vector<double>> pAlpha = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, vecparam1, vecparam2);
@@ -143,9 +143,13 @@ namespace EKG_Project.Modules.HRV_DFA
                 }
                 else
                 {
-                    HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2);
-                    _currentVector = InputData.RRInterval[_currentChannelIndex].Item2.SubVector(0, stepVal);
-                    _rPeaksProcessed = startIndex + stepVal;
+                    if (_aborted != true)
+                    {
+                        HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
+                        _currentVector = InputData.RRInterval[_currentChannelIndex].Item2.SubVector(0, stepVal);
+                        _rPeaksProcessed = startIndex + stepVal;
+                    }
+                    else _ended = true;
 
                 }
             }
@@ -190,7 +194,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main()
         {
-            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis100");
+            HRV_DFA_Params param = new HRV_DFA_Params("testest");
             HRV_DFA testModule = new HRV_DFA();
 
             testModule.Init(param);
@@ -202,7 +206,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-            Console.Read();
+            //Console.Read();
         }
     }
      
