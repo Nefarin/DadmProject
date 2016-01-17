@@ -70,7 +70,7 @@ namespace EKG_Project.Modules.Flutter
 
             for(int i = 0 ; i < _data.FlutterAnnotations.Count; i++)
             {
-                _strToStr.Add(string.Format("Wystąpienie {0}", i), string.Format(" od {0} do {1}", ((double)_data.FlutterAnnotations[i].Item1/_basicData.Frequency),  ((double)_data.FlutterAnnotations[i].Item2/_basicData.Frequency)));
+                _strToStr.Add(string.Format("Wystąpienie {0}", i), string.Format(" od {0} do {1}", ((double)_data.FlutterAnnotations[i].Item1),  ((double)_data.FlutterAnnotations[i].Item2)));
                 _strToObj.Add(string.Format("Wystąpienie {0}", i), _data.FlutterAnnotations[i]); 
             }
 
