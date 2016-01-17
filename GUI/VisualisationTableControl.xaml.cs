@@ -29,7 +29,7 @@ namespace EKG_Project.GUI
             
             public string Lead { get; set; }
             public string QT_Disp_Lcal { get; set; }
-            public string QT_Min { get; set; }
+            public string QT_Mean { get; set; }
             public string QT_Std { get; set; }
         }
 
@@ -78,12 +78,13 @@ namespace EKG_Project.GUI
                 DataToTable dTT = new DataToTable();
                 dTT.Lead = dat.Item1;
                 dTT.QT_Disp_Lcal = dat.Item2.ToString("0.00");
-                dTT.QT_Min = _qt_Disp_Data_Worker.Data.QT_mean.First(a => a.Item1 == dat.Item1).Item2.ToString("0.00");
+                dTT.QT_Mean = _qt_Disp_Data_Worker.Data.QT_mean.First(a => a.Item1 == dat.Item1).Item2.ToString("0.00");
                 dTT.QT_Std = _qt_Disp_Data_Worker.Data.QT_std.First(a => a.Item1 == dat.Item1).Item2.ToString("0.00");
                 _tableData.Add(dTT);
 
             }
             
+
 
             
 
