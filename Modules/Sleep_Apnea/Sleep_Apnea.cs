@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.LinearAlgebra;
 
 
 namespace EKG_Project.Modules.Sleep_Apnea
@@ -22,6 +23,11 @@ namespace EKG_Project.Modules.Sleep_Apnea
             AmplitudeFIltering,
             DetecingApnea,
             Finished
+        }
+
+        public bool IsAborted()
+        {
+            return Aborted;
         }
 
         private SleepApneaAlgStates _currentState;
@@ -136,7 +142,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 _actualProgress = 0;
                 _numberOfChannels = InputData_basic.Signals.Count;
                 _fs = InputData_basic.Frequency;
-                _R_detected = InputData.RPeaks.Select(x => x.Item2).First().Cast<uint>().ToList();
+                _R_detected = InputData.RPeaks.Select(x => x.Item2).First().Select(x => (uint)x).ToList();
                 _currentState = SleepApneaAlgStates.FindingRR;
                 _channelsNames = InputData_basic.Signals.Select(x => x.Item1).ToArray();
 
@@ -159,12 +165,25 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
         private void processData()
         {
+            
+
             switch (_currentState)
             {
                 case SleepApneaAlgStates.FindingRR:
-                    _RR = findIntervals(_R_detected, (int)_fs);
-                    _currentState = SleepApneaAlgStates.CalculatingAverage;
-                    _actualProgress = 100.0 / 9;
+                    if (_R_detected.Count < 42)
+                    {
+                        _currentState = SleepApneaAlgStates.Finished;
+                        _il_Apnea = 0.0;
+                        _h_amp = new List<List<double>>();
+                        _Detected_Apnea = new List<Tuple<int, int>>();
+                        _Detected_Apnea.Add(new Tuple<int, int>(0, 0));
+                    }
+                    else
+                    {
+                        _RR = findIntervals(_R_detected, (int)_fs);
+                        _currentState = SleepApneaAlgStates.CalculatingAverage;
+                        _actualProgress = 100.0 / 9;
+                    }
                     break;
 
                 case SleepApneaAlgStates.CalculatingAverage:
@@ -253,7 +272,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
         public static void Main()
         {
-            Sleep_Apnea_Params param = new Sleep_Apnea_Params("TestAnalysis3");
+            Sleep_Apnea_Params param = new Sleep_Apnea_Params("TestAnalysis6");
             Sleep_Apnea sleep_apnea = new Sleep_Apnea();
             sleep_apnea.Init(param);
             while (true)

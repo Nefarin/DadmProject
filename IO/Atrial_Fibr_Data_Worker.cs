@@ -82,11 +82,14 @@ namespace EKG_Project.IO
                     detectedAF.AppendChild(detected);
 
                     XmlElement detectedPoints = file.CreateElement(string.Empty, "detectedPoints", string.Empty);
-                    string detectedPointsText = null;
+                    
+                    StringBuilder builder = new StringBuilder();
                     foreach (var value in tuple.Item2)
                     {
-                        detectedPointsText += value.ToString() + " ";
+                        builder.Append(value.ToString());
+                        builder.Append(" ");
                     }
+                    string detectedPointsText = builder.ToString();
 
                     XmlText detectedPointsValue = file.CreateTextNode(detectedPointsText);
                     detectedPoints.AppendChild(detectedPointsValue);

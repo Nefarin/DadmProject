@@ -8,11 +8,37 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.IO
 {
-    class FileLoader
+    public class FileLoader
     {
-        IECGConverter converter;
-        string extension;
-        string analysisName;
+        private IECGConverter converter;
+        private string extension;
+        private string analysisName;
+
+        public IECGConverter Converter
+        {
+            get
+            {
+                return converter;
+            }
+
+            set
+            {
+                converter = value;
+            }
+        }
+
+        public string AnalysisName
+        {
+            get
+            {
+                return analysisName;
+            }
+
+            set
+            {
+                analysisName = value;
+            }
+        }
 
         public FileLoader() { }
 
@@ -21,18 +47,18 @@ namespace EKG_Project.IO
             switch (extension)
             {
                 case ".xml":
-                    converter = new XMLConverter(analysisName);
+                    converter = new XMLConverter(AnalysisName);
                     break;
                 case ".txt":
-                    converter = new ASCIIConverter(analysisName);
+                    converter = new ASCIIConverter(AnalysisName);
                     break;
                 case ".dat":
-                    converter = new MITBIHConverter(analysisName);
+                    converter = new MITBIHConverter(AnalysisName);
                     break;
             }
 
-            converter.ConvertFile(path);
-            converter.SaveResult();
+            //converter.ConvertFile(path);
+            //converter.SaveResult();
 
 
         }

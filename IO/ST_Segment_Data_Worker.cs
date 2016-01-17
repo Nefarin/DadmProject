@@ -81,11 +81,13 @@ namespace EKG_Project.IO
 
                     XmlElement moduleNode = file.CreateElement(string.Empty, Names[licznik], string.Empty);
                     
-                    string samplesText = null;
+                    StringBuilder builder = new StringBuilder();
                     foreach (var value in list)
                     {
-                        samplesText += value.ToString() + " ";
+                        builder.Append(value.ToString());
+                        builder.Append(" ");
                     }
+                    string samplesText = builder.ToString();
 
                     XmlText samplesValue = file.CreateTextNode(samplesText);
                     moduleNode.AppendChild(samplesValue);

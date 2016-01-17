@@ -36,5 +36,11 @@ namespace EKG_Project.Modules.HRT
         {
             throw new NotImplementedException();
         }
+
+        public bool IsAborted()
+        {
+            return true;
+            //return Aborted;
+        }
     }
 }

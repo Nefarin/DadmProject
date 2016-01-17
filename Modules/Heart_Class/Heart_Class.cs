@@ -53,6 +53,11 @@ namespace EKG_Project.Modules.Heart_Class
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;
@@ -145,7 +150,7 @@ namespace EKG_Project.Modules.Heart_Class
                 int QRSEnds = InputWavesData.QRSEnds[_channel2].Item2[_samplesProcessed];
                 double R = InputRpeaksData.RPeaks[_channel2].Item2[_samplesProcessed];
 
-                if (QRSEnds == -1 || QRSEnds == -1)
+                if (QRSOnSet == -1 || QRSEnds == -1)
                 {
                     _samplesProcessed++;
                 }
@@ -168,70 +173,6 @@ namespace EKG_Project.Modules.Heart_Class
                 _ended = true;
                 OutputWorker.Save(OutputData);
             }
-            /*
-            int channel = _currentChannelIndex;
-            int startIndex = _samplesProcessed;
-            //int qrsEndStep = 10;// o tyle qrs się przesuwamy
-            //int i = 10; //do inkrementacji co 10
-            //int step; // ilość próbek o którą sie przesuwamy
-
-            if (channel < NumberOfChannels)
-            {
-                //step = InputWavesData.QRSEnds[_currentChannelIndex].Item2[qrsEndStep];
-
-                Console.WriteLine(step);
-                Console.WriteLine(startIndex);
-                Console.WriteLine(_currentChannelLength);
-                if (startIndex + step > _currentChannelLength)
-                {
-                    
-
-                    Console.WriteLine("jestem tuuu");
-                    _currentVector = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
-
-                    //OutputData.ClassificationResult.AddRange(new List<Tuple<int, int>>(Classification(_currentVector, fs, InputRpeaksData.RPeaks[_currentChannelIndex].Item2, InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.QRSEnds[_currentChannelIndex].Item2)));
-                    _tempClassResult = Classification(_currentVector, fs,
-                        InputRpeaksData.RPeaks[_currentChannelIndex].Item2,
-                        InputWavesData.QRSOnsets[_currentChannelIndex].Item2,
-                        InputWavesData.QRSEnds[_currentChannelIndex].Item2);
-                    OutputData.ClassificationResult.AddRange(new List<Tuple<int, int>>(_tempClassResult));
-                    _currentChannelIndex++;
-
-                    if (_currentChannelIndex < NumberOfChannels)
-                    {
-                        _samplesProcessed = 0;
-                        _currentChannelLength = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
-                        _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                        //_tempClassResult = new List<Tuple<int, int>>(); //kasowanie tego co było wczesniej zapisane, czy tak moze byc?
-                    }
-
-                   
-                }
-                else
-                {
-                    
-                    _currentVector = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, step);
-
-                    _tempClassResult = Classification(_currentVector, fs,
-                        InputRpeaksData.RPeaks[_currentChannelIndex].Item2,
-                        InputWavesData.QRSOnsets[_currentChannelIndex].Item2,
-                        InputWavesData.QRSEnds[_currentChannelIndex].Item2);
-                    OutputData.ClassificationResult.AddRange(new List<Tuple<int, int>>(_tempClassResult));
-
-                    _samplesProcessed = startIndex + step;
-                   
-                }
-            }
-            else
-            {
-                OutputWorker.Save(OutputData);
-                _ended = true;
-            }
-
-            qrsEndStep += i;
-            step = InputWavesData.QRSEnds[_currentChannelIndex].Item2[qrsEndStep] - step;
-            */
-
 
         }
 
@@ -348,87 +289,13 @@ namespace EKG_Project.Modules.Heart_Class
             testModule.Init(param);
             while (true)
             {
-                //Console.WriteLine("Press key to continue.");
-                //Console.Read();
+                Console.WriteLine("Press key to continue.");
+                Console.Read();
                 if (testModule.Ended()) break;
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
 
-
-
-
-            /*
-            Heart_Class HeartClass = new Heart_Class();
-            TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\signal.txt");
-            uint fs = TempInput.getFrequency();
-            HeartClass.Signal = TempInput.getSignal();
-            TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsOnset.txt");
-            //ponizej chce wczytac jako wektor a to jest juz lista
-            //HeartClass.QrsOnset = TempInput.getSignal();
-            TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
-            //HeartClass.QrsEnd = TempInput.getSignal();
-
-            // uwaga tu mam pozniej wrzucic plik qrsR.txt !!!!
-            TempInput.setInputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\qrsEnd.txt");
-            HeartClass.QrsR = TempInput.getSignal();
-
-            
-            //WCZYTANIE ZESPOŁÓW QRS NA PODSTAWIE QRSonsets i QRSends
-            HeartClass.SetQrsComplex(); 
-
-            //LICZENIE WSPÓŁCZYNNIKÓW KSZTAŁTU
-            HeartClass.QrsCoefficients = HeartClass.CountCoeff(HeartClass.GetQrsComplex(), fs);
-
-            
-            TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_sig.txt");
-            TempInput.writeFile(fs, HeartClass.Signal);
-            TempInput.setOutputFilePath(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\out_on.txt");
-            TempInput.writeFile(fs, HeartClass.QrsOnset);
-
-            //WCZYTANIE ZBIORU TRENINGOWEGO
-            List<Vector<double>> trainDataList = HeartClass.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d.txt");
-
-
-            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-NV
-            List<Vector<double>> trainClassList = HeartClass.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\train_d_label.txt");
-            // konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
-                    int oneClassElement;
-                    List<int> trainClass;
-                    trainClass = new List<int>();
-                    foreach (var item in trainClassList)
-                    {
-                        foreach (var element in item)
-                        {
-                            oneClassElement = (int)element;
-                            trainClass.Add(oneClassElement);
-                        }
-
-                    }
-
-
-            List<Vector<double>> testDataList = HeartClass.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADM proj\test_d.txt");
-            // Tworzenie listy tupli zbioru testowego - w celach testowych (zbior treningowy i testowy wczytywany jest z pliku). 
-            //w ostatecznej  wresji testDataList będzie obliczane w programie w formie:  List<Tuple<int, Vector<double>>>: 
-                    List<Tuple<int, Vector<double>>> testSamples;
-                    testSamples = new List<Tuple<int, Vector<double>>>();
-                    Tuple<int, Vector<double>> oneElement;
-                    int R = 1; 
-                    foreach (var item in testDataList)
-                    {
-                        oneElement = new Tuple<int, Vector<double>>(R, item.Clone());
-                        testSamples.Add(oneElement);
-                    }
-
-            //KLASYFIKACJA
-            HeartClass.HeartClassData.ClassificationResult = HeartClass.TestKnnCase(trainDataList, HeartClass.QrsCoefficients, trainClass, 1); // klasyfikacja sygnału testowego signal
-            //HeartClass.classificationResult = HeartClass.TestKnnCase(trainDataList, testSamples, trainClass, 1); // jeśli chcemy prztestować zbiór testowy (z matlaba)
-
-        */
-
-            // nie działa bo onset i end są już List<int>
-            //HeartClass.HeartClassData.ClassificationResult = HeartClass.Classification(HeartClass.Signal, fs,
-            //    HeartClass.QrsR, HeartClass.QrsOnset, HeartClass.QrsEnd);
         }
     }
 }

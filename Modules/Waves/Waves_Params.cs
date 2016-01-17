@@ -13,7 +13,6 @@ namespace EKG_Project.Modules.Waves
     {
         private Wavelet_Type _waveType;
         private int _decompositionLevel;
-        private string _analysisName;
         private int _rpeaks_step;
 
         public Wavelet_Type WaveType
@@ -39,18 +38,6 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public string AnalysisName
-        {
-            get
-            {
-                return _analysisName;
-            }
-            set
-            {
-                _analysisName = value;
-            }
-        }
-
         public int RpeaksStep
         {
             get
@@ -70,16 +57,19 @@ namespace EKG_Project.Modules.Waves
             this.RpeaksStep = rpeaksStep;
         }
 
-        public Waves_Params()
+        public Waves_Params() : base()
         {
-            _waveType = Wavelet_Type.haar;
+            this.WaveType = Wavelet_Type.haar;
+            this.DecompositionLevel = 3;
+            this.RpeaksStep = 500;
         }
 
-        public void CopyParametersFrom(Waves_Params parameters)
+        public Waves_Params(string analysisName) : this()
         {
-            this.WaveType = parameters.WaveType;
-            this.DecompositionLevel = parameters.DecompositionLevel;
-            this.RpeaksStep = parameters.RpeaksStep;
+            this.AnalysisName = analysisName;
+            this.WaveType = Wavelet_Type.haar;
+            this.DecompositionLevel = 3;
+            this.RpeaksStep = 500;
         }
     }
 }

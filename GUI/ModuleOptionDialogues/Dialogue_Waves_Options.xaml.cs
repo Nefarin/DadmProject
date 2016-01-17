@@ -1,4 +1,5 @@
-﻿using EKG_Project.Modules.Waves;
+﻿using EKG_Project.Modules;
+using EKG_Project.Modules.Waves;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +21,8 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
     /// </summary>
     public partial class Dialogue_Waves_Options : Window
     {
-        public Waves_Params returnParameters { get; set; }
-        public Waves_Params PendingParameters { get; set; }
+        public ModuleParams returnParameters { get; set; }
+        public ModuleParams PendingParameters { get; set; }
         ModulePanel panel;
 
         public Dialogue_Waves_Options(Object parent, Waves_Params parameters)
@@ -29,15 +30,15 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             panel= parent as ModulePanel;
             this.returnParameters = parameters;
 
-            this.PendingParameters = new Waves_Params();
-            this.PendingParameters.CopyParametersFrom(parameters);
+            this.PendingParameters = new Waves_Params(parameters.AnalysisName);
+            this.PendingParameters.CopyFrom(parameters);
             this.DataContext = this.PendingParameters;
             InitializeComponent();
         }
 
         private void ApplyParameterChanges(object sender, RoutedEventArgs e)
         {
-            this.returnParameters.CopyParametersFrom(this.PendingParameters);
+            this.returnParameters.CopyFrom(this.PendingParameters);
             this.Close();
         }
 

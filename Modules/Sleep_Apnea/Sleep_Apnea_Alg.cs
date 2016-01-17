@@ -36,9 +36,9 @@ namespace EKG_Project.Modules.Sleep_Apnea
             {
                 RR[0].Add((double)(R_detected[i]));
             }
-            for (int i = 0; i < R_detected.Count(); i++)
+            for (int i = 0; i < R_detected.Count()-1; i++)
             {
-                RR[1].Add((double)((R_detected[i + 1] - R_detected[i]) / freq));
+                RR[1].Add((((double)R_detected[i + 1] - R_detected[i]) / freq));
             }
 
             RR[1].Add(0.0);
@@ -102,7 +102,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             sum = 0;
             licznik = 0;
 
-            for (int i = length - (okno - 1) / 2; i <= length; i++)
+            for (int i = length - (okno - 1) / 2; i < length; i++)
             {
                 if (RR[1][i] > 0.4 && RR[1][i] < 2.0)
                 {
@@ -113,7 +113,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
             mean = sum / licznik;
 
-            for (int i = length - (okno - 1) / 2; i <= length; i++)
+            for (int i = length - (okno - 1) / 2; i < length; i++)
             {
                 if (RR[1][i] > 0.8 * mean && RR[1][i] < 1.2 * mean)
                     correct[i] = true;
@@ -126,7 +126,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             RR_average.Add(new List<double>());
             RR_average.Add(new List<double>());
 
-            for (int i = 0; i <= length; i++)
+            for (int i = 0; i < length; i++)
             {
                 if (correct[i] == true)
                 {
@@ -135,7 +135,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 }
             }
 
-            for (int i = 1; i <= length; i++)
+            for (int i = 1; i < length-1; i++)
             {
                 if (correct[i] == false)
                 {
@@ -152,7 +152,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         List<List<double>> resampling(List<List<double>> RR_average, int freq)
         {
             int n_start = (int)RR_average[0][1];
-            int n_stop = (int)RR_average[0][RR_average.Count - 1];
+            int n_stop = (int)RR_average[0][RR_average[0].Count - 1];
             int size = (int)Math.Floor(((double)n_stop - n_start) / freq) + 1;
 
             //create new array and fill with equally distant samples            

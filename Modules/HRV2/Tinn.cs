@@ -6,6 +6,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
+    /*
     public partial class HRV2 : IModule
     {
         #region Documentation
@@ -14,11 +15,12 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        double makeTinn(Vector<double> RRIntervals)
+        double makeTinn()
         {
-            RRIntervals = InputData.RPeaks[_currentChannelIndex].Item2;
+            Vector<double>  RRIntervals = InputData.RRInterval[_outputIndex].Item2;
             double tinn = (RRIntervals.Max() - RRIntervals.Min());
             return tinn;
         }
     }
+     * */
 }

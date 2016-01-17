@@ -51,6 +51,11 @@ namespace EKG_Project.Modules.QT_Disp
             _ended = true;
         }
 
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
+
         public bool Ended()
         {
             return _ended;
@@ -374,6 +379,7 @@ namespace EKG_Project.Modules.QT_Disp
         /*public static void Main()
         {
             QT_Disp_Params param = new QT_Disp_Params();
+            param.AnalysisName = "QtTest2";
             QT_Disp testModule = new QT_Disp();
             testModule.Init(param);
             while (true)

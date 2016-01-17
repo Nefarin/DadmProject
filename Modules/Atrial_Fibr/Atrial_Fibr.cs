@@ -18,10 +18,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private int _samplesProcessed;
         private int _numberOfChannels;
 
-        //int qrsEndStep;// o tyle qrs się przesuwamy 
-        //int i; //do inkrementacji co 10
-        //int step; // ilość próbek o którą sie przesuwamy
-
         private R_Peaks_Data_Worker _inputRpeaksWorker;
         private Atrial_Fibr_Data_Worker _outputWorker;
 
@@ -40,6 +36,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
         {
             Aborted = true;
             _ended = true;
+        }
+
+        public bool IsAborted()
+        {
+            return Aborted;
         }
 
         public bool Ended()

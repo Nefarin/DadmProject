@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
-    public class ECG_Baseline_Data_Worker
+    public class ECG_Baseline_Data_Worker : IECG_Worker
     {
         string directory;
         string analysisName = "TestAnalysis";
@@ -84,11 +84,14 @@ namespace EKG_Project.IO
                     signalFiltered.AppendChild(lead);
 
                     XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-                    string samplesText = null;
+                    
+                    StringBuilder builder = new StringBuilder();
                     foreach (var value in tuple.Item2)
                     {
-                        samplesText += value.ToString() + " ";
+                        builder.Append(value.ToString());
+                        builder.Append(" ");
                     }
+                    string samplesText = builder.ToString();
 
                     XmlText samplesValue = file.CreateTextNode(samplesText);
                     samples.AppendChild(samplesValue);
