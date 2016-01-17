@@ -8,6 +8,9 @@ namespace EKG_Project.Modules.Flutter
 {
     public class Flutter_Params : ModuleParams
     {
-        //brak wyboru metod, wykorzystywany jest jeden algorytm
+        public Flutter_Params(string analysisName)
+        {
+            this.AnalysisName = analysisName;
+        }
     }
 }

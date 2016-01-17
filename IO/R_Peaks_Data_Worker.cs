@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
-    public class R_Peaks_Data_Worker
+    public class R_Peaks_Data_Worker : IECG_Worker
     {
         string directory;
         string analysisName = "TestAnalysis";

@@ -8,5 +8,9 @@ namespace EKG_Project.Modules.SIG_EDR
 {
     public class SIG_EDR_Params : ModuleParams
     {
+        public SIG_EDR_Params(string analysisName)
+        {
+            this.AnalysisName = analysisName;
+        }
     }
 }
