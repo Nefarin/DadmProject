@@ -71,8 +71,15 @@ namespace EKG_Project.GUI
             if (tabNames.Contains("ECG_BASELINE"))
             {
                 _endDisplay["ECG_BASELINE"] = 1;
+
+                if(tabNames.Contains("HRV2"))
+                {
+                    _endDisplay["HRV2"] = 10;
+                }
+
                 if(tabNames.Contains("R_PEAKS"))
                 {
+
                     _endDisplay["ECG_BASELINE"] = 2;
                     if(tabNames.Contains("WAVES"))
                     {
@@ -114,6 +121,8 @@ namespace EKG_Project.GUI
                         {
                             _endDisplay["ECG_BASELINE"] = 8;
                         }
+
+
 
                     }
                 }
