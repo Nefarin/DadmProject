@@ -34,7 +34,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RunApp|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -105,15 +104,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GUI\ChooseModule.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\ECG_BASELINE.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\Flutter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="GUI\ModuleOptionDialogues\Dialogue_Atrial_fibr_Options.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ModuleOptionDialogues\Dialogue_QT_Disp_Options.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -134,6 +141,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\NewAnalysisDialogBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\R_peaks.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -170,7 +181,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Architecture\Delegates.cs" />
-    <Compile Include="Architecture\DLLLoader.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEnded.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEndedTest.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisStarted.cs" />
@@ -208,16 +218,22 @@
       <DependentUpon>AnalysisControlTest.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\AnalysisControlTestArchitecture.cs" />
+    <Compile Include="GUI\ChooseModule.xaml.cs">
+      <DependentUpon>ChooseModule.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\ECGPlot.cs" />
+    <Compile Include="GUI\ECG_BASELINE.xaml.cs">
+      <DependentUpon>ECG_BASELINE.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Flutter.xaml.cs">
+      <DependentUpon>Flutter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\ModuleOption.cs" />
     <Compile Include="GUI\ModuleOptionDialogues\Dialogue_Atrial_fibr_Options.xaml.cs">
       <DependentUpon>Dialogue_Atrial_fibr_Options.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ModuleOptionDialogues\Dialogue_ECG_Baseline_Options.xaml.cs">
       <DependentUpon>Dialogue_ECG_Baseline_Options.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\ModuleOptionDialogues\Dialogue_QT_Disp_Options.xaml.cs">
-      <DependentUpon>Dialogue_QT_Disp_Options.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ModuleOptionDialogues\Dialogue_R_Peaks_Options.xaml.cs">
       <DependentUpon>Dialogue_R_Peaks_Options.xaml</DependentUpon>
@@ -233,6 +249,9 @@
     </Compile>
     <Compile Include="GUI\NewAnalysisDialogBox.xaml.cs">
       <DependentUpon>NewAnalysisDialogBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\R_peaks.xaml.cs">
+      <DependentUpon>R_peaks.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\SaveButton.xaml.cs">
       <DependentUpon>SaveButton.xaml</DependentUpon>
@@ -451,6 +470,7 @@
     <Resource Include="IO\data\5.xml" />
     <Resource Include="IO\data\6.xml" />
     <Resource Include="IO\data\8.xml" />
+    <Resource Include="GUI\baseline.png" />
     <Resource Include="GUI\Images\addNewAnalysis.png" />
     <Resource Include="GUI\Images\backward.png" />
     <Resource Include="GUI\Images\close.png" />
