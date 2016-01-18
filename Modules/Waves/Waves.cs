@@ -65,7 +65,10 @@ namespace EKG_Project.Modules.Waves
         public void Init(ModuleParams parameters)
         {
             Params = parameters as Waves_Params;
-            Aborted = false;
+            if (Params.DecompositionLevel > 0)
+                Aborted = false;
+            else
+                Aborted = true;
             if (!Runnable()) _ended = true;
             else
             {
@@ -172,7 +175,7 @@ namespace EKG_Project.Modules.Waves
 
         public bool Runnable()
         {
-            return Params != null;
+            return Params != null && Params.DecompositionLevel > 0;
         }
 
         private void processData()
