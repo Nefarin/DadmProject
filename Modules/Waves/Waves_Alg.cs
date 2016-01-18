@@ -107,7 +107,12 @@ namespace EKG_Project.Modules.Waves
             return listOut;
 
         }
-
+        #region
+        /// <summary>
+        /// This method calc discrete wavelet transform
+        /// </summary>
+        /// <returns> list of details and approximation coefficients</returns>
+        #endregion
         public List<Vector<double>> ListDWT(Vector<double> signal, int n, Wavelet_Type waveType)
         {
             double[] Hfilter = { 0 };
@@ -159,7 +164,11 @@ namespace EKG_Project.Modules.Waves
             return listOut;
 
         }
-
+        #region
+        /// <summary>
+        /// This method finds location of QRS-ends and QRS-onsets
+        /// </summary>
+        #endregion
         public void DetectQRS()
         {
             _currentQRSonsetsPart.Clear();
@@ -226,7 +235,12 @@ namespace EKG_Project.Modules.Waves
                 _currentQRSendsPart.Add(FindQRSEnd(endInd - startInd, endInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
             }
         }
-
+        #region
+        /// <summary>
+        /// This method finds location of QRS-onset
+        /// </summary>
+        /// <returns> index of founded QRS-onset or -1 if not found</returns>
+        #endregion
         public int FindQRSOnset(double drightEnd, double dmiddleR, Vector<double> dwt, int decompLevel)
         {
             int rightEnd = (int)drightEnd;
@@ -253,7 +267,12 @@ namespace EKG_Project.Modules.Waves
             else
                 return (qrsOnsetInd << decompLevel);
         }
-
+        #region
+        /// <summary>
+        /// This method finds location of QRS-ends
+        /// </summary>
+        /// <returns> index of founded QRS-end or -1 if not found</returns>
+        #endregion
         public int FindQRSEnd(double dmiddleR, double dleftEnd, Vector<double> dwt, int decompLevel)
         {
             int middleR = (int)dmiddleR;
@@ -302,7 +321,12 @@ namespace EKG_Project.Modules.Waves
             }
                 
         }
-
+        #region
+        /// <summary>
+        /// This method calc means of a part of signal
+        /// </summary>
+        /// <returns> Means of 1 ms part of signal counted from qrsEndInd index </returns>
+        #endregion
         double calcMean( int qrsEndInd, int sectionEnd)
         {
             int length = (int)InputData.Frequency * 1;
