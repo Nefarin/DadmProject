@@ -31,6 +31,9 @@ namespace EKG_Project.Modules.Waves
 
         private Waves_Params _params;
 
+        private double _qrsOnsTresh;
+        private double _qrsEndTresh;
+        private int _currentStep;
         private List<int> _currentQRSonsetsPart;
         private List<int> _currentQRSendsPart;
         private List<int> _currentPonsetsPart;
@@ -62,7 +65,10 @@ namespace EKG_Project.Modules.Waves
         public void Init(ModuleParams parameters)
         {
             Params = parameters as Waves_Params;
-            Aborted = false;
+            if (Params.DecompositionLevel > 0)
+                Aborted = false;
+            else
+                Aborted = true;
             if (!Runnable()) _ended = true;
             else
             {
@@ -85,6 +91,7 @@ namespace EKG_Project.Modules.Waves
                 //Console.WriteLine(InputECGData.SignalsFiltered.Count);
                 //Console.WriteLine("Ilosc kanalow Rpeaks");
                 //Console.WriteLine(InputDataRpeaks.RPeaks.Count);
+                _currentStep = _params.RpeaksStep;
 
                 OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
                 OutputData = new Waves_Data();
@@ -94,6 +101,7 @@ namespace EKG_Project.Modules.Waves
                 //NumberOfChannels = InputData.Signals.Count;
                 //najwyrazniej liczba tych kanalow nie byla rowna w trakcie pierwszych testow
                 NumberOfChannels = InputDataRpeaks.RPeaks.Count;
+                _params.RpeaksStep = _inputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count + 100;
                 _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
                 _currentQRSonsetsPart = new List<int>();
                 _currentQRSendsPart = new List<int>();
@@ -167,7 +175,7 @@ namespace EKG_Project.Modules.Waves
 
         public bool Runnable()
         {
-            return Params != null;
+            return Params != null && Params.DecompositionLevel > 0;
         }
 
         private void processData()
@@ -189,23 +197,23 @@ namespace EKG_Project.Modules.Waves
 
                     OutputData.TEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentTends));
 
-                    Console.Write("Rpeaks: ");
-                    Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
+                    //Console.Write("Rpeaks: ");
+                    //Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
 
-                    Console.Write("QRSonset: ");
-                    Console.WriteLine(_currentQRSonsets.Count);
+                    //Console.Write("QRSonset: ");
+                    //Console.WriteLine(_currentQRSonsets.Count);
 
-                    Console.Write("QRSend: ");
-                    Console.WriteLine(_currentQRSends.Count);
+                    //Console.Write("QRSend: ");
+                    //Console.WriteLine(_currentQRSends.Count);
 
-                    Console.Write("Ponsets: ");
-                    Console.WriteLine(_currentPonsets.Count);
+                    //Console.Write("Ponsets: ");
+                    //Console.WriteLine(_currentPonsets.Count);
 
-                    Console.Write("Pends: ");
-                    Console.WriteLine(_currentPends.Count);
+                    //Console.Write("Pends: ");
+                    //Console.WriteLine(_currentPends.Count);
 
-                    Console.Write("Tends: ");
-                    Console.WriteLine(_currentTends.Count);
+                    //Console.Write("Tends: ");
+                    //Console.WriteLine(_currentTends.Count);
 
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)
