@@ -159,7 +159,7 @@ namespace EKG_Project.Modules.Heart_Class
                 }
                 else
                 {
-                    _tempClassResult = ClassificationOneQrs(InputECGbaselineData.SignalsFiltered[_channel2].Item2,
+                    _tempClassResult = Classification(InputECGbaselineData.SignalsFiltered[_channel2].Item2,
                                         QRSOnSet, QRSEnds, R);
                     OutputData.ClassificationResult.Add(_tempClassResult);
 
