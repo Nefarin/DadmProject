@@ -443,6 +443,9 @@
     </TEnds>
   </module>
   <module name="HRV_DFA" />
+  <module name="Heart_Axis">
+    <HeartAxis>0,646468438999416</HeartAxis>
+  </module>
   <module name="Heart_Class">
     <ClassificationResult>
       <item1>447</item1>
@@ -493,8 +496,5 @@
       <item2>0</item2>
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
-  </module>
-  <module name="Heart_Axis">
-    <HeartAxis>0,646468438999416</HeartAxis>
   </module>
 </EKG>
