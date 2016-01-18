@@ -34,7 +34,8 @@ namespace EKG_Project.Modules.Waves
             }
             set
             {
-                _decompositionLevel = value;
+                if (value <= 0) _decompositionLevel = 1;
+                else _decompositionLevel = value;
             }
         }
 
@@ -60,6 +61,8 @@ namespace EKG_Project.Modules.Waves
         public Waves_Params() : base()
         {
             _waveType = Wavelet_Type.db2;
+            DecompositionLevel = 3;
+            RpeaksStep = 500;
         }
 
         public Waves_Params(string analysisName) : this()
