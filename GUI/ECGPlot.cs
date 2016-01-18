@@ -14,6 +14,7 @@ using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.Waves;
 using EKG_Project.Modules.Heart_Class;
+using EKG_Project.Modules.QT_Disp;
 
 namespace EKG_Project.GUI
 {
@@ -32,6 +33,7 @@ namespace EKG_Project.GUI
         private ECG_Baseline_Data _ecg_Baseline_Data;
         private Waves_Data _waves_Data;
         private Heart_Class_Data _heart_Class_Data;
+        private QT_Disp_Data _qt_Disp_Data; 
         List<Tuple<string, List<int>>> _hear_Class_Data_Trans;
         private Basic_Data _basic_Data;
 
@@ -77,8 +79,9 @@ namespace EKG_Project.GUI
             { "POnsets", false },
             { "PEnds", false },
             { "TEnds", false },
-            { "Basic", false }
-            
+            { "Basic", false },
+            { "TEnd_local", false }
+           
         };
 
         
@@ -94,32 +97,33 @@ namespace EKG_Project.GUI
         {
             CurrentPlot = new PlotModel();
             CurrentPlot.Title = plotTitle;
+            CurrentPlot.TitleFontSize = 16;
             //CurrentPlot.LegendTitle = "Legend";
             CurrentPlot.LegendOrientation = LegendOrientation.Horizontal;
             CurrentPlot.LegendPlacement = LegendPlacement.Outside;
             CurrentPlot.LegendPosition = LegendPosition.RightMiddle;
-            CurrentPlot.MouseDown += (sender, evArg) =>
-            {
-                if (evArg.ChangedButton == OxyMouseButton.Right)
-                {
-                    string filename;
-                    Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-                    dlg.DefaultExt = ".svg";
-                    dlg.Filter = "SVG documents (.svg)|*.svg";
-                    if (dlg.ShowDialog() == true)
-                    {
-                        filename = dlg.FileName;
+            //CurrentPlot.MouseDown += (sender, evArg) =>
+            //{
+            //    if (evArg.ChangedButton == OxyMouseButton.Right)
+            //    {
+            //        string filename;
+            //        Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            //        dlg.DefaultExt = ".svg";
+            //        dlg.Filter = "SVG documents (.svg)|*.svg";
+            //        if (dlg.ShowDialog() == true)
+            //        {
+            //            filename = dlg.FileName;
 
-                        using (var stream = System.IO.File.Create(filename))
-                        {
-                            var exporter = new SvgExporter() { Width = 600, Height = 400 };
-                            exporter.Export(CurrentPlot, stream);
-                        }
+            //            using (var stream = System.IO.File.Create(filename))
+            //            {
+            //                var exporter = new SvgExporter() { Width = 600, Height = 400 };
+            //                exporter.Export(CurrentPlot, stream);
+            //            }
 
-                    }
-                }
+            //        }
+            //    }
 
-            };
+            //};
 
             //CurrentPlot.le
             _windowSize = 3000;
@@ -793,8 +797,8 @@ namespace EKG_Project.GUI
                         _basic_Data = new Basic_Data();
                         _basic_Data.Signals = dataToDisplayV[data.Key];
                         modulesToDisplay.Add(data.Key); 
-
                         break; 
+
 
                     default:
                         break;
@@ -833,6 +837,11 @@ namespace EKG_Project.GUI
                         _hear_Class_Data_Trans = new List<Tuple<string, List<int>>>();
                         _hear_Class_Data_Trans = data.Value;   
                         modulesToDisplay.Add("HeartClass");
+                        break;
+                    case "TEnd_local":
+                        _qt_Disp_Data = new QT_Disp_Data();
+                        _qt_Disp_Data.T_End_Local = data.Value; 
+                        modulesToDisplay.Add("TEnd_local");
                         break;
                     default:
                         break;
@@ -877,6 +886,9 @@ namespace EKG_Project.GUI
                         break;
                     case "HeartClass":
                         //DisplayHeartClass();
+                        break;
+                    case "TEnd_local":
+                        DisplayQt_Disp();
                         break;
                     default:
                         break;
@@ -926,13 +938,14 @@ namespace EKG_Project.GUI
                 first = false;
                 var lineraYAxis = new LinearAxis();
                 lineraYAxis.Position = AxisPosition.Left;
-                lineraYAxis.Minimum = -100.0;
-                lineraYAxis.Maximum = 80.0;
+                //lineraYAxis.Minimum = -100.0;
+                //lineraYAxis.Maximum = 80.0;
                 lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
                 lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
                 lineraYAxis.Title = "Voltage [mV]";
 
                 CurrentPlot.Axes.Add(lineraYAxis);
+                _windowSize = _ecg_Baseline_Data.SignalsFiltered.First().Item2.Count;
             }
             else
             {
@@ -963,6 +976,16 @@ namespace EKG_Project.GUI
                 CurrentPlot.Series.Add(ls);
 
             }
+
+            var lineraXAxis = new LinearAxis();
+            lineraXAxis.Position = AxisPosition.Bottom;
+            lineraXAxis.Minimum = 0;
+            lineraXAxis.Maximum = 1000.0;
+            lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
+            lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
+            lineraXAxis.Title = "X";
+
+            CurrentPlot.Axes.Add(lineraXAxis);
 
             RefreshPlot();
         }
@@ -1119,6 +1142,120 @@ namespace EKG_Project.GUI
 
             RefreshPlot();
         }
+        
+        private void DisplayQt_Disp()
+        {
+            foreach (var signal in _ecg_Baseline_Data.SignalsFiltered)
+            {
+
+                Vector<double> signalVector = signal.Item2;
+                List<int> waveList = new List<int>();
+
+                var _t_EndLocal = _qt_Disp_Data.T_End_Local.Find(a => a.Item1 == signal.Item1).Item2;
+
+                bool addWave = false;
+
+                ScatterSeries waveSeries = new ScatterSeries();
+                //waveSeries.Title = wavePart + "_" + signal.Item1;
+                waveSeries.Title = "TEnd_local" + signal.Item1; 
+                waveSeries.IsVisible = _visible;
+
+
+
+                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                {
+
+                    if (_t_EndLocal.Contains(i) && i>0)
+                    {
+                        waveSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+
+                        addWave = true;
+                    }
+                }
+
+                if (addWave)
+                {
+                    CurrentPlot.Series.Add(waveSeries);
+                }
+            }
+
+            RefreshPlot();
+        }
+
+        public void DisplayHeartAxis(double heartAxis)
+        {
+            //ScatterSeries zeroSeries = new ScatterSeries();
+            //zeroSeries.IsVisible = true; 
+            //zeroSeries.Points.Add
+            var lineraYAxis = new LinearAxis();
+            lineraYAxis.Position = AxisPosition.Left;
+            lineraYAxis.Minimum = -110.0;
+            lineraYAxis.Maximum = 112.0;
+            lineraYAxis.IsAxisVisible = false;
+            //lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+            //lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+
+            var lineraXAxis = new LinearAxis();
+            lineraXAxis.Position = AxisPosition.Bottom;
+            lineraXAxis.Minimum = -120.0;
+            lineraXAxis.Maximum = 110.0;
+            lineraXAxis.IsAxisVisible = false;
+            //lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
+            //lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
+
+            CurrentPlot.Axes.Add(lineraYAxis);
+            CurrentPlot.Axes.Add(lineraXAxis);
+
+            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "0", TextPosition = new DataPoint(102, -3), StrokeThickness = 0 });
+            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "+-180", TextPosition = new DataPoint(-110, -3), StrokeThickness = 0 });
+            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "-90", TextPosition = new DataPoint(-1, 102), StrokeThickness = 0 });
+            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "90", TextPosition = new DataPoint(0, -107),StrokeThickness = 0 });
+
+            ArrowAnnotation arrow = new ArrowAnnotation
+            {
+                StartPoint = new DataPoint(0, 0),
+                EndPoint = new DataPoint(100 * Math.Cos(heartAxis), -100 * Math.Sin(heartAxis)),
+                Text = heartAxis.ToString("0.000") + "rad"
+            };
+
+            ArrowAnnotation yup = new ArrowAnnotation
+            {
+                StartPoint = new DataPoint(0, 0),
+                EndPoint = new DataPoint(0, 100),
+                Color = OxyColor.Parse("#000000"),
+                StrokeThickness = 0.2
+            };
+            ArrowAnnotation ydown = new ArrowAnnotation
+            {
+                StartPoint = new DataPoint(0, 0),
+                EndPoint = new DataPoint(0, -100),
+                Color = OxyColor.Parse("#000000"),
+                StrokeThickness = 0.2
+            };
+            ArrowAnnotation xleft = new ArrowAnnotation
+            {
+                StartPoint = new DataPoint(0, 0),
+                EndPoint = new DataPoint(-100, 0),
+                Color = OxyColor.Parse("#000000"),
+                StrokeThickness = 0.2
+            };
+
+            ArrowAnnotation xright = new ArrowAnnotation
+            {
+                StartPoint = new DataPoint(0, 0),
+                EndPoint = new DataPoint(100, 0),
+                Color = OxyColor.Parse("#000000"),
+                StrokeThickness = 0.2
+            };
+
+            CurrentPlot.Annotations.Add(yup);
+            CurrentPlot.Annotations.Add(ydown);
+            CurrentPlot.Annotations.Add(xleft);
+            CurrentPlot.Annotations.Add(xright);
+            CurrentPlot.Annotations.Add(arrow);
+            RefreshPlot();
+        }
+
 
 
 
@@ -1331,6 +1468,62 @@ namespace EKG_Project.GUI
         }
 
 
+
+        public void XAxesControl(double slide)
+        {
+            CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "X"));
+            double min;
+            double max;
+            double windowsSize = (int)(_windowSize / 10);
+            if(slide == 0)
+            {
+                min = 0;
+                max = windowsSize;
+            }
+            else if(slide > 0.9)
+            {
+                max = _windowSize;
+                min = max - windowsSize;
+            }
+            else
+            {
+                min = _windowSize*slide;
+                max = min + windowsSize;
+            }
+            
+            var lineraXAxis = new LinearAxis();
+            lineraXAxis.Position = AxisPosition.Bottom;
+            lineraXAxis.Minimum = min;
+            lineraXAxis.Maximum = max;
+            lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
+            lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
+            lineraXAxis.Title = "X";
+
+            CurrentPlot.Axes.Add(lineraXAxis);
+            RefreshPlot();
+        }
+
+
+
+        public void SavePlot()
+        {
+            string filename;
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.DefaultExt = ".svg";
+            dlg.Filter = "SVG documents (.svg)|*.svg";
+            if (dlg.ShowDialog() == true)
+            {
+                filename = dlg.FileName;
+
+                using (var stream = System.IO.File.Create(filename))
+                {
+                    var exporter = new SvgExporter() { Width = 600, Height = 400 };
+                    exporter.Export(CurrentPlot, stream);
+                }
+
+            }
+        }
+
         private void SavePlot(object sender, System.Windows.Input.MouseEventArgs e)
         {
             string filename;
@@ -1441,7 +1634,8 @@ namespace EKG_Project.GUI
                 Text = "ellipse",
                 X = 10,
                 Y = 0,
-                Fill = OxyColors.WhiteSmoke
+                Fill = OxyColors.WhiteSmoke,
+                
             };
         }
 
