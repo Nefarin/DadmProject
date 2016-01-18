@@ -20,11 +20,12 @@ namespace EKG_Project.Modules.HRV_DFA
         Vector<double> vecparam1;
         Vector<double> vecparam2;
         private int boxVal;
+        private int startValue;
         private int stepVal;
+        private bool longCorrelations;
 
         public void HRV_DFA_Analysis(Vector<double> rRRIntervals, int stepValue, int boxValue)
         {
-
             Vector<double> sig = rRRIntervals;
 
             //read data from file
@@ -34,53 +35,97 @@ namespace EKG_Project.Modules.HRV_DFA
 
             // DFA box parameters
             int dfastep = stepValue;
-            int start = 10;
+            int start = startValue;
             int stop = boxValue; 
 
             // DFA - fluctuation funcion computation
             double[] boxRanged = Generate.LinearRange(start, dfastep, stop);        // set of box sizes
             Vector<double> box = Vector<double>.Build.DenseOfArray(boxRanged);      // n
             Vector<double> vectorFn = DfaFluctuationComputation(box, sig);          // F(n)
-    
+
             // Remove all zeros from vector
             Vector<double> vFn = ZerosRemove(vectorFn);
             Vector<double> vn = box.SubVector(0, vFn.Count());
 
-        
             // Convert to logarytmic scale
             Vector<double> logn = Logarithmize(vn);
             Vector<double> logFn = Logarithmize(vFn);
 
-            // vectors init
-            Vector<double> p1 = Vector<double>.Build.Dense(2);
-            Vector<double> p2 = Vector<double>.Build.Dense(p1.Count());
-
-            Vector<double> logn2 = Vector<double>.Build.Dense(logn.Count());
-            Vector<double> logFn2 = Vector<double>.Build.Dense(logn.Count());
-           
-            Vector<double> fittedFn1 = Vector<double>.Build.Dense(logn.Count());
-            Vector<double> fittedFn2 = Vector<double>.Build.Dense(logn.Count());
-
-            // Arrays to Fit.Polynomial
+            // Arrays to Fit.Line
             double[] logna = logn.ToArray();
             double[] logFna = logFn.ToArray();
 
-            // coefficents to obtain a,b from y = a * x + b
-            Tuple<double, double> p01 = Fit.Line(logna, logFna);
-            p1[0] = p01.Item1;     // b
-            p1[1] = p01.Item2;     // a
-
-            // Line function obtained with Least Square Method
-            Func<double, double> fitting1 = Fit.LineFunc(logna, logFna);    //=PolynomialFunc(logna, logFna, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.QR);
-
-            //fitted line obtaining for short-range correlations
-            for (int k = 0; k < logn.Count(); k++)
+            // short-range:long-range fitting bending data proportion
+            double proportion;
+            if (longCorrelations)
             {
-                fittedFn1[k] = fitting1(logna[k]);
+                proportion = 0.33;
             }
+            else
+            {
+                proportion = 1;
+            }
+            int q = Convert.ToInt32(logn.Count() * proportion);
 
+            // vectors init
+            Vector<double> p1 = Vector<double>.Build.Dense(2);
+            Vector<double> logn1 = logn.SubVector(0, q);
+            Vector<double> logFn1 = logFn.SubVector(0, q);
+            Vector<double> fittedFn1 = Vector<double>.Build.Dense(logn1.Count());
+
+            Vector<double> p2 = Vector<double>.Build.Dense(p1.Count());
+            Vector<double> logn2 = Vector<double>.Build.Dense(logn1.Count());
+            Vector<double> logFn2 = Vector<double>.Build.Dense(logn1.Count());
+            Vector<double> fittedFn2 = Vector<double>.Build.Dense(logFn2.Count());
+
+            if (longCorrelations)
+            {
+                // short - range correlations
+                double[] logn1a = logn1.ToArray();
+                double[] logFn1a = logFn1.ToArray();
+                // coefficents to obtain a,b from y = a * x + b
+                Tuple<double,double> p01 = Fit.Line(logn1a, logFn1a);
+                p1[0] = p01.Item1;     // b
+                p1[1] = p01.Item2;     // a
+                Func<double, double> fitting1 = Fit.LineFunc(logn1a, logFn1a);
+                //fitting curve obtaining for short-range correlations
+                for (int k = 0; k < logn1.Count(); k++)
+                {
+                    fittedFn1[k] = fitting1(logn1a[k]);
+                }
+                //long - range correlations
+                logn2 = logn.SubVector(q, logn.Count() - q);
+                logFn2 = logFn.SubVector(q, logFn.Count() - q);
+                double[] logn2a = logn2.ToArray();
+                double[] logFn2a = logFn2.ToArray();
+                // coefficents to obtain a,b from y = a * x + b
+                Tuple<double,double> p02 = Fit.Line(logn2a, logFn2a);
+                p2[0] = p02.Item1;     // b
+                p2[1] = p02.Item2;     // a
+                // Line function obtained with Least Square Method
+                Func<double, double> fitting2 = Fit.LineFunc(logn2a, logFn2a);
+                //fitting curve obtaining for long-range correlations
+                for (int k = 0; k < logFn2.Count(); k++)
+                {
+                    fittedFn2[k] = fitting2(logn2a[k]);
+                }
+            }
+            else
+            {
+                // coefficents to obtain a,b from y = a * x + b
+                Tuple<double, double> p01 = Fit.Line(logna, logFna);
+                p1[0] = p01.Item1;     // b
+                p1[1] = p01.Item2;     // a
+                // Line function obtained with Least Square Method
+                Func<double, double> fitting1 = Fit.LineFunc(logna, logFna);    //=PolynomialFunc(logna, logFna, 1, MathNet.Numerics.LinearRegression.DirectRegressionMethod.QR);
+                //fitted line obtaining for short-range correlations
+                for (int k = 0; k < logn.Count(); k++)
+                {
+                    fittedFn1[k] = fitting1(logna[k]);
+                }
+            }
             // Outputs
-            veclogn1 = logn;
+            veclogn1 = logn1;
             veclogn2 = logn2;
             veclogFn1 = fittedFn1;
             veclogFn2 = fittedFn2;
@@ -136,7 +181,6 @@ namespace EKG_Project.Modules.HRV_DFA
                         fn[i] = InBoxFluctuations(yk, yn, winCount);
                     }
                 }
-
             }
             return fn;
         }
@@ -180,7 +224,6 @@ namespace EKG_Project.Modules.HRV_DFA
             {
                 signal_integrated[i] = Math.Abs(signal_rr[i] - rr_avg)+ signal_add;
                 signal_add = signal_integrated[i];
-  
             }
 
             return signal_integrated;
@@ -198,6 +241,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
             return p.ToArray();
         }
+
         // Method that logarithmizes signal
         public Vector<double> Logarithmize(Vector<double> signal)
         {
@@ -208,6 +252,7 @@ namespace EKG_Project.Modules.HRV_DFA
             }
             return logSig;
         }
+
         // Method that removes zeros from vector
         public Vector<double> ZerosRemove(Vector<double> vectorIn)
         {
@@ -225,11 +270,8 @@ namespace EKG_Project.Modules.HRV_DFA
                     break;
                 }
             }
-            
             Vector<double> vectorOut = vectorIn.SubVector(0,counter);
             return vectorOut;
         }
- 
-    }
-     
+    }   
 }
