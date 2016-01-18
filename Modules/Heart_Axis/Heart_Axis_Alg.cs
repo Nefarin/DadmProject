@@ -21,10 +21,10 @@ namespace EKG_Project.Modules.Heart_Axis
         /// <summary>
         /// Method calculates pseudo module in first lead
         /// </summary>
-        /// <param name="Q"></param>
-        /// <param name="S"></param>
-        /// <param name="signal"></param>
-        /// <returns></returns>
+        /// <param name="Q">Q as int</param>
+        /// <param name="S">S as int</param>
+        /// <param name="signal">array with signal</param>
+        /// <returns>array of doubles with pseudo modules</returns>
         #endregion
 
 
@@ -47,9 +47,9 @@ namespace EKG_Project.Modules.Heart_Axis
         /// <summary>
         /// Method finds maximum in pseudo module
         /// </summary>
-        /// <param name="Q"></param>
-        /// <param name="pseudo_tab"></param>
-        /// <returns></returns>
+        /// <param name="Q">Q as int</param>
+        /// <param name="pseudo_tab">array with pseudo modules</param>
+        /// <returns>maximum of array with pseudo modules as int</returns>
         #endregion
 
 
@@ -67,11 +67,11 @@ namespace EKG_Project.Modules.Heart_Axis
         /// <summary>
         /// Method implaments Least-Squeres method
         /// </summary>
-        /// <param name="signal"></param>
-        /// <param name="Q"></param>
-        /// <param name="pseudo_tab"></param>
-        /// <param name="frequency"></param>
-        /// <returns></returns>
+        /// <param name="signal">array with signal</param>
+        /// <param name="Q">Q as int</param>
+        /// <param name="pseudo_tab">array with pseudo modules</param>
+        /// <param name="frequency">frequency as int</param>
+        /// <returns>fitting parameters as array of doubles</returns>
         #endregion
 
 
@@ -123,9 +123,9 @@ namespace EKG_Project.Modules.Heart_Axis
         /// <summary>
         /// Method finds maximum from polynomial equation
         /// </summary>
-        /// <param name="Q"></param>
-        /// <param name="fitting_parameters"></param>
-        /// <returns></returns>
+        /// <param name="Q">Q</param>
+        /// <param name="fitting_parameters">double array with fitting parameters</param>
+        /// <returns> maximum of polynomial as int</returns>
         #endregion
 
 
@@ -141,10 +141,10 @@ namespace EKG_Project.Modules.Heart_Axis
         /// <summary>
         /// Method reads the amplitudes from both leads
         /// </summary>
-        /// <param name="FirstLead"></param>
-        /// <param name="SecondLead"></param>
-        /// <param name="MaxOfPoly"></param>
-        /// <returns></returns>
+        /// <param name="FirstLead">array with signal from first lead</param>
+        /// <param name="SecondLead">array with signal from second lead</param>
+        /// <param name="MaxOfPoly">maximum of polynomial</param>
+        /// <returns>double array with two read amplitudes</returns>
         #endregion
 
         /*Reading Amplitudes*/
@@ -160,8 +160,8 @@ namespace EKG_Project.Modules.Heart_Axis
         /// <summary>
         /// Method calculates trigonometrical formula - between lead I and II
         /// </summary>
-        /// <param name="amplitudes"></param>
-        /// <returns></returns>
+        /// <param name="amplitudes">read amplitudes</param>
+        /// <returns>heart axis in radians as double</returns>
         #endregion
 
         /* Trigonometrical formula - between I and II */

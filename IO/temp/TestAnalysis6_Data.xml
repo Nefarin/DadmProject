@@ -443,9 +443,6 @@
     </TEnds>
   </module>
   <module name="HRV_DFA" />
-  <module name="Heart_Axis">
-    <HeartAxis>-0,179957708666279</HeartAxis>
-  </module>
   <module name="Sleep_Apnea">
     <Detected_Apnea>
       <lead>I</lead>
@@ -795,5 +792,8 @@
     <SD2>6761,93847945987</SD2>
     <SD2>3514,22509239235</SD2>
     <SD2>2639,24413042826</SD2>
+  </module>
+  <module name="Heart_Axis">
+    <HeartAxis>-0,179957708666279</HeartAxis>
   </module>
 </EKG>
