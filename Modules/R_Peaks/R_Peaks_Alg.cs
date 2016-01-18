@@ -190,7 +190,6 @@ namespace EKG_Project.Modules.R_Peaks
         /// <returns> list of double which contains teh localisation of peaks in signal </returns>
         #endregion
         public List<double> FindPeaks(double[] signal, uint fs, double distanceInSec)
-        //TO DO: distance--> threshold???
         {
             List<double> potRs = new List<double>();
             double distanceInSamples = fs * distanceInSec;
@@ -567,7 +566,7 @@ namespace EKG_Project.Modules.R_Peaks
                 }
                 Vector<double> tempI = Vector<double>.Build.DenseOfArray(tempV);
                 double tempIndex = tempI.MaximumIndex();
-                locsR.Add(tempIndex + leftLimit[i] - 10);
+                locsR.Add(tempIndex + leftLimit[i]);
             }
 
             return locsR.ToArray();
