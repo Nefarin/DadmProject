@@ -1,8 +1,10 @@
-﻿using System;
+﻿
+using System;
 using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
 using System.Collections.Generic;
+using System.Linq;
 using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Waves;
@@ -22,11 +24,9 @@ namespace EKG_Project.Modules.Heart_Class
         private int startIndex;
         private bool _ml2Processed;
         private int _numberOfSteps;
+        private int[] _numberOfStepsArray;
 
-        // Czy te zmienne muszą być private? 
-        int qrsEndStep;// o tyle qrs się przesuwamy 
-        int i; //do inkrementacji co 10
-        int step; // ilość próbek o którą sie przesuwamy
+
 
         private ECG_Baseline_Data_Worker _inputECGbaselineWorker;
         private R_Peaks_Data_Worker _inputRpeaksWorker;
@@ -105,11 +105,15 @@ namespace EKG_Project.Modules.Heart_Class
                     NumberOfChannels = InputECGbaselineData.SignalsFiltered.Count;
                     _currentChannelLength = InputECGbaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
                     _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                    qrsEndStep = 10;
-                    i = 10;
-                    _numberOfSteps = InputWavesData.QRSEnds[_channel2].Item2.Count;
-                    step = 1;
-                    //ilośc próbek, aż do indeksu końca 10 załamka
+
+
+                    _numberOfStepsArray = new int[3];
+                    _numberOfStepsArray[0]= InputWavesData.QRSEnds[_channel2].Item2.Count;
+                    _numberOfStepsArray[1] = InputWavesData.QRSOnsets[_channel2].Item2.Count;
+                    _numberOfStepsArray[2] = InputRpeaksData.RPeaks[_channel2].Item2.Count;
+
+                    _numberOfSteps = _numberOfStepsArray.Min();
+
                     _tempClassResult = new Tuple<int, int>(0,0);
                     _ml2Processed = false;
 
@@ -145,7 +149,6 @@ namespace EKG_Project.Modules.Heart_Class
 
             if (!_ml2Processed)
             {
-
                 int QRSOnSet = InputWavesData.QRSOnsets[_channel2].Item2[_samplesProcessed];
                 int QRSEnds = InputWavesData.QRSEnds[_channel2].Item2[_samplesProcessed];
                 double R = InputRpeaksData.RPeaks[_channel2].Item2[_samplesProcessed];
@@ -170,6 +173,7 @@ namespace EKG_Project.Modules.Heart_Class
             }
             else
             {
+                Console.WriteLine("   ilsc step  "+_numberOfSteps);
                 _ended = true;
                 OutputWorker.Save(OutputData);
             }
@@ -281,12 +285,14 @@ namespace EKG_Project.Modules.Heart_Class
             set { _basicData = value; }
         }
 
-
+        
         public static void Main()
         {
-            Heart_Class_Params param = new Heart_Class_Params("TestAnalysis2"); // "Analysis6");
+            Heart_Class_Params param = new Heart_Class_Params("TestAnalysis100"); // "Analysis6");
             Heart_Class testModule = new Heart_Class();
             testModule.Init(param);
+
+
             while (true)
             {
                 Console.WriteLine("Press key to continue.");
@@ -297,5 +303,6 @@ namespace EKG_Project.Modules.Heart_Class
             }
 
         }
+        
     }
 }
