@@ -40,7 +40,8 @@ namespace EKG_Project.GUI
             {"WAVES", 0 },
             { "HEART_CLASS", 0 },
             { "HEART_AXIS", 0 },
-            {"ARTRIAL_FIBER", 0 }
+            {"ARTRIAL_FIBER", 0 },
+            {"HRV2", 3 }
         };
 
         public VisualisationDataControl()
