@@ -112,7 +112,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 if (startIndex + step >= _currentChannelLength)
                 {
                     _currentVector = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex-1);
-                    _vectorOfIntervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex-1);
+                    _vectorOfIntervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex-1).Multiply(InputData_basic.Frequency/1000);
                     
                     _tempClassResult = detectAF(_vectorOfIntervals, _currentVector, Convert.ToUInt32(InputData_basic.Frequency), Params);
                     Vector<double> pointsDetected2;
@@ -164,12 +164,14 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 {
 
                     _currentVector = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, step);
-                    _vectorOfIntervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.SubVector(startIndex, step);
+                    _vectorOfIntervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.SubVector(startIndex, step).Multiply(InputData_basic.Frequency/1000) ;
                     _tempClassResult = detectAF(_vectorOfIntervals, _currentVector, Convert.ToUInt32(InputData_basic.Frequency), Params);
 
                     if (_tempClassResult.Item1)
                     {
                         detected = true;
+                        Console.WriteLine("_tempClassResult.Item2.Count");
+                        Console.WriteLine(_tempClassResult.Item2.Count);
                         pointsDetectedA.SetSubVector(Convert.ToInt32(_ClassResult.Item3*InputData_basic.Frequency), _tempClassResult.Item2.Count, _tempClassResult.Item2);
                         lengthOfDetection = _ClassResult.Item3+_tempClassResult.Item3;
                         currentSample += _tempClassResult.Item2.Count ;

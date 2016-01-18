@@ -199,11 +199,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 {
                     lengthOfDetectedIntervals += _rrIntervals.At(i);
                     afDetected = true;
+                    Console.WriteLine("lengthOfDetectedIntervals");
+                    Console.WriteLine(lengthOfDetectedIntervals);
                 }
             }
             if (afDetected)
             {
-                pointsDetected= Vector<Double>.Build.Dense(Convert.ToInt32(lengthOfDetectedIntervals));
+                Console.WriteLine("lengthOfDetectedIntervals");
+                Console.WriteLine(lengthOfDetectedIntervals);
+                pointsDetected = Vector<Double>.Build.Dense(Convert.ToInt32(lengthOfDetectedIntervals));
                 int lastIndex = 0;
                 for (int i = 0; i < detectedIntervals.Length; i++)
                 {
