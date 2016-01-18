@@ -15,16 +15,16 @@ namespace EKG_Project.Modules.Heart_Class
 {
     public partial class Heart_Class : IModule
     {
-        private Vector<double> _signal;          // inicjalizacja przez wczytanie Vector z pliku
+        private Vector<double> _signal;          
         private List<int> _qrsOnset;
         private List<int> _qrsEnd;
-        private int _qrsNumber;                  // inicjalizacja przez zliczenie elementów _qrsOnset
-        private Vector<double> _qrsR;            // inicjalizacja przez wczytanie Vector z pliku
-        private Vector<double> _singleQrs;       // inicjalizacja w konstruktorze
-        private List<Tuple<int, Vector<double>>> _QrsComplex; // inicjalizacja w kontruktorze
+        private int _qrsNumber;                  
+        private Vector<double> _qrsR;            
+        private Vector<double> _singleQrs;       
+        //private List<Tuple<int, Vector<double>>> _QrsComplex; 
         private Tuple<int, Vector<double>> _QrsComplexOne;
-        private List<Tuple<int, Vector<double>>> _qrsCoefficients;
-        private int _currentQRSComplex = 0;
+        //private List<Tuple<int, Vector<double>>> _qrsCoefficients;
+        //private int _currentQRSComplex = 0;
         private Tuple<int, Vector<double>> _qrsCoeffOne;
 
         private Vector<double> _currentRVector;
@@ -52,8 +52,8 @@ namespace EKG_Project.Modules.Heart_Class
             _qrsNumber = new int();
             _qrsR = Vector<double>.Build.Dense(1);
             _singleQrs = Vector<double>.Build.Dense(1);
-            _QrsComplex = new List<Tuple<int, Vector<double>>>();
-            _qrsCoefficients = new List<Tuple<int, Vector<double>>>();
+            //_QrsComplex = new List<Tuple<int, Vector<double>>>();
+            //_qrsCoefficients = new List<Tuple<int, Vector<double>>>();
 
 
             _qrssignal = Vector<double>.Build.Dense(1);
@@ -75,6 +75,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// </summary>
         #endregion
 
+        /*
         #region Documentation
         /// <summary>
         /// 
@@ -130,6 +131,10 @@ namespace EKG_Project.Modules.Heart_Class
             //KLASYFIKACJA
             return HeartClassData.ClassificationResult = TestKnnCase(trainDataList, QrsCoefficients, trainClass, 1); // klasyfikacja sygnału signal
         }
+
+        */
+
+        #region Documentation
         /// <summary>
         /// TODO 
         /// </summary>
@@ -139,6 +144,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="qrsOnset"></param>
         /// <param name="qrsEnd"></param>
         /// <returns></returns>
+        #endregion
         Tuple<int, int> ClassificationOneQrs(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R)
         {
             Signal = loadedSignal;
@@ -170,6 +176,7 @@ namespace EKG_Project.Modules.Heart_Class
    
         }
 
+        /*
         #region Documentation
         /// <summary>
         /// This method uses data from WAVES module (Qrs_onset and Qrs_end) and extracts single QRS complexes, creating list of Tuple. Each tuple contains int value - number of R peaks corresponding to the QRS complex, and vector - containing following signal samples. 
@@ -183,13 +190,21 @@ namespace EKG_Project.Modules.Heart_Class
                 _currentQRSComplex++;
             }
         }
-
+        */
+        #region Documentation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="singleQrsOnset"></param>
+        /// <param name="signleQrsEnd"></param>
+        /// <param name="singleQrsR"></param>
+        #endregion
         private void OneQrsComplex(double singleQrsOnset, double signleQrsEnd, double singleQrsR)
         {
             int qrsLength = (int)(signleQrsEnd - singleQrsOnset + 1);
             SingleQrs = Vector<double>.Build.Dense(qrsLength);
 
-            if ((int)singleQrsOnset != -1) //modul WAVES wypluwa -1 jeśli zespół nie został wykryty
+            if ((int)singleQrsOnset != -1) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
             {
                 Signal.CopySubVectorTo(SingleQrs, sourceIndex: (int)singleQrsOnset, targetIndex: 0,
                     count: qrsLength);
@@ -198,6 +213,7 @@ namespace EKG_Project.Modules.Heart_Class
             }
         }
 
+        /*
         #region Documentation
         /// <summary>
         /// This method returns QRS complexes, which were set in SetQrsComplex()
@@ -208,6 +224,7 @@ namespace EKG_Project.Modules.Heart_Class
         {
             return QrsComplex;
         }
+        */
 
         #region Documentation
         /// <summary>
@@ -376,6 +393,7 @@ namespace EKG_Project.Modules.Heart_Class
         }
 
 
+        /*
         #region Documentation
         /// <summary>
         /// 
@@ -410,7 +428,16 @@ namespace EKG_Project.Modules.Heart_Class
             }
             return result;
         }
+        */
 
+        #region Documentation
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_QrsComplexOne"></param>
+        /// <param name="fs"></param>
+        /// <returns></returns>
+        #endregion
         Tuple<int, Vector<double>> CountCoeffOne(Tuple<int, Vector<double>> _QrsComplexOne, uint fs)
         {
             Vector<double> singleCoeffVect;
@@ -429,7 +456,7 @@ namespace EKG_Project.Modules.Heart_Class
                 QrsCoeffOne = coeffTuple;
                 return QrsCoeffOne;
         }
-
+        /*
         #region Documentation
             /// <summary>
             /// 
@@ -498,6 +525,7 @@ namespace EKG_Project.Modules.Heart_Class
             return testResults;
 
         }
+        */
 
         Tuple<int, int> TestKnnCaseOne(List<Vector<double>> trainSamples, Tuple<int, Vector<double>> testSamples,
            List<int> trainClasses, int K)
@@ -555,13 +583,13 @@ namespace EKG_Project.Modules.Heart_Class
         }
 
 
-            
 
-        
-        // Calculates and returns square of Euclidean distance between two vectors:
+
+
+
         #region Documentation
         /// <summary>
-        /// 
+        /// Calculates and returns square of Euclidean distance between two vectors
         /// </summary>
         /// <param name="sample1"></param>
         /// <param name="sample2"></param>
@@ -570,23 +598,20 @@ namespace EKG_Project.Modules.Heart_Class
         double GetDistance(Vector<double> sample1, Vector<double> sample2)
         {
             var distance = 0.0;
-            // assume sample1 and sample2 are valid i.e. same length 
+            // zakładamy że sample 1 i sample 2 są tej samej długości 
 
             for (var i = 0; i < sample1.Count; i++)
             {
                 var temp = sample1.At(i) - sample2.At(i);
                 distance += temp * temp;
             }
-            //return distance; ??? bez pierwiastka? - zapytać mądrych ludzi
+            
             return Math.Sqrt(distance);
         }
 
-
-
-        // Metody wczytujące zbior treningowy i testowy
         #region Documentation
         /// <summary>
-        /// 
+        /// Method that loads training set with training labels
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -612,7 +637,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// 
+        /// Method that changes strings from one line of .txt file to Vector
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -630,7 +655,7 @@ namespace EKG_Project.Modules.Heart_Class
         }
 
 
-        // getery i settery danych przejściowych
+        
 
         #region Documentation
         /// <summary>
@@ -675,7 +700,7 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _singleQrs; }
             set { _singleQrs = value; }
         }
-
+        /*
         #region Documentation
         /// <summary>
         /// TODO
@@ -697,7 +722,7 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _qrsCoefficients; }
             set { _qrsCoefficients = value; }
         }
-
+        */
         public List<int> QrsOnset
         {
             get { return _qrsOnset; }
@@ -721,7 +746,7 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _qrsCoeffOne; }
             set { _qrsCoeffOne = value; }
         }
-
+        
         public Tuple<int, int> ClassificationResultOne
         {
             get { return _classificationResultOne; }

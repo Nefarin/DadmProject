@@ -796,4 +796,15 @@
     <SD2>3514,22509239235</SD2>
     <SD2>2639,24413042826</SD2>
   </module>
+  <module name="Heart_Class">
+    <ClassificationResult>
+      <item1>2209</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>4386</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ChannelMliiDetected>True</ChannelMliiDetected>
+  </module>
 </EKG>

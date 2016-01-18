@@ -173,7 +173,7 @@ namespace EKG_Project.Modules.Heart_Class
             }
             else
             {
-                Console.WriteLine("   ilsc step  "+_numberOfSteps);
+                //Console.WriteLine("   ilsc step  "+_numberOfSteps);
                 _ended = true;
                 OutputWorker.Save(OutputData);
             }
@@ -288,7 +288,7 @@ namespace EKG_Project.Modules.Heart_Class
         
         public static void Main()
         {
-            Heart_Class_Params param = new Heart_Class_Params("TestAnalysis100"); // "Analysis6");
+            Heart_Class_Params param = new Heart_Class_Params("TestAnalysis6"); // "Analysis6");
             Heart_Class testModule = new Heart_Class();
             testModule.Init(param);
 
