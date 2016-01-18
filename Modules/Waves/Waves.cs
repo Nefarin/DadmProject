@@ -197,23 +197,23 @@ namespace EKG_Project.Modules.Waves
 
                     OutputData.TEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentTends));
 
-                    Console.Write("Rpeaks: ");
-                    Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
+                    //Console.Write("Rpeaks: ");
+                    //Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
 
-                    Console.Write("QRSonset: ");
-                    Console.WriteLine(_currentQRSonsets.Count);
+                    //Console.Write("QRSonset: ");
+                    //Console.WriteLine(_currentQRSonsets.Count);
 
-                    Console.Write("QRSend: ");
-                    Console.WriteLine(_currentQRSends.Count);
+                    //Console.Write("QRSend: ");
+                    //Console.WriteLine(_currentQRSends.Count);
 
-                    Console.Write("Ponsets: ");
-                    Console.WriteLine(_currentPonsets.Count);
+                    //Console.Write("Ponsets: ");
+                    //Console.WriteLine(_currentPonsets.Count);
 
-                    Console.Write("Pends: ");
-                    Console.WriteLine(_currentPends.Count);
+                    //Console.Write("Pends: ");
+                    //Console.WriteLine(_currentPends.Count);
 
-                    Console.Write("Tends: ");
-                    Console.WriteLine(_currentTends.Count);
+                    //Console.Write("Tends: ");
+                    //Console.WriteLine(_currentTends.Count);
 
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)

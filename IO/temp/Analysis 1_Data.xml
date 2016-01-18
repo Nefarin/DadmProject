@@ -200,4 +200,246 @@
       <intervals>1900 942 932 960 970 932 959 958 949 945 1919 </intervals>
     </RRInterval>
   </module>
+  <module name="Waves">
+    <QRSOnsets>
+      <lead>I</lead>
+      <samples>400 1352 2304 3240 4192 5152 6104 7056 7992 8968 9912 -1 11816 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>II</lead>
+      <samples>368 1320 2272 3216 4160 5120 5176 6080 7024 8000 8936 -1 -1 11792 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>III</lead>
+      <samples>408 -1 5120 5192 7024 7992 9888 -1 10904 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>aVR</lead>
+      <samples>384 2280 4224 5128 6112 7056 7992 8944 9952 10840 11792 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>aVL</lead>
+      <samples>376 1352 2304 4192 5152 6088 7056 8008 8992 9920 11792 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>aVF</lead>
+      <samples>408 2272 2344 4160 5120 -1 -1 7992 -1 10840 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V1</lead>
+      <samples>392 1336 2288 3288 4176 5136 6128 7040 7992 8952 9960 10848 11808 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V2</lead>
+      <samples>1344 2296 3240 4184 5144 6104 7048 7992 8968 -1 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V3</lead>
+      <samples>400 1344 2296 3240 4184 5144 6104 7048 7992 8968 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V4</lead>
+      <samples>400 1344 2296 3240 4176 5136 6104 7048 7992 8968 9912 -1 11808 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V5</lead>
+      <samples>376 1328 2280 3224 4160 5128 6088 7032 7984 8944 -1 -1 11792 -1 </samples>
+    </QRSOnsets>
+    <QRSOnsets>
+      <lead>V6</lead>
+      <samples>376 2280 3224 4160 5120 6080 7024 7984 8944 -1 -1 -1 </samples>
+    </QRSOnsets>
+    <QRSEnds>
+      <lead>I</lead>
+      <samples>558 1527 2449 3300 4328 5287 6164 7188 8068 9100 10052 10993 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>II</lead>
+      <samples>655 1589 2456 3293 4241 5199 5542 6253 7248 8151 9141 10097 11047 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>III</lead>
+      <samples>2414 4302 5208 6268 7072 9085 10034 10920 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>aVR</lead>
+      <samples>1508 3438 4330 5289 6250 7191 8150 9103 10055 11000 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>aVL</lead>
+      <samples>547 1488 3381 4320 5284 6243 7182 8142 9096 10987 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>aVF</lead>
+      <samples>1416 2361 3269 4280 5303 6195 7135 9061 9944 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V1</lead>
+      <samples>543 2968 2518 3456 4388 5342 6543 7489 8168 9094 10355 11299 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V2</lead>
+      <samples>1489 2451 3335 4247 5301 6521 7209 8156 10326 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V3</lead>
+      <samples>480 1516 2479 3303 4344 5306 6295 7110 8069 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V4</lead>
+      <samples>635 1537 2465 3302 4328 5300 6260 7109 8068 9109 9975 11000 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V5</lead>
+      <samples>589 1530 2468 3304 4328 5323 6251 7229 8146 9140 9978 10997 -1 -1 </samples>
+    </QRSEnds>
+    <QRSEnds>
+      <lead>V6</lead>
+      <samples>587 2474 3382 4332 5206 6252 7205 8145 9107 9976 -1 -1 </samples>
+    </QRSEnds>
+    <POnsets>
+      <lead>I</lead>
+      <samples>368 1099 2111 3000 4022 5024 6000 6856 7793 8711 9806 -1 11604 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>II</lead>
+      <samples>189 1129 2088 3028 3962 4935 5112 5885 -1 7999 8747 -1 -1 11595 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>III</lead>
+      <samples>377 -1 4830 5045 -1 7816 9761 -1 10843 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>aVR</lead>
+      <samples>310 2209 -1 5093 5963 6876 7945 8912 -1 10812 11744 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>aVL</lead>
+      <samples>263 -1 2111 -1 4872 5982 6794 7997 8974 9806 11608 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>aVF</lead>
+      <samples>375 2085 2278 3965 4911 -1 -1 7815 -1 10640 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V1</lead>
+      <samples>187 1129 2063 3236 3942 4913 6096 6826 7783 8744 9873 10637 11594 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V2</lead>
+      <samples>-1 -1 -1 -1 -1 -1 -1 7794 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V3</lead>
+      <samples>191 1132 2071 3026 4000 4934 5887 6825 7812 8740 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V4</lead>
+      <samples>192 1130 2052 3018 4000 -1 5890 6827 7811 8951 9878 -1 11598 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V5</lead>
+      <samples>-1 1224 2139 3181 3943 4910 5896 -1 7754 8730 -1 -1 -1 -1 </samples>
+    </POnsets>
+    <POnsets>
+      <lead>V6</lead>
+      <samples>-1 2071 3018 3982 4912 5894 6824 7812 8731 -1 -1 -1 </samples>
+    </POnsets>
+    <PEnds>
+      <lead>I</lead>
+      <samples>-1 1184 2144 3049 4060 5077 6058 6896 7834 8749 9858 -1 11651 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>II</lead>
+      <samples>256 1192 2144 3079 4034 4992 5171 5934 6892 -1 8812 -1 -1 11672 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>III</lead>
+      <samples>408 -1 4888 -1 6812 7853 9801 -1 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>aVR</lead>
+      <samples>362 2267 -1 -1 -1 -1 7978 8944 -1 -1 11784 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>aVL</lead>
+      <samples>338 -1 2238 -1 -1 6057 6920 -1 8992 9918 11649 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>aVF</lead>
+      <samples>408 2131 -1 4039 4988 -1 -1 7847 -1 10694 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V1</lead>
+      <samples>287 1207 2181 -1 4000 4994 6128 6906 7891 8845 -1 10742 11695 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V2</lead>
+      <samples>1205 2182 3121 4072 5020 5975 7000 7890 8844 -1 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V3</lead>
+      <samples>289 1205 2152 3094 4043 4994 5969 6906 7889 8845 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V4</lead>
+      <samples>305 1201 2142 3095 4042 4994 5967 6936 7864 8968 9912 -1 11666 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V5</lead>
+      <samples>356 1314 2194 -1 4008 4999 6000 6937 7890 8812 -1 -1 11693 -1 </samples>
+    </PEnds>
+    <PEnds>
+      <lead>V6</lead>
+      <samples>279 2137 3093 4005 5019 6000 6911 7865 8813 -1 -1 -1 </samples>
+    </PEnds>
+    <TEnds>
+      <lead>I</lead>
+      <samples>823 1763 2762 3586 4617 5572 6433 7445 8319 9404 10355 11300 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>II</lead>
+      <samples>840 1814 2742 -1 -1 -1 5611 6542 7486 8433 9414 10386 11304 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>III</lead>
+      <samples>2450 4320 5297 6413 7208 9102 10200 10991 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>aVR</lead>
+      <samples>1671 3715 4477 5345 6277 7215 8309 9126 10127 11030 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>aVL</lead>
+      <samples>794 1720 3677 4614 5571 6553 7443 8429 9402 11265 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>aVF</lead>
+      <samples>1756 2710 3563 4525 5559 6485 7432 9273 -1 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V1</lead>
+      <samples>728 3291 -1 -1 -1 -1 6688 7572 8469 9301 10458 11427 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V2</lead>
+      <samples>1741 2752 3607 4267 -1 6639 7519 8491 10459 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V3</lead>
+      <samples>804 1741 2686 3338 4584 5531 -1 7148 8109 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V4</lead>
+      <samples>841 1813 2713 3329 4631 5618 6507 7145 8106 9409 9992 11308 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V5</lead>
+      <samples>882 1836 2713 3354 4625 5613 6532 7471 8493 9365 10225 11311 -1 -1 </samples>
+    </TEnds>
+    <TEnds>
+      <lead>V6</lead>
+      <samples>839 2715 3661 4629 -1 6540 7481 8459 9406 -1 -1 -1 </samples>
+    </TEnds>
+  </module>
 </EKG>

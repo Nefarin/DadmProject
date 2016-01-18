@@ -44,8 +44,8 @@ namespace EKG_Project.Modules.Waves
             }
             else
             {
-                _qrsEndTresh = 0.15;
-                _qrsOnsTresh = 0.22;
+                _qrsEndTresh = 0.2;
+                _qrsOnsTresh = 0.2;
             }
 
             DetectQRS();
@@ -127,9 +127,12 @@ namespace EKG_Project.Modules.Waves
                     break;
 
                 case Wavelet_Type.db3:
-                    Hfilter = new double[] { -0.332670552950957, 0.806891509313339, -0.459877502119331, -0.135011020010391, 0.0854412738822415, 0.0352262918821007 };
-                    Lfilter = new double[] { 0.0352262918821007, -0.0854412738822415, -0.135011020010391, 0.459877502119331, 0.806891509313339, 0.332670552950957 };
-                    filterSize = 6;
+                    //Hfilter = new double[] { -0.332670552950957, 0.806891509313339, -0.459877502119331, -0.135011020010391, 0.0854412738822415, 0.0352262918821007 };
+                    //Lfilter = new double[] { 0.0352262918821007, -0.0854412738822415, -0.135011020010391, 0.459877502119331, 0.806891509313339, 0.332670552950957 };
+                    //filterSize = 6;
+                    Hfilter = new double[] { -0.482962913144690, 0.836516303737469, -0.224143868041857, -0.129409522550921 };
+                    Lfilter = new double[] { -0.129409522550921, 0.224143868041857, 0.836516303737469, 0.482962913144690 };
+                    filterSize = 4;
                     break;
             }
             int decompSize = signal.Count();
@@ -210,8 +213,6 @@ namespace EKG_Project.Modules.Waves
                 _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR - 1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
                 _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
                 _rPeaksProcessed++;
-                if( _rPeaksProcessed % _currentStep == 0)
-                    Console.WriteLine(Progress());
             }
 
             int Rlast = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1;
