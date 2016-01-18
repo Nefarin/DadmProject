@@ -101,7 +101,7 @@ namespace EKG_Project.IO
                 if (module.Attributes["name"].Value == moduleName)
                 {
                     XmlNode heartAxis = module["HeartAxis"];
-                    basicData.HeartAxis = Convert.ToDouble(heartAxis.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.HeartAxis = Convert.ToDouble(heartAxis.InnerText);
                 }
             }
             this.Data = basicData;

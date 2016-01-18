@@ -149,19 +149,19 @@ namespace EKG_Project.IO
                     basicData.tSTs = readList1;
 
                     XmlNode sNode = module["ConcaveCurves"];
-                    basicData.ConcaveCurves = Convert.ToInt32(sNode.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.ConcaveCurves = Convert.ToInt32(sNode.InnerText);
 
                     XmlNode sNode1 = module["ConvexCurves"];
-                    basicData.ConvexCurves = Convert.ToInt32(sNode1.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.ConvexCurves = Convert.ToInt32(sNode1.InnerText);
 
                     XmlNode sNode2 = module["DecreasingLines"];
-                    basicData.DecreasingLines = Convert.ToInt32(sNode2.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.DecreasingLines = Convert.ToInt32(sNode2.InnerText);
 
                     XmlNode sNode3 = module["HorizontalLines"];
-                    basicData.HorizontalLines = Convert.ToInt32(sNode3.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.HorizontalLines = Convert.ToInt32(sNode3.InnerText);
 
                     XmlNode sNode4 = module["IncreasingLines"];
-                    basicData.IncreasingLines = Convert.ToInt32(sNode4.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.IncreasingLines = Convert.ToInt32(sNode4.InnerText);
 
                 }
             }
@@ -172,7 +172,7 @@ namespace EKG_Project.IO
         {
             long[] digits = input
                               .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                              .Select(digit => Convert.ToInt64(digit, new System.Globalization.NumberFormatInfo()))
+                              .Select(digit => Convert.ToInt64(digit))
                               .ToArray();
             List<long> list = new List<long>();
             for (int i = 0; i < digits.Length; i++)

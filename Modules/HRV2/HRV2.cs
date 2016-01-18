@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MathNet.Numerics.Statistics;
 using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
 using MathNet.Numerics.LinearAlgebra;
-using System.Collections.ObjectModel;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -19,6 +14,7 @@ namespace EKG_Project.Modules.HRV2
         private int _currentRPeaksLength;
         private int _samplesProcessed;
         private int _numberOfChannels;
+        
 
         private R_Peaks_Data_Worker _inputWorker;
         private HRV2_Data_Worker _outputWorker;
@@ -32,6 +28,7 @@ namespace EKG_Project.Modules.HRV2
 
         private Histogram2 _currentHistogram;
         private Vector<double> _currentPoincare;
+        private Vector<double> _currentRPeaks;
 
         public bool IsAborted()
         {
@@ -61,21 +58,29 @@ namespace EKG_Project.Modules.HRV2
                 InputWorker.Load();
                 InputData = InputWorker.Data;
 
-                findOutput();
-                if (_outputFound)
-                {
-                    OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
-                    OutputData = new HRV2_Data();
+                OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
+                OutputData = new HRV2_Data();
 
-                    _currentRPeaksLength = InputData.RRInterval[_outputIndex].Item2.Count;
-                    //_currentHistogram = Vector<Double>.Build.Dense(_currentRPeaksLength);
-                    _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
-                }
-                else
-                {
-                    _ended = true;
-                    Aborted = true;
-                }
+                _currentChannelIndex = 0;
+                _currentRPeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
+                _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
+                _numberOfChannels = InputData.RPeaks.Count;
+
+                //findOutput();
+                //if (_outputFound)
+                //{
+                //    OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
+                //    OutputData = new HRV2_Data();
+
+                //    _currentRPeaksLength = InputData.RRInterval[_outputIndex].Item2.Count;
+                //    //_currentHistogram = Vector<Double>.Build.Dense(_currentRPeaksLength);
+                //    _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
+                //}
+                //else
+                //{
+                //    _ended = true;
+                //    Aborted = true;
+                //}
 
             }
 
@@ -111,22 +116,35 @@ namespace EKG_Project.Modules.HRV2
 
         private void processData()
         {
-            
-            //OutputData.Tinn = makeTinn();
-            //OutputData.TriangleIndex = TriangleIndex();
-            OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
+            if (_currentChannelIndex < _numberOfChannels)
+            {
+                _currentRPeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
+                _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
+                makeTinn();
+                OutputData.Tinn.Add(tinn);
+                //TriangleIndex();
+                //OutputData.TriangleIndex.Add(triangleIndex);
+                //OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
 
-            PoincarePlot_x();
-            PoincarePlot_y();
-            //OutputData.SD1 = SD1();
-            //OutputData.SD2 = SD2();
+                PoincarePlot_x();
+                PoincarePlot_y();
+                OutputData.SD1.Add(SD1());
+                OutputData.SD2.Add(SD2());
 
-            //OutputData.PoincarePlotData_x = new Tuple<string, Vector<double>>("RR", RR_intervals_x);
-            //OutputData.PoincarePlotData_y = new Tuple<string, Vector<double>>("RR+1", RR_intervals_y);
+                OutputData.PoincarePlotData_x.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_x));
+                OutputData.PoincarePlotData_y.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_y));
+
+                _currentChannelIndex++;
+
+            }
+            else
+            {
+                OutputWorker.Save(OutputData);
+                _ended = true;
+            }
 
 
-            OutputWorker.Save(OutputData);
-            _ended = true;
+
         }
 
         public HRV2_Data OutputData
@@ -222,7 +240,7 @@ namespace EKG_Project.Modules.HRV2
 
         public static void Main()
         {
-            HRV2_Params param = new HRV2_Params(3, 9, "TestAnalysis100"); 
+            HRV2_Params param = new HRV2_Params(3, 9, "TestAnalysis6"); 
             HRV2 testModule = new HRV2();
             testModule.Init(param);
             while (true)
