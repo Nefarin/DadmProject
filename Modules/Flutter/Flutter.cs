@@ -110,7 +110,15 @@ namespace EKG_Project.Modules.Flutter
         {
             if(Runnable())
             {
-                processData();
+                try
+                {
+                    processData();
+                }
+                catch(Exception)
+                {
+                    OutputData.FlutterAnnotations = new List<Tuple<int,int>>();
+                    _currentState = FlutterAlgStates.Finished;
+                }
             }
             else
             {
