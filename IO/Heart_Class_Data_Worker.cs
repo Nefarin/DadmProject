@@ -125,7 +125,7 @@ namespace EKG_Project.IO
                         int convertedItem1 = Convert.ToInt32(readItem1);
 
                         XmlNode item2 = node["item2"];
-                        string readItem2 = item1.InnerText;
+                        string readItem2 = item2.InnerText;
                         int convertedItem2 = Convert.ToInt32(readItem2);
 
                         Tuple<int, int> read = Tuple.Create(convertedItem1, convertedItem2);
