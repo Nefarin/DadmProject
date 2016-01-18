@@ -13,17 +13,57 @@ namespace EKG_Project.Modules.HRV_DFA
     
     public partial class HRV_DFA : IModule
     {
+        #region HRV_DFA Class doc
+        /// <summary>
+        /// Class that performs DFA Analysis 
+        /// </summary>
+        #endregion
+        //Fields
+        #region
+        /// <summary>
+        /// veclognx, veclogFnx, vecparamx initialize output data vectors
+        /// </summary>
+        #endregion
         Vector<double> veclogn1;
         Vector<double> veclogn2;
         Vector<double> veclogFn1;
         Vector<double> veclogFn2;
         Vector<double> vecparam1;
         Vector<double> vecparam2;
+        #region
+        /// <summary>
+        /// Value that represents maximum box size for DFA analysis
+        /// </summary>
+        #endregion
         private int boxVal;
+        #region
+        /// <summary>
+        /// Value that represents minimum box size for DFA analysis
+        /// </summary>
+        #endregion
         private int startValue;
+        #region
+        /// <summary>
+        /// Value that represents step for increase of box size for DFA analysis
+        /// </summary>
+        #endregion
         private int stepVal;
+        #region
+        /// <summary>
+        /// Boolean value that detect if signal need long-correlation analysis
+        /// </summary>
+        #endregion
         private bool longCorrelations;
-
+        //METHODS
+        #region
+        /// <summary>
+        /// Function that perform DFA Analysis and outputs final values
+        /// </summary>
+        /// <param name="rRRIntervals">Signal of RR intervals from R_Peaks Module</param>
+        /// <param name="stepValue">Value that represents step for increase of box size for DFA analysis</param>
+        /// <param name="boxValue">Value that represents maximum box size for DFA analysis</param>
+        /// <returns></returns>
+        #endregion
         public void HRV_DFA_Analysis(Vector<double> rRRIntervals, int stepValue, int boxValue)
         {
             Vector<double> sig = rRRIntervals;
@@ -132,9 +172,14 @@ namespace EKG_Project.Modules.HRV_DFA
             vecparam1 = p1;
             vecparam2 = p2;
         }
-
-        // METHODS:
-        // Method that returs vector F(n) of Fluctuation Analysis results 
+        #region
+        /// <summary>
+        /// Function that returs vector F(n) of Fluctuation Analysis results 
+        /// </summary>
+        /// <param name="dfabox">Box size for given iteration</param>
+        /// <param name="signal">RR intervals from R_Peaks</param>
+        /// <returns>Vector of computed fluctuations F(n)</returns>
+        #endregion
         public Vector<double> DfaFluctuationComputation(Vector<double> dfabox, Vector<double> signal)
         {
             
@@ -185,7 +230,15 @@ namespace EKG_Project.Modules.HRV_DFA
             return fn;
         }
 
-        // Method that computates in-box fluctuations F in given box size 
+        #region
+        /// <summary>
+        /// Function that computates in-box fluctuations F in given box size 
+        /// </summary>
+        /// <param name="y_integrated">Vector of integrated signal</param>
+        /// <param name="y_fitted">Vector of fitted line from least-square fitting</param>
+        /// <param name="box_quantity">Size od current box</param>
+        /// <returns>Computed value of fluctuation in given box size</returns>
+        #endregion
         public double InBoxFluctuations(Vector<double> y_integrated, Vector<double> y_fitted, int box_quantity)
         {
             Vector<double> y_k = y_integrated.SubVector(0, box_quantity);
@@ -208,7 +261,13 @@ namespace EKG_Project.Modules.HRV_DFA
             return fn;
         }
 
-        //function that integrates signal
+        #region
+        /// <summary>
+        /// Function that integrates signal
+        /// </summary>
+        /// <param name="signal_rr">Vector of RR intervals from R_Peaks </param>
+        /// <returns>Integrated signal</returns>
+        #endregion
         public Vector<double> Integrate(Vector<double> signal_rr)
         {
             Vector<double> signal_integrated = Vector<double>.Build.Dense(signal_rr.Count(), 0);
@@ -229,7 +288,15 @@ namespace EKG_Project.Modules.HRV_DFA
             return signal_integrated;
         }
 
-        // Least - square approximation 
+        #region
+        /// <summary>
+        /// Refferential function that computes least-square approximation
+        /// </summary>
+        /// <param name="x">x values</param>
+        /// <param name="y">y values</param>
+        /// <param name="degree">Degree of polynomial</param>
+        /// <returns>Fitting coefficients to obtain y = a*x+b function</returns>
+        #endregion
         public double[] Polyfit(double[] x, double[] y, int degree)
         {
             // Vandermonde matrix
@@ -242,7 +309,13 @@ namespace EKG_Project.Modules.HRV_DFA
             return p.ToArray();
         }
 
-        // Method that logarithmizes signal
+        #region
+        /// <summary>
+        /// Function that logarithmizes signal
+        /// </summary>
+        /// <param name="signal">Signal that must be logarithized</param>
+        /// <returns>Logarithmized signal</returns>
+        #endregion
         public Vector<double> Logarithmize(Vector<double> signal)
         {
             Vector<double> logSig = Vector<double>.Build.Dense(signal.Count());
@@ -253,7 +326,13 @@ namespace EKG_Project.Modules.HRV_DFA
             return logSig;
         }
 
-        // Method that removes zeros from vector
+        #region
+        /// <summary>
+        /// Function that removes zeros from vector
+        /// </summary>
+        /// <param name="vectorIn"> Input vector with zeros at the end</param>
+        /// <returns>Output vector with empty values removed</returns>
+        #endregion
         public Vector<double> ZerosRemove(Vector<double> vectorIn)
         {
             int counter = 0;
