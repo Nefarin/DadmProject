@@ -1634,7 +1634,8 @@ namespace EKG_Project.GUI
                 Text = "ellipse",
                 X = 10,
                 Y = 0,
-                Fill = OxyColors.WhiteSmoke
+                Fill = OxyColors.WhiteSmoke,
+                
             };
         }
 

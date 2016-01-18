@@ -3,10 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:EKG_Project.GUI"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             xmlns:local="clr-namespace:EKG_Project.GUI">
+
     <Grid>
-        <DataGrid Name="VisualisationDataTable" ItemsSource="{Binding}" />
+        <DataGrid Name="VisualisationDataTable" ItemsSource="{Binding}" ColumnWidth="*" />
     </Grid>
 </UserControl>

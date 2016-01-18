@@ -37,6 +37,7 @@ namespace EKG_Project.GUI
 
         List<DataToTable> _tableData; 
         private QT_Disp_Data_Worker _qt_Disp_Data_Worker;
+        
 
 
         public VisualisationTableControl(string analyseName, string moduleName, KeyValuePair<string, int> moduleInfo)
@@ -84,7 +85,6 @@ namespace EKG_Project.GUI
 
             }
             
-
 
             
 
