@@ -38,9 +38,10 @@ namespace EKG_Project.GUI
             {"ecgBasic", 0 },
             {"R_PEAKS", 3 },
             {"WAVES", 0 },
-            { "HEART_CLASS",0 },
+            { "HEART_CLASS", 0 },
             { "HEART_AXIS", 0 },
-            {"ARTRIAL_FIBER", 0 }
+            {"ARTRIAL_FIBER", 0 },
+            {"HRV2", 3 }
         };
 
         public VisualisationDataControl()
@@ -75,7 +76,14 @@ namespace EKG_Project.GUI
         {
             InitializeComponent();
             visulisationDataTabsList = new List<TabItem>();
-            
+
+            if (moduleDict.Value == 8)
+            {
+                modulesVisualisationNeeds[moduleName] = 1;
+
+            }
+
+
 
             //if needed and what where needed? 
             switch (modulesVisualisationNeeds[moduleName])
@@ -103,6 +111,11 @@ namespace EKG_Project.GUI
                             
             }
 
+            if (moduleDict.Value == 9)
+            {
+                //StartPlot(analyseName, "HEART_AXIS", new KeyValuePair<string, int>( "HEART_AXIS", 9 ) );
+            }
+
 
             this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
 
@@ -121,7 +134,7 @@ namespace EKG_Project.GUI
 
         public void StartTable(string anName, string modName, KeyValuePair<string, int> moduleDict)
         {
-            VisualisationTableControl ecgVTControl = new VisualisationTableControl();
+            VisualisationTableControl ecgVTControl = new VisualisationTableControl(anName, modName, moduleDict);
 
             TabItem tableControl = new TabItem();
             tableControl.Header = "Table";
