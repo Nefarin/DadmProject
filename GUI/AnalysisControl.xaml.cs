@@ -136,6 +136,7 @@ namespace EKG_Project.GUI
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
             foreach (var option in modulePanel.getAllOptions())
             {
+                
                 if (option.Set)
                 {
                     tempList.Add(option.Name);
