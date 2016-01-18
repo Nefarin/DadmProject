@@ -198,7 +198,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public static void Main()
         {
-            HRV_DFA_Params param = new HRV_DFA_Params("TestAnalysis100");
+            HRV_DFA_Params param = new HRV_DFA_Params("Analysisnsr");
             HRV_DFA testModule = new HRV_DFA();
 
             testModule.Init(param);

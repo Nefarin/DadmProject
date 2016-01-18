@@ -108,7 +108,7 @@ namespace EKG_Project.Modules.HRV_DFA
         public static void Main(String[] args)
         {
             HRV_DFA_Stats stats = new HRV_DFA_Stats();
-            stats.Init("Analysis6");
+            stats.Init("Analysisnsr");
 
 
             while (true)

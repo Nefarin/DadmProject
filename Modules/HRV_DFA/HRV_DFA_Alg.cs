@@ -76,7 +76,7 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> p2 = Vector<double>.Build.Dense(p1.Count());
             Vector<double> logn2 = Vector<double>.Build.Dense(logn.Count());
             Vector<double> logFn2 = Vector<double>.Build.Dense(logFn.Count());
-            Vector<double> fittedFn2 = Vector<double>.Build.Dense(logFn.Count());
+            Vector<double> fittedFn2 = Vector<double>.Build.Dense(logn.Count());
 
             if (longCorrelations)
             {
