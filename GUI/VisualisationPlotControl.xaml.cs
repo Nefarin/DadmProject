@@ -490,18 +490,25 @@ namespace EKG_Project.GUI
             _hear_Class_Data_Worker.Load();
             List<Tuple<string, List<int>>> outList = new List<Tuple<string, List<int>>>();
             List<Tuple<int, int>> tempList = _hear_Class_Data_Worker.Data.ClassificationResult;
-            foreach(var t in tempList)
+            //foreach (var t in _hear_Class_Data_Worker.Data.ClassificationResult)
+            //{
+            //    MessageBox.Show(t.Item1.ToString());
+            //    MessageBox.Show(t.Item2.ToString());
+            //}
+            foreach (var t in tempList)
             {
                 List<int> tempIntList = new List<int>();
-                if (t.Item2==1)
+                if (t.Item2==0)
                 {
+                    //MessageBox.Show("V");
                     tempIntList.Add(t.Item1);
-                    outList.Add(new Tuple<string, List<int>>("SE", tempIntList));
+                    outList.Add(new Tuple<string, List<int>>("V", tempIntList));
                 }
                 else
                 {
+                    //MessageBox.Show("SV");
                     tempIntList.Add(t.Item1);
-                    outList.Add(new Tuple<string, List<int>>("V", tempIntList));
+                    outList.Add(new Tuple<string, List<int>>("SV", tempIntList));
                 }
             }
 
