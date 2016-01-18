@@ -122,23 +122,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         if (_tempClassResult.Item1)
                         {
                             pointsDetectedA.SetSubVector(Convert.ToInt32(_ClassResult.Item3 * InputData_basic.Frequency), _tempClassResult.Item2.Count, _tempClassResult.Item2);
-                            Console.WriteLine("points detected");
-                            Console.WriteLine(pointsDetectedA.Count);
-                            Console.WriteLine("ostatni wektor");
-                            Console.WriteLine(_tempClassResult.Item2.ToString());
-
                             lengthOfDetection = _ClassResult.Item3+_tempClassResult.Item3;
-                            
+                            _ClassResult = new Tuple<bool, Vector<double>, double>(detected, pointsDetectedA, lengthOfDetection);
                         }
-                        currentSample = Convert.ToInt32((lengthOfDetection) * InputData_basic.Frequency) - 1;
+                        currentSample = Convert.ToInt32(_ClassResult.Item3 * InputData_basic.Frequency) - 1;
                         //_ClassResult = new Tuple<bool, Vector<double>, double>(detected, pointsDetected, lengthOfDetection);
                         //int tmp = Convert.ToInt32(lengthOfDetection * InputData_basic.Frequency);
-                        pointsDetected2 = Vector<double>.Build.Dense(currentSample-1);
-                        Console.WriteLine("points detecteda");
-                        Console.WriteLine(pointsDetectedA.Count);
-                        Console.WriteLine("currentSample - 1");
-                        Console.WriteLine(currentSample - 1);
-
+                        pointsDetected2 = Vector<double>.Build.Dense(currentSample - 1);
                         pointsDetectedA.CopySubVectorTo(pointsDetected2, 0, 0, currentSample - 1);
                         
 
@@ -150,9 +140,9 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     
                     if (detected)
                     {
-                        double percentOfDetection = lengthOfDetection / (InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count-1) - InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(0))*100* Convert.ToUInt32(InputData_basic.Frequency);
+                        double percentOfDetection = _ClassResult.Item3 / (InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count-1) - InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(0))*100* Convert.ToUInt32(InputData_basic.Frequency);
                         OutputData.AfDetection.Add(new Tuple<bool, Vector<double>,string,string>(true,pointsDetected2, "Wykryto migotanie przedsionków.",
-                            "Wykryto migotanie trwające "+ lengthOfDetection.ToString("F1", CultureInfo.InvariantCulture)+ "s. Stanowi to "+
+                            "Wykryto migotanie trwające "+ _ClassResult.Item3.ToString("F1", CultureInfo.InvariantCulture)+ "s. Stanowi to "+
                             percentOfDetection.ToString("F1", CultureInfo.InvariantCulture)+ "% trwania sygnału."));
                     }
                     else
@@ -180,21 +170,10 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     if (_tempClassResult.Item1)
                     {
                         detected = true;
-                        Console.WriteLine("Detected.");
                         pointsDetectedA.SetSubVector(Convert.ToInt32(_ClassResult.Item3*InputData_basic.Frequency), _tempClassResult.Item2.Count, _tempClassResult.Item2);
-                        Console.WriteLine("temp length");
-                        Console.WriteLine(_tempClassResult.Item3 * InputData_basic.Frequency);
                         lengthOfDetection = _ClassResult.Item3+_tempClassResult.Item3;
-                        Console.WriteLine("length of detection");
-                        Console.WriteLine(lengthOfDetection * InputData_basic.Frequency);
                         currentSample += _tempClassResult.Item2.Count ;
                         _ClassResult = new Tuple<bool, Vector<double>, double>(detected, pointsDetectedA, lengthOfDetection);
-                        Console.WriteLine("clas result length");
-                        Console.WriteLine(_ClassResult.Item3);
-                        Console.WriteLine("points detected");
-                        Console.WriteLine(pointsDetectedA.Count);
-                        Console.WriteLine("_ClassResult.Item3*InputData_basic.Frequency");
-                        Console.WriteLine(Convert.ToInt32(_ClassResult.Item3 * InputData_basic.Frequency));
                     }
                     
                     _samplesProcessed = startIndex + step;
@@ -260,22 +239,22 @@ namespace EKG_Project.Modules.Atrial_Fibr
             set {_inputData_basic = value;}
         }
 
-        public static void Main()
-        {
-            Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC, "AF1");
+        //public static void Main()
+        //{
+        //    Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC, "AF1");
 
-            Atrial_Fibr testModule = new Atrial_Fibr();
-            testModule.Init(param);
-            while (true)
-            {
-                //Console.WriteLine("Press key to continue.");
-                //Console.Read();
-                if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress());
-                testModule.ProcessData();
-            }
-            Console.WriteLine("Analiza zakonczona. Press key to continue.");
-            Console.Read();
-        }
+        //    Atrial_Fibr testModule = new Atrial_Fibr();
+        //    testModule.Init(param);
+        //    while (true)
+        //    {
+        //        //Console.WriteLine("Press key to continue.");
+        //        //Console.Read();
+        //        if (testModule.Ended()) break;
+        //        Console.WriteLine(testModule.Progress());
+        //        testModule.ProcessData();
+        //    }
+        //    Console.WriteLine("Analiza zakonczona. Press key to continue.");
+        //    Console.Read();
+        //}
     }
 }

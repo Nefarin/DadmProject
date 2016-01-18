@@ -210,7 +210,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     if (detectedIntervals[i])
                     {
                         int j;
-                        for (j = 0; j <  _rrIntervals.At(i); j++)
+                        for (j = 0; j <  _rrIntervals.At(i)-1; j++)
                         {
                             pointsDetected.At(j + lastIndex, _rPeaks.At(i) + j);
                         }
