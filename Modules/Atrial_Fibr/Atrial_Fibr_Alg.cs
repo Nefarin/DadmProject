@@ -214,7 +214,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         {
                             pointsDetected.At(j + lastIndex, _rPeaks.At(i) + j);
                         }
-                        lastIndex += j-1;
+                        lastIndex += j;
                     }
                 }
                 double lengthOfSignal = (_rPeaks.At(_rPeaks.Count-1) - _rPeaks.At(0)) / fs;
@@ -223,7 +223,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             {
                 pointsDetected=Vector<Double>.Build.Dense(1);
             }
-            Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetection);
+            Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetectedIntervals/fs);
             return result;
         }
         //Funkcje pomocnicze do metody statystycznej///////////////////////////////////////////////////////////////////
