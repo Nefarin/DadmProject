@@ -27,7 +27,9 @@ namespace EKG_Project.GUI
         private string _plotType;
         private List<string> _seriesName;
         private List<string> _chosenModules;
-         private List<CheckBox> _seriesChecbox;
+        private List<CheckBox> _seriesChecbox;
+        private uint _analysisFreq;
+        private uint _analysisSampleAmount;
 
         //
         //private List<IECG_Worker> _moduleWorkerList;
@@ -375,7 +377,7 @@ namespace EKG_Project.GUI
             if (moduleInfo.Value != 9)
             {
                 this.CheckBoxList.DataContext = _seriesChecbox;
-                ecgPlot.DisplayControler(_wholeDataToDisplay, _wholeDataToDisplayList);
+                ecgPlot.DisplayControler(_wholeDataToDisplay, _wholeDataToDisplayList, _analysisFreq,_analysisSampleAmount);
             }
 
         }
@@ -386,6 +388,7 @@ namespace EKG_Project.GUI
         {
             _ecg_Baseline_Data_worker = new ECG_Baseline_Data_Worker(currentAnalyseName);
             _ecg_Baseline_Data_worker.Load();
+           
             foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
             {
                 _seriesName.Add(signal.Item1);
@@ -405,6 +408,11 @@ namespace EKG_Project.GUI
         {
             _ecg_Basic_Data_Worker = new Basic_Data_Worker(currentAnalyseName);
             _ecg_Basic_Data_Worker.Load();
+            _analysisFreq = _ecg_Basic_Data_Worker.BasicData.Frequency;
+            _analysisSampleAmount = _ecg_Basic_Data_Worker.BasicData.SampleAmount; 
+
+            System.Windows.MessageBox.Show("frequency=" + _ecg_Basic_Data_Worker.BasicData.Frequency);
+            System.Windows.MessageBox.Show("samples=" + _ecg_Basic_Data_Worker.BasicData.SampleAmount);
 
             CheckBox cB = new CheckBox();
             cB.IsChecked = first;
