@@ -6,14 +6,14 @@ namespace EKG_Project.Modules.HRV2
 {
     public class HRV2_Data : ECG_Data
     {
-        private List<double> _tinn;
-        private List<double> _triangleIndex;
-        private List<double> _sd1;
-        private List<double> _sd2;
+        private List<Tuple<string, double>> _tinn;
+        private List<Tuple<string, double>> _triangleIndex;
+        private List<Tuple<string, double>> _sd1;
+        private List<Tuple<string, double>> _sd2;
         private List<Tuple<string, HRV2.Histogram2>> _histogramData;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_x;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_y;
-        private List<double> _elipseCenter;
+        private List<Tuple<string, double>> _elipseCenter;
 
 
         #region Documentation
@@ -22,7 +22,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public List<double> Tinn
+        public List<Tuple<string, double>> Tinn
         {
             get
             {
@@ -41,7 +41,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public List<double> TriangleIndex
+        public List<Tuple<string, double>> TriangleIndex
         {
             get
             {
@@ -60,7 +60,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public List<double> SD1
+        public List<Tuple<string, double>> SD1
         {
             get
             {
@@ -79,7 +79,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public List<double> SD2
+        public List<Tuple<string, double>> SD2
         {
             get
             {
@@ -148,7 +148,7 @@ namespace EKG_Project.Modules.HRV2
                 _poincarePlotData_y = value;
             }
         }
-        public List<double> ElipseCenter
+        public List<Tuple<string, double>> ElipseCenter
         {
             get
             {
@@ -172,11 +172,11 @@ namespace EKG_Project.Modules.HRV2
             HistogramData = new List<Tuple<string, HRV2.Histogram2>>();
             PoincarePlotData_x = new List<Tuple<string, Vector<double>>>();
             PoincarePlotData_y = new List<Tuple<string, Vector<double>>>();
-            SD1 = new List<double>();
-            SD2 = new List<double>();
-            Tinn = new List<double>();
-            TriangleIndex = new List<double>();
-            ElipseCenter = new List<double>();
+            SD1 = new List<Tuple<string, double>>();
+            SD2 = new List<Tuple<string, double>>();
+            Tinn = new List<Tuple<string, double>>();
+            TriangleIndex = new List<Tuple<string, double>>();
+            ElipseCenter = new List<Tuple<string, double>>();
         }
     }
 }

@@ -121,15 +121,15 @@ namespace EKG_Project.Modules.HRV2
                 _currentRPeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
                 _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
                 makeTinn();
-                OutputData.Tinn.Add(tinn);
+                OutputData.Tinn.Add(new Tuple<string, double> (InputData.RRInterval[_currentChannelIndex].Item1, tinn));
                 //TriangleIndex();
-                //OutputData.TriangleIndex.Add(triangleIndex);
+                //OutputData.TriangleIndex.Add(new Tuple<string, double> (InputData.RRInterval[_currentChannelIndex].Item1,triangleIndex));
                 //OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
 
                 PoincarePlot_x();
                 PoincarePlot_y();
-                OutputData.SD1.Add(SD1());
-                OutputData.SD2.Add(SD2());
+                OutputData.SD1.Add(new Tuple<string, double>(InputData.RRInterval[_currentChannelIndex].Item1, SD1()));
+                OutputData.SD2.Add(new Tuple<string, double>(InputData.RRInterval[_currentChannelIndex].Item1, SD2()));
 
                 OutputData.PoincarePlotData_x.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_x));
                 OutputData.PoincarePlotData_y.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_y));
