@@ -983,7 +983,7 @@ namespace EKG_Project.GUI
             lineraXAxis.Maximum = 1000.0;
             lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
             lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
-            lineraXAxis.Title = "X";
+            lineraXAxis.Title = "Time [ms]";
 
             CurrentPlot.Axes.Add(lineraXAxis);
 
