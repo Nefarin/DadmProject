@@ -156,7 +156,7 @@ namespace EKG_Project.GUI
             
             VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
             this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
-            pdf.GeneratePDF(tempList);
+            //pdf.GeneratePDF(tempList);
         }
 
         public void updateProgress(AvailableOptions module, double progress)
