@@ -63,9 +63,9 @@ namespace EKG_Project.Modules.HRV1
 
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
-                
+                _numberOfChannels = InputData.RPeaks.Count;
+
                 //_currentRPeaksLength = InputData.RRInterval[_outputIndex].Item2.Count;
-                //_numberOfChannels = InputData.Signals.Count;
                 //_currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
                 //_currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
             }
@@ -89,13 +89,13 @@ namespace EKG_Project.Modules.HRV1
 
         private void processData()
         {
-            rInstants = InputData.RPeaks[1].Item2;
-            rrIntervals = InputData.RRInterval[1].Item2;
-
+            rInstants = InputData.RPeaks[_currentChannelIndex].Item2;
+            rrIntervals = InputData.RRInterval[_currentChannelIndex].Item2;
+            intervalsCorection();
             calculateTimeBased();
             calculateFreqBased();
-            var tparams = Vector<double>.Build.Dense(new double[] { HF, LF, VLF, LFHF });
-            var fparams = Vector<double>.Build.Dense(new double[] { SDNN, RMSSD, SDSD, NN50, pNN50 });
+            var tparams = Vector<double>.Build.Dense(new double[] { TP, HF, LF, VLF, LFHF });
+            var fparams = Vector<double>.Build.Dense(new double[] { AVNN, SDNN, RMSSD, NN50, pNN50 });
 
             OutputData.TimeBasedParams.Add(new Tuple<string, Vector<double>>("Time-based params", tparams));
             OutputData.FreqBasedParams.Add(new Tuple<string, Vector<double>>("Frequency-based params", fparams));
@@ -107,19 +107,22 @@ namespace EKG_Project.Modules.HRV1
             _ended = true;
 
             bool debug = true;
-            if (debug){
-                Console.WriteLine("RR no:", rInstants.Count);
-                Console.WriteLine("Time:");
-                Console.WriteLine("SDNN: ", SDNN);
-                Console.WriteLine("RMSSD: ", RMSSD);
-                Console.WriteLine("SDSD: ", SDSD);
-                Console.WriteLine("NN50: ", NN50);
-                Console.WriteLine("pNN50: ", pNN50);
-                Console.WriteLine("Freq:");
-                Console.WriteLine("HF: ", HF);
-                Console.WriteLine("LF: ", LF);
-                Console.WriteLine("VLF: ", VLF);
-                Console.WriteLine("LFHF: ", LFHF);
+            if (debug) {
+                Console.WriteLine("number of RRs: " + rInstants.Count);
+                Console.WriteLine("Min-Max: " + rrIntervals.Min().ToString() + "-" + rrIntervals.Max().ToString());
+                Console.WriteLine("Time");
+                Console.WriteLine("AVNN:  " + AVNN.ToString());
+                Console.WriteLine("SDNN:  " + SDNN.ToString());
+                Console.WriteLine("RMSSD: " + RMSSD);
+                //Console.WriteLine("SDSD:  " + SDSD.ToString());
+                Console.WriteLine("NN50:  " + NN50.ToString());
+                Console.WriteLine("pNN50: " + pNN50.ToString());
+                Console.WriteLine("Freq");
+                Console.WriteLine("TP:   " + TP.ToString());
+                Console.WriteLine("VLF:   " + VLF.ToString());
+                Console.WriteLine("LF:    " + LF.ToString());
+                Console.WriteLine("HF:    " + HF.ToString());
+                Console.WriteLine("LFHF:  " + LFHF.ToString());
             }
         }
 

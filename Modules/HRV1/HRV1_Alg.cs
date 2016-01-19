@@ -1,12 +1,10 @@
 ﻿/*
     TODO:
-        1 zaimplementowac metode samplesToInstants() - pomnożyć numery próbek razy dt / podzielić fs
-        2 zaimplenentowac metode instantsToIntervals() - odejmować próbki od siebie
-        3 zaimplenetowac cala reszte
-        4 podlaczyc do interfejsow
+        1 Poprawic plomba
+        2 Zaimplementowac funkcje korekcji
         5 Testy, testy, testy...
-        ???
-        PROFIT
+        6 ???
+        7 PROFIT
 */
 
 
@@ -40,6 +38,7 @@ namespace EKG_Project.Modules.HRV1
         private double pNN50;
 
         // Declaration od frequency parameters
+        private double TP;
         private double HF;
         private double LF;
         private double VLF;
@@ -88,16 +87,21 @@ namespace EKG_Project.Modules.HRV1
         {
             double ectoThreshHi = 2000;
             double ectoThreshLo = 5;
-            var rrIntervals2 = this.rrIntervals;
+            List<double> rrIntervals_temp = new List<double>();
 
             for (int i = 0; i < this.rrIntervals.Count; ++i)
             {
-                if (this.rrIntervals[i] < ectoThreshLo || this.rrIntervals[i] > ectoThreshHi)
+                if (this.rrIntervals[i] > ectoThreshLo && this.rrIntervals[i] < ectoThreshHi)
                 {
-                    ;
+                    rrIntervals_temp.Add(rrIntervals[i]);
                 }
             }
-
+            rrIntervals = Vector<double>.Build.Dense(rrIntervals_temp.ToArray());
+            rInstants = Vector<double>.Build.Dense(rrIntervals.Count + 1, (i) => 0);
+            for (int i = 1; i < rInstants.Count; ++i)
+            {
+                rInstants[i] = rInstants[i - 1] + rrIntervals[i - 1];
+            }
         }
 
 
@@ -110,20 +114,19 @@ namespace EKG_Project.Modules.HRV1
         {
             AVNN = this.rrIntervals.Sum() / this.rrIntervals.Count;
             SDNN = Statistics.StandardDeviation(this.rrIntervals);
-            RMSSD = Statistics.RootMeanSquare(this.rrIntervals);
 
             var sdL = this.rrIntervals.SubVector(0, this.rrIntervals.Count - 1);
             var sdR = this.rrIntervals.SubVector(1, this.rrIntervals.Count - 1);
             var succesiveDiffs = sdR.Subtract(sdL);
             succesiveDiffs.MapInplace(x => Math.Abs(x));
 
-            SDSD = Statistics.StandardDeviation(succesiveDiffs);
-            //            Vector<int> overFifty = this.rrIntervals.Map(x => (x > 50) ? 1 : 0);
+            RMSSD = Statistics.RootMeanSquare(succesiveDiffs);
+            //SDSD = Statistics.StandardDeviation(succesiveDiffs);
             NN50 = 0;
-            foreach (double x in this.rrIntervals) { NN50 = x > 50 ? NN50 + 1 : NN50; }
+            foreach (double x in succesiveDiffs) { NN50 = (x > 50) ? NN50 + 1 : NN50; }
             pNN50 = 100 * NN50 / this.rrIntervals.Count;
         }
-       
+
 
         #region
         /// <summary>
@@ -132,13 +135,15 @@ namespace EKG_Project.Modules.HRV1
         /// </summary>
         /// <param name="fMin"></param>
         /// <param name="fMax"></param>
-        /// <param name="step"></param>
+        /// <param name="elementsCount"></param>
         /// <returns></returns>
         #endregion
-        private void generateFreqVector(double fMin, double fMax, double step)
+        private void generateFreqVector(double fMin, double fMax, int elementsCount)
         {
-            var elementsCount = (int)Math.Ceiling((fMax - fMin) / step) + 1;
-            f = Vector<double>.Build.Dense(elementsCount, (i) => fMin + i*step);
+            //var elementsCount = (int)Math.Ceiling((fMax - fMin) / step) + 1;
+            //f = Vector<double>.Build.Dense(elementsCount, (i) => fMin + i*step);
+            double step = (fMax - fMin) / elementsCount;
+            f = Vector<double>.Build.Dense(elementsCount, (i) => fMin + i * step);
         }
 
 
@@ -200,11 +205,18 @@ namespace EKG_Project.Modules.HRV1
         #endregion
         private void calculateFreqBased()
         {
-            generateFreqVector(0, 1, 0.1);
+            generateFreqVector(0, 1, this.rrIntervals.Count);
             lombScargle();
 
-            //var temp_vec = Vector<double>.Build.Dense(f.Count, 1);
-            var temp_vec = this.PSD;
+            double df = (double)1000 / rrIntervals.Count;
+            var temp_vec = Vector<double>.Build.Dense(PSD.Count, (i) => PSD[i]*df); 
+
+            for (int i = 0; i < f.Count; i++)
+            {
+                    TP = temp_vec[i] + TP;
+            }
+
+
             //Obliczenie mocy widma w zakresie wysokich częstotliwości (0,15-0,4Hz)
             for (int i = 0; i < f.Count; i++)
             {
@@ -232,8 +244,8 @@ namespace EKG_Project.Modules.HRV1
                 }
             }
 
-                    //Obliczenie stosunku mocy widm niskich częstotliwości do mocy widm wysokich częstotliwości
-                    LFHF = LF / HF;
+            //Obliczenie stosunku mocy widm niskich częstotliwości do mocy widm wysokich częstotliwości
+            LFHF = LF / HF;
         }
 
 
@@ -267,7 +279,7 @@ public static void AlgoTest()
 
             //hrv.samplesToInstants();
             //hrv.instantsToIntervals();
-            hrv.generateFreqVector(0, 1, (double)1/1000);
+            //hrv.generateFreqVector(0, 1, (double)1/1000);
             //Console.WriteLine(hrv.f);
 
             // testowanie lomba
