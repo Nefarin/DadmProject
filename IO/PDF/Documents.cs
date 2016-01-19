@@ -19,12 +19,12 @@ namespace EKG_Project.IO
 
     public Document Document { get; set; }
 
-    public Document CreateDocument()
+    public Document CreateDocument(System.Collections.Generic.List<string> _moduleList)
     {
       Styles.DefineStyles(Document);
 
       Cover cover = new Cover(Document);
-      cover.DefineCover(Document);
+      cover.DefineCover(Document, _moduleList);
       TableOfContents.DefineTableOfContents(Document);
 
       DefineContentSection(Document);

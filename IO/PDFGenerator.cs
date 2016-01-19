@@ -44,9 +44,9 @@ namespace EKG_Project.IO
 
         public void GeneratePDF(System.Collections.Generic.List<string> _moduleList)
         {
-            documentCreator.CreateDocument();
+            documentCreator.CreateDocument(_moduleList);
             MigraDoc.DocumentObjectModel.IO.DdlWriter.WriteToFile(document, "Analysis Report");
-            filename = "PDFexample.pdf";
+            //filename = "PDFexample.pdf";
             PdfDocumentRenderer renderer = new PdfDocumentRenderer(true, PdfSharp.Pdf.PdfFontEmbedding.Always);
             renderer.Document = document;
             renderer.RenderDocument();
