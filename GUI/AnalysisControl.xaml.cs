@@ -151,9 +151,10 @@ namespace EKG_Project.GUI
             //tempList.Add("whole");
             //moduleParams.
          
-               VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
-           
+            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);           
             this.VisualisationPanelUserControl.Visibility = Visibility.Visible; 
+
+
         }
 
         public void updateProgress(AvailableOptions module, double progress)
