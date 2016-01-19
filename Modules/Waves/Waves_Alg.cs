@@ -82,7 +82,13 @@ namespace EKG_Project.Modules.Waves
             }
             return outVec;
         }
-
+        #region
+        /// <summary>
+        /// Work just like wavedec but use only haar wavelet
+        /// http://www.mathworks.com/help/wavelet/ref/wavedec.html
+        /// </summary>
+        /// <returns> list of details and approximation coefficients</returns>
+        #endregion
         public List<Vector<double>> ListHaarDWT(Vector<double> signal, int n)
         {
             //Work just like wavedec but use only haar wavelet
@@ -197,8 +203,8 @@ namespace EKG_Project.Modules.Waves
             int dwtLen = 1;
             if (endInd != startInd)
                 dwtLen = endInd - startInd;
-            //Console.WriteLine(endInd);
-            //Console.WriteLine(dwtLen);
+            else
+                return;
 
             dwt = ListDWT(InputECGData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startInd, dwtLen), _params.DecompositionLevel, _params.WaveType);
 
