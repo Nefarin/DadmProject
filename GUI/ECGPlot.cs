@@ -1471,7 +1471,7 @@ namespace EKG_Project.GUI
 
         public void XAxesControl(double slide)
         {
-            CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "X"));
+            CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "Time [ms]"));
             double min;
             double max;
             double windowsSize = (int)(_windowSize / 10);
@@ -1497,7 +1497,7 @@ namespace EKG_Project.GUI
             lineraXAxis.Maximum = max;
             lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
             lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
-            lineraXAxis.Title = "X";
+            lineraXAxis.Title = "Time [ms]";
 
             CurrentPlot.Axes.Add(lineraXAxis);
             RefreshPlot();
