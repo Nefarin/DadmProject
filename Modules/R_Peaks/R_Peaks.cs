@@ -196,6 +196,12 @@ namespace EKG_Project.Modules.R_Peaks
             }
             else
             {
+               /* Vector<double> Rp1 = OutputData.RPeaks[0].Item2;
+                Vector<double> Rp2 = OutputData.RPeaks[1].Item2;
+                TempInput.setOutputFilePath(@"D:\biomed\DADM\R-peaks\sig\100pt1.txt");
+                TempInput.writeFile(360, Rp1);
+                TempInput.setOutputFilePath(@"D:\biomed\DADM\R-peaks\sig\100pt2.txt");
+                TempInput.writeFile(360, Rp2);*/
                 OutputWorker.Save(OutputData);
                 _ended = true;
             }

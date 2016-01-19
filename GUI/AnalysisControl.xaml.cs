@@ -24,6 +24,7 @@ namespace EKG_Project.GUI
 
         public bool AnalysisInProgress
         {
+            
             get
             {
                 return this._analysisInProgress;
@@ -125,6 +126,7 @@ namespace EKG_Project.GUI
 
         public void processingStarted()
         {
+            this.VisualisationPanelUserControl.Visibility = Visibility.Hidden;
             this.AnalysisInProgress = true;
             Console.WriteLine("Analysis Started");
         }
@@ -136,6 +138,7 @@ namespace EKG_Project.GUI
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
             foreach (var option in modulePanel.getAllOptions())
             {
+                
                 if (option.Set)
                 {
                     tempList.Add(option.Name);
@@ -147,7 +150,9 @@ namespace EKG_Project.GUI
             //tempList.Add("waves");
             //tempList.Add("whole");
             //moduleParams.
+            
             VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
+            this.VisualisationPanelUserControl.Visibility = Visibility.Visible; 
         }
 
         public void updateProgress(AvailableOptions module, double progress)

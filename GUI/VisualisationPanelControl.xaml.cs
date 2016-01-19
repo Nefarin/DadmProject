@@ -71,16 +71,58 @@ namespace EKG_Project.GUI
             if (tabNames.Contains("ECG_BASELINE"))
             {
                 _endDisplay["ECG_BASELINE"] = 1;
+
+                if(tabNames.Contains("HRV2"))
+                {
+                    _endDisplay["HRV2"] = 10;
+                }
+
                 if(tabNames.Contains("R_PEAKS"))
                 {
+
                     _endDisplay["ECG_BASELINE"] = 2;
                     if(tabNames.Contains("WAVES"))
                     {
                         _endDisplay["ECG_BASELINE"] = 3;
+                        bool sA = false;
+                        bool hC = false; 
+                        if(tabNames.Contains("SLEEP_APNEA"))
+                        {
+                            _endDisplay["ECG_BASELINE"] = 5;
+                            sA = true;
+                            
+                        }
                         if (tabNames.Contains("HEART_CLASS"))
                         {
                             _endDisplay["ECG_BASELINE"] = 4;
+                            hC = true;
+                            if (tabNames.Contains("HEART_AXIS"))
+                            {
+                                _endDisplay["HEART_AXIS"] = 9;
+                            }
                         }
+
+                        if (sA==true && hC == true)
+                        {
+                            _endDisplay["ECG_BASELINE"] = 6;
+                        }
+
+                        if(tabNames.Contains("ATRIAL_FIBER"))
+                        {
+                            _endDisplay["ECG_BASELINE"] = 7;
+                        }
+
+                        //if (tabNames.Contains("ATRIAL_FIBER"))
+                        //{
+                        //    _endDisplay["ECG_BASELINE"] = 8;
+                        //}
+
+                        if (tabNames.Contains("QT_DISP"))
+                        {
+                            _endDisplay["ECG_BASELINE"] = 8;
+                        }
+
+
 
                     }
                 }
@@ -104,6 +146,7 @@ namespace EKG_Project.GUI
                 tabItem.Header = dic.Key;
                 tabItem.Content = ecgVDataControl;
                 visulisationDataTabsList.Add(tabItem);
+                //MessageBox.Show(dic.Key);
             }
 
             this.EcgDynamicTab.DataContext = visulisationDataTabsList;

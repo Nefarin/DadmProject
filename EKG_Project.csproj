@@ -34,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'RunApp|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -465,14 +466,6 @@
     <Content Include="DLL\WfdbCsharpLib.pdb" />
     <Resource Include="IO\temp\train_d_label.txt" />
     <Resource Include="IO\temp\train_d.txt" />
-    <Resource Include="IO\temp\TestAnalysis8_Data.xml" />
-    <Resource Include="IO\temp\TestAnalysis6_Data.xml" />
-    <Resource Include="IO\temp\TestAnalysis5_Data.xml" />
-    <Resource Include="IO\temp\TestAnalysis3_Data.xml" />
-    <Resource Include="IO\temp\TestAnalysis2_Data.xml" />
-    <Resource Include="IO\temp\TestAnalysis_Data.xml" />
-    <Resource Include="IO\temp\Analysis6_Data.xml" />
-    <Resource Include="IO\temp\Analysis6_TestModule3.xml" />
     <Resource Include="IO\data\2.xml" />
     <Resource Include="IO\data\3.xml" />
     <Resource Include="IO\data\5.xml" />

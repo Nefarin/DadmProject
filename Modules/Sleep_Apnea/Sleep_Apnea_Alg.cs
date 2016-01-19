@@ -23,8 +23,15 @@ namespace EKG_Project.Modules.Sleep_Apnea
     public partial class Sleep_Apnea : IModule
     {
 
-
-        //function that finds interval between RR peaks [s]
+        #region
+        /// <summary>
+        /// Function that finds intervals between RR peaks
+        /// </summary>
+        /// <param name="freq"> frequency of sampling for signal</param>
+        /// <param name="R_detected"> Signal - number of samples for R peaks </param>
+        /// <returns> RR intervals</returns>
+        #endregion
+        
         List<List<double>> findIntervals(List<uint> R_detected, int freq)
         {
 
@@ -36,7 +43,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             {
                 RR[0].Add((double)(R_detected[i]));
             }
-            for (int i = 0; i < R_detected.Count()-1; i++)
+            for (int i = 0; i < R_detected.Count() - 1; i++)
             {
                 RR[1].Add((((double)R_detected[i + 1] - R_detected[i]) / freq));
             }
@@ -46,7 +53,14 @@ namespace EKG_Project.Modules.Sleep_Apnea
             return RR;
         }
 
-        //use of average filter 
+        #region
+        /// <summary>
+        /// Function that filters RR intervals using average filter
+        /// </summary>
+        /// <param name="RR"> Signal - RR intervals </param>
+        /// <returns> Filtered RR intervals</returns>
+        #endregion
+
         List<List<double>> averageFilter(List<List<double>> RR)
         {
             int okno = 41;
@@ -135,7 +149,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 }
             }
 
-            for (int i = 1; i < length-1; i++)
+            for (int i = 1; i < length - 1; i++)
             {
                 if (correct[i] == false)
                 {
@@ -148,6 +162,14 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
         }
 
+        #region
+        /// <summary>
+        /// Function that resamples RR intervals on 1Hz frequency
+        /// </summary>
+        /// <param name="freq"> frequency of sampling for signal</param>
+        /// <param name="RR_average"> Signal - RR intervals filtered </param>
+        /// <returns> Resampled RR intervals</returns>
+        #endregion
         //resampling on 1Hz frequency        
         List<List<double>> resampling(List<List<double>> RR_average, int freq)
         {
@@ -211,7 +233,14 @@ namespace EKG_Project.Modules.Sleep_Apnea
             return RR_res;
         }
 
-        //Highpass, lowpass filter        
+        #region
+        /// <summary>
+        /// Function that filters RR intervals with highpass and lowpass filters
+        /// </summary>
+        /// <param name="RR_res"> Signal - RR intervals resampled </param>
+        /// <returns> Filtered RR intervals</returns>
+        #endregion
+              
         List<List<double>> HPLP(List<List<double>> RR_res)
         {
             //high-pass filter
@@ -256,7 +285,13 @@ namespace EKG_Project.Modules.Sleep_Apnea
         }
 
 
-
+        #region
+        /// <summary>
+        /// Function that creates Hilbert transform for signal
+        /// </summary>
+        /// <param name="RR_HPLP"> Signal - RR intervals filtered </param>
+        /// <returns> Hilbert's amplitudes and frequencies </returns>
+        #endregion
 
         void hilbert(List<List<double>> RR_HPLP, ref List<List<double>> h_amp, ref List<List<double>> h_freq)
         {
@@ -321,7 +356,15 @@ namespace EKG_Project.Modules.Sleep_Apnea
             return x;
         }
 
-        // Median Filtering using a moving window of 60 points
+        #region
+        /// <summary>
+        /// Function that filters signal using a moving window of 60 points
+        /// </summary>
+        /// <param name="h_freq"> Signal - Hilbert's frequencies </param>
+        /// <param name="h_amp"> Signal - Hilbert's amplitudes </param>
+        /// <returns> Filtered amplitudes and frequencies </returns>
+        #endregion
+
         void median_filter(List<List<double>> h_freq, List<List<double>> h_amp)
         {
             int window_median = 60;
@@ -430,7 +473,16 @@ namespace EKG_Project.Modules.Sleep_Apnea
             }
         }
 
-        // Apnoea detection (if the frequency goes below 0,06 Hz and the amplitude goes above max amplitude the same time)
+        #region
+        /// <summary>
+        /// Function that detects Apnea(if the frequency goes below 0,06 Hz and the amplitude goes above max amplitude the same time)
+        /// </summary>
+        /// <param name="h_freq"> Signal - filtered Hilbert's frequencies </param>
+        /// <param name="h_amp"> Signal - filtered Hilbert's amplitudes </param>
+        /// <returns> The percentage value of sleep apnea in signal (il_Apnea), Hilbert's amplitudes (h_amp) and time periods for which detected apnea (Detected_Apnea) </returns>
+        #endregion
+
+
         List<Tuple<int, int>> apnea_detection(List<List<double>> h_amp, List<List<double>> h_freq, out double il_Apnea)
         {
 

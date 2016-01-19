@@ -10,6 +10,24 @@ namespace EKG_Project.Modules.Heart_Axis
     public partial class Heart_Axis : IModule
     {
 
+        #region Heart Axis Class doc
+        /// <summary>
+        /// Class that calculates Heart Axis
+        /// </summary>
+        #endregion
+
+
+        #region Documentation
+        /// <summary>
+        /// Method calculates pseudo module in first lead
+        /// </summary>
+        /// <param name="Q">Q as int</param>
+        /// <param name="S">S as int</param>
+        /// <param name="signal">array with signal</param>
+        /// <returns>array of doubles with pseudo modules</returns>
+        #endregion
+
+
         /*Pseudo Module*/
 
         private double[] PseudoModule(int Q, int S, double[] signal)
@@ -25,6 +43,16 @@ namespace EKG_Project.Modules.Heart_Axis
             return pseudo_tab;
         }
 
+        #region Documentation
+        /// <summary>
+        /// Method finds maximum in pseudo module
+        /// </summary>
+        /// <param name="Q">Q as int</param>
+        /// <param name="pseudo_tab">array with pseudo modules</param>
+        /// <returns>maximum of array with pseudo modules as int</returns>
+        #endregion
+
+
         /* Finding Max */
 
         private int MaxOfPseudoModule(int Q, double[] pseudo_tab)
@@ -35,8 +63,20 @@ namespace EKG_Project.Modules.Heart_Axis
             return maxIndex;
         }
 
+        #region Documentation
+        /// <summary>
+        /// Method implaments Least-Squeres method
+        /// </summary>
+        /// <param name="signal">array with signal</param>
+        /// <param name="Q">Q as int</param>
+        /// <param name="pseudo_tab">array with pseudo modules</param>
+        /// <param name="frequency">frequency as int</param>
+        /// <returns>fitting parameters as array of doubles</returns>
+        #endregion
+
+
         /*Least-Squares method*/
-       
+
         private double[] LeastSquaresMethod(double []signal, int Q, double[] pseudo_tab, int frequency) // todo: skąd wziąć tablicę samples
         {
             int MaxIndex = MaxOfPseudoModule(Q, pseudo_tab);
@@ -77,7 +117,16 @@ namespace EKG_Project.Modules.Heart_Axis
             int order = 2;
             double[] bestFitCoefficients = Fit.Polynomial(indexes, partSignal, order);
             return bestFitCoefficients;
-        }       
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Method finds maximum from polynomial equation
+        /// </summary>
+        /// <param name="Q">Q</param>
+        /// <param name="fitting_parameters">double array with fitting parameters</param>
+        /// <returns> maximum of polynomial as int</returns>
+        #endregion
 
 
         /*Max of Polynomial*/
@@ -87,7 +136,16 @@ namespace EKG_Project.Modules.Heart_Axis
             int maxOfPoly = (int)Math.Round(dMaxOfPoly, MidpointRounding.AwayFromZero);
             return maxOfPoly;
         }
-  
+
+        #region Documentation
+        /// <summary>
+        /// Method reads the amplitudes from both leads
+        /// </summary>
+        /// <param name="FirstLead">array with signal from first lead</param>
+        /// <param name="SecondLead">array with signal from second lead</param>
+        /// <param name="MaxOfPoly">maximum of polynomial</param>
+        /// <returns>double array with two read amplitudes</returns>
+        #endregion
 
         /*Reading Amplitudes*/
         private double[] ReadingAmplitudes(double[] FirstLead, double[] SecondLead, int MaxOfPoly)
@@ -98,6 +156,13 @@ namespace EKG_Project.Modules.Heart_Axis
             return amplitudes;
             }
 
+        #region Documentation
+        /// <summary>
+        /// Method calculates trigonometrical formula - between lead I and II
+        /// </summary>
+        /// <param name="amplitudes">read amplitudes</param>
+        /// <returns>heart axis in radians as double</returns>
+        #endregion
 
         /* Trigonometrical formula - between I and II */
         private double IandII(double[]amplitudes)

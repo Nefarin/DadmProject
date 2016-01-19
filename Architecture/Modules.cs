@@ -27,25 +27,27 @@ namespace EKG_Project.Architecture
 {
     public class Modules
     {
+        private Dictionary<AvailableOptions, bool> _isComputed;
+
         public static AvailableOptions[] MODULE_ORDER =
         {
             AvailableOptions.ECG_BASELINE,
             AvailableOptions.R_PEAKS,
-            AvailableOptions.WAVES,
-            AvailableOptions.HEART_CLASS,
-            AvailableOptions.HRV1,
+            //AvailableOptions.HRV1,
             AvailableOptions.HRV2,
             AvailableOptions.HRV_DFA,
+            AvailableOptions.WAVES,
             AvailableOptions.FLUTTER,
-            AvailableOptions.SIG_EDR,
-            AvailableOptions.ST_SEGMENT,
+            //AvailableOptions.SIG_EDR,
+            //AvailableOptions.ST_SEGMENT,
             AvailableOptions.SLEEP_APNEA,
             AvailableOptions.ATRIAL_FIBER,
             AvailableOptions.QT_DISP,
             AvailableOptions.FLUTTER,
-            AvailableOptions.HRT,
+            //AvailableOptions.HRT,
+            AvailableOptions.HEART_CLASS,
             AvailableOptions.HEART_AXIS,
-            AvailableOptions.TEST_MODULE
+            //AvailableOptions.TEST_MODULE
         };
 
         Dictionary<AvailableOptions, ModuleParams> _moduleParams;
@@ -63,6 +65,7 @@ namespace EKG_Project.Architecture
 
         public void Init(Dictionary<AvailableOptions, ModuleParams> moduleParams)
         {
+            _isComputed = new Dictionary<AvailableOptions, bool>();
             CurrentModuleIndex = -1;
             CurrentModuleProcessed = 0;
             ModuleParams = moduleParams;
