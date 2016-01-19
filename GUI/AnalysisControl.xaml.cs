@@ -6,22 +6,48 @@ using EKG_Project.Architecture;
 using EKG_Project.Architecture.ProcessingStates;
 using EKG_Project.Architecture.GUIMessages;
 using EKG_Project.Modules;
-
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace EKG_Project.GUI
 {
-    #region Documentation
     /// <summary>
-    /// Interaction logic for AnalysisControl.xaml - class for GUI developers
+    /// Interaction logic for AnalysisControl.xaml
+    /// Handling buttons
     /// </summary>
-    /// 
-    #endregion
-
-
-    public partial class AnalysisControl : UserControl
+    public partial class AnalysisControl : UserControl, INotifyPropertyChanged
     {
+        private bool _analysisInProgress = false;
+
         public string outputPdfPath;
         public string inputFilePath;
+
+        public bool AnalysisInProgress
+        {
+            
+            get
+            {
+                return this._analysisInProgress;
+            }
+            set
+            {
+                this._analysisInProgress = value;
+                this.NotifyPropertyChanged();
+                this.NotifyPropertyChanged("AnalysisNotRunning");
+            }
+        }
+
+        public bool AnalysisNotRunning { get { return !this.AnalysisInProgress; } }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
 
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
@@ -43,21 +69,26 @@ namespace EKG_Project.GUI
             }
 
         }
-        
-        
 
         private void startAnalyseButton_Click(object sender, RoutedEventArgs e)
         {
             foreach (var option in modulePanel.getAllOptions())
             {
+                //modulePa
+                Console.WriteLine("#");
+                Console.WriteLine(option.Name);
+                Console.WriteLine("#");
+
                 if (option.Set)
                 {
                     moduleParams[option.Code] = modulePanel.ModuleOptionAndParams(option.Code).Item2;
                     Console.WriteLine(moduleParams.Count);
                     Console.WriteLine(option.Code);
                     Console.WriteLine(moduleParams);
+                    Console.WriteLine(modulePanel.AnalysisName);
+
                     //Console.WriteLine(modulePanel.ModuleOptionAndParams(option.Code).Item2);
-                    Console.WriteLine(option.Name + " is set."); 
+                    Console.WriteLine(option.Name + " is set.");
                 }
 
             }
@@ -69,7 +100,7 @@ namespace EKG_Project.GUI
             }
             else
             {
-                // Nothing is checked - let user know somehow.
+                MessageBox.Show("No analysis selected. Please select at least one analysis.", "Cannot start calculations", MessageBoxButton.OK);
             }
 
 
@@ -77,6 +108,8 @@ namespace EKG_Project.GUI
             //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
 
         }
+
+        IO.PDFGenerator pdf;
 
         private void pdfButton_Click(object sender, RoutedEventArgs e)
         {
@@ -90,26 +123,40 @@ namespace EKG_Project.GUI
             {
                 outputPdfPath = fileDialog.FileName;
                 checkPlayButton();
-
+                pdf = new IO.PDFGenerator(outputPdfPath);
             }
-
         }
 
         public void processingStarted()
         {
+            this.VisualisationPanelUserControl.Visibility = Visibility.Hidden;
+            this.AnalysisInProgress = true;
             Console.WriteLine("Analysis Started");
         }
 
         public void processingEnded()
         {
+            this.AnalysisInProgress = false;
             Console.WriteLine("Analysis Ended");
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
+            foreach (var option in modulePanel.getAllOptions())
+            {
+                
+                if (option.Set)
+                {
+                    tempList.Add(option.Name);
+                }
+            }
             //tempList.Add("ecgBaseline");
             //tempList.Add("ecgBasic");
             //tempList.Add("r_Peaks");
-            tempList.Add("waves");
+            //tempList.Add("waves");
             //tempList.Add("whole");
-            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(tempList);
+            //moduleParams.
+            
+            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
+            this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
+            pdf.GeneratePDF(tempList);
         }
 
         public void updateProgress(AvailableOptions module, double progress)
@@ -148,13 +195,10 @@ namespace EKG_Project.GUI
             Console.WriteLine("File is not loaded.");
         }
 
-        #region Documentation
         /// <summary>
         /// analyzeEvent - do not delete - just develop - will be used by both GUI and Architects
         /// </summary>
         /// <param name="message"></param>
-        ///
-        #endregion
         private void analyzeEvent(IGUIMessage message)
         {
             message.Read(this);
@@ -162,10 +206,13 @@ namespace EKG_Project.GUI
 
         private void checkPlayButton()
         {
-           // this method does not make sense - analysis should be performed even if the user does not want to save pdf.
-           //startAnalyseButton.IsEnabled = File.Exists(inputFilePath) && Directory.Exists(Path.GetDirectoryName(outputPdfPath));
+            // this method does not make sense - analysis should be performed even if the user does not want to save pdf.
+            //startAnalyseButton.IsEnabled = File.Exists(inputFilePath) && Directory.Exists(Path.GetDirectoryName(outputPdfPath));
         }
 
-
+        private void buttonAbort_Click(object sender, RoutedEventArgs e)
+        {
+            //MessageBox.Show("Analysis aborted.");
+        }
     }
 }

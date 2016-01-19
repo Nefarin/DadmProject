@@ -10,7 +10,6 @@ namespace EKG_Project.Modules.TestModule3
     {
         private int _scale;
         private int _step;
-        private string _analysisName;
 
         public int Scale
         {
@@ -38,25 +37,11 @@ namespace EKG_Project.Modules.TestModule3
             }
         }
 
-        public string AnalysisName
-        {
-            get
-            {
-                return _analysisName;
-            }
-
-            set
-            {
-                _analysisName = value;
-            }
-        }
-
         public TestModule3_Params(int scale, int step, string analysisName)
         {
             this.Scale = scale;
             this.Step = step;
             this.AnalysisName = analysisName;
-
         }
     }
 }

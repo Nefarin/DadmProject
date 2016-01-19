@@ -34,15 +34,14 @@ namespace EKG_Project.GUI
         //3 - plot and table and histogram 
         private Dictionary<string, uint> modulesVisualisationNeeds = new Dictionary<string, uint>()
         {
-            {"ecgBaseline", 1 },
+            {"ECG_BASELINE", 0 },
             {"ecgBasic", 0 },
-            {"r_Peaks", 3 },
-            {"waves", 0 },
-            { "heart_Class" ,0},
-            { "sleep_Apnea", 0 },
-            { "flutter", 0 },
-            { "heart_Axis", 0 },
-            {"artrial_Fibr", 0 }
+            {"R_PEAKS", 3 },
+            {"WAVES", 0 },
+            { "HEART_CLASS", 0 },
+            { "HEART_AXIS", 0 },
+            {"ARTRIAL_FIBER", 0 },
+            {"HRV2", 3 }
         };
 
         public VisualisationDataControl()
@@ -73,31 +72,38 @@ namespace EKG_Project.GUI
             this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
         }
 
-        public VisualisationDataControl(string moduleName)
+        public VisualisationDataControl(string analyseName, string moduleName, KeyValuePair<string, int> moduleDict)
         {
             InitializeComponent();
             visulisationDataTabsList = new List<TabItem>();
-            
+
+            if (moduleDict.Value == 8)
+            {
+                modulesVisualisationNeeds[moduleName] = 1;
+
+            }
+
+
 
             //if needed and what where needed? 
             switch (modulesVisualisationNeeds[moduleName])
             {
                 case 0:                  
-                    StartPlot(moduleName);
+                    StartPlot(analyseName, moduleName, moduleDict);
                     break;
                     
-                case 1:                    
-                    StartPlot(moduleName);
-                    StartTable(moduleName);
+                case 1:
+                    StartPlot(analyseName, moduleName, moduleDict);
+                    StartTable(analyseName, moduleName, moduleDict);
                     break;                   
                 case 2:
-                    StartPlot(moduleName);
-                    StartHistogram(moduleName);
+                    StartPlot(analyseName, moduleName, moduleDict);
+                    StartHistogram(analyseName, moduleName, moduleDict);
                     break;                   
-                case 3:                   
-                    StartPlot(moduleName);
-                    StartTable(moduleName);
-                    StartHistogram(moduleName);
+                case 3:
+                    StartPlot(analyseName, moduleName, moduleDict);
+                    StartTable(analyseName, moduleName, moduleDict);
+                    StartHistogram(analyseName, moduleName, moduleDict);
                     break;
                     
                 default:
@@ -105,14 +111,20 @@ namespace EKG_Project.GUI
                             
             }
 
+            if (moduleDict.Value == 9)
+            {
+                //StartPlot(analyseName, "HEART_AXIS", new KeyValuePair<string, int>( "HEART_AXIS", 9 ) );
+            }
+
 
             this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
 
         }
 
-        public void StartPlot(string modName)
+
+        public void StartPlot(string anName,string modName, KeyValuePair<string, int> moduleDic)
         {
-            VisualisationPlotControl ecgVPControl = new VisualisationPlotControl(modName);
+            VisualisationPlotControl ecgVPControl = new VisualisationPlotControl(anName,modName, moduleDic);
 
             TabItem ecgBaselineTab = new TabItem();
             ecgBaselineTab.Header = "Plot";
@@ -120,9 +132,9 @@ namespace EKG_Project.GUI
             visulisationDataTabsList.Add(ecgBaselineTab);
         }
 
-        public void StartTable(string modName)
+        public void StartTable(string anName, string modName, KeyValuePair<string, int> moduleDict)
         {
-            VisualisationTableControl ecgVTControl = new VisualisationTableControl();
+            VisualisationTableControl ecgVTControl = new VisualisationTableControl(anName, modName, moduleDict);
 
             TabItem tableControl = new TabItem();
             tableControl.Header = "Table";
@@ -130,7 +142,7 @@ namespace EKG_Project.GUI
             visulisationDataTabsList.Add(tableControl);
         }
 
-        public void StartHistogram(string modName)
+        public void StartHistogram(string anName, string modName, KeyValuePair<string, int> moduleDict)
         {
             VisualisationHistogramControl ecgVHControl = new VisualisationHistogramControl();
 

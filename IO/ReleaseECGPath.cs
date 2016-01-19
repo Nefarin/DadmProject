@@ -13,6 +13,11 @@ namespace EKG_Project.IO
             throw new NotImplementedException();
         }
 
+        public string getCurrentPath()
+        {
+            throw new NotImplementedException();
+        }
+
         public string getDataPath()
         {
             throw new NotImplementedException();
