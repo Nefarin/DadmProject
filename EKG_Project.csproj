@@ -298,7 +298,6 @@
     <Compile Include="IO\IECG_Worker.cs" />
     <Compile Include="IO\MITBIHConverter.cs" />
     <Compile Include="IO\PDFGenerator.cs" />
-    <Compile Include="IO\PDF\AddSvgAsPage.cs" />
     <Compile Include="IO\PDF\Cover.cs" />
     <Compile Include="IO\PDF\Documents.cs" />
     <Compile Include="IO\PDF\Styles.cs" />
