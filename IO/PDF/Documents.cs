@@ -8,27 +8,32 @@ namespace EKG_Project.IO
 {
   class Documents
   {
-    public static Document CreateDocument()
+    public Documents ()
     {
-      // Create a new MigraDoc document
-      Document document = new Document();
-      document.Info.Title = "Analisys Report";
-      document.Info.Subject = "";
-      document.Info.Author = "Krzysztof Kaganiec";
+        // Create a new MigraDoc document
+        Document = new Document();
+        Document.Info.Title = "Analisys Report";
+        Document.Info.Subject = "";
+        Document.Info.Author = "Krzysztof Kaganiec";
+    }
 
-      Styles.DefineStyles(document);
+    public Document Document { get; set; }
 
-      Cover cover = new Cover(document);
-      cover.DefineCover(document);
-      TableOfContents.DefineTableOfContents(document);
+    public Document CreateDocument()
+    {
+      Styles.DefineStyles(Document);
 
-      DefineContentSection(document);
+      Cover cover = new Cover(Document);
+      cover.DefineCover(Document);
+      TableOfContents.DefineTableOfContents(Document);
+
+      DefineContentSection(Document);
 
       //Paragraphs.DefineParagraphs(document);
-      Tables.DefineTables(document);
+      Tables.DefineTables(Document);
       //Charts.DefineCharts(document);
 
-      return document;
+      return Document;
     }
 
     /// <summary>
