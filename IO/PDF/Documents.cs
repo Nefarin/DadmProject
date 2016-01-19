@@ -25,7 +25,8 @@ namespace EKG_Project.IO
 
       Cover cover = new Cover(Document);
       cover.DefineCover(Document, _moduleList);
-      TableOfContents.DefineTableOfContents(Document);
+      TableOfContents tableContent = new TableOfContents(Document);
+      tableContent.DefineTableOfContents(_moduleList);
 
       DefineContentSection(Document);
 
