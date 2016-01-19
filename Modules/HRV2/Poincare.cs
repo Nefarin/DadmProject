@@ -54,6 +54,15 @@ namespace EKG_Project.Modules.HRV2
 
             return SD2;
         }
+
+        private Vector<double> eclipseCenter()
+        {
+            double[] array = { RR_intervals_x.Average(), RR_intervals_x.Average()};
+            Vector<double> eclipseCenter = Vector<double>.Build.DenseOfArray(array);
+
+            return eclipseCenter;
+        }
+
     }
 
 }

@@ -131,6 +131,8 @@ namespace EKG_Project.Modules.HRV2
                 OutputData.SD1.Add(new Tuple<string, double>(InputData.RRInterval[_currentChannelIndex].Item1, SD1()));
                 OutputData.SD2.Add(new Tuple<string, double>(InputData.RRInterval[_currentChannelIndex].Item1, SD2()));
 
+                OutputData.ElipseCenter.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, eclipseCenter()));
+
                 OutputData.PoincarePlotData_x.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_x));
                 OutputData.PoincarePlotData_y.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_y));
 
