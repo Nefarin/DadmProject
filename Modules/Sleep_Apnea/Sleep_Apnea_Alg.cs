@@ -370,78 +370,40 @@ namespace EKG_Project.Modules.Sleep_Apnea
             int window_median = 60;
             double[] amp = new double[window_median];
             double[] freq = new double[window_median];
-            int i, j, k, l;
-            double median_amp = 0, median_freq = 0;
+            double[] amp_sorted = new double[window_median];
+            double[] freq_sorted = new double[window_median];
+            int i, j;
 
-            //Filter for samples divisible by 60
-            for (i = 0; i < h_freq[0].Count; i++)
+            //poczatkowe wypelnienie okna
+            for (i = 0; i < window_median; i++)
             {
-                if (i % window_median == 0 && i > 0)
-                {
-                    k = (i / window_median) - 1;
-                    l = 0;
-                    for (j = 0 + window_median * k; j < window_median + window_median * k; j++)
-                    {
-                        freq[l] = h_freq[1][j];
-                        amp[l] = h_amp[1][j];
-                        l++;
-                    }
-                    //Sorting arrays                    
-                    Array.Sort(freq);
-                    Array.Sort(amp);
-                    //Finding the median of the arrays
-                    if (freq.Length % 2 != 0)
-                    {
-                        median_freq = freq[(int)((freq.Length - 1) / 2)];
-                        median_amp = amp[(int)((amp.Length - 1) / 2)];
-                    }
-                    else
-                    {
-                        median_freq = (freq[(int)(Math.Floor(((double)freq.Length - 1) / 2))] + freq[(int)(Math.Floor(((double)freq.Length - 1) / 2)) + 1]) * 0.5;
-                        median_amp = (amp[(int)(Math.Floor(((double)amp.Length - 1) / 2))] + amp[(int)(Math.Floor(((double)amp.Length - 1) / 2)) + 1]) * 0.5;
-                    }
-                    //Writing filtered samples in output arrays
-                    for (j = 0 + window_median * k; j < window_median + window_median * k; j++)
-                    {
-                        h_freq[1][j] = median_freq;
-                        h_amp[1][j] = median_amp;
-                    }
-                }
+                amp[i] = h_amp[1][i];
+                amp_sorted[i] = h_amp[1][i];
+                freq[i] = h_freq[1][i];
+                freq_sorted[i] = h_freq[1][i];
             }
+            Array.Sort(amp_sorted);
+            Array.Sort(freq_sorted);
+            h_amp[1][window_median/2] = amp_sorted[window_median / 2]; // tu ma byc srednia
+            h_freq[1][window_median/2] = freq_sorted[window_median / 2];
 
-            //Filter for another samples
-            if (h_freq[0].Count() % window_median != 0)
+            int last_index = 0;
+            for (i = window_median + 1, j = window_median/2+1; i < h_amp[1].Count; i++, j++)
             {
-                int start_id = (int)(Math.Floor((double)h_freq[0].Count / window_median) * window_median);
-                int stop_id = h_freq[0].Count - 1;
-                double[] amp1 = new double[stop_id - start_id + 1];
-                double[] freq1 = new double[stop_id - start_id + 1];
-                j = start_id;
-                for (i = 0; i < freq1.Length; i++)
+                amp[last_index] = h_amp[1][i];
+                Array.Copy(amp, amp_sorted, amp.Length);
+                Array.Sort(amp_sorted);
+                h_amp[1][j] = amp_sorted[window_median / 2];
+
+                freq[last_index] = h_freq[1][i];
+                Array.Copy(freq, freq_sorted, freq.Length);
+                Array.Sort(freq_sorted);
+                h_freq[1][j] = freq_sorted[window_median / 2];
+
+                last_index++;
+                if(last_index % window_median == 0)
                 {
-                    freq1[i] = h_freq[1][j];
-                    amp1[i] = h_amp[1][j];
-                    j++;
-                }
-                //Sorting arrays
-                Array.Sort(freq1);
-                Array.Sort(amp1);
-                //Finding the median of the arrays
-                if (freq1.Length % 2 != 0)
-                {
-                    median_freq = freq1[(int)((freq1.Length - 1) / 2)];
-                    median_amp = amp1[(int)((amp1.Length - 1) / 2)];
-                }
-                else
-                {
-                    median_freq = (freq1[(int)(Math.Floor(((double)freq1.Length - 1) / 2))] + freq1[(int)(Math.Floor(((double)freq1.Length - 1) / 2)) + 1]) * 0.5;
-                    median_amp = (amp1[(int)(Math.Floor(((double)amp1.Length - 1) / 2))] + amp1[(int)(Math.Floor(((double)amp1.Length - 1) / 2)) + 1]) * 0.5;
-                }
-                //Writing filtered samples to output arrays
-                for (i = start_id; i <= stop_id; i++)
-                {
-                    h_freq[1][i] = median_freq;
-                    h_amp[1][i] = median_amp;
+                    last_index = 0;
                 }
             }
         }
