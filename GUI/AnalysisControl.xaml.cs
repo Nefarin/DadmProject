@@ -123,6 +123,8 @@ namespace EKG_Project.GUI
             {
                 outputPdfPath = fileDialog.FileName;
                 checkPlayButton();
+
+                //EKG_Project.IO.PDF.AddSvgAsPage test = new EKG_Project.IO.PDF.AddSvgAsPage();
                 pdf = new IO.PDFGenerator(outputPdfPath);
             }
         }
@@ -156,7 +158,15 @@ namespace EKG_Project.GUI
             
             VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
             this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
-            pdf.GeneratePDF(tempList);
+
+            IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
+            data.AnalisysName = modulePanel.AnalysisName;
+            data.ModuleList = tempList;
+            data.Filename = this.inputFilePath;
+            pdf.GeneratePDF(data);
+
+            IO.DebugECGPath path = new IO.DebugECGPath();
+            IO.PDF.AddSvgAsPage add = new IO.PDF.AddSvgAsPage(pdf.filename, path.getResourcesPath() + "\\savetopdfd.pdf");
         }
 
         public void updateProgress(AvailableOptions module, double progress)
