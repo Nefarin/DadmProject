@@ -68,7 +68,7 @@ namespace EKG_Project.Architecture
             _isComputed = new Dictionary<AvailableOptions, bool>();
             CurrentModuleIndex = -1;
             CurrentModuleProcessed = 0;
-            ModuleParams = moduleParams;
+            ModuleParams = new Dictionary<AvailableOptions, ModuleParams>(moduleParams);
         }
 
         public void initNextModule()
