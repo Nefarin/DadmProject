@@ -791,9 +791,16 @@ namespace EKG_Project.GUI
                 _windowSize = _windowSize / _scalingPlotValue;
                 System.Windows.MessageBox.Show("windowssize=" + _windowSize);
             }
+            else if(_analyseSamples<30000)
+            {
+                _scalingPlotValue = 30;
+                _windowSize = ((_analyseSamples / _analyseFrequency));
+                //_windowSize = _windowSize / 10;
+                _windowSize = _windowSize / _scalingPlotValue;
+            }
             else
             {
-                _scalingPlotValue = 10;
+                _scalingPlotValue = 200;
                 _windowSize = ((_analyseSamples / _analyseFrequency));
                 //_windowSize = _windowSize / 10;
                 _windowSize = _windowSize / _scalingPlotValue;
