@@ -21,13 +21,16 @@ namespace EKG_Project.GUI
     class ECGPlot
     {
         public PlotModel CurrentPlot { get; set; }
-        private int _windowSize;
+        private double _windowSize;
         private int _beginingPoint;
+        private int _scalingPlotValue; 
         private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
         private Basic_Data_Worker _ecg_Basic_Data_Worker;
         private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
         private bool first;
-        private bool _visible; 
+        private bool _visible;
+        private double _analyseFrequency;
+        private double _analyseSamples;
 
         private R_Peaks_Data _r_PeaksData;
         private ECG_Baseline_Data _ecg_Baseline_Data;
@@ -126,7 +129,7 @@ namespace EKG_Project.GUI
             //};
 
             //CurrentPlot.le
-            _windowSize = 3000;
+            //_windowSize = 3000;
             _beginingPoint = 0;
             first = true;
             _visible = true;
@@ -770,9 +773,41 @@ namespace EKG_Project.GUI
 
         }
 
-        public void DisplayControler(Dictionary<string, List<Tuple<string, Vector<double>>>> dataToDisplayV, Dictionary<string, List<Tuple<string, List<int>>>> dataToDisplayL)
+        public void DisplayControler(Dictionary<string, List<Tuple<string, Vector<double>>>> dataToDisplayV, Dictionary<string, List<Tuple<string, List<int>>>> dataToDisplayL, uint freq, uint samples)
         {
             bool wasEcgBaselineSet = false;
+            _analyseFrequency = freq;
+            //_analyseFrequency = _analyseFrequency
+            
+
+            _analyseSamples = samples;
+
+            if(_analyseSamples<10000)
+            {
+                _scalingPlotValue = 10;
+                _windowSize =((_analyseSamples/_analyseFrequency));
+                //System.Windows.MessageBox.Show("windowssize=" + _windowSize);
+                //_windowSize = _windowSize / 10;
+                _windowSize = _windowSize / _scalingPlotValue;
+                //System.Windows.MessageBox.Show("windowssize=" + _windowSize);
+            }
+            else if(_analyseSamples<30000)
+            {
+                _scalingPlotValue = 30;
+                _windowSize = ((_analyseSamples / _analyseFrequency));
+                //_windowSize = _windowSize / 10;
+                _windowSize = _windowSize / _scalingPlotValue;
+            }
+            else
+            {
+                _scalingPlotValue = 200;
+                _windowSize = ((_analyseSamples / _analyseFrequency));
+                //_windowSize = _windowSize / 10;
+                _windowSize = _windowSize / _scalingPlotValue;
+            }
+
+            //System.Windows.MessageBox.Show("windowssize=" + _windowSize);
+
             List<string> modulesToDisplay = new List<string>();
            
             foreach (var data in dataToDisplayV)
@@ -919,9 +954,9 @@ namespace EKG_Project.GUI
                 ls.MarkerStrokeThickness = 1;
 
 
-                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                for (int i = _beginingPoint; (i <= _analyseSamples && i < signalVector.Count()); i++)
                 {
-                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                    ls.Points.Add(new DataPoint(i/_analyseFrequency, signalVector[i]));
                 }
 
                 CurrentPlot.Series.Add(ls);
@@ -942,10 +977,12 @@ namespace EKG_Project.GUI
                 //lineraYAxis.Maximum = 80.0;
                 lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
                 lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
-                lineraYAxis.Title = "Voltage [mV]";
+                //lineraYAxis.Title = "Voltage [mV]";
+                lineraYAxis.Title = "Amplitude [mV]";
 
                 CurrentPlot.Axes.Add(lineraYAxis);
-                _windowSize = _ecg_Baseline_Data.SignalsFiltered.First().Item2.Count;
+                //_windowSize = _ecg_Baseline_Data.SignalsFiltered.First().Item2.Count;
+                
             }
             else
             {
@@ -967,9 +1004,13 @@ namespace EKG_Project.GUI
                 ls.MarkerStrokeThickness = 1;
 
 
-                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                //for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                //{
+                //    ls.Points.Add(new DataPoint(i/_analyseFrequency, signalVector[i]));
+                //}
+                for (int i = _beginingPoint; (i <= _analyseSamples && i < signalVector.Count()); i++)
                 {
-                    ls.Points.Add(new DataPoint(i, signalVector[i]));
+                    ls.Points.Add(new DataPoint(i / _analyseFrequency, signalVector[i]));
                 }
 
 
@@ -977,15 +1018,17 @@ namespace EKG_Project.GUI
 
             }
 
+
             var lineraXAxis = new LinearAxis();
             lineraXAxis.Position = AxisPosition.Bottom;
             lineraXAxis.Minimum = 0;
-            lineraXAxis.Maximum = 1000.0;
+            lineraXAxis.Maximum = _windowSize;
+            //System.Windows.MessageBox.Show("linearaxis maximum= " + lineraXAxis.Maximum);
             lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
             lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
-            lineraXAxis.Title = "X";
-
+            lineraXAxis.Title = "Time [s]";
             CurrentPlot.Axes.Add(lineraXAxis);
+            
 
             RefreshPlot();
         }
@@ -1016,15 +1059,26 @@ namespace EKG_Project.GUI
                 //rPeaksSeries.DataFieldTag = "R_Peak_" + signal.Item1;
 
 
-                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                //for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                //{
+                //    if (r_PeaksVector.Contains(i))
+                //    {
+                //        rPeaksSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+
+                //        addR_Peak = true;
+                //    }
+                //}
+
+                for (int i = _beginingPoint; (i <= _analyseSamples && i < signalVector.Count()); i++)
                 {
                     if (r_PeaksVector.Contains(i))
                     {
-                        rPeaksSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+                        rPeaksSeries.Points.Add(new ScatterPoint { X = i/_analyseFrequency, Y = signalVector[i], Size = 3 });
 
                         addR_Peak = true;
                     }
                 }
+
 
                 if (addR_Peak)
                 {
@@ -1072,11 +1126,20 @@ namespace EKG_Project.GUI
 
 
 
-                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                //for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                //{
+                //    if (waveList.Contains(i))
+                //    {
+                //        waveSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+
+                //        addWave = true;
+                //    }
+                //}
+                for (int i = _beginingPoint; (i <= _analyseSamples && i < signalVector.Count()); i++)
                 {
                     if (waveList.Contains(i))
                     {
-                        waveSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+                        waveSeries.Points.Add(new ScatterPoint { X = i/_analyseFrequency, Y = signalVector[i], Size = 3 });
 
                         addWave = true;
                     }
@@ -1103,7 +1166,7 @@ namespace EKG_Project.GUI
             }
 
             //wyśiwtlenie ecgBaseline var signal in _ecg_Baseline_Data.Data.SignalsFiltered
-            
+
 
             //List<Tuple<string, List<int>>> _hear_Class_Data_Trans;
 
@@ -1113,12 +1176,36 @@ namespace EKG_Project.GUI
 
 
             //bool addHeartClass = false;
+
+            //foreach (var t in _hear_Class_Data_Trans)
+            //{
+
+            //    foreach (int val in t.Item2)
+            //    {
+            //        if (val <= (_beginingPoint + _windowSize))
+            //        {
+            //            Double yvalue = _ecg_Baseline_Data.SignalsFiltered.First(a => a.Item1 == "II").Item2[val];
+            //            if (yvalue > 0)
+            //            {
+            //                yvalue += 3;
+            //            }
+            //            else
+            //            {
+            //                yvalue -= 6;
+            //            }
+            //            CurrentPlot.Annotations.Add(new TextAnnotation { Text = t.Item1, TextPosition = new DataPoint(val, yvalue) });                       
+            //            //heartClassSeries.Points.Add(new ScatterPoint { X = val, Y = yvalue, Size = 3 });
+            //            //addHeartClass = true;
+            //        }
+            //    }
+            //}
+
             foreach (var t in _hear_Class_Data_Trans)
             {
-                
+
                 foreach (int val in t.Item2)
                 {
-                    if (val <= (_beginingPoint + _windowSize))
+                    if (val <= (_analyseSamples))
                     {
                         Double yvalue = _ecg_Baseline_Data.SignalsFiltered.First(a => a.Item1 == "II").Item2[val];
                         if (yvalue > 0)
@@ -1129,15 +1216,18 @@ namespace EKG_Project.GUI
                         {
                             yvalue -= 6;
                         }
-                        CurrentPlot.Annotations.Add(new TextAnnotation { Text = t.Item1, TextPosition = new DataPoint(val, yvalue) });                       
+                        CurrentPlot.Annotations.Add(new TextAnnotation { Text = t.Item1, TextPosition = new DataPoint(val/_analyseFrequency, yvalue) });
                         //heartClassSeries.Points.Add(new ScatterPoint { X = val, Y = yvalue, Size = 3 });
                         //addHeartClass = true;
                     }
                 }
             }
+
+
+
             //if(addHeartClass)
             //{
-             //   CurrentPlot.Series.Add(heartClassSeries);
+            //   CurrentPlot.Series.Add(heartClassSeries);
             //}
 
             RefreshPlot();
@@ -1162,12 +1252,24 @@ namespace EKG_Project.GUI
 
 
 
-                for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                //for (int i = _beginingPoint; (i <= (_beginingPoint + _windowSize) && i < signalVector.Count()); i++)
+                //{
+
+                //    if (_t_EndLocal.Contains(i) && i>0)
+                //    {
+                //        waveSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+
+                //        addWave = true;
+                //    }
+                //}
+
+
+                for (int i = _beginingPoint; (i <= _analyseSamples && i < signalVector.Count()); i++)
                 {
 
-                    if (_t_EndLocal.Contains(i) && i>0)
+                    if (_t_EndLocal.Contains(i) && i > 0)
                     {
-                        waveSeries.Points.Add(new ScatterPoint { X = i, Y = signalVector[i], Size = 3 });
+                        waveSeries.Points.Add(new ScatterPoint { X = i/_analyseFrequency, Y = signalVector[i], Size = 3 });
 
                         addWave = true;
                     }
@@ -1471,36 +1573,71 @@ namespace EKG_Project.GUI
 
         public void XAxesControl(double slide)
         {
-            CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "X"));
+
+            CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "Time [s]"));
             double min;
             double max;
-            double windowsSize = (int)(_windowSize / 10);
-            if(slide == 0)
+            //double windowsSize = (int)(_windowSize / 10);
+            //double windowsSize = _windowSize * 10;
+            double windowsSize = _windowSize * _scalingPlotValue;
+            if (slide == 0)
             {
                 min = 0;
-                max = windowsSize;
-            }
-            else if(slide > 0.9)
-            {
                 max = _windowSize;
-                min = max - windowsSize;
+            }
+            else if (slide > 0.9)
+            {
+                max = windowsSize;
+                min = max - _windowSize;
             }
             else
             {
-                min = _windowSize*slide;
-                max = min + windowsSize;
+                min = windowsSize * slide;
+                max = min + _windowSize;
             }
-            
+
             var lineraXAxis = new LinearAxis();
             lineraXAxis.Position = AxisPosition.Bottom;
             lineraXAxis.Minimum = min;
             lineraXAxis.Maximum = max;
             lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
             lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
-            lineraXAxis.Title = "X";
+            lineraXAxis.Title = "Time [s]";
 
             CurrentPlot.Axes.Add(lineraXAxis);
             RefreshPlot();
+
+            //may it resovle sync problem?
+            //CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "Time [s]"));
+            //double min;
+            //double max;
+            //double windowsSize = (int)(_windowSize / 10);
+            //if(slide == 0)
+            //{
+            //    min = 0;
+            //    max = windowsSize;
+            //}
+            //else if(slide > 0.9)
+            //{
+            //    max = _windowSize;
+            //    min = max - windowsSize;
+            //}
+            //else
+            //{
+            //    min = _windowSize*slide;
+            //    max = min + windowsSize;
+            //}
+
+            //var lineraXAxis = new LinearAxis();
+            //lineraXAxis.Position = AxisPosition.Bottom;
+            //lineraXAxis.Minimum = min;
+            //lineraXAxis.Maximum = max;
+            //lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
+            //lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
+            //lineraXAxis.Title = "Time [s]";
+
+            //CurrentPlot.Axes.Add(lineraXAxis);
+            //RefreshPlot();
         }
 
 
@@ -1509,16 +1646,24 @@ namespace EKG_Project.GUI
         {
             string filename;
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.DefaultExt = ".svg";
-            dlg.Filter = "SVG documents (.svg)|*.svg";
+            //dlg.DefaultExt = ".svg";
+            //dlg.Filter = "SVG documents (.svg)|*.svg";
+            dlg.DefaultExt = ".pdf";
+            dlg.Filter = "PDF documents (.pdf)|*.pdf";
             if (dlg.ShowDialog() == true)
             {
                 filename = dlg.FileName;
 
+                //using (var stream = System.IO.File.Create(filename))
+                //{
+                //    var exporter = new SvgExporter() { Width = 600, Height = 400 };
+                //    exporter.Export(CurrentPlot, stream);
+                //}
+
                 using (var stream = System.IO.File.Create(filename))
                 {
-                    var exporter = new SvgExporter() { Width = 600, Height = 400 };
-                    exporter.Export(CurrentPlot, stream);
+                    var pdfExporter = new PdfExporter() { Width = 600, Height = 400 };
+                    pdfExporter.Export(CurrentPlot, stream);
                 }
 
             }
@@ -1528,16 +1673,23 @@ namespace EKG_Project.GUI
         {
             string filename;
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.DefaultExt = ".svg";
-            //dlg.Filter = "Text documents (.txt)|*.txt";
+            //dlg.DefaultExt = ".svg";
+            dlg.DefaultExt = ".pdf";
+            dlg.Filter = "PDF documents (.pdf)|*.pdf";
             if (dlg.ShowDialog() == true)
             {
                 filename = dlg.FileName;
 
+                //using (var stream = System.IO.File.Create(filename))
+                //{
+                //    var exporter = new SvgExporter() { Width = 600, Height = 400 };
+                //    exporter.Export(CurrentPlot, stream);
+                //}
+
                 using (var stream = System.IO.File.Create(filename))
                 {
-                    var exporter = new SvgExporter() { Width = 600, Height = 400 };
-                    exporter.Export(CurrentPlot, stream);
+                    var pdfExporter = new PdfExporter() { Width = 600, Height = 400 };
+                    pdfExporter.Export(CurrentPlot, stream);
                 }
 
             }
