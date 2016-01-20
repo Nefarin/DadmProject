@@ -86,6 +86,7 @@ namespace EKG_Project.GUI
                 isComputed = new Dictionary<AvailableOptions, bool>();
                 BeginAnalysis analysisParams = new BeginAnalysis(moduleParams);
                 Communication.SendGUIMessage(analysisParams);
+                moduleParams = new Dictionary<AvailableOptions, ModuleParams>();
             }
             else
             {
