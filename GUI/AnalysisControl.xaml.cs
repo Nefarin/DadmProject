@@ -83,6 +83,7 @@ namespace EKG_Project.GUI
 
             if (moduleParams.Count > 0)
             {
+                isComputed = new Dictionary<AvailableOptions, bool>();
                 BeginAnalysis analysisParams = new BeginAnalysis(moduleParams);
                 Communication.SendGUIMessage(analysisParams);
             }
@@ -159,7 +160,16 @@ namespace EKG_Project.GUI
             }
             else
             {
-                isComputed.Add(module, true);
+                try
+                {
+                    isComputed.Add(module, true);
+                }
+                
+                catch (Exception e)
+                {
+
+                }
+
 
             }
         }
