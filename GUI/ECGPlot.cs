@@ -1606,6 +1606,7 @@ namespace EKG_Project.GUI
             CurrentPlot.Axes.Add(lineraXAxis);
             RefreshPlot();
 
+            //may it resovle sync problem?
             //CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "Time [s]"));
             //double min;
             //double max;
