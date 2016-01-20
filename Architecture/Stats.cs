@@ -25,9 +25,10 @@ using System.Collections.Generic;
 // TO DO
 namespace EKG_Project.Architecture
 {
-    public class Modules
+    public class Stats
     {
         private Dictionary<AvailableOptions, bool> _isComputed;
+        private Dictionary<AvailableOptions, Dictionary<String, String>> _results;
 
         public static AvailableOptions[] MODULE_ORDER =
         {
@@ -50,32 +51,30 @@ namespace EKG_Project.Architecture
             //AvailableOptions.TEST_MODULE
         };
 
-        Dictionary<AvailableOptions, ModuleParams> _moduleParams;
         private string _analysisName;
         private int _currentModuleIndex;
         private int _currentModuleProcessed;
         private AvailableOptions _currentOption;
-        private bool _fileLoaded = false;
-        IModule _currentModule;
+        IModuleStats _currentStats;
 
-        public Modules(string analysisName)
+        public Stats(string analysisName)
         {
             AnalysisName = analysisName;
         }
 
-        public void Init(Dictionary<AvailableOptions, ModuleParams> moduleParams)
+        public void Init(Dictionary<AvailableOptions, bool> moduleComputed)
         {
-            _isComputed = new Dictionary<AvailableOptions, bool>();
+            _isComputed = moduleComputed;
+            _results = new Dictionary<AvailableOptions, Dictionary<string, string>>();
             CurrentModuleIndex = -1;
             CurrentModuleProcessed = 0;
-            ModuleParams = moduleParams;
         }
 
-        public void initNextModule()
+        public void initNextStats()
         {
             try
             {
-                CurrentModule = nextModule();
+                CurrentStats = nextStats();
                 CurrentOption = MODULE_ORDER[CurrentModuleIndex];
             }
             catch (Exception e)
@@ -83,18 +82,33 @@ namespace EKG_Project.Architecture
                 throw e;
             }
         }
-        private IModule nextModule()
+        private IModuleStats nextStats()
         {
             CurrentModuleIndex++;
             AvailableOptions option = MODULE_ORDER[CurrentModuleIndex];
-            //Console.WriteLine(option);
-            ModuleParams param;
             try
             {
-                param = ModuleParams[option];
-                IModule module = ModuleFactory.NewModule(option);
-                module.Init(param);
-                return module;
+                bool computed;
+                try
+                {
+                    computed = _isComputed[option];
+                }
+                catch (Exception e)
+                {
+                    computed = false;
+                }
+
+                if (computed == true)
+                {
+                    IModuleStats stats = StatsFactory.New(option);
+                    stats.Init(AnalysisName);
+                    return stats;
+                }
+                else
+                {
+                    throw new Exception();
+                }
+
             }
             catch (Exception e)
             {
@@ -105,8 +119,9 @@ namespace EKG_Project.Architecture
 
         public int Amount()
         {
-            return ModuleParams.Count;
+            return MODULE_ORDER.Length;
         }
+
 
         public int CurrentModuleIndex
         {
@@ -121,31 +136,7 @@ namespace EKG_Project.Architecture
             }
         }
 
-        public Dictionary<AvailableOptions, ModuleParams> ModuleParams
-        {
-            get
-            {
-                return _moduleParams;
-            }
 
-            set
-            {
-                _moduleParams = value;
-            }
-        }
-
-        public IModule CurrentModule
-        {
-            get
-            {
-                return _currentModule;
-            }
-
-            set
-            {
-                _currentModule = value;
-            }
-        }
 
         public AvailableOptions CurrentOption
         {
@@ -160,18 +151,6 @@ namespace EKG_Project.Architecture
             }
         }
 
-        public bool FileLoaded
-        {
-            get
-            {
-                return _fileLoaded;
-            }
-
-            set
-            {
-                _fileLoaded = value;
-            }
-        }
 
         public string AnalysisName
         {
@@ -196,6 +175,32 @@ namespace EKG_Project.Architecture
             set
             {
                 _currentModuleProcessed = value;
+            }
+        }
+
+        public IModuleStats CurrentStats
+        {
+            get
+            {
+                return _currentStats;
+            }
+
+            set
+            {
+                _currentStats = value;
+            }
+        }
+
+        public Dictionary<AvailableOptions, Dictionary<string, string>> Results
+        {
+            get
+            {
+                return _results;
+            }
+
+            set
+            {
+                _results = value;
             }
         }
     }

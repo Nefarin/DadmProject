@@ -27,7 +27,9 @@ namespace EKG_Project.GUI
         private string _plotType;
         private List<string> _seriesName;
         private List<string> _chosenModules;
-         private List<CheckBox> _seriesChecbox;
+        private List<CheckBox> _seriesChecbox;
+        private uint _analysisFreq;
+        private uint _analysisSampleAmount;
 
         //
         //private List<IECG_Worker> _moduleWorkerList;
@@ -79,26 +81,26 @@ namespace EKG_Project.GUI
             switch (moduleInfo.Value)
             {
                 case 0:
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("Analise " + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
 
                 case 1:
                     Get_ECG_BASELINE_Data(analyseName);
                     Get_ECG_BASIC_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 2:
                     Get_ECG_BASELINE_Data(analyseName);
                     Get_ECG_BASIC_Data(analyseName);
                     Get_R_PEAKS_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 3:
                     Get_ECG_BASELINE_Data(analyseName);
                     Get_ECG_BASIC_Data(analyseName);
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 4:
                     Get_ECG_BASELINE_Data(analyseName);
@@ -106,7 +108,7 @@ namespace EKG_Project.GUI
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
                     Get_HEART_CLASS_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 5:
                     Get_ECG_BASELINE_Data(analyseName);
@@ -114,7 +116,7 @@ namespace EKG_Project.GUI
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
                     Get_SLEEP_APNEA_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 6:
                     Get_ECG_BASELINE_Data(analyseName);
@@ -123,7 +125,7 @@ namespace EKG_Project.GUI
                     Get_WAVES_Data(analyseName);
                     Get_HEART_CLASS_Data(analyseName);
                     Get_SLEEP_APNEA_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 7:
                     Get_ECG_BASELINE_Data(analyseName);
@@ -131,7 +133,7 @@ namespace EKG_Project.GUI
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
                     //ATRIAL_FIBER
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 8:
                     Get_ECG_BASELINE_Data(analyseName);
@@ -139,7 +141,7 @@ namespace EKG_Project.GUI
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
                     Get_QT_DISP_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 9 :
                     Get_HEART_AXIS_Data(analyseName);
@@ -147,12 +149,12 @@ namespace EKG_Project.GUI
                     //this.PlotBackwardButton.Visibility = Visibility.Collapsed;
                     this.PlotSlider.Visibility = Visibility.Collapsed;
                     this.CheckBoxList.Visibility = Visibility.Collapsed;
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                   //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
 
 
                 default:
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
 
             }
@@ -375,7 +377,7 @@ namespace EKG_Project.GUI
             if (moduleInfo.Value != 9)
             {
                 this.CheckBoxList.DataContext = _seriesChecbox;
-                ecgPlot.DisplayControler(_wholeDataToDisplay, _wholeDataToDisplayList);
+                ecgPlot.DisplayControler(_wholeDataToDisplay, _wholeDataToDisplayList, _analysisFreq,_analysisSampleAmount);
             }
 
         }
@@ -386,6 +388,7 @@ namespace EKG_Project.GUI
         {
             _ecg_Baseline_Data_worker = new ECG_Baseline_Data_Worker(currentAnalyseName);
             _ecg_Baseline_Data_worker.Load();
+           
             foreach (var signal in _ecg_Baseline_Data_worker.Data.SignalsFiltered)
             {
                 _seriesName.Add(signal.Item1);
@@ -405,6 +408,12 @@ namespace EKG_Project.GUI
         {
             _ecg_Basic_Data_Worker = new Basic_Data_Worker(currentAnalyseName);
             _ecg_Basic_Data_Worker.Load();
+            _analysisFreq = _ecg_Basic_Data_Worker.BasicData.Frequency;
+            _analysisSampleAmount = _ecg_Basic_Data_Worker.BasicData.SampleAmount; 
+            
+
+            //System.Windows.MessageBox.Show("frequency=" + _ecg_Basic_Data_Worker.BasicData.Frequency);
+            //System.Windows.MessageBox.Show("samples=" + _ecg_Basic_Data_Worker.BasicData.SampleAmount);
 
             CheckBox cB = new CheckBox();
             cB.IsChecked = first;
@@ -490,18 +499,25 @@ namespace EKG_Project.GUI
             _hear_Class_Data_Worker.Load();
             List<Tuple<string, List<int>>> outList = new List<Tuple<string, List<int>>>();
             List<Tuple<int, int>> tempList = _hear_Class_Data_Worker.Data.ClassificationResult;
-            foreach(var t in tempList)
+            //foreach (var t in _hear_Class_Data_Worker.Data.ClassificationResult)
+            //{
+            //    MessageBox.Show(t.Item1.ToString());
+            //    MessageBox.Show(t.Item2.ToString());
+            //}
+            foreach (var t in tempList)
             {
                 List<int> tempIntList = new List<int>();
-                if (t.Item2==1)
+                if (t.Item2==0)
                 {
+                    //MessageBox.Show("V");
                     tempIntList.Add(t.Item1);
-                    outList.Add(new Tuple<string, List<int>>("SE", tempIntList));
+                    outList.Add(new Tuple<string, List<int>>("V", tempIntList));
                 }
                 else
                 {
+                    //MessageBox.Show("SV");
                     tempIntList.Add(t.Item1);
-                    outList.Add(new Tuple<string, List<int>>("V", tempIntList));
+                    outList.Add(new Tuple<string, List<int>>("SV", tempIntList));
                 }
             }
 
@@ -682,5 +698,26 @@ namespace EKG_Project.GUI
         {
             ecgPlot.SavePlot();
         }
+
+        //private void ClearPlotButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //ListBox checkBoxes = this.CheckBoxList.DataContext;
+        //    bool first = true;
+        //    foreach(var cB in this.CheckBoxList.Items)
+        //    {
+        //        var c = cB as CheckBox;
+        //        if (first)
+        //        {
+        //            ecgPlot.SeriesControler(c.Name, true);
+                    
+        //        }
+        //        else
+        //        {
+        //            ecgPlot.SeriesControler(c.Name, false);
+        //        }
+                             
+        //    }
+
+        //}
     }
 }

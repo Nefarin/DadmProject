@@ -4,7 +4,7 @@ using System;
 
 namespace EKG_Project.Architecture.ProcessingStates
 {
-    public class NextModule : IProcessingState
+    public class NextStats : IProcessingState
     {
 
         #region Documentation
@@ -17,31 +17,24 @@ namespace EKG_Project.Architecture.ProcessingStates
         #endregion
         public void Process(Processing process, out IProcessingState timeoutState)
         {
-            if (process.Modules.CurrentModuleProcessed < process.Modules.Amount())
+            if (process.Stats.CurrentModuleIndex < process.Stats.Amount())
             {
-                try {
-                    process.Modules.initNextModule();
-
-                    if (process.Modules.CurrentModule.Runnable())
-                    {
-                        timeoutState = new ProcessModule();
-                    }
-                    else
-                    {
-                        timeoutState = new NextModule();
-                    }
+                try
+                {
+                    process.Stats.initNextStats();
+                    timeoutState = new ProcessStats();
                 }
 
                 catch (Exception e)
                 {
-                    timeoutState = new NextModule();
+                    timeoutState = new NextStats();
                 }
 
 
             }
             else
             {
-                timeoutState = new SProcessingEnded();
+                timeoutState = new SStatsCalculationEnded();
             }
 
         }

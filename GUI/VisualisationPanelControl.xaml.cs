@@ -44,11 +44,11 @@ namespace EKG_Project.GUI
         {
             try
             {
-                this.headerTable.ItemsSource = this.CreateHeaderInfoTable().DefaultView;
+                //this.headerTable.ItemsSource = this.CreateHeaderInfoTable().DefaultView;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                //MessageBox.Show(ex.ToString());
             }
         }
 
@@ -74,7 +74,7 @@ namespace EKG_Project.GUI
 
                 if(tabNames.Contains("HRV2"))
                 {
-                    _endDisplay["HRV2"] = 10;
+                    //_endDisplay["HRV2"] = 10;
                 }
 
                 if(tabNames.Contains("R_PEAKS"))
