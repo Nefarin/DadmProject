@@ -20,8 +20,9 @@ namespace EKG_Project.IO
         public void DefineCover(Document document, PDF.StoreDataPDF _data)
         {
             Paragraph paragraph = section.AddParagraph();
-            //paragraph.Format.SpaceAfter = "3cm";
+        
             PutLogoInHeader();
+
             paragraph = section.AddParagraph("Final Report");
             paragraph.Format.Font.Size = 32;
             paragraph.Format.Font.Color = Colors.DarkRed;
@@ -29,18 +30,14 @@ namespace EKG_Project.IO
             paragraph.Format.SpaceAfter = "2.5cm";
             paragraph.Format.Alignment = ParagraphAlignment.Center;
 
-            //Cover.AddCoverAnalysisList(paragraph, section);
             this.InsertCoverContent(paragraph, section, _data);
-
-            //Image image = document.LastSection.AddImage("cover.png");
-            //Image image = section.AddImage("cover.png");
-            //image.Left = "8.5cm";
 
             paragraph = section.AddParagraph("Date: ");
             paragraph.AddDateField();
-            //paragraph.Format.LeftIndent = "5cm";
+
             paragraph.Format.Borders.DistanceFromTop = "2cm";
             paragraph.Format.Alignment = ParagraphAlignment.Center;
+
             paragraph = section.AddParagraph("Created from file: " + _data.Filename);
             paragraph.Format.Alignment = ParagraphAlignment.Center;
 
@@ -51,16 +48,11 @@ namespace EKG_Project.IO
             cell.AddParagraph("Modules included:\n\n");
             cell.Format.Font.Color = Colors.Blue;
 
-            //string[] items = " Analysis 1 | Analysis 2 | Analysis 3 | Analysis 4 | Analysis 5 | Analysis ... | Analysis n".Split('|');
-
             foreach (string element in _moduleList)
             {
                 ListInfo listinfo = new ListInfo();
-                //listinfo.ContinuePreviousList = idx > 0;
                 listinfo.ListType = ListType.NumberList1;
                 paragraph = cell.AddParagraph(element);
-                //System.Console.WriteLine(element);
-                //paragraph.Style = "MyBulletList";
                 paragraph.Format.ListInfo = listinfo;
                 paragraph.Format.Font.Color = Colors.Black;
             }
@@ -83,24 +75,6 @@ namespace EKG_Project.IO
             cell = row.Cells[1];
             this.AddFileInfo(paragraph, cell, _data.AnalisysName);
             cell.Format.Alignment = ParagraphAlignment.Justify;
-
-            //Image image = cell.AddImage("cover.png");
-
-            //row = table.AddRow();
-            //cell = row.Cells[1];
-            //cell.AddParagraph("Date: ");
-            //cell.AddParagraph(paragraph.AddDateField().ToString());
-
-            //paragraph.AddDateField();
-            //cell.AddParagraph("Data 2");
-
-            //row = table.AddRow();
-            //cell = row.Cells[0];
-            //cell.AddParagraph("Param 2");
-            //cell = row.Cells[1];
-            //cell.AddParagraph("Data 2");
-
-            //table.SetEdge(0, 0, 2, 3, Edge.Box, BorderStyle.Single, 1.5, Colors.Black);
 
             section.Add(table);
         }
