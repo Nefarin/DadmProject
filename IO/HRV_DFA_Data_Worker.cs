@@ -11,12 +11,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads HRV_DFA_Data from internal XML file
+    /// </summary>
     public class HRV_DFA_Data_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private HRV_DFA_Data _data;
 
+        /// <summary>
+        /// Gets or sets HRV_DFA_Data
+        /// </summary>
         public HRV_DFA_Data Data
         {
             get
@@ -42,6 +56,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves HRV_DFA_Data
+        /// </summary>
+        /// <param name="data">HRV_DFA_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is HRV_DFA_Data)
@@ -126,6 +145,9 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Loads and sets HRV_DFA_Data
+        /// </summary>
         public void Load()
         {
             HRV_DFA_Data basicData = new HRV_DFA_Data();

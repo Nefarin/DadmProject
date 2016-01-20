@@ -11,12 +11,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads T_Wave_Alt_Data from internal XML file
+    /// </summary>
     public class T_Wave_Alt_Data_Worker
     {
+        //FILEDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private T_Wave_Alt_Data _data;
 
+        /// <summary>
+        /// Gets or sets T_Wave_Alt_Data
+        /// </summary>
         public T_Wave_Alt_Data Data
         {
             get
@@ -42,6 +56,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves T_Wave_Alt_Data
+        /// </summary>
+        /// <param name="data">T_Wave_Alt_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is T_Wave_Alt_Data)
@@ -93,6 +112,9 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Loads and sets T_Wave_Alt_Data
+        /// </summary>
         public void Load()
         {
             T_Wave_Alt_Data basicData = new T_Wave_Alt_Data();

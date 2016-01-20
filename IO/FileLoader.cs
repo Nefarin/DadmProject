@@ -8,12 +8,30 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that sets converter for input file format
+    /// </summary>
     public class FileLoader
     {
+        //FIELDS
+        /// <summary>
+        /// Stores converter
+        /// </summary>
         private IECGConverter converter;
+
+        /// <summary>
+        /// Stores file extension
+        /// </summary>
         private string extension;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         private string analysisName;
 
+        /// <summary>
+        /// Gets or sets converter
+        /// </summary>
         public IECGConverter Converter
         {
             get
@@ -27,6 +45,9 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Gets or sets analysis name
+        /// </summary>
         public string AnalysisName
         {
             get
@@ -42,6 +63,11 @@ namespace EKG_Project.IO
 
         public FileLoader() { }
 
+        //METHODS
+        /// <summary>
+        /// Sets converter for input file format
+        /// </summary>
+        /// <param name="path"></param>
         public void Load(string path)
         {
             switch (extension)
@@ -56,13 +82,12 @@ namespace EKG_Project.IO
                     converter = new MITBIHConverter(AnalysisName);
                     break;
             }
-
-            //converter.ConvertFile(path);
-            //converter.SaveResult();
-
-
         }
 
+        /// <summary>
+        /// Validates input path
+        /// </summary>
+        /// <param name="path">input path</param>
         public void Validate(string path)
         {
             try
@@ -76,7 +101,7 @@ namespace EKG_Project.IO
                     /*
                     else
                     {
-                        throw new FileNotFoundException(); // < - robić coś takiego?
+                        throw new FileNotFoundException(); 
                     }
                      */
             }
@@ -85,17 +110,6 @@ namespace EKG_Project.IO
                 throw e;
             }
                 
-        }
-
-        
-        static void Main()
-        {
-            FileLoader fl = new FileLoader();
-            fl.Validate(@"C:\temp\234.txt");
-            Console.WriteLine("Rozszerzenie: " + fl.extension);
-            fl.Load(@"C:\temp\234.txt");
-            Console.WriteLine("Konwerter: " + fl.converter.GetType().Name);
-            Console.Read();
         }
     }
 }
