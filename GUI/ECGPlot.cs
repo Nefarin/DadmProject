@@ -786,10 +786,10 @@ namespace EKG_Project.GUI
             {
                 _scalingPlotValue = 10;
                 _windowSize =((_analyseSamples/_analyseFrequency));
-                System.Windows.MessageBox.Show("windowssize=" + _windowSize);
+                //System.Windows.MessageBox.Show("windowssize=" + _windowSize);
                 //_windowSize = _windowSize / 10;
                 _windowSize = _windowSize / _scalingPlotValue;
-                System.Windows.MessageBox.Show("windowssize=" + _windowSize);
+                //System.Windows.MessageBox.Show("windowssize=" + _windowSize);
             }
             else if(_analyseSamples<30000)
             {
@@ -1022,7 +1022,7 @@ namespace EKG_Project.GUI
             lineraXAxis.Position = AxisPosition.Bottom;
             lineraXAxis.Minimum = 0;
             lineraXAxis.Maximum = _windowSize;
-            System.Windows.MessageBox.Show("linearaxis maximum= " + lineraXAxis.Maximum);
+            //System.Windows.MessageBox.Show("linearaxis maximum= " + lineraXAxis.Maximum);
             lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
             lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
             lineraXAxis.Title = "Time [s]";
