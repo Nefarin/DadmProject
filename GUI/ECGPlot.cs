@@ -23,6 +23,7 @@ namespace EKG_Project.GUI
         public PlotModel CurrentPlot { get; set; }
         private double _windowSize;
         private int _beginingPoint;
+        private int _scalingPlotValue; 
         private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
         private Basic_Data_Worker _ecg_Basic_Data_Worker;
         private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
@@ -783,15 +784,19 @@ namespace EKG_Project.GUI
 
             if(_analyseSamples<10000)
             {
+                _scalingPlotValue = 10;
                 _windowSize =((_analyseSamples/_analyseFrequency));
                 System.Windows.MessageBox.Show("windowssize=" + _windowSize);
-                _windowSize = _windowSize / 10;
+                //_windowSize = _windowSize / 10;
+                _windowSize = _windowSize / _scalingPlotValue;
                 System.Windows.MessageBox.Show("windowssize=" + _windowSize);
             }
             else
             {
+                _scalingPlotValue = 10;
                 _windowSize = ((_analyseSamples / _analyseFrequency));
-                _windowSize = _windowSize / 10;
+                //_windowSize = _windowSize / 10;
+                _windowSize = _windowSize / _scalingPlotValue;
             }
 
             //System.Windows.MessageBox.Show("windowssize=" + _windowSize);
@@ -1565,7 +1570,8 @@ namespace EKG_Project.GUI
             double min;
             double max;
             //double windowsSize = (int)(_windowSize / 10);
-            double windowsSize = _windowSize * 10;
+            //double windowsSize = _windowSize * 10;
+            double windowsSize = _windowSize * _scalingPlotValue;
             if (slide == 0)
             {
                 min = 0;
