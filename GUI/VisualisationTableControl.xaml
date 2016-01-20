@@ -6,6 +6,22 @@
              xmlns:local="clr-namespace:EKG_Project.GUI">
 
     <Grid>
-        <DataGrid Name="VisualisationDataTable" ItemsSource="{Binding}" ColumnWidth="*" />
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="90"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <DataGrid Name="VisualisationDataTable" ItemsSource="{Binding}" Grid.Row="0" Grid.Column="1" ColumnWidth="*"/>
+        <Button Name="SavePlotButton" Grid.Column="0" Grid.Row="1" Click="SavePlotButton_Click">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="images/save.png"/>
+                <Label Padding="0">Save Table</Label>
+            </StackPanel>
+        </Button>
     </Grid>
 </UserControl>
