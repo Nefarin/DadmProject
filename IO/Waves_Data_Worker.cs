@@ -11,12 +11,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads Waves_Data from internal XML file
+    /// </summary>
     public class Waves_Data_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private Waves_Data _data;
 
+        /// <summary>
+        /// Gets or sets Waves_Data
+        /// </summary>
         public Waves_Data Data
         {
             get
@@ -42,6 +56,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves Waves_Data
+        /// </summary>
+        /// <param name="data">Waves_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is Waves_Data)
@@ -112,6 +131,9 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Loads and sets Waves_Data
+        /// </summary>
         public void Load()
         {
             Waves_Data basicData = new Waves_Data();
@@ -213,6 +235,11 @@ namespace EKG_Project.IO
             this.Data = basicData;
         }
 
+        /// <summary>
+        /// Converts string to list
+        /// </summary>
+        /// <param name="input">string</param>
+        /// <returns>list</returns>
         public static List<int> stringToList(string input)
         {
             int[] digits = input
