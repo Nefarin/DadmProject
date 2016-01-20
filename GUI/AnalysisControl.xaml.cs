@@ -8,6 +8,7 @@ using EKG_Project.Architecture.GUIMessages;
 using EKG_Project.Modules;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace EKG_Project.GUI
 {
@@ -108,8 +109,8 @@ namespace EKG_Project.GUI
 
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                Communication.SendGUIMessage(new BeginStatsCalculation(this.isComputed));
                 outputPdfPath = fileDialog.FileName;
-                pdf = new IO.PDFGenerator(outputPdfPath);
             }
         }
 
@@ -158,7 +159,7 @@ namespace EKG_Project.GUI
             }
             else
             {
-                isComputed[module] = true;
+                isComputed.Add(module, true);
 
             }
         }
@@ -181,6 +182,26 @@ namespace EKG_Project.GUI
             startAnalyseButton.IsEnabled = false;
             MessageBox.Show("File not found during analysis.");
 
+        }
+
+        public void statsCalculationStarted()
+        {
+            MessageBox.Show("Started generating PDF");
+        }
+
+        public void statsCalculationEnded(Dictionary<AvailableOptions, Dictionary<String, String>> results)
+        {
+            foreach (var result in results)
+            {
+                Dictionary<String, String> temp = result.Value;
+                foreach(var smth in temp)
+                {
+                    Console.WriteLine(smth.Key + " " + smth.Value);
+                }
+            }
+
+            pdf = new IO.PDFGenerator(outputPdfPath);
+            MessageBox.Show("PDF generated");
         }
 
         public void analysisAborted()
