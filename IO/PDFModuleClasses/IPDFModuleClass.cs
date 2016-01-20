@@ -9,6 +9,7 @@ namespace EKG_Project.IO.PDFModuleClasses
     interface IPDFModuleClass
     {
         void FillReportForModule(string _header);
-      
+
+        void InsertStatisticsTable(Dictionary<string, string> _strToStr);      
     }
 }
