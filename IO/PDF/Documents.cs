@@ -45,96 +45,95 @@ namespace EKG_Project.IO
                         
                     case "R_PEAKS":
 
-                        PDFModule = new PDFModuleClasses.ECG_Baseline_PDF(Document);
+                        PDFModule = new PDFModuleClasses.R_PEAKS_PDF(Document);
                         PDFModule.FillReportForModule(element);
                         break;
 
-                    /*
-                case AvailableOptions.WAVES:
-                    if (this.ModuleParam == null)
-                    {
-                        this.ModuleParam = new Waves_Params(this.AnalysisName);
-                        this.ModuleParam.GUIParametersAvailable = true;
-                        FillDictionaries();
-                    }
-                    break;
-                case AvailableOptions.ATRIAL_FIBER:
-                    if (this.ModuleParam == null)
-                    {
-                        this.ModuleParam = new Atrial_Fibr_Params(this.AnalysisName);
-                        this.ModuleParam.GUIParametersAvailable = true;
-                        FillDictionaries();
-                    }
-                    break;
-                case AvailableOptions.HEART_CLASS:
-                    this.ModuleParam = new Heart_Class_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.HEART_AXIS:
-                    this.ModuleParam = new Heart_Axis_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.SLEEP_APNEA:
-                    this.ModuleParam = new Sleep_Apnea_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.HRV2:
-                    this.ModuleParam = new HRV2_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.QT_DISP:
-                    if (this.ModuleParam == null)
-                    {
-                        this.ModuleParam = new QT_Disp_Params(this.AnalysisName);
-                        this.ModuleParam.GUIParametersAvailable = true;
-                        FillDictionaries();
-                    }
-                    break;
-                case AvailableOptions.FLUTTER:
-                    this.ModuleParam = new Flutter_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.HRV_DFA:
-                    this.ModuleParam = new HRV_DFA_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
 
-                case AvailableOptions.TEST_MODULE:
-                    this.ModuleParam = new TestModule_Params(500);
-                    this.ModuleParam.GUIParametersAvailable = true;
-                    FillDictionaries();
-                    break;s
-                case AvailableOptions.HRV1:
-                    this.ModuleParam = new HRV1_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.ST_SEGMENT:
-                    this.ModuleParam = new ST_Segment_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.T_WAVE_ALT:
-                    this.ModuleParam = new T_Wave_Alt_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.SIG_EDR:
-                    this.ModuleParam = new SIG_EDR_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.HRT:
-                    this.ModuleParam = new HRT_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;*/
+                    case "WAVES":
+
+                        PDFModule = new PDFModuleClasses.WAVES_PDF(Document);
+                        PDFModule.FillReportForModule(element);
+                        break;
+
+                    case "ATRIAL_FIBER":
+
+                        PDFModule = new PDFModuleClasses.ATRIAL_FIBER_PDF(Document);
+                        PDFModule.FillReportForModule(element);
+                        break;
+
+                    case "HEART_CLASS":
+
+                        PDFModule = new PDFModuleClasses.HEART_CLASS_PDF(Document);
+                        PDFModule.FillReportForModule(element);
+                        break;
+
+                    case "HEART_AXIS":
+
+                        PDFModule = new PDFModuleClasses.HEART_AXIS_PDF(Document);
+                        PDFModule.FillReportForModule(element);
+                        break;
+
+                    case "SLEEP_APNEA":
+
+                        PDFModule = new PDFModuleClasses.SLEEP_APNEA_PDF(Document);
+                        PDFModule.FillReportForModule(element);
+                        break;
+
+                    case "HRV2":
+
+                        PDFModule = new PDFModuleClasses.HRV2_PDF(Document);
+                        PDFModule.FillReportForModule(element);
+                        break;
+
+                    case "QT_DISP":
+
+                        PDFModule = new PDFModuleClasses.QT_DISP_PDF(Document);
+                        PDFModule.FillReportForModule(element);
+                        break;
+
+                    case "FLUTTER":
+
+                        PDFModule = new PDFModuleClasses.FLUTTER_PDF(Document);
+                        PDFModule.FillReportForModule(element);
+                        break;
+
+                    case "HRV_DFA":
+
+                        PDFModule = new PDFModuleClasses.HRV_DFA_PDF(Document);
+                        PDFModule.FillReportForModule(element);
+                        break;
+
+                    /*case AvailableOptions.TEST_MODULE:
+                        this.ModuleParam = new TestModule_Params(500);
+                        this.ModuleParam.GUIParametersAvailable = true;
+                        FillDictionaries();
+                        break;s
+                    case AvailableOptions.HRV1:
+                        this.ModuleParam = new HRV1_Params(this.AnalysisName);
+                        this.ModuleParam.GUIParametersAvailable = false;
+                        FillDictionaries();
+                        break;
+                    case AvailableOptions.ST_SEGMENT:
+                        this.ModuleParam = new ST_Segment_Params(this.AnalysisName);
+                        this.ModuleParam.GUIParametersAvailable = false;
+                        FillDictionaries();
+                        break;
+                    case AvailableOptions.T_WAVE_ALT:
+                        this.ModuleParam = new T_Wave_Alt_Params(this.AnalysisName);
+                        this.ModuleParam.GUIParametersAvailable = false;
+                        FillDictionaries();
+                        break;
+                    case AvailableOptions.SIG_EDR:
+                        this.ModuleParam = new SIG_EDR_Params(this.AnalysisName);
+                        this.ModuleParam.GUIParametersAvailable = false;
+                        FillDictionaries();
+                        break;
+                    case AvailableOptions.HRT:
+                        this.ModuleParam = new HRT_Params(this.AnalysisName);
+                        this.ModuleParam.GUIParametersAvailable = false;
+                        FillDictionaries();
+                        break;*/
                     default:
 
                         break;
