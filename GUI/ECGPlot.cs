@@ -1644,16 +1644,24 @@ namespace EKG_Project.GUI
         {
             string filename;
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.DefaultExt = ".svg";
-            dlg.Filter = "SVG documents (.svg)|*.svg";
+            //dlg.DefaultExt = ".svg";
+            //dlg.Filter = "SVG documents (.svg)|*.svg";
+            dlg.DefaultExt = ".pdf";
+            dlg.Filter = "PDF documents (.pdf)|*.pdf";
             if (dlg.ShowDialog() == true)
             {
                 filename = dlg.FileName;
 
+                //using (var stream = System.IO.File.Create(filename))
+                //{
+                //    var exporter = new SvgExporter() { Width = 600, Height = 400 };
+                //    exporter.Export(CurrentPlot, stream);
+                //}
+
                 using (var stream = System.IO.File.Create(filename))
                 {
-                    var exporter = new SvgExporter() { Width = 600, Height = 400 };
-                    exporter.Export(CurrentPlot, stream);
+                    var pdfExporter = new PdfExporter() { Width = 600, Height = 400 };
+                    pdfExporter.Export(CurrentPlot, stream);
                 }
 
             }
@@ -1663,16 +1671,23 @@ namespace EKG_Project.GUI
         {
             string filename;
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.DefaultExt = ".svg";
-            //dlg.Filter = "Text documents (.txt)|*.txt";
+            //dlg.DefaultExt = ".svg";
+            dlg.DefaultExt = ".pdf";
+            dlg.Filter = "PDF documents (.pdf)|*.pdf";
             if (dlg.ShowDialog() == true)
             {
                 filename = dlg.FileName;
 
+                //using (var stream = System.IO.File.Create(filename))
+                //{
+                //    var exporter = new SvgExporter() { Width = 600, Height = 400 };
+                //    exporter.Export(CurrentPlot, stream);
+                //}
+
                 using (var stream = System.IO.File.Create(filename))
                 {
-                    var exporter = new SvgExporter() { Width = 600, Height = 400 };
-                    exporter.Export(CurrentPlot, stream);
+                    var pdfExporter = new PdfExporter() { Width = 600, Height = 400 };
+                    pdfExporter.Export(CurrentPlot, stream);
                 }
 
             }
