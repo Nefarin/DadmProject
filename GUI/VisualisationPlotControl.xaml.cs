@@ -79,26 +79,26 @@ namespace EKG_Project.GUI
             switch (moduleInfo.Value)
             {
                 case 0:
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
 
                 case 1:
                     Get_ECG_BASELINE_Data(analyseName);
                     Get_ECG_BASIC_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 2:
                     Get_ECG_BASELINE_Data(analyseName);
                     Get_ECG_BASIC_Data(analyseName);
                     Get_R_PEAKS_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 3:
                     Get_ECG_BASELINE_Data(analyseName);
                     Get_ECG_BASIC_Data(analyseName);
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 4:
                     Get_ECG_BASELINE_Data(analyseName);
@@ -106,7 +106,7 @@ namespace EKG_Project.GUI
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
                     Get_HEART_CLASS_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 5:
                     Get_ECG_BASELINE_Data(analyseName);
@@ -114,7 +114,7 @@ namespace EKG_Project.GUI
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
                     Get_SLEEP_APNEA_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 6:
                     Get_ECG_BASELINE_Data(analyseName);
@@ -123,7 +123,7 @@ namespace EKG_Project.GUI
                     Get_WAVES_Data(analyseName);
                     Get_HEART_CLASS_Data(analyseName);
                     Get_SLEEP_APNEA_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 7:
                     Get_ECG_BASELINE_Data(analyseName);
@@ -131,7 +131,7 @@ namespace EKG_Project.GUI
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
                     //ATRIAL_FIBER
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 8:
                     Get_ECG_BASELINE_Data(analyseName);
@@ -139,7 +139,7 @@ namespace EKG_Project.GUI
                     Get_R_PEAKS_Data(analyseName);
                     Get_WAVES_Data(analyseName);
                     Get_QT_DISP_Data(analyseName);
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
                 case 9 :
                     Get_HEART_AXIS_Data(analyseName);
@@ -147,12 +147,12 @@ namespace EKG_Project.GUI
                     //this.PlotBackwardButton.Visibility = Visibility.Collapsed;
                     this.PlotSlider.Visibility = Visibility.Collapsed;
                     this.CheckBoxList.Visibility = Visibility.Collapsed;
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
 
 
                 default:
-                    MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
                     break;
 
             }

@@ -16,6 +16,7 @@ namespace EKG_Project.Architecture
     public class Processing
     {
         private Modules _modules;
+        private Stats _stats;
         private ProcessSync _communication;
         private IProcessingState _timeoutState;
         private bool _stop;
@@ -90,6 +91,19 @@ namespace EKG_Project.Architecture
             }
         }
 
+        public Stats Stats
+        {
+            get
+            {
+                return _stats;
+            }
+
+            set
+            {
+                _stats = value;
+            }
+        }
+
         #endregion
 
         #region Documentation
@@ -103,6 +117,7 @@ namespace EKG_Project.Architecture
         {
             this._communication = communication;
             Modules = new Modules(analysisName);
+            Stats = new Stats(analysisName);
             TimeoutState = new Idle(5);
             Stop = false;
         }
