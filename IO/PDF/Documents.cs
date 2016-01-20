@@ -19,19 +19,19 @@ namespace EKG_Project.IO
 
     public Document Document { get; set; }
 
-    public Document CreateDocument(System.Collections.Generic.List<string> _moduleList)
+    public Document CreateDocument(PDF.StoreDataPDF _data)
     {
       Styles.DefineStyles(Document);
 
       Cover cover = new Cover(Document);
-      cover.DefineCover(Document, _moduleList);
+      cover.DefineCover(Document, _data);
       TableOfContents tableContent = new TableOfContents(Document);
-      tableContent.DefineTableOfContents(_moduleList);
+      tableContent.DefineTableOfContents(_data.ModuleList);
 
       //DefineContentSection(Document);
 
       //Paragraphs.DefineParagraphs(document);
-      foreach(string element in _moduleList)
+      foreach(string element in _data.ModuleList)
             {
                 PDFModuleClasses.IPDFModuleClass PDFModule;
                 switch (element)
@@ -140,7 +140,7 @@ namespace EKG_Project.IO
                 }
             }
 
-      Tables.DefineTables(Document);
+      //Tables.DefineTables(Document);
       //Charts.DefineCharts(document);
 
       return Document;
