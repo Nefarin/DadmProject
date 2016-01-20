@@ -410,6 +410,7 @@ namespace EKG_Project.GUI
             _ecg_Basic_Data_Worker.Load();
             _analysisFreq = _ecg_Basic_Data_Worker.BasicData.Frequency;
             _analysisSampleAmount = _ecg_Basic_Data_Worker.BasicData.SampleAmount; 
+            
 
             //System.Windows.MessageBox.Show("frequency=" + _ecg_Basic_Data_Worker.BasicData.Frequency);
             //System.Windows.MessageBox.Show("samples=" + _ecg_Basic_Data_Worker.BasicData.SampleAmount);
@@ -697,5 +698,26 @@ namespace EKG_Project.GUI
         {
             ecgPlot.SavePlot();
         }
+
+        //private void ClearPlotButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //ListBox checkBoxes = this.CheckBoxList.DataContext;
+        //    bool first = true;
+        //    foreach(var cB in this.CheckBoxList.Items)
+        //    {
+        //        var c = cB as CheckBox;
+        //        if (first)
+        //        {
+        //            ecgPlot.SeriesControler(c.Name, true);
+                    
+        //        }
+        //        else
+        //        {
+        //            ecgPlot.SeriesControler(c.Name, false);
+        //        }
+                             
+        //    }
+
+        //}
     }
 }
