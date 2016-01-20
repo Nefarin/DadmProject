@@ -977,7 +977,8 @@ namespace EKG_Project.GUI
                 //lineraYAxis.Maximum = 80.0;
                 lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
                 lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
-                lineraYAxis.Title = "Voltage [mV]";
+                //lineraYAxis.Title = "Voltage [mV]";
+                lineraYAxis.Title = "Amplitude [mV]";
 
                 CurrentPlot.Axes.Add(lineraYAxis);
                 //_windowSize = _ecg_Baseline_Data.SignalsFiltered.First().Item2.Count;
