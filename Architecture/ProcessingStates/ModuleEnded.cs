@@ -18,7 +18,6 @@ namespace EKG_Project.Architecture.ProcessingStates
         #endregion
         public void Process(Processing process, out IProcessingState timeoutState)
         {
-            Console.WriteLine("Ended");
             process.Modules.CurrentModuleProcessed++;
             process.Communication.SendProcessingEvent(new EndedModule(process.Modules.CurrentOption, process.Modules.CurrentModule.IsAborted()));
             timeoutState = new NextModule();

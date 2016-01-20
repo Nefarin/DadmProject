@@ -17,7 +17,7 @@ namespace EKG_Project.IO
         {
             section = _doc.AddSection();
         }
-        public void DefineCover(Document document)
+        public void DefineCover(Document document, System.Collections.Generic.List<string> _moduleList)
         {
             Paragraph paragraph = section.AddParagraph();
             //paragraph.Format.SpaceAfter = "3cm";
@@ -30,7 +30,7 @@ namespace EKG_Project.IO
             paragraph.Format.Alignment = ParagraphAlignment.Center;
 
             //Cover.AddCoverAnalysisList(paragraph, section);
-            Cover.InsertCoverContent(paragraph, section);
+            Cover.InsertCoverContent(paragraph, section, _moduleList);
 
             //Image image = document.LastSection.AddImage("cover.png");
             //Image image = section.AddImage("cover.png");
@@ -46,24 +46,25 @@ namespace EKG_Project.IO
 
         }
 
-        public static void AddCoverAnalysisList(Paragraph paragraph, Cell cell)
+        public static void AddCoverAnalysisList(Paragraph paragraph, Cell cell, System.Collections.Generic.List<string> _moduleList)
         {
-            cell.AddParagraph("Report content:\n\n");
+            cell.AddParagraph("Modules included:\n\n");
             
-            string[] items = " Analysis 1 | Analysis 2 | Analysis 3 | Analysis 4 | Analysis 5 | Analysis ... | Analysis n".Split('|');
+            //string[] items = " Analysis 1 | Analysis 2 | Analysis 3 | Analysis 4 | Analysis 5 | Analysis ... | Analysis n".Split('|');
 
-            for (int idx = 0; idx < items.Length; ++idx)
+            foreach(string element in _moduleList)
             {
                 ListInfo listinfo = new ListInfo();
-                listinfo.ContinuePreviousList = idx > 0;
-                listinfo.ListType = ListType.BulletList1;
-                paragraph = cell.AddParagraph(items[idx]);
-                paragraph.Style = "MyBulletList";
+                //listinfo.ContinuePreviousList = idx > 0;
+                listinfo.ListType = ListType.NumberList1;
+                paragraph = cell.AddParagraph(element);
+                System.Console.WriteLine(element);
+                //paragraph.Style = "MyBulletList";
                 paragraph.Format.ListInfo = listinfo;
             }
         }
 
-        public static void InsertCoverContent(Paragraph paragraph, Section section)
+        public static void InsertCoverContent(Paragraph paragraph, Section section, System.Collections.Generic.List<string> _moduleList)
         {
 
             Table table = new Table();
@@ -75,7 +76,8 @@ namespace EKG_Project.IO
 
             Row row = table.AddRow();
             Cell cell = row.Cells[0];
-            Cover.AddCoverAnalysisList(paragraph, cell);
+            Cover.AddCoverAnalysisList(paragraph, cell, _moduleList);
+            cell.Format.Alignment = ParagraphAlignment.Left;
             cell = row.Cells[1];
             //Image image = cell.AddImage("cover.png");
 

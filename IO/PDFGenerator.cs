@@ -20,41 +20,46 @@ namespace EKG_Project.IO
     {
         public Document document;
         private string filename;
+        Documents documentCreator;
 
         //public string Filename { get; set; }
 
         public PDFGenerator()
         {
-            document = Documents.CreateDocument();
+            Documents documentCreator = new Documents();
+            document = documentCreator.Document;
             filename = "PDFexample.pdf";
-            this.GeneratePDF();
+            //this.GeneratePDF();
         }
         public PDFGenerator(string _filename)
         {
-            document = Documents.CreateDocument();
+            documentCreator = new Documents();
+            document = documentCreator.Document;
             filename = _filename;
-            this.GeneratePDF();
+            //this.GeneratePDF();
         }
 
 
 
 
-        public void GeneratePDF()
+        public void GeneratePDF(System.Collections.Generic.List<string> _moduleList)
         {
+            documentCreator.CreateDocument(_moduleList);
             MigraDoc.DocumentObjectModel.IO.DdlWriter.WriteToFile(document, "Analysis Report");
-            filename = "PDFexample.pdf";
+            //filename = "PDFexample.pdf";
             PdfDocumentRenderer renderer = new PdfDocumentRenderer(true, PdfSharp.Pdf.PdfFontEmbedding.Always);
             renderer.Document = document;
             renderer.RenderDocument();
             renderer.PdfDocument.Save(filename);
+            Process.Start(filename);
         }
            
-        static void Main(string[] args)
+        /*static void Main(string[] args)
         {
 
             PDFGenerator pdf = new PDFGenerator();
             //pdf.Filename = "PDFexample.pdf";
             Process.Start(pdf.filename);
-        }
+        }*/
     }
 }

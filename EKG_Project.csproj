@@ -48,7 +48,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.IO.PDFGenerator</StartupObject>
+    <StartupObject>EKG_Project.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -192,6 +192,7 @@
     </Compile>
     <Compile Include="Architecture\Delegates.cs" />
     <Compile Include="Architecture\DLLLoader.cs" />
+    <Compile Include="Architecture\GUIMessages\AnalysisAborted.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEnded.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEndedTest.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisStarted.cs" />
@@ -205,6 +206,7 @@
     <Compile Include="Architecture\GUIMessages\TestMessage.cs" />
     <Compile Include="Architecture\Modules.cs" />
     <Compile Include="Architecture\ProcessingStates\Abort.cs" />
+    <Compile Include="Architecture\ProcessingStates\AbortAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\AbortTest.cs" />
     <Compile Include="Architecture\ProcessingStates\BeginAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\Idle.cs" />
@@ -298,7 +300,6 @@
     <Compile Include="IO\IECG_Worker.cs" />
     <Compile Include="IO\MITBIHConverter.cs" />
     <Compile Include="IO\PDFGenerator.cs" />
-    <Compile Include="IO\PDF\AddSvgAsPage.cs" />
     <Compile Include="IO\PDF\Cover.cs" />
     <Compile Include="IO\PDF\Documents.cs" />
     <Compile Include="IO\PDF\Styles.cs" />
