@@ -44,7 +44,7 @@ namespace EKG_Project.GUI
         {
             try
             {
-                this.headerTable.ItemsSource = this.CreateHeaderInfoTable().DefaultView;
+                //this.headerTable.ItemsSource = this.CreateHeaderInfoTable().DefaultView;
             }
             catch (Exception ex)
             {

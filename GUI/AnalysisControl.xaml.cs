@@ -64,7 +64,6 @@ namespace EKG_Project.GUI
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 inputFilePath = fileDialog.FileName;
-                checkPlayButton();
                 Communication.SendGUIMessage(new LoadFile(inputFilePath));
             }
 
@@ -74,21 +73,9 @@ namespace EKG_Project.GUI
         {
             foreach (var option in modulePanel.getAllOptions())
             {
-                //modulePa
-                Console.WriteLine("#");
-                Console.WriteLine(option.Name);
-                Console.WriteLine("#");
-
                 if (option.Set)
                 {
                     moduleParams[option.Code] = modulePanel.ModuleOptionAndParams(option.Code).Item2;
-                    Console.WriteLine(moduleParams.Count);
-                    Console.WriteLine(option.Code);
-                    Console.WriteLine(moduleParams);
-                    Console.WriteLine(modulePanel.AnalysisName);
-
-                    //Console.WriteLine(modulePanel.ModuleOptionAndParams(option.Code).Item2);
-                    Console.WriteLine(option.Name + " is set.");
                 }
 
             }
@@ -122,7 +109,6 @@ namespace EKG_Project.GUI
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 outputPdfPath = fileDialog.FileName;
-                checkPlayButton();
                 pdf = new IO.PDFGenerator(outputPdfPath);
             }
         }
@@ -130,14 +116,16 @@ namespace EKG_Project.GUI
         public void processingStarted()
         {
             this.VisualisationPanelUserControl.Visibility = Visibility.Hidden;
+            panel.Visibility = Visibility.Visible;
             this.AnalysisInProgress = true;
-            Console.WriteLine("Analysis Started");
+            loadFileButton.IsEnabled = false;
+            pdfButton.IsEnabled = false;
+            startAnalyseButton.IsEnabled = false;
         }
 
         public void processingEnded()
         {
             this.AnalysisInProgress = false;
-            Console.WriteLine("Analysis Ended");
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
             foreach (var option in modulePanel.getAllOptions())
             {
@@ -147,52 +135,61 @@ namespace EKG_Project.GUI
                     tempList.Add(option.Name);
                 }
             }
-            //tempList.Add("ecgBaseline");
-            //tempList.Add("ecgBasic");
-            //tempList.Add("r_Peaks");
-            //tempList.Add("waves");
-            //tempList.Add("whole");
-            //moduleParams.
-            
+
+            loadFileButton.IsEnabled = true;
+            pdfButton.IsEnabled = true;
+            startAnalyseButton.IsEnabled = true;
             VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
+            panel.Visibility = Visibility.Hidden;
             this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
-            //pdf.GeneratePDF(tempList);
         }
 
         public void updateProgress(AvailableOptions module, double progress)
         {
-            Console.WriteLine(module.ToString() + " progress: " + progress);
+            analysisLabel.Content = "Analysis in progress..\nCurrent module: " + module.ToString();
+            progressBar.Value = progress;
         }
 
         public void moduleEnded(AvailableOptions module, bool aborted)
         {
             if (aborted)
             {
-                Console.WriteLine(module.ToString() + " aborted.");
+
             }
             else
             {
                 isComputed[module] = true;
-                Console.WriteLine(module.ToString() + " completed.");
+
             }
         }
 
         public void fileLoaded()
         {
             startAnalyseButton.IsEnabled = true;
-            Console.WriteLine("File loaded sucessfully.");
+            MessageBox.Show("File loaded successfully.");
         }
 
         public void fileError()
         {
             startAnalyseButton.IsEnabled = false;
-            Console.WriteLine("File could not be loaded sucessfully.");
+            MessageBox.Show("File could not be loaded successfully.");
+
         }
 
         public void fileNotLoaded()
         {
             startAnalyseButton.IsEnabled = false;
-            Console.WriteLine("File is not loaded.");
+            MessageBox.Show("File not found during analysis.");
+
+        }
+
+        public void analysisAborted()
+        {
+            progressBar.Value = 0;
+            MessageBox.Show("Analysis aborted.");
+            loadFileButton.IsEnabled = true;
+            startAnalyseButton.IsEnabled = true;
+            panel.Visibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -204,15 +201,10 @@ namespace EKG_Project.GUI
             message.Read(this);
         }
 
-        private void checkPlayButton()
-        {
-            // this method does not make sense - analysis should be performed even if the user does not want to save pdf.
-            //startAnalyseButton.IsEnabled = File.Exists(inputFilePath) && Directory.Exists(Path.GetDirectoryName(outputPdfPath));
-        }
 
         private void buttonAbort_Click(object sender, RoutedEventArgs e)
         {
-            //MessageBox.Show("Analysis aborted.");
+            Communication.SendGUIMessage(new AbortAnalysis());
         }
     }
 }
