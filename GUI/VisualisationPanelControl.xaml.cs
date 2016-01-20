@@ -74,7 +74,7 @@ namespace EKG_Project.GUI
 
                 if(tabNames.Contains("HRV2"))
                 {
-                    _endDisplay["HRV2"] = 10;
+                    //_endDisplay["HRV2"] = 10;
                 }
 
                 if(tabNames.Contains("R_PEAKS"))
