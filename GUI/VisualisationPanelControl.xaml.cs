@@ -48,7 +48,7 @@ namespace EKG_Project.GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                //MessageBox.Show(ex.ToString());
             }
         }
 
