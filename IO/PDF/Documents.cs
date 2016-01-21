@@ -15,127 +15,134 @@ namespace EKG_Project.IO
         Document.Info.Title = "Analisys Report";
         Document.Info.Subject = "";
         Document.Info.Author = "Krzysztof Kaganiec";
+      
+        //Document.DefaultPageSetup.TopMargin = 3.5;
     }
 
     public Document Document { get; set; }
 
-    public Document CreateDocument(PDF.StoreDataPDF _data)
+    public Document CreateDocument(PDF.StoreDataPDF _data, bool init)
     {
-      Styles.DefineStyles(Document);
-
-      Cover cover = new Cover(Document);
-      cover.DefineCover(Document, _data);
-      TableOfContents tableContent = new TableOfContents(Document);
-      tableContent.DefineTableOfContents(_data.ModuleList);
-
-      foreach(string element in _data.ModuleList)
-        {
-            PDFModuleClasses.IPDFModuleClass PDFModule;
-            switch (element)
+            if (init)
             {
-                case "ECG_BASELINE":
+                Styles.DefineStyles(Document);
 
-                    PDFModule = new PDFModuleClasses.ECG_Baseline_PDF(Document);
-                    PDFModule.FillReportForModule(element);
-                    break;
-                    
-                        
-                case "R_PEAKS":
-
-                    PDFModule = new PDFModuleClasses.R_PEAKS_PDF(Document);
-                    PDFModule.FillReportForModule(element);
-                    break;
-
-
-                case "WAVES":
-
-                    PDFModule = new PDFModuleClasses.WAVES_PDF(Document);
-                    PDFModule.FillReportForModule(element);
-                    break;
-
-                case "ATRIAL_FIBER":
-
-                    PDFModule = new PDFModuleClasses.ATRIAL_FIBER_PDF(Document);
-                    PDFModule.FillReportForModule(element);
-                    break;
-
-                case "HEART_CLASS":
-
-                    PDFModule = new PDFModuleClasses.HEART_CLASS_PDF(Document);
-                    PDFModule.FillReportForModule(element);
-                    break;
-
-                case "HEART_AXIS":
-
-                    PDFModule = new PDFModuleClasses.HEART_AXIS_PDF(Document);
-                    PDFModule.FillReportForModule(element);
-                    break;
-
-                case "SLEEP_APNEA":
-
-                    PDFModule = new PDFModuleClasses.SLEEP_APNEA_PDF(Document);
-                    PDFModule.FillReportForModule(element);
-                    break;
-
-                case "HRV2":
-
-                    PDFModule = new PDFModuleClasses.HRV2_PDF(Document);
-                    PDFModule.FillReportForModule(element);
-                    break;
-
-                case "QT_DISP":
-
-                    PDFModule = new PDFModuleClasses.QT_DISP_PDF(Document, _data.AnalisysName);
-                    PDFModule.FillReportForModule(element);
-                    break;
-
-                case "FLUTTER":
-
-                    PDFModule = new PDFModuleClasses.FLUTTER_PDF(Document);
-                    PDFModule.FillReportForModule(element);
-                    break;
-
-                case "HRV_DFA":
-
-                    PDFModule = new PDFModuleClasses.HRV_DFA_PDF(Document);
-                    PDFModule.FillReportForModule(element);
-                    break;
-
-                /*case AvailableOptions.TEST_MODULE:
-                    this.ModuleParam = new TestModule_Params(500);
-                    this.ModuleParam.GUIParametersAvailable = true;
-                    FillDictionaries();
-                    break;s
-                case AvailableOptions.HRV1:
-                    this.ModuleParam = new HRV1_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.ST_SEGMENT:
-                    this.ModuleParam = new ST_Segment_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.T_WAVE_ALT:
-                    this.ModuleParam = new T_Wave_Alt_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.SIG_EDR:
-                    this.ModuleParam = new SIG_EDR_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;
-                case AvailableOptions.HRT:
-                    this.ModuleParam = new HRT_Params(this.AnalysisName);
-                    this.ModuleParam.GUIParametersAvailable = false;
-                    FillDictionaries();
-                    break;*/
-                default:
-
-                    break;
+                Cover cover = new Cover(Document);
+                cover.DefineCover(Document, _data);
+                TableOfContents tableContent = new TableOfContents(Document);
+                tableContent.DefineTableOfContents(_data.ModuleList);
             }
-        }
+            else
+            {
+                int element = (int)_data.ModuleOption;
+
+                PDFModuleClasses.IPDFModuleClass PDFModule;
+                switch (element)
+                {
+                    case 0: //ECG_BASELINE
+
+                        PDFModule = new PDFModuleClasses.ECG_Baseline_PDF(Document);
+                        PDFModule.FillReportForModule("ECG_BASELINE", _data.statsDictionary);
+                        break;
+
+
+                    case 1: //R_PEAKS
+
+                        PDFModule = new PDFModuleClasses.R_PEAKS_PDF(Document);
+                        PDFModule.FillReportForModule("R_PEAKS", _data.statsDictionary);
+                        break;
+
+                    case 4: //HRV2
+
+                        PDFModule = new PDFModuleClasses.HRV2_PDF(Document);
+                        PDFModule.FillReportForModule("HRV2", _data.statsDictionary);
+                        break;
+
+                    case 5: //WAVES
+
+                        PDFModule = new PDFModuleClasses.WAVES_PDF(Document);
+                        PDFModule.FillReportForModule("WAVES", _data.statsDictionary);
+                        break;
+
+                    case 6: //HRV_DFA
+
+                        PDFModule = new PDFModuleClasses.HRV_DFA_PDF(Document);
+                        PDFModule.FillReportForModule("HRV_DFA", _data.statsDictionary);
+                        break;
+
+                    case 10: //SLEEP_APNEA
+
+                        PDFModule = new PDFModuleClasses.SLEEP_APNEA_PDF(Document);
+                        PDFModule.FillReportForModule("SLEEP_APNEA", _data.statsDictionary);
+                        break;
+
+                    case 11: //HEART_CLASS
+
+                        PDFModule = new PDFModuleClasses.HEART_CLASS_PDF(Document);
+                        PDFModule.FillReportForModule("HEART_CLASS", _data.statsDictionary);
+                        break;
+
+                    case 12: //ATRIAL_FIBER
+
+                        PDFModule = new PDFModuleClasses.ATRIAL_FIBER_PDF(Document);
+                        PDFModule.FillReportForModule("ATRIAL_FIBER", _data.statsDictionary);
+                        break;
+
+                    case 13: //QT_DISP
+
+                        PDFModule = new PDFModuleClasses.QT_DISP_PDF(Document, _data.AnalisysName);
+                        PDFModule.FillReportForModule("QT_DISP", _data.statsDictionary);
+                        break;
+
+                    case 14: //FLUTTER
+
+                        PDFModule = new PDFModuleClasses.FLUTTER_PDF(Document);
+                        PDFModule.FillReportForModule("FLUTTER", _data.statsDictionary);
+                        break;
+
+                    case 17: //HEART_AXIS
+
+                        PDFModule = new PDFModuleClasses.HEART_AXIS_PDF(Document);
+                        PDFModule.FillReportForModule("HEART_AXIS", _data.statsDictionary);
+                        break;
+
+
+                    /*case AvailableOptions.TEST_MODULE:
+                        this.ModuleParam = new TestModule_Params(500);
+                        this.ModuleParam.GUIParametersAvailable = true;
+                        FillDictionaries();
+                        break;s
+                    case AvailableOptions.HRV1:
+                        this.ModuleParam = new HRV1_Params(this.AnalysisName);
+                        this.ModuleParam.GUIParametersAvailable = false;
+                        FillDictionaries();
+                        break;
+                    case AvailableOptions.ST_SEGMENT:
+                        this.ModuleParam = new ST_Segment_Params(this.AnalysisName);
+                        this.ModuleParam.GUIParametersAvailable = false;
+                        FillDictionaries();
+                        break;
+                    case AvailableOptions.T_WAVE_ALT:
+                        this.ModuleParam = new T_Wave_Alt_Params(this.AnalysisName);
+                        this.ModuleParam.GUIParametersAvailable = false;
+                        FillDictionaries();
+                        break;
+                    case AvailableOptions.SIG_EDR:
+                        this.ModuleParam = new SIG_EDR_Params(this.AnalysisName);
+                        this.ModuleParam.GUIParametersAvailable = false;
+                        FillDictionaries();
+                        break;
+                    case AvailableOptions.HRT:
+                        this.ModuleParam = new HRT_Params(this.AnalysisName);
+                        this.ModuleParam.GUIParametersAvailable = false;
+                        FillDictionaries();
+                        break;*/
+                    default:
+
+                        break;
+                }
+                
+            }
 
       return Document;
     }

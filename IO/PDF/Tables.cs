@@ -12,7 +12,8 @@ namespace EKG_Project.IO
     public static void DefineTable(Document document, int _rows, int _cols, Dictionary<string, string> _strToStr)
     {
             Table table = new Table();
-            table.Borders.Width = 1;
+   
+            table.Borders.Width = 2;
 
             Column column;
             Row row;
@@ -20,7 +21,7 @@ namespace EKG_Project.IO
 
             for (int count = 0; count < _cols; count++)
             {
-                column = table.AddColumn(Unit.FromCentimeter(5));
+                column = table.AddColumn(Unit.FromCentimeter(7));
                 column.Format.Alignment = ParagraphAlignment.Center;
             }
 
