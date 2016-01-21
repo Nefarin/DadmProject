@@ -12,12 +12,26 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads R_Peaks_Data from internal XML file
+    /// </summary>
     public class R_Peaks_Data_Worker : IECG_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
-        string analysisName = "TestAnalysis";
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
+        string analysisName;
         private R_Peaks_Data _data;
 
+        /// <summary>
+        /// Gets or sets R_Peaks_Data
+        /// </summary>
         public R_Peaks_Data Data
         {
             get
@@ -44,6 +58,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves R_Peaks_Data
+        /// </summary>
+        /// <param name="data">R_Peaks_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is R_Peaks_Data)
@@ -131,6 +150,9 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Loads and sets R_Peaks_Data
+        /// </summary>
         public void Load()
         {
             R_Peaks_Data basicData = new R_Peaks_Data();
@@ -184,24 +206,5 @@ namespace EKG_Project.IO
             }
             this.Data = basicData;
         }
-
-        //public static void Main()
-        //{
-        //    R_Peaks_Data_Worker worker = new R_Peaks_Data_Worker();
-        //    worker.Load();
-
-        //    foreach (var signal in worker.Data.RPeaks)
-        //    {
-                
-        //        //Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
-        //        Debug.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
-        //        //Debug.
-        //    }
-
-
-        //    //Console.Read();
-
-        //}
-
     }
 }

@@ -10,13 +10,32 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that converts XML files
+    /// </summary>
     public class XMLConverter : IECGConverter
     {
+        //FIELDS
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
+
+        /// <summary>
+        /// Stores list of sequence nodes
+        /// </summary>
         XmlNodeList sequences;
+
+        /// <summary>
+        /// Stores number of samples in signal
+        /// </summary>
         uint sampleAmount;
+
         Basic_Data _data;
 
+        /// <summary>
+        /// Gets or sets Basic Data
+        /// </summary>
         public Basic_Data Data
         {
             get
@@ -35,6 +54,10 @@ namespace EKG_Project.IO
             analysisName = XMLAnalysisName;
         }
 
+        // METHODS
+        /// <summary>
+        /// Saves Basic Data in internal XML file
+        /// </summary>
         public void SaveResult()
         {
             foreach (var property in Data.GetType().GetProperties())
@@ -53,6 +76,10 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Calls method loadXMLFile and sets Basic Data
+        /// </summary>
+        /// <param name="path">input file path</param>
         public void ConvertFile(string path)
         {
             loadXMLFile(path);
@@ -62,6 +89,10 @@ namespace EKG_Project.IO
             Data.SampleAmount = sampleAmount;
         }
         
+        /// <summary>
+        /// Loads XML input file and gets its list of sequence nodes
+        /// </summary>
+        /// <param name="path">input file path</param>
         public void loadXMLFile(string path)
         {
             XmlDocument XMLFile = new XmlDocument();
@@ -74,6 +105,10 @@ namespace EKG_Project.IO
             
         }
 
+        /// <summary>
+        /// Gets sampling frequency from input file
+        /// </summary>
+        /// <returns>sampling frequency</returns>
         public uint getFrequency()
         {
             uint frequency = 0;
@@ -94,6 +129,10 @@ namespace EKG_Project.IO
             return frequency;
         }
 
+        /// <summary>
+        /// Gets signal origin from input file
+        /// </summary>
+        /// <returns>signal origin</returns>
         public double getOrigin()
         {
             double readOrigin = 0;
@@ -114,6 +153,10 @@ namespace EKG_Project.IO
             return readOrigin;
         }
 
+        /// <summary>
+        /// Gets signal scale from input file
+        /// </summary>
+        /// <returns>signal scale</returns>
         public double getScale()
         {
             double readScale = 0;
@@ -133,6 +176,10 @@ namespace EKG_Project.IO
             return readScale;
         }
 
+        /// <summary>
+        /// Gets signals from input file
+        /// </summary>
+        /// <returns>signals</returns>
         public List<Tuple<string, Vector<double>>> getSignals()
         {
             List<Tuple<string, Vector<double>>> Signals = new List<Tuple<string, Vector<double>>>();
@@ -168,6 +215,11 @@ namespace EKG_Project.IO
             return Signals;
         }
 
+        /// <summary>
+        /// Converts string to vector
+        /// </summary>
+        /// <param name="input">input string</param>
+        /// <returns>output vector</returns>
         public Vector<double> stringToVector(string input)
         {
             double[] digits = input
@@ -180,6 +232,11 @@ namespace EKG_Project.IO
 
         }
 
+        /// <summary>
+        /// Normalizes signal basing on origin and scale
+        /// </summary>
+        /// <param name="signal"></param>
+        /// <returns></returns>
         Vector<double> normalizeSignal(Vector<double> signal)
         {
             double origin = getOrigin();
@@ -192,40 +249,16 @@ namespace EKG_Project.IO
             return signal;
         }
 
+        /// <summary>
+        /// Gets number of samples in signal
+        /// </summary>
+        /// <param name="signal">signal</param>
+        /// <returns>number of samples</returns>
         public uint getSampleAmount(Vector<double> signal)
         {
             if (signal != null)
                 sampleAmount = (uint)signal.Count;
             return sampleAmount;
-        }
-
-        
-        public static void Main()
-        {
-            IECGPath pathBuilder = new DebugECGPath();
-            XMLConverter xml = new XMLConverter("TestAnalysis8");
-            xml.ConvertFile(System.IO.Path.Combine(pathBuilder.getDataPath(), "8.xml"));
-            xml.SaveResult();
-
-            //xml.loadXMLFile(@"C:\temp\6.xml");
-
-            uint f = xml.getFrequency();
-            Console.WriteLine("Frequency: " + f + " Hz");
-
-            uint samples = xml.sampleAmount;
-            Console.WriteLine("Sample amount: " + samples.ToString());
-            Console.WriteLine();
-
-            List<Tuple<string, Vector<double>>> signals = xml.getSignals();
-            foreach (var tuple in signals)
-            {
-                Console.WriteLine("Lead name: " + tuple.Item1);
-                Console.WriteLine("Signal Vector in uV: " + tuple.Item2);
-                Console.WriteLine();
-           
-            }
-
-            Console.Read();
         }
     }
 }

@@ -15,6 +15,10 @@ using System.Windows.Shapes;
 using System.Data;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using EKG_Project.IO;
+using System.Xml;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace EKG_Project.GUI
 {
@@ -25,21 +29,100 @@ namespace EKG_Project.GUI
     {
         public class DataToTable
         {
-            public int ID { get; set; }
-            public string ModuleName { get; set; }
-            public string JakiesDane { get; set; }
+            
+            public string Lead { get; set; }
+            public string QT_Disp_Lcal { get; set; }
+            public string QT_Mean { get; set; }
+            public string QT_Std { get; set; }
         }
 
+        //public int ID { get; set; }
+
+        List<DataToTable> _tableData; 
+        private QT_Disp_Data_Worker _qt_Disp_Data_Worker;
+        private string _moduleInTable;
+        private string _analyseName;
+        
+
+
+        public VisualisationTableControl(string analyseName, string moduleName, KeyValuePair<string, int> moduleInfo)
+        {
+            InitializeComponent();
+            _moduleInTable = moduleName;
+            _analyseName = analyseName;
+            //List<DataToTable> tempData = new List<DataToTable>();
+            //tempData.Add(new DataToTable { ModuleName = "EcgBaseline", ID = 1, JakiesDane = "Tutaj znajda sie dane od modułów" });
+            //tempData.Add(new DataToTable { ModuleName = "R_Peaks", ID = 2, JakiesDane = "Tutaj znajda sie dane od modułów" });
+            _tableData = new List<DataToTable>();
+            switch (moduleInfo.Value)
+            {
+                case 8:
+                    Get_QT_DISP_Data(analyseName);
+                    //MessageBox.Show("analyseName=" + analyseName + ", moduleName=" + moduleName + ", moduleInfoKey=" + moduleInfo.Key + "=" + moduleInfo.Value);
+                    break;
+                default:
+                    break;
+            }
+
+
+                    this.VisualisationDataTable.DataContext = _tableData;
+        }
 
         public VisualisationTableControl()
         {
             InitializeComponent();
+        }
 
-            List<DataToTable> tempData = new List<DataToTable>();
-            tempData.Add(new DataToTable { ModuleName = "EcgBaseline", ID = 1, JakiesDane = "Tutaj znajda sie dane od modułów" });
-            tempData.Add(new DataToTable { ModuleName = "R_Peaks", ID = 2, JakiesDane = "Tutaj znajda sie dane od modułów" });
+        private void Get_QT_DISP_Data(string currentAnalyseName)
+        {
+            _qt_Disp_Data_Worker = new QT_Disp_Data_Worker(currentAnalyseName);
+            _qt_Disp_Data_Worker.Load();
 
-            this.VisualisationDataTable.DataContext = tempData;
+            
+            
+            foreach (var dat in _qt_Disp_Data_Worker.Data.QT_disp_local)
+            {
+                DataToTable dTT = new DataToTable();
+                dTT.Lead = dat.Item1;
+                dTT.QT_Disp_Lcal = dat.Item2.ToString("0.00");
+                dTT.QT_Mean = _qt_Disp_Data_Worker.Data.QT_mean.First(a => a.Item1 == dat.Item1).Item2.ToString("0.00");
+                dTT.QT_Std = _qt_Disp_Data_Worker.Data.QT_std.First(a => a.Item1 == dat.Item1).Item2.ToString("0.00");
+                _tableData.Add(dTT);
+
+            }
+            
+
+            
+
+        }
+
+        private void SavePlotButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            string filename = "";
+            //string fullPath = "";
+            bool toSave = false;
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.DefaultExt = ".xml";
+            dlg.Filter = "Xml documents (.xml)|*.xml";
+            if (dlg.ShowDialog() == true)
+            {
+                toSave = true;
+                filename = dlg.FileName;
+
+                
+                
+            }
+
+            if (toSave)
+            {
+                //string fileNameToSave = _analyseName + "_" + _moduleInTable + "_" + filename + ".xml";
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<DataToTable>));
+                TextWriter Filestream = new StreamWriter(filename);
+                xmlSerializer.Serialize(Filestream, _tableData);
+                Filestream.Close();
+            }
+
         }
     }
 }

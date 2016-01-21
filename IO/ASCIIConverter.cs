@@ -10,14 +10,36 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that converts ASCII files
+    /// </summary>
     class ASCIIConverter : IECGConverter
     {
+        //FIELDS
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
+
+        /// <summary>
+        /// Stores file lines in array
+        /// </summary>
         string[] lines;
+
+        /// <summary>
+        /// Stores file columns in list 
+        /// </summary>
         List<string>[] columns;
+
+        /// <summary>
+        /// Stores number of samples in signal
+        /// </summary>
         uint sampleAmount;
         Basic_Data _data;
 
+        /// <summary>
+        /// Gets or sets Basic Data
+        /// </summary>
         public Basic_Data Data
         {
             get
@@ -36,6 +58,10 @@ namespace EKG_Project.IO
             analysisName = ASCIIAnalysisName;
         }
 
+        // METHODS
+        /// <summary>
+        /// Saves Basic Data in internal XML file
+        /// </summary>
         public void SaveResult()
         {
             foreach (var property in Data.GetType().GetProperties())
@@ -43,7 +69,7 @@ namespace EKG_Project.IO
 
                 if (property.GetValue(Data, null) == null)
                 {
-                    //throw new Exception(); // < - robić coś takiego?
+                    //throw new Exception();
 
                 }
                 else
@@ -54,6 +80,10 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Calls method loadASCIIFile and sets Basic Data
+        /// </summary>
+        /// <param name="path">input file path</param>
         public void ConvertFile(string path)
         {
             loadASCIIFile(path);
@@ -63,6 +93,10 @@ namespace EKG_Project.IO
             Data.SampleAmount = sampleAmount;
         }
 
+        /// <summary>
+        /// Loads ASCII input file and gets its lines and columns 
+        /// </summary>
+        /// <param name="path">input file path</param>
         public void loadASCIIFile(string path)
         {
             lines = File.ReadAllLines(path);
@@ -87,6 +121,10 @@ namespace EKG_Project.IO
 
         }
 
+        /// <summary>
+        /// Gets sampling frequency from input file
+        /// </summary>
+        /// <returns>sampling frequency</returns>
        public uint getFrequency()
         {
             uint frequency = 0;
@@ -108,7 +146,10 @@ namespace EKG_Project.IO
             return frequency;
         }
 
-
+        /// <summary>
+        /// Gets signals from input file
+        /// </summary>
+        /// <returns>signals</returns>
        public List<Tuple<string, Vector<double>>> getSignals()
        {
            List<Tuple<string, Vector<double>>> Signals = new List<Tuple<string, Vector<double>>>();
@@ -133,6 +174,12 @@ namespace EKG_Project.IO
            return Signals;
 
        }
+
+        /// <summary>
+        /// Gets number of samples in signal
+        /// </summary>
+        /// <param name="signal">signal</param>
+        /// <returns>number of samples</returns>
        public uint getSampleAmount(Vector<double> signal)
        {
            if (signal != null)

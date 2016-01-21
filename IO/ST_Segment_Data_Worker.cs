@@ -12,12 +12,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads ST_Segment_Data from internal XML file
+    /// </summary>
     public class ST_Segment_Data_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private ST_Segment_Data _data;
 
+        /// <summary>
+        /// Gets or sets ST_Segment_Data
+        /// </summary>
         public ST_Segment_Data Data
         {
             get
@@ -43,6 +57,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves ST_Segment_Data
+        /// </summary>
+        /// <param name="data">ST_Segment_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is ST_Segment_Data)
@@ -121,6 +140,9 @@ namespace EKG_Project.IO
 
         }
 
+        /// <summary>
+        /// Loads and sets ST_Segment_Data
+        /// </summary>
         public void Load()
         {
             ST_Segment_Data basicData = new ST_Segment_Data();
@@ -168,6 +190,11 @@ namespace EKG_Project.IO
             this.Data = basicData;
         }
 
+        /// <summary>
+        /// Converts string to list
+        /// </summary>
+        /// <param name="input">string</param>
+        /// <returns>list</returns>
         public static List<long> stringToList(string input)
         {
             long[] digits = input
