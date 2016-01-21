@@ -196,20 +196,6 @@ namespace EKG_Project.GUI
         public void statsCalculationStarted()
         {
             MessageBox.Show("Started generating PDF");
-            pdf = new IO.PDFGenerator(outputPdfPath);
-        }
-
-        
-        public void statsCalculationEnded(Dictionary<AvailableOptions, Dictionary<String, String>> results)
-        {
-            foreach (var result in results)
-            {
-                Dictionary<String, String> temp = result.Value;
-                foreach(var smth in temp)
-                {
-                    Console.WriteLine(smth.Key + " " + smth.Value);
-                }
-            }
 
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
             foreach (var option in modulePanel.getAllOptions())
@@ -225,9 +211,35 @@ namespace EKG_Project.GUI
             data.AnalisysName = modulePanel.AnalysisName;
             data.ModuleList = tempList;
             data.Filename = this.inputFilePath;
-            pdf.GeneratePDF(data);
 
+            pdf = new IO.PDFGenerator(outputPdfPath);
+            pdf.GeneratePDF(data, true);
+        }
+
+        
+        public void statsCalculationEnded(Dictionary<AvailableOptions, Dictionary<String, String>> results)
+        {
+            foreach (var result in results)
+            {
+                Dictionary<String, String> temp = result.Value;
+                foreach(var smth in temp)
+                {
+                    Console.WriteLine(smth.Key + " " + smth.Value);
+                }
+            }
+
+            IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
+
+            foreach (var element in results)
+            {
+                data.ModuleOption = element.Key;
+                data.statsDictionary = element.Value;
+
+                pdf.GeneratePDF(data, false);
+            }
+      
             MessageBox.Show("PDF generated");
+            pdf.SaveDocument();
         }
 
         public void analysisAborted()
