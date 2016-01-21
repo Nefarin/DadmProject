@@ -11,12 +11,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads Heart_Axis_Data from internal XML file
+    /// </summary>
     public class Heart_Axis_Data_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private Heart_Axis_Data _data;
 
+        /// <summary>
+        /// Gets or sets Heart_Axis_Data
+        /// </summary>
         public Heart_Axis_Data Data
         {
             get
@@ -42,6 +56,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves Heart_Axis_Data
+        /// </summary>
+        /// <param name="data">Heart_Axis_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is Heart_Axis_Data)
@@ -83,6 +102,9 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Loads and sets Heart_Axis_Data
+        /// </summary>
         public void Load()
         {
             Heart_Axis_Data basicData = new Heart_Axis_Data();
