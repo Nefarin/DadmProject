@@ -42,9 +42,13 @@ namespace EKG_Project.IO
 
 
 
-        public void GeneratePDF(PDF.StoreDataPDF _data)
+        public void GeneratePDF(PDF.StoreDataPDF _data, bool init)
         {
-            documentCreator.CreateDocument(_data);
+            documentCreator.CreateDocument(_data, init);
+        }
+
+        public void SaveDocument()
+        {
             MigraDoc.DocumentObjectModel.IO.DdlWriter.WriteToFile(document, "Analysis Report");
             //filename = "PDFexample.pdf";
             PdfDocumentRenderer renderer = new PdfDocumentRenderer(true, PdfSharp.Pdf.PdfFontEmbedding.Always);
@@ -53,7 +57,7 @@ namespace EKG_Project.IO
             renderer.PdfDocument.Save(filename);
             //Process.Start(filename);
         }
-           
+
         /*static void Main(string[] args)
         {
 
