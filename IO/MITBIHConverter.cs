@@ -10,14 +10,36 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that converts MIT BIH files
+    /// </summary>
     class MITBIHConverter : IECGConverter
     {
+        //FIELDS
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
+
+        /// <summary>
+        /// Stores sampling frequency
+        /// </summary>
         uint frequency;
+
+        /// <summary>
+        /// Stores number of samples
+        /// </summary>
         uint sampleAmount;
+
+        /// <summary>
+        /// Stores signals
+        /// </summary>
         List<Tuple<string, Vector<double>>> signals;
         Basic_Data _data;
 
+        /// <summary>
+        /// Gets or sets Basic Data
+        /// </summary>
         public Basic_Data Data
         {
             get
@@ -36,6 +58,10 @@ namespace EKG_Project.IO
             analysisName = MITBIHAnalysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves Basic Data in internal XML file
+        /// </summary>
         public void SaveResult()
         {
             foreach (var property in Data.GetType().GetProperties())
@@ -43,7 +69,7 @@ namespace EKG_Project.IO
 
                 if (property.GetValue(Data, null) == null)
                 {
-                    //throw new Exception(); // < - robić coś takiego?
+                    //throw new Exception();
 
                 }
                 else
@@ -54,6 +80,10 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Calls method loadMITBIHFile and sets Basic Data
+        /// </summary>
+        /// <param name="path">input file path</param>
         public void ConvertFile(string path)
         {
             loadMITBIHFile(path);
@@ -63,6 +93,10 @@ namespace EKG_Project.IO
             Data.SampleAmount = sampleAmount;
         }
 
+        /// <summary>
+        /// Loads MIT BIH input file and gets data from it
+        /// </summary>
+        /// <param name="path">input file path</param>
         public void loadMITBIHFile(string path)
         {
             string recordName = Path.GetFileNameWithoutExtension(path);

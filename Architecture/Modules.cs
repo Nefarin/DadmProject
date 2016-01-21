@@ -87,7 +87,7 @@ namespace EKG_Project.Architecture
         {
             CurrentModuleIndex++;
             AvailableOptions option = MODULE_ORDER[CurrentModuleIndex];
-            Console.WriteLine(option);
+            //Console.WriteLine(option);
             ModuleParams param;
             try
             {

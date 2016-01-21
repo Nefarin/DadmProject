@@ -9,13 +9,24 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that creates internal XML file
+    /// </summary>
     public class ECG_Worker 
     {
+        //FIELDS
+        /// <summary>
+        /// Stores worker
+        /// </summary>
         IECG_Worker worker;
+
         private XmlDocument _internalXMLFile;
 
         public ECG_Worker() { }
 
+        /// <summary>
+        /// Gets or sets internalXMLFile
+        /// </summary>
         public XmlDocument InternalXMLFile
         {
             get
@@ -28,6 +39,10 @@ namespace EKG_Project.IO
             }
         }
 
+        //METHODS
+        /// <summary>
+        /// Creates internal XML file
+        /// </summary>
         public void CreateFile()
         {
             InternalXMLFile = new XmlDocument();
@@ -39,12 +54,6 @@ namespace EKG_Project.IO
             XmlElement root = InternalXMLFile.CreateElement(string.Empty, "EKG", string.Empty);
             InternalXMLFile.AppendChild(root);
 
-        }
-
-
-        static void Main()
-        {
-            Console.Read();
         }
     }
 }

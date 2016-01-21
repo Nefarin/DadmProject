@@ -11,12 +11,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads Sleep_Apnea_Data from internal XML file
+    /// </summary>
     public class Sleep_Apnea_Data_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private Sleep_Apnea_Data _data;
 
+        /// <summary>
+        /// Gets or sets Sleep_Apnea_Data
+        /// </summary>
         public Sleep_Apnea_Data Data
         {
             get
@@ -42,6 +56,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves Sleep_Apnea_Data
+        /// </summary>
+        /// <param name="data">Sleep_Apnea_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is Sleep_Apnea_Data)
@@ -161,6 +180,9 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Loads Sleep_Apnea_Data
+        /// </summary>
          public void Load()
         {
             Sleep_Apnea_Data basicData = new Sleep_Apnea_Data();
@@ -244,6 +266,11 @@ namespace EKG_Project.IO
             this.Data = basicData;
         }
 
+        /// <summary>
+        /// Converts string to list
+        /// </summary>
+        /// <param name="input">string</param>
+        /// <returns>list</returns>
         public static List<double> stringToList(string input)
         {
             double[] digits = input

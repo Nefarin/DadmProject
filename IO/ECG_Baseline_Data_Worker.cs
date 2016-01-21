@@ -12,12 +12,26 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads ECG_Baseline_Data from internal XML file
+    /// </summary>
     public class ECG_Baseline_Data_Worker : IECG_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
-        string analysisName = "TestAnalysis";
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
+        string analysisName;
         private ECG_Baseline_Data _data;
 
+        /// <summary>
+        /// Gets or sets ECG_Baseline_Data
+        /// </summary>
         public ECG_Baseline_Data Data
         {
             get
@@ -44,6 +58,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves ECG_Baseline_Data
+        /// </summary>
+        /// <param name="data">ECG_Baseline_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is ECG_Baseline_Data)
@@ -105,6 +124,9 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Loads and sets ECG_Baseline_Data
+        /// </summary>
         public void Load()
         {
             ECG_Baseline_Data basicData = new ECG_Baseline_Data();
@@ -142,23 +164,5 @@ namespace EKG_Project.IO
             }
             this.Data = basicData;
         }
-
-
-        //public static void Main()
-        //{
-        //    ECG_Baseline_Data_Worker worker = new ECG_Baseline_Data_Worker();
-        //    worker.Load();
-
-        //    foreach (var signal in worker.Data.SignalsFiltered)
-        //    {
-        //        //Console.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
-        //        Debug.WriteLine(String.Format("Signal {0}: {1} \n", signal.Item1, signal.Item2.ToString()));
-        //        //Debug.
-        //    }
-
-            
-        //    //Console.Read();
-
-        //}
     }
 }

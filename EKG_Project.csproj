@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{EFE339A0-2E66-496C-8A74-F84B670D3DA9}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EKG_Project</RootNamespace>
     <AssemblyName>EKG_Project</AssemblyName>
@@ -192,6 +192,7 @@
     </Compile>
     <Compile Include="Architecture\Delegates.cs" />
     <Compile Include="Architecture\DLLLoader.cs" />
+    <Compile Include="Architecture\GUIMessages\AnalysisAborted.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEnded.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisEndedTest.cs" />
     <Compile Include="Architecture\GUIMessages\AnalysisStarted.cs" />
@@ -202,11 +203,15 @@
     <Compile Include="Architecture\GUIMessages\IGUIMessage.cs" />
     <Compile Include="Architecture\GUIMessages\ModuleProgress.cs" />
     <Compile Include="Architecture\GUIMessages\ProcessingEnded.cs" />
+    <Compile Include="Architecture\GUIMessages\StatsCalculationBegun.cs" />
+    <Compile Include="Architecture\GUIMessages\StatsCalculationEnded.cs" />
     <Compile Include="Architecture\GUIMessages\TestMessage.cs" />
     <Compile Include="Architecture\Modules.cs" />
     <Compile Include="Architecture\ProcessingStates\Abort.cs" />
+    <Compile Include="Architecture\ProcessingStates\AbortAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\AbortTest.cs" />
     <Compile Include="Architecture\ProcessingStates\BeginAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\BeginStatsCalculation.cs" />
     <Compile Include="Architecture\ProcessingStates\Idle.cs" />
     <Compile Include="Architecture\ProcessingStates\Init.cs" />
     <Compile Include="Architecture\ProcessingStates\IProcessingState.cs" />
@@ -214,10 +219,15 @@
     <Compile Include="Architecture\ProcessingStates\ModuleEnded.cs" />
     <Compile Include="Architecture\ProcessingStates\NextAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\NextModule.cs" />
+    <Compile Include="Architecture\ProcessingStates\NextStats.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessingEnded.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessModule.cs" />
+    <Compile Include="Architecture\ProcessingStates\ProcessStats.cs" />
+    <Compile Include="Architecture\ProcessingStates\SStatsCalculationEnded.cs" />
+    <Compile Include="Architecture\ProcessingStates\StatsEnded.cs" />
     <Compile Include="Architecture\ProcessingStates\TestState.cs" />
+    <Compile Include="Architecture\Stats.cs" />
     <Compile Include="Architecture\TabContainer.cs" />
     <Compile Include="Architecture\Processing.cs" />
     <Compile Include="Architecture\ProcessSync.cs" />
@@ -298,9 +308,22 @@
     <Compile Include="IO\IECG_Worker.cs" />
     <Compile Include="IO\MITBIHConverter.cs" />
     <Compile Include="IO\PDFGenerator.cs" />
+    <Compile Include="IO\PDFModuleClasses\ATRIAL_FIBER_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\ECG_Baseline_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\FLUTTER_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\HEART_AXIS_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\HEART_CLASS_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\HRV2_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\HRV_DFA_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\IPDFModuleClass.cs" />
+    <Compile Include="IO\PDFModuleClasses\QT_DISP_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\R_PEAKS_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\SLEEP_APNEA_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\WAVES_PDF.cs" />
     <Compile Include="IO\PDF\AddSvgAsPage.cs" />
     <Compile Include="IO\PDF\Cover.cs" />
     <Compile Include="IO\PDF\Documents.cs" />
+    <Compile Include="IO\PDF\StoreDataPDF.cs" />
     <Compile Include="IO\PDF\Styles.cs" />
     <Compile Include="IO\PDF\TableOfContents.cs" />
     <Compile Include="IO\PDF\Tables.cs" />
@@ -445,6 +468,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\savetopdfd.pdf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -464,6 +488,7 @@
     <Content Include="DLL\resetvars.vbs" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="Resources\logo.png" />
     <Resource Include="IO\temp\train_d_label.txt" />
     <Resource Include="IO\temp\train_d.txt" />
     <Resource Include="IO\data\2.xml" />

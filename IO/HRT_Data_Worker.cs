@@ -11,12 +11,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads HRT_Data from internal XML file
+    /// </summary>
     public class HRT_Data_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private HRT_Data _data;
 
+        /// <summary>
+        /// Gets or sets HRT_Data
+        /// </summary>
         public HRT_Data Data
         {
             get
@@ -42,6 +56,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves HRT_Data
+        /// </summary>
+        /// <param name="data">HRT_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is HRT_Data)
@@ -130,6 +149,9 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Loads and sets HRT_Data
+        /// </summary>
         public void Load()
         {
             HRT_Data basicData = new HRT_Data();

@@ -11,12 +11,26 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads Basic_Data from internal XML file
+    /// </summary>
     public class Basic_Data_Worker : IECG_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
-        string analysisName = "Analysis6";
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
+        string analysisName;
         private Basic_Data basicData;
 
+        /// <summary>
+        /// Gets or sets Basic_Data
+        /// </summary>
         public Basic_Data BasicData
         {
             get
@@ -41,6 +55,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves Basic_Data
+        /// </summary>
+        /// <param name="data">Basic_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is Basic_Data)
@@ -103,6 +122,10 @@ namespace EKG_Project.IO
             }
 
         }
+
+        /// <summary>
+        /// Loads and sets Basic_Data
+        /// </summary>
         public void Load()
         {
             Basic_Data basicData = new Basic_Data();
