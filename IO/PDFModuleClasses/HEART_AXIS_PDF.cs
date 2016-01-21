@@ -32,5 +32,12 @@ namespace EKG_Project.IO.PDFModuleClasses
             paragraph.Format.OutlineLevel = OutlineLevel.Level1;
         }
 
+        public void InsertStatisticsTable(Dictionary<string, string> _strToStr)
+        {
+            int cols = 2;
+            int rows = _strToStr.Count;
+            Tables.DefineTable(Document, rows, cols, _strToStr);
+        }
+
     }
 }
