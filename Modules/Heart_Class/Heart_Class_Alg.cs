@@ -16,6 +16,7 @@ namespace EKG_Project.Modules.Heart_Class
     public partial class Heart_Class : IModule
     {
         //FIELDS
+
         private Vector<double> _signal;          
         private List<int> _qrsOnset;
         private List<int> _qrsEnd;                
@@ -40,7 +41,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         public Heart_Class()
         {
-
+           
             _signal = Vector<double>.Build.Dense(1);
             _qrsOnset = new List<int>();
             _qrsEnd = new List<int>();
@@ -66,7 +67,7 @@ namespace EKG_Project.Modules.Heart_Class
 
         #region Documentation
         /// <summary>
-        /// TODO 
+        /// This method is general method of module Heart_Class and it performs whole procedure of classification, from coefficient counting up to Qrs complex'es classification 
         /// </summary>
         /// <param name="loadedSignal"></param>
         /// <param name="fs"></param>
