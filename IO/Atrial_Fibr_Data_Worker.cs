@@ -11,12 +11,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads Atrial_Fibr_Data from internal XML file
+    /// </summary>
     public class Atrial_Fibr_Data_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private Atrial_Fibr_Data _data;
 
+        /// <summary>
+        /// Gets or sets Atrial_Fibr_Data
+        /// </summary>
         public Atrial_Fibr_Data Data
         {
             get
@@ -42,6 +56,10 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        /// <summary>
+        /// Saves Atrial_Fibr_Data
+        /// </summary>
+        /// <param name="data">Atrial_Fibr_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is Atrial_Fibr_Data)
@@ -115,6 +133,9 @@ namespace EKG_Project.IO
 
         }
 
+        /// <summary>
+        /// Loads and sets Atrial_Fibr_Data
+        /// </summary>
         public void Load()
         {
             Atrial_Fibr_Data basicData = new Atrial_Fibr_Data();

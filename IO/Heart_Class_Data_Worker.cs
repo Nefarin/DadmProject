@@ -11,12 +11,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads Heart_Class_Data from internal XML file
+    /// </summary>
     public class Heart_Class_Data_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private Heart_Class_Data _data;
 
+        /// <summary>
+        /// Gets or sets Heart_Class_Data
+        /// </summary>
         public Heart_Class_Data Data
         {
             get
@@ -42,6 +56,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHOD
+        /// <summary>
+        /// Saves Heart_Class_Data
+        /// </summary>
+        /// <param name="data">Heart_Class_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is Heart_Class_Data)
@@ -99,6 +118,10 @@ namespace EKG_Project.IO
 
             }
         }
+
+        /// <summary>
+        /// Loads and sets Heart_Class_Data
+        /// </summary>
         public void Load()
         {
             Heart_Class_Data basicData = new Heart_Class_Data();
@@ -122,11 +145,11 @@ namespace EKG_Project.IO
                     {
                         XmlNode item1 = node["item1"];
                         string readItem1 = item1.InnerText;
-                        int convertedItem1 = Convert.ToInt32(readItem1, new System.Globalization.NumberFormatInfo());
+                        int convertedItem1 = Convert.ToInt32(readItem1);
 
                         XmlNode item2 = node["item2"];
-                        string readItem2 = item1.InnerText;
-                        int convertedItem2 = Convert.ToInt32(readItem2, new System.Globalization.NumberFormatInfo());
+                        string readItem2 = item2.InnerText;
+                        int convertedItem2 = Convert.ToInt32(readItem2);
 
                         Tuple<int, int> read = Tuple.Create(convertedItem1, convertedItem2);
                         list.Add(read);

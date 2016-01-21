@@ -12,12 +12,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads ST_Segment_Data from internal XML file
+    /// </summary>
     public class ST_Segment_Data_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private ST_Segment_Data _data;
 
+        /// <summary>
+        /// Gets or sets ST_Segment_Data
+        /// </summary>
         public ST_Segment_Data Data
         {
             get
@@ -43,6 +57,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves ST_Segment_Data
+        /// </summary>
+        /// <param name="data">ST_Segment_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is ST_Segment_Data)
@@ -121,6 +140,9 @@ namespace EKG_Project.IO
 
         }
 
+        /// <summary>
+        /// Loads and sets ST_Segment_Data
+        /// </summary>
         public void Load()
         {
             ST_Segment_Data basicData = new ST_Segment_Data();
@@ -149,30 +171,35 @@ namespace EKG_Project.IO
                     basicData.tSTs = readList1;
 
                     XmlNode sNode = module["ConcaveCurves"];
-                    basicData.ConcaveCurves = Convert.ToInt32(sNode.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.ConcaveCurves = Convert.ToInt32(sNode.InnerText);
 
                     XmlNode sNode1 = module["ConvexCurves"];
-                    basicData.ConvexCurves = Convert.ToInt32(sNode1.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.ConvexCurves = Convert.ToInt32(sNode1.InnerText);
 
                     XmlNode sNode2 = module["DecreasingLines"];
-                    basicData.DecreasingLines = Convert.ToInt32(sNode2.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.DecreasingLines = Convert.ToInt32(sNode2.InnerText);
 
                     XmlNode sNode3 = module["HorizontalLines"];
-                    basicData.HorizontalLines = Convert.ToInt32(sNode3.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.HorizontalLines = Convert.ToInt32(sNode3.InnerText);
 
                     XmlNode sNode4 = module["IncreasingLines"];
-                    basicData.IncreasingLines = Convert.ToInt32(sNode4.InnerText, new System.Globalization.NumberFormatInfo());
+                    basicData.IncreasingLines = Convert.ToInt32(sNode4.InnerText);
 
                 }
             }
             this.Data = basicData;
         }
 
+        /// <summary>
+        /// Converts string to list
+        /// </summary>
+        /// <param name="input">string</param>
+        /// <returns>list</returns>
         public static List<long> stringToList(string input)
         {
             long[] digits = input
                               .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                              .Select(digit => Convert.ToInt64(digit, new System.Globalization.NumberFormatInfo()))
+                              .Select(digit => Convert.ToInt64(digit))
                               .ToArray();
             List<long> list = new List<long>();
             for (int i = 0; i < digits.Length; i++)
