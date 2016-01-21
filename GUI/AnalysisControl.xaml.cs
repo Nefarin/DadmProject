@@ -240,6 +240,7 @@ namespace EKG_Project.GUI
       
             MessageBox.Show("PDF generated");
             pdf.SaveDocument();
+            pdf.ProcessStart();
         }
 
         public void analysisAborted()

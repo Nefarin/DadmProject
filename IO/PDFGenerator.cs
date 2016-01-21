@@ -58,6 +58,11 @@ namespace EKG_Project.IO
             //Process.Start(filename);
         }
 
+        public void ProcessStart()
+        {
+            Process.Start(filename);
+        }
+
         /*static void Main(string[] args)
         {
 

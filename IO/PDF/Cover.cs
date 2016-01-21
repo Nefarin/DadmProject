@@ -120,6 +120,7 @@ namespace EKG_Project.IO
             image.Top = ShapePosition.Top;
             image.Left = ShapePosition.Right;
             image.WrapFormat.Style = WrapStyle.Through;
+            image.Section.PageSetup.TopMargin = Unit.FromCentimeter(6.0);
         }
     }
 }

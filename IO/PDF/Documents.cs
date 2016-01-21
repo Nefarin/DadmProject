@@ -15,6 +15,8 @@ namespace EKG_Project.IO
         Document.Info.Title = "Analisys Report";
         Document.Info.Subject = "";
         Document.Info.Author = "Krzysztof Kaganiec";
+      
+        //Document.DefaultPageSetup.TopMargin = 3.5;
     }
 
     public Document Document { get; set; }
