@@ -273,23 +273,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
         public static void Main()
         {
-            List<uint> RR_det = ReadFromCSV("../../QRSOnsets.csv").Select(x => (uint)x).ToList();
-
-            int fs = 360;
-            Sleep_Apnea apnea = new Sleep_Apnea();
-            var RR = apnea.findIntervals(RR_det, fs);
-            var RR_average = apnea.averageFilter(RR);
-            var RR_res = apnea.resampling(RR_average, fs);
-            var RR_HPLP = apnea.HPLP(RR_res);
-            var h_amp = new List<List<double>>(2);
-            var h_freq = new List<List<double>>(2);
-            apnea.hilbert(RR_HPLP, ref h_amp, ref h_freq);
-            apnea.median_filter(h_freq, h_amp);
-            apnea.amp_filter(h_amp);
-            double il_Apnea;
-            var Detected_Apnea = apnea.apnea_detection(h_amp, h_freq, out il_Apnea);
-
-            /*Sleep_Apnea_Params param = new Sleep_Apnea_Params("TestAnalysis234");
+            Sleep_Apnea_Params param = new Sleep_Apnea_Params("TestAnalysis100");
             Sleep_Apnea sleep_apnea = new Sleep_Apnea();
             sleep_apnea.Init(param);
             while (true)
@@ -300,7 +284,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 }
                 Console.WriteLine(sleep_apnea.Progress());
                 sleep_apnea.ProcessData();
-            }*/
+            }
 
             /*Sleep_Apnea_Stats stats = new Sleep_Apnea_Stats();
             stats.Init("Analysis6");
@@ -316,26 +300,6 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 Console.WriteLine(key + stats.GetStatsAsString()[key]);
             }
             Console.Read();*/
-        }
-
-        private static double[] ReadFromCSV(string path) 
-        {
-            double[] samples = null;
-            StreamReader reader = new StreamReader(File.OpenRead(path));
-            while (!reader.EndOfStream)
-            {
-                string line = reader.ReadLine();
-                string[] values = line.Split(',');
-
-                samples = new double[values.Length];
-                int i = 0;
-                foreach (var value in values)
-                {
-                    samples[i] = double.Parse(value.Replace('.', ','), System.Globalization.NumberStyles.Float);
-                    i++;
-                }
-            }
-            return samples;
         }
     }
 }

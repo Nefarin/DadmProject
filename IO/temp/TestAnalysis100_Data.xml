@@ -309,4 +309,46 @@
     </ClassificationResult>
     <ChannelMliiDetected>True</ChannelMliiDetected>
   </module>
+  <module name="Sleep_Apnea">
+    <Detected_Apnea>
+      <lead>MLII</lead>
+      <tupleList>
+        <tuple>
+          <item1>0</item1>
+          <item2>0</item2>
+        </tuple>
+      </tupleList>
+    </Detected_Apnea>
+    <Detected_Apnea>
+      <lead>V5</lead>
+      <tupleList>
+        <tuple>
+          <item1>0</item1>
+          <item2>0</item2>
+        </tuple>
+      </tupleList>
+    </Detected_Apnea>
+    <h_amp>
+      <lead>MLII</lead>
+      <samplesList>
+        <samples>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 </samples>
+        <samples>4,22129534175871 6,68770338649815 4,2215085652316 0,00157767301970547 1,31228448559394 0,00151731473993457 0,668450512517721 0,00174238646033522 0,340702414165826 0,00157912998543931 0,105798932243585 0,00174687223349734 0,105859083999257 0,00165356625633545 0,340628318044221 0,00160812147412948 0,668585977491668 0,00156401641357293 1,31237420104808 0,00181970082429634 </samples>
+      </samplesList>
+    </h_amp>
+    <h_amp>
+      <lead>V5</lead>
+      <samplesList>
+        <samples>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 </samples>
+        <samples>4,22129534175871 6,68770338649815 4,2215085652316 0,00157767301970547 1,31228448559394 0,00151731473993457 0,668450512517721 0,00174238646033522 0,340702414165826 0,00157912998543931 0,105798932243585 0,00174687223349734 0,105859083999257 0,00165356625633545 0,340628318044221 0,00160812147412948 0,668585977491668 0,00156401641357293 1,31237420104808 0,00181970082429634 </samples>
+      </samplesList>
+    </h_amp>
+    <il_Apnea>
+      <lead>MLII</lead>
+      <item2>0</item2>
+    </il_Apnea>
+    <il_Apnea>
+      <lead>V5</lead>
+      <item2>0</item2>
+    </il_Apnea>
+  </module>
 </EKG>

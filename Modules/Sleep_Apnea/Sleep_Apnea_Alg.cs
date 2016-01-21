@@ -374,6 +374,11 @@ namespace EKG_Project.Modules.Sleep_Apnea
             double[] freq_sorted = new double[window_median];
             int i, j;
 
+            if(h_freq[1].Count <= window_median)
+            {
+                return;
+            }
+
             //poczatkowe wypelnienie okna
             for (i = 0; i < window_median; i++)
             {
@@ -384,11 +389,20 @@ namespace EKG_Project.Modules.Sleep_Apnea
             }
             Array.Sort(amp_sorted);
             Array.Sort(freq_sorted);
-            h_amp[1][window_median/2] = amp_sorted[window_median / 2]; // tu ma byc srednia
-            h_freq[1][window_median/2] = freq_sorted[window_median / 2];
+            if (window_median % 2 == 0)
+            {
+                h_amp[1][window_median / 2] = (amp_sorted[window_median / 2] + amp_sorted[(window_median / 2) + 1]) / 2.0;
+                h_freq[1][window_median / 2] = (freq_sorted[window_median / 2] + freq_sorted[(window_median / 2) + 1]) / 2.0;
+
+            }
+            else
+            {
+                h_amp[1][window_median / 2] = amp_sorted[window_median / 2]; // tu ma byc srednia
+                h_freq[1][window_median / 2] = freq_sorted[window_median / 2];
+            }
 
             int last_index = 0;
-            for (i = window_median + 1, j = window_median/2+1; i < h_amp[1].Count; i++, j++)
+            for (i = window_median, j = window_median/2+1; i < h_amp[1].Count; i++, j++)
             {
                 amp[last_index] = h_amp[1][i];
                 Array.Copy(amp, amp_sorted, amp.Length);
