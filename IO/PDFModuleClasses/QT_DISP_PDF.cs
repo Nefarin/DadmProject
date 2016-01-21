@@ -30,7 +30,6 @@ namespace EKG_Project.IO.PDFModuleClasses
         {
             Paragraph paragraph = Section.AddParagraph(_header);
             paragraph.AddBookmark(_header);
-            paragraph.Format.SpaceBefore = "3cm";
             paragraph.Format.Font.Size = 18;
             paragraph.Format.Font.Bold = true;
             paragraph.Format.SpaceAfter = 24;
