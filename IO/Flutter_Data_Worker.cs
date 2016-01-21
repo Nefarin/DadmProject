@@ -11,12 +11,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads Flutter_Data from internal XML file
+    /// </summary>
     public class Flutter_Data_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private Flutter_Data _data;
 
+        /// <summary>
+        /// Gets or sets Flutter_Data
+        /// </summary>
         public Flutter_Data Data
         {
             get
@@ -42,6 +56,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves Flutter_Data
+        /// </summary>
+        /// <param name="data">Flutter_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is Flutter_Data)
@@ -94,6 +113,9 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Loads and sets Flutter_Data
+        /// </summary>
         public void Load()
         {
             Flutter_Data basicData = new Flutter_Data();

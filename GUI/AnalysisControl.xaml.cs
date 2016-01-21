@@ -99,8 +99,6 @@ namespace EKG_Project.GUI
 
         }
 
-        IO.PDFGenerator pdf;
-
         private void pdfButton_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.SaveFileDialog fileDialog = new System.Windows.Forms.SaveFileDialog();
@@ -195,11 +193,14 @@ namespace EKG_Project.GUI
 
         }
 
+        IO.PDFGenerator pdf;
         public void statsCalculationStarted()
         {
             MessageBox.Show("Started generating PDF");
+            pdf = new IO.PDFGenerator(outputPdfPath);
         }
 
+        
         public void statsCalculationEnded(Dictionary<AvailableOptions, Dictionary<String, String>> results)
         {
             foreach (var result in results)
@@ -211,7 +212,22 @@ namespace EKG_Project.GUI
                 }
             }
 
-            pdf = new IO.PDFGenerator(outputPdfPath);
+            System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
+            foreach (var option in modulePanel.getAllOptions())
+            {
+
+                if (option.Set)
+                {
+                    tempList.Add(option.Name);
+                }
+            }
+
+            IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
+            data.AnalisysName = modulePanel.AnalysisName;
+            data.ModuleList = tempList;
+            data.Filename = this.inputFilePath;
+            pdf.GeneratePDF(data);
+
             MessageBox.Show("PDF generated");
         }
 

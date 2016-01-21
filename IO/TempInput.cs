@@ -8,17 +8,11 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Temporary class to read txt files
+    /// </summary>
     class TempInput
     {
-        #region Documentation
-        /// <summary>
-        /// TO DO
-        /// </summary>
-        /// <param name="pathIn"></param>
-        /// <param name="pathOut"></param>
-        /// 
-        #endregion
-
         static string pathIn;
         static string pathOut;
 
