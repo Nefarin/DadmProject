@@ -26,7 +26,7 @@ namespace EKG_Project.IO.PDFModuleClasses
 
         }
 
-        public void FillReportForModule(string _header)
+        public void FillReportForModule(string _header, Dictionary<String, String> _statsDictionary)
         {
             Paragraph paragraph = Section.AddParagraph(_header);
             paragraph.AddBookmark(_header);
@@ -35,6 +35,8 @@ namespace EKG_Project.IO.PDFModuleClasses
             paragraph.Format.Font.Bold = true;
             paragraph.Format.SpaceAfter = 24;
             paragraph.Format.OutlineLevel = OutlineLevel.Level1;
+
+            InsertStatisticsTable(_statsDictionary);
         }
 
         public void InsertStatisticsTable(Dictionary<string, string> _strToStr)
