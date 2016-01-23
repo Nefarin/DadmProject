@@ -2,6 +2,7 @@
 using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -27,6 +28,7 @@ namespace EKG_Project.Modules.HRV2
         private int _outputIndex;
 
         private Histogram2 _currentHistogram;
+        private Histogram _currentHistogramV;
         private Vector<double> _currentPoincare;
         private Vector<double> _currentRPeaks;
 
@@ -121,17 +123,17 @@ namespace EKG_Project.Modules.HRV2
                 _currentRPeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
                 _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
                 makeTinn();
-                OutputData.Tinn.Add(new Tuple<string, double> (InputData.RRInterval[_currentChannelIndex].Item1, tinn));
-                //TriangleIndex();
+                //OutputData.Tinn.Add(new Tuple<string, double> (InputData.RRInterval[_currentChannelIndex].Item1, tinn));
+                TriangleIndex();
                 //OutputData.TriangleIndex.Add(new Tuple<string, double> (InputData.RRInterval[_currentChannelIndex].Item1,triangleIndex));
-                //OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
+                OutputData.HistogramData.Add(new Tuple<string, Histogram>(InputData.RRInterval[_outputIndex].Item1, _currentHistogramV));
 
                 PoincarePlot_x();
                 PoincarePlot_y();
-                OutputData.SD1.Add(new Tuple<string, double>(InputData.RRInterval[_currentChannelIndex].Item1, SD1()));
-                OutputData.SD2.Add(new Tuple<string, double>(InputData.RRInterval[_currentChannelIndex].Item1, SD2()));
+                //OutputData.SD1.Add(new Tuple<string, double>(InputData.RRInterval[_currentChannelIndex].Item1, SD1()));
+                //OutputData.SD2.Add(new Tuple<string, double>(InputData.RRInterval[_currentChannelIndex].Item1, SD2()));
 
-                OutputData.ElipseCenter.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, eclipseCenter()));
+                //OutputData.ElipseCenter.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, eclipseCenter()));
 
                 OutputData.PoincarePlotData_x.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_x));
                 OutputData.PoincarePlotData_y.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_y));

@@ -1,28 +1,29 @@
 ﻿using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
 using System;
+using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV2
 {
     public class HRV2_Data : ECG_Data
     {
-        private List<Tuple<string, double>> _tinn;
-        private List<Tuple<string, double>> _triangleIndex;
-        private List<Tuple<string, double>> _sd1;
-        private List<Tuple<string, double>> _sd2;
-        private List<Tuple<string, HRV2.Histogram2>> _histogramData;
+        private List<double> _tinn;
+        private List<double> _triangleIndex;
+        private List<double> _sd1;
+        private List<double> _sd2;
+        private List<Tuple<string, Histogram>> _histogramData;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_x;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_y;
-        private List<Tuple<string, Vector<double>>> _elipseCenter;
+        private List<double> _elipseCenter;
 
 
         #region Documentation
         /// <summary>
-        /// Współczynnik TINN
+        /// TINN coefficient, the base of the triangle fitted to histogram
         /// </summary>
         /// 
         #endregion
-        public List<Tuple<string, double>> Tinn
+        public List<double> Tinn
         {
             get
             {
@@ -37,11 +38,11 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Indeks trójkątny
+        /// Triangle index coefficient, value of the highest bin, devided by all RR intervals count
         /// </summary>
         /// 
         #endregion
-        public List<Tuple<string, double>> TriangleIndex
+        public List<double> TriangleIndex
         {
             get
             {
@@ -56,11 +57,11 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Współczynnik SD1, krótsza przekątna dopasowanej elipsy do wykresu Poincare, zmienność krótko-terminowa
+        /// SD1 coefficient, the shorter axis of the ellipse
         /// </summary>
         /// 
         #endregion
-        public List<Tuple<string, double>> SD1
+        public List<double> SD1
         {
             get
             {
@@ -75,11 +76,11 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Współczynnik SD2,dłuższa przekątna dopasowanej elipsy do wykresu Poincare, zmienność długo-terminowa
+        /// SD2 coefficient, the longer axis of the ellipse
         /// </summary>
         /// 
         #endregion
-        public List<Tuple<string, double>> SD2
+        public List<double> SD2
         {
             get
             {
@@ -94,11 +95,11 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Histogram długości interwałów RR
+        /// The RR intervals histogram
         /// </summary>
         /// 
         #endregion
-        public List<Tuple<string, HRV2.Histogram2>> HistogramData
+        public List<Tuple<string, Histogram>> HistogramData
         {
             get
             {
@@ -113,7 +114,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Wykres Poincare_x
+        /// x coefficien of Poincare plot
         /// </summary>
         /// 
         #endregion
@@ -132,7 +133,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Wykres Poincare_y
+        /// y coefficents of Poincare plot 
         /// </summary>
         /// 
         #endregion
@@ -148,7 +149,14 @@ namespace EKG_Project.Modules.HRV2
                 _poincarePlotData_y = value;
             }
         }
-        public List<Tuple<string, Vector<double>>> ElipseCenter
+
+        #region Documentation
+        /// <summary>
+        /// The center of an elipse fitted to Poincare plot 
+        /// </summary>
+        /// 
+        #endregion
+        public List<double> ElipseCenter
         {
             get
             {
@@ -163,20 +171,21 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Konstruktor z histogramem i wykresem Poincare
+        /// Empty output constructors of HRV2 module
         /// </summary>
         /// 
         #endregion
         public HRV2_Data()
         {
-            HistogramData = new List<Tuple<string, HRV2.Histogram2>>();
+            HistogramData = new List<Tuple<string, Histogram>>();
             PoincarePlotData_x = new List<Tuple<string, Vector<double>>>();
             PoincarePlotData_y = new List<Tuple<string, Vector<double>>>();
-            SD1 = new List<Tuple<string, double>>();
-            SD2 = new List<Tuple<string, double>>();
-            Tinn = new List<Tuple<string, double>>();
-            TriangleIndex = new List<Tuple<string, double>>();
-            ElipseCenter = new List<Tuple<string, Vector<double>>>();
+            SD1 = new List<double>();
+            SD2 = new List<double>();
+            Tinn = new List<double>();
+            TriangleIndex = new List<double>();
+            ElipseCenter = new List<double>();
         }
     }
 }
+
