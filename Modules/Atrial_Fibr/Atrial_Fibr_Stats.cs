@@ -99,24 +99,24 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     break;
             }
         }
-        public static void Main(String[] args)
-        {
-            Atrial_Fibr_Stats stats = new Atrial_Fibr_Stats();
-            stats.Init("test123");
+        //public static void Main(String[] args)
+        //{
+        //    Atrial_Fibr_Stats stats = new Atrial_Fibr_Stats();
+        //    stats.Init("test123");
 
 
-            while (true)
-            {
-                if (stats.Ended()) break;
-                stats.ProcessStats();
-            }
+        //    while (true)
+        //    {
+        //        if (stats.Ended()) break;
+        //        stats.ProcessStats();
+        //    }
 
-            foreach (var key in stats.GetStatsAsString().Keys)
-            {
-                Console.WriteLine(key + stats.GetStatsAsString()[key]);
-            }
-            Console.Read();
+        //    foreach (var key in stats.GetStatsAsString().Keys)
+        //    {
+        //        Console.WriteLine(key + stats.GetStatsAsString()[key]);
+        //    }
+        //    Console.Read();
 
-        }
+        //}
     }
 }
