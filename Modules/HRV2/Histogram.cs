@@ -14,13 +14,37 @@ namespace EKG_Project.Modules.HRV2
     {
         private const float binLength = 7.8125f;
 
+        #region Documentation
+        /// <summary>
+        /// This histogram is made for visualisation. 
+        /// We use Histogram class from MathNet.Numerics.Statistics
+        /// </summary>
+        /// 
+        #endregion
+        public Histogram HistogramToVisualisation()
+        {
+            Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2;
+            double dBinAmount = RRIntervals.AbsoluteMaximum() - RRIntervals.AbsoluteMinimum() / 7.8125;
+            int binAmount = (int)Math.Round(dBinAmount);
+            _currentHistogramV = new Histogram(RRIntervals, binAmount);
+            return _currentHistogramV;
+        }
+
+
+        #region Documentation
+        /// <summary>
+        /// This histogram is made for caluculations (triangle index)
+        /// We made our own class HRV2.Histogram2
+        /// </summary>
+        /// 
+        #endregion
+
+
         public Histogram2 makeHistogram()
         {
             Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2;
-            //int binAmount = (int)((RRIntervals.AbsoluteMaximum() - RRIntervals.AbsoluteMinimum()) / 7.8125); //the amount of the bins
             Console.WriteLine(RRIntervals.Max());
             Console.ReadLine();
-            // _currentHistogram = new Histogram(RRIntervals, binAmount);
             _currentHistogram = new Histogram2(binLength, RRIntervals);
             return _currentHistogram;
         }
@@ -72,7 +96,6 @@ namespace EKG_Project.Modules.HRV2
                 this.INPUT = input;
                 _width = width;
                 _samples = new ObservableCollection<Sample>();
-                //ensureDataLoaded();
             }
 
             public Histogram2()
@@ -126,7 +149,6 @@ namespace EKG_Project.Modules.HRV2
                 }
                 try
                 {
-                    //checkCountOfSamples(_helperListOfSampleList, samples);
                     createSampleList(_helperListOfSampleList);
                 }
                 catch (Exception e)
