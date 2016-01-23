@@ -44,7 +44,7 @@ namespace EKG_Project.GUI
 
             ecgBaseline.
                 AddSuboptionAndMoveDown(AvailableOptions.R_PEAKS).
-                    //AddSuboption(AvailableOptions.HRV1).
+                    AddSuboption(AvailableOptions.HRV1).
                     AddSuboption(AvailableOptions.HRV2).
                     AddSuboptionAndMoveDown(AvailableOptions.WAVES).
                         //AddSuboption(AvailableOptions.ST_SEGMENT).
