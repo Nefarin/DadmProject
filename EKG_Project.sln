@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EKG_Project", "EKG_Project.csproj", "{EFE339A0-2E66-496C-8A74-F84B670D3DA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EKG_ProjectTests", "EKG_ProjectTests\EKG_ProjectTests.csproj", "{51146378-57ED-4207-A846-FB0C8A081048}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EKG_Unit", "EKG_Unit\EKG_Unit.csproj", "{C42978F9-5551-4EB8-AB0D-8EF74CCBBC52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{EFE339A0-2E66-496C-8A74-F84B670D3DA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFE339A0-2E66-496C-8A74-F84B670D3DA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFE339A0-2E66-496C-8A74-F84B670D3DA9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{51146378-57ED-4207-A846-FB0C8A081048}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{51146378-57ED-4207-A846-FB0C8A081048}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{51146378-57ED-4207-A846-FB0C8A081048}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{51146378-57ED-4207-A846-FB0C8A081048}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C42978F9-5551-4EB8-AB0D-8EF74CCBBC52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C42978F9-5551-4EB8-AB0D-8EF74CCBBC52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C42978F9-5551-4EB8-AB0D-8EF74CCBBC52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C42978F9-5551-4EB8-AB0D-8EF74CCBBC52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
