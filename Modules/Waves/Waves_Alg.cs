@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
+using System.Diagnostics;
 
 namespace EKG_Project.Modules.Waves
 {
@@ -47,10 +48,21 @@ namespace EKG_Project.Modules.Waves
                 _qrsEndTresh = 0.2;
                 _qrsOnsTresh = 0.2;
             }
-
+            Stopwatch sw = new Stopwatch();
+            Console.WriteLine(InputECGData.SignalsFiltered[_currentChannelIndex].Item2.Count);
+            Console.WriteLine(InputECGData.SignalsFiltered[_currentChannelIndex].Item1);
+            sw.Start();
             DetectQRS();
+            sw.Stop();
+            Console.WriteLine("QRS "+sw.Elapsed.ToString());
+            sw.Start();
             FindP();
+            sw.Stop();
+            Console.WriteLine("P "+ sw.Elapsed.ToString());
+            sw.Start();
             FindT();
+            sw.Stop();
+            Console.WriteLine("T "+ sw.Elapsed.ToString());
 
             _currentQRSonsets.AddRange(_currentQRSonsetsPart);
             _currentQRSends.AddRange(_currentQRSendsPart);
