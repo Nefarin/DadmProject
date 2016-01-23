@@ -17,3 +17,4 @@ namespace EKG_Project.Modules
         Dictionary<String, Object> GetStats();
     }
 }
+
