@@ -133,11 +133,13 @@ namespace EKG_Project.IO
 
             string readStartTime = columns[0][2];
             string cleanedStartTime = System.Text.RegularExpressions.Regex.Replace(readStartTime, @"\s+", "");
-            DateTime startTime = DateTime.ParseExact(cleanedStartTime, "m:ss.fff", CultureInfo.InvariantCulture);
+            string startPattern = getTimeFormat(cleanedStartTime);
+            DateTime startTime = DateTime.ParseExact(cleanedStartTime, startPattern, CultureInfo.InvariantCulture);
 
             string readStopTime = columns[0][lines.Length - 1].ToString();
             string cleanedStopTime = System.Text.RegularExpressions.Regex.Replace(readStopTime, @"\s+", "");
-            DateTime stopTime = DateTime.ParseExact(cleanedStopTime, "m:ss.fff", CultureInfo.InvariantCulture);
+            string stopPattern = getTimeFormat(cleanedStopTime);
+            DateTime stopTime = DateTime.ParseExact(cleanedStopTime, stopPattern, CultureInfo.InvariantCulture);
 
             TimeSpan totalTime = stopTime - startTime;
             uint totalTimeValue = Convert.ToUInt32(totalTime.TotalSeconds);
@@ -146,6 +148,29 @@ namespace EKG_Project.IO
             return frequency;
         }
 
+
+        public string getTimeFormat(string input)
+       {
+            string timeFormat = null;
+            if(input.Count() == 8)
+            {
+                timeFormat = "m:ss.fff";
+            }
+            else if (input.Count() == 9)
+            {
+                timeFormat = "mm:ss.fff";
+            }
+            else if (input.Count() == 11)
+            {
+                timeFormat = "h:mm:ss.fff";
+            }
+            else if (input.Count() == 12)
+            {
+                timeFormat = "hh:mm:ss.fff";
+            }
+            return timeFormat;
+
+       }
         /// <summary>
         /// Gets signals from input file
         /// </summary>
