@@ -442,4 +442,32 @@
       <samples>765 1310 1611 2342 2875 3412 766 1310 1611 2342 2874 3411 866 1410 1453 2151 2953 3373 3959 725 1269 1691 2301 615 1159 1607 2191 2735 3377 4005 4429 4699 4834 746 1290 2322 765 726 1310 1454 2044 2342 2874 3411 3474 3850 4005 4401 763 1310 2044 2341 2874 765 1310 1890 2342 2874 3386 765 1310 2044 2342 2874 3411 765 1310 2044 2342 2874 3411 765 725 1309 1450 1608 2184 -1 2341 2301 2729 2874 3037 3166 3410 3410 3473 3846 4005 4239 4283 4700 4827 </samples>
     </TEnds>
   </module>
+  <module name="HRV_DFA" />
+  <module name="Heart_Class">
+    <ClassificationResult>
+      <item1>164</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>601</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>1145</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>1442</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>2177</item1>
+      <item2>1</item2>
+    </ClassificationResult>
+    <ClassificationResult>
+      <item1>2721</item1>
+      <item2>0</item2>
+    </ClassificationResult>
+    <ChannelMliiDetected>True</ChannelMliiDetected>
+  </module>
 </EKG>

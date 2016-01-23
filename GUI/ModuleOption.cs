@@ -117,7 +117,7 @@ namespace EKG_Project.GUI
                     panel.Params[this.Code] = this.ModuleParam;
                     break;
                 case AvailableOptions.ATRIAL_FIBER:
-                    this.ModuleParam = new Atrial_Fibr_Params(Detect_Method.POINCARE);
+                    this.ModuleParam = new Atrial_Fibr_Params(Detect_Method.POINCARE, this.getAnalysisName());
                     panel.OptionParams[this] = this.ModuleParam;
                     panel.Params[this.Code] = this.ModuleParam;
                     break;

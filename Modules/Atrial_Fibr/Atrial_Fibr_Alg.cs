@@ -19,7 +19,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
     {
         private uint fs;
         private Vector<double> _rr_intervals;
-        private Vector<double> partOfRrIntervals;
+        private Vector<double> _r_Peaks;
         private Vector <double> pointsDetected;
         bool migotanie;
         double tpr, se, rmssd;
@@ -27,10 +27,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
         List<DataPoint> _RawData;
         List<DataPoint> _NormalizedData;
         List<DataPoint> _ClusteredData;
-
+        Tuple<bool, Vector<double>, double> _wynik;
+        Atrial_Fibr_Params param;
         public Atrial_Fibr()
         {
+            Param = new Atrial_Fibr_Params();
+            Fs = new uint();
+            pointsDetected= Vector<double>.Build.Dense(1);
             _rr_intervals = Vector<double>.Build.Dense(1);
+            _r_Peaks= Vector<double>.Build.Dense(1);
             migotanie = new bool();
             tpr = new double();
             se = new double();
@@ -45,44 +50,64 @@ namespace EKG_Project.Modules.Atrial_Fibr
         //public static void Main()
         //{
         //    Atrial_Fibr af = new Atrial_Fibr();
-
-        //    TempInput.setInputFilePath(@"E:\Studia\ROK 5\DADM\projekt\RR_afdb05091.txt");
-        //    uint fs = TempInput.getFrequency();
-
+        //    Tuple<bool, Vector<double>, double> Wynik = new Tuple<bool, Vector<double>, double>(false, af.pointsDetected, 0);
+        //    TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\int3.txt");
+        //    af.Fs = 250;
+        //    //af.Param.Method = Detect_Method.POINCARE;
         //    af.RR_intervals = TempInput.getSignal();
-        //    af.fs = TempInput.getFrequency();
-        //    af.detectAF(af.RR_intervals, af.fs);
+        //    TempInput.setInputFilePath(@"C:\Users\Anna\Desktop\qrs3.txt");
+        //    af.R_Peaks = TempInput.getSignal();
 
-            //af.migotanie = af.detectAFPoin(af.RR_intervals, af.fs);
+        //    Wynik = af.detectAF(af.RR_intervals, af.R_Peaks, af.Fs, af.Param);
 
-            //if (af.migotanie)
-            //{
-            //    Console.WriteLine("MIGOTANIE PRZEDSIONKOW");
-            //    Console.ReadLine();
-            //}
-            //else
-            //{
-            //    Console.WriteLine("BRAK MIGOTANIA");
-            //    Console.ReadLine();
-            //}
+        //    if (Wynik.Item1)
+        //    {
+        //        Console.WriteLine("MIGOTANIE PRZEDSIONKOW");
+        //        Console.ReadLine();
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("BRAK MIGOTANIA");
+        //        Console.ReadLine();
+        //    }
+        //    Console.WriteLine(Wynik.Item2.ToString());
+        //    Console.ReadLine();
+        //    Console.WriteLine(Wynik.Item2.Count());
 
-            //af.tpr = af.TPR(af.RR_intervals);
-            //af.se = af.SE(af.RR_intervals);
-            //af.RR_intervals = TempInput.getSignal(); //trzeba jeszcze raz wczytac sygnal, bo SE(af.RR_intervals) zastepuje zerami próbki (albo wymyśleć coś lepszego)
-            //af.rmssd = af.RMSSD(af.RR_intervals);
-
-            //Console.WriteLine(af.tpr);
-            //Console.WriteLine(af.se);
-            //Console.WriteLine(af.rmssd);
-            //Console.ReadLine();
+        //    Console.ReadLine();
 
 
         //}
-
+        public Atrial_Fibr_Params Param
+        {
+            get { return param; }
+            set { param = value; }
+        }
+        public uint Fs
+        {
+            get { return fs; }
+            set { fs = value; }
+        }
         public Vector<double> RR_intervals
         {
             get { return _rr_intervals; }
             set { _rr_intervals = value; }
+        }
+        public Tuple<bool, Vector<double>, double> Wynik
+        {
+            get { return _wynik; }
+            set { _wynik = value; }
+        }
+        public Vector<double> R_Peaks
+        {
+            get { return _r_Peaks; }
+            set { _r_Peaks = value; }
+        }
+
+        public Vector<double> Points_Detected
+        {
+            get { return pointsDetected; }
+            set { pointsDetected = value; }
         }
 
         public List<DataPoint> RawData
@@ -131,17 +156,24 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
             tmp = _rrIntervals.Count / dividingFactor;
             nrOfParts = Convert.ToInt32(Math.Floor(tmp));
-            detectedIntervals = new bool[nrOfParts];
+            Vector<double> partOfRrIntervals = Vector<double>.Build.Dense(dividingFactor);
+            detectedIntervals = new bool[nrOfParts*dividingFactor];
+            bool detectedPart = false;
             for (int i = 0; i < nrOfParts; i++)
             {
                 _rrIntervals.CopySubVectorTo(partOfRrIntervals, i * dividingFactor, 0, dividingFactor);
                 if (_method.Method == Detect_Method.STATISTIC)
                 {
-                    detectedIntervals[i] = detectAFStat(partOfRrIntervals, fs);
+                    detectedPart = detectAFStat(partOfRrIntervals, fs);
                 }
                 else
                 {
-                    detectedIntervals[i] = detectAFPoin(partOfRrIntervals, fs);
+                    detectedPart = detectAFPoin(partOfRrIntervals, fs);
+                }
+                
+                for (int j = 0; j < dividingFactor; j++)
+                {
+                    detectedIntervals[i*dividingFactor + j] = detectedPart;
                 }
             }
             double lengthOfDetectedIntervals = 0.0;
@@ -184,7 +216,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
             else
             {
-                pointsDetected.Clear();
+                pointsDetected=Vector<Double>.Build.Dense(1);
                 //afDetectedS="Nie wykryto migotania przedsionków";
             }
             Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetection);
