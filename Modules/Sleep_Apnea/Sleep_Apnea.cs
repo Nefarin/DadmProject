@@ -272,7 +272,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
         public static void Main()
         {
-            Sleep_Apnea_Params param = new Sleep_Apnea_Params("TestAnalysis6");
+            /*Sleep_Apnea_Params param = new Sleep_Apnea_Params("TestAnalysis6");
             Sleep_Apnea sleep_apnea = new Sleep_Apnea();
             sleep_apnea.Init(param);
             while (true)
@@ -283,7 +283,22 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 }
                 Console.WriteLine(sleep_apnea.Progress());
                 sleep_apnea.ProcessData();
+            }*/
+
+            Sleep_Apnea_Stats stats = new Sleep_Apnea_Stats();
+            stats.Init("Analysis6");
+
+            while (true)
+            {
+                if (stats.Ended()) break;
+                stats.ProcessStats();
             }
+
+            foreach (var key in stats.GetStatsAsString().Keys)
+            {
+                Console.WriteLine(key + stats.GetStatsAsString()[key]);
+            }
+            Console.Read();
         }
     }
 }
