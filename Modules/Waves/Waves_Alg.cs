@@ -34,8 +34,8 @@ namespace EKG_Project.Modules.Waves
 
             if( _params.WaveType == Wavelet_Type.haar)
             {
-                _qrsEndTresh = 0.08;
-                _qrsOnsTresh = 0.12;
+                _qrsEndTresh = 0.2;
+                _qrsOnsTresh = 0.2;
             }
             else if (_params.WaveType == Wavelet_Type.db2)
             {
@@ -49,15 +49,15 @@ namespace EKG_Project.Modules.Waves
             }
 
             DetectQRS();
-            FindP();
-            FindT();
+            //FindP();
+            //FindT();
 
             _currentQRSonsets.AddRange(_currentQRSonsetsPart);
             _currentQRSends.AddRange(_currentQRSendsPart);
-            _currentPonsets.AddRange(_currentPonsetsPart);
-            _currentPends.AddRange(_currentPendsPart);
-            _currentTends.AddRange(_currentTendsPart);
-            _params.RpeaksStep = _currentStep;
+            //_currentPonsets.AddRange(_currentPonsetsPart);
+            //_currentPends.AddRange(_currentPendsPart);
+            //_currentTends.AddRange(_currentTendsPart);
+           // _params.RpeaksStep = _currentStep;
         }
 
         public Vector<double> HaarDWT(Vector<double> signal, int n)
@@ -174,66 +174,25 @@ namespace EKG_Project.Modules.Waves
             _currentQRSonsetsPart.Clear();
             _currentQRSendsPart.Clear();
             List<Vector<double>> dwt = new List<Vector<double>>();
-            int startInd = 0;
             
-            if (_rPeaksProcessed > 1)
-            {
-                startInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed - 1];
-                //Console.WriteLine("startujemy");
-                //Console.WriteLine(startInd);
-            }
-            int endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1;
-
-            if (_rPeaksProcessed + _params.RpeaksStep + 1 < endInd)
-            {
-                endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + _params.RpeaksStep + 1];
-                //Console.WriteLine(endInd);
-            }
-            else
-            {
-                endInd = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[endInd];
-            }
-
-            int dwtLen = 1;
-            if (endInd != startInd)
-                dwtLen = endInd - startInd;
-            //Console.WriteLine(endInd);
-            //Console.WriteLine(dwtLen);
-
-            dwt = ListDWT(InputECGData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startInd, dwtLen), _params.DecompositionLevel, _params.WaveType);
+            dwt = ListDWT(_currentECG , _params.DecompositionLevel, _params.WaveType);
 
             int d2size = dwt[_params.DecompositionLevel - 1].Count();
             int rSize = _params.RpeaksStep;
             int decLev = _params.DecompositionLevel;
 
-            if (startInd == 0)
-                _currentQRSonsetsPart.Add(FindQRSOnset(0, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[0], dwt[decLev - 1], _params.DecompositionLevel));
+            
+            _currentQRSonsetsPart.Add(FindQRSOnset(0, _currentRpeaks[0] , dwt[decLev - 1], _params.DecompositionLevel));
+            int maxRInd = _currentRpeaks.Count - 1;
 
-            int maxRInd = _rPeaksProcessed + rSize;
-            if (maxRInd >= _currentRpeaksLength)
-                maxRInd = _currentRpeaksLength - 1;
-
-            if (_rPeaksProcessed == 0)
-                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
-
-            for (int middleR = _rPeaksProcessed + 1; middleR < maxRInd; middleR++)
+            for (int middleR = 0; middleR < maxRInd; middleR++)
             {
-               
-                _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR - 1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
-                _currentQRSendsPart.Add(FindQRSEnd(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[middleR + 1] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
-                _rPeaksProcessed++;
+                _currentQRSonsetsPart.Add(FindQRSOnset(_currentRpeaks[middleR ], _currentRpeaks[middleR+1] , dwt[decLev - 1], _params.DecompositionLevel) );
+                _currentQRSendsPart.Add(FindQRSEnd(_currentRpeaks[middleR] , _currentRpeaks[middleR + 1] , dwt[decLev - 1], _params.DecompositionLevel));
+
             }
 
-            int Rlast = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 1;
-
-            if (_rPeaksProcessed + Params.RpeaksStep > Rlast)
-                _currentQRSonsetsPart.Add(FindQRSOnset(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[Rlast - 1] - startInd, InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[Rlast] - startInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
-
-            if (endInd >= (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count - 2)
-            {
-                //Console.WriteLine("uga buga");
-                _currentQRSendsPart.Add(FindQRSEnd(endInd - startInd, endInd, dwt[decLev - 1], _params.DecompositionLevel) + startInd);
-            }
+            _currentQRSendsPart.Add(FindQRSEnd(_currentRpeaks[maxRInd] , _currentECG.Count , dwt[decLev - 1], _params.DecompositionLevel) );
         }
         #region
         /// <summary>
@@ -247,14 +206,17 @@ namespace EKG_Project.Modules.Waves
             int middleR = (int)dmiddleR;
             int sectionStart = (rightEnd >> decompLevel);
 
-            int len = (middleR >> decompLevel) - (rightEnd >> decompLevel);
+            int len = (middleR>>decompLevel) -(rightEnd >> decompLevel);
 
             if (len < 1)
                 len = 1;
 
 
-            if (sectionStart + len >= dwt.Count || len < 1 || sectionStart < 0)
+            if  (len < 1 || sectionStart < 0)
                 return -1;
+
+            if (sectionStart + len >= dwt.Count)
+                len = dwt.Count - sectionStart;
 
             int qrsOnsetInd = dwt.SubVector(sectionStart, len).MinimumIndex() + sectionStart;
             double treshold = Math.Abs(dwt[qrsOnsetInd]) * _qrsOnsTresh;
@@ -265,7 +227,7 @@ namespace EKG_Project.Modules.Waves
             if (qrsOnsetInd == sectionStart)
                 return -1;
             else
-                return (qrsOnsetInd << decompLevel);
+                return (qrsOnsetInd << decompLevel) + _offset;
         }
         #region
         /// <summary>
@@ -317,7 +279,7 @@ namespace EKG_Project.Modules.Waves
                 //val = 12;
                 while (Math.Abs(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[qrsEndInd] - calcMean(qrsEndInd, sectionEnd)) > 0.4*val)
                     qrsEndInd++;
-                return qrsEndInd;
+                return qrsEndInd + _offset;
             }
                 
         }

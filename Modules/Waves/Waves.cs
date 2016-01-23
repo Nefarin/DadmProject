@@ -46,6 +46,10 @@ namespace EKG_Project.Modules.Waves
         private List<int> _currentPends;
         private List<int> _currentTends;
 
+        private Vector<double> _currentECG;
+        private Vector<double> _currentRpeaks;
+
+        private int _offset;
         public void Abort()
         {
             Aborted = true;
@@ -101,7 +105,7 @@ namespace EKG_Project.Modules.Waves
                 //NumberOfChannels = InputData.Signals.Count;
                 //najwyrazniej liczba tych kanalow nie byla rowna w trakcie pierwszych testow
                 NumberOfChannels = InputDataRpeaks.RPeaks.Count;
-                _params.RpeaksStep = _inputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count + 100;
+                //_params.RpeaksStep = _inputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count + 100;
                 _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
                 _currentQRSonsetsPart = new List<int>();
                 _currentQRSendsPart = new List<int>();
@@ -114,6 +118,8 @@ namespace EKG_Project.Modules.Waves
                 _currentPonsets = new List<int>();
                 _currentPends = new List<int>();
                 _currentTends = new List<int>();
+
+                _offset = 0;
 
             }
 
@@ -186,8 +192,9 @@ namespace EKG_Project.Modules.Waves
 
             if (channel < NumberOfChannels)
             {
-                if (startIndex + step > _currentRpeaksLength)
+                if (startIndex + step >= _currentRpeaksLength)
                 {
+                    cutSignals();
                     analyzeSignalPart();
                     OutputData.QRSOnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSonsets));
                     OutputData.QRSEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSends));
@@ -196,24 +203,6 @@ namespace EKG_Project.Modules.Waves
                     OutputData.PEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPends));
 
                     OutputData.TEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentTends));
-
-                    //Console.Write("Rpeaks: ");
-                    //Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
-
-                    //Console.Write("QRSonset: ");
-                    //Console.WriteLine(_currentQRSonsets.Count);
-
-                    //Console.Write("QRSend: ");
-                    //Console.WriteLine(_currentQRSends.Count);
-
-                    //Console.Write("Ponsets: ");
-                    //Console.WriteLine(_currentPonsets.Count);
-
-                    //Console.Write("Pends: ");
-                    //Console.WriteLine(_currentPends.Count);
-
-                    //Console.Write("Tends: ");
-                    //Console.WriteLine(_currentTends.Count);
 
                     _currentChannelIndex++;
                     if (_currentChannelIndex < NumberOfChannels)
@@ -233,10 +222,9 @@ namespace EKG_Project.Modules.Waves
                 }
                 else
                 {
+                    cutSignals();
                     analyzeSignalPart();
-                    _rPeaksProcessed = startIndex + step;
-                    //Console.WriteLine("Jedna sesja poszla!");
-                    //Console.WriteLine(_rPeaksProcessed);
+                    _rPeaksProcessed += step;
                 }
             }
             else
@@ -249,6 +237,33 @@ namespace EKG_Project.Modules.Waves
 
         }
 
+        private void cutSignals()
+        {
+            int signalStart = 0;
+            if( _rPeaksProcessed > 1)
+                signalStart = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed - 1];
+
+            int signalEnd = 0;
+            int rPeaks2cut = Params.RpeaksStep;
+
+            if (_rPeaksProcessed + Params.RpeaksStep +2 > _currentRpeaksLength)
+                signalEnd = InputECGData.SignalsFiltered[_currentChannelIndex].Item2.Count - 1;
+            else
+            {
+                int lastRpeak = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + Params.RpeaksStep+1];
+                signalEnd = lastRpeak;
+            }
+
+            if (_rPeaksProcessed + Params.RpeaksStep > _currentRpeaksLength)
+                rPeaks2cut = _currentRpeaksLength - _rPeaksProcessed;
+
+            _currentECG = InputECGData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(signalStart, signalEnd - signalStart);
+
+            _currentRpeaks = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.SubVector(_rPeaksProcessed, rPeaks2cut);
+            _currentRpeaks= _currentRpeaks.Subtract(signalStart);
+
+            _offset = signalStart;
+        }
         public Basic_Data InputData
         {
             get
