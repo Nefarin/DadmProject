@@ -33,6 +33,7 @@ namespace EKG_Project.Modules.TestModule3
 
             set
             {
+                if (value < 1) throw new ArgumentOutOfRangeException();
                 _step = value;
             }
         }

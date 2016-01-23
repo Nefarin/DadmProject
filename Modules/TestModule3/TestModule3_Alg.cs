@@ -6,20 +6,60 @@ using EKG_Project.IO;
 
 namespace EKG_Project.Modules.TestModule3
 {
-    public partial class TestModule3 : IModule
+    public class TestModule3_Alg
     {
-        private void scaleSamples(int channel, int startIndex, int step)
+        private Vector<Double> _currentVector;
+        private TestModule3_Params _params;
+
+        public TestModule3_Params Params
         {
-            Console.WriteLine("Start index: " + startIndex);
-            Console.WriteLine("Start step: " + step);
-            Console.WriteLine("Current length: " + _currentChannelLength);
-            if (step > 0)
+            get
             {
-                Vector<Double> temp = InputData.Signals[channel].Item2.SubVector(startIndex, step);
-                temp = temp.Multiply(Params.Scale);
-                _currentVector.SetSubVector(startIndex, step, temp);
+                return _params;
             }
 
+            set
+            {
+                if (value == null) throw new ArgumentNullException();
+                _params = value;
+            }
+        }
+
+        public Vector<double> CurrentVector
+        {
+            get
+            {
+                return _currentVector;
+            }
+
+            set
+            {
+                if (value == null) throw new ArgumentNullException();
+                _currentVector = value;
+            }
+        }
+
+        public TestModule3_Alg(Vector<Double> data, TestModule3_Params param)
+        {
+            CurrentVector = data; // pracujemy na referencjach, nie tworzymy nowego, cięcie ma następować w interfejsie (od środy/czwartku)
+            Params = param; // parametry są lekkie, ich referncja dla wygody może być też tutaj
+        }
+
+        private void scaleSamples()
+        {
+            CurrentVector = CurrentVector.Multiply(Params.Scale);
+        }
+
+        private void addVector(Vector<Double> toAdd)
+        {
+            if (toAdd == null) throw new ArgumentNullException();
+            CurrentVector = CurrentVector.Add(toAdd);
+        }
+
+        private void subVector(Vector<Double> toSub)
+        {
+            if (toSub == null) throw new ArgumentNullException();
+            CurrentVector = CurrentVector.Subtract(toSub);
         }
     }
 }

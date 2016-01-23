@@ -43,27 +43,27 @@ namespace EKG_Project.Modules.TestModule3
 
         public void Init(ModuleParams parameters)
         {
-            Params = parameters as TestModule3_Params;
-            Aborted = false;
-            if (!Runnable()) _ended = true;
-            else
-            {
-                _ended = false;
+            //Params = parameters as TestModule3_Params;
+            //Aborted = false;
+            //if (!Runnable()) _ended = true;
+            //else
+            //{
+            //    _ended = false;
 
-                InputWorker = new Basic_Data_Worker(Params.AnalysisName);
-                InputWorker.Load();
-                InputData = InputWorker.BasicData;
+            //    InputWorker = new Basic_Data_Worker(Params.AnalysisName);
+            //    InputWorker.Load();
+            //    InputData = InputWorker.BasicData;
 
-                OutputWorker = new TestModule3_Data_Worker(Params.AnalysisName);
-                OutputData = new TestModule3_Data(InputData.Frequency, InputData.SampleAmount);
+            //    OutputWorker = new TestModule3_Data_Worker(Params.AnalysisName);
+            //    OutputData = new TestModule3_Data(InputData.Frequency, InputData.SampleAmount);
                 
-                _currentChannelIndex = 0;
-                _samplesProcessed = 0;
-                NumberOfChannels = InputData.Signals.Count;
-                _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-                _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+            //    _currentChannelIndex = 0;
+            //    _samplesProcessed = 0;
+            //    NumberOfChannels = InputData.Signals.Count;
+            //    _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+            //    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
 
-            }
+            //}
 
         }
 
@@ -85,37 +85,37 @@ namespace EKG_Project.Modules.TestModule3
 
         private void processData()
         {
-            int channel = _currentChannelIndex;
-            int startIndex = _samplesProcessed;
-            int step = Params.Step;
+            //int channel = _currentChannelIndex;
+            //int startIndex = _samplesProcessed;
+            //int step = Params.Step;
 
-            if (channel < NumberOfChannels)
-            {
-                if (startIndex + step > _currentChannelLength)
-                {
-                    scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
-                    OutputData.Output.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
-                    _currentChannelIndex++;
-                    if (_currentChannelIndex < NumberOfChannels)
-                    {
-                        _samplesProcessed = 0;
-                        _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-                        _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                    }
+            //if (channel < NumberOfChannels)
+            //{
+            //    if (startIndex + step > _currentChannelLength)
+            //    {
+            //        scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
+            //        OutputData.Output.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
+            //        _currentChannelIndex++;
+            //        if (_currentChannelIndex < NumberOfChannels)
+            //        {
+            //            _samplesProcessed = 0;
+            //            _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+            //            _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+            //        }
 
 
-                }
-                else
-                {
-                    scaleSamples(channel, startIndex, step);
-                    _samplesProcessed = startIndex + step;
-                }
-            }
-            else
-            {
-                OutputWorker.Save(OutputData);
-                _ended = true;
-            }
+            //    }
+            //    else
+            //    {
+            //        scaleSamples(channel, startIndex, step);
+            //        _samplesProcessed = startIndex + step;
+            //    }
+            //}
+            //else
+            //{
+            //    OutputWorker.Save(OutputData);
+            //    _ended = true;
+            //}
 
 
 
