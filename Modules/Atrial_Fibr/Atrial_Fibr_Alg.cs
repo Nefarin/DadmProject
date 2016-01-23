@@ -269,34 +269,29 @@ namespace EKG_Project.Modules.Atrial_Fibr
             Vector<double> _RR1;
             _RR1 = _RR;
             List<Tuple<int, double>> listOfElements = new List<Tuple<int, double>>();
-            for (int i = 0; i < 8; i++)
+            int i;
+            for (i = 0; i < 7; i++)
             {
-                if (i < 7)
+                for (int k = 0; k < _RR1.Count; k++)
                 {
-                    for (int k = 0; k < _RR1.Count; k++)
+                    Tuple<int, double> elements = _RR1.Find(element => (element >= tmp && element < (tmp + width)));
+                    if (elements != null)
                     {
-                        Tuple<int, double> elements = _RR1.Find(element => (element >= tmp && element < (tmp + width)));
-                        if (elements != null)
-                        {
-                            listOfElements.Add(elements);
-                            _RR1.ClearSubVector(elements.Item1, 1);
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        listOfElements.Add(elements);
+                        _RR1.ClearSubVector(elements.Item1, 1);
                     }
-                    dzielnik = listOfElements.Count / 24.0;
-                    histogram[i] = dzielnik;
-                    listOfElements.Clear();
+                    else
+                    {
+                       break;
+                    }
                 }
-                else
-                {
-                    dzielnik = (32 - (histogram.Sum() * 24.0)) / 24.0;
-                    histogram[i] = dzielnik;
-                }
+                dzielnik = listOfElements.Count / 24.0;
+                histogram[i] = dzielnik;
+                listOfElements.Clear();
                 tmp += width;
             }
+            dzielnik = (32 - (histogram.Sum() * 24.0)) / 24.0;
+            histogram[i] = dzielnik;
             double se = 0;
             foreach (double a in histogram)
             {
