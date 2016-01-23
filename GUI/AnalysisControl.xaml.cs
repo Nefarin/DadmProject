@@ -8,6 +8,7 @@ using EKG_Project.Architecture.GUIMessages;
 using EKG_Project.Modules;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace EKG_Project.GUI
 {
@@ -24,6 +25,7 @@ namespace EKG_Project.GUI
 
         public bool AnalysisInProgress
         {
+            
             get
             {
                 return this._analysisInProgress;
@@ -63,7 +65,6 @@ namespace EKG_Project.GUI
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 inputFilePath = fileDialog.FileName;
-                checkPlayButton();
                 Communication.SendGUIMessage(new LoadFile(inputFilePath));
             }
 
@@ -73,29 +74,19 @@ namespace EKG_Project.GUI
         {
             foreach (var option in modulePanel.getAllOptions())
             {
-                //modulePa
-                Console.WriteLine("#");
-                Console.WriteLine(option.Name);
-                Console.WriteLine("#");
-
                 if (option.Set)
                 {
                     moduleParams[option.Code] = modulePanel.ModuleOptionAndParams(option.Code).Item2;
-                    Console.WriteLine(moduleParams.Count);
-                    Console.WriteLine(option.Code);
-                    Console.WriteLine(moduleParams);
-                    Console.WriteLine(modulePanel.AnalysisName);
-
-                    //Console.WriteLine(modulePanel.ModuleOptionAndParams(option.Code).Item2);
-                    Console.WriteLine(option.Name + " is set.");
                 }
 
             }
 
             if (moduleParams.Count > 0)
             {
+                isComputed = new Dictionary<AvailableOptions, bool>();
                 BeginAnalysis analysisParams = new BeginAnalysis(moduleParams);
                 Communication.SendGUIMessage(analysisParams);
+                moduleParams = new Dictionary<AvailableOptions, ModuleParams>();
             }
             else
             {
@@ -118,72 +109,148 @@ namespace EKG_Project.GUI
 
             if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                Communication.SendGUIMessage(new BeginStatsCalculation(this.isComputed));
                 outputPdfPath = fileDialog.FileName;
-                checkPlayButton();
             }
         }
 
         public void processingStarted()
         {
+            this.VisualisationPanelUserControl.Visibility = Visibility.Hidden;
+            panel.Visibility = Visibility.Visible;
             this.AnalysisInProgress = true;
-            Console.WriteLine("Analysis Started");
+            loadFileButton.IsEnabled = false;
+            pdfButton.IsEnabled = false;
+            startAnalyseButton.IsEnabled = false;
         }
 
         public void processingEnded()
         {
             this.AnalysisInProgress = false;
-            Console.WriteLine("Analysis Ended");
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
             foreach (var option in modulePanel.getAllOptions())
             {
+                
                 if (option.Set)
                 {
                     tempList.Add(option.Name);
                 }
             }
-            //tempList.Add("ecgBaseline");
-            //tempList.Add("ecgBasic");
-            //tempList.Add("r_Peaks");
-            //tempList.Add("waves");
-            //tempList.Add("whole");
-            //moduleParams.
+
+            loadFileButton.IsEnabled = true;
+            pdfButton.IsEnabled = true;
+            startAnalyseButton.IsEnabled = true;
             VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
+            panel.Visibility = Visibility.Hidden;
+            this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
         }
 
         public void updateProgress(AvailableOptions module, double progress)
         {
-            Console.WriteLine(module.ToString() + " progress: " + progress);
+            analysisLabel.Content = "Analysis in progress..\nCurrent module: " + module.ToString();
+            progressBar.Value = progress;
         }
 
         public void moduleEnded(AvailableOptions module, bool aborted)
         {
             if (aborted)
             {
-                Console.WriteLine(module.ToString() + " aborted.");
+
             }
             else
             {
-                isComputed[module] = true;
-                Console.WriteLine(module.ToString() + " completed.");
+                try
+                {
+                    isComputed.Add(module, true);
+                }
+                
+                catch (Exception e)
+                {
+
+                }
+
+
             }
         }
 
         public void fileLoaded()
         {
             startAnalyseButton.IsEnabled = true;
-            Console.WriteLine("File loaded sucessfully.");
+            MessageBox.Show("File loaded successfully.");
         }
 
         public void fileError()
         {
             startAnalyseButton.IsEnabled = false;
-            Console.WriteLine("File could not be loaded sucessfully.");
+            MessageBox.Show("File could not be loaded successfully.");
+
         }
 
         public void fileNotLoaded()
         {
             startAnalyseButton.IsEnabled = false;
-            Console.WriteLine("File is not loaded.");
+            MessageBox.Show("File not found during analysis.");
+
+        }
+
+        IO.PDFGenerator pdf;
+        public void statsCalculationStarted()
+        {
+            MessageBox.Show("Started generating PDF");
+
+            System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
+            foreach (var option in modulePanel.getAllOptions())
+            {
+
+                if (option.Set)
+                {
+                    tempList.Add(option.Name);
+                }
+            }
+
+            IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
+            data.AnalisysName = modulePanel.AnalysisName;
+            data.ModuleList = tempList;
+            data.Filename = this.inputFilePath;
+
+            pdf = new IO.PDFGenerator(outputPdfPath);
+            pdf.GeneratePDF(data, true);
+        }
+
+        
+        public void statsCalculationEnded(Dictionary<AvailableOptions, Dictionary<String, String>> results)
+        {
+            foreach (var result in results)
+            {
+                Dictionary<String, String> temp = result.Value;
+                foreach(var smth in temp)
+                {
+                    Console.WriteLine(smth.Key + " " + smth.Value);
+                }
+            }
+
+            IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
+
+            foreach (var element in results)
+            {
+                data.ModuleOption = element.Key;
+                data.statsDictionary = element.Value;
+
+                pdf.GeneratePDF(data, false);
+            }
+      
+            MessageBox.Show("PDF generated");
+            pdf.SaveDocument();
+            pdf.ProcessStart();
+        }
+
+        public void analysisAborted()
+        {
+            progressBar.Value = 0;
+            MessageBox.Show("Analysis aborted.");
+            loadFileButton.IsEnabled = true;
+            startAnalyseButton.IsEnabled = true;
+            panel.Visibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -195,15 +262,10 @@ namespace EKG_Project.GUI
             message.Read(this);
         }
 
-        private void checkPlayButton()
-        {
-            // this method does not make sense - analysis should be performed even if the user does not want to save pdf.
-            //startAnalyseButton.IsEnabled = File.Exists(inputFilePath) && Directory.Exists(Path.GetDirectoryName(outputPdfPath));
-        }
 
         private void buttonAbort_Click(object sender, RoutedEventArgs e)
         {
-            //MessageBox.Show("Analysis aborted.");
+            Communication.SendGUIMessage(new AbortAnalysis());
         }
     }
 }

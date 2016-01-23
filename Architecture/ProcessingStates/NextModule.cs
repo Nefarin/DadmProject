@@ -24,12 +24,10 @@ namespace EKG_Project.Architecture.ProcessingStates
 
                     if (process.Modules.CurrentModule.Runnable())
                     {
-                        Console.WriteLine("Runnable");
                         timeoutState = new ProcessModule();
                     }
                     else
                     {
-                        Console.WriteLine("Not Runnable");
                         timeoutState = new NextModule();
                     }
                 }

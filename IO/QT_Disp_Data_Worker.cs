@@ -11,12 +11,26 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    /// <summary>
+    /// Class that saves and loads QT_Disp_Data from internal XML file
+    /// </summary>
     public class QT_Disp_Data_Worker
     {
+        //FIELDS
+        /// <summary>
+        /// Stores internal XML file directory
+        /// </summary>
         string directory;
+
+        /// <summary>
+        /// Stores analysis name
+        /// </summary>
         string analysisName;
         private QT_Disp_Data _data;
 
+        /// <summary>
+        /// Gets or sets QT_Disp_Data
+        /// </summary>
         public QT_Disp_Data Data
         {
             get
@@ -42,6 +56,11 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        //METHODS
+        /// <summary>
+        /// Saves QT_Disp_Data
+        /// </summary>
+        /// <param name="data">QT_Disp_Data</param>
         public void Save(ECG_Data data)
         {
             if (data is QT_Disp_Data)
@@ -135,6 +154,9 @@ namespace EKG_Project.IO
             }
         }
 
+        /// <summary>
+        /// Loads QT_Disp_Data
+        /// </summary>
         public void Load()
         {
             QT_Disp_Data basicData = new QT_Disp_Data();
@@ -224,6 +246,11 @@ namespace EKG_Project.IO
             this.Data = basicData;
         }
 
+        /// <summary>
+        /// Converts string to list
+        /// </summary>
+        /// <param name="input">string</param>
+        /// <returns>list</returns>
         public static List<int> stringToList(string input)
         {
             int[] digits = input

@@ -1,6 +1,7 @@
 ﻿using EKG_Project.Architecture;
 using EKG_Project.Modules;
 using EKG_Project.Architecture.GUIMessages;
+using System;
 
 namespace EKG_Project.Architecture.ProcessingStates
 {
