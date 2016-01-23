@@ -85,7 +85,7 @@ namespace EKG_Project.Modules.HRV1
         #endregion
         private void intervalsCorection()
         {
-            double ectoThreshHi = 2000;
+            double ectoThreshHi = 1000;
             double ectoThreshLo = 5;
             List<double> rrIntervals_temp = new List<double>();
 
@@ -118,9 +118,11 @@ namespace EKG_Project.Modules.HRV1
             var sdL = this.rrIntervals.SubVector(0, this.rrIntervals.Count - 1);
             var sdR = this.rrIntervals.SubVector(1, this.rrIntervals.Count - 1);
             var succesiveDiffs = sdR.Subtract(sdL);
-            succesiveDiffs.MapInplace(x => Math.Abs(x));
+            
 
             RMSSD = Statistics.RootMeanSquare(succesiveDiffs);
+            succesiveDiffs.MapInplace(x => Math.Abs(x));
+
             //SDSD = Statistics.StandardDeviation(succesiveDiffs);
             NN50 = 0;
             foreach (double x in succesiveDiffs) { NN50 = (x > 50) ? NN50 + 1 : NN50; }
@@ -209,13 +211,14 @@ namespace EKG_Project.Modules.HRV1
             lombScargle();
 
             double df = (double)1000 / rrIntervals.Count;
-            var temp_vec = Vector<double>.Build.Dense(PSD.Count, (i) => PSD[i]*df); 
+            var temp_vec = Vector<double>.Build.Dense(PSD.Count, (i) => PSD[i]*df);
+            
+            TP = VLF = LF = HF = 0;
 
-            for (int i = 0; i < f.Count; i++)
-            {
-                    TP = temp_vec[i] + TP;
-            }
+            //for (int i = 0; i < f.Count; i++){ TP = temp_vec[i] + TP; };
 
+            //Obliczenie całkowitej mocy widma
+            TP = temp_vec.Sum();
 
             //Obliczenie mocy widma w zakresie wysokich częstotliwości (0,15-0,4Hz)
             for (int i = 0; i < f.Count; i++)
