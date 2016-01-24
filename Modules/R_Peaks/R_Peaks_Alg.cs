@@ -16,7 +16,7 @@ namespace EKG_Project.Modules.R_Peaks
     /// Class that locates the R peaks in ECG 
     /// </summary>
     #endregion
-    public partial class R_Peaks : IModule
+    public class R_Peaks_Alg
     {      
         /*static void Main(string[] args)
         {

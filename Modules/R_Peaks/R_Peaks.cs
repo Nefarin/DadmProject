@@ -9,7 +9,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.R_Peaks
 {
-    public partial class R_Peaks : IModule
+    public class R_Peaks : IModule
     {
         private bool _ended;
         private bool _aborted;
@@ -52,35 +52,35 @@ namespace EKG_Project.Modules.R_Peaks
 
         public void Init(ModuleParams parameters)
         {
-            Params = parameters as R_Peaks_Params;
-            Aborted = false;
-            if (!Runnable()) _ended = true;
-            else
-            {
-                _ended = false;
+            //Params = parameters as R_Peaks_Params;
+            //Aborted = false;
+            //if (!Runnable()) _ended = true;
+            //else
+            //{
+            //    _ended = false;
 
-                InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
-                InputWorker_basic.Load();
-                InputData_basic = InputWorker_basic.BasicData;
+            //    InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
+            //    InputWorker_basic.Load();
+            //    InputData_basic = InputWorker_basic.BasicData;
 
-                InputWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
-                InputWorker.Load();
-                InputData = InputWorker.Data;
+            //    InputWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
+            //    InputWorker.Load();
+            //    InputData = InputWorker.Data;
 
-                OutputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-                OutputData = new R_Peaks_Data();
+            //    OutputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
+            //    OutputData = new R_Peaks_Data();
 
-                _currentChannelIndex = 0;
-                _samplesProcessed = 0;
-                _lastRPeak = 0;
-                _numRPeaks = 0;
-                NumberOfChannels = InputData.SignalsFiltered.Count;
-                _currentChannelLength = InputData.SignalsFiltered[_currentChannelIndex].Item2.Count;
-                _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                _currentVectorRRInterval = Vector<Double>.Build.Dense(_currentChannelLength);
-                _totalVector = Vector<Double>.Build.Dense(_currentChannelLength);
+            //    _currentChannelIndex = 0;
+            //    _samplesProcessed = 0;
+            //    _lastRPeak = 0;
+            //    _numRPeaks = 0;
+            //    NumberOfChannels = InputData.SignalsFiltered.Count;
+            //    _currentChannelLength = InputData.SignalsFiltered[_currentChannelIndex].Item2.Count;
+            //    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+            //    _currentVectorRRInterval = Vector<Double>.Build.Dense(_currentChannelLength);
+            //    _totalVector = Vector<Double>.Build.Dense(_currentChannelLength);
 
-            }
+            //}
         }
 
         public void ProcessData()
@@ -101,110 +101,110 @@ namespace EKG_Project.Modules.R_Peaks
 
         private void processData()
         {
-            int channel = _currentChannelIndex;
-            int startIndex = (_samplesProcessed == 0) ? _samplesProcessed : _lastRPeak;
-            int step = 6000;    //efficiency is dependent?
+            //int channel = _currentChannelIndex;
+            //int startIndex = (_samplesProcessed == 0) ? _samplesProcessed : _lastRPeak;
+            //int step = 6000;    //efficiency is dependent?
 
-            if (channel < NumberOfChannels)
-            {
-                if (startIndex + step >= _currentChannelLength)
-                {
-                    _currentVector = InputData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
-                    try {
-                        switch (Params.Method)
-                        {
-                            case R_Peaks_Method.PANTOMPKINS:
-                                _currentVector = PanTompkins(_currentVector, InputData_basic.Frequency);
-                                break;
-                            case R_Peaks_Method.HILBERT:
-                                _currentVector = Hilbert(_currentVector, InputData_basic.Frequency);
-                                break;
-                            case R_Peaks_Method.EMD:
-                                _currentVector = EMD(_currentVector, InputData_basic.Frequency);
-                                break;
-                        }
-                        _currentVector.Add(startIndex, _currentVector);
-                        _totalVector.SetSubVector(_numRPeaks, _currentVector.Count, _currentVector);
-                        _numRPeaks = _numRPeaks + _currentVector.Count;
-                    }
-                    catch(Exception ex)
-                    {
-                        //no idea what logic put in this- no need any
-                        //Console.WriteLine("No detected R peaks in final part of signal");
-                    }
-                    if (_numRPeaks == 1)
-                    {
-                        _currentVector = _totalVector.SubVector(0, 1);
-                        _currentVectorRRInterval = _totalVector.SubVector(1, 1);
-                    }
-                    else if (_numRPeaks != 0)
-                    {
-                        _currentVector = _totalVector.SubVector(0, _numRPeaks);
-                        _currentVectorRRInterval = RRinMS(_currentVector, InputData_basic.Frequency);
-                    }
-                    else
-                    {
-                        _currentVector = _totalVector.SubVector(0, 1);
-                        _currentVectorRRInterval = _totalVector.SubVector(0, 1);
-                    }
+            //if (channel < NumberOfChannels)
+            //{
+            //    if (startIndex + step >= _currentChannelLength)
+            //    {
+            //        _currentVector = InputData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
+            //        try {
+            //            switch (Params.Method)
+            //            {
+            //                case R_Peaks_Method.PANTOMPKINS:
+            //                    _currentVector = PanTompkins(_currentVector, InputData_basic.Frequency);
+            //                    break;
+            //                case R_Peaks_Method.HILBERT:
+            //                    _currentVector = Hilbert(_currentVector, InputData_basic.Frequency);
+            //                    break;
+            //                case R_Peaks_Method.EMD:
+            //                    _currentVector = EMD(_currentVector, InputData_basic.Frequency);
+            //                    break;
+            //            }
+            //            _currentVector.Add(startIndex, _currentVector);
+            //            _totalVector.SetSubVector(_numRPeaks, _currentVector.Count, _currentVector);
+            //            _numRPeaks = _numRPeaks + _currentVector.Count;
+            //        }
+            //        catch(Exception ex)
+            //        {
+            //            //no idea what logic put in this- no need any
+            //            //Console.WriteLine("No detected R peaks in final part of signal");
+            //        }
+            //        if (_numRPeaks == 1)
+            //        {
+            //            _currentVector = _totalVector.SubVector(0, 1);
+            //            _currentVectorRRInterval = _totalVector.SubVector(1, 1);
+            //        }
+            //        else if (_numRPeaks != 0)
+            //        {
+            //            _currentVector = _totalVector.SubVector(0, _numRPeaks);
+            //            _currentVectorRRInterval = RRinMS(_currentVector, InputData_basic.Frequency);
+            //        }
+            //        else
+            //        {
+            //            _currentVector = _totalVector.SubVector(0, 1);
+            //            _currentVectorRRInterval = _totalVector.SubVector(0, 1);
+            //        }
 
-                    OutputData.RPeaks.Add(new Tuple<string, Vector<double>>(InputData.SignalsFiltered[_currentChannelIndex].Item1, _currentVector)); 
-                    OutputData.RRInterval.Add(new Tuple<string, Vector<double>>(InputData.SignalsFiltered[_currentChannelIndex].Item1, _currentVectorRRInterval));
-                    _currentChannelIndex++;
-                    if (_currentChannelIndex < NumberOfChannels)
-                    {
-                        _samplesProcessed = 0;
-                        _lastRPeak = 0;
-                        _numRPeaks = 0;
-                        _currentChannelLength = InputData.SignalsFiltered[_currentChannelIndex].Item2.Count;
-                        _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                        _totalVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                    }
+            //        OutputData.RPeaks.Add(new Tuple<string, Vector<double>>(InputData.SignalsFiltered[_currentChannelIndex].Item1, _currentVector)); 
+            //        OutputData.RRInterval.Add(new Tuple<string, Vector<double>>(InputData.SignalsFiltered[_currentChannelIndex].Item1, _currentVectorRRInterval));
+            //        _currentChannelIndex++;
+            //        if (_currentChannelIndex < NumberOfChannels)
+            //        {
+            //            _samplesProcessed = 0;
+            //            _lastRPeak = 0;
+            //            _numRPeaks = 0;
+            //            _currentChannelLength = InputData.SignalsFiltered[_currentChannelIndex].Item2.Count;
+            //            _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+            //            _totalVector = Vector<Double>.Build.Dense(_currentChannelLength);
+            //        }
 
-                }
-                else
-                {
-                    _currentVector = InputData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, step);
-                    try
-                    {
-                        switch (Params.Method)
-                        {
-                            case R_Peaks_Method.PANTOMPKINS:
-                                _currentVector = PanTompkins(_currentVector, InputData_basic.Frequency);
-                                break;
-                            case R_Peaks_Method.HILBERT:
-                                _currentVector = Hilbert(_currentVector, InputData_basic.Frequency);
-                                break;
-                            case R_Peaks_Method.EMD:
-                                _currentVector = EMD(_currentVector, InputData_basic.Frequency);
-                                break;
-                        }
-                        _currentVector.Add(startIndex, _currentVector);
-                        _totalVector.SetSubVector(_numRPeaks, _currentVector.Count, _currentVector);
-                        _numRPeaks = _currentVector.Count + _numRPeaks;
-                        _lastRPeak = Convert.ToInt32(_currentVector[_currentVector.Count - 1]) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
-                    }
-                    catch(Exception ex)
-                    {
-                        _lastRPeak = startIndex + step;
-                        //Console.WriteLine("No detected R peaks in this part of signal");
-                    }
-                    //Vector<double> _currentVectorRRInterval = RRinMS(_currentVector, InputData_basic.Frequency);
-                    _samplesProcessed = startIndex + step;
+            //    }
+            //    else
+            //    {
+            //        _currentVector = InputData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, step);
+            //        try
+            //        {
+            //            switch (Params.Method)
+            //            {
+            //                case R_Peaks_Method.PANTOMPKINS:
+            //                    _currentVector = PanTompkins(_currentVector, InputData_basic.Frequency);
+            //                    break;
+            //                case R_Peaks_Method.HILBERT:
+            //                    _currentVector = Hilbert(_currentVector, InputData_basic.Frequency);
+            //                    break;
+            //                case R_Peaks_Method.EMD:
+            //                    _currentVector = EMD(_currentVector, InputData_basic.Frequency);
+            //                    break;
+            //            }
+            //            _currentVector.Add(startIndex, _currentVector);
+            //            _totalVector.SetSubVector(_numRPeaks, _currentVector.Count, _currentVector);
+            //            _numRPeaks = _currentVector.Count + _numRPeaks;
+            //            _lastRPeak = Convert.ToInt32(_currentVector[_currentVector.Count - 1]) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
+            //        }
+            //        catch(Exception ex)
+            //        {
+            //            _lastRPeak = startIndex + step;
+            //            //Console.WriteLine("No detected R peaks in this part of signal");
+            //        }
+            //        //Vector<double> _currentVectorRRInterval = RRinMS(_currentVector, InputData_basic.Frequency);
+            //        _samplesProcessed = startIndex + step;
                     
-                }
-            }
-            else
-            {
-               /* Vector<double> Rp1 = OutputData.RPeaks[0].Item2;
-                Vector<double> Rp2 = OutputData.RPeaks[1].Item2;
-                TempInput.setOutputFilePath(@"D:\biomed\DADM\R-peaks\sig\100pt1.txt");
-                TempInput.writeFile(360, Rp1);
-                TempInput.setOutputFilePath(@"D:\biomed\DADM\R-peaks\sig\100pt2.txt");
-                TempInput.writeFile(360, Rp2);*/
-                OutputWorker.Save(OutputData);
-                _ended = true;
-            }
+            //    }
+            //}
+            //else
+            //{
+            //   /* Vector<double> Rp1 = OutputData.RPeaks[0].Item2;
+            //    Vector<double> Rp2 = OutputData.RPeaks[1].Item2;
+            //    TempInput.setOutputFilePath(@"D:\biomed\DADM\R-peaks\sig\100pt1.txt");
+            //    TempInput.writeFile(360, Rp1);
+            //    TempInput.setOutputFilePath(@"D:\biomed\DADM\R-peaks\sig\100pt2.txt");
+            //    TempInput.writeFile(360, Rp2);*/
+            //    OutputWorker.Save(OutputData);
+            //    _ended = true;
+            //}
 
 
         }
