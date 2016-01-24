@@ -10,6 +10,8 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
+
+
     
     public class HRV_DFA_Alg
     {
