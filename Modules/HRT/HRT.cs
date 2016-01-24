@@ -32,37 +32,24 @@ namespace EKG_Project.Modules.HRT
         private R_Peaks_Data _inputRpeaksData;
         private Heart_Class_Data _inputHeartClassData;
 
-        //Wlasciwosci
-        public HRT_Data_Worker OutputWorker { get { return _outputWorker; } set { _outputWorker = value; } }
-        public R_Peaks_Data_Worker InputRpeaksWorker { get { return _inputRpeaksWorker; } set { _inputRpeaksWorker = value; } }
-        public HRT_Params Params { get { return _params; } set { _params = value; } }
-        public Heart_Class_Data_Worker InputHeartClassWorker { get { return _inputHeartClassWorker; } set { _inputHeartClassWorker = value; } }
-        public R_Peaks_Data InputRpeaksData { get { return _inputRpeaksData; } set { _inputRpeaksData = value; } }
-        public Heart_Class_Data InputHeartClassData { get { return _inputHeartClassData; } set { _inputHeartClassData = value; } }
-        public HRT_Data OutputData { get { return _outputData; } set { _outputData = value; } }
-        public bool Aborted { get { return _aborted; } set { _aborted = value; } }
-        public int NumberOfChannels { get { return _numberOfChannels; } set { _numberOfChannels = value; } }
+        
 
 
         //interfejs - metody HRT (maszyny stanow)
-        public void Abort()
-        {
+        public void Abort() {
             Aborted = true;
             _ended = true;
         }
 
-        public bool Ended()
-        {
+        public bool Ended() {
             return _ended;
         }
 
-        public void Init(ModuleParams parameters)
-        {
+        public void Init(ModuleParams parameters) {
             Params = parameters as HRT_Params;
             Aborted = false;
-            if (!Runnable()) _ended = true;
-            else
-            {
+            if (!Runnable() ) _ended = true;
+            else {
                 _ended = false;
 
                 InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
@@ -94,13 +81,11 @@ namespace EKG_Project.Modules.HRT
             return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
         }
 
-        public bool Runnable()
-        {
+        public bool Runnable() {
             return Params != null;
         }
 
-        public bool IsAborted()
-        {
+        public bool IsAborted() {
             return Aborted;
         }
 
@@ -108,9 +93,24 @@ namespace EKG_Project.Modules.HRT
 
         }
 
-        public static void Main()
-        {
-            HRT_Params param = null;
+
+        //Wlasciwosci (gettery i settery)
+        public HRT_Data_Worker OutputWorker { get { return _outputWorker; } set { _outputWorker = value; } }
+        public R_Peaks_Data_Worker InputRpeaksWorker { get { return _inputRpeaksWorker; } set { _inputRpeaksWorker = value; } }
+        public HRT_Params Params { get { return _params; } set { _params = value; } }
+        public Heart_Class_Data_Worker InputHeartClassWorker { get { return _inputHeartClassWorker; } set { _inputHeartClassWorker = value; } }
+        public R_Peaks_Data InputRpeaksData { get { return _inputRpeaksData; } set { _inputRpeaksData = value; } }
+        public Heart_Class_Data InputHeartClassData { get { return _inputHeartClassData; } set { _inputHeartClassData = value; } }
+        public HRT_Data OutputData { get { return _outputData; } set { _outputData = value; } }
+        public bool Aborted { get { return _aborted; } set { _aborted = value; } }
+        public int NumberOfChannels { get { return _numberOfChannels; } set { _numberOfChannels = value; } }
+
+
+
+        public static void Main() {
+
+            HRT_Params param = new HRT_Params("TestAnalysis8"); 
+
             HRT testModule = new HRT();
             testModule.Init(param);
             while (true)
@@ -121,7 +121,6 @@ namespace EKG_Project.Modules.HRT
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-            //Console.ReadKey();
         }
     }
 }

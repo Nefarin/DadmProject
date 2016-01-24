@@ -5,18 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.IO;
+using EKG_Project.Modules.R_Peaks;
+using EKG_Project.Modules.Heart_Class;
+using EKG_Project.IO;
 
 
-namespace EKG_Project.Modules.HRT{
-    public class HRT_Alg { 
-        ///<Summary>_RRTimes nr próbek wystąpienia załamków R</Summary>
+namespace EKG_Project.Modules.HRT
+{
+    public class HRT_Alg
+    {
+
         public Vector<double> _rInstants { get; set; }
-        ///<Summary>_RRTimesVPC - nr próbek wystąpienia załamków Ventricular Premature Complex</Summary>
         public Vector<double> _rInstantsVentricularComplex { get; set; }
-        ///<Summary>_Tachogram -Tachogram (od modułu HRV1 lub HRV2)</Summary>
         public Vector<double> _rrIntervals { get; set; }
 
-        ///<Summary>konstruktor główny </Summary>
         public HRT_Alg(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
         {
             _rrIntervals = Tachogram;
@@ -24,44 +26,22 @@ namespace EKG_Project.Modules.HRT{
             _rInstantsVentricularComplex = RRTimesVC;
         }
 
-        ///<Summary>konstruktor testowy</Summary>
-        public HRT_Alg(Vector<double> Tachogram)
-        {
-            _rrIntervals = Tachogram;
-        }
 
+        //public static void Main(string[] args)
+        //{
+        //    //read data from file
+        //    TempInput.setInputFilePath(@"C:\Users\mrevening\Desktop\R_100.txt");
+        //    uint fs = TempInput.getFrequency();
+        //    Vector<double> sig = TempInput.getSignal();
 
-        // METHODS
-        // function that converts samples numers to time [ms] (od Pauliny Sołtys)
-        public Vector<double> TimeConvert(uint samplFreq, double[] rRawSamples)
-        {
-            int signal_size = rRawSamples.Count();
-            Vector<double> tachos_r = Vector<double>.Build.Dense(signal_size);
+        //    HRT_Alg hrt = new HRT_Alg(sig);
 
-            for (int i = 0; i < signal_size; i++)
-            {
-                tachos_r[i] = rRawSamples[i] * 1000 / samplFreq;     // [ms]
-            }
+        //    // Samples to time convertion [ms]
+        //    Vector<double> tacho_rr = hrt.TimeConvert(fs, sig.ToArray());
 
-            return tachos_r;
-        }
-
-
-        public static void Main(string[] args)
-        {
-            //read data from file
-            TempInput.setInputFilePath(@"C:\Users\mrevening\Desktop\R_100.txt");
-            uint fs = TempInput.getFrequency();
-            Vector<double> sig = TempInput.getSignal();
-
-            HRT_Alg hrt = new HRT_Alg(sig);
-
-            // Samples to time convertion [ms]
-            Vector<double> tacho_rr = hrt.TimeConvert(fs, sig.ToArray());
-
-            Console.WriteLine(fs);
-            Console.WriteLine(sig);
-            Console.ReadKey();
-        }
+        //    Console.WriteLine(fs);
+        //    Console.WriteLine(sig);
+        //    Console.ReadKey();
+        //}
     }
 }
