@@ -11,7 +11,7 @@ using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.QT_Disp
 {
-    public partial class QT_Disp : IModule
+    public class QT_Disp_Alg
     {
         List<int> QRS_onset;                            //to do in init
         List<int> T_End_Global;                         //to do in init
@@ -23,7 +23,7 @@ namespace EKG_Project.Modules.QT_Disp
         List<double> QT_intervals;                      //to do in processData
         List<int> T_End_local;                          //to do in processData
         List<List<double>> AllQT_Intervals;             //to do after change a channel
-        public QT_Disp()
+        public QT_Disp_Alg()
         {
             QRS_onset = new List<int>();
             T_End_Global = new List<int>();
