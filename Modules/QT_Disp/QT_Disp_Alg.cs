@@ -487,11 +487,11 @@ namespace EKG_Project.Modules.QT_Disp
             outputData = Tuple.Create(T_End, QT_Interval);
             return outputData;
         }
-        private Vector<double> diff(Vector<double> In)
+        public Vector<double> diff(Vector<double> In)
         {
             List<double> Output = new List<double>(In.Count - 1);
             Vector<double> output = Vector<double>.Build.Dense(1);
-            if (Output.Count > 1)
+            if (In.Count > 1)
             {
                 for (int i = 0; i < In.Count - 1; i++)
                 {
@@ -501,7 +501,7 @@ namespace EKG_Project.Modules.QT_Disp
             }
             else
             {
-                
+                throw new InvalidOperationException("Wrong input vector");
             }
 
             return output;
