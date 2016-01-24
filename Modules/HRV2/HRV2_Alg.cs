@@ -7,11 +7,10 @@ using MathNet.Numerics.LinearAlgebra;
 namespace EKG_Project.Modules.HRV2
 {
     /*
-    public partial class HRV2 : IModule
-        {
-
-        //nothing to do here, go to poincare.cs, histogram.cs, tinn.cs itd
-
-        }
-     */
+                To see algorithm navigate to the appropriate file: 
+                Poincare.cs, 
+                Histogram.cs, 
+                Tinn.cs, 
+                TriangleIndex.cs
+    */
 }
