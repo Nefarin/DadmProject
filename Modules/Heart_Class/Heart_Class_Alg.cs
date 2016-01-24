@@ -13,7 +13,7 @@ using System.Globalization;
 
 namespace EKG_Project.Modules.Heart_Class
 {
-    public partial class Heart_Class : IModule
+    public class Heart_Class_Alg
     {
         //FIELDS
         private Vector<double> _signal;          
@@ -38,7 +38,7 @@ namespace EKG_Project.Modules.Heart_Class
         private List<Vector<double>> coefficients; //lista współczynników kształtu dla zbioru treningowego
         private Tuple<int, int> _classificationResultOne; // pierwszy int - nr zespołu (nr R), drugi int - klasa zespołu
 
-        public Heart_Class()
+        public Heart_Class_Alg()
         {
 
             _signal = Vector<double>.Build.Dense(1);
