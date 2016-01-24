@@ -1,4 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<OrderedTest xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="d2870cd8-2738-44c3-9b61-198e515d3e0d" name="R_Peaks">
-	
+<OrderedTest name="r_peaks" storage="d:\biomed\dadm\dadm project\dadmproject\ekg_unit\modules\r_peaks\r_peaks.orderedtest" id="d2870cd8-2738-44c3-9b61-198e515d3e0d" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestLinks>
+    <TestLink id="1ca32130-0557-2396-7c77-78f71a83cfed" name="methodTest1" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  </TestLinks>
 </OrderedTest>
