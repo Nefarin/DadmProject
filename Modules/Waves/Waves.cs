@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace EKG_Project.Modules.Waves
 {
 
-    public partial class Waves : IModule
+    public class Waves : IModule
     {
         private bool _ended;
         private bool _aborted;
@@ -64,58 +64,58 @@ namespace EKG_Project.Modules.Waves
 
         public void Init(ModuleParams parameters)
         {
-            Params = parameters as Waves_Params;
-            if (Params.DecompositionLevel > 0)
-                Aborted = false;
-            else
-                Aborted = true;
-            if (!Runnable()) _ended = true;
-            else
-            {
-                _ended = false;
+            //Params = parameters as Waves_Params;
+            //if (Params.DecompositionLevel > 0)
+            //    Aborted = false;
+            //else
+            //    Aborted = true;
+            //if (!Runnable()) _ended = true;
+            //else
+            //{
+            //    _ended = false;
 
-                InputWorker = new Basic_Data_Worker(Params.AnalysisName);
-                InputECGworker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
-                InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
+            //    InputWorker = new Basic_Data_Worker(Params.AnalysisName);
+            //    InputECGworker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
+            //    InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
 
-                InputWorker.Load();
-                InputData = InputWorker.BasicData;
+            //    InputWorker.Load();
+            //    InputData = InputWorker.BasicData;
 
-                InputECGworker.Load();
-                InputECGData = InputECGworker.Data;
+            //    InputECGworker.Load();
+            //    InputECGData = InputECGworker.Data;
 
-                InputWorkerRpeaks.Load();
-                InputDataRpeaks = InputWorkerRpeaks.Data;
-                //Console.Write(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
-                //Console.Write("ilosc kanalow ECG ");
-                //Console.WriteLine(InputECGData.SignalsFiltered.Count);
-                //Console.WriteLine("Ilosc kanalow Rpeaks");
-                //Console.WriteLine(InputDataRpeaks.RPeaks.Count);
-                _currentStep = _params.RpeaksStep;
+            //    InputWorkerRpeaks.Load();
+            //    InputDataRpeaks = InputWorkerRpeaks.Data;
+            //    //Console.Write(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
+            //    //Console.Write("ilosc kanalow ECG ");
+            //    //Console.WriteLine(InputECGData.SignalsFiltered.Count);
+            //    //Console.WriteLine("Ilosc kanalow Rpeaks");
+            //    //Console.WriteLine(InputDataRpeaks.RPeaks.Count);
+            //    _currentStep = _params.RpeaksStep;
 
-                OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
-                OutputData = new Waves_Data();
+            //    OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
+            //    OutputData = new Waves_Data();
 
-                _currentChannelIndex = 0;
-                _rPeaksProcessed = 0;
-                //NumberOfChannels = InputData.Signals.Count;
-                //najwyrazniej liczba tych kanalow nie byla rowna w trakcie pierwszych testow
-                NumberOfChannels = InputDataRpeaks.RPeaks.Count;
-                _params.RpeaksStep = _inputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count + 100;
-                _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
-                _currentQRSonsetsPart = new List<int>();
-                _currentQRSendsPart = new List<int>();
-                _currentPonsetsPart = new List<int>();
-                _currentPendsPart = new List<int>();
-                _currentTendsPart = new List<int>();
+            //    _currentChannelIndex = 0;
+            //    _rPeaksProcessed = 0;
+            //    //NumberOfChannels = InputData.Signals.Count;
+            //    //najwyrazniej liczba tych kanalow nie byla rowna w trakcie pierwszych testow
+            //    NumberOfChannels = InputDataRpeaks.RPeaks.Count;
+            //    _params.RpeaksStep = _inputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count + 100;
+            //    _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
+            //    _currentQRSonsetsPart = new List<int>();
+            //    _currentQRSendsPart = new List<int>();
+            //    _currentPonsetsPart = new List<int>();
+            //    _currentPendsPart = new List<int>();
+            //    _currentTendsPart = new List<int>();
 
-                _currentQRSonsets = new List<int>();
-                _currentQRSends = new List<int>();
-                _currentPonsets = new List<int>();
-                _currentPends = new List<int>();
-                _currentTends = new List<int>();
+            //    _currentQRSonsets = new List<int>();
+            //    _currentQRSends = new List<int>();
+            //    _currentPonsets = new List<int>();
+            //    _currentPends = new List<int>();
+            //    _currentTends = new List<int>();
 
-            }
+            //}
 
         }
 
@@ -180,70 +180,70 @@ namespace EKG_Project.Modules.Waves
 
         private void processData()
         {
-            int channel = _currentChannelIndex;
-            int startIndex = _rPeaksProcessed;
-            int step = Params.RpeaksStep;
+            //int channel = _currentChannelIndex;
+            //int startIndex = _rPeaksProcessed;
+            //int step = Params.RpeaksStep;
 
-            if (channel < NumberOfChannels)
-            {
-                if (startIndex + step > _currentRpeaksLength)
-                {
-                    analyzeSignalPart();
-                    OutputData.QRSOnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSonsets));
-                    OutputData.QRSEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSends));
+            //if (channel < NumberOfChannels)
+            //{
+            //    if (startIndex + step > _currentRpeaksLength)
+            //    {
+            //        analyzeSignalPart();
+            //        OutputData.QRSOnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSonsets));
+            //        OutputData.QRSEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSends));
 
-                    OutputData.POnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPonsets));
-                    OutputData.PEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPends));
+            //        OutputData.POnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPonsets));
+            //        OutputData.PEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPends));
 
-                    OutputData.TEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentTends));
+            //        OutputData.TEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentTends));
 
-                    //Console.Write("Rpeaks: ");
-                    //Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
+            //        //Console.Write("Rpeaks: ");
+            //        //Console.WriteLine(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
 
-                    //Console.Write("QRSonset: ");
-                    //Console.WriteLine(_currentQRSonsets.Count);
+            //        //Console.Write("QRSonset: ");
+            //        //Console.WriteLine(_currentQRSonsets.Count);
 
-                    //Console.Write("QRSend: ");
-                    //Console.WriteLine(_currentQRSends.Count);
+            //        //Console.Write("QRSend: ");
+            //        //Console.WriteLine(_currentQRSends.Count);
 
-                    //Console.Write("Ponsets: ");
-                    //Console.WriteLine(_currentPonsets.Count);
+            //        //Console.Write("Ponsets: ");
+            //        //Console.WriteLine(_currentPonsets.Count);
 
-                    //Console.Write("Pends: ");
-                    //Console.WriteLine(_currentPends.Count);
+            //        //Console.Write("Pends: ");
+            //        //Console.WriteLine(_currentPends.Count);
 
-                    //Console.Write("Tends: ");
-                    //Console.WriteLine(_currentTends.Count);
+            //        //Console.Write("Tends: ");
+            //        //Console.WriteLine(_currentTends.Count);
 
-                    _currentChannelIndex++;
-                    if (_currentChannelIndex < NumberOfChannels)
-                    {
-                        _rPeaksProcessed = 0;
+            //        _currentChannelIndex++;
+            //        if (_currentChannelIndex < NumberOfChannels)
+            //        {
+            //            _rPeaksProcessed = 0;
 
-                        _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
+            //            _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
 
-                        _currentQRSonsets = new List<int>();
-                        _currentQRSends = new List<int>();
-                        _currentPonsets = new List<int>();
-                        _currentPends = new List<int>();
-                        _currentTends = new List<int>();
-                    }
+            //            _currentQRSonsets = new List<int>();
+            //            _currentQRSends = new List<int>();
+            //            _currentPonsets = new List<int>();
+            //            _currentPends = new List<int>();
+            //            _currentTends = new List<int>();
+            //        }
 
 
-                }
-                else
-                {
-                    analyzeSignalPart();
-                    _rPeaksProcessed = startIndex + step;
-                    //Console.WriteLine("Jedna sesja poszla!");
-                    //Console.WriteLine(_rPeaksProcessed);
-                }
-            }
-            else
-            {
-                OutputWorker.Save(OutputData);
-                _ended = true;
-            }
+            //    }
+            //    else
+            //    {
+            //        analyzeSignalPart();
+            //        _rPeaksProcessed = startIndex + step;
+            //        //Console.WriteLine("Jedna sesja poszla!");
+            //        //Console.WriteLine(_rPeaksProcessed);
+            //    }
+            //}
+            //else
+            //{
+            //    OutputWorker.Save(OutputData);
+            //    _ended = true;
+            //}
 
 
 
