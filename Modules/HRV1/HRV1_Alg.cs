@@ -261,6 +261,17 @@ namespace EKG_Project.Modules.HRV1
 public static void Main()
         {
             Console.WriteLine("Hello Matylda!");
+            var hrv1Test = new HRV1_Alg();
+
+            var testintervals = new double[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            hrv1Test.rrIntervals = Vector<double>.Build.Dense(testintervals);
+            hrv1Test.rInstants = Vector<double>.Build.Dense(testintervals);
+
+            hrv1Test.generateFreqVector(0, 1, 10);
+            Console.WriteLine(hrv1Test.f);
+
+            hrv1Test.lombScargle();
+            Console.WriteLine(hrv1Test.PSD);
 
             // do testowania nalezy odkomentowac odpowiednia linijke, a zakomentowac pozostale
             //string dataPath = "F:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na duzym komputerze Michala
@@ -273,9 +284,9 @@ public static void Main()
 
             // wczytywanie danych - tutaj trzeba bedzie dostosowac do nowego modulu IO, kiedy sie pojawi
             //TempInput.setInputFilePath(dataPath);
-           // hrv.rSamples = TempInput.getSignal();
-           // hrv.Fs = TempInput.getFrequency();
-           // hrv.dt = 1 / hrv.Fs;
+            // hrv.rSamples = TempInput.getSignal();
+            // hrv.Fs = TempInput.getFrequency();
+            // hrv.dt = 1 / hrv.Fs;
 
             //hrv.samplesToInstants();
             //hrv.instantsToIntervals();
@@ -283,19 +294,16 @@ public static void Main()
             //Console.WriteLine(hrv.f);
 
             // testowanie lomba
-       //     double[] fSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
-      //      var f = Vector<double>.Build.Dense(fSrc);
-      //      var xSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
-      //      var x = Vector<double>.Build.Dense(xSrc);
-       //     var ySrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
-       //     var y = Vector<double>.Build.Dense(ySrc);
+            //     double[] fSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
+            //      var f = Vector<double>.Build.Dense(fSrc);
+            //      var xSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
+            //      var x = Vector<double>.Build.Dense(xSrc);
+            //     var ySrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
+            //     var y = Vector<double>.Build.Dense(ySrc);
             //hrv.PSD = lombScargle();
-           // Console.WriteLine(hrv.PSD);
+            // Console.WriteLine(hrv.PSD);
 
             //dalej heja
-
-
-
         }
     }
 }
