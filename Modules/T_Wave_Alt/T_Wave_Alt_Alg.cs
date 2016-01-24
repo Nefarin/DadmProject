@@ -10,7 +10,7 @@ using EKG_Project.IO;
 
 namespace EKG_Project.Modules.T_Wave_Alt
 {
-    public partial class T_Wave_Alt : IModule
+    public class T_Wave_Alt_Alg
     {
         private int[] findAlternans(List<int> t_end_List, Vector<double> ecg, uint fs)
         {
