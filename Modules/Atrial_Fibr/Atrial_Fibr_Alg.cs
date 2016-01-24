@@ -240,7 +240,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         #endregion
         double TPR(Vector<double> _RR)
         {
-            int turningPoints = 0;
+            double turningPoints = 0;
             for (int i = 1; i < (_RR.Count - 1); i++)
             {
                 if (((_RR.At(i - 1) < _RR.At(i)) && (_RR.At(i + 1) < _RR.At(i))) || ((_RR.At(i - 1) > _RR.At(i)) && (_RR.At(i + 1) > _RR.At(i))))
