@@ -7,24 +7,14 @@ using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.IO;
 
 
-namespace EKG_Project.Modules.HRT
-{
-    public class HRT_Alg
-    {
-        // Declaration of time parameters
-        private const int _back = 5;
-        private const int _foward = 15;
-
+namespace EKG_Project.Modules.HRT{
+    public class HRT_Alg { 
         ///<Summary>_RRTimes nr próbek wystąpienia załamków R</Summary>
         public Vector<double> _rInstants { get; set; }
-
         ///<Summary>_RRTimesVPC - nr próbek wystąpienia załamków Ventricular Premature Complex</Summary>
         public Vector<double> _rInstantsVentricularComplex { get; set; }
-
         ///<Summary>_Tachogram -Tachogram (od modułu HRV1 lub HRV2)</Summary>
         public Vector<double> _rrIntervals { get; set; }
-
-        //KONSTUKTORY
 
         ///<Summary>konstruktor główny </Summary>
         public HRT_Alg(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
@@ -57,25 +47,21 @@ namespace EKG_Project.Modules.HRT
         }
 
 
+        public static void Main(string[] args)
+        {
+            //read data from file
+            TempInput.setInputFilePath(@"C:\Users\mrevening\Desktop\R_100.txt");
+            uint fs = TempInput.getFrequency();
+            Vector<double> sig = TempInput.getSignal();
 
+            HRT_Alg hrt = new HRT_Alg(sig);
 
+            // Samples to time convertion [ms]
+            Vector<double> tacho_rr = hrt.TimeConvert(fs, sig.ToArray());
 
-        //MAIN
-        //public static void Main(string[] args)
-        //{
-        //    //read data from file
-        //    TempInput.setInputFilePath(@"C:\Users\mrevening\Desktop\R_100.txt");
-        //    uint fs = TempInput.getFrequency();
-        //    Vector<double> sig = TempInput.getSignal();
-
-        //    HRT hrt = new HRT(sig);
-
-        //    // Samples to time convertion [ms]
-        //    Vector<double> tacho_rr = hrt.TimeConvert(fs, sig.ToArray());
-
-        //    Console.WriteLine(fs);
-        //    Console.WriteLine(sig);
-        //    Console.ReadKey();
-        //}
+            Console.WriteLine(fs);
+            Console.WriteLine(sig);
+            Console.ReadKey();
+        }
     }
 }
