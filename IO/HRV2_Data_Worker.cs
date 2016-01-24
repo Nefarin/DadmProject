@@ -90,30 +90,30 @@ namespace EKG_Project.IO
 
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
-                List<Tuple<string, HRV2.Histogram2>> hist = basicData.HistogramData;
-                foreach (var tuple in hist)
-                {
-                    XmlElement histogramData = file.CreateElement(string.Empty, "HistogramData", string.Empty);
-                    module.AppendChild(histogramData);
+                //List<Tuple<string, HRV2.Histogram2>> hist = basicData.HistogramData;
+                //foreach (var tuple in hist)
+                //{
+                //    XmlElement histogramData = file.CreateElement(string.Empty, "HistogramData", string.Empty);
+                //    module.AppendChild(histogramData);
 
-                    XmlElement lead = file.CreateElement(string.Empty, "lead", string.Empty);
-                    XmlText leadValue = file.CreateTextNode(tuple.Item1);
-                    lead.AppendChild(leadValue);
-                    histogramData.AppendChild(lead);
+                //    XmlElement lead = file.CreateElement(string.Empty, "lead", string.Empty);
+                //    XmlText leadValue = file.CreateTextNode(tuple.Item1);
+                //    lead.AppendChild(leadValue);
+                //    histogramData.AppendChild(lead);
 
-                    XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
-                    ObservableCollection<HRV2.Sample> values = tuple.Item2.Samples;
-                    StringBuilder builder = new StringBuilder();
-                    foreach (var value in values)
-                    {
-                        builder.Append(value.ToString());
-                    }
-                    string samplesText = builder.ToString();
+                //    XmlElement samples = file.CreateElement(string.Empty, "samples", string.Empty);
+                //    //ObservableCollection<HRV2.Sample> values = tuple.Item2.Samples;
+                //    StringBuilder builder = new StringBuilder();
+                //    foreach (var value in values)
+                //    {
+                //        builder.Append(value.ToString());
+                //    }
+                //    string samplesText = builder.ToString();
 
-                    XmlText samplesValue = file.CreateTextNode(samplesText);
-                    samples.AppendChild(samplesValue);
-                    histogramData.AppendChild(samples);
-                }
+                //    XmlText samplesValue = file.CreateTextNode(samplesText);
+                //    samples.AppendChild(samplesValue);
+                //    histogramData.AppendChild(samples);
+                //}
 
                 
                 object[] Properties = {basicData.PoincarePlotData_x, basicData.PoincarePlotData_y};
@@ -236,7 +236,7 @@ namespace EKG_Project.IO
                     }
                      * */
                     //basicData.HistogramData = list;
-                    basicData.HistogramData = null;
+                    //basicData.HistogramData = null;
 
                     List<Tuple<string, Vector<double>>> PoincarePlotData_x = new List<Tuple<string,Vector<double>>>();
                     XmlNodeList nodes = module.SelectNodes("PoincarePlotData_x");

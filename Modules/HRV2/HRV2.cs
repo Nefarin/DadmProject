@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
-    public partial class HRV2 : IModule
+    public class HRV2 : IModule
     {
         private bool _ended;
         private bool _aborted;
@@ -26,7 +26,7 @@ namespace EKG_Project.Modules.HRV2
         private bool _outputFound;
         private int _outputIndex;
 
-        private Histogram2 _currentHistogram;
+       // private Histogram2 _currentHistogram;
         private Vector<double> _currentPoincare;
         private Vector<double> _currentRPeaks;
 
@@ -47,42 +47,42 @@ namespace EKG_Project.Modules.HRV2
 
         public void Init(ModuleParams parameters)
         {
-            Params = parameters as HRV2_Params;
-            Aborted = false;
-            if (!Runnable()) _ended = true;
-            else
-            {
-                _ended = false;
+            //Params = parameters as HRV2_Params;
+            //Aborted = false;
+            //if (!Runnable()) _ended = true;
+            //else
+            //{
+            //    _ended = false;
 
-                InputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-                InputWorker.Load();
-                InputData = InputWorker.Data;
+            //    InputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
+            //    InputWorker.Load();
+            //    InputData = InputWorker.Data;
 
-                OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
-                OutputData = new HRV2_Data();
+            //    OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
+            //    OutputData = new HRV2_Data();
 
-                _currentChannelIndex = 0;
-                _currentRPeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
-                _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
-                _numberOfChannels = InputData.RPeaks.Count;
+            //    _currentChannelIndex = 0;
+            //    _currentRPeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
+            //    _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
+            //    _numberOfChannels = InputData.RPeaks.Count;
 
-                //findOutput();
-                //if (_outputFound)
-                //{
-                //    OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
-                //    OutputData = new HRV2_Data();
+            //    //findOutput();
+            //    //if (_outputFound)
+            //    //{
+            //    //    OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
+            //    //    OutputData = new HRV2_Data();
 
-                //    _currentRPeaksLength = InputData.RRInterval[_outputIndex].Item2.Count;
-                //    //_currentHistogram = Vector<Double>.Build.Dense(_currentRPeaksLength);
-                //    _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
-                //}
-                //else
-                //{
-                //    _ended = true;
-                //    Aborted = true;
-                //}
+            //    //    _currentRPeaksLength = InputData.RRInterval[_outputIndex].Item2.Count;
+            //    //    //_currentHistogram = Vector<Double>.Build.Dense(_currentRPeaksLength);
+            //    //    _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
+            //    //}
+            //    //else
+            //    //{
+            //    //    _ended = true;
+            //    //    Aborted = true;
+            //    //}
 
-            }
+            //}
 
         }
 
@@ -116,32 +116,32 @@ namespace EKG_Project.Modules.HRV2
 
         private void processData()
         {
-            if (_currentChannelIndex < _numberOfChannels)
-            {
-                _currentRPeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
-                _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
-                makeTinn();
-                OutputData.Tinn.Add(tinn);
-                //TriangleIndex();
-                //OutputData.TriangleIndex.Add(triangleIndex);
-                //OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
+            //if (_currentChannelIndex < _numberOfChannels)
+            //{
+            //    _currentRPeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
+            //    _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
+            //    makeTinn();
+            //    OutputData.Tinn.Add(tinn);
+            //    //TriangleIndex();
+            //    //OutputData.TriangleIndex.Add(triangleIndex);
+            //    //OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
 
-                PoincarePlot_x();
-                PoincarePlot_y();
-                OutputData.SD1.Add(SD1());
-                OutputData.SD2.Add(SD2());
+            //    PoincarePlot_x();
+            //    PoincarePlot_y();
+            //    OutputData.SD1.Add(SD1());
+            //    OutputData.SD2.Add(SD2());
 
-                OutputData.PoincarePlotData_x.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_x));
-                OutputData.PoincarePlotData_y.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_y));
+            //    OutputData.PoincarePlotData_x.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_x));
+            //    OutputData.PoincarePlotData_y.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_y));
 
-                _currentChannelIndex++;
+            //    _currentChannelIndex++;
 
-            }
-            else
-            {
-                OutputWorker.Save(OutputData);
-                _ended = true;
-            }
+            //}
+            //else
+            //{
+            //    OutputWorker.Save(OutputData);
+            //    _ended = true;
+            //}
 
 
 

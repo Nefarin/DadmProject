@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
+using EKG_Project.Modules.HRV2;
 using System;
 
 namespace EKG_Project.Modules.HRV2
@@ -10,7 +11,7 @@ namespace EKG_Project.Modules.HRV2
         private List<double> _triangleIndex;
         private List<double> _sd1;
         private List<double> _sd2;
-        private List<Tuple<string, HRV2.Histogram2>> _histogramData;
+        //private List<Tuple<string, HRV2.Histogram2>> _histogramData;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_x;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_y;
         private List<double> _elipseCenter;
@@ -98,18 +99,18 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public List<Tuple<string, HRV2.Histogram2>> HistogramData
-        {
-            get
-            {
-                return _histogramData;
-            }
+        //public List<Tuple<string, HRV2.Histogram2>> HistogramData
+        //{
+        //    get
+        //    {
+        //        return _histogramData;
+        //    }
 
-            set
-            {
-                _histogramData = value;
-            }
-        }
+        //    set
+        //    {
+        //        _histogramData = value;
+        //    }
+        //}
 
         #region Documentation
         /// <summary>
@@ -169,7 +170,7 @@ namespace EKG_Project.Modules.HRV2
         #endregion
         public HRV2_Data()
         {
-            HistogramData = new List<Tuple<string, HRV2.Histogram2>>();
+            //HistogramData = new List<Tuple<string, HRV2.Histogram2>>();
             PoincarePlotData_x = new List<Tuple<string, Vector<double>>>();
             PoincarePlotData_y = new List<Tuple<string, Vector<double>>>();
             SD1 = new List<double>();

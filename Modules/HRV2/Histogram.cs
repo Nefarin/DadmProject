@@ -9,21 +9,21 @@ using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV2
 {
-   
-    public partial class HRV2 : IModule
+
+    public partial class HRV2_Alg
     {
         private const float binLength = 7.8125f;
 
-        public Histogram2 makeHistogram()
-        {
-            Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2;
-            //int binAmount = (int)((RRIntervals.AbsoluteMaximum() - RRIntervals.AbsoluteMinimum()) / 7.8125); //the amount of the bins
-            Console.WriteLine(RRIntervals.Max());
-            Console.ReadLine();
-            // _currentHistogram = new Histogram(RRIntervals, binAmount);
-            _currentHistogram = new Histogram2(binLength, RRIntervals);
-            return _currentHistogram;
-        }
+        //public Histogram2 makeHistogram()
+        //{
+        //    Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2;
+        //    //int binAmount = (int)((RRIntervals.AbsoluteMaximum() - RRIntervals.AbsoluteMinimum()) / 7.8125); //the amount of the bins
+        //    Console.WriteLine(RRIntervals.Max());
+        //    Console.ReadLine();
+        //    // _currentHistogram = new Histogram(RRIntervals, binAmount);
+        //    _currentHistogram = new Histogram2(binLength, RRIntervals);
+        //    return _currentHistogram;
+        //}
         
         public class Sample
         {
