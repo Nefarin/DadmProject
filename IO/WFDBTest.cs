@@ -10,14 +10,6 @@ using System.Runtime.InteropServices;
 
 namespace EKG_Project.IO
 {
-
-    public interface IEleganckiTestDLL
-    {
-        //Tutaj definiujecie metody zgodne z DLL
-        string Name { get; set; }
-        
-        
-    }
     public class WFDBTest
     {
         public static void Main()
