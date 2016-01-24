@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.Modules.HRV2;
 using System;
+using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -11,7 +11,7 @@ namespace EKG_Project.Modules.HRV2
         private List<double> _triangleIndex;
         private List<double> _sd1;
         private List<double> _sd2;
-        //private List<Tuple<string, HRV2.Histogram2>> _histogramData;
+        private List<Tuple<string, Histogram>> _histogramData;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_x;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_y;
         private List<double> _elipseCenter;
@@ -19,7 +19,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Współczynnik TINN
+        /// TINN coefficient, the base of the triangle fitted to histogram
         /// </summary>
         /// 
         #endregion
@@ -38,7 +38,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Indeks trójkątny
+        /// Triangle index coefficient, value of the highest bin, devided by all RR intervals count
         /// </summary>
         /// 
         #endregion
@@ -57,7 +57,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Współczynnik SD1, krótsza przekątna dopasowanej elipsy do wykresu Poincare, zmienność krótko-terminowa
+        /// SD1 coefficient, the shorter axis of the ellipse
         /// </summary>
         /// 
         #endregion
@@ -76,7 +76,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Współczynnik SD2,dłuższa przekątna dopasowanej elipsy do wykresu Poincare, zmienność długo-terminowa
+        /// SD2 coefficient, the longer axis of the ellipse
         /// </summary>
         /// 
         #endregion
@@ -95,26 +95,26 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Histogram długości interwałów RR
+        /// The RR intervals histogram
         /// </summary>
         /// 
         #endregion
-        //public List<Tuple<string, HRV2.Histogram2>> HistogramData
-        //{
-        //    get
-        //    {
-        //        return _histogramData;
-        //    }
+        public List<Tuple<string, Histogram>> HistogramData
+        {
+            get
+            {
+                return _histogramData;
+            }
 
-        //    set
-        //    {
-        //        _histogramData = value;
-        //    }
-        //}
+            set
+            {
+                _histogramData = value;
+            }
+        }
 
         #region Documentation
         /// <summary>
-        /// Wykres Poincare_x
+        /// x coefficien of Poincare plot
         /// </summary>
         /// 
         #endregion
@@ -133,7 +133,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Wykres Poincare_y
+        /// y coefficents of Poincare plot 
         /// </summary>
         /// 
         #endregion
@@ -149,6 +149,13 @@ namespace EKG_Project.Modules.HRV2
                 _poincarePlotData_y = value;
             }
         }
+
+        #region Documentation
+        /// <summary>
+        /// The center of an elipse fitted to Poincare plot 
+        /// </summary>
+        /// 
+        #endregion
         public List<double> ElipseCenter
         {
             get
@@ -164,13 +171,13 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Konstruktor z histogramem i wykresem Poincare
+        /// Empty output constructors of HRV2 module
         /// </summary>
         /// 
         #endregion
         public HRV2_Data()
         {
-            //HistogramData = new List<Tuple<string, HRV2.Histogram2>>();
+            HistogramData = new List<Tuple<string, Histogram>>();
             PoincarePlotData_x = new List<Tuple<string, Vector<double>>>();
             PoincarePlotData_y = new List<Tuple<string, Vector<double>>>();
             SD1 = new List<double>();
