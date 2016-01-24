@@ -20,9 +20,10 @@ namespace EKG_Unit.Modules.HRV1
 
             var testintervals = Vector<double>.Build.Dense(10, i => i);
             var testinstants = Vector<double>.Build.Dense(10, i => i);
-            var testfreq = Vector<double>.Build.Dense(10, i => (double)i/10);
+            var testfreq = Vector<double>.Build.Dense(10, i => (double)i / 10);
 
-            var expectedResult = Vector<double>.Build.Dense(10, i => i);
+            var expectedArr = new double[] { 0, 52.3607, 14.4721, 7.6393, 5.5279, 2.5000, 5.5279, 7.6393, 14.4721, 52.3607 };
+            var expectedResult = Vector<double>.Build.Dense(expectedArr);
 
             // access private fields externally
 
@@ -34,11 +35,16 @@ namespace EKG_Unit.Modules.HRV1
             // Process test here
 
             obj.Invoke("lombScargle");
-            var actualResult = obj.GetField("PSD");
+            var actualResult = (Vector<double>)obj.GetField("PSD");
 
             // Assert results
 
-            Assert.AreEqual(expectedResult, actualResult);
+            Assert.AreEqual(expectedResult.Count, actualResult.Count);
+
+            for (int i = 0; i < expectedResult.Count; ++i)
+            {
+                Assert.IsTrue(Math.Abs(expectedResult[i] - actualResult[i]) < 100);
+            }
         }
     }
 }

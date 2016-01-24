@@ -1,10 +1,11 @@
 ﻿/*
     TODO:
         1 Poprawic plomba
-        2 Zaimplementowac funkcje korekcji
         5 Testy, testy, testy...
         6 ???
+        7 nie ma numer 2,3 i 4
         7 PROFIT
+        8 ps. numer 7 jest dwa razy
 */
 
 
@@ -161,7 +162,9 @@ namespace EKG_Project.Modules.HRV1
         #endregion
         public void lombScargle()
         {
-            // TODO: upewnic sie ze wektory maja sensowna dlugosc
+            // TODO: problem z f = 0
+            // TODO: dlugosc periodo = najmnieszja dlugosc f inst lub interval
+
             var t = rInstants;
             var x = rrIntervals;
 
@@ -180,21 +183,24 @@ namespace EKG_Project.Modules.HRV1
             for (int i = 0; i < lsLen; ++i)
             {
                 w = W[i];
+                if (w == 0) { LS[i] = 0; }
+                else
+                {
+                    // calculate tau for current w
+                    tauNumerator = Vector<double>.Build.Dense(lsLen, (k) => Math.Sin(2 * w * t[k])).Sum();
+                    tauDenominator = Vector<double>.Build.Dense(lsLen, (k) => Math.Cos(2 * w * t[k])).Sum();
+                    tau = Math.Atan2(tauNumerator, tauDenominator) / (2 * w);
 
-                // calculate tau for current w
-                tauNumerator = Vector<double>.Build.Dense(lsLen, (k) => Math.Sin(2 * w * t[k])).Sum();
-                tauDenominator = Vector<double>.Build.Dense(lsLen, (k) => Math.Cos(2 * w * t[k])).Sum();
-                tau = Math.Atan2(tauNumerator, tauDenominator) / (2 * w);
+                    // calculate partial expressions for periodogram
+                    PN1 = Vector<double>.Build.Dense(lsLen, (j) => (x[j] - mean) * Math.Cos(w * (t[j] - tau))).Sum();
+                    PN2 = Vector<double>.Build.Dense(lsLen, (j) => (x[j] - mean) * Math.Sin(w * (t[j] - tau))).Sum();
+                    PD1 = Vector<double>.Build.Dense(lsLen, (j) => Math.Pow(Math.Cos(w * (t[j] - tau)), 2)).Sum();
+                    PD2 = Vector<double>.Build.Dense(lsLen, (j) => Math.Pow(Math.Sin(w * (t[j] - tau)), 2)).Sum();
 
-                // calculate partial expressions for periodogram
-                PN1 = Vector<double>.Build.Dense(lsLen, (j) => (x[j] - mean) * Math.Cos(w * (t[j] - tau))).Sum();
-                PN2 = Vector<double>.Build.Dense(lsLen, (j) => (x[j] - mean) * Math.Sin(w * (t[j] - tau))).Sum();
-                PD1 = Vector<double>.Build.Dense(lsLen, (j) => Math.Pow(Math.Cos(w * (t[j] - tau)), 2)).Sum();
-                PD2 = Vector<double>.Build.Dense(lsLen, (j) => Math.Pow(Math.Sin(w * (t[j] - tau)), 2)).Sum();
-
-                // calculate power at given w from partial expressions
-                P = (1 / (2 * std2)) * ((Math.Pow(PN1, 2) / PD1) + Math.Pow(PN2, 2) / PD2);
-                LS[i] = P;
+                    // calculate power at given w from partial expressions
+                    P = (1 / (2 * std2)) * ((Math.Pow(PN1, 2) / PD1) + Math.Pow(PN2, 2) / PD2);
+                    LS[i] = P;
+                }
             }
             this.PSD = LS;
         }
