@@ -56,8 +56,83 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg_Test.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Data_Test.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Params_Test.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Stats_Test.cs" />
+    <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Test.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Alg_Test.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Data_Test.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Params_Test.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Stats_Test.cs" />
+    <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Test.cs" />
+    <Compile Include="Modules\Flutter\Flutter_Alg_Test.cs" />
+    <Compile Include="Modules\Flutter\Flutter_Data_Test.cs" />
+    <Compile Include="Modules\Flutter\Flutter_Params_Test.cs" />
+    <Compile Include="Modules\Flutter\Flutter_Stats_Test.cs" />
+    <Compile Include="Modules\Flutter\Flutter_Test.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis_Alg_Test.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis_Data_Test.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis_Params_Test.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis_Stats_Test.cs" />
+    <Compile Include="Modules\Heart_Axis\Heart_Axis_Test.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class_Alg_Test.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class_Data_Test.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class_Params_Test.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class_Stats_Test.cs" />
+    <Compile Include="Modules\Heart_Class\Heart_Class_Test.cs" />
+    <Compile Include="Modules\HRT\HRT_Alg_Test.cs" />
+    <Compile Include="Modules\HRT\HRT_Data_Test.cs" />
+    <Compile Include="Modules\HRT\HRT_Params_Test.cs" />
+    <Compile Include="Modules\HRT\HRT_Stats_Test.cs" />
+    <Compile Include="Modules\HRT\HRT_Test.cs" />
+    <Compile Include="Modules\HRV1\HRV1_Alg_Test.cs" />
+    <Compile Include="Modules\HRV1\HRV1_Data_Test.cs" />
+    <Compile Include="Modules\HRV1\HRV1_Params_Test.cs" />
+    <Compile Include="Modules\HRV1\HRV1_Stats_Test.cs" />
+    <Compile Include="Modules\HRV1\HRV1_Test.cs" />
+    <Compile Include="Modules\HRV2\HRV2_Alg_Test.cs" />
+    <Compile Include="Modules\HRV2\HRV2_Data_Test.cs" />
+    <Compile Include="Modules\HRV2\HRV2_Params_Test.cs" />
+    <Compile Include="Modules\HRV2\HRV2_Stats_Test.cs" />
+    <Compile Include="Modules\HRV2\HRV2_Test.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA_Alg_Test.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA_Data_Test.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA_Params_Test.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA_Stats_Test.cs" />
+    <Compile Include="Modules\HRV_DFA\HRV_DFA_Test.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Alg_Test.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Data_Test.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Params_Test.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Stats_Test.cs" />
+    <Compile Include="Modules\QT_Disp\QT_Disp_Test.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks_Alg_Test.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks_Data_Test.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks_Params_Test.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks_Stats_Test.cs" />
+    <Compile Include="Modules\R_Peaks\R_Peaks_Test.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Alg_Test.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Data_Test.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Params_Test.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Stats_Test.cs" />
+    <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Test.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment_Alg_Test.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment_Data_Test.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment_Params_Test.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment_Stats_Test.cs" />
+    <Compile Include="Modules\ST_Segment\ST_Segment_Test.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Alg_Test.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Params_Test.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Alg_Test.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Data_Test.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Params_Test.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Stats_Test.cs" />
+    <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Test.cs" />
+    <Compile Include="Modules\Waves\Waves_Alg_Test.cs" />
+    <Compile Include="Modules\Waves\Waves_Data_Test.cs" />
+    <Compile Include="Modules\Waves\Waves_Params_Test.cs" />
+    <Compile Include="Modules\Waves\Waves_Stats_Test.cs" />
+    <Compile Include="Modules\Waves\Waves_Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +145,7 @@
     <Folder Include="Architecture\" />
     <Folder Include="GUI\" />
     <Folder Include="IO\" />
-    <Folder Include="Modules\Atrial_Fibr\" />
+    <Folder Include="Modules\SIG_EDR\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
