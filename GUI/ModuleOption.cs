@@ -134,12 +134,14 @@ namespace EKG_Project.GUI
                             this.ModuleParam = new TestModule_Params(500);
                             this.ModuleParam.GUIParametersAvailable = true;
                             FillDictionaries();
-                            break;s
+                            break;
+                           */
                         case AvailableOptions.HRV1:
                             this.ModuleParam = new HRV1_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
+                            /*
                         case AvailableOptions.ST_SEGMENT:
                             this.ModuleParam = new ST_Segment_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
