@@ -11,7 +11,7 @@ using MathNet.Numerics;
 namespace EKG_Project.Modules.HRV_DFA
 {
     
-    public partial class HRV_DFA : IModule
+    public class HRV_DFA : IModule
     {
         private bool _ended;
         private bool _aborted;
@@ -54,29 +54,29 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public void Init(ModuleParams parameters)
         {
-            Params = parameters as HRV_DFA_Params;
-            Aborted = false;
-            if (!Runnable()) _ended = true;
-            else
-            {
-                _ended = false;
+            //Params = parameters as HRV_DFA_Params;
+            //Aborted = false;
+            //if (!Runnable()) _ended = true;
+            //else
+            //{
+            //    _ended = false;
 
-                InputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-                InputWorker.Load();
-                InputData = InputWorker.Data;
+            //    InputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
+            //    InputWorker.Load();
+            //    InputData = InputWorker.Data;
 
-                OutputWorker = new HRV_DFA_Data_Worker(Params.AnalysisName);
-                OutputData = new HRV_DFA_Data();
+            //    OutputWorker = new HRV_DFA_Data_Worker(Params.AnalysisName);
+            //    OutputData = new HRV_DFA_Data();
 
-                _currentChannelIndex = 0;
-                _rPeaksProcessed = 0;
-                NumberOfChannels = InputData.RRInterval.Count;
-                _currentRpeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
+            //    _currentChannelIndex = 0;
+            //    _rPeaksProcessed = 0;
+            //    NumberOfChannels = InputData.RRInterval.Count;
+            //    _currentRpeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
 
-               // _currentdfaNumberN = Tuple<string, Vector<double>, Vector<double>>();
-                //_currentdfaValueFn = Vector<double>.Build.Dense(_currentRpeaksLength);
-               // _currentparamAlpha = Vector<double>.Build.Dense(_currentRpeaksLength);
-            }
+            //   // _currentdfaNumberN = Tuple<string, Vector<double>, Vector<double>>();
+            //    //_currentdfaValueFn = Vector<double>.Build.Dense(_currentRpeaksLength);
+            //   // _currentparamAlpha = Vector<double>.Build.Dense(_currentRpeaksLength);
+            //}
         }
 
         public void ProcessData()
@@ -96,73 +96,73 @@ namespace EKG_Project.Modules.HRV_DFA
         }
         private void processData()
         {
-            int channel = _currentChannelIndex;
-            int startIndex = _rPeaksProcessed;
-            int step = 10000;
+            //int channel = _currentChannelIndex;
+            //int startIndex = _rPeaksProcessed;
+            //int step = 10000;
 
-            if (channel < NumberOfChannels)
-            {
-                Console.WriteLine("Len: " +_currentRpeaksLength);
-                if (_currentRpeaksLength > 20 && _currentRpeaksLength < 1000)
-                {
-                    this.boxVal = 100;
-                    this.startValue = 10;
-                    this.stepVal = 10;
-                    this.longCorrelations = false;
-                }
-                if (_currentRpeaksLength > 1000)
-                {
-                    this.boxVal = 1000;
-                    this.startValue = 50;
-                    this.stepVal = 100;
-                    this.longCorrelations = true;
-                }
-                if (_currentRpeaksLength < 20)
-                {
-                    Console.WriteLine("Number of R - Peaks is too short");
-                    _aborted = true;
-                }
+            //if (channel < NumberOfChannels)
+            //{
+            //    Console.WriteLine("Len: " +_currentRpeaksLength);
+            //    if (_currentRpeaksLength > 20 && _currentRpeaksLength < 1000)
+            //    {
+            //        this.boxVal = 100;
+            //        this.startValue = 10;
+            //        this.stepVal = 10;
+            //        this.longCorrelations = false;
+            //    }
+            //    if (_currentRpeaksLength > 1000)
+            //    {
+            //        this.boxVal = 1000;
+            //        this.startValue = 50;
+            //        this.stepVal = 100;
+            //        this.longCorrelations = true;
+            //    }
+            //    if (_currentRpeaksLength < 20)
+            //    {
+            //        Console.WriteLine("Number of R - Peaks is too short");
+            //        _aborted = true;
+            //    }
               
-                if (startIndex + step > _currentRpeaksLength && _aborted != true)
-                {
+            //    if (startIndex + step > _currentRpeaksLength && _aborted != true)
+            //    {
 
-                        HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
-                        Tuple<string, Vector<double>, Vector<double>> numberN = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogn1, veclogn2);
-                        Tuple<string, Vector<double>, Vector<double>> fnValue = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogFn1, veclogFn2);
-                        Tuple<string, Vector<double>, Vector<double>> pAlpha = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, vecparam1, vecparam2);
-                        OutputData.DfaNumberN.Add(numberN);
-                        OutputData.DfaValueFn.Add(fnValue);
-                        OutputData.ParamAlpha.Add(pAlpha);
+            //            HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
+            //            Tuple<string, Vector<double>, Vector<double>> numberN = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogn1, veclogn2);
+            //            Tuple<string, Vector<double>, Vector<double>> fnValue = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogFn1, veclogFn2);
+            //            Tuple<string, Vector<double>, Vector<double>> pAlpha = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, vecparam1, vecparam2);
+            //            OutputData.DfaNumberN.Add(numberN);
+            //            OutputData.DfaValueFn.Add(fnValue);
+            //            OutputData.ParamAlpha.Add(pAlpha);
 
                    
-                    _currentChannelIndex++;
+            //        _currentChannelIndex++;
 
-                    if (_currentChannelIndex < NumberOfChannels)
-                    {
-                        _rPeaksProcessed = 0;
+            //        if (_currentChannelIndex < NumberOfChannels)
+            //        {
+            //            _rPeaksProcessed = 0;
 
-                        _currentRpeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
-                        _currentVector = Vector<double>.Build.Dense(_currentRpeaksLength);
-                    }
-                }
-                else
-                {
-                    if (_aborted != true)
-                    {
-                        HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
-                        _currentVector = InputData.RRInterval[_currentChannelIndex].Item2.SubVector(0, stepVal);
-                        _rPeaksProcessed = startIndex + stepVal;
-                    }
-                    else _ended = true;
+            //            _currentRpeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
+            //            _currentVector = Vector<double>.Build.Dense(_currentRpeaksLength);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (_aborted != true)
+            //        {
+            //            HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
+            //            _currentVector = InputData.RRInterval[_currentChannelIndex].Item2.SubVector(0, stepVal);
+            //            _rPeaksProcessed = startIndex + stepVal;
+            //        }
+            //        else _ended = true;
 
-                }
-            }
-            else
-            {
-                Console.WriteLine("Here");
-                OutputWorker.Save(OutputData);
-                _ended = true;
-            }
+            //    }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Here");
+            //    OutputWorker.Save(OutputData);
+            //    _ended = true;
+            //}
 
         }
 //

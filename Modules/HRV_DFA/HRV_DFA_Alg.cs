@@ -11,7 +11,7 @@ using MathNet.Numerics.LinearAlgebra;
 namespace EKG_Project.Modules.HRV_DFA
 {
     
-    public partial class HRV_DFA : IModule
+    public class HRV_DFA_Alg
     {
         Vector<double> veclogn1;
         Vector<double> veclogn2;
