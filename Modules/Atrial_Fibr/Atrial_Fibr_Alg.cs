@@ -20,7 +20,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
     /// Class which detect Atrial Fibrillation in ECG signal.
     /// </summary>
     #endregion
-    public partial class Atrial_Fibr : IModule
+    public class Atrial_Fibr_Alg
     {
         private uint fs;
         private Vector<double> _rr_intervals;
@@ -40,7 +40,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// Declaration of fields of class Atrial_Fibr
         /// </summary>
         #endregion
-        public Atrial_Fibr()
+        public Atrial_Fibr_Alg()
         {
             Param = new Atrial_Fibr_Params();
             Fs = new uint();

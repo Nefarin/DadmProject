@@ -6,7 +6,7 @@ using MathNet.Numerics;
 
 namespace EKG_Project.Modules.TestModule3
 {
-    public partial class TestModule3 : IModule
+    public class TestModule3 : IModule
     {
         private bool _ended;
         private bool _aborted;
