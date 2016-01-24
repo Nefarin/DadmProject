@@ -334,6 +334,7 @@
     <Compile Include="IO\ST_Segment_Data_Worker.cs" />
     <Compile Include="IO\TempInput.cs" />
     <Compile Include="IO\TestModule3_Data_Worker.cs" />
+    <Compile Include="IO\Test_Worker.cs" />
     <Compile Include="IO\T_Wave_Alt_Data_Worker.cs" />
     <Compile Include="IO\Waves_Data_Worker.cs" />
     <Compile Include="IO\WFDBLoader.cs" />
