@@ -13,9 +13,9 @@ namespace EKG_Project.Modules.QT_Disp
 {
     public class QT_Disp_Alg
     {
-        List<int> QRS_onset;                            //to do in init
-        List<int> T_End_Global;                         //to do in init
-        List<int> QRS_End;                              //to do in init
+        List<double> QRS_onset;                            //to do in init
+        List<double> T_End_Global;                         //to do in init
+        List<double> QRS_End;                              //to do in init
         Vector<double> R_Peaks;                         //to do in init
         T_End_Method T_End_method;                      //to do in init
         QT_Calc_Method QT_Calc_method;                  //to do in init
@@ -23,7 +23,7 @@ namespace EKG_Project.Modules.QT_Disp
         List<double> QT_intervals;                      //to do in processData
         List<int> T_End_local;                          //to do in processData
         //List<List<double>> AllQT_Intervals;             //to do after change a channel
-        public QT_Disp_Alg()
+        /*public QT_Disp_Alg()
         {
             QRS_onset = new List<int>();
             T_End_Global = new List<int>();
@@ -35,6 +35,22 @@ namespace EKG_Project.Modules.QT_Disp
             QT_intervals = new List<double>(1);
             //AllQT_Intervals = new List<List<double>>();
             T_End_local = new List<int>(1);
+        }*/
+        public QT_Disp_Alg()
+        {
+            TempInput.setInputFilePath("C:\\Users\\Pawel\\Desktop\\QRS_Onset.txt");
+            this.Fs = 360;
+            this.QRS_onset = TempInput.getSignal().ToList();
+            TempInput.setInputFilePath("C:\\Users\\Pawel\\Desktop\\QRS_End.txt");
+            this.QRS_End = TempInput.getSignal().ToList();
+            TempInput.setInputFilePath("C:\\Users\\Pawel\\Desktop\\R_Peak.txt");
+            this.R_Peaks = TempInput.getSignal();
+            TempInput.setInputFilePath("C:\\Users\\Pawel\\Desktop\\T_End.txt");
+            this.T_End_Global = TempInput.getSignal().ToList();
+            this.T_End_method = T_End_Method.TANGENT;
+            this.QT_Calc_method = QT_Calc_Method.FRAMIGHAMA;
+            this.QT_intervals = new List<double>();
+            this.T_End_local = new List<int>();
         }
         /// <summary>
         /// This constructor get all data to a current drain
@@ -46,7 +62,7 @@ namespace EKG_Project.Modules.QT_Disp
         /// <param name="T_End_method">method use to calculate T_End </param>
         /// <param name="QT_Calc_method">method use to calculate QT interval</param>
         /// <param name="Fs">Sampling Frequency</param>
-        public void TODoInInit(List<int> QRS_Onset, List<int> T_End_Global, List<int> QRS_End, Vector<double> R_Peaks, T_End_Method T_End_method, QT_Calc_Method QT_Calc_method, uint Fs)
+        /*public void TODoInInit(List<int> QRS_Onset, List<int> T_End_Global, List<int> QRS_End, Vector<double> R_Peaks, T_End_Method T_End_method, QT_Calc_Method QT_Calc_method, uint Fs)
         {
             this.QRS_onset = QRS_Onset;
             this.QRS_End = QRS_End;
@@ -55,7 +71,7 @@ namespace EKG_Project.Modules.QT_Disp
             this.T_End_method = T_End_method;
             this.QT_Calc_method = QT_Calc_method;
             this.Fs = Fs;
-        }
+        }*/
         /// <summary>
         /// This function is called to get a current sampled signal and processed it 
         /// </summary>
@@ -77,11 +93,11 @@ namespace EKG_Project.Modules.QT_Disp
                 // need this point to find T_end
                 if(index<T_End_Global.Count)
                 {                   
-                    int onset = QRS_onset.ElementAt(1);
-                    int end = QRS_End.ElementAt(0);                   
+                    int onset = (int)QRS_onset.ElementAt(1);
+                    int end =(int) QRS_End.ElementAt(0);                   
                     if (onset > end )
                     {
-                        DataToCalculate data = new DataToCalculate(QRS_onset.ElementAt(index), QRS_End.ElementAt(index), T_End_Global.ElementAt(index), samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);
+                        DataToCalculate data = new DataToCalculate((int)QRS_onset.ElementAt(index), (int)QRS_End.ElementAt(index), (int)T_End_Global.ElementAt(index), samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);
                         //here we add a QT interval to a list
                         this.QT_INTERVALS.Add(data.Calc_QT_Interval().Item2);
                         //here we add a T_End index to a list
@@ -93,7 +109,7 @@ namespace EKG_Project.Modules.QT_Disp
                     {
                         if (index > 1)
                         {                           
-                            DataToCalculate data = new DataToCalculate(QRS_onset.ElementAt(index), QRS_End.ElementAt(index-1), T_End_Global.ElementAt(index-1), samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);
+                            DataToCalculate data = new DataToCalculate((int)QRS_onset.ElementAt(index),(int) QRS_End.ElementAt(index-1),(int)T_End_Global.ElementAt(index-1), samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);
                             //here we add a QT interval to a list
                             this.QT_INTERVALS.Add(data.Calc_QT_Interval().Item2);
                             //here we add a T_End index to a list
@@ -214,9 +230,33 @@ namespace EKG_Project.Modules.QT_Disp
             Console.WriteLine("Hello world");
             
             Vector<double> signal;
-            TempInput input = new TempInput();
+            Vector<double> samples;
+            //TempInput input = new TempInput();
             TempInput.setInputFilePath("C:\\Users\\Pawel\\Documents\\MATLAB\\DADM\\projekt\\wyniki.txt");
+            
             signal = TempInput.getSignal();
+            QT_Disp_Alg data = new QT_Disp_Alg();
+            List<Tuple<int, double>> output = new List<Tuple<int, double>>();
+            double[] t_end = new double[22];
+            double[] qt_interval = new double[22];
+            for(int i=0; i<data.R_Peaks.Count-1; i++)
+            {
+                double[] r_peakss = new double[] { data.R_Peaks.ElementAt(i), data.R_Peaks.ElementAt(i + 1) }; 
+                samples = signal.SubVector((int)data.R_Peaks.ElementAt(i), 
+                    (int)(data.R_Peaks.ElementAt(i + 1) - data.R_Peaks.ElementAt(i)));
+                DataToCalculate data_samples = new DataToCalculate((int)data.QRS_onset.ElementAt(i), 
+                    (int)data.QRS_End.ElementAt(i), (int)data.T_End_Global.ElementAt(i),
+                    samples, data.QT_Calc_method, data.T_End_method, data.Fs, r_peakss);
+                output.Add(data_samples.Calc_QT_Interval());
+                t_end[i] = data_samples.Calc_QT_Interval().Item1;
+                qt_interval[i] = data_samples.Calc_QT_Interval().Item2;
+            }
+            TempInput.setOutputFilePath("C:\\Users\\Pawel\\Desktop\\output_end.txt");
+            Vector<double> file = Vector<double>.Build.DenseOfArray(t_end);
+            TempInput.writeFile(360, file);
+            TempInput.setOutputFilePath("C:\\Users\\Pawel\\Desktop\\output_qt.txt");
+            TempInput.writeFile(360, Vector<double>.Build.DenseOfArray(qt_interval));
+
             Console.ReadKey();
         }
         
@@ -487,11 +527,11 @@ namespace EKG_Project.Modules.QT_Disp
             outputData = Tuple.Create(T_End, QT_Interval);
             return outputData;
         }
-        private Vector<double> diff(Vector<double> In)
+        public Vector<double> diff(Vector<double> In)
         {
             List<double> Output = new List<double>(In.Count - 1);
             Vector<double> output = Vector<double>.Build.Dense(1);
-            if (Output.Count > 1)
+            if (In.Count > 1)
             {
                 for (int i = 0; i < In.Count - 1; i++)
                 {
@@ -501,7 +541,7 @@ namespace EKG_Project.Modules.QT_Disp
             }
             else
             {
-                
+                throw new InvalidOperationException("Wrong input vector");
             }
 
             return output;
