@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.Flutter
 {
-    public partial class Flutter : IModule
+    public class Flutter_Alg
     {
         private List<int> _QRSonsets; // początek zespołu qrs
         private List<int> _Tends; // lista numerów próbek gdzie kończy się fala T
@@ -20,7 +20,7 @@ namespace EKG_Project.Modules.Flutter
         private const double RI_LOWER_LIMIT_FOR_AFL = 1.6;
         private const double RI_UPPER_LIMIT_FOR_AFL = 2.4;
 
-        public Flutter(List<int> tEnds, List<int> qrsOnsets, 
+        public Flutter_Alg(List<int> tEnds, List<int> qrsOnsets, 
             Vector<double> samples, double fs)
         {
             _Tends = tEnds;
@@ -29,7 +29,7 @@ namespace EKG_Project.Modules.Flutter
             _fs = fs;
         }
 
-        public Flutter()
+        public Flutter_Alg()
         {
         }
 

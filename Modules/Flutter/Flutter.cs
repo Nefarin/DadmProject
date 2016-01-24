@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.Flutter
 {
-    public partial class Flutter : IModule
+    public class Flutter : IModule
     {
         private enum FlutterAlgStates 
         {
@@ -61,48 +61,48 @@ namespace EKG_Project.Modules.Flutter
 
         public void Init(ModuleParams parameters)
         {
-            _aborted = false;
-            Params = parameters as Flutter_Params;
-            if(!Runnable())
-            {
-                _ended = true;
-            }
-            else
-            {
-                _ended = false;
+            //_aborted = false;
+            //Params = parameters as Flutter_Params;
+            //if(!Runnable())
+            //{
+            //    _ended = true;
+            //}
+            //else
+            //{
+            //    _ended = false;
 
-                InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
-                InputWorker_basic.Load();
-                InputData_basic = InputWorker_basic.BasicData;
+            //    InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
+            //    InputWorker_basic.Load();
+            //    InputData_basic = InputWorker_basic.BasicData;
 
-                InputWorker = new Waves_Data_Worker(Params.AnalysisName);
-                InputWorker.Load();
-                InputData = InputWorker.Data;
+            //    InputWorker = new Waves_Data_Worker(Params.AnalysisName);
+            //    InputWorker.Load();
+            //    InputData = InputWorker.Data;
 
-                OutputWorker = new Flutter_Data_Worker(Params.AnalysisName);
-                OutputData = new Flutter_Data();
+            //    OutputWorker = new Flutter_Data_Worker(Params.AnalysisName);
+            //    OutputData = new Flutter_Data();
 
-                _actualProgress = 0;
+            //    _actualProgress = 0;
 
-                _fs = InputData_basic.Frequency;
+            //    _fs = InputData_basic.Frequency;
 
-                string[] channels = InputData.QRSOnsets.Select(x => x.Item1).ToArray();
-                string[] expectedChannels = new string[] { "II", "III", "I" };
-                int indexOf = -1;
-                int i = 0;
-                while(indexOf < 0 && i < expectedChannels.Length)
-                {
-                    indexOf = Array.IndexOf(channels, expectedChannels[i++]);
-                }
-                if(indexOf == -1)
-                {
-                    indexOf = 0;
-                }
-                _QRSonsets = InputData.QRSOnsets[indexOf].Item2;
-                _Tends = InputData.TEnds[indexOf].Item2;
-                _samples = InputData_basic.Signals[indexOf].Item2;
-                _currentState = FlutterAlgStates.ExtractEcgFragments;
-            }
+            //    string[] channels = InputData.QRSOnsets.Select(x => x.Item1).ToArray();
+            //    string[] expectedChannels = new string[] { "II", "III", "I" };
+            //    int indexOf = -1;
+            //    int i = 0;
+            //    while(indexOf < 0 && i < expectedChannels.Length)
+            //    {
+            //        indexOf = Array.IndexOf(channels, expectedChannels[i++]);
+            //    }
+            //    if(indexOf == -1)
+            //    {
+            //        indexOf = 0;
+            //    }
+            //    _QRSonsets = InputData.QRSOnsets[indexOf].Item2;
+            //    _Tends = InputData.TEnds[indexOf].Item2;
+            //    _samples = InputData_basic.Signals[indexOf].Item2;
+            //    _currentState = FlutterAlgStates.ExtractEcgFragments;
+            //}
 
         }
 
@@ -128,55 +128,55 @@ namespace EKG_Project.Modules.Flutter
 
         private void processData()
         {
-            switch(_currentState)
-            {
-                case FlutterAlgStates.ExtractEcgFragments:
-                    _t2qrsEkgParts = GetEcgPart();
-                    _currentState = FlutterAlgStates.CalculateSpectralDensity;
-                    _actualProgress = 100.0 / 6;
-                    break;
+            //switch(_currentState)
+            //{
+            //    case FlutterAlgStates.ExtractEcgFragments:
+            //        _t2qrsEkgParts = GetEcgPart();
+            //        _currentState = FlutterAlgStates.CalculateSpectralDensity;
+            //        _actualProgress = 100.0 / 6;
+            //        break;
 
-                case FlutterAlgStates.CalculateSpectralDensity:
-                    _spectralDensityList = CalculateSpectralDensity(_t2qrsEkgParts);
-                    _frequenciesList = CalculateFrequenciesAxis(_spectralDensityList);
-                    _currentState = FlutterAlgStates.TrimSpectrum;
-                    _actualProgress = 2* 100.0 / 6;
-                    break;
+            //    case FlutterAlgStates.CalculateSpectralDensity:
+            //        _spectralDensityList = CalculateSpectralDensity(_t2qrsEkgParts);
+            //        _frequenciesList = CalculateFrequenciesAxis(_spectralDensityList);
+            //        _currentState = FlutterAlgStates.TrimSpectrum;
+            //        _actualProgress = 2* 100.0 / 6;
+            //        break;
 
-                case FlutterAlgStates.TrimSpectrum:
-                    TrimToGivenFreq(_spectralDensityList, _frequenciesList, 70.0);
-                    _currentState = FlutterAlgStates.InterpolateSpectrum;
-                    _actualProgress = 3 * 100.0 / 6;
-                    break;
+            //    case FlutterAlgStates.TrimSpectrum:
+            //        TrimToGivenFreq(_spectralDensityList, _frequenciesList, 70.0);
+            //        _currentState = FlutterAlgStates.InterpolateSpectrum;
+            //        _actualProgress = 3 * 100.0 / 6;
+            //        break;
 
-                case FlutterAlgStates.InterpolateSpectrum:
-                    InterpolateSpectralDensity(_spectralDensityList, _frequenciesList, 0.01);
-                    _currentState = FlutterAlgStates.CalculatePower;
-                    _actualProgress = 4 * 100.0 / 6;
-                    break;
+            //    case FlutterAlgStates.InterpolateSpectrum:
+            //        InterpolateSpectralDensity(_spectralDensityList, _frequenciesList, 0.01);
+            //        _currentState = FlutterAlgStates.CalculatePower;
+            //        _actualProgress = 4 * 100.0 / 6;
+            //        break;
 
-                case FlutterAlgStates.CalculatePower:
-                    _powerList = CalculateIntegralForEachSpectrum(_frequenciesList, _spectralDensityList);
-                    _currentState = FlutterAlgStates.DetectAFL;
-                    _actualProgress = 5 * 100.0 / 6;
-                    break;
+            //    case FlutterAlgStates.CalculatePower:
+            //        _powerList = CalculateIntegralForEachSpectrum(_frequenciesList, _spectralDensityList);
+            //        _currentState = FlutterAlgStates.DetectAFL;
+            //        _actualProgress = 5 * 100.0 / 6;
+            //        break;
 
-                case FlutterAlgStates.DetectAFL:
-                    _aflAnnotations = Detect(_spectralDensityList, _frequenciesList, _powerList);
-                    OutputData.FlutterAnnotations = _aflAnnotations;
-                    _currentState = FlutterAlgStates.Finished;
-                    _actualProgress = 99.0;
-                    break;
+            //    case FlutterAlgStates.DetectAFL:
+            //        _aflAnnotations = Detect(_spectralDensityList, _frequenciesList, _powerList);
+            //        OutputData.FlutterAnnotations = _aflAnnotations;
+            //        _currentState = FlutterAlgStates.Finished;
+            //        _actualProgress = 99.0;
+            //        break;
 
-                case FlutterAlgStates.Finished:
-                    _actualProgress = 100.0;
-                    OutputWorker.Save(OutputData);
-                    _ended = true;
-                    break;
+            //    case FlutterAlgStates.Finished:
+            //        _actualProgress = 100.0;
+            //        OutputWorker.Save(OutputData);
+            //        _ended = true;
+            //        break;
 
-                default:
-                    throw new InvalidOperationException("Undefined state");
-            }
+            //    default:
+            //        throw new InvalidOperationException("Undefined state");
+            //}
         }
 
         public double Progress()
