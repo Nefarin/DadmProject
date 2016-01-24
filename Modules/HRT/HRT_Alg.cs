@@ -9,7 +9,7 @@ using EKG_Project.IO;
 
 namespace EKG_Project.Modules.HRT
 {
-    public partial class HRT : IModule
+    public class HRT_Alg
     {
         // Declaration of time parameters
         private const int _back = 5;
@@ -27,7 +27,7 @@ namespace EKG_Project.Modules.HRT
         //KONSTUKTORY
 
         ///<Summary>konstruktor główny </Summary>
-        public HRT(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
+        public HRT_Alg(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
         {
             _rrIntervals = Tachogram;
             _rInstants = RRTimes;
@@ -35,7 +35,7 @@ namespace EKG_Project.Modules.HRT
         }
 
         ///<Summary>konstruktor testowy</Summary>
-        public HRT(Vector<double> Tachogram)
+        public HRT_Alg(Vector<double> Tachogram)
         {
             _rrIntervals = Tachogram;
         }
@@ -61,21 +61,21 @@ namespace EKG_Project.Modules.HRT
 
 
         //MAIN
-        public static void Main(string[] args)
-        {
-            //read data from file
-            TempInput.setInputFilePath(@"C:\Users\mrevening\Desktop\R_100.txt");
-            uint fs = TempInput.getFrequency();
-            Vector<double> sig = TempInput.getSignal();
+        //public static void Main(string[] args)
+        //{
+        //    //read data from file
+        //    TempInput.setInputFilePath(@"C:\Users\mrevening\Desktop\R_100.txt");
+        //    uint fs = TempInput.getFrequency();
+        //    Vector<double> sig = TempInput.getSignal();
 
-            HRT hrt = new HRT(sig);
+        //    HRT hrt = new HRT(sig);
 
-            // Samples to time convertion [ms]
-            Vector<double> tacho_rr = hrt.TimeConvert(fs, sig.ToArray());
+        //    // Samples to time convertion [ms]
+        //    Vector<double> tacho_rr = hrt.TimeConvert(fs, sig.ToArray());
 
-            Console.WriteLine(fs);
-            Console.WriteLine(sig);
-            Console.ReadKey();
-        }
+        //    Console.WriteLine(fs);
+        //    Console.WriteLine(sig);
+        //    Console.ReadKey();
+        //}
     }
 }

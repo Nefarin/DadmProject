@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.HRT
 {
-    public partial class HRT : IModule
+    public class HRT : IModule
     {
         public void Abort()
         {
