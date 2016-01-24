@@ -12,7 +12,7 @@ using EKG_Project.IO;
 namespace EKG_Project.Modules.ST_Segment
 {
 
-    public partial class ST_Segment : IModule
+    public class ST_Segment_Alg
     {
         
 

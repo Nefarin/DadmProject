@@ -15,7 +15,7 @@ namespace EKG_Project.Modules.ST_Segment
 
 
 {
-    public partial class ST_Segment : IModule
+    public class ST_Segment : IModule
     {
         private bool _ended;
         private bool _aborted;
@@ -101,54 +101,54 @@ namespace EKG_Project.Modules.ST_Segment
 
         public void Init(ModuleParams parameters)
         {
-            Params = parameters as ST_Segment_Params;
-            Aborted = false;
-            if (!Runnable()) _ended = true;
-            else
-            {
-                _ended = false;
+            //Params = parameters as ST_Segment_Params;
+            //Aborted = false;
+            //if (!Runnable()) _ended = true;
+            //else
+            //{
+            //    _ended = false;
 
-                InputWorker = new Basic_Data_Worker(Params.AnalysisName);
-                InputECGWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
-                InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-                InputWavesWorker = new Waves_Data_Worker(Params.AnalysisName);
+            //    InputWorker = new Basic_Data_Worker(Params.AnalysisName);
+            //    InputECGWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
+            //    InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
+            //    InputWavesWorker = new Waves_Data_Worker(Params.AnalysisName);
 
-                InputWorker.Load();
-                InputData = InputWorker.BasicData;
+            //    InputWorker.Load();
+            //    InputData = InputWorker.BasicData;
 
-                InputECGWorker.Load();
-                InputECGData = InputECGWorker.Data;
+            //    InputECGWorker.Load();
+            //    InputECGData = InputECGWorker.Data;
 
-                InputRpeaksWorker.Load();
-                InputRpeaksData = InputRpeaksWorker.Data;
+            //    InputRpeaksWorker.Load();
+            //    InputRpeaksData = InputRpeaksWorker.Data;
 
-                InputWavesWorker.Load();
-                InputWavesData = InputWavesWorker.Data;
-
-
-                OutputWorker = new ST_Segment_Data_Worker(Params.AnalysisName);
-                OutputData = new ST_Segment_Data();
-
-                _currentChannelIndex = 0;
-                _samplesProcessed = 0;
-                _rPeaksProcessed = 0;
-                //startIndex = _samplesProcessed;
-                NumberOfChannels = InputData.Signals.Count;
-
-                _currentRPeaksLength = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count;
+            //    InputWavesWorker.Load();
+            //    InputWavesData = InputWavesWorker.Data;
 
 
-                _currenttJ = new List<long>();
-                _currenttST = new List<long>();
-                _currentConcaveCurves = new int();
-                _currentConvexCurves = new int();
-                _currentIncreasingLines = new int();
-                _currentHorizontalLines = new int();
-                _currentDecreasingLines = new int();
-            }
+            //    OutputWorker = new ST_Segment_Data_Worker(Params.AnalysisName);
+            //    OutputData = new ST_Segment_Data();
+
+            //    _currentChannelIndex = 0;
+            //    _samplesProcessed = 0;
+            //    _rPeaksProcessed = 0;
+            //    //startIndex = _samplesProcessed;
+            //    NumberOfChannels = InputData.Signals.Count;
+
+            //    _currentRPeaksLength = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count;
+
+
+            //    _currenttJ = new List<long>();
+            //    _currenttST = new List<long>();
+            //    _currentConcaveCurves = new int();
+            //    _currentConvexCurves = new int();
+            //    _currentIncreasingLines = new int();
+            //    _currentHorizontalLines = new int();
+            //    _currentDecreasingLines = new int();
+            //}
         }
 
-        public void ProcessData(ST_Segment_Params parameters)
+        public void ProcessData()
         {
 
             if (Runnable()) processData();
@@ -170,69 +170,69 @@ namespace EKG_Project.Modules.ST_Segment
 
         private void processData()
         {
-            //OutputData = Method(argumenty);
-            //Analasiys ST_Segment (Method);
-            int channel = _currentChannelIndex;
-            int startIndex = _rPeaksProcessed;
-            int step = Params.RpeaksStep;
+            ////OutputData = Method(argumenty);
+            ////Analasiys ST_Segment (Method);
+            //int channel = _currentChannelIndex;
+            //int startIndex = _rPeaksProcessed;
+            //int step = Params.RpeaksStep;
 
-            if (channel < NumberOfChannels)
-            {
-                if (startIndex + step > _currentRpeaksLength)
-                {
-                    int QRSOnSet = InputWavesData.QRSOnsets[_channel2].Item2[_samplesProcessed];
-                    int QRSEnds = InputWavesData.QRSEnds[_channel2].Item2[_samplesProcessed];
-                    double rInterval = InputRpeaksData.RPeaks[_channel2].Item2[_samplesProcessed];
+            //if (channel < NumberOfChannels)
+            //{
+            //    if (startIndex + step > _currentRpeaksLength)
+            //    {
+            //        int QRSOnSet = InputWavesData.QRSOnsets[_channel2].Item2[_samplesProcessed];
+            //        int QRSEnds = InputWavesData.QRSEnds[_channel2].Item2[_samplesProcessed];
+            //        double rInterval = InputRpeaksData.RPeaks[_channel2].Item2[_samplesProcessed];
 
-                    if (QRSEnds == -1 || QRSEnds == -1)
+            //        if (QRSEnds == -1 || QRSEnds == -1)
 
-                        _samplesProcessed++;
-                }
+            //            _samplesProcessed++;
+            //    }
 
-                if (_samplesProcessed >= _numberOfSteps)
-                {
-                    _ml2Processed = true;
-                }
-            }
-            // Method (InputData.RRInterval[_currentChannelIndex].Item2);
-            // Method(Vector<double>signal, Vector < uint > tQRS_onset, Vector < uint > tQRS_ends, Vector < double > rInterval, int freq);
-            // OutputData.tJs.Add(_tJs); //
-            //OutputData.tSTs.Add(new List<long>(InputData.Signals[_currentChannelIndex].Item1, _tSTs));
+            //    if (_samplesProcessed >= _numberOfSteps)
+            //    {
+            //        _ml2Processed = true;
+            //    }
+            //}
+            //// Method (InputData.RRInterval[_currentChannelIndex].Item2);
+            //// Method(Vector<double>signal, Vector < uint > tQRS_onset, Vector < uint > tQRS_ends, Vector < double > rInterval, int freq);
+            //// OutputData.tJs.Add(_tJs); //
+            ////OutputData.tSTs.Add(new List<long>(InputData.Signals[_currentChannelIndex].Item1, _tSTs));
 
-            //OutputData.ConcaveCurves.Add(new Tuple<string, int> (InputData.Signals[_currentChannelIndex].Item1, _ConcaveCurves));
-            //OutputData.ConcaveCurves.Add(new Tuple<string, int>(InputData.Signals[_currentChannelIndex].Item1, _ConcaveCurves));
-            // OutputData.ConvexCurves = _ConvexCurves;//
-            //OutputData.IncreasingLines.Add(new < int > (InputData.Signals[_currentChannelIndex].Item1, _IncreasingLines));
-            // OutputData.IncreasingLines = _IncreasingLines;
-            //  OutputData.HorizontalLines = _HorizontalLines;//
-            //  OutputData.DecreasingLines = _DecreasingLines; //
+            ////OutputData.ConcaveCurves.Add(new Tuple<string, int> (InputData.Signals[_currentChannelIndex].Item1, _ConcaveCurves));
+            ////OutputData.ConcaveCurves.Add(new Tuple<string, int>(InputData.Signals[_currentChannelIndex].Item1, _ConcaveCurves));
+            //// OutputData.ConvexCurves = _ConvexCurves;//
+            ////OutputData.IncreasingLines.Add(new < int > (InputData.Signals[_currentChannelIndex].Item1, _IncreasingLines));
+            //// OutputData.IncreasingLines = _IncreasingLines;
+            ////  OutputData.HorizontalLines = _HorizontalLines;//
+            ////  OutputData.DecreasingLines = _DecreasingLines; //
 
-            //d _currentChannelIndex++;
-            //d if (_currentChannelIndex < NumberOfChannels)
+            ////d _currentChannelIndex++;
+            ////d if (_currentChannelIndex < NumberOfChannels)
             
 
-                    /*dobre
-                    _rPeaksProcessed = 0;
+            //        /*dobre
+            //        _rPeaksProcessed = 0;
 
-                    _currentRpeaksLength = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count;
+            //        _currentRpeaksLength = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count;
 
-                    _currenttJ = new List<long>();
-                    _currenttST = new List<long>();
-                    _currentConcaveCurves = new int();
-                    _currentConvexCurves = new int();
-                    _currentIncreasingLines = new int();
-                    _currentHorizontalLines = new int();
-                    _currentDecreasingLines = new int();
-                    }}
-                    */
+            //        _currenttJ = new List<long>();
+            //        _currenttST = new List<long>();
+            //        _currentConcaveCurves = new int();
+            //        _currentConvexCurves = new int();
+            //        _currentIncreasingLines = new int();
+            //        _currentHorizontalLines = new int();
+            //        _currentDecreasingLines = new int();
+            //        }}
+            //        */
 
              
 
-            else
-            {
-                    OutputWorker.Save(OutputData);
-                    _ended = true;
-             }      
+            //else
+            //{
+            //        OutputWorker.Save(OutputData);
+            //        _ended = true;
+            // }      
         }
 
 
@@ -428,7 +428,7 @@ namespace EKG_Project.Modules.ST_Segment
                 Console.WriteLine(testModule.Progress());
 
 
-                testModule.ProcessData(param);
+                //testModule.ProcessData(param);
 
 
                 Console.WriteLine(testModule.OutputData.ConcaveCurves);
