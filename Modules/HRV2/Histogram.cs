@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
+using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
 using MathNet.Numerics.Statistics;
 
@@ -23,9 +24,9 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public Histogram HistogramToVisualisation()
+        public Histogram HistogramToVisualisation(Vector<double> RRIntervals)
         {
-            Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2; 
+            //Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2; 
             double dBinAmount = RRIntervals.AbsoluteMaximum() - RRIntervals.AbsoluteMinimum() / binLength;
             int binAmount = (int)Math.Round(dBinAmount);
             _currentHistogramV = new Histogram(RRIntervals, binAmount);
@@ -42,9 +43,9 @@ namespace EKG_Project.Modules.HRV2
         #endregion
 
 
-        public Histogram2 makeHistogram()
+        public Histogram2 makeHistogram(Vector<double> RRIntervals)
         {
-            Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2;
+            //Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2;
             Console.WriteLine(RRIntervals.Max());
             Console.ReadLine();
             _currentHistogram = new Histogram2(binLength, RRIntervals);
