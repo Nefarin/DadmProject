@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace EKG_Project.Modules.ECG_Baseline
 {
-    public partial class ECG_Baseline : IModule
+    public class ECG_Baseline_Alg
     {
         public class Filter
         {
