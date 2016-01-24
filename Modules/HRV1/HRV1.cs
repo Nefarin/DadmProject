@@ -9,7 +9,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV1
 {
-    public partial class HRV1 : IModule
+    public class HRV1 : IModule
     {
         private HRV1_Data _outputData;
         private R_Peaks_Data _inputData;
@@ -44,40 +44,40 @@ namespace EKG_Project.Modules.HRV1
 
         public void Init(ModuleParams parameters)
         {
-            Params = parameters as HRV1_Params;
-            OutputData = new HRV1_Data();
-            Aborted = false;
-            if (!Runnable()) _ended = true;
-            else
-            {
-                _ended = false;
-                InputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-                InputWorker.Load();
-                InputData = InputWorker.Data;
+            //Params = parameters as HRV1_Params;
+            //OutputData = new HRV1_Data();
+            //Aborted = false;
+            //if (!Runnable()) _ended = true;
+            //else
+            //{
+            //    _ended = false;
+            //    InputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
+            //    InputWorker.Load();
+            //    InputData = InputWorker.Data;
 
-                OutputWorker = new HRV1_Data_Worker(Params.AnalysisName);
-                OutputData = new HRV1_Data();
-            }
+            //    OutputWorker = new HRV1_Data_Worker(Params.AnalysisName);
+            //    OutputData = new HRV1_Data();
+            //}
         }
 
         public void ProcessData()
         {
-            if (Runnable())
-            {
-                var instants = InputData.RPeaks[1].Item2;
-                var intervals = InputData.RRInterval[1].Item2;
-                calculateTimeBased();
-                calculateFreqBased();
-                var tparams = Vector<double>.Build.Dense(new double[] {HF, LF, VLF, LFHF });
-                var fparams = Vector<double>.Build.Dense(new double[] { SDNN, RMSSD, SDSD, NN50, pNN50 });
+            //if (Runnable())
+            //{
+            //    var instants = InputData.RPeaks[1].Item2;
+            //    var intervals = InputData.RRInterval[1].Item2;
+            //    calculateTimeBased();
+            //    calculateFreqBased();
+            //    var tparams = Vector<double>.Build.Dense(new double[] {HF, LF, VLF, LFHF });
+            //    var fparams = Vector<double>.Build.Dense(new double[] { SDNN, RMSSD, SDSD, NN50, pNN50 });
 
-                OutputData.TimeBasedParams.Add(new Tuple<string, Vector<double>>(" ", tparams));
-                OutputData.FreqBasedParams.Add(new Tuple<string, Vector<double>>(" ", fparams));
+            //    OutputData.TimeBasedParams.Add(new Tuple<string, Vector<double>>(" ", tparams));
+            //    OutputData.FreqBasedParams.Add(new Tuple<string, Vector<double>>(" ", fparams));
 
-                OutputData.RInstants.Add(new Tuple<string, Vector<double>>(" ", instants));
-                OutputData.RRIntervals.Add(new Tuple<string, Vector<double>>(" ", intervals));
-            }
-            else _ended = true;
+            //    OutputData.RInstants.Add(new Tuple<string, Vector<double>>(" ", instants));
+            //    OutputData.RRIntervals.Add(new Tuple<string, Vector<double>>(" ", intervals));
+            //}
+            //else _ended = true;
         }
 
         public double Progress()

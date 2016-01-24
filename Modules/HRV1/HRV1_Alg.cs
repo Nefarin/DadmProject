@@ -28,7 +28,7 @@ namespace EKG_Project.Modules.HRV1
     /// Class for calculating frequency- and time-based prameters of RR tachogram
     /// </summary>
     #endregion
-    public partial class HRV1 : IModule
+    public class HRV1_Alg
     {
         // Declaration of time parameters
         private double SDNN;
@@ -215,39 +215,39 @@ private void calculateFreqBased()
 #endregion
 public static void AlgoTest()
         {
-            Console.WriteLine("Hello Matylda!");
+           // Console.WriteLine("Hello Matylda!");
 
-            // do testowania nalezy odkomentowac odpowiednia linijke, a zakomentowac pozostale
-            //string dataPath = "F:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na duzym komputerze Michala
-           // string dataPath = "C:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na laptopie Michala
-            string dataPath = "...\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na komputerze Matyldy
-            string filename = "NSR001.txt"; // plik zawiera 'ladny' wycinek z tachogramu RR sygnalu NSR001
-            dataPath = dataPath + filename;
+           // // do testowania nalezy odkomentowac odpowiednia linijke, a zakomentowac pozostale
+           // //string dataPath = "F:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na duzym komputerze Michala
+           //// string dataPath = "C:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na laptopie Michala
+           // string dataPath = "...\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na komputerze Matyldy
+           // string filename = "NSR001.txt"; // plik zawiera 'ladny' wycinek z tachogramu RR sygnalu NSR001
+           // dataPath = dataPath + filename;
 
-            var hrv = new HRV1();
+           // var hrv = new HRV1();
 
-            // wczytywanie danych - tutaj trzeba bedzie dostosowac do nowego modulu IO, kiedy sie pojawi
-            TempInput.setInputFilePath(dataPath);
-            hrv.rSamples = TempInput.getSignal();
-            hrv.Fs = TempInput.getFrequency();
-            hrv.dt = 1 / hrv.Fs;
+           // // wczytywanie danych - tutaj trzeba bedzie dostosowac do nowego modulu IO, kiedy sie pojawi
+           // TempInput.setInputFilePath(dataPath);
+           // hrv.rSamples = TempInput.getSignal();
+           // hrv.Fs = TempInput.getFrequency();
+           // hrv.dt = 1 / hrv.Fs;
 
-            //hrv.samplesToInstants();
-            //hrv.instantsToIntervals();
-            hrv.f = hrv.gnerateFreqVector(0, 1, (double)1/1000);
-            //Console.WriteLine(hrv.f);
+           // //hrv.samplesToInstants();
+           // //hrv.instantsToIntervals();
+           // hrv.f = hrv.gnerateFreqVector(0, 1, (double)1/1000);
+           // //Console.WriteLine(hrv.f);
 
-            // testowanie lomba
-            double[] fSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
-            var f = Vector<double>.Build.Dense(fSrc);
-            var xSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
-            var x = Vector<double>.Build.Dense(xSrc);
-            var ySrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
-            var y = Vector<double>.Build.Dense(ySrc);
-            hrv.PSD = lombScargle(f, x, y);
-            Console.WriteLine(hrv.PSD);
+           // // testowanie lomba
+           // double[] fSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
+           // var f = Vector<double>.Build.Dense(fSrc);
+           // var xSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
+           // var x = Vector<double>.Build.Dense(xSrc);
+           // var ySrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
+           // var y = Vector<double>.Build.Dense(ySrc);
+           // hrv.PSD = lombScargle(f, x, y);
+           // Console.WriteLine(hrv.PSD);
 
-            //dalej heja
+           // //dalej heja
 
 
 
