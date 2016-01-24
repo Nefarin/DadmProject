@@ -30,8 +30,9 @@ namespace EKG_Project.Modules.Waves
         private R_Peaks_Data _inputRpeaksData;
 
         private Waves_Params _params;
-        private Waves_Alg _alg;
 
+        private double _qrsOnsTresh;
+        private double _qrsEndTresh;
         private int _currentStep;
         private List<int> _currentQRSonsetsPart;
         private List<int> _currentQRSendsPart;
@@ -98,8 +99,6 @@ namespace EKG_Project.Modules.Waves
 
                 OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
                 OutputData = new Waves_Data();
-
-                _alg = new Waves_Alg(_params);
 
                 _currentChannelIndex = 0;
                 _rPeaksProcessed = 0;
@@ -196,16 +195,7 @@ namespace EKG_Project.Modules.Waves
                 if (startIndex + step >= _currentRpeaksLength)
                 {
                     cutSignals();
-                    _alg.analyzeSignalPart(_currentECG, _currentRpeaks,
-                        _currentQRSonsetsPart, _currentQRSendsPart,
-                        _currentPonsetsPart, _currentPendsPart, _currentTendsPart, _offset, InputData.Frequency);
-
-                    _currentQRSonsets.AddRange(_currentQRSonsetsPart);
-                    _currentQRSends.AddRange(_currentQRSendsPart);
-                    _currentPonsets.AddRange(_currentPonsetsPart);
-                    _currentPends.AddRange(_currentPendsPart);
-                    _currentTends.AddRange(_currentTendsPart);
-
+                    analyzeSignalPart();
                     OutputData.QRSOnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSonsets));
                     OutputData.QRSEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSends));
 
@@ -233,16 +223,7 @@ namespace EKG_Project.Modules.Waves
                 else
                 {
                     cutSignals();
-                    _alg.analyzeSignalPart(_currentECG, _currentRpeaks,
-                        _currentQRSonsetsPart, _currentQRSendsPart,
-                        _currentPonsetsPart, _currentPendsPart, _currentTendsPart, _offset, InputData.Frequency);
-
-                    _currentQRSonsets.AddRange(_currentQRSonsetsPart);
-                    _currentQRSends.AddRange(_currentQRSendsPart);
-                    _currentPonsets.AddRange(_currentPonsetsPart);
-                    _currentPends.AddRange(_currentPendsPart);
-                    _currentTends.AddRange(_currentTendsPart);
-
+                    analyzeSignalPart();
                     _rPeaksProcessed += step;
                 }
             }
@@ -259,17 +240,17 @@ namespace EKG_Project.Modules.Waves
         private void cutSignals()
         {
             int signalStart = 0;
-            if (_rPeaksProcessed > 1)
+            if( _rPeaksProcessed > 1)
                 signalStart = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed - 1];
 
             int signalEnd = 0;
             int rPeaks2cut = Params.RpeaksStep;
 
-            if (_rPeaksProcessed + Params.RpeaksStep + 2 > _currentRpeaksLength)
+            if (_rPeaksProcessed + Params.RpeaksStep +2 > _currentRpeaksLength)
                 signalEnd = InputECGData.SignalsFiltered[_currentChannelIndex].Item2.Count - 1;
             else
             {
-                int lastRpeak = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + Params.RpeaksStep + 1];
+                int lastRpeak = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + Params.RpeaksStep+1];
                 signalEnd = lastRpeak;
             }
 
@@ -279,7 +260,7 @@ namespace EKG_Project.Modules.Waves
             _currentECG = InputECGData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(signalStart, signalEnd - signalStart);
 
             _currentRpeaks = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.SubVector(_rPeaksProcessed, rPeaks2cut);
-            _currentRpeaks = _currentRpeaks.Subtract(signalStart);
+            _currentRpeaks= _currentRpeaks.Subtract(signalStart);
 
             _offset = signalStart;
         }
@@ -446,9 +427,8 @@ namespace EKG_Project.Modules.Waves
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
-            Console.WriteLine("fajrant");
             Console.Read();
-
+            
         }
 
     }

@@ -60,7 +60,7 @@ namespace EKG_Project.Modules.Waves
 
         public Waves_Params() : base()
         {
-            _waveType = Wavelet_Type.db2;
+            _waveType = Wavelet_Type.haar;
             DecompositionLevel = 3;
             RpeaksStep = 500;
         }
