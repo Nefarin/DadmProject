@@ -7,7 +7,7 @@ using MathNet.Numerics;
 
 namespace EKG_Project.Modules.Heart_Axis
 {
-    public partial class Heart_Axis : IModule
+    public class Heart_Axis_Alg
     {
 
         #region Heart Axis Class doc
@@ -96,8 +96,8 @@ namespace EKG_Project.Modules.Heart_Axis
             else
             {
                 //wyjątek
-                Aborted = true;
-                _ended = true;
+                //Aborted = true;
+                //_ended = true;
             }
             
 

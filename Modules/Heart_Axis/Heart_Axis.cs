@@ -11,7 +11,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Heart_Axis
 {
-    public partial class Heart_Axis : IModule
+    public class Heart_Axis : IModule
     {
 
         /* Zmienne do komunikacji z GUI - czy liczenie osi serca się skończyło/zostało przerwane */
@@ -92,200 +92,200 @@ namespace EKG_Project.Modules.Heart_Axis
 
         public void Init(ModuleParams parameters)
         {
-            Params = parameters as Heart_Axis_Params;
-            Aborted = false;
-            if (!Runnable()) _ended = true;
-            else
-            {
-                _ended = false;
+            //Params = parameters as Heart_Axis_Params;
+            //Aborted = false;
+            //if (!Runnable()) _ended = true;
+            //else
+            //{
+            //    _ended = false;
 
-                // wczytywanie danych
+            //    // wczytywanie danych
 
-                // inicjalizacja zmiennych
-
-
-                /* wczytanie sygnałów z odprowadzeń */
-                string _analysisName = Params.AnalysisName;
-                try
-                {
-
-                    InputECGBaselineWorker = new ECG_Baseline_Data_Worker(_analysisName);
-
-                    InputECGBaselineWorker.Load();
-                    InputECGBaselineData = InputECGBaselineWorker.Data;
+            //    // inicjalizacja zmiennych
 
 
-                }
-                catch (Exception e)
-                {
-                    Abort();
-                }
+            //    /* wczytanie sygnałów z odprowadzeń */
+            //    string _analysisName = Params.AnalysisName;
+            //    try
+            //    {
 
-                List<Tuple<string, Vector<double>>> allSignalsFiltered = InputECGBaselineData.SignalsFiltered;
+            //        InputECGBaselineWorker = new ECG_Baseline_Data_Worker(_analysisName);
 
-                /*
-                Ustawiam wszystkie zmienne przechowujące sygnał z odprowadzeń na null,
-                żeby potem móc sprawdzić które zostały wykryte i wybrać na których
-                będą przeprowadzane obliczenia
-                */
-
-                Lead_I = null;
-                Lead_II = null;
+            //        InputECGBaselineWorker.Load();
+            //        InputECGBaselineData = InputECGBaselineWorker.Data;
 
 
-                try
-                {
-                    foreach (Tuple<string, Vector<double>> lead in allSignalsFiltered)
-                    {
-                        String _leadName = lead.Item1;
-                        if (_leadName.Equals(LeadISymbol)) // todo: sprawdzić czy o to chodziło przy wyborze odprowadzenia do obliczeń
-                        {
-                            Lead_I = lead.Item2.ToArray();
-                        }
-                        else if (_leadName.Equals(LeadIISymbol))
-                        {
-                            Lead_II = lead.Item2.ToArray();
-                        }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        Abort();
+            //    }
 
-                    }
+            //    List<Tuple<string, Vector<double>>> allSignalsFiltered = InputECGBaselineData.SignalsFiltered;
 
-                }
-                catch (NullReferenceException e)
-                {
-                    Abort();
-                }
+            //    /*
+            //    Ustawiam wszystkie zmienne przechowujące sygnał z odprowadzeń na null,
+            //    żeby potem móc sprawdzić które zostały wykryte i wybrać na których
+            //    będą przeprowadzane obliczenia
+            //    */
+
+            //    Lead_I = null;
+            //    Lead_II = null;
 
 
-                // przypadki - trzeba ustalić z którego odprowadzenia korzystamy jako głównego
-                if ((Lead_I != null) && (Lead_II != null))
-                {
-                    FirstSignalName = LeadISymbol;
-                    FirstSignal = Lead_I;
-                }
-                else
-                {
-                    // pozostały przypadek to taki, gdzie wszystkie są nullami - nie udało się wykryć żadnej pary odprowadzeń, wyrzucamy wyjątek
-                    _ended = true;
-                    Aborted = true;
-                }
+            //    try
+            //    {
+            //        foreach (Tuple<string, Vector<double>> lead in allSignalsFiltered)
+            //        {
+            //            String _leadName = lead.Item1;
+            //            if (_leadName.Equals(LeadISymbol)) // todo: sprawdzić czy o to chodziło przy wyborze odprowadzenia do obliczeń
+            //            {
+            //                Lead_I = lead.Item2.ToArray();
+            //            }
+            //            else if (_leadName.Equals(LeadIISymbol))
+            //            {
+            //                Lead_II = lead.Item2.ToArray();
+            //            }
+
+            //        }
+
+            //    }
+            //    catch (NullReferenceException e)
+            //    {
+            //        Abort();
+            //    }
 
 
-
-
-                // wczytywanie danych QRS
-
-
-                InputWavesWorker = new Waves_Data_Worker(_analysisName); // todo: nie mam bladego pojęcia czy to jest poprawne - oni dostają nazwę analizy z GUI, a nie widzę nigdzie w kodzie tego
-                InputWavesWorker.Load();
-                InputWavesData = InputWavesWorker.Data; // todo: czy tu nie powinno być Waves_Data?;
+            //    // przypadki - trzeba ustalić z którego odprowadzenia korzystamy jako głównego
+            //    if ((Lead_I != null) && (Lead_II != null))
+            //    {
+            //        FirstSignalName = LeadISymbol;
+            //        FirstSignal = Lead_I;
+            //    }
+            //    else
+            //    {
+            //        // pozostały przypadek to taki, gdzie wszystkie są nullami - nie udało się wykryć żadnej pary odprowadzeń, wyrzucamy wyjątek
+            //        _ended = true;
+            //        Aborted = true;
+            //    }
 
 
 
-                List<Tuple<string, List<int>>> allQRSOnSets = InputWavesData.QRSOnsets;
-                List<Tuple<string, List<int>>> allQRSEnds = InputWavesData.QRSEnds;
+
+            //    // wczytywanie danych QRS
+
+
+            //    InputWavesWorker = new Waves_Data_Worker(_analysisName); // todo: nie mam bladego pojęcia czy to jest poprawne - oni dostają nazwę analizy z GUI, a nie widzę nigdzie w kodzie tego
+            //    InputWavesWorker.Load();
+            //    InputWavesData = InputWavesWorker.Data; // todo: czy tu nie powinno być Waves_Data?;
 
 
 
-                /*wczytywnie list załamków */
-
-                QArray = null;
-                SArray = null;
-
-                // QRSOnsets
-                try
-                {
-                    foreach (Tuple<String, List<int>> lead in allQRSOnSets) // pętla po sygnałach z odprowadzeń
-                    {
-                        String _leadName = lead.Item1;
-                        if (_leadName.Equals(FirstSignalName))
-                        {
-                            QArray = lead.Item2.ToArray(); ;
-                            break;
-                        }
-
-                    }
-                }
-                catch (NullReferenceException e)
-                {
-                    Abort();
-                }
-
-                // QRSEnds
-
-                try
-                {
-                    foreach (Tuple<String, List<int>> lead in allQRSEnds) // pętla po sygnałach z odprowadzeń
-                    {
-
-                        String _leadName = lead.Item1;
-                        if (_leadName.Equals(FirstSignalName))
-                        {
-                            SArray = lead.Item2.ToArray();
-                            break;
-                        }
-
-                    }
-                }
-                catch (NullReferenceException e)
-                {
-                    Abort();
-                }
-
-                if ((QArray == null) || (SArray == null))
-                {
-                    Abort();
-                }
-
-                Q = 0;
-                S = 0;
-
-                // sprawdzanie, czy Q i S jest poprawne
-
-                try
-                {
-                    for (int QIndex = 0; QIndex < QArray.Length; QIndex++)
-                    {
-                        Q = QArray[QIndex];
-                        S = SArray[QIndex];
-                        if ((Q < S) && (Q != -1) && (S != -1))
-                        {
-                            break;
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Abort();
-                }
-
-                if ((Q == -1) || (S == -1) || (Q >= S))
-                {
-                    _ended = true;
-                    Aborted = true;
-                }
-
-                // wczytywanie częstotliwości próbkowania
-
-                try
-                {
-
-                    InputBasicDataWorker = new Basic_Data_Worker(_analysisName);
-                    InputBasicDataWorker.Load();
-                    InputBasicData = InputBasicDataWorker.BasicData;
+            //    List<Tuple<string, List<int>>> allQRSOnSets = InputWavesData.QRSOnsets;
+            //    List<Tuple<string, List<int>>> allQRSEnds = InputWavesData.QRSEnds;
 
 
-                    Fs = (int)InputBasicData.Frequency;
-                }
-                catch (Exception e)
-                {
-                    Abort();
-                }
 
-                // dane wyjściowe - inicjalizacja
+            //    /*wczytywnie list załamków */
 
-                OutputWorker = new Heart_Axis_Data_Worker(Params.AnalysisName);
-                OutputData = new Heart_Axis_Data();
-            }
+            //    QArray = null;
+            //    SArray = null;
+
+            //    // QRSOnsets
+            //    try
+            //    {
+            //        foreach (Tuple<String, List<int>> lead in allQRSOnSets) // pętla po sygnałach z odprowadzeń
+            //        {
+            //            String _leadName = lead.Item1;
+            //            if (_leadName.Equals(FirstSignalName))
+            //            {
+            //                QArray = lead.Item2.ToArray(); ;
+            //                break;
+            //            }
+
+            //        }
+            //    }
+            //    catch (NullReferenceException e)
+            //    {
+            //        Abort();
+            //    }
+
+            //    // QRSEnds
+
+            //    try
+            //    {
+            //        foreach (Tuple<String, List<int>> lead in allQRSEnds) // pętla po sygnałach z odprowadzeń
+            //        {
+
+            //            String _leadName = lead.Item1;
+            //            if (_leadName.Equals(FirstSignalName))
+            //            {
+            //                SArray = lead.Item2.ToArray();
+            //                break;
+            //            }
+
+            //        }
+            //    }
+            //    catch (NullReferenceException e)
+            //    {
+            //        Abort();
+            //    }
+
+            //    if ((QArray == null) || (SArray == null))
+            //    {
+            //        Abort();
+            //    }
+
+            //    Q = 0;
+            //    S = 0;
+
+            //    // sprawdzanie, czy Q i S jest poprawne
+
+            //    try
+            //    {
+            //        for (int QIndex = 0; QIndex < QArray.Length; QIndex++)
+            //        {
+            //            Q = QArray[QIndex];
+            //            S = SArray[QIndex];
+            //            if ((Q < S) && (Q != -1) && (S != -1))
+            //            {
+            //                break;
+            //            }
+            //        }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        Abort();
+            //    }
+
+            //    if ((Q == -1) || (S == -1) || (Q >= S))
+            //    {
+            //        _ended = true;
+            //        Aborted = true;
+            //    }
+
+            //    // wczytywanie częstotliwości próbkowania
+
+            //    try
+            //    {
+
+            //        InputBasicDataWorker = new Basic_Data_Worker(_analysisName);
+            //        InputBasicDataWorker.Load();
+            //        InputBasicData = InputBasicDataWorker.BasicData;
+
+
+            //        Fs = (int)InputBasicData.Frequency;
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        Abort();
+            //    }
+
+            //    // dane wyjściowe - inicjalizacja
+
+            //    OutputWorker = new Heart_Axis_Data_Worker(Params.AnalysisName);
+            //    OutputData = new Heart_Axis_Data();
+            //}
 
         }
 
@@ -312,16 +312,16 @@ namespace EKG_Project.Modules.Heart_Axis
         private void processData()
         {
 
-            // todo: wstawić kolejne etapy obliczania osi serca
+            //// todo: wstawić kolejne etapy obliczania osi serca
 
-            double[] pseudo_tab = PseudoModule(Q, S, FirstSignal);
-            double[] fitting_parameters = LeastSquaresMethod(FirstSignal, Q, pseudo_tab, Fs);
-            int MaxOfPoly = MaxOfPolynomial(Q, fitting_parameters);
-            double[] amplitudes = ReadingAmplitudes(Lead_I, Lead_II, MaxOfPoly);
-            OutputData.HeartAxis = IandII(amplitudes);
+            //double[] pseudo_tab = PseudoModule(Q, S, FirstSignal);
+            //double[] fitting_parameters = LeastSquaresMethod(FirstSignal, Q, pseudo_tab, Fs);
+            //int MaxOfPoly = MaxOfPolynomial(Q, fitting_parameters);
+            //double[] amplitudes = ReadingAmplitudes(Lead_I, Lead_II, MaxOfPoly);
+            //OutputData.HeartAxis = IandII(amplitudes);
 
-            OutputWorker.Save(OutputData);
-            _ended = true;
+            //OutputWorker.Save(OutputData);
+            //_ended = true;
 
 
         }
