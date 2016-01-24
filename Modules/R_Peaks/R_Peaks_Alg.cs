@@ -22,7 +22,7 @@ namespace EKG_Project.Modules.R_Peaks
         {
             #region readData            
             //read data from dat file
-            TempInput.setInputFilePath(@"D:\biomed\DADM\C#\100.txt");
+            TempInput.setInputFilePath(@"D:\biomed\DADM\C#\100v5.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> signal = TempInput.getSignal();
             #endregion
@@ -31,21 +31,20 @@ namespace EKG_Project.Modules.R_Peaks
 
             R_Peaks emd = new R_Peaks();
 
-            Vector<double> locsR = emd.EMD(signal, fs);
-            emd.LocsR = locsR;
+            emd.LocsR = emd.PanTompkins(signal, fs);
+            
             
            #region writeData
             //write result to dat file
             //TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baserr.txt");
             //TempInput.writeFile(fs, RRms);
-            TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\210out.txt");
-            TempInput.writeFile(fs, emd.LocsR);
+            
             #endregion
 
             //TEST-Console
             Console.WriteLine("done");
             //foreach (double sth in emd.LocsR) { Console.WriteLine(sth); }
-            //Console.ReadKey();
+            Console.ReadKey();
         }*/
 
         //FIELDS
@@ -161,6 +160,7 @@ namespace EKG_Project.Modules.R_Peaks
         public double[] Integrating(double[] squaredSignal, uint fs)
         {
             double[] integratedSignal = new double[squaredSignal.Length];
+            //double[] normIntSignal = new double[squaredSignal.Length];
             double window = Math.Round(0.15 * fs);
             Delay += Convert.ToUInt32(Math.Round(window / 2));
             IList<double> hi_coeff = new List<double>();
@@ -171,10 +171,13 @@ namespace EKG_Project.Modules.R_Peaks
             OnlineFirFilter integrationFilter = new OnlineFirFilter(hi_coeff);
             integratedSignal = integrationFilter.ProcessSamples(squaredSignal);
 
-            //enhancing by put zero below threshold (0.002)
-            for (int i = 0; i < integratedSignal.Length; i++)
+            //enhancing by put zero below threshold (0.05 of maximum value)
+            double minIS = integratedSignal.Min();
+            double maxIS = integratedSignal.Max();
+                        for (int i = 0; i < integratedSignal.Length; i++)
             {
-                if (integratedSignal[i] < 0.002)
+                double normIntSig = (integratedSignal[i] - minIS) / (maxIS - minIS);
+                if ( normIntSig < 0.05)
                     integratedSignal[i] = 0;
             }
             return integratedSignal;
@@ -275,8 +278,8 @@ namespace EKG_Project.Modules.R_Peaks
             double potAmp = 0;
 
             //init thresholds 
-            int assumedLength = Convert.ToInt16(2 * fs); //2 seconds of signal
-            if(integratedSignalV.Count < Convert.ToInt16(2 * fs))
+            int assumedLength = Convert.ToInt32(2 * fs); //2 seconds of signal
+            if(integratedSignalV.Count < Convert.ToInt32(2 * fs))
             {
                 assumedLength = integratedSignalV.Count-1;
             }
@@ -298,7 +301,7 @@ namespace EKG_Project.Modules.R_Peaks
             foreach (int r in potRsI)
             {
                 //detect peaks in filetred signal
-                int window = Convert.ToInt16(0.15 * fs);
+                int window = Convert.ToInt32(0.15 * fs);
                 if ((r <= filteredSignal.Count) && (r - window >= 0))
                 {
                     Vector<double> tempSig = CutSignal(filteredSignal, r - window, r);
@@ -325,7 +328,7 @@ namespace EKG_Project.Modules.R_Peaks
                     List<double> lastRs = locsRi.GetRange(locsRi.Count - 8, 8);
                     Vector<double> tempRR = Diff(Vector<double>.Build.DenseOfArray(lastRs.ToArray()));
                     mRR = tempRR.Mean();
-                    double lastRR = locsRi.Last() - locsRi[locsRi.Count - 1];
+                    double lastRR = locsRi.Last() - locsRi[locsRi.Count - 2];
                     if (lastRR <= 0.92 * mRR || lastRR >= 1.66 * mRR) //lower thersholds if irregular beat
                     {
                         thrSig = 0.5 * thrSig;
@@ -347,9 +350,9 @@ namespace EKG_Project.Modules.R_Peaks
                 {
                     if ((r - locsRi.Last()) >= 1.66 * testRR)
                     {
-                        int buff = Convert.ToInt16(0.2 * fs);
-                        int beg = Convert.ToInt16(locsRi.Last()) + buff;
-                        int en = Convert.ToInt16(potRsI.Last()) - buff;
+                        int buff = Convert.ToInt32(0.2 * fs);
+                        int beg = Convert.ToInt32(locsRi.Last()) + buff;
+                        int en = Convert.ToInt32(r - buff);
                         Vector<double> tempSigI = CutSignal(integratedSignalV, beg, en);
                         double tempPeak = tempSigI.Maximum();
                         double tempInd = tempSigI.MaximumIndex() + beg;
@@ -360,20 +363,20 @@ namespace EKG_Project.Modules.R_Peaks
                             double tempAmpR = 0;
                             if (tempInd < filteredSignal.Count)
                             {
-                                Vector<double> tempSig = CutSignal(filteredSignal, Convert.ToInt16(tempInd) - window, Convert.ToInt16(tempInd));
+                                Vector<double> tempSig = CutSignal(filteredSignal, Convert.ToInt32(tempInd) - window, Convert.ToInt32(tempInd));
                                 tempPotR = tempSig.MaximumIndex();
                                 tempAmpR = tempSig.Maximum();
                             }
                             else
                             {
-                                Vector<double> tempSig = CutSignal(filteredSignal, Convert.ToInt16(tempInd) - window, filteredSignal.Count);
+                                Vector<double> tempSig = CutSignal(filteredSignal, Convert.ToInt32(tempInd) - window, filteredSignal.Count);
                                 tempPotR = tempSig.MaximumIndex();
                                 tempAmpR = tempSig.Maximum();
                             }
 
                             if (tempAmpR > thrNoise)
                             {
-                                locsR.Add(tempPotR + Convert.ToInt16(tempInd) - window);
+                                locsR.Add(tempPotR + Convert.ToInt32(tempInd) - window);
                                 levSig = 0.25 * tempAmpR + 0.75 * levSig;
                             }
                             levSigI = 0.25 * tempPeak + 0.75 * levSigI;
@@ -388,9 +391,9 @@ namespace EKG_Project.Modules.R_Peaks
                     {
                         if (r - locsRi.Last() <= Math.Round(0.360 * fs))
                         {
-                            Vector<double> tempSig1 = CutSignal(filteredSignal, r - Convert.ToInt16(0.075 * fs), r);
+                            Vector<double> tempSig1 = CutSignal(filteredSignal, r - Convert.ToInt32(0.075 * fs), r);
                             double slope1 = Math.Abs(Diff(tempSig1).Mean());
-                            Vector<double> tempSig2 = CutSignal(filteredSignal, Convert.ToInt16(locsRi.Last() - Math.Round(0.075 * fs)), Convert.ToInt16(locsRi.Last()));
+                            Vector<double> tempSig2 = CutSignal(filteredSignal, Convert.ToInt32(locsRi.Last() - Math.Round(0.075 * fs)), Convert.ToInt32(locsRi.Last()));
                             double slope2 = Math.Abs(Diff(tempSig2).Mean());
                             if (slope1 <= 0.5 * slope2)
                             {
@@ -399,6 +402,7 @@ namespace EKG_Project.Modules.R_Peaks
                                 levNoiseI = 0.125 * integratedSignal[r] + 0.875 * levNoiseI;
                             }
                             else { skip = false; }
+                            if (r == locsRi.Last()) { skip = true; }
                         }
                     }
                     if (!skip)
@@ -429,6 +433,11 @@ namespace EKG_Project.Modules.R_Peaks
                 {
                     thrSig = levNoise + 0.25 * Math.Abs(levSig - levNoise);
                     thrNoise = 0.5 * thrSig;
+                }
+                if (levNoiseI != 0 || levSigI!=0)
+                {
+                    thrSigI = levNoiseI + 0.25 * Math.Abs(levSigI - levNoiseI);
+                    thrNoiseI = 0.5 * thrSigI;
                 }
 
                 //reset param
@@ -489,8 +498,8 @@ namespace EKG_Project.Modules.R_Peaks
             Vector<double> tempSignal = Vector<double>.Build.DenseOfArray(int1Signal);
 
             // correcting signal length
-            Vector<double> int2Signal = CutSignal(tempSignal, Convert.ToInt16(Math.Round(window / 2)), htSignal.Length - 1);
-            int sigLength = htSignal.Length - Convert.ToInt16(Math.Round(window / 2));
+            Vector<double> int2Signal = CutSignal(tempSignal, Convert.ToInt32(Math.Round(window / 2)), htSignal.Length - 1);
+            int sigLength = htSignal.Length - Convert.ToInt32(Math.Round(window / 2));
 
             // normalization
             double tempMax = int2Signal.Maximum();
@@ -674,16 +683,16 @@ namespace EKG_Project.Modules.R_Peaks
                 {
                     for (int i = 0; i < debS.Count; i++)
                     {
-                        if (diffSig[Convert.ToInt16(debS[i]) - 1] > 0)
+                        if (diffSig[Convert.ToInt32(debS[i]) - 1] > 0)
                         {
-                            if (diffSig[Convert.ToInt16(finS[i])] < 0)
+                            if (diffSig[Convert.ToInt32(finS[i])] < 0)
                             {
                                 iMax.Add(Math.Round((finS[i] + debS[i]) / 2));
                             }
                         }
                         else
                         {
-                            if (diffSig[Convert.ToInt16(finS[i])] > 0)
+                            if (diffSig[Convert.ToInt32(finS[i])] > 0)
                             {
                                 iMin.Add(Math.Round((finS[i] + debS[i]) / 2));
                             }
@@ -723,7 +732,7 @@ namespace EKG_Project.Modules.R_Peaks
             CubicSpline splineCoeff = CubicSpline.InterpolateNatural(x, y);
             for (double c = 0; c < signalLength; c++)
             {
-                interpSpl[Convert.ToInt16(c)] = splineCoeff.Interpolate(c);
+                interpSpl[Convert.ToInt32(c)] = splineCoeff.Interpolate(c);
             }
             return interpSpl;
         }
@@ -751,11 +760,11 @@ namespace EKG_Project.Modules.R_Peaks
                     Vector<double> ampMax = Vector<double>.Build.Dense(iMax.Count);
                     for (int j = 0; j < iMin.Count; j++)
                     {
-                        ampMin[j] = d[Convert.ToInt16(iMin[j])];
+                        ampMin[j] = d[Convert.ToInt32(iMin[j])];
                     }
                     for(int j =0; j < iMax.Count; j++)
                     {
-                        ampMax[j] = d[Convert.ToInt16(iMax[j])];
+                        ampMax[j] = d[Convert.ToInt32(iMax[j])];
                     }
                     //envelopes
                     Vector<double> envMin = CubicSplineInterp(signal.Count, iMin, ampMin);
