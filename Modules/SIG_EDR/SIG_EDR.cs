@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.SIG_EDR
 {
-    public partial class SIG_EDR : IModule
+    public class SIG_EDR : IModule
     {
         public void Abort()
         {

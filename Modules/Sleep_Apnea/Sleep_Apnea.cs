@@ -10,7 +10,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Sleep_Apnea
 {
-    public partial class Sleep_Apnea : IModule
+    public class Sleep_Apnea : IModule
     {
         private enum SleepApneaAlgStates
         {
@@ -118,35 +118,35 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
         public void Init(ModuleParams parameters)
         {
-            Params = parameters as Sleep_Apnea_Params;
-            Aborted = false;
-            if (!Runnable())
-            {
-                _ended = true;
-            }
-            else
-            {
-                _ended = false;
+            //Params = parameters as Sleep_Apnea_Params;
+            //Aborted = false;
+            //if (!Runnable())
+            //{
+            //    _ended = true;
+            //}
+            //else
+            //{
+            //    _ended = false;
 
-                InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
-                InputWorker_basic.Load();
-                InputData_basic = InputWorker_basic.BasicData;
+            //    InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
+            //    InputWorker_basic.Load();
+            //    InputData_basic = InputWorker_basic.BasicData;
 
-                InputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-                InputWorker.Load();
-                InputData = InputWorker.Data;
+            //    InputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
+            //    InputWorker.Load();
+            //    InputData = InputWorker.Data;
 
-                OutputWorker = new Sleep_Apnea_Data_Worker(Params.AnalysisName);
-                OutputData = new Sleep_Apnea_Data();
+            //    OutputWorker = new Sleep_Apnea_Data_Worker(Params.AnalysisName);
+            //    OutputData = new Sleep_Apnea_Data();
 
-                _actualProgress = 0;
-                _numberOfChannels = InputData_basic.Signals.Count;
-                _fs = InputData_basic.Frequency;
-                _R_detected = InputData.RPeaks.Select(x => x.Item2).First().Select(x => (uint)x).ToList();
-                _currentState = SleepApneaAlgStates.FindingRR;
-                _channelsNames = InputData_basic.Signals.Select(x => x.Item1).ToArray();
+            //    _actualProgress = 0;
+            //    _numberOfChannels = InputData_basic.Signals.Count;
+            //    _fs = InputData_basic.Frequency;
+            //    _R_detected = InputData.RPeaks.Select(x => x.Item2).First().Select(x => (uint)x).ToList();
+            //    _currentState = SleepApneaAlgStates.FindingRR;
+            //    _channelsNames = InputData_basic.Signals.Select(x => x.Item1).ToArray();
 
-            }
+            //}
         }
 
         public void ProcessData()
@@ -167,96 +167,96 @@ namespace EKG_Project.Modules.Sleep_Apnea
         {
             
 
-            switch (_currentState)
-            {
-                case SleepApneaAlgStates.FindingRR:
-                    if (_R_detected.Count < 42)
-                    {
-                        _currentState = SleepApneaAlgStates.Finished;
-                        _il_Apnea = 0.0;
-                        _h_amp = new List<List<double>>();
-                        _Detected_Apnea = new List<Tuple<int, int>>();
-                        _Detected_Apnea.Add(new Tuple<int, int>(0, 0));
-                    }
-                    else
-                    {
-                        _RR = findIntervals(_R_detected, (int)_fs);
-                        _currentState = SleepApneaAlgStates.CalculatingAverage;
-                        _actualProgress = 100.0 / 9;
-                    }
-                    break;
+            //switch (_currentState)
+            //{
+            //    case SleepApneaAlgStates.FindingRR:
+            //        if (_R_detected.Count < 42)
+            //        {
+            //            _currentState = SleepApneaAlgStates.Finished;
+            //            _il_Apnea = 0.0;
+            //            _h_amp = new List<List<double>>();
+            //            _Detected_Apnea = new List<Tuple<int, int>>();
+            //            _Detected_Apnea.Add(new Tuple<int, int>(0, 0));
+            //        }
+            //        else
+            //        {
+            //            _RR = findIntervals(_R_detected, (int)_fs);
+            //            _currentState = SleepApneaAlgStates.CalculatingAverage;
+            //            _actualProgress = 100.0 / 9;
+            //        }
+            //        break;
 
-                case SleepApneaAlgStates.CalculatingAverage:
-                    _RR_average = averageFilter(_RR);
-                    _currentState = SleepApneaAlgStates.Resampling;
-                    _actualProgress = 2 * 100.0 / 9;
-                    break;
+            //    case SleepApneaAlgStates.CalculatingAverage:
+            //        _RR_average = averageFilter(_RR);
+            //        _currentState = SleepApneaAlgStates.Resampling;
+            //        _actualProgress = 2 * 100.0 / 9;
+            //        break;
 
-                case SleepApneaAlgStates.Resampling:
-                    _RR_res = resampling(_RR_average, (int)_fs);
-                    _currentState = SleepApneaAlgStates.BandPassFiltering;
-                    _actualProgress = 3 * 100.0 / 9;
-                    break;
+            //    case SleepApneaAlgStates.Resampling:
+            //        _RR_res = resampling(_RR_average, (int)_fs);
+            //        _currentState = SleepApneaAlgStates.BandPassFiltering;
+            //        _actualProgress = 3 * 100.0 / 9;
+            //        break;
 
-                case SleepApneaAlgStates.BandPassFiltering:
-                    _RR_HPLP = HPLP(_RR_res);
-                    _currentState = SleepApneaAlgStates.CaclulatingHilbert;
-                    _actualProgress = 4 * 100.0 / 9;
-                    break;
+            //    case SleepApneaAlgStates.BandPassFiltering:
+            //        _RR_HPLP = HPLP(_RR_res);
+            //        _currentState = SleepApneaAlgStates.CaclulatingHilbert;
+            //        _actualProgress = 4 * 100.0 / 9;
+            //        break;
 
-                case SleepApneaAlgStates.CaclulatingHilbert:
-                    _h_amp = new List<List<double>>(2);
-                    _h_freq = new List<List<double>>(2);
-                    hilbert(_RR_HPLP, ref _h_amp, ref _h_freq);
-                    _currentState = SleepApneaAlgStates.MedianFiltering;
-                    _actualProgress = 5 * 100.0 / 9;
-                    break;
+            //    case SleepApneaAlgStates.CaclulatingHilbert:
+            //        _h_amp = new List<List<double>>(2);
+            //        _h_freq = new List<List<double>>(2);
+            //        hilbert(_RR_HPLP, ref _h_amp, ref _h_freq);
+            //        _currentState = SleepApneaAlgStates.MedianFiltering;
+            //        _actualProgress = 5 * 100.0 / 9;
+            //        break;
 
-                case SleepApneaAlgStates.MedianFiltering:
-                    median_filter(_h_freq, _h_amp);
-                    _currentState = SleepApneaAlgStates.AmplitudeFIltering;
-                    _actualProgress = 6 * 100.0 / 9;
-                    break;
+            //    case SleepApneaAlgStates.MedianFiltering:
+            //        median_filter(_h_freq, _h_amp);
+            //        _currentState = SleepApneaAlgStates.AmplitudeFIltering;
+            //        _actualProgress = 6 * 100.0 / 9;
+            //        break;
 
-                case SleepApneaAlgStates.AmplitudeFIltering:
-                    amp_filter(_h_amp);
-                    _currentState = SleepApneaAlgStates.DetecingApnea;
-                    _actualProgress = 7 * 100.0 / 9;
-                    break;
+            //    case SleepApneaAlgStates.AmplitudeFIltering:
+            //        amp_filter(_h_amp);
+            //        _currentState = SleepApneaAlgStates.DetecingApnea;
+            //        _actualProgress = 7 * 100.0 / 9;
+            //        break;
 
-                case SleepApneaAlgStates.DetecingApnea:
-                    _Detected_Apnea = apnea_detection(_h_amp, _h_freq, out _il_Apnea);
-                    _currentState = SleepApneaAlgStates.Finished;
-                    _actualProgress = 8 * 100.0 / 9;
-                    break;
+            //    case SleepApneaAlgStates.DetecingApnea:
+            //        _Detected_Apnea = apnea_detection(_h_amp, _h_freq, out _il_Apnea);
+            //        _currentState = SleepApneaAlgStates.Finished;
+            //        _actualProgress = 8 * 100.0 / 9;
+            //        break;
 
-                case SleepApneaAlgStates.Finished:
-                    List<Tuple<string, List<Tuple<int, int>>>> detected_Apnea = new List<Tuple<string, List<Tuple<int, int>>>>();
-                    List<Tuple<string, List<List<double>>>> h_amp = new List<Tuple<string, List<List<double>>>>();
-                    List<Tuple<string, double>> il_Apnea = new List<Tuple<string, double>>();
+            //    case SleepApneaAlgStates.Finished:
+            //        List<Tuple<string, List<Tuple<int, int>>>> detected_Apnea = new List<Tuple<string, List<Tuple<int, int>>>>();
+            //        List<Tuple<string, List<List<double>>>> h_amp = new List<Tuple<string, List<List<double>>>>();
+            //        List<Tuple<string, double>> il_Apnea = new List<Tuple<string, double>>();
 
-                    for (int i = 0; i < _numberOfChannels; i++)
-                    {
-                        il_Apnea.Add(new Tuple<string, double>(_channelsNames[i], _il_Apnea));
-                        h_amp.Add(new Tuple<string, List<List<double>>>(_channelsNames[i], _h_amp));
-                        detected_Apnea.Add(new Tuple<string, List<Tuple<int, int>>>(_channelsNames[i], _Detected_Apnea));
-                    }
+            //        for (int i = 0; i < _numberOfChannels; i++)
+            //        {
+            //            il_Apnea.Add(new Tuple<string, double>(_channelsNames[i], _il_Apnea));
+            //            h_amp.Add(new Tuple<string, List<List<double>>>(_channelsNames[i], _h_amp));
+            //            detected_Apnea.Add(new Tuple<string, List<Tuple<int, int>>>(_channelsNames[i], _Detected_Apnea));
+            //        }
 
 
-                    OutputData.Detected_Apnea = detected_Apnea;
-                    OutputData.h_amp = h_amp;
-                    OutputData.il_Apnea = il_Apnea;
+            //        OutputData.Detected_Apnea = detected_Apnea;
+            //        OutputData.h_amp = h_amp;
+            //        OutputData.il_Apnea = il_Apnea;
 
-                    OutputWorker.Save(OutputData);
+            //        OutputWorker.Save(OutputData);
 
-                    _actualProgress = 100.0;
-                    _ended = true;
-                    break;
+            //        _actualProgress = 100.0;
+            //        _ended = true;
+            //        break;
 
-                default:
-                    throw new InvalidOperationException("Undefined state");
+            //    default:
+            //        throw new InvalidOperationException("Undefined state");
 
-            }
+            //}
 
         }
 

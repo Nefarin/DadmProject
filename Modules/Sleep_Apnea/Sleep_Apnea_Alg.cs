@@ -20,7 +20,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
     /// </summary>
     #endregion
 
-    public partial class Sleep_Apnea : IModule
+    public class Sleep_Apnea_Alg
     {
 
         #region
