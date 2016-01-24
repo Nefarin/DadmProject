@@ -1,4 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<OrderedTest xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="a266892d-6f54-4088-8ceb-bad838cee361" name="QT_Disp">
-	
+<OrderedTest name="qt_disp" storage="d:\dadm_v2\dadmproject\ekg_unit\modules\qt_disp\qt_disp.orderedtest" id="a266892d-6f54-4088-8ceb-bad838cee361" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestLinks>
+    <TestLink id="ebda69eb-8fec-171a-ad3d-c2aec411474d" name="testParamsInit" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="15de1ea0-cb04-ba7f-0e81-ee95cba44246" name="testQT_Calc_Method" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="e3fdaa53-547b-81db-12c3-b60cd20791c1" name="testT_End_method" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="262fd646-1b17-2197-309c-475f6e5c4665" name="testAlldrains" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  </TestLinks>
 </OrderedTest>
