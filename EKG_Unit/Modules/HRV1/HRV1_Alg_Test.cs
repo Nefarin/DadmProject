@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules.HRV1;
+using MathNet.Numerics.LinearAlgebra;
 
 
 namespace EKG_Unit.Modules.HRV1
@@ -9,6 +9,7 @@ namespace EKG_Unit.Modules.HRV1
     [TestClass]
     public class HRV1_Alg_Test
     {
+
         [TestMethod]
         [Description("Test of LS")]
         public void lombscargleTest()
@@ -17,33 +18,27 @@ namespace EKG_Unit.Modules.HRV1
 
             var hrv1Test = new HRV1_Alg();
 
-            var testintervals = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            hrv1Test.rrIntervals = Vector<double>.Build.Dense(testintervals);
-            hrv1Test.rInstants = Vector<double>.Build.Dense(testintervals);
+            var testintervals = Vector<double>.Build.Dense(10, i => i);
+            var testinstants = Vector<double>.Build.Dense(10, i => i);
+            var testfreq = Vector<double>.Build.Dense(10, i => (double)i/10);
 
-            var expectedResultArr = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-            var expectedResultVec = Vector<double>.Build.Dense(expectedResultArr);
+            var expectedResult = Vector<double>.Build.Dense(10, i => i);
 
-
-
-            // Since we want to test private method there is needed another overhead - public function does not need this
-            // can be invoked in normal way
+            // access private fields externally
 
             PrivateObject obj = new PrivateObject(hrv1Test);
-            PrivateObject obj2 = new PrivateObject(hrv1Test.rrIntervals);
-            PrivateObject obj3 = new PrivateObject(hrv1Test.rInstants);
+            obj.SetField("rrIntervals", testintervals);
+            obj.SetField("rInstants", testinstants);
+            obj.SetField("f", testfreq);
+
             // Process test here
 
             obj.Invoke("lombScargle");
+            var actualResult = obj.GetField("PSD");
 
             // Assert results
 
-            Assert.AreEqual(algoOutput, expectedResultVec);
-
-
+            Assert.AreEqual(expectedResult, actualResult);
         }
     }
-
-
-
 }
