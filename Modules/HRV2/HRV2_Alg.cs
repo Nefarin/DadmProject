@@ -28,7 +28,7 @@ namespace EKG_Project.Modules.HRV2
             }
         }
        
-       // tu bd interpolacja
+    
        
         #region Documentation
         /// <summary>
@@ -61,7 +61,6 @@ namespace EKG_Project.Modules.HRV2
             Vector<double> sig = TempInput.getSignal();
 
             HRV2_Alg Analise = new HRV2_Alg();
-            //Analise.Anlalysis();
             Analise.HistogramToVisualisation().ForEach(Console.WriteLine);
             Console.WriteLine(fs);
             Console.ReadLine();
@@ -71,17 +70,6 @@ namespace EKG_Project.Modules.HRV2
             //TempInput.setOutputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\result.txt");
             //TempInput.writeFile();
 
-            //HRV2_Params param = new HRV2_Params(3, 9, "TestAnalysis6");
-            //HRV2 testModule = new HRV2();
-            //testModule.Init(param);
-            //while (true)
-            //{
-            //    //Console.WriteLine("Press key to continue.");
-            //    //Console.Read();
-            //    if (testModule.Ended()) break;
-            //    Console.WriteLine(testModule.Progress());
-            //    testModule.ProcessData();
-            //}
         }
     }
 }
