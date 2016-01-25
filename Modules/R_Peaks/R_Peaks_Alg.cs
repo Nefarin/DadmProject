@@ -98,6 +98,8 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public double[] Filtering(double samplingFreq, double lowCutOff, double highCutOff, double[] rawSignal)
         {
+            if (rawSignal == null) throw new ArgumentNullException();
+            //TESTY na głupie częstotliwości odcięcia!
             //TO DO: add cutoffs as constants not param?
             Delay += 10;
             IList<double> coef = new List<double>();
@@ -463,6 +465,7 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public double[] HilbertTransform(double[] filteredSignal)
         {
+            if (filteredSignal == null) throw new ArgumentNullException();
             double pi = Math.PI;
             IList<double> d = new List<double>();
             d.Add(1 / (pi * filteredSignal.Length));
@@ -487,6 +490,7 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public double[] Integration(double[] htSignal, uint fs)
         {
+            if (htSignal == null) throw new ArgumentNullException();
             double[] int1Signal = new double[htSignal.Length];
             double window = Math.Round(0.37 * fs);
             Delay += Convert.ToUInt32(Math.Round(window / 2));
@@ -525,6 +529,7 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         double[] FindPeak(double[] integratedSignal, Vector<double> signal)
         {
+            if (signal == null) throw new ArgumentNullException();
             // finding threshold
             double tempMax = integratedSignal.Max();
             double threshold = integratedSignal.Average() * tempMax;
