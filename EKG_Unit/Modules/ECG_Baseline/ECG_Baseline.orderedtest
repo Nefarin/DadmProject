@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<OrderedTest name="ecg_baseline" storage="c:\users\win7\desktop\dadm_project\dadmproject\ekg_unit\modules\ecg_baseline\ecg_baseline.orderedtest" id="05755fbb-0fe2-4105-8717-ada59e09b4a4" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+<OrderedTest name="ecg_baseline" storage="c:\users\rakso\documents\githubvisualstudio\dadm_project\dadmproject\ekg_unit\modules\ecg_baseline\ecg_baseline.orderedtest" id="05755fbb-0fe2-4105-8717-ada59e09b4a4" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <TestLinks>
-    <TestLink id="9dc66e79-5f1f-0f80-65c0-5839ec03fd8e" name="ButterworthLowPassTest" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="b923ad76-f738-ca2c-605d-73f7051f69bb" name="defaultConstructor" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   </TestLinks>
 </OrderedTest>
