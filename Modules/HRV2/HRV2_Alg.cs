@@ -76,14 +76,12 @@ namespace EKG_Project.Modules.HRV2
             Analise.RRIntervals = sig;
             Analise.Interpolation();
             Analise.HistogramToVisualisation().ForEach(Console.WriteLine);
-            Console.WriteLine(fs);
-            Console.ReadLine();
-
+            
             //write result to dat file
-            //TempInput.setOutputFilePath(@"C:\Users\Ewa\Desktop\DADM_projekt\DadmProject\result.txt");
+            TempInput.setOutputFilePath("result.txt");
             //TempInput.setOutputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\result.txt");
-            //TempInput.writeFile();
-
+            TempInput.writeFile(Analise.HistogramToVisualisation());
+            Console.ReadLine();
         }
     }
 }
