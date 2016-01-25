@@ -139,7 +139,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="fs"></param>
         /// <returns></returns>
         #endregion
-        double CountMalinowskaFactor(Vector<double> _qrssignal, uint fs)
+        public double CountMalinowskaFactor(Vector<double> _qrssignal, uint fs)
         {
             double surface = Integrate(_qrssignal);
             double perimeter = Perimeter(_qrssignal, fs);
