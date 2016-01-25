@@ -8,6 +8,7 @@ using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Heart_Class;
 using EKG_Project.IO;
 
+
 namespace EKG_Project.Modules.HRT
 {
     public class HRT : IModule
@@ -19,7 +20,6 @@ namespace EKG_Project.Modules.HRT
         private int _currentChannelLength;
         private int _samplesProcessed;
         private int _numberOfChannels;
-        private Vector<Double> _currentVector;
 
         //stworzenie obiektów workerów poszczególnych klas 
         private HRT_Params _params;
@@ -32,7 +32,9 @@ namespace EKG_Project.Modules.HRT
         private R_Peaks_Data _inputRpeaksData;
         private Heart_Class_Data _inputHeartClassData;
 
-        
+        List<Tuple<string, Vector<double>>> _rrintervals;
+
+
 
 
         //interfejs - metody HRT (maszyny stanow)
@@ -46,6 +48,7 @@ namespace EKG_Project.Modules.HRT
         }
 
         public void Init(ModuleParams parameters) {
+
             Params = parameters as HRT_Params;
             Aborted = false;
             if (!Runnable() ) _ended = true;
@@ -55,8 +58,6 @@ namespace EKG_Project.Modules.HRT
                 InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
                 InputRpeaksWorker.Load();
                 InputRpeaksData = InputRpeaksWorker.Data;
-
-                //??NIE WIEM CZY .DATA czy .OUTPUTDATA
 
                 InputHeartClassWorker = new Heart_Class_Data_Worker(Params.AnalysisName);
                 InputHeartClassWorker.Load();
@@ -75,10 +76,11 @@ namespace EKG_Project.Modules.HRT
             if (Runnable()) processData();
             else _ended = true;
         }
-
+        int i = 0;
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
+            return i++;
+           // return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
         }
 
         public bool Runnable() {
@@ -90,9 +92,18 @@ namespace EKG_Project.Modules.HRT
         }
 
         private void processData() {
+            
+            _rrintervals = InputRpeaksData.RRInterval;
+            Console.WriteLine(_rrintervals.Count);
+            foreach (Tuple<string, Vector<double>> _licznik in _rrintervals){
+
+                Console.WriteLine(_licznik.Item2);
+                _ended = true;
+            }
 
         }
 
+            
 
         //Wlasciwosci (gettery i settery)
         public HRT_Data_Worker OutputWorker { get { return _outputWorker; } set { _outputWorker = value; } }
@@ -115,8 +126,6 @@ namespace EKG_Project.Modules.HRT
             testModule.Init(param);
             while (true)
             {
-                //Console.WriteLine("Press key to continue.");
-                //Console.Read();
                 if (testModule.Ended()) break;
                 Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
