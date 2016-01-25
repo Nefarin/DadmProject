@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Heart_Class;
 using EKG_Project.IO;
+
 
 
 namespace EKG_Project.Modules.HRT
@@ -76,6 +74,9 @@ namespace EKG_Project.Modules.HRT
                 _rrintervals = InputRpeaksData.RRInterval;
                 _rpeaks = InputRpeaksData.RPeaks;
 
+                HRT_Alg Algorytm = new HRT_Alg();
+                Algorytm.ReadCSVFile();
+
             }
         }
 
@@ -121,7 +122,7 @@ namespace EKG_Project.Modules.HRT
 
             
 
-        //Wlasciwosci (gettery i settery)
+        //Accessors (getters and setters)
         public HRT_Data_Worker OutputWorker
         {
             get { return _outputWorker; }
@@ -167,7 +168,6 @@ namespace EKG_Project.Modules.HRT
             get { return _numberOfChannels; }
             set { _numberOfChannels = value; }
         }
-
 
 
         public static void Main() {
