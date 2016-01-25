@@ -142,5 +142,145 @@ namespace EKG_Unit.Modules.ECG_Baseline
             System.Console.WriteLine(actual.ToString());
             Assert.AreEqual(resultVector, actual);
         }
+
+        [TestMethod]
+        [Description("Test if savitzky-golay BP method returns proper values")]
+        public void SavitzkyGolayBandPassTest()
+        {
+            double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
+            double[] resultArray = { 2.65800865800865, 3.38528138528139, 3.62337662337663, 3.46753246753248, 3.15584415584407, 6.51515151515139, 8.24242424242408, 9.55844155844155, 13.0000000000000, 13.4242424242422, 12.5930735930738, 10.3290043290043, 7.69264069264068, 8.20346320346346, -0.969696969700635, 1.72727272727161, 16.1168831168861, 34.3419913419930, 55.0692640692650, 73.8354978354992 };
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            for (int i = 0; i < resultVector.Count; i++)
+            {
+                resultVector[i] = System.Math.Round(resultVector[i], 3);
+            }
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.savitzky_golay(testVector, 9, Filtr_Type.BANDPASS);
+
+            for (int i = 0; i < actual.Count; i++)
+            {
+                actual[i] = System.Math.Round(actual[i], 3);
+            }
+
+            System.Console.WriteLine(actual.ToString());
+            Assert.AreEqual(resultVector, actual);
+        }
+
+        [TestMethod]
+        [Description("Test if moving average LP method returns proper values")]
+        public void MovingAverageLowPassTest()
+        {
+            double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
+            double[] resultArray = { 1, 1.11111111111111, 1.88888888888889, 2.33333333333333, 2.33333333333333, 2.55555555555556, 3.11111111111111, 4.33333333333333, 6.77777777777778, 7.22222222222222, 7.88888888888889, 9.11111111111111, 9.11111111111111, 9.88888888888889, 10.1111111111111, 9.88888888888889, 9.22222222222222, 7.22222222222222, 16, 24.5555555555556 };
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            for (int i = 0; i < resultVector.Count; i++)
+            {
+                resultVector[i] = System.Math.Round(resultVector[i], 3);
+            }
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.moving_average(testVector, 9, Filtr_Type.LOWPASS);
+
+            for (int i = 0; i < actual.Count; i++)
+            {
+                actual[i] = System.Math.Round(actual[i], 3);
+            }
+
+            System.Console.WriteLine(actual.ToString());
+            Assert.AreEqual(resultVector, actual);
+        }
+
+        [TestMethod]
+        [Description("Test if moving average HP method returns proper values")]
+        public void MovingAverageHighPassTest()
+        {
+            double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
+            double[] resultArray = { 0, 0.988505747126437, 6.90804597701149, 3.86206896551724, -0.137931034482759, 1.83908045977012, 4.78160919540230, 10.6551724137931, 21.4022988505747, 3.35632183908046, 6.27586206896552, 17.0689655172414, 3.02298850574713, 5.94252873563218, 2.89655172413793, 1.86206896551724, 3.80459770114943, 2.75862068965517, 80.8045977011494, 80.8390804597701 };
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            for (int i = 0; i < resultVector.Count; i++)
+            {
+                resultVector[i] = System.Math.Round(resultVector[i], 3);
+            }
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.moving_average(testVector, 87, Filtr_Type.HIGHPASS);
+
+            for (int i = 0; i < actual.Count; i++)
+            {
+                actual[i] = System.Math.Round(actual[i], 3);
+            }
+
+            System.Console.WriteLine(actual.ToString());
+            Assert.AreEqual(resultVector, actual);
+        }
+
+        [TestMethod]
+        [Description("Test if moving average BP method returns proper values")]
+        public void MovingAverageBandPassTest()
+        {
+            double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
+            double[] resultArray = { 1, 1.11111111111111, 1.88888888888889, 2.33333333333333, 2.33333333333333, 2.55555555555556, 3.11111111111111, 4.33333333333333, 6.77777777777778, 7.22222222222222, 7.88888888888889, 9.11111111111111, 9.11111111111111, 9.88888888888889, 10.1111111111111, 9.88888888888889, 9.22222222222222, 7.22222222222222, 16, 24.5555555555556 };
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            for (int i = 0; i < resultVector.Count; i++)
+            {
+                resultVector[i] = System.Math.Round(resultVector[i], 3);
+            }
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.moving_average(testVector, 9, Filtr_Type.LOWPASS);
+
+            for (int i = 0; i < actual.Count; i++)
+            {
+                actual[i] = System.Math.Round(actual[i], 3);
+            }
+
+            System.Console.WriteLine(actual.ToString());
+            Assert.AreEqual(resultVector, actual);
+        }
+
+        /*
+        [TestMethod]
+        [Description("Test if LMS LP method returns proper values")]
+        public void LMSLowPassTest()
+        {
+            double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
+            double[] testFilteredArray = { 2, 2, 2, 4, 5, 1, 14, 12, 1, 6, 7, 15, 8, 8, 2, 7, 11, 10, 4, 5 };
+            double[] resultArray = { 0.00000, 0.56000, 5.86880, -26.38586, 255.61202, -2155.77962, 23949.11075, -499803.79529, 29527205.55922, -2242067864.11451, 182349064975.68800, -18692941606262.80000, 2167497459981610.00000, -263267085426246000.00000, 33454186668971100000.00000, -4344925839486270000000.00000, 578846977867839000000000.00000, -79548164342263400000000000.00000, 15570874781327400000000000000.00000, -18614211988508500000000000000000.00000 };
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Vector<double> testFilteredVector = Vector<double>.Build.DenseOfArray(testFilteredArray);
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            for (int i = 0; i < resultVector.Count; i++)
+            {
+                resultVector[i] = System.Math.Round(resultVector[i], 3);
+            }
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.lms(testVector, testFilteredVector, 50);
+
+            for (int i = 0; i < actual.Count; i++)
+            {
+                actual[i] = System.Math.Round(actual[i], 3);
+            }
+
+            System.Console.WriteLine(actual.ToString());
+            Assert.AreEqual(resultVector, actual);
+        }
+        */
     }
+
 }
