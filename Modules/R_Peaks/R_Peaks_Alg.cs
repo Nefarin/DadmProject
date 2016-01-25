@@ -18,7 +18,7 @@ namespace EKG_Project.Modules.R_Peaks
     #endregion
     public class R_Peaks_Alg
     {
-        /*static void Main(string[] args)
+        static void Main(string[] args)
         {
             #region readData            
             //read data from dat file
@@ -28,12 +28,12 @@ namespace EKG_Project.Modules.R_Peaks
             #endregion
 
             //Vector<double> signal = sig.SubVector(0, 6000);
+            double[] testArray = { 0, 1, 0, -1, 0 };
 
-            R_Peaks_Alg emd = new R_Peaks_Alg();
-
-            emd.LocsR = emd.PanTompkins(signal, fs);
-            
-            
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] hilbert1 = test.HilbertTransform(testArray);
+            double[] hilbert2 = test.HilbertTransform(hilbert1);
+  
            #region writeData
             //write result to dat file
             //TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baserr.txt");
@@ -43,9 +43,11 @@ namespace EKG_Project.Modules.R_Peaks
 
             //TEST-Console
             Console.WriteLine("done");
-            foreach (double sth in emd.LocsR) { Console.WriteLine(sth); }
+            foreach (double sth in hilbert1) { Console.WriteLine(sth); }
+            Console.WriteLine();
+            foreach (double sth in hilbert2) { Console.WriteLine(sth); }
             Console.ReadKey();
-        }*/
+        }
 
         //FIELDS
         #region 
@@ -591,6 +593,7 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public Vector<double> FindIndexes(Vector<double> signal, Func<double, bool> predicate)
         {
+            if (signal == null || predicate == null) throw new ArgumentNullException();
             Vector<double> indexes = Vector<double>.Build.Dense(signal.Count);
             int i = 0;
             int lastInd = 0;
@@ -620,6 +623,7 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public Tuple<List<double>, List<double>> Extrema(Vector<double> signal)
         {
+            if (signal == null) throw new ArgumentNullException();
             List<double> iMax = new List<double>();
             List<double> iMin = new List<double>();
             Vector<double> diffSig = Diff(signal);
