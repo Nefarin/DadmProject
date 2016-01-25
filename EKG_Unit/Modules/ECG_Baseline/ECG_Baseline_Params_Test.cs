@@ -32,11 +32,21 @@ namespace EKG_Unit.Modules.ECG_Baseline
             expectedParams.WindowSizeLow = 10;
             expectedParams.WindowSizeHigh = 100;
 
+            ECG_Baseline_Params actualParams = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 10, 100, "analysis");
+
+            Assert.AreEqual(expectedParams.Method, actualParams.Method);
+            Assert.AreEqual(expectedParams.Type, actualParams.Type);
+            Assert.AreEqual(expectedParams.AnalysisName, actualParams.AnalysisName);
+            Assert.AreEqual(expectedParams.WindowSizeLow, actualParams.WindowSizeLow);
+            Assert.AreEqual(expectedParams.WindowSizeHigh, actualParams.WindowSizeHigh);
+
+            /*
             Assert.AreEqual(Filtr_Method.LMS, expectedParams.Method);
             Assert.AreEqual("analysis", expectedParams.AnalysisName);
             Assert.AreEqual(Filtr_Type.BANDPASS, expectedParams.Type);
             Assert.AreEqual(10, expectedParams.WindowSizeLow);
             Assert.AreEqual(100, expectedParams.WindowSizeHigh);
+            */
         }
 
     }
