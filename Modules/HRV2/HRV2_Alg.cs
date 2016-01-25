@@ -11,8 +11,19 @@ namespace EKG_Project.Modules.HRV2
     public partial class HRV2_Alg
     {
         private Vector<double> _rrIntervals;
+        public Vector<double> RRIntervals
+        {
+            set
+            {
+                _rrIntervals = value;
+            }
+            get
+            {
+                return _rrIntervals;
+            }
+        }
 
-        private void _Interpolation()
+        public void Interpolation()
         {
             for (int i = 1; i <= _rrIntervals.Count; i++)
             {
@@ -59,8 +70,11 @@ namespace EKG_Project.Modules.HRV2
             //TempInput.setInputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\RR_100.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
-
+            
+            
             HRV2_Alg Analise = new HRV2_Alg();
+            Analise.RRIntervals = sig;
+            Analise.Interpolation();
             Analise.HistogramToVisualisation().ForEach(Console.WriteLine);
             Console.WriteLine(fs);
             Console.ReadLine();
