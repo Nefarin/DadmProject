@@ -81,8 +81,8 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public void ProcessData()
         {
-            if (Runnable()) processData();
-            else _ended = true;
+            /*if (Runnable()) processData();
+            else _ended = true;*/
         }
 
         public double Progress()
@@ -94,7 +94,7 @@ namespace EKG_Project.Modules.HRV_DFA
         {
             return Params != null;
         }
-        private void processData()
+   /*     private void processData()
         {
             //int channel = _currentChannelIndex;
             //int startIndex = _rPeaksProcessed;
@@ -165,7 +165,7 @@ namespace EKG_Project.Modules.HRV_DFA
             //}
 
         }
-//
+//*/
         public bool Aborted
         { get{ return _aborted; }set {_aborted = value;} }
 
@@ -195,11 +195,12 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public R_Peaks_Data InputData
         { get { return _inputData; } set{ _inputData = value;} }
-
+/*
         public static void Main()
         {
             HRV_DFA_Params param = new HRV_DFA_Params("Analysisnsr");
             HRV_DFA testModule = new HRV_DFA();
+            HRV_DFA_Alg testModulea = new HRV_DFA_Alg();
 
             testModule.Init(param);
             while (true)
@@ -211,7 +212,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 testModule.ProcessData();
             }
             //Console.Read();
-        }
+        }*/
     }
      
 }
