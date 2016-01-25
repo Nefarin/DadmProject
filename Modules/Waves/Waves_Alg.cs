@@ -63,35 +63,16 @@ namespace EKG_Project.Modules.Waves
 
         }
 
-        public Vector<double> HaarDWT(Vector<double> signal, int n)
-        {
-            //Work just like wavedec but use only haar wavelet
-            // http://www.mathworks.com/help/wavelet/ref/wavedec.html
-            //lol
-            int decompSize = signal.Count();
-            double sqrt2 = Math.Sqrt(2);
-            Vector<double> outVec = Vector<double>.Build.Dense(decompSize);
-            Vector<double> signalTemp = signal;
-
-            for (int i = 0; i < n; i++)
-            {
-                decompSize /= 2;
-                for (int dataInd = 0; dataInd < decompSize; dataInd++)
-                {
-                    outVec[dataInd] = (signalTemp[2 * dataInd] + signalTemp[2 * dataInd + 1]) / sqrt2;
-                    outVec[decompSize + dataInd] = (signalTemp[2 * dataInd] - signalTemp[2 * dataInd + 1]) / sqrt2;
-                }
-                signalTemp = outVec.SubVector(0, decompSize);
-            }
-            return outVec;
-        }
-
-        public List<Vector<double>> ListHaarDWT(Vector<double> signal, int n)
+        private List<Vector<double>> ListHaarDWT(Vector<double> signal, int n)
         {
             //Work just like wavedec but use only haar wavelet
             // http://www.mathworks.com/help/wavelet/ref/wavedec.html
             // [0]  -> d1, [1]  -> d2, ...
             int decompSize = signal.Count();
+            if( n <1 )
+                throw new InvalidOperationException("Decompositionlevel is too low");
+            if ( decompSize >> n < 2)
+                throw new InvalidOperationException("Not long enough signal for such decomposition");
             double sqrt2 = Math.Sqrt(2);
             Vector<double> outVec = Vector<double>.Build.Dense(decompSize);
             Vector<double> signalTemp = signal;
@@ -135,12 +116,9 @@ namespace EKG_Project.Modules.Waves
                     break;
 
                 case Wavelet_Type.db3:
-                    //Hfilter = new double[] { -0.332670552950957, 0.806891509313339, -0.459877502119331, -0.135011020010391, 0.0854412738822415, 0.0352262918821007 };
-                    //Lfilter = new double[] { 0.0352262918821007, -0.0854412738822415, -0.135011020010391, 0.459877502119331, 0.806891509313339, 0.332670552950957 };
-                    //filterSize = 6;
-                    Hfilter = new double[] { -0.482962913144690, 0.836516303737469, -0.224143868041857, -0.129409522550921 };
-                    Lfilter = new double[] { -0.129409522550921, 0.224143868041857, 0.836516303737469, 0.482962913144690 };
-                    filterSize = 4;
+                    Hfilter = new double[] { -0.332670552950957, 0.806891509313339, -0.459877502119331, -0.135011020010391, 0.0854412738822415, 0.0352262918821007 };
+                    Lfilter = new double[] { 0.0352262918821007, -0.0854412738822415, -0.135011020010391, 0.459877502119331, 0.806891509313339, 0.332670552950957 };
+                    filterSize = 6;
                     break;
             }
             int decompSize = signal.Count();
@@ -192,11 +170,11 @@ namespace EKG_Project.Modules.Waves
             for (int middleR = 0; middleR < maxRInd; middleR++)
             {
                 currentQRSonsetsPart.Add(FindQRSOnset(currentRpeaks[middleR], currentRpeaks[middleR + 1], dwt[decLev - 1], offset));
-                currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[middleR], currentRpeaks[middleR + 1], dwt[decLev - 1], _params.DecompositionLevel));
+                currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[middleR], currentRpeaks[middleR + 1], dwt[decLev - 1], _params.DecompositionLevel, currentECG));
 
             }
 
-            currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[maxRInd], currentECG.Count, dwt[decLev - 1], _params.DecompositionLevel));
+            currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[maxRInd], currentECG.Count, dwt[decLev - 1], _params.DecompositionLevel, currentECG));
         }
         #region
         /// <summary>
@@ -240,7 +218,7 @@ namespace EKG_Project.Modules.Waves
         /// </summary>
         /// <returns> index of founded QRS-end or -1 if not found</returns>
         #endregion
-        public int FindQRSEnd(double dmiddleR, double dleftEnd, Vector<double> dwt, int offset)
+        public int FindQRSEnd(double dmiddleR, double dleftEnd, Vector<double> dwt, int offset, Vector<double> currentECG)
         {
             int decompLevel = _params.DecompositionLevel;
             int middleR = (int)dmiddleR;
@@ -281,6 +259,9 @@ namespace EKG_Project.Modules.Waves
             else
             {
                 qrsEndInd = qrsEndInd << decompLevel;
+                double Rval = currentECG[(int)dmiddleR];
+                while (lastNderivSquares(10, qrsEndInd, currentECG) > Rval * 0.01)
+                    qrsEndInd++;
                 //double val = Math.Abs(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[qrsEndInd]);
                 ////val = 12;
                 //while (Math.Abs(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[qrsEndInd] - calcMean(qrsEndInd, sectionEnd)) > 0.4 * val)
@@ -289,23 +270,23 @@ namespace EKG_Project.Modules.Waves
             }
 
         }
-        #region
-        /// <summary>
-        /// This method calc means of a part of signal
-        /// </summary>
-        /// <returns> Means of 1 ms part of signal counted from qrsEndInd index </returns>
-        #endregion
-        //double calcMean(int qrsEndInd, int sectionEnd)
-        //{
-        //    int length = (int)InputData.Frequency * 1;
-        //    double result = 0;
-        //    int i = 0;
-        //    for (i = 1; i < length && i < sectionEnd && qrsEndInd + i < InputECGData.SignalsFiltered[_currentChannelIndex].Item2.Count; i++)
-        //    {
-        //        result += InputECGData.SignalsFiltered[_currentChannelIndex].Item2[qrsEndInd + i];
-        //    }
-        //    return result / (double)i;
-        //}
+        double lastNderivSquares(int n, int index, Vector<double> signal)
+        {
+            double res = 0;
+            for (int i = 0; i < n; i++)
+            {
+                res += derivSquare(index - i, signal);
+            }
+            return res;
+        }
+        double derivSquare(int index, Vector<double> signal)
+        {
+            double res = 0;
+            if (index - 2 > 0 && index + 2 < signal.Count)
+                res = 0.125 * (-signal[index - 2] - 2 * signal[index - 1] + 2 * signal[index + 1] + signal[index + 2]);
+            return res * res;
+        }
+
         #region
         /// <summary>
         /// This method finds maximum value and its location through particular segment of ecg signal

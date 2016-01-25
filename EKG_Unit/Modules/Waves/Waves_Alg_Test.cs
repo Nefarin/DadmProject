@@ -9,7 +9,40 @@ namespace EKG_Unit.Modules.Waves
     public class Waves_Alg_Test
     {
         [TestMethod]
-        [Description("Test if method finds maximum in vector")]
+        [Description("Test if method returns exception when decomposition level is too low")]
+        [ExpectedException(typeof(InvalidOperationException), "Decompositionlevel is too low")]
+        public void ListHaarDWTTest()
+        {
+            double [] signalArray = { 8, 7, 6, 5, 5, 9, 6, 7, 8, 10, 9 };
+            Vector<double> signalVector = Vector<double>.Build.DenseOfArray(signalArray);
+            Waves_Params testParams = new Waves_Params(Wavelet_Type.haar, 3, "Analysis1", 500);
+
+            Waves_Alg testAlgs = new Waves_Alg(testParams);
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            object[] args = { signalVector, 0 };
+
+            obj.Invoke("ListHaarDWT", args);
+        }
+
+        [TestMethod]
+        [Description("Test if method return exception decomposition level is to high (not enough samples)")]
+        [ExpectedException(typeof(InvalidOperationException), "Not long enough signal for such decomposition")]
+        public void ListHaarDWTTest2()
+        {
+            double[] signalArray = { 8, 7, 6, 5, 5, 9, 6, 7, 8, 10, 9 };
+            Vector<double> signalVector = Vector<double>.Build.DenseOfArray(signalArray);
+            Waves_Params testParams = new Waves_Params(Wavelet_Type.haar, 4, "Analysis1", 500);
+
+            Waves_Alg testAlgs = new Waves_Alg(testParams);
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            object[] args = { signalVector, 0 };
+
+            obj.Invoke("ListHaarDWT", args);
+        }
+
+        
         public void MaxValueTest1()
         {
             Waves_Params testParams = new Waves_Params(Wavelet_Type.haar,3,"Analysis1",500);
