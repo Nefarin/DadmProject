@@ -4,13 +4,29 @@ using System.Collections.ObjectModel;
 using EKG_Project.Modules.R_Peaks;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.IO;
+using System.Linq;
 
 namespace EKG_Project.Modules.HRV2
 {
     public partial class HRV2_Alg
     {
         private Vector<double> _rrIntervals;
-        private Vector<double> _rrIntervalsFixed;
+
+        private void _Interpolation()
+        {
+            for (int i = 1; i <= _rrIntervals.Count; i++)
+            {
+                if (_rrIntervals[i] > 2*_rrIntervals.Average())
+                {
+                    _rrIntervals[i] = _rrIntervals[i + 1];
+                    i++;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
        
        // tu bd interpolacja
        
