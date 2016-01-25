@@ -32,7 +32,8 @@ namespace EKG_Project.Modules.HRV_DFA
             //TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\DADM\RR_100.txt");
             //uint fs = TempInput.getFrequency();
             //Vector<double> sig = TempInput.getSignal();
-
+                
+        
             // DFA box parameters
             int dfastep = stepValue;
             int start = startValue;
