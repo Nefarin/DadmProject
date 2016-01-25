@@ -73,6 +73,13 @@ namespace EKG_Project.Modules.HRV2
                     HighestValue,
                     Count);
             }
+
+            public Tuple<double,double>HistogramToVisualisation()
+            {
+                Tuple<double, double> bin = new Tuple<double, double>(AverageValue, Count);
+                return bin;
+            }
+
         }
 
         public class Histogram2
