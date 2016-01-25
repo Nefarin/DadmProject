@@ -80,14 +80,16 @@ namespace EKG_Project.Modules.Heart_Class
             Signal = loadedSignal;
             OneQrsComplex(qrsOnset, qrsEnd, R);
             CountCoeff(QrsComplexOne, fs);
+            int numberOfNeighbors = 3;
+
             //WCZYTANIE ZBIORU TRENINGOWEGO
             DebugECGPath loader = new DebugECGPath();
             List<Vector<double>> trainDataList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
 
 
-            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-NV
+            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-SV
             List<Vector<double>> trainClassList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
-            // konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
+            //konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
             int oneClassElement;
             List<int> trainClass;
             trainClass = new List<int>();
@@ -102,7 +104,7 @@ namespace EKG_Project.Modules.Heart_Class
             }
 
 
-            return ClassificationResultOne = TestKnnCase(trainDataList, QrsCoeffOne, trainClass, 3);
+            return ClassificationResultOne = TestKnn(trainDataList, QrsCoeffOne, trainClass, 3);
    
         }
 
@@ -157,7 +159,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="_qrssignal"></param>
         /// <returns></returns>
         #endregion
-        double Integrate(Vector<double> _qrssignal)
+        public double Integrate(Vector<double> _qrssignal)
         {
 
             double result = 0;
@@ -179,7 +181,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="fs"></param>
         /// <returns></returns>
         #endregion
-        double Perimeter(Vector<double> _qrssignal, uint fs)
+        public double Perimeter(Vector<double> _qrssignal, uint fs)
         {
             qrsLength = _qrssignal.Count();
             double timeBtw2points = 1 / fs;
@@ -332,7 +334,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="K"></param>
         /// <returns></returns>
         #endregion
-        Tuple<int, int> TestKnnCase(List<Vector<double>> trainSamples, Tuple<int, Vector<double>> testSamples,
+        Tuple<int, int> TestKnn(List<Vector<double>> trainSamples, Tuple<int, Vector<double>> testSamples,
            List<int> trainClasses, int K)
         {
             Tuple< int, int> testResults;
@@ -349,7 +351,7 @@ namespace EKG_Project.Modules.Heart_Class
             }
 
 
-            // Performing KNN 
+            //KNN 
 
                 // Dla każdej próbki testowej, obliczane są odległości w stosunku do każdej z próbek treningowych 
 
