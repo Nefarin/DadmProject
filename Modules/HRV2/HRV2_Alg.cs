@@ -35,16 +35,16 @@ namespace EKG_Project.Modules.HRV2
         public static void Main()
         {
             //read data from file
-            //TempInput.setInputFilePath(@"C:\Users\Ewa\Desktop\DADM_projekt\DadmProject\RR_100.txt");
-            TempInput.setInputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\RR_100.txt");
+            TempInput.setInputFilePath(@"C:\Users\Ewa\Desktop\DADM_projekt\DadmProject\RR_100.txt");
+            //TempInput.setInputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\RR_100.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
 
             HRV2_Alg Analise = new HRV2_Alg();
             //Analise.Anlalysis(sig);
             Analise.HistogramToVisualisation(sig).ForEach(Console.WriteLine);
-
-           // Console.ReadKey();
+            Console.WriteLine(fs);
+            Console.ReadLine();
 
             //write result to dat file
             //TempInput.setOutputFilePath(@"C:\Users\Ewa\Desktop\DADM_projekt\DadmProject\result.txt");
