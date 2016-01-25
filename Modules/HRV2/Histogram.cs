@@ -15,11 +15,10 @@ namespace EKG_Project.Modules.HRV2
     {
         private const float binLength = 7.8125f;
         Histogram2 _currentHistogram;
-        Histogram _currentHistogramV;
 
         #region Documentation
         /// <summary>
-        /// This histogram is made for visualisation. 
+        /// This  is made for visualisation. 
         /// We use Histogram class from MathNet.Numerics.Statistics
         /// </summary>
         /// 
@@ -27,8 +26,10 @@ namespace EKG_Project.Modules.HRV2
 
         public List<Tuple<double,double>> HistogramToVisualisation(Vector<double> RRIntervals)
         {
-            Histogram2 data = new Histogram2(binLength, RRIntervals);
-            ObservableCollection<Sample> samples = data.Samples;
+            //Histogram2 data = new Histogram2(binLength, RRIntervals);
+            _currentHistogram = new Histogram2(binLength, RRIntervals);
+            ObservableCollection<Sample> samples = _currentHistogram.Samples;
+            Console.WriteLine(samples.Count);
             List<Tuple<double, double>> HistogramList = new List<Tuple<double, double>>();
 
             foreach (Sample s in samples)
@@ -48,14 +49,13 @@ namespace EKG_Project.Modules.HRV2
         #endregion
 
 
-        public Histogram2 makeHistogram(Vector<double> RRIntervals)
-        {
-            //Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2;
-            Console.WriteLine(RRIntervals.Max());
-            Console.ReadLine();
-            _currentHistogram = new Histogram2(binLength, RRIntervals);
-            return _currentHistogram;
-        }
+        //public Histogram2 makeHistogram(Vector<double> RRIntervals)
+        //{
+        //    Console.WriteLine(RRIntervals.Max());
+        //    Console.ReadLine();
+        //    _currentHistogram = new Histogram2(binLength, RRIntervals);
+        //    return _currentHistogram;
+        //}
 
         public class Sample
         {
@@ -149,6 +149,7 @@ namespace EKG_Project.Modules.HRV2
 
             private void groupSamples(List<Double> samples)
             {
+                samples.Sort();
                 double start = samples[0];
                 List<List<Double>> _helperListOfSampleList = new List<List<Double>>();
                 List<Double> _helperSampleList = new List<Double>();
