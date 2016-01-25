@@ -18,7 +18,7 @@ namespace EKG_Project.Modules.HRV2
         public void TriangleIndex()
         {
             //Vector<double> RRIntervaals = InputData.RRInterval[_outputIndex].Item2;
-            triangleIndex = _currentHistogram.MaxCount / _rrIntervals.Count;
+            triangleIndex = (double)_rrIntervals.Count/(double)_currentHistogram.MaxCount;
         }
     }
 

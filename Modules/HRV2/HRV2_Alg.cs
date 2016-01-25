@@ -75,12 +75,15 @@ namespace EKG_Project.Modules.HRV2
             HRV2_Alg Analise = new HRV2_Alg();
             Analise.RRIntervals = sig;
             Analise.Interpolation();
-            Analise.HistogramToVisualisation().ForEach(Console.WriteLine);
+         
+            Analise.HRV2_Anlalysis();
+            
+            //Analise.HistogramToVisualisation().ForEach(Console.WriteLine);
             
             //write result to dat file
-            TempInput.setOutputFilePath("result.txt");
+            TempInput.setOutputFilePath("resultTriInx.txt");
             //TempInput.setOutputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\result.txt");
-            TempInput.writeFile(Analise.HistogramToVisualisation());
+            TempInput.writeFile(Analise.triangleIndex);
             Console.ReadLine();
         }
     }

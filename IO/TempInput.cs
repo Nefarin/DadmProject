@@ -65,13 +65,19 @@ namespace EKG_Project.IO
 
         public static void writeFile(List <Tuple <double, double>> output)
         {
-            Console.WriteLine("ZAPISUJE");
             using (StreamWriter sw = new StreamWriter(pathOut))
             {
-                output.ForEach(sw.Write);
+                
+                output.ForEach(sw.WriteLine);
             }
         }
-
+        public static void writeFile(double output)
+        {
+            using (StreamWriter sw = new StreamWriter(pathOut))
+            {
+                sw.WriteLine(output);  
+            }
+        }
 
         public static void writeFile(uint frequency, Vector<double> signalX, Vector<double> signalY)
         {
