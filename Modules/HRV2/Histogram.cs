@@ -24,13 +24,18 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public Histogram HistogramToVisualisation(Vector<double> RRIntervals)
+
+        public List<Tuple<double,double>> HistogramToVisualisation(Vector<double> RRIntervals)
         {
-            //Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2; 
-            double dBinAmount = RRIntervals.AbsoluteMaximum() - RRIntervals.AbsoluteMinimum() / binLength;
-            int binAmount = (int)Math.Round(dBinAmount);
-            _currentHistogramV = new Histogram(RRIntervals, binAmount);
-            return _currentHistogramV;
+            Histogram2 data = new Histogram2(binLength, RRIntervals);
+            ObservableCollection<Sample> samples = data.Samples;
+            List<Tuple<double, double>> HistogramList = new List<Tuple<double, double>>();
+
+            foreach (Sample s in samples)
+            {
+                HistogramList.Add(s.HistogramToVisualise());
+            }
+            return HistogramList;
         }
 
 
@@ -74,7 +79,7 @@ namespace EKG_Project.Modules.HRV2
                     Count);
             }
 
-            public Tuple<double,double>HistogramToVisualisation()
+            public Tuple<double, double> HistogramToVisualise()
             {
                 Tuple<double, double> bin = new Tuple<double, double>(AverageValue, Count);
                 return bin;
