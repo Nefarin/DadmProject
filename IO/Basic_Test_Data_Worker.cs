@@ -29,6 +29,8 @@ namespace EKG_Project.IO
 
         private Attributes attributes;
 
+        private uint currentNumberOfSamples;
+
         public Attributes Attributes
         {
             get { return attributes; }
@@ -56,11 +58,21 @@ namespace EKG_Project.IO
             StreamWriter sw = new StreamWriter(pathOut, mode); 
             // true to append data to the file; false to overwrite the file.
             // If the file does not exist, this constructor creates a new file.
+            if(mode == false)
+            {
+                currentNumberOfSamples = 0;
+            }
+            else
+            {
+                currentNumberOfSamples = LoadAttribute(Attributes.NumberOfSamples);
+            }
+
             foreach (var sample in signal)
             {
                 sw.WriteLine(sample.ToString());
+                currentNumberOfSamples++;
             }
-
+            SaveAttribute(Attributes.NumberOfSamples, currentNumberOfSamples);
             sw.Close();
 
         }
@@ -83,11 +95,16 @@ namespace EKG_Project.IO
 
             iterator = 0;
             double[] readSamples = new double[length];
-            while (iterator < length && !sr.EndOfStream)
+            while (iterator < length)
             {
                 string readLine = sr.ReadLine();
                 readSamples[iterator] = Convert.ToDouble(readLine);
                 iterator++;
+            }
+
+            if(sr.EndOfStream)
+            {
+                throw new IndexOutOfRangeException();
             }
 
             sr.Close();
@@ -129,10 +146,10 @@ namespace EKG_Project.IO
             Basic_Test_Data_Worker worker = new Basic_Test_Data_Worker("TestAnalysis");
             Vector<double> vector = worker.LoadSignal("V5", 500000, 100);
             worker.SaveSignal("III", false, vector);
+            Console.WriteLine("Current number of samples in file: " + worker.currentNumberOfSamples);
             worker.SaveAttribute(Attributes.Frequency, 360);
-            worker.SaveAttribute(Attributes.NumberOfSamples, 100);
             uint frequency = worker.LoadAttribute(Attributes.Frequency);
-            Console.WriteLine(frequency);
+            Console.WriteLine("Frequency: " + frequency);
             Console.Read();
         }
     }
