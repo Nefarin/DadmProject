@@ -9,6 +9,11 @@ namespace EKG_Project.Modules.HRV2
 {
     public partial class HRV2_Alg
     {
+        private Vector<double> _rrIntervals;
+        private Vector<double> _rrIntervalsFixed;
+       
+       // tu bd interpolacja
+       
         #region Documentation
         /// <summary>
         /// This function returns all parameters needed to analyze.
@@ -16,21 +21,20 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public void Anlalysis(Vector<double> rrIntervals)
+        public void HRV2_Anlalysis()
         {
             //Histogram.cs
-            HistogramToVisualisation(rrIntervals);
-            makeHistogram(rrIntervals);
+            HistogramToVisualisation();
             //Poincare.cs
-            PoincarePlot_x(rrIntervals);
-            PoincarePlot_y(rrIntervals);
+            PoincarePlot_x();
+            PoincarePlot_y();
             SD1();
             SD2();
             eclipseCenter();
             //Tinn.cs
-            makeTinn(rrIntervals);
+            makeTinn();
             //TriangleIndex.cs
-            TriangleIndex(rrIntervals);
+            TriangleIndex();
         }
         public static void Main()
         {
@@ -41,8 +45,8 @@ namespace EKG_Project.Modules.HRV2
             Vector<double> sig = TempInput.getSignal();
 
             HRV2_Alg Analise = new HRV2_Alg();
-            //Analise.Anlalysis(sig);
-            Analise.HistogramToVisualisation(sig).ForEach(Console.WriteLine);
+            //Analise.Anlalysis();
+            Analise.HistogramToVisualisation().ForEach(Console.WriteLine);
             Console.WriteLine(fs);
             Console.ReadLine();
 

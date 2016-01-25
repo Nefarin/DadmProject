@@ -15,10 +15,10 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public void TriangleIndex(Vector<double> RRIntervaals)
+        public void TriangleIndex()
         {
             //Vector<double> RRIntervaals = InputData.RRInterval[_outputIndex].Item2;
-            triangleIndex = _currentHistogram.MaxCount / RRIntervaals.Count;
+            triangleIndex = _currentHistogram.MaxCount / _rrIntervals.Count;
         }
     }
 

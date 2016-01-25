@@ -24,12 +24,11 @@ namespace EKG_Project.Modules.HRV2
         /// 
         #endregion
 
-        public List<Tuple<double,double>> HistogramToVisualisation(Vector<double> RRIntervals)
+        public List<Tuple<double,double>> HistogramToVisualisation()
         {
             //Histogram2 data = new Histogram2(binLength, RRIntervals);
-            _currentHistogram = new Histogram2(binLength, RRIntervals);
+            _currentHistogram = new Histogram2(binLength, _rrIntervals);
             ObservableCollection<Sample> samples = _currentHistogram.Samples;
-            Console.WriteLine(samples.Count);
             List<Tuple<double, double>> HistogramList = new List<Tuple<double, double>>();
 
             foreach (Sample s in samples)
@@ -47,15 +46,6 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-
-
-        //public Histogram2 makeHistogram(Vector<double> RRIntervals)
-        //{
-        //    Console.WriteLine(RRIntervals.Max());
-        //    Console.ReadLine();
-        //    _currentHistogram = new Histogram2(binLength, RRIntervals);
-        //    return _currentHistogram;
-        //}
 
         public class Sample
         {

@@ -20,11 +20,11 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        private void PoincarePlot_x(Vector<double> RRIntervals)
+        private void PoincarePlot_x()
         {
             //Vector<double> RRIntervals = InputData.RRInterval[_currentChannelIndex].Item2.Clone();
-            Vector<double> rr_intervals_x = Vector<double>.Build.Dense(RRIntervals.Count - 1);
-            rr_intervals_x = RRIntervals.SubVector(1, RRIntervals.Count - 1);
+            Vector<double> rr_intervals_x = Vector<double>.Build.Dense(_rrIntervals.Count - 1);
+            rr_intervals_x = _rrIntervals.SubVector(1, _rrIntervals.Count - 1);
             //Console.WriteLine(rr_intervals_x.Count);
             RR_intervals_x = rr_intervals_x;
         }
@@ -35,11 +35,11 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        private void PoincarePlot_y(Vector<double> RRIntervals)
+        private void PoincarePlot_y()
         {
             //Vector<double> RRIntervals = InputData.RRInterval[_currentChannelIndex].Item2.Clone();
-            Vector<double> rr_intervals_y = Vector<double>.Build.Dense(RRIntervals.Count - 1);
-            rr_intervals_y = RRIntervals.SubVector(0, RRIntervals.Count - 1);
+            Vector<double> rr_intervals_y = Vector<double>.Build.Dense(_rrIntervals.Count - 1);
+            rr_intervals_y = _rrIntervals.SubVector(0, _rrIntervals.Count - 1);
             //Console.WriteLine(rr_intervals_y.Count);
             RR_intervals_y = rr_intervals_y;
         }
