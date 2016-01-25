@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules.QT_Disp;
+using System.Collections.Generic;
 
 namespace EKG_Unit.Modules.QT_Disp
 {
@@ -77,6 +78,31 @@ namespace EKG_Unit.Modules.QT_Disp
             Assert.AreEqual(T_End_Method.TANGENT, obj.GetField("T_End_method"));
             Assert.AreEqual((uint)360, obj.GetField("Fs"));
            // Assert.AreEqual(RR, obj.GetField("R_Peak"));
+        }
+        [TestMethod]
+        [Description("Test constructor QT_Disp_Alg if proper assertion")]
+        public void testQT_Disp_Alg()
+        {
+            QT_Disp_Alg test = new QT_Disp_Alg();
+            PrivateObject obj = new PrivateObject(test);
+            List<int> onset = new List<int>();
+            onset.Add(191);
+            List<int> end = new List<int>();
+            end.Add(225);
+            List<int> tend = new List<int>();
+            tend.Add(352);
+            double[] rpeak = { 204,606};
+            Vector<double> Rpeak = Vector<double>.Build.DenseOfArray(rpeak);
+
+            test.TODoInInit(onset, tend, end,Rpeak, T_End_Method.TANGENT, QT_Calc_Method.FRIDERICA, (uint)360);
+
+            Assert.AreEqual(onset, obj.GetField("QRS_onset"));
+            Assert.AreEqual(end, obj.GetField("QRS_End"));
+            Assert.AreEqual(tend, obj.GetField("T_End_Global"));
+            Assert.AreEqual(Rpeak, obj.GetField("R_Peaks"));
+            Assert.AreEqual(T_End_Method.TANGENT, obj.GetField("T_End_method"));
+            Assert.AreEqual(QT_Calc_Method.FRIDERICA, obj.GetField("QT_Calc_method"));
+            Assert.AreEqual((uint)360, obj.GetField("Fs"));
         }
     }
 }
