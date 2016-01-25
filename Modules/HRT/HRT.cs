@@ -33,17 +33,21 @@ namespace EKG_Project.Modules.HRT
         private Heart_Class_Data _inputHeartClassData;
 
         List<Tuple<string, Vector<double>>> _rrintervals;
+        List<Tuple<string, Vector<double>>> _rpeaks;
+        List<Tuple<int,int>> _class;
 
 
 
 
-        //interfejs - metody HRT (maszyny stanow)
-        public void Abort() {
+        
+        public void Abort()
+        {
             Aborted = true;
             _ended = true;
         }
 
-        public bool Ended() {
+        public bool Ended()
+        {
             return _ended;
         }
 
@@ -68,6 +72,10 @@ namespace EKG_Project.Modules.HRT
 
                 _currentChannelIndex = 0;
                 _samplesProcessed = 0;
+
+                _rrintervals = InputRpeaksData.RRInterval;
+                _rpeaks = InputRpeaksData.RPeaks;
+
             }
         }
 
@@ -76,10 +84,10 @@ namespace EKG_Project.Modules.HRT
             if (Runnable()) processData();
             else _ended = true;
         }
-        int i = 0;
+      
         public double Progress()
         {
-            return i++;
+            return 0;
            // return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
         }
 
@@ -92,29 +100,73 @@ namespace EKG_Project.Modules.HRT
         }
 
         private void processData() {
-            
-            _rrintervals = InputRpeaksData.RRInterval;
-            Console.WriteLine(_rrintervals.Count);
-            foreach (Tuple<string, Vector<double>> _licznik in _rrintervals){
 
+            
+            Console.WriteLine("Liczba odprowadzeń Rpeaks: ",_rrintervals.Count);
+            foreach (Tuple<string, Vector<double>> _licznik in _rrintervals)
+            {
+                Console.WriteLine(_licznik.Item1);
                 Console.WriteLine(_licznik.Item2);
-                _ended = true;
             }
 
+            _class = InputHeartClassData.ClassificationResult;
+            Console.WriteLine("Liczba odprowadzeń HeartClass: ",_rrintervals.Count);
+            foreach (Tuple<int, int> _licznik in _class)
+            {
+                Console.WriteLine(_licznik.Item1);
+                Console.WriteLine(_licznik.Item2);
+            }
+            _ended = true;
         }
 
             
 
         //Wlasciwosci (gettery i settery)
-        public HRT_Data_Worker OutputWorker { get { return _outputWorker; } set { _outputWorker = value; } }
-        public R_Peaks_Data_Worker InputRpeaksWorker { get { return _inputRpeaksWorker; } set { _inputRpeaksWorker = value; } }
-        public HRT_Params Params { get { return _params; } set { _params = value; } }
-        public Heart_Class_Data_Worker InputHeartClassWorker { get { return _inputHeartClassWorker; } set { _inputHeartClassWorker = value; } }
-        public R_Peaks_Data InputRpeaksData { get { return _inputRpeaksData; } set { _inputRpeaksData = value; } }
-        public Heart_Class_Data InputHeartClassData { get { return _inputHeartClassData; } set { _inputHeartClassData = value; } }
-        public HRT_Data OutputData { get { return _outputData; } set { _outputData = value; } }
-        public bool Aborted { get { return _aborted; } set { _aborted = value; } }
-        public int NumberOfChannels { get { return _numberOfChannels; } set { _numberOfChannels = value; } }
+        public HRT_Data_Worker OutputWorker
+        {
+            get { return _outputWorker; }
+            set { _outputWorker = value; }
+        }
+        public R_Peaks_Data_Worker InputRpeaksWorker
+        {
+            get { return _inputRpeaksWorker; }
+            set { _inputRpeaksWorker = value; }
+        }
+        public HRT_Params Params
+        {
+            get { return _params; }
+            set { _params = value; }
+        }
+        public Heart_Class_Data_Worker InputHeartClassWorker
+        {
+            get { return _inputHeartClassWorker; }
+            set { _inputHeartClassWorker = value; }
+        }
+        public R_Peaks_Data InputRpeaksData
+        {
+            get { return _inputRpeaksData; }
+            set { _inputRpeaksData = value; }
+        }
+        public Heart_Class_Data InputHeartClassData
+        {
+            get { return _inputHeartClassData; }
+            set { _inputHeartClassData = value; }
+        }
+        public HRT_Data OutputData
+        {
+            get { return _outputData; }
+            set { _outputData = value; }
+        }
+        public bool Aborted
+        {
+            get { return _aborted; }
+            set { _aborted = value; }
+        }
+        public int NumberOfChannels
+        {
+            get { return _numberOfChannels; }
+            set { _numberOfChannels = value; }
+        }
 
 
 

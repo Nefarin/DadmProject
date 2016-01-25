@@ -4,27 +4,59 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.IO;
-using EKG_Project.Modules.R_Peaks;
-using EKG_Project.Modules.Heart_Class;
-using EKG_Project.IO;
-
 
 namespace EKG_Project.Modules.HRT
 {
     public class HRT_Alg
     {
-
-        public Vector<double> _rInstants { get; set; }
-        public Vector<double> _rInstantsVentricularComplex { get; set; }
-        public Vector<double> _rrIntervals { get; set; }
-
-        public HRT_Alg(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
-        {
-            _rrIntervals = Tachogram;
-            _rInstants = RRTimes;
-            _rInstantsVentricularComplex = RRTimesVC;
+        public bool IsLengthOfTachogramOK(Vector<double> Tachogram)
+        { 
+            return false;
         }
+        public Vector<double> SearchVentricularTurbulence(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
+        {
+
+            return Tachogram;
+        }
+
+        public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalUnchanged,int samplingFreq)
+        {
+            Vector<double> SignalInTimeDomain;
+            SignalInTimeDomain = SignalUnchanged / samplingFreq;
+            return SignalInTimeDomain;
+        }
+
+        int CountNrOfVPC(Vector<double> rrTimesVPC) {
+
+            return 0;
+        }
+
+
+        //ustalenie które nr pików R to są VPC
+        //Vector<double> WhichPeaksAreVPC(Vector<double> rrTimes, Vector<double> rrTimesVPC)
+        //{
+        //    int VPCcount=rrTimesVPC
+        //    Vector<double> nrVPC;
+        //    for (int i = 0; i < VPCcount; i++)
+        //    {
+        //        for (int j = 0, j< rrTimes.Count; j++)
+        //        {
+        //            if rrTimes(i) == rrTimesVPC(j)
+        //            {
+        //                nrVPC(j) = i;
+        //            }
+
+        //        }
+        //    }
+        //}
+
+
+
+
+
+
+
+
 
 
         //public static void Main(string[] args)
