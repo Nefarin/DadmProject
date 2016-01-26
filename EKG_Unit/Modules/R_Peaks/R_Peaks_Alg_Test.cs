@@ -141,16 +141,7 @@ namespace EKG_Unit.Modules.R_Peaks
             R_Peaks_Alg test = new R_Peaks_Alg();
             Vector<double> testResult = test.ExtractModeFun(testVector);
         }
-        [TestMethod]
-        [Description("Test if Filtering throws null if argument is not initialized")]
-        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
-        public void FilteringNullTest()
-        {
-            double[] testArray = null;
-            R_Peaks_Alg test = new R_Peaks_Alg();
-            double[] testResult = test.Filtering(25, 5, 12, testArray);
-        }
-
+       
         [TestMethod]
         [Description("Test if ExtractMode return input signal if it does not consist of any modes")]
         public void ExtractModeFailureTest()
@@ -326,7 +317,17 @@ namespace EKG_Unit.Modules.R_Peaks
             }
             CollectionAssert.AreNotEqual(testResult, resultArray);
         }
-        
+
+        [TestMethod]
+        [Description("Test if Filtering throws null if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void FilteringNullTest()
+        {
+            double[] testArray = null;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Filtering(25, 5, 12, testArray);
+        }
+
         // ____________________________________DOTĄD DZIAŁAM!_____________________________________________
 
         /*
