@@ -1,4 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<OrderedTest xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="ab83c4ea-d123-4578-bfcd-f62787540700" name="HRT">
-	
+<OrderedTest name="hrt" storage="c:\users\groszek\desktop\dadm working copy\dadmproject\ekg_unit\modules\hrt\hrt.orderedtest" id="ab83c4ea-d123-4578-bfcd-f62787540700" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestLinks>
+    <TestLink id="0172bb10-3bfe-2624-6ae9-2b80dae5cb40" name="ChangeVectorIntoTimeDomainTest1" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  </TestLinks>
 </OrderedTest>
