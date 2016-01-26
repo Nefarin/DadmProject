@@ -58,6 +58,7 @@ namespace EKG_Project.Modules.QT_Disp
             if(R_Peaks.Count == 0) throw new ArgumentNullException("R_Peak empty list");
             if(T_End_Global.Count == 0) throw new ArgumentNullException("T_End empty list");
             if (Fs < 0) throw new InvalidDataException("Wrong frequency");
+            if (QRS_Onset.Count != QRS_End.Count && QRS_End.Count != T_End_Global.Count) throw new InvalidOperationException("List not same capacity");
 
             this.QRS_onset = QRS_Onset;
             this.QRS_End = QRS_End;
@@ -317,11 +318,10 @@ namespace EKG_Project.Modules.QT_Disp
             if(T_End_Global == null) throw new ArgumentNullException("T_End_Global null");
             if (R_Peak.Count() != 2) throw new InvalidDataException("Wrong parameters for R_Peak");
             if(samples.Count != (R_Peak[1]- R_Peak[0])) throw new ArgumentNullException("Samples wrong length");
-            if(QRS_onset > QRS_End) throw new ArgumentNullException("Waves not work good QRS onset > QRS End - recognition impossible");
-            if(QRS_End > T_End_Global) throw new ArgumentNullException("Waves not work good QRS End > T_End- recognition impossible");
+            if(QRS_onset > QRS_End && (QRS_onset !=-1 || QRS_End !=- 1)) throw new ArgumentNullException("Waves not work good QRS onset > QRS End - recognition impossible");
+            if(QRS_End > T_End_Global && (QRS_End != -1 || T_End_Global !=-1) ) throw new ArgumentNullException("Waves not work good QRS End > T_End- recognition impossible");
             if(Fs < 0) throw new ArgumentNullException("Wrong Frequency parameter");
-
-
+            
             this.QRS_onset = QRS_onset;
             this.QRS_End = QRS_End;
             this.T_End_Global = T_End_Global;
