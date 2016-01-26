@@ -9,7 +9,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
     public class Atrial_Fibr_Alg_Test
     {
         [TestMethod]
-        [Description("Test if turning points is correct for AF signal")]
+        [Description("Test if turning points is correct for AF signal (07859)")]
         public void TPRTestAF()
         {
             //init
@@ -27,7 +27,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
         }
 
         [TestMethod]
-        [Description("Test if turning points is correct for healthy signal")]
+        [Description("Test if turning points is correct for healthy signal (16265)")]
         public void TPRTestNAF()
         {
             //init
@@ -76,6 +76,76 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             double realresult = Convert.ToDouble(obj.Invoke("SE", args));
             //results
             Assert.AreEqual(result, realresult, delta);
+        }
+
+        [TestMethod]
+        [Description("Test if RMSSD is correct for healthy signal")]
+        public void RMSSDTestNAF()
+        {
+            //init
+            double[] testArray = { 85, 84, 82, 83, 84, 89, 94, 101, 101, 99, 97, 96, 95, 95, 97, 98, 97, 94, 95, 98, 95, 97, 101, 103, 95, 95, 97, 98, 97, 97, 100, 100 };
+            double result = 0.0301;
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            object[] args = { testVector };
+            double delta = 0.001;
+            //test
+            double realresult = Convert.ToDouble(obj.Invoke("RMSSD", args));
+            //results
+            Assert.AreEqual(result, realresult, delta);
+        }
+
+        [TestMethod]
+        [Description("Test if RMSSD is correct for AF signal")]
+        public void RMSSDTestAF()
+        {
+            //init
+            double[] testArray = { 137, 147, 156, 129, 130, 123, 129, 138, 138, 162, 138, 161, 123, 144, 157, 156, 142, 136, 118, 136, 158, 139, 178, 158, 164, 126, 135, 134, 173, 171, 170, 143 };
+            double result = 0.1370;
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            object[] args = { testVector };
+            double delta = 0.001;
+            //test
+            double realresult = Convert.ToDouble(obj.Invoke("RMSSD", args));
+            //results
+            Assert.AreEqual(result, realresult, delta);
+        }
+
+        [TestMethod]
+        [Description("Test if detection of AF is correct for AF signal")]
+        public void detectAFStatTestAF()
+        {
+            //init
+            double[] testArray = { 85, 84, 82, 83, 84, 89, 94, 101, 101, 99, 97, 96, 95, 95, 97, 98, 97, 94, 95, 98, 95, 97, 101, 103, 95, 95, 97, 98, 97, 97, 100, 100 };
+            bool result = false;
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            object[] args = { testVector };
+            //test
+            bool realresult = Convert.ToBoolean(obj.Invoke("detectAFStat", args));
+            //results
+            Assert.AreEqual(result, realresult);
+        }
+
+        [TestMethod]
+        [Description("Test if detection of AF is correct for healthy signal")]
+        public void detectAFStatTestNAF()
+        {
+            //init
+            double[] testArray = { 137, 147, 156, 129, 130, 123, 129, 138, 138, 162, 138, 161, 123, 144, 157, 156, 142, 136, 118, 136, 158, 139, 178, 158, 164, 126, 135, 134, 173, 171, 170, 143 };
+            bool result = true;
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            object[] args = { testVector };
+            //test
+            bool realresult = Convert.ToBoolean(obj.Invoke("detectAFStat", args));
+            //results
+            Assert.AreEqual(result, realresult);
         }
     }
 }
