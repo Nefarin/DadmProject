@@ -366,6 +366,11 @@
     <Compile Include="Modules\Heart_Class\Heart_Class_Data.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Params.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Stats.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Alg.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Data.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Params.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Stats.cs" />
     <Compile Include="Modules\HRT\HRT.cs" />
     <Compile Include="Modules\HRT\HRT_Alg.cs" />
     <Compile Include="Modules\HRT\HRT_Data.cs" />

@@ -83,6 +83,11 @@
     <Compile Include="Modules\Heart_Class\Heart_Class_Params_Test.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Stats_Test.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Test.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Alg_Test.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Data_Test.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Params_Test.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Stats_Test.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Test.cs" />
     <Compile Include="Modules\HRT\HRT_Alg_Test.cs" />
     <Compile Include="Modules\HRT\HRT_Data_Test.cs" />
     <Compile Include="Modules\HRT\HRT_Params_Test.cs" />
@@ -163,6 +168,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Modules\Heart_Class\Heart_Class.orderedtest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Modules\Heart_Cluster\Heart_Cluster.orderedtest">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Modules\HRT\HRT.orderedtest">
