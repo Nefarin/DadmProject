@@ -27,5 +27,39 @@ namespace EKG_Unit.Modules.HRT
 
         }
 
+        [TestMethod]
+        [Description("Test if vector changes into time domain properly - not equality test")]
+        public void ChangeVectorIntoTimeDomainTest2()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            double[] resultArray = { 0, 10, 20, 31, 40, 50, 60, 70, 81, 90, 100 };
+            int samplingFreq = 100;
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Vector<double> testResult = testAlg.ChangeVectorIntoTimeDomain(testVector, samplingFreq);
+            Assert.AreNotEqual(testResult, resultVector);
+
+        }
+
+        [TestMethod]
+        [Description("Test if ChangeVectorIntoTimeDomain throws null if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void ChangeVectorIntoTimeDomainNullTest()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            Vector<double> testVector = null;
+            int samplingFreq = 100;
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Vector<double> testResult = testAlg.ChangeVectorIntoTimeDomain(testVector, samplingFreq);
+            
+        }
+
     }
 }
