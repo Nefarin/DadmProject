@@ -496,13 +496,13 @@ namespace EKG_Project.Modules.R_Peaks
             OnlineFirFilter integrationFilter = new OnlineFirFilter(hi_coeff);
             int1Signal = integrationFilter.ProcessSamples(htSignal);
             Vector<double> tempSignal = Vector<double>.Build.DenseOfArray(int1Signal);
-            /*
+            
             // correcting signal length
             Vector<double> int2Signal = CutSignal(tempSignal, Convert.ToInt32(Math.Round(window / 2)), htSignal.Length - 1);
             int sigLength = htSignal.Length - Convert.ToInt32(Math.Round(window / 2));
-            */
+            /*
             double[] int2Signal = tempSignal.ToArray();
-            int sigLength = int2Signal.Length;
+            int sigLength = int2Signal.Length;*/
             // normalization
             double tempMax = int2Signal.Maximum();
             double tempMin = int2Signal.Minimum();
@@ -578,7 +578,7 @@ namespace EKG_Project.Modules.R_Peaks
                 }
                 Vector<double> tempI = Vector<double>.Build.DenseOfArray(tempV);
                 double tempIndex = tempI.MaximumIndex();
-                locsR.Add(tempIndex + leftLimit[i]);
+                locsR.Add(tempIndex + leftLimit[i] /*- Delay*/);
             }
 
             return locsR.ToArray();
