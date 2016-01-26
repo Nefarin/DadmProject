@@ -277,6 +277,8 @@ namespace EKG_Unit.Modules.R_Peaks
             double[] testResult = test.HilbertTransform(testArray);
         }
 
+        // TEST - co jeśli pusta tablica na wejściu -> wyjątek dot pustej tablicy!
+
         // Perform Filtering
         [TestMethod]
         [Description("Test if Filtering works properly")]
@@ -328,8 +330,56 @@ namespace EKG_Unit.Modules.R_Peaks
             double[] testResult = test.Filtering(25, 5, 12, testArray);
         }
 
-        // ____________________________________DOTĄD DZIAŁAM!_____________________________________________
+        // Integration for Hilbert method
+        [TestMethod]
+        [Description("Test if Filtering works properly")]
+        public void IntegrationTest()
+        {
+            double[] testArray = { 2, 0, 1, -2, 8, -3, 0, 1, 0, 2 };
+            double[] resultArray = { 0.3333, 0.1111, 1.0000, 0.6667, 0.4444, 0.5556, 0.4444, 0.8889 };
+            
+            for (int i = 0; i < resultArray.Length; i++)
+            {
+                resultArray[i] = Math.Round(resultArray[i], 4);
+            }
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Integration(testArray, 15);
+            for (int i = 0; i < testResult.Length; i++)
+            {
+                testResult[i] = Math.Round(testResult[i], 4);
+            }
+            CollectionAssert.AreEqual(testResult, resultArray);
+        }
+        
+        [TestMethod]
+        [Description("Test if Filtering works properly - not equality test")]
+        public void IntegrationTest2()
+        {
+            double[] testArray = { 2, 0, 1, -2, 8, -3, 0, 1, 0, 2 };
+            double[] resultArray = { 0.2222, 0.2222, 1.0000, 0.6667, 0.4444, 0.5556, 0.4444, 0.8889 };
 
+            for (int i = 0; i < resultArray.Length; i++)
+            {
+                resultArray[i] = Math.Round(resultArray[i], 4);
+            }
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Integration(testArray, 15);
+            for (int i = 0; i < testResult.Length; i++)
+            {
+                testResult[i] = Math.Round(testResult[i], 4);
+            }
+            CollectionAssert.AreNotEqual(testResult, resultArray);
+        }
+        [TestMethod]
+        [Description("Test if Filtering throws null if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void IntegrationNullTest()
+        {
+            double[] testArray = null;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Integration(testArray, 15);
+        }
+        // ____________________________________DOTĄD DZIAŁAM!_____________________________________________
         /*
         [TestMethod]
         [Description("Test if find indexes return null if no elements find")]

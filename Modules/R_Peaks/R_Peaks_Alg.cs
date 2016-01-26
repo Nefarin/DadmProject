@@ -18,8 +18,8 @@ namespace EKG_Project.Modules.R_Peaks
     #endregion
     public class R_Peaks_Alg
     {
-       /* static void Main(string[] args)
-        {
+        static void Main(string[] args)
+        {/*
             #region readData            
             //read data from dat file
             TempInput.setInputFilePath(@"D:\biomed\DADM\C#\100v5.txt");
@@ -28,27 +28,27 @@ namespace EKG_Project.Modules.R_Peaks
             #endregion
 
             R_Peaks_Alg test = new R_Peaks_Alg();
-
-            #region writeData
+  
+           #region writeData
             //write result to dat file
             //TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baserr.txt");
             //TempInput.writeFile(fs, RRms);
-
+            
             #endregion
 
             //TEST-Console
             Console.WriteLine("done");
             foreach (double sth in resultLists.Item1) { Console.WriteLine(sth + "xx"); }
             foreach (double sth in testResult.Item2) { Console.WriteLine(sth + "xx"); }
-            Console.ReadKey();
-        }*/
+            Console.ReadKey();*/
+        }
 
         //FIELDS
-        #region 
-        /// <summary>
-        /// Store the value of delay in samples generates due to processing
-        /// </summary>
-        #endregion
+            #region 
+            /// <summary>
+            /// Store the value of delay in samples generates due to processing
+            /// </summary>
+            #endregion
         private uint _delay;
         #region
         /// <summary>
@@ -486,21 +486,23 @@ namespace EKG_Project.Modules.R_Peaks
         {
             if (htSignal == null) throw new ArgumentNullException();
             double[] int1Signal = new double[htSignal.Length];
-            double window = Math.Round(0.37 * fs);
+            double window = Math.Round(0.36 * fs);
             Delay += Convert.ToUInt32(Math.Round(window / 2));
             IList<double> hi_coeff = new List<double>();
-            for (int i = 0; i < window; i++)
+            for (int i = 0; i < (window+1); i++)
             {
                 hi_coeff.Add((1 / window) + 1);
             }
             OnlineFirFilter integrationFilter = new OnlineFirFilter(hi_coeff);
             int1Signal = integrationFilter.ProcessSamples(htSignal);
             Vector<double> tempSignal = Vector<double>.Build.DenseOfArray(int1Signal);
-
+            
             // correcting signal length
             Vector<double> int2Signal = CutSignal(tempSignal, Convert.ToInt32(Math.Round(window / 2)), htSignal.Length - 1);
             int sigLength = htSignal.Length - Convert.ToInt32(Math.Round(window / 2));
-
+            /*
+            double[] int2Signal = tempSignal.ToArray();
+            int sigLength = int2Signal.Length;*/
             // normalization
             double tempMax = int2Signal.Maximum();
             double tempMin = int2Signal.Minimum();
@@ -576,7 +578,7 @@ namespace EKG_Project.Modules.R_Peaks
                 }
                 Vector<double> tempI = Vector<double>.Build.DenseOfArray(tempV);
                 double tempIndex = tempI.MaximumIndex();
-                locsR.Add(tempIndex + leftLimit[i]);
+                locsR.Add(tempIndex + leftLimit[i] /*- Delay*/);
             }
 
             return locsR.ToArray();
@@ -728,7 +730,7 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public Vector<double> CubicSplineInterp(int signalLength, IEnumerable<double> x, IEnumerable<double> y)
         {
-            //TO DO: ROUND???
+            //TO DO: ROUND???       
             if (x==null || y==null) throw new ArgumentNullException();
             //result vector
             Vector<double> interpSpl = Vector<double>.Build.Dense(signalLength);
@@ -774,12 +776,12 @@ namespace EKG_Project.Modules.R_Peaks
                     //envelopes
                     try
                     {
-                        Vector<double> envMin = CubicSplineInterp(signal.Count, iMin, ampMin);
-                        Vector<double> envMax = CubicSplineInterp(signal.Count, iMax, ampMax);
-                        Vector<double> envMean = envMin.Add(envMax).Divide(2);
-                        //substract form signal
-                        d = d - envMean;
-                    }
+                    Vector<double> envMin = CubicSplineInterp(signal.Count, iMin, ampMin);
+                    Vector<double> envMax = CubicSplineInterp(signal.Count, iMax, ampMax);
+                    Vector<double> envMean = envMin.Add(envMax).Divide(2);
+                    //substract form signal
+                    d = d - envMean;
+                }
                     catch(ArgumentException ex)
                     {
                         Console.WriteLine(ex.Message);
