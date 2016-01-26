@@ -302,19 +302,19 @@ namespace EKG_Project.Modules.Waves
 
             if (currentECG.Count == 0)
             {
-                throw new InvalidOperationException("Empty vector");
+                throw new InvalidOperationException("Empty vector"); // Exception if signal is empty
             }
-            int loc_index;
+            int loc_index; // variable for indexing location of samples in signal
 
-            max_val = double.MinValue;
-            max_loc = 0;
+            max_val = double.MinValue; // initialize maximum value
+            max_loc = 0; // initialize maximum value location
 
             for (loc_index = begin_loc; loc_index <= end_loc; loc_index++)
             {
                 if (max_val < currentECG[loc_index])
                 {
-                    max_val = currentECG[loc_index];
-                    max_loc = loc_index;
+                    max_val = currentECG[loc_index]; // if current sample is greater than previous maximum then current sample is maximum value
+                    max_loc = loc_index; // if current sample is greater than previous maximum then current sample location is maximum value location
                 }
             }
 
@@ -324,67 +324,73 @@ namespace EKG_Project.Modules.Waves
         /// <summary>
         /// This method finds locations of P-onsets and P-ends
         /// </summary>
+        /// <param name="frequency"> Sampling frequency of signal</param>
+        /// <param name="offset"> Signal shift during division of signal</param>
+        /// <param name="currentQRSonsetsPart"> QRSonsets location in current signal part</param>
+        /// <param name="currentECG"> Current signal</param>
+        /// <param name="currentPonsetsPart"> Ponsets location in current signal part</param>
+        /// <param name="currentPendsPart"> Pends location in current signal part</param>
         /// <returns> List containing locations of P-onsets and P-ends</returns>
         #endregion
         public void FindP( uint frequency, int offset, List<int> currentQRSonsetsPart,
             Vector<double> currentECG, List<int> currentPonsetsPart, List<int> currentPendsPart)
         {
-            double pmax_val, thr;
-            int window, break_window, pmax_loc, ponset, pend;
+            double pmax_val, thr; // initialization of P-wave maximum and threshold variables
+            int window, break_window, pmax_loc, ponset, pend; // initialization of P-wave maximum location, Ponsets location, Pends location and window variables
 
-            window = Convert.ToInt32( frequency * 0.25);
-            break_window = Convert.ToInt32(frequency * 0.3);
+            window = Convert.ToInt32( frequency * 0.25); // window length
+            break_window = Convert.ToInt32(frequency * 0.3); // length of window to break searching for maximum
 
             foreach (int onset_loc_abs in currentQRSonsetsPart)
             {
-                int onset_loc = -1;
+                int onset_loc = -1; // initialization of QRSonset location
                 if (onset_loc_abs != -1)
-                    onset_loc = onset_loc_abs - offset;
+                    onset_loc = onset_loc_abs - offset; // offset adjustment to current part of signal
                 if ((onset_loc - (window)) >= 1 && onset_loc != -1)
                 {
-                    FindMaxValue(onset_loc - window, onset_loc, out pmax_loc, out pmax_val, currentECG);
+                    FindMaxValue(onset_loc - window, onset_loc, out pmax_loc, out pmax_val, currentECG); // find maximum of P-wave on length of window
                 }
                 else
                 {
-                    ponset = -1;
-                    pend = -1;
-                    currentPonsetsPart.Add(ponset);
-                    currentPendsPart.Add(pend);
+                    ponset = -1; // if Ponset is on recognized then write as -1
+                    pend = -1; // if Pend is on recognized then write as -1
+                    currentPonsetsPart.Add(ponset); // add -1 to current Ponsets list
+                    currentPendsPart.Add(pend); // add -1 to current Pends list
                     continue;
                 }
 
-                ponset = pmax_loc;
-                thr = (pmax_val - currentECG[onset_loc]) * 0.4;
-                while (currentECG[ponset] > currentECG[ponset - 1] || Math.Abs(pmax_val - currentECG[ponset]) < thr) //dawniej 70
+                ponset = pmax_loc; // initialize Ponset location with maximum location
+                thr = (pmax_val - currentECG[onset_loc]) * 0.4; // set threshold equal to percentage of level from maximum value and QRSonset
+                while (currentECG[ponset] > currentECG[ponset - 1] || Math.Abs(pmax_val - currentECG[ponset]) < thr) // find local minimum and check if threshold is exceeded
                 {
-                    ponset--;
-                    if (ponset < onset_loc - break_window || ponset < 1)
+                    ponset--; // move backwards in samples
+                    if (ponset < onset_loc - break_window || ponset < 1) // check if current location exceeded length of break window
                     {
-                        ponset = -1;
+                        ponset = -1; // set location to -1
                         break;
                     }
                 }
 
                 if (ponset != -1)
-                    currentPonsetsPart.Add(ponset + offset);
+                    currentPonsetsPart.Add(ponset + offset); // add new Ponset location to the list
                 else
-                    currentPonsetsPart.Add(ponset );
+                    currentPonsetsPart.Add(ponset ); // add -1 to the list
 
-                pend = pmax_loc;
-                thr = (pmax_val - currentECG[onset_loc]) * 0.4;
-                while (currentECG[pend] > currentECG[pend + 1] || (pmax_val - currentECG[pend] < thr))
+                pend = pmax_loc; // initialize Pend location with maximum location
+                thr = (pmax_val - currentECG[onset_loc]) * 0.4; // set threshold equal to percentage of level from maximum value and QRSonset
+                while (currentECG[pend] > currentECG[pend + 1] || (pmax_val - currentECG[pend] < thr)) // find local minimum and check if threshold is exceeded
                 {
-                    pend++;
-                    if (pend > onset_loc)
+                    pend++; // move forward in samples
+                    if (pend > onset_loc) // check if Pend location exceeded QRSonset location
                     {
-                        pend = -1;
+                        pend = -1; // set location to -1
                         break;
                     }
                 }
                 if( pend != -1)
-                    currentPendsPart.Add(pend + offset);
+                    currentPendsPart.Add(pend + offset); // add new Pend location to the list
                 else
-                    currentPendsPart.Add(pend);
+                    currentPendsPart.Add(pend); // add -1 to the list
             }
         }
 
@@ -392,46 +398,54 @@ namespace EKG_Project.Modules.Waves
         /// <summary>
         /// This method finds locations of T-ends
         /// </summary>
+        /// <param name="frequency"> Sampling frequency of signal</param>
+        /// <param name="offset"> Signal shift during division of signal</param>
+        /// <param name="currentQRSendsPart"> QRSends location in current signal part</param>
+        /// <param name="currentECG"> Current signal</param>
+        /// <param name="currentTendsPart"> Tends location in current signal part</param>
         /// <returns> List containing locations of T-ends</returns>
         #endregion
         public void FindT( uint frequency, List<int> currentQRSendsPart, int offset, Vector<double> currentECG,
             List<int> currentTendsPart)
         {
-            double tmax_val, thr;
-            int window, break_window, tmax_loc, tend;
+            double tmax_val, thr; // initialization of T-wave maximum and threshold variables
+            int window, break_window, tmax_loc, tend; // initialization of T-wave maximum location, Tends location and window variables
 
 
-            window = Convert.ToInt32(frequency * 0.3);
-            break_window = Convert.ToInt32(frequency * 0.35);
+            window = Convert.ToInt32(frequency * 0.3); // window length
+            break_window = Convert.ToInt32(frequency * 0.35); // length of window to break searching for maximum
 
             foreach (int ends_loc_abs in currentQRSendsPart)
             {
-                int ends_loc = -1;
+                int ends_loc = -1; // initialization of QRSend location
                 if (ends_loc_abs != -1)
-                    ends_loc = ends_loc_abs - offset;
+                    ends_loc = ends_loc_abs - offset; // offset adjustment to current part of signal
                 if (((ends_loc + (window)) < currentECG.Count) && ends_loc != -1)
                 {
-                    FindMaxValue(ends_loc, ends_loc + window, out tmax_loc, out tmax_val, currentECG);
+                    FindMaxValue(ends_loc, ends_loc + window, out tmax_loc, out tmax_val, currentECG); // find maximum of T-wave on length of window
                 }
                 else
                 {
-                    tend = -1;
-                    currentTendsPart.Add(tend);
+                    tend = -1; // if Tend is on recognized then write as -1
+                    currentTendsPart.Add(tend); // add -1 to current Tends list
                     continue;
                 }
 
-                tend = tmax_loc;
-                thr = (tmax_val - currentECG[ends_loc]) * 0.25;
-                while (currentECG[tend] > currentECG[tend + 1] || ((tmax_val - currentECG[tend] < thr) && (tmax_val - currentECG[tend] > -(tmax_val * 0.01))))
+                tend = tmax_loc; // initialize Tend location with maximum location
+                thr = (tmax_val - currentECG[ends_loc]) * 0.25; // set threshold equal to percentage of level from maximum value and QRSend
+                while (currentECG[tend] > currentECG[tend + 1] || ((tmax_val - currentECG[tend] < thr) && (tmax_val - currentECG[tend] > -(tmax_val * 0.01)))) // find local minimum and check if threshold is exceeded
                 {
-                    tend++;
-                    if (tend > ends_loc + break_window)
+                    tend++; // move forward in samples
+                    if (tend > ends_loc + break_window) // check if current location exceeded length of break window
                     {
-                        tend = -1;
+                        tend = -1; // set location to -1
                         break;
                     }
                 }
-                currentTendsPart.Add(tend);
+                if (tend != -1)
+                    currentTendsPart.Add(tend + offset); // add new Tend location to the list
+                else
+                    currentTendsPart.Add(tend); // add -1 to the list
             }
         }
     }
