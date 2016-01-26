@@ -204,7 +204,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="_qrssignal"></param>
         /// <returns></returns>
         #endregion
-        double PnRatio(Vector<double> _qrssignal)
+        public double PnRatio(Vector<double> _qrssignal)
         {
             double result = 0;
             double positiveAmplitude = 0;
@@ -232,7 +232,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="_qrssignal"></param>
         /// <returns></returns>
         #endregion
-        double SpeedAmpRatio(Vector<double> _qrssignal)
+        public double SpeedAmpRatio(Vector<double> _qrssignal)
         {
             qrsLength = _qrssignal.Count();
             double[] speed = new double[qrsLength-2];
@@ -255,7 +255,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="_qrssignal"></param>
         /// <returns></returns>
         #endregion
-        double FastSampleCount(Vector<double> _qrssignal)
+        public double FastSampleCount(Vector<double> _qrssignal)
         {
            
             int qrsLength = _qrssignal.Count();
@@ -289,7 +289,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="fs"></param>
         /// <returns></returns>
         #endregion
-        double QrsDuration(Vector<double> _qrssignal, uint fs)
+        public double QrsDuration(Vector<double> _qrssignal, uint fs)
         {
             qrsLength = _qrssignal.Count();
             double samplingInterval = 1 / (double)fs;
