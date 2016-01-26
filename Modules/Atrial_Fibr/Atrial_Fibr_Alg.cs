@@ -270,7 +270,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             _RR1 = _RR;
             List<Tuple<int, double>> listOfElements = new List<Tuple<int, double>>();
             int i;
-            for (i = 0; i < 8; i++)
+            for (i = 0; i < 7; i++)
             {
                  for (int k = 0; k < _RR1.Count; k++)
                  {

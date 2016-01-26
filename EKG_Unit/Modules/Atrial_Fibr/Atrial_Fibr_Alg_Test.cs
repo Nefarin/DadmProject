@@ -49,7 +49,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
         {
             //init
             double[] testArray = { 137, 147, 156, 129, 130, 123, 129, 138, 138, 162, 138, 161, 123, 144, 157, 156, 142, 136, 118, 136, 158, 139, 178, 158, 164, 126, 135, 134, 173, 171, 170, 143 };
-            double result = 0.7399;
+            double result = 0.9865;
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
             Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
             PrivateObject obj = new PrivateObject(testAlg);
