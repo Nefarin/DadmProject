@@ -262,11 +262,28 @@ namespace EKG_Unit.Modules.QT_Disp
             int onset = 192;
             int end = 255;
             int tend = new int();
-            //352
             double[] rpeak = { 204, 606 };
             
+            DataToCalculate data = new DataToCalculate(onset, end, tend, sampl, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, rpeak);  
+        }
+
+        [TestMethod]
+        [Description("Test if method parameter proper samples vector length")]
+        [ExpectedException(typeof(ArgumentNullException), "Samples wrong length")]
+        public void test_DataToCalculate_6()
+        {
+            QT_Disp_Alg test = new QT_Disp_Alg();
+
+            PrivateObject obj = new PrivateObject(test);
+            double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662, };
+
+            Vector<double> sampl = Vector<double>.Build.DenseOfArray(signalTab);
+            int onset = 2;
+            int end = 5;
+            int tend = 6;
+            double[] rpeak = { 0, 6 };
+
             DataToCalculate data = new DataToCalculate(onset, end, tend, sampl, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, rpeak);
-            
         }
     }
 }

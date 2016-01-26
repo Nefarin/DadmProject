@@ -310,14 +310,6 @@ namespace EKG_Project.Modules.QT_Disp
         private T_End_Method T_End_method;
         private uint Fs;
         private double[] R_Peak = new double[2];
-        private object p;
-        private int end;
-        private int tend;
-        private Vector<double> sampl;
-        private QT_Calc_Method fRAMIGHAMA;
-        private T_End_Method pARABOLA;
-        private int v;
-        private double[] rpeak;
 
         public DataToCalculate(int QRS_onset, int QRS_End, int T_End_Global, Vector<double> samples, QT_Calc_Method QT_Calc_method, T_End_Method T_End_method, uint Fs, double[] R_Peak)
         {
