@@ -61,5 +61,22 @@ namespace EKG_Unit.Modules.HRT
             
         }
 
+        [TestMethod]
+        [Description("Test if ChangeVectorIntoTimeDomain throws null if argument is out of range")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Parameter out of range")]
+        public void ChangeVectorIntoTimeDomainOutOfRangeTest()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            int samplingFreq = 0;
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Vector<double> testResult = testAlg.ChangeVectorIntoTimeDomain(testVector, samplingFreq);
+
+        }
+
     }
 }
