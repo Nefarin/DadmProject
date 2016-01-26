@@ -11,7 +11,7 @@ namespace EKG_Project.Modules.HRV2
         private double tinn;
         #region Documentation
         /// <summary>
-        /// Get the TINN coefficient, which is 
+        /// Write to the <double> tinn coefficient, which is 
         /// the base of the triangle fitted to histogram
         /// </summary>
         /// 
@@ -19,8 +19,7 @@ namespace EKG_Project.Modules.HRV2
             private void makeTinn()
         {
             //Vector<double> RRIntervals = InputData.RRInterval[_currentChannelIndex].Item2;
-            double Tinn = (_rrIntervals.Max() - _rrIntervals.Min());
-            tinn = Tinn;
+            tinn = (_rrIntervals.Max() - _rrIntervals.Min());
         }
     }
 }

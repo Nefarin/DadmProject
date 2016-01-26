@@ -15,15 +15,14 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// This  is made for visualisation. 
-        /// We use Histogram class from MathNet.Numerics.Statistics
+        /// Returns a List<Tuple<double.double>>. 
+        /// First is average value of the bin and the second is count of the bin. 
         /// </summary>
         /// 
         #endregion
 
         public List<Tuple<double,double>> HistogramToVisualisation()
         {
-            //Histogram2 data = new Histogram2(binLength, RRIntervals);
             _currentHistogram = new Histogram2(binLength, _rrIntervals);
             ObservableCollection<Sample> samples = _currentHistogram.Samples;
             List<Tuple<double, double>> HistogramList = new List<Tuple<double, double>>();
@@ -34,7 +33,6 @@ namespace EKG_Project.Modules.HRV2
             }
             return HistogramList;
         }
-
 
         #region Documentation
         /// <summary>

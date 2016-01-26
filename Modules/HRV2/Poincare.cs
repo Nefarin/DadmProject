@@ -64,7 +64,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Get the SD1 coefficient, the shorter axis of the ellipse
+        /// Returns a <double> SD1 coefficient, the shorter axis of the ellipse
         /// </summary>
         /// 
         #endregion
@@ -76,7 +76,7 @@ namespace EKG_Project.Modules.HRV2
         }
         #region Documentation
         /// <summary>
-        /// Get the SD2 coefficient, the longer axis of the ellipse
+        /// Returns a <double> SD2 coefficient, the longer axis of the ellipse
         /// </summary>
         /// 
         #endregion
@@ -89,7 +89,7 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// Get the center of an elipse fitted to Poincare plot 
+        /// Returns a Vector <double> center (x,y) of an elipse fitted to Poincare plot 
         /// </summary>
         /// 
         #endregion

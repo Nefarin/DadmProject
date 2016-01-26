@@ -10,7 +10,7 @@ namespace EKG_Project.Modules.HRV2
         double triangleIndex;
         #region Documentation
         /// <summary>
-        /// Get Triangle Index coefficient, which is 
+        /// Write to Triangle Index coefficient, which is 
         /// the value of the highest bin, devided by all RR intervals count
         /// </summary>
         /// 
