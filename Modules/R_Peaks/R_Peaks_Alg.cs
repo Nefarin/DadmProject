@@ -523,9 +523,10 @@ namespace EKG_Project.Modules.R_Peaks
         /// <param name="signal"> ECG signal</param>
         /// <returns> Numbers of samples of R peaks in ECG signal as int array </returns>
         #endregion
-        double[] FindPeak(double[] integratedSignal, Vector<double> signal)
+        public double[] FindPeak(double[] integratedSignal, Vector<double> signal)
         {
-            if (signal == null) throw new ArgumentNullException();
+            if (integratedSignal == null) throw new ArgumentNullException();
+            if (signal == null) throw new NullReferenceException();
             // finding threshold
             double tempMax = integratedSignal.Max();
             double threshold = integratedSignal.Average() * tempMax;

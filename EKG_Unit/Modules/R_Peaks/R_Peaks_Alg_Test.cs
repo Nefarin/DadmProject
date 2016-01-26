@@ -222,9 +222,8 @@ namespace EKG_Unit.Modules.R_Peaks
             CollectionAssert.AreEqual(resultVectors, testResult);
         }
 
-
-
         // __________________________________________________________________________________________
+
         // Tests for HILBERT functions
         // Perform Hilbert Transform
         [TestMethod]
@@ -337,7 +336,7 @@ namespace EKG_Unit.Modules.R_Peaks
         {
             double[] testArray = { 2, 0, 1, -2, 8, -3, 0, 1, 0, 2 };
             double[] resultArray = { 0.3333, 0.1111, 1.0000, 0.6667, 0.4444, 0.5556, 0.4444, 0.8889 };
-            
+
             for (int i = 0; i < resultArray.Length; i++)
             {
                 resultArray[i] = Math.Round(resultArray[i], 4);
@@ -370,6 +369,7 @@ namespace EKG_Unit.Modules.R_Peaks
             }
             CollectionAssert.AreNotEqual(testResult, resultArray);
         }
+
         [TestMethod]
         [Description("Test if Filtering throws null if argument is not initialized")]
         [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
@@ -379,19 +379,63 @@ namespace EKG_Unit.Modules.R_Peaks
             R_Peaks_Alg test = new R_Peaks_Alg();
             double[] testResult = test.Integration(testArray, 15);
         }
-        // ____________________________________DOTĄD DZIAŁAM!_____________________________________________
-        /*
+
+        // Locating peaks for Hilbert method
         [TestMethod]
-        [Description("Test if find indexes return null if no elements find")]
-        public void HilbertTransformFailureTest()
+        [Description("Test if Filtering works properly")]
+        public void FindPeakTest()
         {
-            double[] testArray = { 0, 2, 0, 0, 4, 7, 9, 0 };
-            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] testArray1 = { 2, 0, 1, -2, 9, -2, 0, 1, 0, 1 };
+            double[] testArray2 = { 0.1000, 1.0000, 0.8000, 0.6000, 0.7000, 0.6000, 0.9000, 0, 0.2000, 0.2000 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray2);
+            double[] resultArray = { 4 };
 
             R_Peaks_Alg test = new R_Peaks_Alg();
-            Vector<double> testResult = test.FindIndexes(testVector);
-            Assert.AreEqual(testResult, null);
-        }*/
+            double[] testResult = test.FindPeak(testArray1, testVector);
+            CollectionAssert.AreEqual(testResult, resultArray);
+        }
+
+        [TestMethod]
+        [Description("Test if Filtering works properly - not equality test")]
+        public void FindPeakTest2()
+        {
+            double[] testArray1 = { 2, 0, 1, -2, 9, -2, 0, 1, 0, 1 };
+            double[] testArray2 = { 0.1000, 1.0000, 0.8000, 0.6000, 0.7000, 0.6000, 0.9000, 0, 0.2000, 0.2000 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray2);
+            double[] resultArray = { 5 };
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.FindPeak(testArray1, testVector);
+            CollectionAssert.AreNotEqual(testResult, resultArray);
+        }
+
+        [TestMethod]
+        [Description("Test if FindPeak throws null if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter (array)")]
+        public void FindPeakNullTest1()
+        {
+            double[] testArray = null;
+            double[] testArray2 = { 1, 2, 3};
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray2);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.FindPeak(testArray, testVector);
+        }
+
+        [TestMethod]
+        [Description("Test if FindPeak throws null if argument is not initialized")]
+        [ExpectedException(typeof(NullReferenceException), "Null given as parameter (vector)")]
+        public void FindPeakNullTest2()
+        {
+            double[] testArray = { 1, 2, 3 };
+            double[] testArray2 = null;
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray2);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.FindPeak(testArray, testVector);
+        }
+
+        // ____________________________________DOTĄD DZIAŁAM!_____________________________________________
+
+        //...
 
     }
 }
