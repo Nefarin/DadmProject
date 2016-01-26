@@ -93,8 +93,8 @@ namespace EKG_Project.Modules.R_Peaks
         public double[] Filtering(double samplingFreq, double lowCutOff, double highCutOff, double[] rawSignal)
         {
             if (rawSignal == null) throw new ArgumentNullException();
-            //TESTY na głupie częstotliwości odcięcia!
-            //TO DO: add cutoffs as constants not param?
+            if (samplingFreq <= 0 || lowCutOff < 0 || highCutOff <=0) throw new ArgumentOutOfRangeException();
+            //TO DO: add cutoffs as constants not param? NOPE!
             Delay += 10;
             IList<double> coef = new List<double>();
 
@@ -485,6 +485,7 @@ namespace EKG_Project.Modules.R_Peaks
         public double[] Integration(double[] htSignal, uint fs)
         {
             if (htSignal == null) throw new ArgumentNullException();
+            if (fs == 0) throw new ArgumentException();
             double[] int1Signal = new double[htSignal.Length];
             double window = Math.Round(0.36 * fs);
             Delay += Convert.ToUInt32(Math.Round(window / 2));

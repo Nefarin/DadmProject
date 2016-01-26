@@ -320,7 +320,7 @@ namespace EKG_Unit.Modules.R_Peaks
         }
 
         [TestMethod]
-        [Description("Test if Filtering throws null if argument is not initialized")]
+        [Description("Test if Filtering throws exception if argument is not initialized")]
         [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
         public void FilteringNullTest()
         {
@@ -329,9 +329,22 @@ namespace EKG_Unit.Modules.R_Peaks
             double[] testResult = test.Filtering(25, 5, 12, testArray);
         }
 
+        [TestMethod]
+        [Description("Test if Filtering throws exception if any of input frequencies is below zero")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Non-positive frequency value given as parameter")]
+        public void FilteringZeroTest()
+        {
+            double fs = 0;
+            double fl = -5;
+            double fh = 0;
+            double[] testArray = { 2, 1, 1, 2, 3, 2, 1, 1, 0, 1 };
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Filtering(fs, fl, fh, testArray);
+        }
+
         // Integration for Hilbert method
         [TestMethod]
-        [Description("Test if Filtering works properly")]
+        [Description("Test if Integration works properly")]
         public void IntegrationTest()
         {
             double[] testArray = { 2, 0, 1, -2, 8, -3, 0, 1, 0, 2 };
@@ -351,7 +364,7 @@ namespace EKG_Unit.Modules.R_Peaks
         }
         
         [TestMethod]
-        [Description("Test if Filtering works properly - not equality test")]
+        [Description("Test if Integration works properly - not equality test")]
         public void IntegrationTest2()
         {
             double[] testArray = { 2, 0, 1, -2, 8, -3, 0, 1, 0, 2 };
@@ -371,7 +384,7 @@ namespace EKG_Unit.Modules.R_Peaks
         }
 
         [TestMethod]
-        [Description("Test if Filtering throws null if argument is not initialized")]
+        [Description("Test if Integration throws exception if argument is not initialized")]
         [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
         public void IntegrationNullTest()
         {
@@ -380,9 +393,20 @@ namespace EKG_Unit.Modules.R_Peaks
             double[] testResult = test.Integration(testArray, 15);
         }
 
+        [TestMethod]
+        [Description("Test if Integration throws exception if fs equals zero")]
+        [ExpectedException(typeof(ArgumentException), "Non-positive frequency value given as parameter")]
+        public void IntegrationZeroTest()
+        {
+            uint fs = 0;
+            double[] testArray = { 2, 1, 1, 2, 3, 2, 1, 1, 0, 1 };
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Integration(testArray, fs);
+        }
+
         // Locating peaks for Hilbert method
         [TestMethod]
-        [Description("Test if Filtering works properly")]
+        [Description("Test if FindPeak works properly")]
         public void FindPeakTest()
         {
             double[] testArray1 = { 2, 0, 1, -2, 9, -2, 0, 1, 0, 1 };
@@ -396,7 +420,7 @@ namespace EKG_Unit.Modules.R_Peaks
         }
 
         [TestMethod]
-        [Description("Test if Filtering works properly - not equality test")]
+        [Description("Test if FindPeak works properly - not equality test")]
         public void FindPeakTest2()
         {
             double[] testArray1 = { 2, 0, 1, -2, 9, -2, 0, 1, 0, 1 };
@@ -410,7 +434,7 @@ namespace EKG_Unit.Modules.R_Peaks
         }
 
         [TestMethod]
-        [Description("Test if FindPeak throws null if argument is not initialized")]
+        [Description("Test if FindPeak throws exception if argument is not initialized")]
         [ExpectedException(typeof(ArgumentNullException), "Null given as parameter (array)")]
         public void FindPeakNullTest1()
         {
@@ -422,7 +446,7 @@ namespace EKG_Unit.Modules.R_Peaks
         }
 
         [TestMethod]
-        [Description("Test if FindPeak throws null if argument is not initialized")]
+        [Description("Test if FindPeak throws exception if argument is not initialized")]
         [ExpectedException(typeof(NullReferenceException), "Null given as parameter (vector)")]
         public void FindPeakNullTest2()
         {
@@ -433,7 +457,13 @@ namespace EKG_Unit.Modules.R_Peaks
             double[] testResult = test.FindPeak(testArray, testVector);
         }
 
+        // __________________________________________________________________________________________
+
+        // Tests for PAN TOMPKINS functions
+
         // ____________________________________DOTĄD DZIAŁAM!_____________________________________________
+
+
 
         //...
 
