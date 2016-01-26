@@ -136,5 +136,37 @@ namespace EKG_Unit.Modules.HRT
             
         }
 
+        [TestMethod]
+        [Description("Test if GetNrVPC throws null if argument is out of ranged")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Parameter out of range")]
+        public void GetNrVPCOutOfRangeTest1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            double[] testrrTimesArray = { 0, 0.15, 0.30, 0.45, 0.60, 0.75, 0.9, 1.05 };
+            double[] testrrTimesVPCArray = { 0.30, 0.60, 1.55 };
+            int testVPCcount = 4;
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Vector<double> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+
+        }
+
+        [TestMethod]
+        [Description("Test if GetNrVPC throws null if argument is out of ranged")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "rrTimesVPC array is larger than rrTimes array")]
+        public void GetNrVPCOutOfRangeTest2()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            double[] testrrTimesArray = { 0.30, 0.60, 1.55 };
+            double[] testrrTimesVPCArray = { 0, 0.15, 0.30, 0.45, 0.60, 0.75, 0.9, 1.05 };
+            int testVPCcount = 8;
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Vector<double> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+
+        }
+
     }
 }
