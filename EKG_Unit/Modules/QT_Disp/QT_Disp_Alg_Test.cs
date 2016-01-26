@@ -169,19 +169,17 @@ namespace EKG_Unit.Modules.QT_Disp
                 0.018387776, 0.064885728, 0.11667983, 0.1699266, 0.21990291, 0.26194305, 0.29193246, };
            
             Vector<double> sampl = Vector<double>.Build.DenseOfArray(signalTab);
-            List<int> onset = new List<int>();
-            //onset.Add(191);   //correct onset
-            onset.Add(-1);
-            List<int> end = new List<int>();
-            end.Add(225);
-            List<int> tend = new List<int>();
-            tend.Add(352);
+            int onset = -1;
+            //onset 192
+            int end = 225;
+            int tend = -1;
+            //352
             double[] rpeak = { 204, 606 };
-            Vector<double> Rpeak = Vector<double>.Build.DenseOfArray(rpeak);
+            //Vector<double> Rpeak = Vector<double>.Build.DenseOfArray(rpeak);
            
-            test.TODoInInit(onset, tend, end, Rpeak, T_End_Method.TANGENT, QT_Calc_Method.FRIDERICA, (uint)360);
-            test.ToDoInProccessData(sampl, 0);
-            DataToCalculate data = new DataToCalculate(); // check if this is correct way of thinking...
+            //test.TODoInInit(onset, tend, end, Rpeak, T_End_Method.TANGENT, QT_Calc_Method.FRIDERICA, (uint)360);
+            //test.ToDoInProccessData(sampl, 0);
+            DataToCalculate data = new DataToCalculate(onset, end, tend, sampl, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, rpeak);
                                                           // because I get adverse results than I expected...
             int result = data.FindT_End();
             Tuple<int, double> result2 = data.Calc_QT_Interval();
