@@ -19,8 +19,13 @@ namespace EKG_Project.Modules.HRT
         private int _samplesProcessed;
         private int _numberOfChannels;
         private int _fs;
-        List<string> NamesOfLeads;
-        Vector<double> _Rpeaks;
+        Vector<double> _rpeaksSelected;
+        Vector<double> _rrintervalsSelected;
+        int [] _classSelected;
+        List<Tuple<string, Vector<double>>> _rrintervals;
+        List<Tuple<string, Vector<double>>> _rpeaks;
+        List<Tuple<int, int>> _class;
+
 
 
         //stworzenie obiektów workerów poszczególnych klas 
@@ -37,9 +42,7 @@ namespace EKG_Project.Modules.HRT
         private R_Peaks_Data _inputRpeaksData;
         private Heart_Class_Data _inputHeartClassData;
 
-        List<Tuple<string, Vector<double>>> _rrintervals;
-        List<Tuple<string, Vector<double>>> _rpeaks;
-        List<Tuple<int,int>> _class;
+        
 
         public void Abort()
         {
@@ -68,7 +71,7 @@ namespace EKG_Project.Modules.HRT
                     InputBasicData = InputBasicDataWorker.BasicData;
 
                     Fs = (int)InputBasicData.Frequency;
-                    Console.WriteLine("Częstotliwość: ");
+                    Console.Write("Częstotliwość: ");
                     Console.WriteLine(Fs);
                 }
                 catch (Exception e)
@@ -82,65 +85,79 @@ namespace EKG_Project.Modules.HRT
                     InputRpeaksWorker.Load();
                     InputRpeaksData = InputRpeaksWorker.Data;
                     _rpeaks = InputRpeaksData.RPeaks;
+                    _rrintervals = InputRpeaksData.RRInterval;
+
+                    //selekcja kanałów, biorę tylko I
                     foreach (Tuple<string, Vector<double>> _licznik in _rpeaks)
                     {
-                        if (_licznik.Item1 == "I")
-                        {
-                            //Console.WriteLine(_licznik.Item2);
-                            _Rpeaks = _licznik.Item2;
-                            Console.WriteLine(_Rpeaks);
+                        if (_licznik.Item1 == "I") {
+                            _rpeaksSelected = _licznik.Item2;
                         }
+                        else {; }
                     }
-
-                    bool jest= HRT_Algorythms.IsLengthOfTachogramOK(_Rpeaks);
-                    Console.WriteLine(jest);
+                    foreach (Tuple<string, Vector<double>> _licznik in _rrintervals)
+                    {
+                        if (_licznik.Item1 == "I")
+                        { 
+                            _rrintervalsSelected = _licznik.Item2;
+                        }
+                        else {; }
+                    }
                 }
                 catch (Exception e)
                 {
                     Abort();
                 }
-                //Console.WriteLine(NamesOfLeads[1]);
+
+                //wypisz Rpiki z kanału I
+                //foreach (double _licznik in _rpeaksSelected){
+                //    Console.WriteLine(_licznik);
+                //}
+                //Console.WriteLine("************************************");
+                //foreach (double _licznik in _rrintervalsSelected)
+                //{
+                //    Console.WriteLine(_licznik);
+                //}
 
 
+                try
+                {
+                    InputHeartClassWorker = new Heart_Class_Data_Worker(_analysisName);
+                    InputHeartClassWorker.Load();
+                    InputHeartClassData = InputHeartClassWorker.Data;
+                    _class = InputHeartClassData.ClassificationResult;
 
 
-
-                //try
-                //    {
-                //        foreach (Tuple<String, List<int>> lead in allQRSOnSets) // pętla po sygnałach z odprowadzeń
-                //        {
-                //            String _leadName = lead.Item1;
-                //            if (_leadName.Equals(FirstSignalName))
-                //            {
-                //                QArray = lead.Item2.ToArray(); ;
-                //                break;
-                //            }
-
-                //        }
-                //    }
-                //    catch (NullReferenceException e)
-                //    {
-                //        Abort();
-                //    }
-
-
-
-
-
-
-                //InputHeartClassWorker = new Heart_Class_Data_Worker(_analysisName);
-                //InputHeartClassWorker.Load();
-                //InputHeartClassData = InputHeartClassWorker.Data;
-
-                //OutputWorker = new HRT_Data_Worker(_analysisName);
-                //OutputData = new HRT_Data();
-
+                    List<int> Klasy = new List<int>();
+                    foreach (Tuple<int, int> _licznik in _class)
+                    {
+                        if (_licznik.Item2 == 1)
+                        {
+                            Klasy.Add(_licznik.Item1);
+      
+                        }
+                        else {; }
+                    }
+                    _classSelected = Klasy.ToArray();
+                    if (_classSelected.Length == 0)
+                    {
+                        Console.WriteLine("Brak załamków VPC");
+                    }
+                    else
+                    {
+                        Console.Write("Jest ");
+                        Console.Write(_classSelected.Length);
+                        Console.WriteLine(" załamków VPC");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Abort();
+                }
+                
                 //_currentChannelIndex = 0;
                 //_samplesProcessed = 0;
-
-
-
-
+                
             }
 
         }
@@ -168,23 +185,6 @@ namespace EKG_Project.Modules.HRT
         private void processData()
         {
 
-            
-                
-
-                //Console.WriteLine("RR piki");
-                //foreach (Tuple<string, Vector<double>> _licznik in _rpeaks)
-                //{
-                //    Console.WriteLine(_licznik.Item1);
-                //    Console.WriteLine(_licznik.Item2);
-                //}
-
-                //_class = InputHeartClassData.ClassificationResult;
-                //Console.WriteLine("Klasy QRS");
-                //foreach (Tuple<int, int> _licznik in _class)
-                //{
-                //    Console.WriteLine(_licznik.Item1);
-                //    //Console.WriteLine(_licznik.Item2);
-                //}
            
             _ended = true;
         }
@@ -248,16 +248,8 @@ namespace EKG_Project.Modules.HRT
         }
         public int Fs
         {
-            get
-            {
-                return _fs;
-            }
-
-            set
-            {
-                _fs = value;
-            }
-
+            get { return _fs;}
+            set{ _fs = value;}
         }
 
 

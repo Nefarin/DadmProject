@@ -10,12 +10,7 @@ namespace EKG_Project.Modules.HRT
 {
     public class HRT_Alg
     {
-        public bool IsLengthOfTachogramOK(Vector<double> Tachogram)
-        {
-            if (Tachogram.Count > 20) return true;
-            else return false;
-        }
-
+        
         public Vector<double> SearchVentricularTurbulence(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
         {
 
