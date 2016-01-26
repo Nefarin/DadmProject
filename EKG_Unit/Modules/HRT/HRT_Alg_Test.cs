@@ -8,6 +8,7 @@ namespace EKG_Unit.Modules.HRT
     [TestClass]
     public class HRT_Alg_Test
     {
+        //ChangeVectorIntoTimeDomain
         [TestMethod]
         [Description("Test if vector changes into time domain properly - equality test")]
         public void ChangeVectorIntoTimeDomainTest1()
@@ -76,6 +77,63 @@ namespace EKG_Unit.Modules.HRT
             HRT_Alg testAlg = new HRT_Alg();
             Vector<double> testResult = testAlg.ChangeVectorIntoTimeDomain(testVector, samplingFreq);
 
+        }
+
+        //GetNrVPC
+        [TestMethod]
+        [Description("Test if funcion properly finds VPC nr by R_peak index - equality test")]
+        public void GetNrVPC1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            double[] testrrTimesArray = { 0, 0.15, 0.30, 0.45, 0.60, 0.75, 0.9, 1.05 };
+            double[] testrrTimesVPCArray = { 0.30, 0.60, 1.05 };
+            int testVPCcount = 3;
+
+            double[] testnrVPCArray = { 2, 4, 7 };
+
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(testnrVPCArray);
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Vector<double> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            Assert.AreEqual(testResult, resultVector);
+
+        }
+
+        [TestMethod]
+        [Description("Test if funcion properly finds VPC nr by R_peak index - not equality test")]
+        public void GetNrVPC2()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            double[] testrrTimesArray = { 0, 0.15, 0.30, 0.45, 0.60, 0.75, 0.9, 1.05 };
+            double[] testrrTimesVPCArray = { 0.30, 0.60, 1.55 };
+            int testVPCcount = 3;
+
+            double[] testnrVPCArray = { 2, 4, 7 };
+
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(testnrVPCArray);
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Vector<double> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            Assert.AreNotEqual(testResult, resultVector);
+
+        }
+
+        [TestMethod]
+        [Description("Test if GetNrVPC throws null if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void GetNrVPCNullTest()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            double[] testrrTimesArray = null;
+            double[] testrrTimesVPCArray = { 0.30, 0.60, 1.55 };
+            int testVPCcount = 3;
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Vector<double> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            
         }
 
     }
