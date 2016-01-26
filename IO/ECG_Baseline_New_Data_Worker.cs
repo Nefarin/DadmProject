@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.IO
 {
-    class Test_Worker
+    class ECG_Baseline_New_Data_Worker
     {
     }
 }

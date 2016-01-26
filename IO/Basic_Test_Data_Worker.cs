@@ -12,13 +12,13 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
-    public enum Attributes { Frequency, NumberOfSamples };
+    public enum Basic_Attributes { Frequency, NumberOfSamples };
 
     class Basic_Test_Data_Worker
     {
         //FIELDS
         /// <summary>
-        /// Stores internal XML file directory
+        /// Stores txt files directory
         /// </summary>
         private string directory;
 
@@ -27,11 +27,20 @@ namespace EKG_Project.IO
         /// </summary>
         private string analysisName;
 
-        private Attributes attributes;
+        /// <summary>
+        /// Stores Basic_Attributes
+        /// </summary>
+        private Basic_Attributes attributes;
 
+        /// <summary>
+        /// Stores current number of samples
+        /// </summary>
         private uint currentNumberOfSamples;
 
-        public Attributes Attributes
+        /// <summary>
+        /// Gets or sets Basic_Attributes
+        /// </summary>
+        public Basic_Attributes Attributes
         {
             get { return attributes; }
             set { attributes = value; }
@@ -48,6 +57,12 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        /// <summary>
+        /// Saves part of signal in txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <param name="mode">true:append, false:overwrite file</param>
+        /// <param name="signal">signal</param>
         public void SaveSignal(string lead, bool mode, Vector<double> signal)
         {
             string moduleName = this.GetType().Name;
@@ -64,7 +79,7 @@ namespace EKG_Project.IO
             }
             else
             {
-                currentNumberOfSamples = LoadAttribute(Attributes.NumberOfSamples);
+                currentNumberOfSamples = LoadAttribute(Basic_Attributes.NumberOfSamples);
             }
 
             foreach (var sample in signal)
@@ -72,10 +87,18 @@ namespace EKG_Project.IO
                 sw.WriteLine(sample.ToString());
                 currentNumberOfSamples++;
             }
-            SaveAttribute(Attributes.NumberOfSamples, currentNumberOfSamples);
+            SaveAttribute(Basic_Attributes.NumberOfSamples, currentNumberOfSamples);
             sw.Close();
 
         }
+
+        /// <summary>
+        /// Loads signal from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <param name="startIndex">start index</param>
+        /// <param name="length">length</param>
+        /// <returns>signal</returns>
         public Vector<double> LoadSignal(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
@@ -97,14 +120,14 @@ namespace EKG_Project.IO
             double[] readSamples = new double[length];
             while (iterator < length)
             {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
                 string readLine = sr.ReadLine();
                 readSamples[iterator] = Convert.ToDouble(readLine);
                 iterator++;
-            }
-
-            if(sr.EndOfStream)
-            {
-                throw new IndexOutOfRangeException();
             }
 
             sr.Close();
@@ -114,7 +137,12 @@ namespace EKG_Project.IO
             return vector;
         }
 
-        public void SaveAttribute(Attributes atr, uint value)
+        /// <summary>
+        /// Saves Basic_Attributes
+        /// </summary>
+        /// <param name="atr">attribute</param>
+        /// <param name="value">value</param>
+        public void SaveAttribute(Basic_Attributes atr, uint value)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -126,7 +154,12 @@ namespace EKG_Project.IO
             sw.Close();
         }
 
-        public uint LoadAttribute(Attributes atr)
+        /// <summary>
+        /// Loads Basic_Attributes
+        /// </summary>
+        /// <param name="atr">atribute</param>
+        /// <returns>value</returns>
+        public uint LoadAttribute(Basic_Attributes atr)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -147,8 +180,8 @@ namespace EKG_Project.IO
             Vector<double> vector = worker.LoadSignal("V5", 500000, 100);
             worker.SaveSignal("III", false, vector);
             Console.WriteLine("Current number of samples in file: " + worker.currentNumberOfSamples);
-            worker.SaveAttribute(Attributes.Frequency, 360);
-            uint frequency = worker.LoadAttribute(Attributes.Frequency);
+            worker.SaveAttribute(Basic_Attributes.Frequency, 360);
+            uint frequency = worker.LoadAttribute(Basic_Attributes.Frequency);
             Console.WriteLine("Frequency: " + frequency);
             Console.Read();
         }

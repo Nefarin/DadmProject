@@ -88,7 +88,7 @@ namespace EKG_Project.IO
         public void SaveResult()
         {
             Basic_Test_Data_Worker dataWorker = new Basic_Test_Data_Worker(analysisName);
-            dataWorker.SaveAttribute(Attributes.Frequency, frequency);
+            dataWorker.SaveAttribute(Basic_Attributes.Frequency, frequency);
         }
 
         /// <summary>
@@ -129,15 +129,17 @@ namespace EKG_Project.IO
             {
                 if (signal.Description == lead)
                 {
+                    double[] convertedSamples = new double[length];
                     signal.Seek(startIndex);
-                    List<Sample> samples = signal.ReadNext(length);
-
-                    if (signal.IsEof)
+                    for (int i = 0; i < length; i++)
                     {
-                        throw new IndexOutOfRangeException();
+                        if (signal.IsEof)
+                        {
+                            throw new IndexOutOfRangeException();
+                        }
+                        Sample sample = signal.ReadNext();
+                        convertedSamples[i] = sample.ToPhys();
                     }
-
-                    double[] convertedSamples = samples.Select(sample => sample.ToPhys()).ToArray();
                     vector = Vector<double>.Build.Dense(convertedSamples.Length);
                     vector.SetValues(convertedSamples);
                 }
