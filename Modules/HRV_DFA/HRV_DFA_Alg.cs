@@ -11,6 +11,7 @@ using EKG_Project.IO;
 
 namespace EKG_Project.Modules.HRV_DFA
 {
+    
 
     public class HRV_DFA_Alg 
     {
@@ -40,12 +41,12 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> vectorFn0 = dfa.ComputeDfaFluctuation(sig, BoxRanged);
             Vector<double> vectorLogN = dfa.ConvertToLog(boxSizeSet);
 
-            Vector<double> vFn = dfa.RemoveZeros(vectorFn0);
-            Vector<double> vectorLogFn = dfa.ConvertToLog(vFn);
-            Vector<double> vectorLog_n = vectorLogN.SubVector(0, vFn.Count());
+           // Vector<double> vFn = dfa.RemoveZeros(vectorFn0);
+           // Vector<double> vectorLogFn = dfa.ConvertToLog(vFn);
+           // Vector<double> vectorLog_n = vectorLogN.SubVector(0, vFn.Count());
 
             // Convert to logarytmic scale
-
+            /*
             // short-range:long-range fitting bending data proportion
             bool longCorrelations;
             if (sig.Count() > 1500)
@@ -92,22 +93,22 @@ namespace EKG_Project.Modules.HRV_DFA
                 p1 = Vector<double>.Build.DenseOfArray(shortRange.Item1);
                 //fitting curve obtaining for short-range correlations
                 lineShortRange = shortRange.Item2;
-            }
-
+            }*/
+            /*
             // Outputs
             dfa.veclogn1 = logn1;
             dfa.veclogn2 = logn2;
             dfa.veclogFn1 =lineShortRange;
             dfa.veclogFn2 = lineLongRange;
             dfa.vecparam1 = p1;
-            dfa.vecparam2 = p2;
+            dfa.vecparam2 = p2;*/
 
             uint lth = Convert.ToUInt32(sig.Count());
             
             //
             //write result to dat file
             TempInput.setOutputFilePath(@"C:\Users\Paulina\Desktop\inervals\result.txt");
-            TempInput.writeFile(lth, vectorLogFn);
+            TempInput.writeFile(lth, vectorFn0);
         }
     
         public Vector<double> ComputeDfaFluctuation(Vector<double> intervals, double[] BoxValues )
@@ -136,24 +137,30 @@ namespace EKG_Project.Modules.HRV_DFA
                     Vector<double> yk = IntegrateDfa(intervals.SubVector(0, winCount));
                     Vector<double> yn = Vector<double>.Build.Dense(winCount, 1);
 
-                    //yk = integrated.SubVector(0, winCount);
+                    
 
                     for (int j = 0; j < nWin - 1; j++)
                     {
                         // Least-Square Fitting
-                        int ykIndex = j * boxValint;
-
-                        double[] xx = Generate.LinearRange(1, 1, winCount);
+                        int ykIndex = (j+1) * boxValint;
+            
+                        double[] xx = Generate.LinearRange(1, 1, boxValint);
                         Vector<double> x = Vector<double>.Build.DenseOfArray(xx);
-                        Vector<double> y = yk;
+                        Vector<double> y = yk.SubVector(ykIndex, boxValint);
+
 
                         // Line function                                    
                         Tuple<double[], Vector<double>> localTrend = LinearSquare(x, y, boxVal);
                         yn = localTrend.Item2;
-                        //yk = yk.SubVector(0, boxValint);
+
+
+                        // yk = yk.SubVector(0, boxValint);
                         // dfa fluctuation function F(n)
-                        fluctuations[i] = ComputeInBox(yk, yn, winCount, sig_length);
+
+                        //fluctuations = yk;
+                        fluctuations[i] = ComputeInBox(y, yn, winCount, sig_length);
                     }
+                    
                 }
             }
             return fluctuations;
@@ -164,38 +171,33 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> y_k = y_integrated;
             Vector<double> y_n = y_fitted;
 
-            Vector<double> y_sub = Vector<double>.Build.Dense(y_n.Count());
-
-            double vector_add = 0;
-            vector_add = Math.Pow(y_k[0] - y_n[0], 2);
-            y_sub[0] = vector_add;
-
-            for (int i = 1; i < y_k.Count() - 1; i++)
-            {
-                y_sub[i] = Math.Pow(y_k[i] - y_n[i], 2);
-                vector_add = y_sub[i];
-            }
+            Vector<double> subtraction = y_k.Subtract(y_n);
+            double[] power = subtraction.PointwiseMultiply(subtraction).ToArray();
+            double[] y_sub = CumulativeSum(power);
 
             double fn = Math.Sqrt(y_sub.Sum() / intervals_length);
+
+            Vector<double> potega = Vector<double>.Build.DenseOfArray(power);
+            Vector<double> suma = Vector<double>.Build.DenseOfArray(y_sub);
 
             return fn;
         }
 
-
-        public Vector<double> IntegrateDfa(Vector<double> intervals)
+        public double[] CumulativeSum(double[] a)
         {
-            Vector<double> output = Vector<double>.Build.Dense(intervals.Count());
+            double sum = 0;
+            double[] b = a.Select(x => (sum += x)).ToArray();
+            return b;
+        }
+      
+        public Vector<double> IntegrateDfa (Vector<double> intervals)
+        {
             double average = intervals.Sum() / intervals.Count();
+            Vector<double> a = intervals.Subtract(average);
+            //Vector<double> b = a.PointwiseMultiply(a);      ///sprawdzić bez potęgowania 
+            double[] sum = CumulativeSum(a.ToArray());
 
-            double signal_add = 0;
-            signal_add = intervals[0] - average;
-            output[0] = signal_add;
-
-            for (int i = 1; i < intervals.Count - 1; i++)
-            {
-                output[i] = intervals[i] - average + signal_add;
-                signal_add = output[i];
-            }
+            Vector<double> output = Vector<double>.Build.DenseOfArray(sum);
             return output;
         }
 
@@ -228,6 +230,8 @@ namespace EKG_Project.Modules.HRV_DFA
             P[0] = pa;
             P[1] = pb;
             Tuple<double[], Vector<double>> output = new Tuple<double[], Vector<double>>(P, y_approx);
+            TempInput.setOutputFilePath(@"C:\Users\Paulina\Desktop\inervals\result2.txt");
+            TempInput.writeFile(Convert.ToUInt32(y_approx.Count()), y_approx);
             return output;
         }
 
