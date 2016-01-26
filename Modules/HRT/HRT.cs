@@ -113,9 +113,9 @@ namespace EKG_Project.Modules.HRT
                 {
                     Abort();
                 }
-               
-                
-                
+
+
+
 
                 //try
                 //{
@@ -125,34 +125,34 @@ namespace EKG_Project.Modules.HRT
                 //    _class = InputHeartClassData.ClassificationResult;
 
 
-                //        List<int> Klasy = new List<int>();
-                //        foreach (Tuple<int, int> _licznik in _class)
-                //        {
-                //            if (_licznik.Item2 == 1)
-                //            {
-                //                Klasy.Add(_licznik.Item1);
-
-                //            }
-                //            else {; }
-                //        }
-                //         // _classSelected = Klasy.ToArray();
-                //         _classSelected = Vector<double>.Build.DenseOfArray(Klasy.ToArray());
-                //          _VPCcount = _classSelected.Length;
-                //        if (_classSelected.Length == 0)
-                //        {
-                //            Console.WriteLine("Brak załamków VPC");
-                //        }
-                //        else
-                //        {
-                //            Console.Write("Jest ");
-                //            Console.Write(_VPCcount);
-                //            Console.WriteLine(" załamków VPC");
-                //        }
-                //    }
-                //    catch (Exception e)
+                //    List<int> Klasy = new List<int>();
+                //    foreach (Tuple<int, int> _licznik in _class)
                 //    {
-                //        Abort();
+                //        if (_licznik.Item2 == 1)
+                //        {
+                //            Klasy.Add(_licznik.Item1);
+
+                //        }
+                //        else {; }
                 //    }
+                //    // _classSelected = Klasy.ToArray();
+                //    _classSelected = Vector<double>.Build.DenseOfArray(Klasy.ToArray());
+                //    _VPCcount = _classSelected.Length;
+                //    if (_classSelected.Length == 0)
+                //    {
+                //        Console.WriteLine("Brak załamków VPC");
+                //    }
+                //    else
+                //    {
+                //        Console.Write("Jest ");
+                //        Console.Write(_VPCcount);
+                //        Console.WriteLine(" załamków VPC");
+                //    }
+                //}
+                //catch (Exception e)
+                //{
+                //    Abort();
+                //}
 
 
                 //_currentChannelIndex = 0;

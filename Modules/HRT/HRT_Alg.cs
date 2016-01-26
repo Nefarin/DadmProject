@@ -52,7 +52,7 @@ namespace EKG_Project.Modules.HRT
         {
             if (rrTimes == null || rrTimesVPC == null) throw new ArgumentNullException();
             if (rrTimes.Length < rrTimesVPC.Length) throw new ArgumentOutOfRangeException();
-            if (rrTimesVPC.Length < VPCcount) throw new ArgumentOutOfRangeException();
+            if (rrTimesVPC.Length < VPCcount || VPCcount < 0) throw new ArgumentOutOfRangeException();
 
             double[] nrVPCArray;
             nrVPCArray = new double[VPCcount];
