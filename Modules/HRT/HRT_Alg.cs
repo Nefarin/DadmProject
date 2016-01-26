@@ -18,21 +18,28 @@ namespace EKG_Project.Modules.HRT
 
             return Tachogram;
         }
+
         public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalInSampleDomain, int samplingFreq)
         {
+            if (SignalInSampleDomain == null) throw new ArgumentNullException();
+            if (samplingFreq <= 0) throw new ArgumentOutOfRangeException();
             Vector<double> SignalInTimeDomain;
-            SignalInTimeDomain = 1000 *SignalInSampleDomain / samplingFreq  ;
+            SignalInTimeDomain = 1000 * SignalInSampleDomain / samplingFreq;
             return SignalInTimeDomain;
         }
+
         public Vector<double> ChangeVectorIntoTimeDomain(int[] SignalInSampleDomain, int samplingFreq)
         {
+            double[] Sig = new double[SignalInSampleDomain.Length];
             Vector<double> SignalInTimeDomain = Vector<double>.Build.Dense(SignalInSampleDomain.Length);
+            int i = 0;
             foreach (int counter in SignalInSampleDomain)
             {
-                SignalInTimeDomain.Add(1000 * counter / samplingFreq);
+                Sig[i++] = 1000 * counter / samplingFreq;
             }
-            return SignalInTimeDomain;
+            return Vector<double>.Build.DenseOfArray(Sig);
         }
+
         public void PrintVector (Vector<double> Signal)
         {
             foreach (double _licznik in Signal)
@@ -40,6 +47,22 @@ namespace EKG_Project.Modules.HRT
                 Console.WriteLine(_licznik);
             }
         }
+
+
+        //public Vector<double> CutSignal(Vector<double> inputSignal, int begin, int end)
+        //{
+        //    int len = end - begin + 1;
+        //    double[] cuttedSignal = new double[len];
+        //    for (int i = 0; i < len; i++)
+        //    {
+        //        cuttedSignal[i] = inputSignal[i + begin];
+        //    }
+        //    return Vector<double>.Build.DenseOfArray(cuttedSignal);
+        //}
+
+
+
+
 
         public Vector<int> GetNrVPC (double[] rrTimes, double[] rrTimesVPC, int VPCcount)
         {

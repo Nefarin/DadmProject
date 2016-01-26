@@ -155,7 +155,8 @@ namespace EKG_Project.Modules.HRT
                 //_samplesProcessed = 0;
                 //HRT_Algorythms.PrintVector(_rpeaksSelected);
                 _rpeaksTime =HRT_Algorythms.ChangeVectorIntoTimeDomain(_rpeaksSelected, _fs);
-                _classTime = HRT_Algorythms.ChangeVectorIntoTimeDomain(_classSelected, _fs)
+                _classTime = HRT_Algorythms.ChangeVectorIntoTimeDomain(_classSelected, _fs);
+
                 //HRT_Algorythms.GetNrVPC(_rpeaksSelected)
 
 
@@ -185,13 +186,24 @@ namespace EKG_Project.Modules.HRT
 
         private void processData()
         {
-            HRT_Algorythms.PrintVector(_rpeaksTime);
-            HRT_Algorythms.PrintVector(_rrintervalsSelected);
+            //HRT_Algorythms.PrintVector(_rpeaksTime);
+           // HRT_Algorythms.PrintVector(_rrintervalsSelected);
             HRT_Algorythms.PrintVector(_classTime);
 
+           
             _ended = true;
         }
             
+
+
+
+
+
+
+
+
+
+
 
         //Accessors (getters and setters)
         public HRT_Data_Worker OutputWorker
