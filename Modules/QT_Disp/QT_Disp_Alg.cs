@@ -276,12 +276,13 @@ namespace EKG_Project.Modules.QT_Disp
             double[] t_end = new double[22];
             double[] qt_interval = new double[22];
             //signal cutting
+           
             for(int i=0; i<data.R_Peaks.Count-1; i++)
             {
                 samples = signal.SubVector((int)data.R_Peaks.ElementAt(i),
                    (int)(data.R_Peaks.ElementAt(i + 1) - data.R_Peaks.ElementAt(i)));
                 // cutted signal between neighbour R_Peaks
-                data.ToDoInProccessData(samples, i);
+                data.ToDoInProccessData(samples, i);             
                
             }
             // Show output that will be saved in file 
