@@ -25,6 +25,8 @@ namespace EKG_Project.Modules.HRT
         List<Tuple<string, Vector<double>>> _rrintervals;
         List<Tuple<string, Vector<double>>> _rpeaks;
         List<Tuple<int, int>> _class;
+        Vector<double> _rpeaksTime;
+        Vector<double> _classTime;
 
 
 
@@ -108,18 +110,9 @@ namespace EKG_Project.Modules.HRT
                 {
                     Abort();
                 }
-
-                //wypisz Rpiki z kanału I
-                foreach (double _licznik in _rpeaksSelected)
-                {
-                    Console.WriteLine(_licznik);
-                }
-                Console.WriteLine("************************************");
-                foreach (double _licznik in _rrintervalsSelected)
-                {
-                    Console.WriteLine(_licznik);
-                }
-
+               
+                
+                
 
                 try
                 {
@@ -155,15 +148,14 @@ namespace EKG_Project.Modules.HRT
                     {
                         Abort();
                     }
-                    
 
 
-                    //_currentChannelIndex = 0;
-                    //_samplesProcessed = 0;
 
-
-                    HRT_Algorythms.ChangeVectorIntoTimeDomain(_rpeaksSelected, _fs);
-                //HRT_Algorythms.ChangeVectorIntoTimeDomain(_classSelected, _fs);
+                //_currentChannelIndex = 0;
+                //_samplesProcessed = 0;
+                //HRT_Algorythms.PrintVector(_rpeaksSelected);
+                _rpeaksTime =HRT_Algorythms.ChangeVectorIntoTimeDomain(_rpeaksSelected, _fs);
+                _classTime = HRT_Algorythms.ChangeVectorIntoTimeDomain(_classSelected, _fs)
                 //HRT_Algorythms.GetNrVPC(_rpeaksSelected)
 
 
@@ -193,8 +185,10 @@ namespace EKG_Project.Modules.HRT
 
         private void processData()
         {
+            HRT_Algorythms.PrintVector(_rpeaksTime);
+            HRT_Algorythms.PrintVector(_rrintervalsSelected);
+            HRT_Algorythms.PrintVector(_classTime);
 
-           
             _ended = true;
         }
             

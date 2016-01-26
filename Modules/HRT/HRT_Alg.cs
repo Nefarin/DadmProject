@@ -13,17 +13,32 @@ namespace EKG_Project.Modules.HRT
     public class HRT_Alg
     {
 
-        public Vector<double> SearchVentricularTurbulence(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
+        public Vector<double> SearchVentricularTurbulences(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
         {
 
             return Tachogram;
         }
-
         public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalInSampleDomain, int samplingFreq)
         {
             Vector<double> SignalInTimeDomain;
-            SignalInTimeDomain = SignalInSampleDomain / (samplingFreq * 1000);
+            SignalInTimeDomain = 1000 *SignalInSampleDomain / samplingFreq  ;
             return SignalInTimeDomain;
+        }
+        public Vector<double> ChangeVectorIntoTimeDomain(int[] SignalInSampleDomain, int samplingFreq)
+        {
+            Vector<double> SignalInTimeDomain = Vector<double>.Build.Dense(SignalInSampleDomain.Length);
+            foreach (int counter in SignalInSampleDomain)
+            {
+                SignalInTimeDomain.Add(1000 * counter / samplingFreq);
+            }
+            return SignalInTimeDomain;
+        }
+        public void PrintVector (Vector<double> Signal)
+        {
+            foreach (double _licznik in Signal)
+            {
+                Console.WriteLine(_licznik);
+            }
         }
 
         public Vector<int> GetNrVPC (double[] rrTimes, double[] rrTimesVPC, int VPCcount)
