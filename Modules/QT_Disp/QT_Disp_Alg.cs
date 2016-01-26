@@ -310,11 +310,20 @@ namespace EKG_Project.Modules.QT_Disp
         private T_End_Method T_End_method;
         private uint Fs;
         private double[] R_Peak = new double[2];
+        private object p;
+        private int end;
+        private int tend;
+        private Vector<double> sampl;
+        private QT_Calc_Method fRAMIGHAMA;
+        private T_End_Method pARABOLA;
+        private int v;
+        private double[] rpeak;
+
         public DataToCalculate(int QRS_onset, int QRS_End, int T_End_Global, Vector<double> samples, QT_Calc_Method QT_Calc_method, T_End_Method T_End_method, uint Fs, double[] R_Peak)
         {
             //check if we have a good arguments if not system crash
-            if(QRS_onset == null) throw new ArgumentNullException("QRS_onset null");
-            if(QRS_End == null) throw new ArgumentNullException("QRS_onset null");
+            if(QRS_onset == null) throw new ArgumentNullException("QRS_Onset null");
+            if(QRS_End == null) throw new ArgumentNullException("QRS_End null");
             if(T_End_Global == null) throw new ArgumentNullException("T_End_Global null");
             if (R_Peak.Count() != 2) throw new InvalidDataException("Wrong parameters for R_Peak");
             if(samples.Count != (R_Peak[1]- R_Peak[0])) throw new ArgumentNullException("Samples wrong length");
@@ -342,6 +351,7 @@ namespace EKG_Project.Modules.QT_Disp
             this.samples = Vector<double>.Build.Dense(1);
             this.T_End_method = T_End_Method.TANGENT;
         }
+
         /// <summary>
         /// This method find T_End index in a signal
         /// </summary>

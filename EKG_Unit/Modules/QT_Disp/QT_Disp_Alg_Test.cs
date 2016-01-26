@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MathNet.Numerics.LinearAlgebra;
+﻿using EKG_Project.IO;
 using EKG_Project.Modules.QT_Disp;
+using MathNet.Numerics.LinearAlgebra;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
-using EKG_Project.IO;
 
 namespace EKG_Unit.Modules.QT_Disp
 {
@@ -110,7 +110,7 @@ namespace EKG_Unit.Modules.QT_Disp
         /// 
         /// </summary>
         [TestMethod]
-        [Description("Test if method FindT_End returns -1 when contructor parameters = -1")]
+        [Description("Test if method returns -1, 0 when contructor parameters QRSonset= -1 and Tend = -1")]
         public void testQT_Disp_Alg2()
         {//check if this is correct...
             QT_Disp_Alg test = new QT_Disp_Alg();
@@ -180,7 +180,7 @@ namespace EKG_Unit.Modules.QT_Disp
             //test.TODoInInit(onset, tend, end, Rpeak, T_End_Method.TANGENT, QT_Calc_Method.FRIDERICA, (uint)360);
             //test.ToDoInProccessData(sampl, 0);
             DataToCalculate data = new DataToCalculate(onset, end, tend, sampl, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, rpeak);
-                                                          // because I get adverse results than I expected...
+                                                          
             int result = data.FindT_End();
             Tuple<int, double> result2 = data.Calc_QT_Interval();
 
@@ -188,5 +188,85 @@ namespace EKG_Unit.Modules.QT_Disp
             Assert.AreEqual(0, result2.Item2);
         }
 
+        [TestMethod]
+        [Description("Test if method parameter QRSonset not null")]
+        [ExpectedException(typeof(ArgumentNullException), "QRS_Onset null")]
+        public void test_DataToCalculate_3()
+        {
+            QT_Disp_Alg test = new QT_Disp_Alg();
+
+            PrivateObject obj = new PrivateObject(test);
+            double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662,
+                -0.041548435, -0.092222265, -0.13023595, -0.15420422, -0.16411052, -0.16140441, -0.14840957, -0.12827963,
+                -0.10450146, -0.080351337, -0.058148759, -0.039751104, -0.025919515, -0.016778473, -0.011926399, -0.010313956,
+                -0.010919177, -0.012712054, -0.014793107, -0.016475001, -0.01736423, -0.017499676, -0.01712471, -0.016458301,
+                0.018387776, 0.064885728, 0.11667983, 0.1699266, 0.21990291, 0.26194305, 0.29193246, };
+
+            Vector<double> sampl = Vector<double>.Build.DenseOfArray(signalTab);
+            int onset = new int();
+            int end = 225;
+            int tend = -1;
+            //352
+            double[] rpeak = { 204, 606 };
+            //Vector<double> Rpeak = Vector<double>.Build.DenseOfArray(rpeak);
+
+            DataToCalculate data = new DataToCalculate(onset, end, tend, sampl, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, rpeak);
+        }
+
+        [TestMethod]
+        [Description("Test if method parameter QRSend not null")]
+        [ExpectedException(typeof(ArgumentNullException), "QRS_End null")]
+        public void test_DataToCalculate_4()
+        {
+            QT_Disp_Alg test = new QT_Disp_Alg();
+
+            PrivateObject obj = new PrivateObject(test);
+            double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662,
+                -0.041548435, -0.092222265, -0.13023595, -0.15420422, -0.16411052, -0.16140441, -0.14840957, -0.12827963,
+                -0.10450146, -0.080351337, -0.058148759, -0.039751104, -0.025919515, -0.016778473, -0.011926399, -0.010313956,
+                -0.010919177, -0.012712054, -0.014793107, -0.016475001, -0.01736423, -0.017499676, -0.01712471, -0.016458301,
+                0.018387776, 0.064885728, 0.11667983, 0.1699266, 0.21990291, 0.26194305, 0.29193246, };
+
+            Vector<double> sampl = Vector<double>.Build.DenseOfArray(signalTab);
+            int onset = 192;
+            int end = new int();
+            int tend = -1;
+            //352
+            double[] rpeak = { 204, 606 };
+            //Vector<double> Rpeak = Vector<double>.Build.DenseOfArray(rpeak);
+
+            DataToCalculate data = new DataToCalculate(onset, end, tend, sampl, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, rpeak);
+
+            //int result = data.FindT_End();
+            //Tuple<int, double> result2 = data.Calc_QT_Interval();
+
+            //Assert.AreEqual(-1, result);
+            //Assert.AreEqual(0, result2.Item2);
+        }
+
+        [TestMethod]
+        [Description("Test if method parameter Tend_global not null")]
+        [ExpectedException(typeof(ArgumentNullException), "T_End_Global null")]
+        public void test_DataToCalculate_5()
+        {
+            QT_Disp_Alg test = new QT_Disp_Alg();
+
+            PrivateObject obj = new PrivateObject(test);
+            double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662,
+                -0.041548435, -0.092222265, -0.13023595, -0.15420422, -0.16411052, -0.16140441, -0.14840957, -0.12827963,
+                -0.10450146, -0.080351337, -0.058148759, -0.039751104, -0.025919515, -0.016778473, -0.011926399, -0.010313956,
+                -0.010919177, -0.012712054, -0.014793107, -0.016475001, -0.01736423, -0.017499676, -0.01712471, -0.016458301,
+                0.018387776, 0.064885728, 0.11667983, 0.1699266, 0.21990291, 0.26194305, 0.29193246, };
+
+            Vector<double> sampl = Vector<double>.Build.DenseOfArray(signalTab);
+            int onset = 192;
+            int end = 255;
+            int tend = new int();
+            //352
+            double[] rpeak = { 204, 606 };
+            
+            DataToCalculate data = new DataToCalculate(onset, end, tend, sampl, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, rpeak);
+            
+        }
     }
 }
