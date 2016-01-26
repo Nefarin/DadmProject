@@ -50,21 +50,25 @@ namespace EKG_Project.Modules.HRT
 
         public Vector<double> GetNrVPC(double[] rrTimes, double[] rrTimesVPC, int VPCcount)
         {
-            double[] Sig = new double[VPCcount];
-            //Vector<double> nrVPC = Vector<double>.Build.Dense(VPCcount);
-            int rrTimesLength = rrTimes.Length;
-            for (int j = 0; j < VPCcount; j++)
+            if (rrTimes == null || rrTimesVPC == null) throw new ArgumentNullException();
+            if (rrTimes.Length < rrTimesVPC.Length) throw new ArgumentOutOfRangeException();
+            if (rrTimesVPC.Length < VPCcount) throw new ArgumentOutOfRangeException();
+
+            double[] nrVPCArray;
+            nrVPCArray = new double[VPCcount];
+            for (int i = 0; i < VPCcount; i++)
             {
-                for (int i = 0; i < rrTimes.Length; i++)
+                for (int j = 0; j < rrTimes.Length; j++)
                 {
-                    if ((int)rrTimes[i] == (int)rrTimesVPC[j])
+                    if (rrTimes[j] == rrTimesVPC[i])
                     {
-                        Sig[j] = i;
-                        //Console.WriteLine(Sig[j]);
+                        nrVPCArray[i] = j;
                     }
                 }
             }
-            return Vector<double>.Build.DenseOfArray(Sig);
+            Vector<double> nrVPC = Vector<double>.Build.DenseOfArray(nrVPCArray);
+            return nrVPC;
         }
     }
+
 }
