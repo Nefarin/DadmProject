@@ -25,10 +25,13 @@ namespace EKG_Project.IO
         private string analysisName;
 
         /// <summary>
-        /// Stores Basic_Attributes
+        /// Stores R_Peaks_Attributes
         /// </summary>
         private R_Peaks_Attributes attributes;
 
+        /// <summary>
+        /// Gets or sets R_Peaks_Attributes
+        /// </summary>
         public R_Peaks_Attributes Attributes
         {
             get { return attributes; }

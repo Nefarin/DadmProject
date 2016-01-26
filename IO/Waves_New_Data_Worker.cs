@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.IO;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.Modules.Waves;
 
 namespace EKG_Project.IO
 {
+    public enum Waves_Attributes { QRSOnsets, QRSEnds, POnsets, PEnds, TEnds };
+
     #region Documentation
     /// <summary>
     /// Class that saves and loads Waves_Data chunks from internal text file
@@ -26,6 +31,20 @@ namespace EKG_Project.IO
         /// </summary>
         #endregion
         string analysisName;
+
+        /// <summary>
+        /// Stores Waves_Attributes 
+        /// </summary>
+        private Waves_Attributes attributes;
+
+        /// <summary>
+        /// Gets or sets Waves_Attributes
+        /// </summary>
+        public Waves_Attributes Attributes
+        {
+            get { return attributes; }
+            set { attributes = value; }
+        }
 
         #region Documentation
         /// <summary>
@@ -52,17 +71,18 @@ namespace EKG_Project.IO
         //METHODS
         #region Documentation
         /// <summary>
-        /// Saves part of filtered signal in txt file
+        /// Saves part of Waves signal in txt file
         /// </summary>
-        /// <param name="lead"></param>
-        /// <param name="mode"></param>
-        /// <param name="signal"></param>
+        /// <param name="atr">Waves_Attributes</param>
+        /// <param name="lead">lead</param>
+        /// <param name="mode">true:append, false:overwrite file</param>
+        /// <param name="signal">signal</param>
         #endregion
-        public void SaveSignal(string lead, bool mode, Vector<double> signal)
+        public void SaveSignal(Waves_Attributes atr, string lead, bool mode, List<int> signal)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string pathOut = Path.Combine(directory, fileName);
 
             StreamWriter sw = new StreamWriter(pathOut, mode);
@@ -75,18 +95,19 @@ namespace EKG_Project.IO
 
         #region Documentation
         /// <summary>
-        /// Loads signal chunk from txt file
+        /// Loads parts of Waves signal from txt file
         /// </summary>
-        /// <param name="lead"></param>
-        /// <param name="startIndex"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
+        /// <param name="atr">Waves_Attributes</param>
+        /// <param name="lead">lead</param>
+        /// <param name="startIndex">start index</param>
+        /// <param name="length">length</param>
+        /// <returns>Waves signal list</returns>
         #endregion
-        public Vector<double> LoadSignal(string lead, int startIndex, int length)
+        public List<int> LoadSignal(Waves_Attributes atr, string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string pathIn = Path.Combine(directory, fileName);
 
             StreamReader sr = new StreamReader(pathIn);
@@ -100,7 +121,8 @@ namespace EKG_Project.IO
             }
 
             iterator = 0;
-            double[] readSamples = new double[length];
+
+            List<int> list = new List<int>();
             while (iterator < length)
             {
                 if (sr.EndOfStream)
@@ -109,15 +131,14 @@ namespace EKG_Project.IO
                 }
 
                 string readLine = sr.ReadLine();
-                readSamples[iterator] = Convert.ToDouble(readLine);
+                int readValue = Convert.ToInt32(readLine);
+                list.Add(readValue);
                 iterator++;
             }
 
             sr.Close();
 
-            Vector<double> vector = Vector<double>.Build.Dense(readSamples.Length);
-            vector.SetValues(readSamples);
-            return vector;
+            return list;
         }
     }
 }
