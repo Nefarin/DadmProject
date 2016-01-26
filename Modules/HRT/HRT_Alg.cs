@@ -40,7 +40,7 @@ namespace EKG_Project.Modules.HRT
             return Vector<double>.Build.DenseOfArray(Sig);
         }
 
-        public void PrintVector (Vector<double> Signal)
+        public void PrintVector(Vector<double> Signal)
         {
             foreach (double _licznik in Signal)
             {
@@ -48,70 +48,23 @@ namespace EKG_Project.Modules.HRT
             }
         }
 
-
-        //public Vector<double> CutSignal(Vector<double> inputSignal, int begin, int end)
-        //{
-        //    int len = end - begin + 1;
-        //    double[] cuttedSignal = new double[len];
-        //    for (int i = 0; i < len; i++)
-        //    {
-        //        cuttedSignal[i] = inputSignal[i + begin];
-        //    }
-        //    return Vector<double>.Build.DenseOfArray(cuttedSignal);
-        //}
-
-
-
-
-
-        public Vector<int> GetNrVPC (double[] rrTimes, double[] rrTimesVPC, int VPCcount)
+        public Vector<double> GetNrVPC(double[] rrTimes, double[] rrTimesVPC, int VPCcount)
         {
-            Vector<int> nrVPC = Vector<int>.Build.Dense(VPCcount);
+            double[] Sig = new double[VPCcount];
+            //Vector<double> nrVPC = Vector<double>.Build.Dense(VPCcount);
             int rrTimesLength = rrTimes.Length;
-            for (int i=0; i<VPCcount; i++)
+            for (int j = 0; j < VPCcount; j++)
             {
-                for (int j=0; j<rrTimes.Length; j++)
+                for (int i = 0; i < rrTimes.Length; i++)
                 {
-                    if (rrTimes[i] == rrTimesVPC[j])
+                    if ((int)rrTimes[i] == (int)rrTimesVPC[j])
                     {
-                        nrVPC.Add(i);
+                        Sig[j] = i;
+                        //Console.WriteLine(Sig[j]);
                     }
                 }
-                
             }
-            return nrVPC;
+            return Vector<double>.Build.DenseOfArray(Sig);
         }
-//        %ustalenie które nr pików R to są VPC
-//nrVPC=zeros(VPCcount,1);
-//for j=1:VPCcount
-//    for i=1:length(rrTimes)
-//        if rrTimes(i)==rrTimesVPC(j)
-//            nrVPC(j)=i;
-//        end
-//    end
-//end
-
-
-
-
-
-        //ustalenie które nr pików R to są VPC
-        //Vector<double> WhichPeaksAreVPC(Vector<double> rrTimes, Vector<double> rrTimesVPC)
-        //{
-        //    int VPCcount=rrTimesVPC
-        //    Vector<double> nrVPC;
-        //    for (int i = 0; i < VPCcount; i++)
-        //    {
-        //        for (int j = 0, j< rrTimes.Count; j++)
-        //        {
-        //            if rrTimes(i) == rrTimesVPC(j)
-        //            {
-        //                nrVPC(j) = i;
-        //            }
-
-        //        }
-        //    }
-        //}
-
     }
 }

@@ -27,6 +27,9 @@ namespace EKG_Project.Modules.HRT
         List<Tuple<int, int>> _class;
         Vector<double> _rpeaksTime;
         Vector<double> _classTime;
+        int _VPCcount;
+        Vector<double> _nrVPC;
+
 
 
 
@@ -132,7 +135,8 @@ namespace EKG_Project.Modules.HRT
                             }
                             else {; }
                         }
-                        _classSelected = Klasy.ToArray();
+                          _classSelected = Klasy.ToArray();
+                          _VPCcount = _classSelected.Length;
                         if (_classSelected.Length == 0)
                         {
                             Console.WriteLine("Brak załamków VPC");
@@ -140,7 +144,7 @@ namespace EKG_Project.Modules.HRT
                         else
                         {
                             Console.Write("Jest ");
-                            Console.Write(_classSelected.Length);
+                            Console.Write(_VPCcount);
                             Console.WriteLine(" załamków VPC");
                         }
                     }
@@ -150,14 +154,20 @@ namespace EKG_Project.Modules.HRT
                     }
 
 
-
                 //_currentChannelIndex = 0;
                 //_samplesProcessed = 0;
                 //HRT_Algorythms.PrintVector(_rpeaksSelected);
                 _rpeaksTime =HRT_Algorythms.ChangeVectorIntoTimeDomain(_rpeaksSelected, _fs);
                 _classTime = HRT_Algorythms.ChangeVectorIntoTimeDomain(_classSelected, _fs);
 
-                //HRT_Algorythms.GetNrVPC(_rpeaksSelected)
+
+
+                //double[] _rpeaksTimeArray;
+                //double[] _classTimeArray;
+                //_rpeaksTimeArray = _rpeaksTime.ToArray();
+                //_classTimeArray =_classTime.ToArray()
+
+                _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksTime.ToArray(), _classTime.ToArray(), _VPCcount);
 
 
             }
@@ -186,11 +196,13 @@ namespace EKG_Project.Modules.HRT
 
         private void processData()
         {
-            //HRT_Algorythms.PrintVector(_rpeaksTime);
-           // HRT_Algorythms.PrintVector(_rrintervalsSelected);
+            HRT_Algorythms.PrintVector(_rpeaksTime);
+            // HRT_Algorythms.PrintVector(_rrintervalsSelected);
+            Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             HRT_Algorythms.PrintVector(_classTime);
+            //HRT_Algorythms.PrintVector(_nrVPC);
 
-           
+
             _ended = true;
         }
             
