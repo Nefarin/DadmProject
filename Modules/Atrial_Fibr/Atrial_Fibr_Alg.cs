@@ -199,14 +199,14 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 {
                     lengthOfDetectedIntervals += _rrIntervals.At(i);
                     afDetected = true;
-                    Console.WriteLine("lengthOfDetectedIntervals");
-                    Console.WriteLine(lengthOfDetectedIntervals);
+                    //Console.WriteLine("lengthOfDetectedIntervals");
+                    //Console.WriteLine(lengthOfDetectedIntervals);
                 }
             }
             if (afDetected)
             {
-                Console.WriteLine("lengthOfDetectedIntervals");
-                Console.WriteLine(lengthOfDetectedIntervals);
+                //Console.WriteLine("lengthOfDetectedIntervals");
+                //Console.WriteLine(lengthOfDetectedIntervals);
                 pointsDetected = Vector<Double>.Build.Dense(Convert.ToInt32(lengthOfDetectedIntervals));
                 int lastIndex = 0;
                 for (int i = 0; i < detectedIntervals.Length; i++)
@@ -214,13 +214,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     if (detectedIntervals[i])
                     {
                         int j;
-                        for (j = 0; j <  _rrIntervals.At(i)-1; j++)
+                        for (j = 0; j <  _rrIntervals.At(i); j++)
                         {
                             pointsDetected.At(j + lastIndex, _rPeaks.At(i) + j);
+                            Console.WriteLine(pointsDetected.At(j + lastIndex));
                         }
                         lastIndex += j;
                     }
                 }
+                Console.WriteLine(pointsDetected.At(Convert.ToInt32(lengthOfDetectedIntervals)-1));
                 double lengthOfSignal = (_rPeaks.At(_rPeaks.Count-1) - _rPeaks.At(0)) / fs;
             }
             else
