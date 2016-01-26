@@ -47,12 +47,28 @@ namespace EKG_Project.Modules.HRT
                 Console.WriteLine(_licznik);
             }
         }
+        public void PrintVector(int[] Signal)
+        {
+            for (int i =0; i<Signal.Length; i++)
+            { 
+                Console.WriteLine(Signal[i]);
+            }
+        }
 
-        public Vector<double> GetNrVPC(double[] rrTimes, double[] rrTimesVPC, int VPCcount)
+        public Vector<double> rrTimesShift(Vector<double> rrPeaks)
+        {
+            for (int i=0; i<rrPeaks.Count;i++)
+            {
+                rrPeaks[i]++;
+            }
+            return rrPeaks;
+        }
+
+        public Vector<double> GetNrVPC(double[] rrTimes, int[] rrTimesVPC, int VPCcount)
         {
             if (rrTimes == null || rrTimesVPC == null) throw new ArgumentNullException();
             if (rrTimes.Length < rrTimesVPC.Length) throw new ArgumentOutOfRangeException();
-            if (rrTimesVPC.Length < VPCcount || VPCcount < 0) throw new ArgumentOutOfRangeException();
+            if (rrTimesVPC.Length < VPCcount || VPCcount < 0 ) throw new ArgumentOutOfRangeException();
 
             double[] nrVPCArray;
             nrVPCArray = new double[VPCcount];
