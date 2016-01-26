@@ -2,6 +2,7 @@
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,138 +13,243 @@ namespace EKG_Project.Modules.T_Wave_Alt
 {
     public class T_Wave_Alt_Alg
     {
-        private int[] findAlternans(List<int> t_end_List, Vector<double> ecg, uint fs)
+        private T_Wave_Alt_Params _params;
+
+        public T_Wave_Alt_Params Params
         {
-            int[] t_end = t_end_List.ToArray();
-
-            // t-wave length calculation
-            // assuming t-wave length of 150ms
-            // 360Hz*0,15s=54
-            double t_length1 = fs*0.15;
-            int t_length = Convert.ToInt32(t_length1);
-
-            // creating a matrix containing all detected t-waves
-            var M = Matrix<double>.Build;
-
-            var t_waves = M.Dense(t_end.Length, t_length);
-
-            for (var i = 0; i < t_end.Length; i++)
+            get
             {
-                var j = 0;
-                for (int v = t_end[i] - t_length; v < t_end[i]; v++)
-                {
-                    t_waves[i, j] = ecg[v];
-                    j += 1;
-                }
+                return _params;
             }
 
-            // creating a vector containg the medians of corresponding
-            // t-waves samples
-            var V = Vector<double>.Build;
-
-            var t_mdn = V.Dense(t_length);
-            var temp = V.Dense(t_end.Length);
-
-            for (var i = 0; i < t_length; i++)
+            set
             {
-                t_waves.Column(i, 0, t_end.Length, temp);
-                var mdn = temp.ToArray();
-                Array.Sort(mdn);
-
-                int mid = t_end.Length / 2;
-                t_mdn[i] = mdn[mid];
+                if (value == null) throw new ArgumentNullException();
+                _params = value;
             }
-
-            // calculating ACI values for each t-wave vector
-            var aci = V.Dense(t_end.Length);
-
-            for (var m = 0; m < t_end.Length; m++)
-            {
-                var aci_aux_nom = V.Dense(t_length);
-                var aci_aux_denom = V.Dense(t_length);
-
-                for (var n = 0; n < t_length; n++)
-                {
-                    aci_aux_nom[n] = t_waves[m, n] * t_mdn[n];
-                    aci_aux_denom[n] = t_mdn[n] * t_mdn[n];
-                }
-
-                aci[m] = aci_aux_nom.Sum() / aci_aux_denom.Sum();
-            }
-
-            // finding fluctuations around 1
-            // 1 - value changed around 1
-            // 0 - value hasn't changed
-            var fluct = V.Dense(t_end.Length);
-
-            for (int k = 0; k < t_end.Length; k++)
-            {
-                if (((aci[k] > 1) && (aci[k + 1] < 1)) || ((aci[k] < 1) && (aci[k + 1] > 1)))
-                {
-                    fluct[k] = 1;
-                }
-                else
-                {
-                    fluct[k] = 0;
-
-                }
-            }
-
-            // determining whether the fluctuations have occured in 
-            // 7 or more consecutive heartbeats
-            var alt_tresh = 7;
-            var V1 = Vector<int>.Build;
-            var alternans = V1.Dense(t_end.Length);
-            var counter = 0;
-            var first_el = 0;
-            var last_el = 0;
-
-            for (var o = 0; o < t_end.Length; o++)
-            {
-                if (counter == 0) 
-                {
-                    if (fluct[o]==1)
-                    {
-                        first_el = o;
-                        counter++;
-                    }
-                }
-
-                else if ((counter > 0) && (counter < alt_tresh))
-                {
-                    if (fluct[o] == 1)
-                    {
-                        counter++;
-                    }
-                    else
-                    {
-                        counter = 0;
-                    }
-                }
-
-                else if (counter >= alt_tresh)
-                {
-                    if (fluct[o] == 1)
-                    {
-                        counter++;
-                    }
-                    else
-                    {
-                        last_el = o - 1;
-                        counter = 0;
-                        for (var p = first_el; p <= last_el; p++)
-                        {
-                            alternans[p] = 1;
-                        }
-                        first_el = 0;
-                        last_el = 0;
-                    }
-                }
-            }
-
-            var alternans_out = alternans.ToArray();
-            return alternans_out;
         }
+
+        #region Documentation
+        /// <summary>
+        /// This function calculates the length of an average T-wave in samples.
+        /// </summary>
+        /// <param name="fs">Sampling frequency</param>
+        /// <returns>Average T-length in samples</returns>
+        #endregion
+        public int calculateTLength(uint fs)
+        {
+            double t_length1 = fs * 0.15;
+            int tLength = Convert.ToInt32(t_length1);
+            return tLength;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// This function extracts T-waves based on the input signal and indices of T-ends.
+        /// TODO: fs integration
+        /// </summary>
+        /// <param name="loadedSignal">Input signal</param>
+        /// <param name="tEndsList">List of T-ends indices</param>
+        /// <returns>List of vectors containing T-waves</returns>
+        #endregion
+        public List<Vector<double>> buildTWavesArray(Vector<double> loadedSignal, List<int> tEndsList)
+        {
+            //int tLength = calculateTLength(360);
+            int tLength = calculateTLength(20);
+            List<Vector<double>> TWavesArray = new List<Vector<double>>();
+            foreach (int currentTEnd in tEndsList) {
+                Vector<double> newTWave = loadedSignal.SubVector(currentTEnd - tLength, tLength);
+                TWavesArray.Add(newTWave);
+            }
+
+            return TWavesArray;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// This function calculates the medians of corresponding samples in T-waves vectors
+        /// TODO: tLength proper integration
+        /// </summary>
+        /// <param name="TWavesArray">List of vectors containing T-waves</param>
+        /// <returns>Vector containing median T-wave</returns>
+        #endregion
+        public Vector<double> calculateMedianTWave(List<Vector<double>> TWavesArray)
+        {
+            //deklaracja na stałe później do wyrzucenia!
+            int tLength = 2;
+
+            Vector<double> medianVector = Vector<double>.Build.Dense(tLength);
+            Vector<double> tempColumn = Vector<double>.Build.Dense(TWavesArray.Count);
+            for (int column = 0; column < tLength; column++)
+            {
+                for (int row = 0; row < TWavesArray.Count(); row++)
+                {
+                    Vector<double> currentTWave = TWavesArray[row];
+                    tempColumn[row] = currentTWave[column];
+                }
+                double[] tempColumn2 = tempColumn.ToArray();
+                Array.Sort(tempColumn2);
+                if (TWavesArray.Count % 2 == 0) medianVector[column] = (tempColumn2[TWavesArray.Count / 2] + tempColumn2[(TWavesArray.Count / 2) - 1]) / 2;
+                else medianVector[column] = tempColumn2[(TWavesArray.Count-1)/2];
+            }
+
+            return medianVector;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// This function calculates ACI values for all of the detected T-waves
+        /// </summary>
+        /// <param name="TWavesArray">List of vectors containing T-waves</param>
+        /// <param name="medianVector">Vector containing median T-wave</param>
+        /// <returns>Vector containing ACI values</returns>
+        #endregion
+        public Vector<double> calculateACI(List<Vector<double>> TWavesArray, Vector<double> medianVector)
+        {
+            Vector<double> ACIVector = Vector<double>.Build.Dense(TWavesArray.Count);
+            for (int j = 0; j < TWavesArray.Count; j++)
+            {
+                double sumNom = 0;
+                double sumDenom = 0;
+                Vector<double> currentTWave = TWavesArray[j];
+
+                int count = 0;
+                foreach (int singleSample in currentTWave)
+                {
+                    double ACI_auxNom = singleSample * medianVector[count];
+                    double ACI_auxDenom = medianVector[count] * medianVector[count];
+                    sumNom = sumNom + ACI_auxNom;
+                    sumDenom = sumDenom + ACI_auxDenom;
+                    count++;
+                }
+                
+                ACIVector[j] = sumNom/sumDenom;
+            }
+
+            return ACIVector;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// This function finds ACI fluctuations around 1
+        /// </summary>
+        /// <param name="ACIVector">Vector containing ACI values</param>
+        /// <returns> List containing 1s when fluctuation had occured, 0s when it hadn't</returns>
+        #endregion
+        public List<int> findFluctuations(Vector<double> ACIVector)
+        {
+            List<int> fluctuationsList= new List<int>(ACIVector.Count);
+            fluctuationsList.Add(0);
+
+            for (int i = 1; i < ACIVector.Count; i++)
+            {
+                if ((ACIVector[i - 1] <= 1 && ACIVector[i] > 1) || (ACIVector[i - 1] >= 1 && ACIVector[i] < 1))
+                {
+                    fluctuationsList.Add(1);
+                }
+                else fluctuationsList.Add(0);
+            }
+
+            return fluctuationsList;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// This function detects T-wave alternans, based on the frequency of the fluctuations of the ACI values.
+        /// </summary>
+        /// <param name="fluctuationsList">List containing 1s when fluctuation had occured, 0s when it hadn't</param>
+        /// <returns> Vector containing 1s where alternans is detected</returns>
+        #endregion
+        public Vector<double> findAlternans(List<int> fluctuationsList)
+        {
+            Vector<double> alternansVector = Vector<double>.Build.Dense(fluctuationsList.Count);
+            alternansVector = alternansVector + 1;
+            int alterThreshold = 3;
+            int firstElement = 0;
+            int counter = 0;
+            int forEachIndex = 0;
+
+            foreach (int element in fluctuationsList)
+            {
+                if (counter == 0)
+                {
+                    if (element == 0)
+                    {
+                        firstElement = forEachIndex;
+                        counter++;
+                    }
+                }
+
+                else if ((counter > 0) && (counter < alterThreshold))
+                {
+                    if (element == 0)
+                    {
+                        counter++;
+                    }
+                    else
+                    {
+                        counter = 0;
+                    }
+                }
+
+                else if (counter >= alterThreshold)
+                {
+                    if (element == 0)
+                    {
+                        if (forEachIndex + 1 != fluctuationsList.Count) counter++;
+                        else
+                        {
+                            for (int p = firstElement; p <= firstElement+counter; p++)
+                            {
+                                alternansVector[p] = 0;
+                            }
+                            counter = 0;
+                            firstElement = 0;
+                        }
+                    }
+
+                    else
+                    {
+                        for (int p = firstElement; p < firstElement+counter; p++)
+                        {
+                            alternansVector[p] = 0;
+                        }
+                        counter = 0;
+                        firstElement = 0;
+                    }
+                }
+                forEachIndex++;
+            }
+
+            return alternansVector;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// This function produces final ouput data in a proper format (for visualisation)
+        /// </summary>
+        /// <param name="alternansVector">Vector containing 1s where alternans is detected</param>
+        /// <param name="tEndsList">List of T-ends indices</param>
+        /// <returns>List of tuples. Each tuple consists of a heartbeat index and a '1' value for confirmation</returns>
+        #endregion
+        public List<Tuple<int, int>> alternansDetection(Vector<double> alternansVector, List<int> tEndsList)
+        {
+            List<Tuple<int, int>> alternansDetectedList = new List<Tuple<int, int>>();
+
+            for (int i = 0; i < alternansVector.Count; i++)
+            {
+                if (alternansVector[i]==1)
+                {
+                    Tuple<int, int> currentRecord = new Tuple<int, int>(tEndsList[i], 1);
+                    alternansDetectedList.Add(currentRecord);
+                }
+            }
+
+            return alternansDetectedList;
+        } 
+
+       
+    }
         
         /*
         public static void Main(string [] args)
@@ -162,5 +268,5 @@ namespace EKG_Project.Modules.T_Wave_Alt
             TempInput.writeFile(fs, alt_found);
         }
         */
-    }
+    
 }
