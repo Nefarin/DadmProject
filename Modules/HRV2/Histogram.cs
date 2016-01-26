@@ -47,11 +47,11 @@ namespace EKG_Project.Modules.HRV2
             public int Count { get; set; }
             public float LowestValue { get; set; }
             public float HighestValue { get; set; }
-            public float AverageValue
+            public double AverageValue
             {
                 get
                 {
-                    return (LowestValue + HighestValue) / 2;
+                    return Math.Round(((LowestValue + HighestValue)/2));
                 }
             }
 
