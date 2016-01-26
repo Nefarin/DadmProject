@@ -118,6 +118,7 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public double[] Derivative(double[] filteredSignal)
         {
+            if (filteredSignal == null) throw new ArgumentNullException();
             Delay += 2;
             IList<double> hd_coef = new List<double>();
             double[] hd_array = { -1, -2, 0, 2, 1 };
@@ -139,6 +140,7 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public double[] Squaring(double[] derivativeSignal)
         {
+            if (derivativeSignal == null) throw new ArgumentNullException();
             double[] squaredSignal = new double[derivativeSignal.Length];
             for (int i = 0; i < derivativeSignal.Length; i++)
             {
@@ -157,6 +159,8 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public double[] Integrating(double[] squaredSignal, uint fs)
         {
+            if (squaredSignal == null) throw new ArgumentNullException();
+            if (fs == 0) throw new ArgumentException();
             double[] integratedSignal = new double[squaredSignal.Length];
             //double[] normIntSignal = new double[squaredSignal.Length];
             double window = Math.Round(0.15 * fs);
@@ -192,6 +196,8 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public List<double> FindPeaks(double[] signal, uint fs, double distanceInSec)
         {
+            if (signal == null) throw new ArgumentNullException();
+            if (fs == 0) throw new ArgumentException();
             List<double> potRs = new List<double>();
             double distanceInSamples = fs * distanceInSec;
             for (int i = 1; i < signal.Length - 1; i++)
@@ -228,6 +234,8 @@ namespace EKG_Project.Modules.R_Peaks
         //SUBVECTOR from MATHNET?!
         public Vector<double> CutSignal(Vector<double> inputSignal, int begin, int end)
         {
+            if (inputSignal == null) throw new ArgumentNullException();
+            if (end <= begin) throw new ArgumentException();
             int len = end - begin + 1;
             double[] cuttedSignal = new double[len];
             for (int i = 0; i < len; i++)
@@ -246,6 +254,7 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public Vector<double> Diff(Vector<double> signal)
         {
+            if (signal == null) throw new ArgumentNullException();
             Vector<double> diffSignal = Vector<double>.Build.Dense(signal.Count - 1);
             signal.SubVector(1, signal.Count - 1).Subtract(signal.SubVector(0, signal.Count - 1), diffSignal);
             return diffSignal;

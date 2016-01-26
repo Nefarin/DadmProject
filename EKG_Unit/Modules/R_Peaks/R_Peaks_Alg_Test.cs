@@ -460,11 +460,279 @@ namespace EKG_Unit.Modules.R_Peaks
         // __________________________________________________________________________________________
 
         // Tests for PAN TOMPKINS functions
+        // Derivative for PT method
+        [TestMethod]
+        [Description("Test if Derivative works properly")]
+        public void DerivativeTest()
+        {
+            double[] testArray = { 2, 1, 1, 3, 5, 1, 1 };
+            double[] resultArray = { -2, -5, -3, -1, -7, -8, 4 };
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Derivative(testArray);
+            CollectionAssert.AreEqual(testResult, resultArray);
+        }
+
+        [TestMethod]
+        [Description("Test if Derivative works properly - not equality tes")]
+        public void DerivativeTest2()
+        {
+            double[] testArray = { 2, 1, 1, 3, 5, 1, 1 };
+            double[] resultArray = { -5, -3, -1, -7, -8, 4, -2};
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Derivative(testArray);
+            CollectionAssert.AreNotEqual(testResult, resultArray);
+        }
+
+        [TestMethod]
+        [Description("Test if Derivative throws exception if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void DerivativeNullTest()
+        {
+            double[] testArray = null;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Derivative(testArray);
+        }
+
+        // Squaring for PT method
+        [TestMethod]
+        [Description("Test if Squaring works properly")]
+        public void SquaringTest()
+        {
+            double[] testArray = { 2, 5, -3, 0, 1 };
+            double[] resultArray = { 4, 25, 9, 0, 1 };
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Squaring(testArray);
+            CollectionAssert.AreEqual(testResult, resultArray);
+        }
+
+        [TestMethod]
+        [Description("Test if Squaring works properly - not equality tes")]
+        public void SquaringTest2()
+        {
+            double[] testArray = { 2, 5, -3, 0, 1 };
+            double[] resultArray = { 4, 25, -9, 0, 1 };
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Squaring(testArray);
+            CollectionAssert.AreNotEqual(testResult, resultArray);
+        }
+
+        [TestMethod]
+        [Description("Test if Squaring throws exception if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void SquaringNullTest()
+        {
+            double[] testArray = null;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Squaring(testArray);
+        }
+
+        // Integrating for PT method
+        [TestMethod]
+        [Description("Test if Integrating works properly")]
+        public void IntegratingTest()
+        {
+            double[] testArray = { 1, 0, 2, -1, 5, 3, 0, -1};
+            double[] resultArray = { 0.5, 0.5, 1, 0.5, 2, 4, 1.5, 0 };
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Integrating(testArray, 10);
+            CollectionAssert.AreEqual(testResult, resultArray);
+        }
+
+        [TestMethod]
+        [Description("Test if Integrating works properly - not equality test")]
+        public void IntegratingTest2()
+        {
+            double[] testArray = { 1, 0, 2, -1, 5, 3, 0, -1 };
+            double[] resultArray = { 0.5, 0.5, 1, 0.5, 2, 4, 1.5, 0 };
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Integrating(testArray, 30);
+            CollectionAssert.AreNotEqual(testResult, resultArray);
+        }
+
+        [TestMethod]
+        [Description("Test if Integration throws exception if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void IntegratingNullTest()
+        {
+            double[] testArray = null;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Integrating(testArray, 15);
+        }
+
+        [TestMethod]
+        [Description("Test if Integration throws exception if fs equals zero")]
+        [ExpectedException(typeof(ArgumentException), "Non-positive frequency value given as parameter")]
+        public void IntegratingZeroTest()
+        {
+            uint fs = 0;
+            double[] testArray = { 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 };
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Integrating(testArray, fs);
+        }
+        // ____________________________________ZERKNIJ NA TO_____________________________________________
+
+        // Finding Peaks peaks for PT method
+        /*[TestMethod]
+        [Description("Test if FindPeaks works properly")]
+        public void FindPeaksTest()
+        {
+            uint fs = 10;
+            double dist = 1;
+            double[] testArray = { 2, 0, 1, -2, 9, -2, 0, 1, 0, 1 };
+            double[] resultArray = { 4 };
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            List<double> testResult = test.FindPeaks(testArray, fs, dist);
+            CollectionAssert.AreEqual(testResult, resultArray);
+        }
+
+        [TestMethod]
+        [Description("Test if FindPeaks works properly - not equality test")]
+        public void FindPeaksTest2()
+        {
+            uint fs = 10;
+            double dist = 1;
+            double[] testArray = { 2, 0, 1, -2, 9, -2, 0, 1, 0, 1 };
+            double[] resultArray = { 5 };
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            List<double> testResult = test.FindPeaks(testArray, fs, dist);
+            CollectionAssert.AreNotEqual(testResult, resultArray);
+        }*/
+        
+        [TestMethod]
+        [Description("Test if FindPeaks throws exception if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void FindPeaksNullTest()
+        {
+            uint fs = 10;
+            double dist = 1;
+            double[] testArray = null;
+            double[] resultArray = { 5 };
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            List<double> testResult = test.FindPeaks(testArray, fs, dist);
+        }
+
+        [TestMethod]
+        [Description("Test if FindPeaks throws exception if fs equals zero")]
+        [ExpectedException(typeof(ArgumentException), "Non-positive frequency value given as parameter")]
+        public void FindPeaksZeroTest()
+        {
+            uint fs = 0;
+            double[] testArray = { 1, 1, 2, 3, 5, 2, 0, -1, 0, 1 };
+            double dist = 1;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            List<double> testResult = test.FindPeaks(testArray, fs, dist);
+        }
+
+        // Test for other functions
+        // CutSignal function
+        [TestMethod]
+        [Description("Test if CutSignal works properly")]
+        public void CutSignalTest()
+        {
+            int begin = 2;
+            int end = 5;
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] resultArray = { 2, 3, 4, 5 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.CutSignal(testVector, begin, end);
+            Assert.AreEqual(testResult, resultVector);
+        }
+
+        [TestMethod]
+        [Description("Test if CutSignal works properly - not equality test")]
+        public void CutSignalTest2()
+        {
+            int begin = 2;
+            int end = 5;
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] resultArray = { 1, 2, 3, 4 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.CutSignal(testVector, begin, end);
+            Assert.AreNotEqual(testResult, resultVector);
+        }
+
+        [TestMethod]
+        [Description("Test if CutSignal throws exception if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void CutSignalNullTest()
+        {
+            int begin = 2;
+            int end = 5;
+            Vector<double> testVector = null;
+            double[] resultArray = { 1, 2, 3, 4 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.CutSignal(testVector, begin, end);
+        }
+
+        [TestMethod]
+        [Description("Test if CutSignal throws exception if end is lower than begin")]
+        [ExpectedException(typeof(ArgumentException), "Wrong begin or end value given as parameter")]
+        public void CutSignalTimeTravelTest()
+        {
+            int begin = 5;
+            int end = 2;
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.CutSignal(testVector, begin, end);
+        }
+
+        // Diff function
+        [TestMethod]
+        [Description("Test if Diff works properly")]
+        public void DiffTest()
+        {
+            double[] testArray = { 2, 4, 6, 3, 1, -2, -4, 5 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] resultArray = { 2, 2, -3, -2, -3, -2, 9 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.Diff(testVector);
+            Assert.AreEqual(testResult, resultVector);
+        }
+
+        [TestMethod]
+        [Description("Test if Diff works properly - not equality test")]
+        public void DiffTest2()
+        {
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] resultArray = { 2, 2, 3, 2, -3, -2, 9 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.Diff(testVector);
+            Assert.AreNotEqual(testResult, resultVector);
+        }
+
+        [TestMethod]
+        [Description("Test if CutSignal throws exception if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void DiffNullTest()
+        {
+            Vector<double> testVector = null;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.Diff(testVector);
+        }
 
         // ____________________________________DOTĄD DZIAŁAM!_____________________________________________
-
-
-
         //...
 
     }
