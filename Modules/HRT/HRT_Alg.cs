@@ -18,22 +18,29 @@ namespace EKG_Project.Modules.HRT
 
             return Tachogram;
         }
+
         public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalInSampleDomain, int samplingFreq)
         {
+            if (SignalInSampleDomain == null) throw new ArgumentNullException();
+            if (samplingFreq <= 0) throw new ArgumentOutOfRangeException();
             Vector<double> SignalInTimeDomain;
-            SignalInTimeDomain = 1000 *SignalInSampleDomain / samplingFreq  ;
+            SignalInTimeDomain = 1000 * SignalInSampleDomain / samplingFreq;
             return SignalInTimeDomain;
         }
+
         public Vector<double> ChangeVectorIntoTimeDomain(int[] SignalInSampleDomain, int samplingFreq)
         {
+            double[] Sig = new double[SignalInSampleDomain.Length];
             Vector<double> SignalInTimeDomain = Vector<double>.Build.Dense(SignalInSampleDomain.Length);
+            int i = 0;
             foreach (int counter in SignalInSampleDomain)
             {
-                SignalInTimeDomain.Add(1000 * counter / samplingFreq);
+                Sig[i++] = 1000 * counter / samplingFreq;
             }
-            return SignalInTimeDomain;
+            return Vector<double>.Build.DenseOfArray(Sig);
         }
-        public void PrintVector (Vector<double> Signal)
+
+        public void PrintVector(Vector<double> Signal)
         {
             foreach (double _licznik in Signal)
             {
@@ -41,54 +48,23 @@ namespace EKG_Project.Modules.HRT
             }
         }
 
-        public Vector<int> GetNrVPC (double[] rrTimes, double[] rrTimesVPC, int VPCcount)
+        public Vector<double> GetNrVPC(double[] rrTimes, double[] rrTimesVPC, int VPCcount)
         {
-            Vector<int> nrVPC = Vector<int>.Build.Dense(VPCcount);
+            double[] Sig = new double[VPCcount];
+            //Vector<double> nrVPC = Vector<double>.Build.Dense(VPCcount);
             int rrTimesLength = rrTimes.Length;
-            for (int i=0; i<VPCcount; i++)
+            for (int j = 0; j < VPCcount; j++)
             {
-                for (int j=0; j<rrTimes.Length; j++)
+                for (int i = 0; i < rrTimes.Length; i++)
                 {
-                    if (rrTimes[i] == rrTimesVPC[j])
+                    if ((int)rrTimes[i] == (int)rrTimesVPC[j])
                     {
-                        nrVPC.Add(i);
+                        Sig[j] = i;
+                        //Console.WriteLine(Sig[j]);
                     }
                 }
-                
             }
-            return nrVPC;
+            return Vector<double>.Build.DenseOfArray(Sig);
         }
-//        %ustalenie które nr pików R to są VPC
-//nrVPC=zeros(VPCcount,1);
-//for j=1:VPCcount
-//    for i=1:length(rrTimes)
-//        if rrTimes(i)==rrTimesVPC(j)
-//            nrVPC(j)=i;
-//        end
-//    end
-//end
-
-
-
-
-
-        //ustalenie które nr pików R to są VPC
-        //Vector<double> WhichPeaksAreVPC(Vector<double> rrTimes, Vector<double> rrTimesVPC)
-        //{
-        //    int VPCcount=rrTimesVPC
-        //    Vector<double> nrVPC;
-        //    for (int i = 0; i < VPCcount; i++)
-        //    {
-        //        for (int j = 0, j< rrTimes.Count; j++)
-        //        {
-        //            if rrTimes(i) == rrTimesVPC(j)
-        //            {
-        //                nrVPC(j) = i;
-        //            }
-
-        //        }
-        //    }
-        //}
-
     }
 }
