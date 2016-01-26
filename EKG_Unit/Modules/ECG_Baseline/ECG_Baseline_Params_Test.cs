@@ -119,20 +119,14 @@ namespace EKG_Unit.Modules.ECG_Baseline
         [Description("Test if BandPassConstructorForLMSMovingAverageSavitzkyGolay constructor works properly")]
         public void BandPassConstructorForLMSMovingAverageSavitzkyGolayTest()
         {
-            ECG_Baseline_Params expectedParams = new ECG_Baseline_Params();
-            expectedParams.Method = Filtr_Method.LMS;
-            expectedParams.AnalysisName = "analysis";
-            expectedParams.Type = Filtr_Type.BANDPASS;
-            expectedParams.WindowSizeLow = 10;
-            expectedParams.WindowSizeHigh = 100;
-
-            ECG_Baseline_Params actualParams = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 10, 100, "analysis");
-
-            Assert.AreEqual(expectedParams.Method, actualParams.Method);
-            Assert.AreEqual(expectedParams.Type, actualParams.Type);
-            Assert.AreEqual(expectedParams.AnalysisName, actualParams.AnalysisName);
-            Assert.AreEqual(expectedParams.WindowSizeLow, actualParams.WindowSizeLow);
-            Assert.AreEqual(expectedParams.WindowSizeHigh, actualParams.WindowSizeHigh);
+          
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 10, 100, "analysis");
+            Assert.AreEqual(Filtr_Method.LMS, param.Method);
+            Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
+            Assert.AreEqual("analysis", param.AnalysisName);
+            Assert.AreEqual(10, param.WindowSizeLow);
+            Assert.AreEqual(100, param.WindowSizeHigh);
         }
+
     }
 }
