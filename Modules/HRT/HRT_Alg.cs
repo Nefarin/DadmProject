@@ -11,8 +11,9 @@ namespace EKG_Project.Modules.HRT
     public class HRT_Alg
     {
         public bool IsLengthOfTachogramOK(Vector<double> Tachogram)
-        { 
-            return false;
+        {
+            if (Tachogram.Count > 20) return true;
+            else return false;
         }
 
         public Vector<double> SearchVentricularTurbulence(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
@@ -34,20 +35,7 @@ namespace EKG_Project.Modules.HRT
         }
 
 
-        public void ReadCSVFile()
-        {
-            var reader = new StreamReader(File.OpenRead(@"C:\Users\mrevening\Desktop\rrIntervals.dat"));
-            List<string> listA = new List<string>();
-            List<string> listB = new List<string>();
-            while (!reader.EndOfStream)
-            {
-                var line = reader.ReadLine();
-                var values = line.Split(';');
-
-                listA.Add(values[0]);
-                listB.Add(values[1]);
-            }
-         }
+   
 
         //ustalenie które nr pików R to są VPC
         //Vector<double> WhichPeaksAreVPC(Vector<double> rrTimes, Vector<double> rrTimesVPC)
@@ -67,30 +55,5 @@ namespace EKG_Project.Modules.HRT
         //    }
         //}
 
-
-
-
-
-
-
-
-
-
-    //    public static void Main(string[] args)
-    //    {
-    //        //read data from file
-    //        TempInput.setInputFilePath(@"C:\Users\mrevening\Desktop\R_100.txt");
-    //        uint fs = TempInput.getFrequency();
-    //        Vector<double> sig = TempInput.getSignal();
-
-    //        HRT_Alg hrt = new HRT_Alg(sig);
-
-    //        // Samples to time convertion [ms]
-    //        Vector<double> tacho_rr = hrt.TimeConvert(fs, sig.ToArray());
-
-    //        Console.WriteLine(fs);
-    //        Console.WriteLine(sig);
-    //        Console.ReadKey();
-    //    }
     }
 }
