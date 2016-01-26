@@ -32,7 +32,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.OrderHigh = 3;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int order, double fc, string analysisName) //konstruktor BUTTERWORTH LOW, HIGH
+        public ECG_Baseline_Params(string analysisName, Filtr_Method method, Filtr_Type type, int order, double fc) //konstruktor BUTTERWORTH LOW, HIGH
         {
             this.Method = method;
             this.AnalysisName = analysisName;
