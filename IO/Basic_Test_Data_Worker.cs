@@ -91,7 +91,7 @@ namespace EKG_Project.IO
         }
 
         /// <summary>
-        /// Loads signal from txt file
+        /// Loads part of signal from txt file
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
