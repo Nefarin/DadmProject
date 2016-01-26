@@ -13,8 +13,12 @@ namespace EKG_Project.Modules.T_Wave_Alt
 {
     public class T_Wave_Alt_Alg
     {
+        // Class fields
         private T_Wave_Alt_Params _params;
+        private uint _fs;
+        private int _tLength;
 
+        // Get&set
         public T_Wave_Alt_Params Params
         {
             get
@@ -28,25 +32,49 @@ namespace EKG_Project.Modules.T_Wave_Alt
                 _params = value;
             }
         }
+        public uint Fs
+        {
+            get
+            {
+                return _fs;
+            }
+
+            set
+            {
+                _fs = value;
+            }
+        }
+        public int TLength
+        {
+            get
+            {
+                return _tLength;
+            }
+
+            set
+            {
+                _tLength = value;
+            }
+        }
+
+        // Class methods
 
         #region Documentation
         /// <summary>
-        /// This function calculates the length of an average T-wave in samples.
+        /// This function calculates the length of an average T-wave in samples, used by many further functions.
         /// </summary>
         /// <param name="fs">Sampling frequency</param>
         /// <returns>Average T-length in samples</returns>
         #endregion
-        public int calculateTLength(uint fs)
+        public void calculateTLength()
         {
-            double t_length1 = fs * 0.15;
-            int tLength = Convert.ToInt32(t_length1);
-            return tLength;
+            double t_length1 = this.Fs * 0.15;
+            this.TLength = Convert.ToInt32(t_length1);
         }
 
         #region Documentation
         /// <summary>
         /// This function extracts T-waves based on the input signal and indices of T-ends.
-        /// TODO: fs integration
         /// </summary>
         /// <param name="loadedSignal">Input signal</param>
         /// <param name="tEndsList">List of T-ends indices</param>
@@ -54,12 +82,15 @@ namespace EKG_Project.Modules.T_Wave_Alt
         #endregion
         public List<Vector<double>> buildTWavesArray(Vector<double> loadedSignal, List<int> tEndsList)
         {
-            //int tLength = calculateTLength(360);
-            int tLength = calculateTLength(20);
+            calculateTLength();
+            int tLength = this.TLength;
             List<Vector<double>> TWavesArray = new List<Vector<double>>();
             foreach (int currentTEnd in tEndsList) {
-                Vector<double> newTWave = loadedSignal.SubVector(currentTEnd - tLength, tLength);
-                TWavesArray.Add(newTWave);
+                if (currentTEnd + 1 >= tLength)
+                {
+                    Vector<double> newTWave = loadedSignal.SubVector(currentTEnd - tLength + 1, tLength);
+                    TWavesArray.Add(newTWave);
+                }
             }
 
             return TWavesArray;
@@ -68,15 +99,13 @@ namespace EKG_Project.Modules.T_Wave_Alt
         #region Documentation
         /// <summary>
         /// This function calculates the medians of corresponding samples in T-waves vectors
-        /// TODO: tLength proper integration
         /// </summary>
         /// <param name="TWavesArray">List of vectors containing T-waves</param>
         /// <returns>Vector containing median T-wave</returns>
         #endregion
         public Vector<double> calculateMedianTWave(List<Vector<double>> TWavesArray)
         {
-            //deklaracja na stałe później do wyrzucenia!
-            int tLength = 2;
+            int tLength = this.TLength;
 
             Vector<double> medianVector = Vector<double>.Build.Dense(tLength);
             Vector<double> tempColumn = Vector<double>.Build.Dense(TWavesArray.Count);
@@ -182,14 +211,8 @@ namespace EKG_Project.Modules.T_Wave_Alt
 
                 else if ((counter > 0) && (counter < alterThreshold))
                 {
-                    if (element == 0)
-                    {
-                        counter++;
-                    }
-                    else
-                    {
-                        counter = 0;
-                    }
+                    if (element == 0) counter++;
+                    else counter = 0;
                 }
 
                 else if (counter >= alterThreshold)
@@ -247,26 +270,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
 
             return alternansDetectedList;
         } 
-
        
     }
-        
-        /*
-        public static void Main(string [] args)
-        {
-            TempInput.setInputFilePath(@"C:\Users\fouette\Desktop\Janek projekt\signal.txt");
-            uint fs = TempInput.getFrequency();
-            Vector<double> sig = TempInput.getSignal();
-
-            TempInput.setInputFilePath(@"C:\Users\fouette\Desktop\Janek projekt\t_end.txt");
-            Vector<int> t_ends = TempInput.getSignal();
-
-            T_Wave_Alt instance1 = new T_Wave_Alt();
-            int[] alt_found = instance1.findAlternans(t_ends, sig, fs);
-
-            TempInput.setOutputFilePath(@"C:\Users\fouette\Desktop\Janek projekt\alternans.txt");
-            TempInput.writeFile(fs, alt_found);
-        }
-        */
     
 }

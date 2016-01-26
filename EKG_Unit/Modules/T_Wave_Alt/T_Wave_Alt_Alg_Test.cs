@@ -10,20 +10,25 @@ namespace EKG_Unit.Modules.T_Wave_Alt
     [TestClass]
     public class T_Wave_Alt_Alg_Test
     {
+        // TODO
+        // buildTWavesArray right border test
+        // whole Alg test
+        // division by zero tests
+
         [TestMethod]
         [Description("Tests if T-wave array is built properly")]
         public void buildTWavesArrayEqualTest()
         {
             // Init test here
 
-            double[] testArray = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             double[] resultArray1 = { 2, 3, 4 };
             double[] resultArray2 = { 7, 8, 9 };
 
 
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
             List<int> testTEndList = new List<int>();
-            testTEndList.Add(4);
+            testTEndList.Add(4); // index!!! not the 4th element
             testTEndList.Add(9);
             Vector<double> resultVector1 = Vector<double>.Build.DenseOfArray(resultArray1);
             Vector<double> resultVector2 = Vector<double>.Build.DenseOfArray(resultArray2);
@@ -35,12 +40,14 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             // Process test here
 
+            testAlgs.Fs = 20;
+
             List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList);
 
             // Assert results
 
-            Assert.AreEqual(desiredList[0], resultVector1);
-            Assert.AreEqual(desiredList[1], resultVector2);
+            Assert.AreEqual(resultVector1,desiredList[0]);
+            Assert.AreEqual(resultVector2,desiredList[1]);
 
 
         }
@@ -70,12 +77,52 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             // Process test here
 
+            testAlgs.Fs = 20;
+
             List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList);
 
             // Assert results
 
             Assert.AreNotEqual(desiredList[0], resultVector1);
             Assert.AreNotEqual(desiredList[1], resultVector2);
+
+        }
+
+        [TestMethod]
+        [Description("Tests if the buildTWavesArray omits the waves it cannot build ('left' border effect)")]
+        public void buildTWavesArrayLeftBorderTest()
+        {
+            // Init test here
+
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            double[] resultArray1 = { 3, 4, 5 };
+            double[] resultArray2 = { 7, 8, 9 };
+
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            List<int> testTEndList = new List<int>();
+            testTEndList.Add(1); // aditional t-end - t-wave can't be built
+            testTEndList.Add(5);
+            testTEndList.Add(9);
+            Vector<double> resultVector1 = Vector<double>.Build.DenseOfArray(resultArray1);
+            Vector<double> resultVector2 = Vector<double>.Build.DenseOfArray(resultArray2);
+            List<Vector<double>> resultList = new List<Vector<double>>();
+            resultList.Add(resultVector1);
+            resultList.Add(resultVector2);
+
+            T_Wave_Alt_Alg testAlgs = new T_Wave_Alt_Alg();
+
+            // Process test here
+
+            testAlgs.Fs = 20;
+
+            List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList);
+
+            // Assert results
+
+            Assert.AreEqual(resultVector1, desiredList[0]);
+            Assert.AreEqual(resultVector2, desiredList[1]);
+
 
         }
 
@@ -107,6 +154,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             // Process test here
 
+            testAlgs.TLength = 2; // defined here for easy testing purposes
             Vector<double> desiredMedian = testAlgs.calculateMedianTWave(testList);
 
             // Assert results
@@ -139,6 +187,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             // Process test here
 
+            testAlgs.TLength = 2; // defined here for easy testing purposes
             Vector<double> desiredMedian = testAlgs.calculateMedianTWave(testList);
 
             // Assert results
@@ -147,21 +196,17 @@ namespace EKG_Unit.Modules.T_Wave_Alt
         }
 
         [TestMethod]
-        [Description("Tests if ACI are calculated properly")]
-        public void calculateACITest()
+        [Description("Tests if ACI are calculated properly - general logic test, all ACI values should equal 1")]
+        public void calculateACITest1()
         {
             // Init test here
-            // TODO: check for values other than 1
 
-            //double[] testArray1 = { 2, 5, 6 };
             double[] testArray1 = { 3, 6, 4 };
             double[] testArray2 = { 3, 6, 4 };
             double[] testArray3 = { 3, 6, 4 };
-            //double[] testArray3 = { 3, 7, 4 };
 
             double[] testMedian = { 3, 6, 4 };
-
-            //double[] testACIArray = { 0.983, 1, 1,098 };
+            
             double[] testACIArray = { 1, 1, 1 };
 
             Vector<double> testVector1 = Vector<double>.Build.DenseOfArray(testArray1);
@@ -183,6 +228,46 @@ namespace EKG_Unit.Modules.T_Wave_Alt
             // Assert results
 
             Assert.AreEqual(testACI, receivedACI);
+        }
+
+        [TestMethod]
+        [Description("Tests if ACI are calculated properly - plausible values")]
+        public void calculateACITest2()
+        {
+            // Init test here
+
+            double[] testArray1 = { 2, 5, 6 };
+            double[] testArray2 = { 3, 6, 4 };
+            double[] testArray3 = { 3, 7, 4 };
+
+            double[] testMedian = { 3, 6, 4 };
+
+            double[] testACIArray = { 0.983, 1, 1.098 };
+
+            Vector<double> testVector1 = Vector<double>.Build.DenseOfArray(testArray1);
+            Vector<double> testVector2 = Vector<double>.Build.DenseOfArray(testArray2);
+            Vector<double> testVector3 = Vector<double>.Build.DenseOfArray(testArray3);
+            Vector<double> testMedianVec = Vector<double>.Build.DenseOfArray(testMedian);
+            Vector<double> testACI = Vector<double>.Build.DenseOfArray(testACIArray);
+            List<Vector<double>> testList = new List<Vector<double>>();
+            testList.Add(testVector1);
+            testList.Add(testVector2);
+            testList.Add(testVector3);
+
+            T_Wave_Alt_Alg testAlgs = new T_Wave_Alt_Alg();
+
+            // Process test here
+
+            Vector<double> receivedACI = testAlgs.calculateACI(testList, testMedianVec);
+
+            // Assert results
+            double epsylon = 0.001;
+            int iter = 0;
+            foreach (double element in testACI)
+            {
+                Assert.AreEqual(testACI[iter], receivedACI[iter], epsylon);
+                iter++;
+            }
         }
 
         [TestMethod]
