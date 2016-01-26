@@ -39,13 +39,13 @@ namespace EKG_Project.Modules.Waves
             }
             else if (_params.WaveType == Wavelet_Type.db2)
             {
-                _qrsEndTresh = 0.12;
-                _qrsOnsTresh = 0.12;
+                _qrsEndTresh = 0.42;
+                _qrsOnsTresh = 0.22;
             }
             else
             {
-                _qrsEndTresh = 0.2;
-                _qrsOnsTresh = 0.2;
+                _qrsEndTresh = 0.4;
+                _qrsOnsTresh = 0.4;
             }
 
             DetectQRS();
@@ -132,12 +132,9 @@ namespace EKG_Project.Modules.Waves
                     break;
 
                 case Wavelet_Type.db3:
-                    //Hfilter = new double[] { -0.332670552950957, 0.806891509313339, -0.459877502119331, -0.135011020010391, 0.0854412738822415, 0.0352262918821007 };
-                    //Lfilter = new double[] { 0.0352262918821007, -0.0854412738822415, -0.135011020010391, 0.459877502119331, 0.806891509313339, 0.332670552950957 };
-                    //filterSize = 6;
-                    Hfilter = new double[] { -0.482962913144690, 0.836516303737469, -0.224143868041857, -0.129409522550921 };
-                    Lfilter = new double[] { -0.129409522550921, 0.224143868041857, 0.836516303737469, 0.482962913144690 };
-                    filterSize = 4;
+                    Hfilter = new double[] { -0.332670552950957, 0.806891509313339, -0.459877502119331, -0.135011020010391, 0.0854412738822415, 0.0352262918821007 };
+                    Lfilter = new double[] { 0.0352262918821007, -0.0854412738822415, -0.135011020010391, 0.459877502119331, 0.806891509313339, 0.332670552950957 };
+                    filterSize = 6;
                     break;
             }
             int decompSize = signal.Count();
@@ -220,14 +217,24 @@ namespace EKG_Project.Modules.Waves
 
             int qrsOnsetInd = dwt.SubVector(sectionStart, len).MinimumIndex() + sectionStart;
             double treshold = Math.Abs(dwt[qrsOnsetInd]) * _qrsOnsTresh;
-
+            double Rval = _currentECG[(int)dmiddleR];
             while (Math.Abs(dwt[qrsOnsetInd]) > treshold && qrsOnsetInd > sectionStart)
                 qrsOnsetInd--;
 
             if (qrsOnsetInd == sectionStart)
                 return -1;
             else
-                return (qrsOnsetInd << decompLevel) + _offset;
+            {
+                qrsOnsetInd = (qrsOnsetInd << decompLevel);
+                int samples2analyse = (int)(InputData.Frequency * 0.04);
+                while (lastNderivSquares(samples2analyse, qrsOnsetInd, _currentECG) > 0.004 * Rval && qrsOnsetInd < rightEnd)
+                {
+                    qrsOnsetInd--;
+                }
+                    
+                return  qrsOnsetInd + _offset;
+            }
+                
         }
         #region
         /// <summary>
@@ -256,7 +263,7 @@ namespace EKG_Project.Modules.Waves
             }
 
 
-            double treshold = Math.Abs(dwt.SubVector(qrsEndInd, len).Minimum()) * _qrsEndTresh;
+            double treshold = Math.Abs(dwt.SubVector(qrsEndInd, len).Maximum()) * _qrsEndTresh;
 
 
             if (!(qrsEndInd + 1 < dwt.Count))
@@ -265,20 +272,39 @@ namespace EKG_Project.Modules.Waves
 
             }
 
+            //qrsEndInd = qrsEndInd << decompLevel;
+            //sectionEnd = leftEnd;
+            double Rval = _currentECG[(int)dmiddleR];
+            //while (Math.Abs(_currentECG[qrsEndInd]) > 0.12 * Rval && qrsEndInd < sectionEnd)
+            //    qrsEndInd++;
+            //while (_currentECG[qrsEndInd] > _currentECG[qrsEndInd+1] && qrsEndInd < sectionEnd)
+            //    qrsEndInd++;
+            //while (Math.Abs(_currentECG[qrsEndInd]) > 0.12 * Rval && qrsEndInd < sectionEnd)
+            //    qrsEndInd++;
+            //while (calcLastNSquares(3, qrsEndInd, _currentECG) > Rval * 0.05 && qrsEndInd < sectionEnd)
+            //    qrsEndInd++;
             while (dwt[qrsEndInd] > dwt[qrsEndInd + 1] && qrsEndInd < sectionEnd)
                 qrsEndInd++;
             while (Math.Abs(dwt[qrsEndInd]) > treshold && qrsEndInd < sectionEnd)
                 qrsEndInd++;
-
             if (qrsEndInd >= sectionEnd)
                 return -1;
             else
             {
-                qrsEndInd= qrsEndInd << decompLevel;
-                double val = Math.Abs(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[qrsEndInd]);
-                //val = 12;
-                while (Math.Abs(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[qrsEndInd] - calcMean(qrsEndInd, sectionEnd)) > 0.4*val)
+                int samples2analyse = (int)(InputData.Frequency * 0.02);
+                qrsEndInd = (qrsEndInd << decompLevel);
+                while (Math.Abs(_currentECG[qrsEndInd] - Rval) / Rval < 0.95 && qrsEndInd < leftEnd)
                     qrsEndInd++;
+                while (_currentECG[qrsEndInd] > _currentECG[qrsEndInd + 1] && qrsEndInd < leftEnd)
+                    qrsEndInd++;
+                while (lastNderivSquares(samples2analyse, qrsEndInd, _currentECG) > 0.02 * Rval && qrsEndInd < leftEnd)
+                    qrsEndInd++;
+                while (nextNderivSquares(samples2analyse, qrsEndInd, _currentECG) > 0.02 * Rval && qrsEndInd < leftEnd)
+                    qrsEndInd++;
+                //double val = Math.Abs(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[qrsEndInd]);
+                ////val = 12;
+                //while (Math.Abs(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[qrsEndInd] - calcMean(qrsEndInd, sectionEnd)) > 0.4*val)
+                //    qrsEndInd++;
                 return qrsEndInd + _offset;
             }
                 
@@ -289,16 +315,30 @@ namespace EKG_Project.Modules.Waves
         /// </summary>
         /// <returns> Means of 1 ms part of signal counted from qrsEndInd index </returns>
         #endregion
-        double calcMean( int qrsEndInd, int sectionEnd)
+        double lastNderivSquares(int n, int index, Vector<double> signal)
         {
-            int length = (int)InputData.Frequency * 1;
-            double result = 0;
-            int i = 0;
-            for(i = 1; i< length && i < sectionEnd && qrsEndInd+i< InputECGData.SignalsFiltered[_currentChannelIndex].Item2.Count; i++)
+            double res = 0;
+            for(int i=0; i< n; i++)
             {
-                result += InputECGData.SignalsFiltered[_currentChannelIndex].Item2[qrsEndInd + i];
+                res += derivSquare(index - i, signal);
             }
-            return result / (double)i;
+            return res;
+        }
+        double nextNderivSquares(int n, int index, Vector<double> signal)
+        {
+            double res = 0;
+            for (int i = 0; i < n; i++)
+            {
+                res += derivSquare(index + i, signal);
+            }
+            return res;
+        }
+        double derivSquare( int index, Vector<double> signal)
+        {
+            double res = 0;
+            if (index - 2 > 0 && index + 2 < signal.Count)
+                res = 0.125 * (-signal[index -2] - 2 * signal[index-1] +2*signal[index+1] + signal[index+2]);
+            return res * res;
         }
         #region
         /// <summary>
