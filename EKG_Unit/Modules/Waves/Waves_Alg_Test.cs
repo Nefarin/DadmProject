@@ -142,7 +142,7 @@ namespace EKG_Unit.Modules.Waves
             Waves_Params testParams = new Waves_Params(Wavelet_Type.haar,3,"Analysis1",500);
 
             double[] testArray = { 8, 7, 6, 5, 5, 9, 6, 7, 8 , 10 , 9 };
-            double result = 5;
+            double result = 9;
             int begin_loc = 0;
             int end_loc = 6;
             double max_val = 0;
@@ -156,7 +156,7 @@ namespace EKG_Unit.Modules.Waves
 
             obj.Invoke("FindMaxValue", args);
 
-            Assert.AreEqual( (int)args[3] , result);
+            Assert.AreEqual( args[3] , result);
 
 
         }
@@ -168,7 +168,7 @@ namespace EKG_Unit.Modules.Waves
             Waves_Params testParams = new Waves_Params(Wavelet_Type.haar, 3, "Analysis1", 500);
 
             double[] testArray = { 8, 7, 6, 5, 5, 9, 6, 7, 8, 10, 9 };
-            int result = 8;
+            int result = 5;
             int begin_loc = 0;
             int end_loc = 6;
             double max_val = 0;
@@ -182,7 +182,7 @@ namespace EKG_Unit.Modules.Waves
 
             obj.Invoke("FindMaxValue", args);
 
-            Assert.AreEqual((int)args[2], result);
+            Assert.AreEqual( args[2], result);
 
 
         }
