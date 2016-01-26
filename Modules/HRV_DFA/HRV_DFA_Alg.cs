@@ -13,7 +13,7 @@ namespace EKG_Project.Modules.HRV_DFA
 {
     
 
-    public class HRV_DFA_Alg 
+    public class HRV_DFA_Alg
     {
         Vector<double> veclogn1;
         Vector<double> veclogn2;
@@ -21,11 +21,13 @@ namespace EKG_Project.Modules.HRV_DFA
         Vector<double> veclogFn2;
         Vector<double> vecparam1;
         Vector<double> vecparam2;
-
+        Vector<double> logN;
+        Vector<double> logFn;
+        
         static void Main(string[] args)
         {
             //read data from file
-            TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\inervals\16265rr.txt");
+            TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\inervals\RR_100.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
             HRV_DFA_Alg dfa = new HRV_DFA_Alg();
@@ -34,22 +36,22 @@ namespace EKG_Project.Modules.HRV_DFA
             int dfastep;
             int start;
             int stop;
-            double proportion;
+            string state;
             if (sig.Count() > 60000)
             {
                 longCorrelations = true;
                 dfastep = 100;
                 start = 500;
                 stop = 50000;
-                proportion = 0.5;
+                state = "bending";
             }
-            else if (sig.Count() > 1500 && sig.Count() < 60000)
+            else if (sig.Count() > 2750 && sig.Count() < 60000)
             {
                 longCorrelations = true;
                 dfastep = 50;
                 start = 500;
                 stop = 5000;
-                proportion = 0.33;
+                state = "bending";
             }
             else
             {
@@ -57,7 +59,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 dfastep = 50;
                 start = 500;
                 stop = 5000;
-                proportion = 1;
+                state = "no_bending";
             }
 
             double[] BoxRanged = Generate.LinearRange(start, dfastep, stop);        // set of box sizes
@@ -69,64 +71,78 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> vectorLogFn = dfa.ConvertToLog(vFn);
             Vector<double> vectorLogn = vectorLogN.SubVector(0, vFn.Count());
 
-            int q = Convert.ToInt32(vectorLogn.Count() * proportion);
+           
             // vectors init
-            Vector<double> ln1 = vectorLogn.SubVector(0, q);
-            Vector<double> lFn1 = vectorLogFn.SubVector(0, q);
-            Vector<double> ln2 = vectorLogn.SubVector(q, vectorLogn.Count() - q);
-            Vector<double> lFn2 = vectorLogFn.SubVector(q, vectorLogFn.Count() - q);
+            Vector<double> ln1 = Vector<double>.Build.Dense(vectorLogn.Count);
+            Vector<double> lFn1 = Vector<double>.Build.Dense(vectorLogFn.Count);
+            Vector<double> ln2 = Vector<double>.Build.Dense(vectorLogn.Count);
+            Vector<double> lFn2 = Vector<double>.Build.Dense(vectorLogFn.Count);
+            Vector<double> lineShortRange = Vector<double>.Build.Dense(lFn1.Count());
+            Vector<double> lineLongRange = Vector<double>.Build.Dense(lFn2.Count());
+            Vector<double> p1 = Vector<double>.Build.Dense(2);
+            Vector<double> p2 = Vector<double>.Build.Dense(2);
 
             if (longCorrelations)
             {
-
+                int q = 55;
+                int qq = vectorLogFn.Count() - q;
+                ln1 = vectorLogn.SubVector(0, q);
+                lFn1 = vectorLogFn.SubVector(0, q);
+                ln2 = vectorLogn.SubVector(q, qq);
+                lFn2 = vectorLogFn.SubVector(q, qq);
+                lineShortRange = Vector<double>.Build.Dense(lFn1.Count());
+                lineLongRange = Vector<double>.Build.Dense(lFn2.Count());
+                p1 = Vector<double>.Build.Dense(2);
+                p2 = Vector<double>.Build.Dense(2);
                 // short - range correlations
                 Tuple<double[], Vector<double>> shortRange = dfa.LinearSquare(ln1, lFn1);
-                Vector<double> p1 = Vector<double>.Build.DenseOfArray(shortRange.Item1);
+                p1 = Vector<double>.Build.DenseOfArray(shortRange.Item1);
                 //fitting curve obtaining for short-range correlations
-                Vector<double> lineShortRange = shortRange.Item2;
+                lineShortRange = shortRange.Item2;
 
                 //long - range correlations
                 Tuple<double[], Vector<double>> longRange = dfa.LinearSquare(ln2, lFn2);
-                Vector<double> p2 = Vector<double>.Build.DenseOfArray(longRange.Item1);
+                p2 = Vector<double>.Build.DenseOfArray(longRange.Item1);
                 //fitting curve obtaining for short-range correlations
-                Vector<double> lineLongRange = longRange.Item2;
+                lineLongRange = longRange.Item2;
             }
             else
             {
-                Tuple<double[], Vector<double>> shortRange = dfa.LinearSquare(vectorLogn, vectorLogFn);
+                ln1 = vectorLogn;
+                lFn1 = vectorLogFn;
+                Tuple<double[], Vector<double>> shortRange = dfa.LinearSquare(ln1, lFn1);
                 Vector<double> p = Vector<double>.Build.DenseOfArray(shortRange.Item1);
                 //fitting curve obtaining for short-range correlations
-                Vector<double> line = shortRange.Item2;
+                lineShortRange = shortRange.Item2;
             }
             //
             //write result to dat file
             TempInput.setOutputFilePath(@"C:\Users\Paulina\Desktop\inervals\result.txt");
-            TempInput.writeFile(fs, vectorFn0);
+            TempInput.writeFile(fs, ln1, lineShortRange);
         }
-
-       /* public HRV_DFA_Analysis()
-        {
-
+        /*
+         public void HRV_DFA_Analysis(Vector<double> sig)
+         {
             bool longCorrelations;
             int dfastep;
             int start;
             int stop;
-            double proportion;
+            string state;
             if (sig.Count() > 60000)
             {
                 longCorrelations = true;
                 dfastep = 100;
                 start = 500;
                 stop = 50000;
-                proportion = 0.5;
+                state = "bending";  
             }
-            else if (sig.Count() > 1500 && sig.Count() < 60000)
+            else if (sig.Count() > 2750 && sig.Count() < 60000)
             {
                 longCorrelations = true;
                 dfastep = 50;
                 start = 500;
                 stop = 5000;
-                proportion = 0.33;
+                state = "bending";
             }
             else
             {
@@ -134,46 +150,70 @@ namespace EKG_Project.Modules.HRV_DFA
                 dfastep = 50;
                 start = 500;
                 stop = 5000;
-                proportion = 1;
+                state = "no_bending";
             }
 
-            double[] BoxRanged = Generate.LinearRange(start, dfastep, stop);        // set of box sizes
-            Vector<double> boxSizeSet = Vector<double>.Build.DenseOfArray(BoxRanged);
-            Vector<double> vectorLogN = ConvertToLog(boxSizeSet);
+             double[] BoxRanged = Generate.LinearRange(start, dfastep, stop);        // set of box sizes
+             Vector<double> boxSizeSet = Vector<double>.Build.DenseOfArray(BoxRanged);
+             Vector<double> vectorLogN = ConvertToLog(boxSizeSet);
 
-            Vector<double> vectorFn0 = ComputeDfaFluctuation(sig, BoxRanged);
-            Vector<double> vFn = RemoveZeros(vectorFn0);
-            Vector<double> vectorLogFn = ConvertToLog(vFn);
-            Vector<double> vectorLogn = vectorLogN.SubVector(0, vFn.Count());
-
-            int q = Convert.ToInt32(vectorLogn.Count() * proportion);
+             Vector<double> vectorFn0 = ComputeDfaFluctuation(sig, BoxRanged);
+             Vector<double> vFn = RemoveZeros(vectorFn0);
+             Vector<double> vectorLogFn = ConvertToLog(vFn);
+             Vector<double> vectorLogn = vectorLogN.SubVector(0, vFn.Count());
+             
             // vectors init
-            Vector<double> ln1 = vectorLogn.SubVector(0, q);
-            Vector<double> lFn1 = vectorLogFn.SubVector(0, q);
-            Vector<double> ln2 = vectorLogn.SubVector(q, vectorLogn.Count() - q);
-            Vector<double> lFn2 = vectorLogFn.SubVector(q, vectorLogFn.Count() - q);
+            Vector<double> ln1 = Vector<double>.Build.Dense(vectorLogn.Count);
+            Vector<double> lFn1 = Vector<double>.Build.Dense(vectorLogFn.Count);
+            Vector<double> ln2 = Vector<double>.Build.Dense(vectorLogn.Count);
+            Vector<double> lFn2 = Vector<double>.Build.Dense(vectorLogFn.Count);
+            Vector<double> lineShortRange = Vector<double>.Build.Dense(lFn1.Count());
+            Vector<double> lineLongRange = Vector<double>.Build.Dense(lFn2.Count());
+            Vector<double> p1 = Vector<double>.Build.Dense(2);
+            Vector<double> p2 = Vector<double>.Build.Dense(2);
 
             if (longCorrelations)
             {
+                int q = 55;
+                int qq = vectorLogFn.Count() - q;
+                ln1 = vectorLogn.SubVector(0, q);
+                lFn1 = vectorLogFn.SubVector(0, q);
+                ln2 = vectorLogn.SubVector(q, qq);
+                lFn2 = vectorLogFn.SubVector(q, qq);
+                lineShortRange = Vector<double>.Build.Dense(lFn1.Count());
+                lineLongRange = Vector<double>.Build.Dense(lFn2.Count());
+                p1 = Vector<double>.Build.Dense(2);
+                p2 = Vector<double>.Build.Dense(2);
                 // short - range correlations
                 Tuple<double[], Vector<double>> shortRange = LinearSquare(ln1, lFn1);
-                Vector<double> p1 = Vector<double>.Build.DenseOfArray(shortRange.Item1);
+                p1 = Vector<double>.Build.DenseOfArray(shortRange.Item1);
                 //fitting curve obtaining for short-range correlations
-                Vector<double> lineShortRange = shortRange.Item2;
+                lineShortRange = shortRange.Item2;
 
                 //long - range correlations
                 Tuple<double[], Vector<double>> longRange = LinearSquare(ln2, lFn2);
-                Vector<double> p2 = Vector<double>.Build.DenseOfArray(longRange.Item1);
+                p2 = Vector<double>.Build.DenseOfArray(longRange.Item1);
                 //fitting curve obtaining for short-range correlations
-                Vector<double> lineLongRange = longRange.Item2;
+                lineLongRange = longRange.Item2;
             }
             else
             {
-                Tuple<double[], Vector<double>> shortRange = LinearSquare(vectorLogn, vectorLogFn);
+                ln1 = vectorLogn;
+                lFn1 = vectorLogFn;
+                Tuple<double[], Vector<double>> shortRange = LinearSquare(ln1, lFn1);
                 Vector<double> p = Vector<double>.Build.DenseOfArray(shortRange.Item1);
                 //fitting curve obtaining for short-range correlations
-                Vector<double> line = shortRange.Item2;
+                lineShortRange = shortRange.Item2;
             }
+
+             veclogn1 = ln1;
+             veclogn2 = ln2;
+             veclogFn1 = lineShortRange;
+             veclogFn2 = lineLongRange;
+             vecparam1 = p1;
+             vecparam2 = p2;
+            logN = vectorLogn;
+            logFn = vectorLogFn;
 
         }*/
 

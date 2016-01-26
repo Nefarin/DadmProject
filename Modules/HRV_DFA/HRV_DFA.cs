@@ -195,7 +195,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public R_Peaks_Data InputData
         { get { return _inputData; } set{ _inputData = value;} }
-/*
+
         public static void Main()
         {
             HRV_DFA_Params param = new HRV_DFA_Params("Analysisnsr");
@@ -212,7 +212,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 testModule.ProcessData();
             }
             //Console.Read();
-        }*/
+        }
     }
      
 }
