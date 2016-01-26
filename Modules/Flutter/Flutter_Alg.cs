@@ -250,6 +250,15 @@ namespace EKG_Project.Modules.Flutter
             return spectralDensity;
         }
 
+        #region
+        /// <summary>
+        /// Function that finds Tends to QRSonsets segments to analysis
+        /// </summary>
+        /// <param name="_Tends"> List of number of samples where T-waves end </param>
+        /// <param name="_QRSonsets"> List of number of samples where QRS start </param>
+        /// <returns> Segments to frequency analisis </returns>
+        #endregion
+
         private List<double[]> GetEcgPart()
         {
             List<double[]> t2qrsEkgParts = new List<double[]>();
