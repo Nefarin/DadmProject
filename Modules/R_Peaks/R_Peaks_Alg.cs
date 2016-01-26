@@ -18,7 +18,7 @@ namespace EKG_Project.Modules.R_Peaks
     #endregion
     public class R_Peaks_Alg
     {
-        static void Main(string[] args)
+       /* static void Main(string[] args)
         {
             #region readData            
             //read data from dat file
@@ -27,12 +27,7 @@ namespace EKG_Project.Modules.R_Peaks
             Vector<double> signal = TempInput.getSignal();
             #endregion
 
-            //Vector<double> signal = sig.SubVector(0, 6000);
-            double[] testArray = { 0, 1, 0, -1, 0 };
-
             R_Peaks_Alg test = new R_Peaks_Alg();
-            double[] hilbert1 = test.HilbertTransform(testArray);
-            double[] hilbert2 = test.HilbertTransform(hilbert1);
 
             #region writeData
             //write result to dat file
@@ -43,11 +38,10 @@ namespace EKG_Project.Modules.R_Peaks
 
             //TEST-Console
             Console.WriteLine("done");
-            foreach (double sth in hilbert1) { Console.WriteLine(sth); }
-            Console.WriteLine();
-            foreach (double sth in hilbert2) { Console.WriteLine(sth); }
+            foreach (double sth in resultLists.Item1) { Console.WriteLine(sth + "xx"); }
+            foreach (double sth in testResult.Item2) { Console.WriteLine(sth + "xx"); }
             Console.ReadKey();
-        }
+        }*/
 
         //FIELDS
         #region 
@@ -492,23 +486,21 @@ namespace EKG_Project.Modules.R_Peaks
         {
             if (htSignal == null) throw new ArgumentNullException();
             double[] int1Signal = new double[htSignal.Length];
-            double window = Math.Round(0.36 * fs);
+            double window = Math.Round(0.37 * fs);
             Delay += Convert.ToUInt32(Math.Round(window / 2));
             IList<double> hi_coeff = new List<double>();
-            for (int i = 0; i < (window+1); i++)
+            for (int i = 0; i < window; i++)
             {
                 hi_coeff.Add((1 / window) + 1);
             }
             OnlineFirFilter integrationFilter = new OnlineFirFilter(hi_coeff);
             int1Signal = integrationFilter.ProcessSamples(htSignal);
             Vector<double> tempSignal = Vector<double>.Build.DenseOfArray(int1Signal);
-            /*
+
             // correcting signal length
             Vector<double> int2Signal = CutSignal(tempSignal, Convert.ToInt32(Math.Round(window / 2)), htSignal.Length - 1);
             int sigLength = htSignal.Length - Convert.ToInt32(Math.Round(window / 2));
-            */
-            double[] int2Signal = tempSignal.ToArray();
-            int sigLength = int2Signal.Length;
+
             // normalization
             double tempMax = int2Signal.Maximum();
             double tempMin = int2Signal.Minimum();
@@ -736,7 +728,8 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public Vector<double> CubicSplineInterp(int signalLength, IEnumerable<double> x, IEnumerable<double> y)
         {
-            //TO DO: ROUND???       
+            //TO DO: ROUND???
+            if (x==null || y==null) throw new ArgumentNullException();
             //result vector
             Vector<double> interpSpl = Vector<double>.Build.Dense(signalLength);
             //cubic spline interpolation
@@ -757,6 +750,7 @@ namespace EKG_Project.Modules.R_Peaks
 #endregion
         public Vector<double> ExtractModeFun(Vector<double> signal)
         {
+            if (signal==null) throw new ArgumentNullException();
             int numOfSift = 20;
             Vector<double> d = signal;
             for (int i = 0; i < numOfSift; i++)
@@ -778,12 +772,19 @@ namespace EKG_Project.Modules.R_Peaks
                         ampMax[j] = d[Convert.ToInt32(iMax[j])];
                     }
                     //envelopes
-                    Vector<double> envMin = CubicSplineInterp(signal.Count, iMin, ampMin);
-                    Vector<double> envMax = CubicSplineInterp(signal.Count, iMax, ampMax);
-                    Vector<double> envMean = envMin.Add(envMax).Divide(2);
-
-                    //substract form signal
-                    d = d - envMean;
+                    try
+                    {
+                        Vector<double> envMin = CubicSplineInterp(signal.Count, iMin, ampMin);
+                        Vector<double> envMax = CubicSplineInterp(signal.Count, iMax, ampMax);
+                        Vector<double> envMean = envMin.Add(envMax).Divide(2);
+                        //substract form signal
+                        d = d - envMean;
+                    }
+                    catch(ArgumentException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        break;
+                    }
                 }
                 else break;
             }
@@ -797,8 +798,9 @@ namespace EKG_Project.Modules.R_Peaks
         /// <param name="signal"> Decomposed signal as vector of samples</param>
         /// <returns> An array of vectors in which each vector is next Intrinsic Mode Function of signal </returns>
 #endregion
-        public Vector<double>[] EmpipricalModeDecomposition(Vector<double> signal)
+        public Vector<double>[] EmpiricalModeDecomposition(Vector<double> signal)
         {
+            if (signal == null) throw new ArgumentNullException();
             int numOfImfs = 2;
             Vector<double>[] imfs = new Vector<double>[numOfImfs];
             Vector<double> res = Vector<double>.Build.DenseOfVector(signal);
@@ -968,7 +970,7 @@ namespace EKG_Project.Modules.R_Peaks
         {
             Delay = 0;
             //emd
-            Vector<double>[] imfs = EmpipricalModeDecomposition(signalECG);
+            Vector<double>[] imfs = EmpiricalModeDecomposition(signalECG);
             //non linear tranform imfs
             Vector<double> imfSum = TransformImf(imfs, samplingFrequency);
             //filtering
