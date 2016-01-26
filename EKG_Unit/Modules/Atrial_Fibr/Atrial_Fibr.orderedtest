@@ -1,4 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<OrderedTest xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="d74e9918-6acd-4cf8-9b3b-6e69e3f627f9" name="Atrial_Fibr">
-	
+<OrderedTest name="atrial_fibr" storage="c:\users\anna\documents\githubvisualstudio\dadmproject\ekg_unit\modules\atrial_fibr\atrial_fibr.orderedtest" id="d74e9918-6acd-4cf8-9b3b-6e69e3f627f9" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestLinks>
+    <TestLink id="a87bda78-b415-ca49-e88e-a17f2b9b7f83" name="TPRTestAF" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  </TestLinks>
 </OrderedTest>

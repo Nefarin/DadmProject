@@ -248,7 +248,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     turningPoints++;
                 }
             }
-            return tpr = turningPoints / ((2 * 30 - 4) / 3);
+            return tpr = turningPoints / ((2 * 32 - 4) / 3);
         }
 
         #region Documentation
