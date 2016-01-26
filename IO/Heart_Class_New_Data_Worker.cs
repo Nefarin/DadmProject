@@ -1,17 +1,15 @@
 ﻿using System;
 using System.IO;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.Modules;
-using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
     #region Documentation
     /// <summary>
-    /// Class that saves and loads ECG_Baseline_Data from internal file
+    /// Class that saves and loads Heart_Class_Data chunks from internal text file
     /// </summary>
     #endregion
-    class ECG_Baseline_New_Data_Worker
+    class Heart_Class_New_Data_Worker
     {
         //FIELDS
         #region Documentation
@@ -33,7 +31,7 @@ namespace EKG_Project.IO
         /// Default constructor
         /// </summary>
         #endregion
-        public ECG_Baseline_New_Data_Worker() 
+        public Heart_Class_New_Data_Worker()
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
@@ -44,14 +42,14 @@ namespace EKG_Project.IO
         /// Parameterized constructor
         /// </summary>
         #endregion
-        public ECG_Baseline_New_Data_Worker(String analysisName) : this()
+        public Heart_Class_New_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
 
         #region Documentation
         /// <summary>
-        /// Saves part of filtered signal in txt file
+        /// Saves chunk of signal in txt file
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>

@@ -1,39 +1,38 @@
 ﻿using System;
 using System.IO;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.Modules;
-using System.Diagnostics;
+using EKG_Project.Modules.Waves;
 
 namespace EKG_Project.IO
 {
     #region Documentation
     /// <summary>
-    /// Class that saves and loads ECG_Baseline_Data from internal file
+    /// Class that saves and loads Waves_Data chunks from internal text file
     /// </summary>
     #endregion
-    class ECG_Baseline_New_Data_Worker
+    class Waves_New_Data_Worker
     {
         //FIELDS
         #region Documentation
         /// <summary>
-        /// Stores txt files directory
+        /// Stores internal XML file directory
         /// </summary>
         #endregion
-        private string directory;
+        string directory;
 
         #region Documentation
         /// <summary>
         /// Stores analysis name
         /// </summary>
         #endregion
-        private string analysisName;
+        string analysisName;
 
         #region Documentation
         /// <summary>
         /// Default constructor
         /// </summary>
         #endregion
-        public ECG_Baseline_New_Data_Worker() 
+        public Waves_New_Data_Worker()
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
@@ -43,19 +42,21 @@ namespace EKG_Project.IO
         /// <summary>
         /// Parameterized constructor
         /// </summary>
+        /// <param name="analysisName"></param>
         #endregion
-        public ECG_Baseline_New_Data_Worker(String analysisName) : this()
+        public Waves_New_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
 
+        //METHODS
         #region Documentation
         /// <summary>
         /// Saves part of filtered signal in txt file
         /// </summary>
-        /// <param name="lead">lead</param>
-        /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="signal">signal</param>
+        /// <param name="lead"></param>
+        /// <param name="mode"></param>
+        /// <param name="signal"></param>
         #endregion
         public void SaveSignal(string lead, bool mode, Vector<double> signal)
         {
@@ -74,12 +75,12 @@ namespace EKG_Project.IO
 
         #region Documentation
         /// <summary>
-        /// Loads filtered signal from txt file
+        /// Loads signal chunk from txt file
         /// </summary>
-        /// <param name="lead">lead</param>
-        /// <param name="startIndex">start index</param>
-        /// <param name="length">length</param>
-        /// <returns>signal</returns>
+        /// <param name="lead"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         #endregion
         public Vector<double> LoadSignal(string lead, int startIndex, int length)
         {
