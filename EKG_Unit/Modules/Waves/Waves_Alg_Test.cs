@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EKG_Project.Modules.Waves;
 using MathNet.Numerics.LinearAlgebra;
+using System.Collections.Generic;
 
 namespace EKG_Unit.Modules.Waves
 {
@@ -42,7 +43,100 @@ namespace EKG_Unit.Modules.Waves
             obj.Invoke("ListHaarDWT", args);
         }
 
-        
+        [TestMethod]
+        [Description("Test if method returns right result of Haar decomposition")]
+        public void HaarDecompositionResult()
+        {
+            Waves_Params param = new Waves_Params(Wavelet_Type.haar, 2, "TestAnalysis100", 500);
+            Waves_Alg testAlgs = new Waves_Alg(param);
+
+            double[] signalArray = { 1, 2, 3, 4, 5, 9, 7, 7, 8, 24, 9 };
+            Vector<double> signalVector = Vector<double>.Build.DenseOfArray(signalArray);
+
+            double[] trueOut = { -2, 0};
+            Vector<double> trueOutVector = Vector<double>.Build.DenseOfArray(trueOut);
+
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            object[] args = { signalVector, 2 };
+            var dwt  = obj.Invoke("ListHaarDWT", args);
+            List<Vector<double>> dwtL = (List<Vector<double>>)dwt;
+            Vector<double> dwtLevel2 = dwtL[1];
+            Assert.AreEqual(dwtLevel2 , trueOutVector);
+        }
+
+        [TestMethod]
+        [Description("Test if method returns right result of db2 decomposition")]
+        public void db2DecompositionResult()
+        {
+            Waves_Params param = new Waves_Params(Wavelet_Type.db2, 2, "TestAnalysis100", 500);
+            Waves_Alg testAlgs = new Waves_Alg(param);
+
+            double[] signalArray = { 1, 2, 3, 4, 5, 9, 7, 7, 8, 24, 9 };
+            Vector<double> signalVector = Vector<double>.Build.DenseOfArray(signalArray);
+
+            double[] trueOut = { 3.6818, 18.5651 };
+            Vector<double> trueOutVector = Vector<double>.Build.DenseOfArray(trueOut);
+
+            PrivateObject obj = new PrivateObject(testAlgs);
+            
+            object[] args = { signalVector, 2 , Wavelet_Type.db2};
+            var dwt = obj.Invoke("ListDWT", args);
+            List<Vector<double>> dwtL = (List<Vector<double>>)dwt;
+            Vector<double> dwtLevel2 = dwtL[1];
+            for( int i = 0; i< dwtLevel2.Count; i++)
+            {
+                dwtLevel2[i] = Math.Round(dwtLevel2[i], 4);
+            }
+            Assert.AreEqual(dwtLevel2, trueOutVector);
+        }
+
+        [TestMethod]
+        [Description("Test if method returns right result of db2 decomposition")]
+        public void db3DecompositionResult()
+        {
+            Waves_Params param = new Waves_Params(Wavelet_Type.db3, 2, "TestAnalysis100", 500);
+            Waves_Alg testAlgs = new Waves_Alg(param);
+
+            double[] signalArray = { 1, 2, 3, 4, 5, 9, 7, 7, 8, 24, 9 };
+            Vector<double> signalVector = Vector<double>.Build.DenseOfArray(signalArray);
+
+            double[] trueOut = { 16.5803, -2.4791 };
+            Vector<double> trueOutVector = Vector<double>.Build.DenseOfArray(trueOut);
+
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            object[] args = { signalVector, 2, Wavelet_Type.db3 };
+            var dwt = obj.Invoke("ListDWT", args);
+            List<Vector<double>> dwtL = (List<Vector<double>>)dwt;
+            Vector<double> dwtLevel2 = dwtL[1];
+            for (int i = 0; i < dwtLevel2.Count; i++)
+            {
+                dwtLevel2[i] = Math.Round(dwtLevel2[i], 4);
+            }
+            Assert.AreEqual(dwtLevel2, trueOutVector);
+        }
+
+        [TestMethod]
+        [Description("Test if derivSquare return right value")]
+        public void derivSquareValueTest()
+        {
+            Waves_Params param = new Waves_Params(Wavelet_Type.db3, 2, "TestAnalysis100", 500);
+            Waves_Alg testAlgs = new Waves_Alg(param);
+            double[] signalArray = { 1, 2, 3, 4, 5, 9, 7, 7, 8, 24, 9 };
+            Vector<double> signalVector = Vector<double>.Build.DenseOfArray(signalArray);
+
+            double trueResult = 3.0625;
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            object[] args = { 4, signalVector };
+            double result2check = (double)obj.Invoke("derivSquare", args);
+
+            Assert.AreEqual(result2check, trueResult, 0.0001);
+        }
+
+        [TestMethod]
+        [Description("Test if method finds maximum value in vector")]
         public void MaxValueTest1()
         {
             Waves_Params testParams = new Waves_Params(Wavelet_Type.haar,3,"Analysis1",500);
@@ -58,11 +152,11 @@ namespace EKG_Unit.Modules.Waves
 
             Waves_Alg testAlgs = new Waves_Alg(testParams);
             PrivateObject obj = new PrivateObject(testAlgs);
-            object[] args = { begin_loc , end_loc , max_loc , max_val , testVector };
+            object[] args = { begin_loc , end_loc ,  max_loc ,  max_val , testVector };
 
             obj.Invoke("FindMaxValue", args);
 
-            Assert.AreEqual(max_val, result);
+            Assert.AreEqual( (int)args[3] , result);
 
 
         }
@@ -88,7 +182,7 @@ namespace EKG_Unit.Modules.Waves
 
             obj.Invoke("FindMaxValue", args);
 
-            Assert.AreEqual(max_loc, result);
+            Assert.AreEqual((int)args[2], result);
 
 
         }

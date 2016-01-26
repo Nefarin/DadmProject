@@ -63,7 +63,7 @@ namespace EKG_Project.Modules.Waves
 
         }
 
-        private List<Vector<double>> ListHaarDWT(Vector<double> signal, int n)
+        public List<Vector<double>> ListHaarDWT(Vector<double> signal, int n)
         {
             //Work just like wavedec but use only haar wavelet
             // http://www.mathworks.com/help/wavelet/ref/wavedec.html
@@ -270,7 +270,7 @@ namespace EKG_Project.Modules.Waves
             }
 
         }
-        double lastNderivSquares(int n, int index, Vector<double> signal)
+        public double lastNderivSquares(int n, int index, Vector<double> signal)
         {
             double res = 0;
             for (int i = 0; i < n; i++)
@@ -279,7 +279,7 @@ namespace EKG_Project.Modules.Waves
             }
             return res;
         }
-        double derivSquare(int index, Vector<double> signal)
+        public double derivSquare(int index, Vector<double> signal)
         {
             double res = 0;
             if (index - 2 > 0 && index + 2 < signal.Count)
