@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<OrderedTest name="qt_disp" storage="d:\dadm_v2\dadmproject\ekg_unit\modules\qt_disp\qt_disp.orderedtest" id="a266892d-6f54-4088-8ceb-bad838cee361" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+<OrderedTest name="qt_disp" storage="c:\users\martyna\source\repos\dadmproject\ekg_unit\modules\qt_disp\qt_disp.orderedtest" id="a266892d-6f54-4088-8ceb-bad838cee361" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <TestLinks>
     <TestLink id="ebda69eb-8fec-171a-ad3d-c2aec411474d" name="testParamsInit" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <TestLink id="15de1ea0-cb04-ba7f-0e81-ee95cba44246" name="testQT_Calc_Method" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
@@ -10,5 +10,6 @@
     <TestLink id="2155db88-0dba-3d33-8aed-4d0bd313fc00" name="test_DataToCalculate" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <TestLink id="55000100-1d82-c3cd-d3ad-2fc8141e73e9" name="test_DataToCalculate2" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <TestLink id="ba793630-8035-5349-101f-b542b267b124" name="testQT_Disp_Alg" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="6b1c7787-147d-0359-6cc6-941baac26ffc" name="testQT_Disp_Alg2" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   </TestLinks>
 </OrderedTest>
