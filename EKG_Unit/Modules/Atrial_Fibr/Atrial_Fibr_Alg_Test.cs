@@ -60,5 +60,22 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             //results
             Assert.AreEqual(result, realresult,  delta);
         }
+        [TestMethod]
+        [Description("Test if SE is correct for healthy signal")]
+        public void SETestNAF()
+        {
+            //init
+            double[] testArray = { 85, 84, 82, 83, 84, 89, 94, 101, 101, 99, 97, 96, 95, 95, 97, 98, 97, 94, 95, 98, 95, 97, 101, 103, 95, 95, 97, 98, 97, 97, 100, 100 };
+            double result = 0.9335;
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            object[] args = { testVector };
+            double delta = 0.001;
+            //test
+            double realresult = Convert.ToDouble(obj.Invoke("SE", args));
+            //results
+            Assert.AreEqual(result, realresult, delta);
+        }
     }
 }

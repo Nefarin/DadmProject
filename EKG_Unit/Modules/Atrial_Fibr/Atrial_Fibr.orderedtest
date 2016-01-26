@@ -3,5 +3,7 @@
   <TestLinks>
     <TestLink id="a87bda78-b415-ca49-e88e-a17f2b9b7f83" name="TPRTestAF" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <TestLink id="64371261-d5ba-3786-195f-9ad61ac572e7" name="TPRTestNAF" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="ee5733e9-5952-7ac4-59ac-923ff39128eb" name="SETestNAF" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="bfb51204-fc70-b1b1-1b35-1eb7220b7a69" name="SETestAF" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   </TestLinks>
 </OrderedTest>
