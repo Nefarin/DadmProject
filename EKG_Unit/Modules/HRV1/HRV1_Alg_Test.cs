@@ -46,5 +46,34 @@ namespace EKG_Unit.Modules.HRV1
                 Assert.IsTrue(Math.Abs(expectedResult[i] - actualResult[i]) < 100);
             }
         }
+
+        [TestMethod]
+        [Description("Test of instants To Intervals")]
+        public void instantsToIntervalsTest()
+        {
+            // Init test here
+
+            var hrv1Test = new HRV1_Alg();
+
+            var testinstants = new double[]{ 2, 3, 5, 9, 11, 15, 20, 22, 28, 30};    
+
+            var expectedArr = new double[] { 1, 2, 4, 2, 4, 5, 2, 6, 2 };
+            var expectedResult = Vector<double>.Build.Dense(expectedArr);
+
+            // access private fields externally
+
+            PrivateObject obj = new PrivateObject(hrv1Test);
+            obj.SetField("rInstants", testinstants);
+
+            // Process test here
+
+            obj.Invoke("instantsToIntervals");
+            var actualResult = (Vector<double>)obj.GetField("rrIntervals");
+
+            // Assert results
+
+            Assert.AreEqual(expectedResult.Count, actualResult.Count);
+
+        }
     }
 }
