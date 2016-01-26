@@ -5,32 +5,57 @@ using System.Text;
 using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using System.IO;
+using MathNet.Numerics;
+
 
 namespace EKG_Project.Modules.HRT
 {
     public class HRT_Alg
     {
-        
+
         public Vector<double> SearchVentricularTurbulence(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
         {
 
             return Tachogram;
         }
 
-        public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalInSampleDomain,int samplingFreq)
+        public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalInSampleDomain, int samplingFreq)
         {
             Vector<double> SignalInTimeDomain;
-            SignalInTimeDomain = SignalInSampleDomain / (samplingFreq*1000);
+            SignalInTimeDomain = SignalInSampleDomain / (samplingFreq * 1000);
             return SignalInTimeDomain;
         }
 
-        int CountNrOfVPC(Vector<double> rrTimesVPC) {
-
-            return 0;
+        public Vector<int> GetNrVPC (double[] rrTimes, double[] rrTimesVPC, int VPCcount)
+        {
+            Vector<int> nrVPC = Vector<int>.Build.Dense(VPCcount);
+            int rrTimesLength = rrTimes.Length;
+            for (int i=0; i<VPCcount; i++)
+            {
+                for (int j=0; j<rrTimes.Length; j++)
+                {
+                    if (rrTimes[i] == rrTimesVPC[j])
+                    {
+                        nrVPC.Add(i);
+                    }
+                }
+                
+            }
+            return nrVPC;
         }
+//        %ustalenie które nr pików R to są VPC
+//nrVPC=zeros(VPCcount,1);
+//for j=1:VPCcount
+//    for i=1:length(rrTimes)
+//        if rrTimes(i)==rrTimesVPC(j)
+//            nrVPC(j)=i;
+//        end
+//    end
+//end
 
 
-   
+
+
 
         //ustalenie które nr pików R to są VPC
         //Vector<double> WhichPeaksAreVPC(Vector<double> rrTimes, Vector<double> rrTimesVPC)

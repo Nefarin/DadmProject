@@ -87,7 +87,7 @@ namespace EKG_Project.Modules.HRT
                     _rpeaks = InputRpeaksData.RPeaks;
                     _rrintervals = InputRpeaksData.RRInterval;
 
-                    //selekcja kanałów, biorę tylko I
+                    //selekcja kanałów, na razie biorę tylko I
                     foreach (Tuple<string, Vector<double>> _licznik in _rpeaks)
                     {
                         if (_licznik.Item1 == "I") {
@@ -110,14 +110,15 @@ namespace EKG_Project.Modules.HRT
                 }
 
                 //wypisz Rpiki z kanału I
-                //foreach (double _licznik in _rpeaksSelected){
-                //    Console.WriteLine(_licznik);
-                //}
-                //Console.WriteLine("************************************");
-                //foreach (double _licznik in _rrintervalsSelected)
-                //{
-                //    Console.WriteLine(_licznik);
-                //}
+                foreach (double _licznik in _rpeaksSelected)
+                {
+                    Console.WriteLine(_licznik);
+                }
+                Console.WriteLine("************************************");
+                foreach (double _licznik in _rrintervalsSelected)
+                {
+                    Console.WriteLine(_licznik);
+                }
 
 
                 try
@@ -128,36 +129,44 @@ namespace EKG_Project.Modules.HRT
                     _class = InputHeartClassData.ClassificationResult;
 
 
-                    List<int> Klasy = new List<int>();
-                    foreach (Tuple<int, int> _licznik in _class)
-                    {
-                        if (_licznik.Item2 == 1)
+                        List<int> Klasy = new List<int>();
+                        foreach (Tuple<int, int> _licznik in _class)
                         {
-                            Klasy.Add(_licznik.Item1);
-      
+                            if (_licznik.Item2 == 1)
+                            {
+                                Klasy.Add(_licznik.Item1);
+
+                            }
+                            else {; }
                         }
-                        else {; }
+                        _classSelected = Klasy.ToArray();
+                        if (_classSelected.Length == 0)
+                        {
+                            Console.WriteLine("Brak załamków VPC");
+                        }
+                        else
+                        {
+                            Console.Write("Jest ");
+                            Console.Write(_classSelected.Length);
+                            Console.WriteLine(" załamków VPC");
+                        }
                     }
-                    _classSelected = Klasy.ToArray();
-                    if (_classSelected.Length == 0)
+                    catch (Exception e)
                     {
-                        Console.WriteLine("Brak załamków VPC");
+                        Abort();
                     }
-                    else
-                    {
-                        Console.Write("Jest ");
-                        Console.Write(_classSelected.Length);
-                        Console.WriteLine(" załamków VPC");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Abort();
-                }
-                
-                //_currentChannelIndex = 0;
-                //_samplesProcessed = 0;
-                
+                    
+
+
+                    //_currentChannelIndex = 0;
+                    //_samplesProcessed = 0;
+
+
+                    HRT_Algorythms.ChangeVectorIntoTimeDomain(_rpeaksSelected, _fs);
+                //HRT_Algorythms.ChangeVectorIntoTimeDomain(_classSelected, _fs);
+                //HRT_Algorythms.GetNrVPC(_rpeaksSelected)
+
+
             }
 
         }
