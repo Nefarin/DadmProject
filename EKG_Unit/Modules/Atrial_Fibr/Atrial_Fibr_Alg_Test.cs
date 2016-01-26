@@ -172,6 +172,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             //results
             Assert.AreEqual(result, realresult);
         }
+
         [TestMethod]
         [Description("Test if detection of AF is correct for AF signal")]
         public void detectAFTestAFStat()
@@ -180,7 +181,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             double[] rrintArray = { 137, 147, 156, 129, 130, 123, 129, 138, 138, 162, 138, 161, 123, 144, 157, 156, 142, 136, 118, 136, 158, 139, 178, 158, 164, 126, 135, 134, 173, 171, 170, 143 };
             double[] rpeaksArray = { 140, 277, 424, 580, 709, 839, 962, 1091, 1229, 1367, 1529, 1667, 1828, 1951, 2095, 2252, 2408, 2550, 2686, 2804, 2940, 3098, 3237, 3415, 3573, 3737, 3863, 3998, 4132, 4305, 4476, 4646 };
             double[] resultArray =new double [ 4646-140+143];
-            for (int i = 0; i < 4506; i++)
+            for (int i = 0; i < 4649; i++)
             {
                 resultArray[i] = i + 140;
             }
@@ -198,7 +199,15 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             //test
             Tuple<bool, Vector<double>, double> realresult = (Tuple<bool, Vector<double>, double>)obj.Invoke("detectAF", args);
             //results
+            for (int i=0; i< realresult.Item2.Count ; i++)
+            {
+                Console.WriteLine(realresult.Item2.At(i));
+            }
             Assert.AreEqual(realresult.Item1,result.Item1 );
+            //for (int i = 0; i < realresult.Item2.Count; i++)
+            //{
+            //    Assert.AreEqual(realresult.Item2.At(i), result.Item2.At(i));
+            //}
             Assert.AreEqual(realresult.Item2, result.Item2);
             Assert.AreEqual(realresult.Item3, result.Item3, 0.001);
         }
