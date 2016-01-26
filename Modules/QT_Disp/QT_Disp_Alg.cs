@@ -27,7 +27,7 @@ namespace EKG_Project.Modules.QT_Disp
         List<double> QT_intervals;                      //to do in processData
         List<int> T_End_local;                          //to do in processData
         //List<List<double>> AllQT_Intervals;             //to do after change a channel
-       /* public QT_Disp_Alg()
+        public QT_Disp_Alg()
         {
             QRS_onset = new List<int>();
             T_End_Global = new List<int>();
@@ -39,46 +39,7 @@ namespace EKG_Project.Modules.QT_Disp
             QT_intervals = new List<double>(1);
             //AllQT_Intervals = new List<List<double>>();
             T_End_local = new List<int>(1);
-        }*/
-        //This constructor is made to test if algorithm is correct
-        public QT_Disp_Alg()
-        {
-            DebugECGPath path = new DebugECGPath();
-            var path_data = path.getDataPath();
-            string path_output_onset = Path.Combine(path_data, "res_QT_Disp", "QRS_Onset.txt");
-            string path_output_end = Path.Combine(path_data, "res_QT_Disp", "QRS_End.txt");
-            string path_output_tend = Path.Combine(path_data, "res_QT_Disp", "T_End.txt");
-            string path_output_rpeak = Path.Combine(path_data, "res_QT_Disp", "R_Peak.txt");
-            List<int> onset = new List<int>();
-            List<int> end = new List<int>();
-            List<int> tend = new List<int>();
-            TempInput.setInputFilePath(path_output_onset);
-            this.Fs = 360;
-            foreach(double element in TempInput.getSignal().ToList())
-            {
-                onset.Add((int)element);
-            }
-            this.QRS_onset = onset;
-
-            TempInput.setInputFilePath(path_output_end);
-            foreach (double element in TempInput.getSignal().ToList())
-            {
-                end.Add((int)element);
-            }
-            this.QRS_End = end;
-            TempInput.setInputFilePath(path_output_rpeak);
-            this.R_Peaks = TempInput.getSignal();
-            TempInput.setInputFilePath(path_output_tend);
-            foreach (double element in TempInput.getSignal().ToList())
-            {
-                tend.Add((int)element);
-            }
-            this.T_End_Global = tend;
-            this.T_End_method = T_End_Method.TANGENT;
-            this.QT_Calc_method = QT_Calc_Method.BAZETTA;
-            this.QT_intervals = new List<double>();
-            this.T_End_local = new List<int>();
-        }
+        }      
         
         /// <summary>
         /// This constructor get all data to a current drain
@@ -92,6 +53,12 @@ namespace EKG_Project.Modules.QT_Disp
         /// <param name="Fs">Sampling Frequency</param>
         public void TODoInInit(List<int> QRS_Onset, List<int> T_End_Global, List<int> QRS_End, Vector<double> R_Peaks, T_End_Method T_End_method, QT_Calc_Method QT_Calc_method, uint Fs)
         {
+            if (QRS_Onset.Count == 0) throw new ArgumentNullException("QRS_onset empty list");
+            if(QRS_End.Count == 0) throw new ArgumentNullException("QRS_end empty list");
+            if(R_Peaks.Count == 0) throw new ArgumentNullException("R_Peak empty list");
+            if(T_End_Global.Count == 0) throw new ArgumentNullException("T_End empty list");
+            if (Fs < 0) throw new InvalidDataException("Wrong frequency");
+
             this.QRS_onset = QRS_Onset;
             this.QRS_End = QRS_End;
             this.T_End_Global = T_End_Global;
@@ -108,6 +75,7 @@ namespace EKG_Project.Modules.QT_Disp
         /// <returns>T End local index</returns>
         public int ToDoInProccessData(Vector<double> samples, int index)
         {
+            //check if we have a good arguments
             if(samples.Count == 0)
             {
                 throw new InvalidOperationException("Empty samples");
@@ -116,7 +84,11 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 throw new InvalidOperationException("Null index");
             }
-
+            if (samples.Count != (this.R_Peaks[index + 1] - this.R_Peaks[index]))
+            {
+                throw new InvalidDataException("Wrong size of samples");
+            }
+            //start algorithm
             int T_End = -1;
             Tuple<int, double> result = Tuple.Create(-1, 0.0);
             //check if we exceed a size of R _ Peaks
@@ -253,26 +225,66 @@ namespace EKG_Project.Modules.QT_Disp
         {
             Console.WriteLine("Hello world");
             // Test if algorithm is correct
+            //  read from file
             DebugECGPath path = new DebugECGPath();
             var path_data = path.getDataPath();
             string path_output = Path.Combine(path_data, "res_QT_Disp", "sig.txt");
             Vector<double> signal;
             Vector<double> samples;
-           
-            TempInput.setInputFilePath(path_output);
+
+            string path_output_onset = Path.Combine(path_data, "res_QT_Disp", "QRS_Onset.txt");
+            string path_output_end = Path.Combine(path_data, "res_QT_Disp", "QRS_End.txt");
+            string path_output_tend = Path.Combine(path_data, "res_QT_Disp", "T_End.txt");
+            string path_output_rpeak = Path.Combine(path_data, "res_QT_Disp", "R_Peak.txt");
+
+            List<int> onset = new List<int>();
+            List<int> end = new List<int>();
+            List<int> tend = new List<int>();
+            Vector<double> R_Peaks;
+
+            TempInput.setInputFilePath(path_output_onset);
+            foreach (double element in TempInput.getSignal().ToList())
+            {
+                onset.Add((int)element);
+            }
             
+            TempInput.setInputFilePath(path_output_end);
+            foreach (double element in TempInput.getSignal().ToList())
+            {
+                end.Add((int)element);
+            }
+            
+            TempInput.setInputFilePath(path_output_rpeak);
+            R_Peaks = TempInput.getSignal();
+            TempInput.setInputFilePath(path_output_tend);
+            foreach (double element in TempInput.getSignal().ToList())
+            {
+                tend.Add((int)element);
+            }           
+         
+
+            TempInput.setInputFilePath(path_output);            
             signal = TempInput.getSignal();
+
+
+            //create object like we do in interface
             QT_Disp_Alg data = new QT_Disp_Alg();
+            // read list from waves, r_peaks  and params 
+            data.TODoInInit(onset, tend, end, R_Peaks, T_End_Method.PARABOLA, QT_Calc_Method.FRAMIGHAMA, 360);
             List<Tuple<int, double>> output = new List<Tuple<int, double>>();
+            // variable to store output
             double[] t_end = new double[22];
             double[] qt_interval = new double[22];
+            //signal cutting
             for(int i=0; i<data.R_Peaks.Count-1; i++)
             {
                 samples = signal.SubVector((int)data.R_Peaks.ElementAt(i),
                    (int)(data.R_Peaks.ElementAt(i + 1) - data.R_Peaks.ElementAt(i)));
+                // cutted signal between neighbour R_Peaks
                 data.ToDoInProccessData(samples, i);
                
             }
+            // Show output that will be saved in file 
             Console.WriteLine("QT local:\t" + data.getLocal() + "\nQT_mean:\t" + data.getMean() + "\nQT_std:\t\t" + data.getStd());
 
 
@@ -298,6 +310,17 @@ namespace EKG_Project.Modules.QT_Disp
         private double[] R_Peak = new double[2];
         public DataToCalculate(int QRS_onset, int QRS_End, int T_End_Global, Vector<double> samples, QT_Calc_Method QT_Calc_method, T_End_Method T_End_method, uint Fs, double[] R_Peak)
         {
+            //check if we have a good arguments if not system crash
+            if(QRS_onset == null) throw new ArgumentNullException("QRS_onset null");
+            if(QRS_End == null) throw new ArgumentNullException("QRS_onset null");
+            if(T_End_Global == null) throw new ArgumentNullException("T_End_Global null");
+            if (R_Peak.Count() != 2) throw new InvalidDataException("Wrong parameters for R_Peak");
+            if(samples.Count != (R_Peak[1]- R_Peak[0])) throw new ArgumentNullException("Samples wrong length");
+            if(QRS_onset > QRS_End) throw new ArgumentNullException("Waves not work good QRS onset > QRS End - recognition impossible");
+            if(QRS_End > T_End_Global) throw new ArgumentNullException("Waves not work good QRS End > T_End- recognition impossible");
+            if(Fs < 0) throw new ArgumentNullException("Wrong Frequency parameter");
+
+
             this.QRS_onset = QRS_onset;
             this.QRS_End = QRS_End;
             this.T_End_Global = T_End_Global;
