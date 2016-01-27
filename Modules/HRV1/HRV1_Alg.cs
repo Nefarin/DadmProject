@@ -56,6 +56,8 @@ namespace EKG_Project.Modules.HRV1
         private double Fs;  // sampling frequency of original ECG signal
         private double dt;  // time interval between consecutive samples of original ECG signal
 
+
+        /*
         #region
         /// <summary>
         /// This methods calculates vector rInstants based on values of Fs and rSamples
@@ -65,7 +67,7 @@ namespace EKG_Project.Modules.HRV1
         {
 			this.rInstants = Vector<double>.Build.Dense(this.rSamples.Count, (i) => this.rSamples[i] * dt);
         }
-
+        */
         
 
         #region

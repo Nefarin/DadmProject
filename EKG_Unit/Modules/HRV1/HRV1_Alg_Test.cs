@@ -6,6 +6,11 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Unit.Modules.HRV1
 {
+    //to do:
+    //GenerateFreqVector - do delate
+    //intervalsCorection
+    //calculateFreqBased
+
     [TestClass]
     public class HRV1_Alg_Test
     {
@@ -55,25 +60,75 @@ namespace EKG_Unit.Modules.HRV1
 
             var hrv1Test = new HRV1_Alg();
 
-            var testinstants = new double[]{ 2, 3, 5, 9, 11, 15, 20, 22, 28, 30};    
+            var testinstantsarr = new double[]{ 2, 3, 5, 9, 11, 15, 20, 22, 28, 30};
+            var testinstantsvec = Vector<double>.Build.Dense(testinstantsarr);
 
-            var expectedArr = new double[] { 1, 2, 4, 2, 4, 5, 2, 6, 2 };
-            var expectedResult = Vector<double>.Build.Dense(expectedArr);
+            var expectedarr = new double[] { 1, 2, 4, 2, 4, 5, 2, 6, 2 };
+            var expectedvec = Vector<double>.Build.Dense(expectedarr);
 
             // access private fields externally
 
             PrivateObject obj = new PrivateObject(hrv1Test);
-            obj.SetField("rInstants", testinstants);
+            obj.SetField("rInstants", testinstantsvec);
 
             // Process test here
 
             obj.Invoke("instantsToIntervals");
-            var actualResult = (Vector<double>)obj.GetField("rrIntervals");
+            var result = (Vector<double>)obj.GetField("rrIntervals");
 
             // Assert results
 
-            Assert.AreEqual(expectedResult.Count, actualResult.Count);
+            Assert.AreEqual(expectedvec.Count, result.Count);
 
         }
+
+        [TestMethod]
+        [Description("Test of calculate Time Based Parameters")]
+        public void calculateTimeBasedTest()
+        {
+            // Init test here
+
+            var hrv1Test = new HRV1_Alg();
+
+            var testintervals = new double[] { 11, 28, 43, 25, 38, 95, 86, 15, 61, 65, 22, 400, 33, 37, 34, 33, 75, 47, 21, 12 };
+            var vectortestintervals = Vector<double>.Build.Dense(testintervals);
+
+            var expectedAVNN = 59.05;
+            var expectedSDNN = 83.75;
+            var expectedRMSSD = 124.44 ;
+            var expectedNN50 = 4;
+            var expectedpNN50 = 20; // wartość w %
+
+            // access private fields externally
+
+            PrivateObject obj = new PrivateObject(hrv1Test);
+            obj.SetField("rrIntervals", vectortestintervals);
+
+            // Process test here
+
+            obj.Invoke("calculateTimeBased");
+            var actualAVNN = (double)obj.GetField("AVNN");
+            var actualSDNN = (double)obj.GetField("SDNN");
+            var actualRMSSD = (double)obj.GetField("RMSSD");
+            var actualNN50 = (double)obj.GetField("NN50");
+            var actualpNN50 = (double)obj.GetField("pNN50");
+            // Assert results
+
+            //Assert.AreEqual(expectedAVNN, actualAVNN);
+            double passThreshold = 0.1;
+            Assert.IsTrue(Math.Abs(actualAVNN-expectedAVNN)< passThreshold);
+
+            Assert.IsTrue(Math.Abs(actualSDNN - expectedSDNN) < passThreshold);
+
+            Assert.IsTrue(Math.Abs(actualRMSSD - expectedRMSSD) < passThreshold);
+
+            Assert.IsTrue(Math.Abs(actualNN50 - expectedNN50) < passThreshold);
+
+            double passThreshold2 = 0.1;
+            Assert.IsTrue(Math.Abs(actualpNN50 - expectedpNN50) < passThreshold2);
+        }
+
+        
+
     }
 }
