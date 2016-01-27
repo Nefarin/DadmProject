@@ -30,9 +30,15 @@ namespace EKG_Project.Modules.HRT
         int _VPCcount;
         int[] _nrVPC;
         Tuple<double[,], double[], double[]> FinalResults;
+        double TurbulenceOnsetMean;
+        double TurbulenceSlopeMean;
+        double TurbulenceSlopeMax;
+        double TurbulenceSlopeMin;
+        double TurbulenceOnsetMax;
+        double TurbulenceOnsetMin;
 
 
- 
+
 
         //stworzenie obiektów workerów poszczególnych klas 
         private HRT_Params _params;
@@ -190,8 +196,31 @@ namespace EKG_Project.Modules.HRT
             //HRT_Algorythms.PrintVector(_classSelected);
             //HRT_Algorythms.PrintVector(_nrVPC);
             FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
-            HRT_Algorythms.PrintVector(FinalResults.Item2);
-            HRT_Algorythms.PrintVector(FinalResults.Item3);
+            //HRT_Algorythms.PrintVector(FinalResults.Item1);
+
+            TurbulenceOnsetMean = (HRT_Algorythms.CountMean(FinalResults.Item2));
+            Console.Write("Turbulence Onset Mean: ");
+            Console.WriteLine(TurbulenceOnsetMean);
+
+            TurbulenceSlopeMean = HRT_Algorythms.CountMean(FinalResults.Item3);
+            Console.Write("Turbulence Slope Mean: ");
+            Console.WriteLine(TurbulenceSlopeMean);
+
+            TurbulenceOnsetMax = HRT_Algorythms.CountMax(FinalResults.Item2);
+            Console.Write("Turbulence Onset Max: ");
+            Console.WriteLine(TurbulenceOnsetMax);
+
+            TurbulenceOnsetMin = HRT_Algorythms.CountMin(FinalResults.Item2);
+            Console.Write("Turbulence Onset Min ");
+            Console.WriteLine(TurbulenceOnsetMin);
+
+            TurbulenceSlopeMax = HRT_Algorythms.CountMax(FinalResults.Item3);
+            Console.Write("Turbulence Slope Max: ");
+            Console.WriteLine(TurbulenceSlopeMax);
+
+            TurbulenceSlopeMin = HRT_Algorythms.CountMin(FinalResults.Item3);
+            Console.Write("Turbulence Slope Min: ");
+            Console.WriteLine(TurbulenceSlopeMin);
 
 
             _ended = true;

@@ -177,14 +177,14 @@ namespace EKG_Project.Modules.HRT
         {
             int back = 5;
             int foward = 15;
-            int sum = back + foward + 1;
+            int sum = back + foward ;
 
             double[] after = new double[VPC.GetLength(0)-1];
             double[] before = new double[VPC.GetLength(0)-1];
             double[] TO = new double[VPC.GetLength(0)-1];
             double[] TS = new double[VPC.GetLength(0)-1];
             int i = 0;
-            double[,] VPCTachogram = new double[sum, VPC.GetLength(0) - 1];
+            double[,] VPCTachogram = new double[sum, VPC.GetLength(0)-1];
 
             foreach (int nrVPC in VPC)
             {
@@ -218,6 +218,27 @@ namespace EKG_Project.Modules.HRT
                 i++;
             }
             return Tuple.Create(VPCTachogram, TO, TS);
+        }
+
+        public double CountMean (double[] vec)
+        {
+            double suma = vec.Sum();
+            double dlugosc = vec.Length;
+            double mean = suma / dlugosc;
+            return mean;
+        }
+
+
+        public double CountMax(double[] vec)
+        {
+            double max;
+            return max = vec.Max();
+        }
+
+        public double CountMin(double[] vec)
+        {
+            double min;
+            return min = vec.Min();
         }
     }
 }
