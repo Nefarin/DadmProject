@@ -352,11 +352,10 @@ namespace EKG_Unit.Modules.Heart_Class
 
         }
 
-        //test z nullem, jeszcze dkonczyc
-        /* 
+      
         [TestMethod]
         [Description("Test if method throws null, when qrsOnser or qrsEnd is -1")]
-        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        [ExpectedException(typeof(NullReferenceException), "Object reference not set to an instance of an object")]
         public void OneQrsComplex2()
         {
             Heart_Class_Alg testAlgs = new Heart_Class_Alg();
@@ -365,6 +364,7 @@ namespace EKG_Unit.Modules.Heart_Class
             double qrsOnset = 5;
             double qrsEnd = -1;
             double R = 13;
+            uint fs = 360;
             double[] testArray =
             {
                 -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335, -0.38369, -0.39605,
@@ -375,26 +375,40 @@ namespace EKG_Unit.Modules.Heart_Class
             Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
             testAlgs.Signal = exampleSignal;
 
-            double[] expectedArray =
-            {
-                -0.33335, -0.38369, -0.39605, -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486, 0.86883,
-                0.84255, 0.72056, 0.52455, 0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399, -0.28368, -0.21097,
-                -0.1402, -0.090148, -0.070429
-            };
+            object[] args = { qrsOnset, qrsEnd, R };
+            obj.Invoke("OneQrsComplex", args);
 
-            Vector<double> expectedVector = Vector<double>.Build.DenseOfArray(expectedArray);
-            Tuple<int, Vector<double>> expectedResult = new Tuple<int, Vector<double>>((int)R, expectedVector);
+            Tuple<int, Vector<double>> testResult = testAlgs.CountCoeff(testAlgs.QrsComplexOne, fs);
+
+        }
+
+        [TestMethod]
+        [Description("Test if method throws null, when qrsOnser and qrsEnd is -1")]
+        [ExpectedException(typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+        public void OneQrsComplex3()
+        {
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            double qrsOnset = -1;
+            double qrsEnd = -1;
+            double R = 13;
+            uint fs = 360;
+            double[] testArray =
+            {
+                -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335, -0.38369, -0.39605,
+                -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486, 0.86883, 0.84255, 0.72056, 0.52455,
+                0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399, -0.28368, -0.21097, -0.1402, -0.090148,
+                -0.070429, -0.080307, -0.11024, -0.1458
+            };
+            Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
+            testAlgs.Signal = exampleSignal;
 
             object[] args = { qrsOnset, qrsEnd, R };
             obj.Invoke("OneQrsComplex", args);
 
-           
-            expectedResult = testAlgs.QrsComplexOne;
+            Tuple<int, Vector<double>> testResult = testAlgs.CountCoeff(testAlgs.QrsComplexOne, fs);
 
         }
-
-        */
-
-
     }
 }
