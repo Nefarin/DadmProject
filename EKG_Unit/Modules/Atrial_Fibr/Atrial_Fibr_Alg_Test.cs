@@ -485,5 +485,58 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             //results
             CollectionAssert.AreEqual(result, realresult);
         }
+
+        [TestMethod]
+        [Description("Test if updating means of clusters is correct")]
+        public void UpdateDataPointMeansTest()
+        {
+            //init
+            List<Atrial_Fibr_Alg.DataPoint> data = new List<Atrial_Fibr_Alg.DataPoint>();
+            data.Add(new Atrial_Fibr_Alg.DataPoint(137, 147, 0));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(147, 156, 0));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(156, 129, 1));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(129, 130, 2));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(130, 123, 0));
+            List<Atrial_Fibr_Alg.DataPoint> clusters = new List<Atrial_Fibr_Alg.DataPoint>();
+            List<Atrial_Fibr_Alg.DataPoint> resultList = new List<Atrial_Fibr_Alg.DataPoint>();
+            resultList.Add(new Atrial_Fibr_Alg.DataPoint(138, 142));
+            resultList.Add(new Atrial_Fibr_Alg.DataPoint(156, 129));
+            resultList.Add(new Atrial_Fibr_Alg.DataPoint(129, 130));
+            bool resultBool = true;
+            Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>> result = new Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>>(resultBool, resultList);
+
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            object[] args = { data, clusters };
+            //test
+            Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>> realresult = (Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>>)obj.Invoke("UpdateDataPointMeans", args);
+            //results
+            Assert.AreEqual(result.Item1, realresult.Item1);
+            CollectionAssert.AreEqual(result.Item2, realresult.Item2);
+        }
+        [TestMethod]
+        [Description("Test if resulting false when some cluster is empty")]
+        public void UpdateDataPointMeansTest2()
+        {
+            //init
+            List<Atrial_Fibr_Alg.DataPoint> data = new List<Atrial_Fibr_Alg.DataPoint>();
+            data.Add(new Atrial_Fibr_Alg.DataPoint(137, 147, 0));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(147, 156, 0));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(156, 129, 1));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(129, 130, 2));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(130, 123, 0));
+            List<Atrial_Fibr_Alg.DataPoint> clusters = new List<Atrial_Fibr_Alg.DataPoint>();
+            bool resultBool = false;
+            Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>> result = new Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>>(resultBool, clusters);
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            obj.SetField("amountOfCluster", 4);
+            object[] args = { data, clusters };
+            //test
+            Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>> realresult = (Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>>)obj.Invoke("UpdateDataPointMeans", args);
+            //results
+            Assert.AreEqual(result.Item1, realresult.Item1);
+            CollectionAssert.AreEqual(result.Item2, realresult.Item2);
+        }
     }
 }
