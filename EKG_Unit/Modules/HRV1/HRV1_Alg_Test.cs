@@ -7,8 +7,6 @@ using MathNet.Numerics.LinearAlgebra;
 namespace EKG_Unit.Modules.HRV1
 {
     //to do:
-    //GenerateFreqVector - do delate
-    //intervalsCorection
     //calculateFreqBased
 
     [TestClass]
@@ -124,11 +122,40 @@ namespace EKG_Unit.Modules.HRV1
 
             Assert.IsTrue(Math.Abs(actualNN50 - expectedNN50) < passThreshold);
 
-            double passThreshold2 = 0.1;
-            Assert.IsTrue(Math.Abs(actualpNN50 - expectedpNN50) < passThreshold2);
+            Assert.IsTrue(Math.Abs(actualpNN50 - expectedpNN50) < passThreshold);
         }
 
-        
+        [TestMethod]
+        [Description("Test of intervals Corection")]
+        public void intervalsCorectionTest()
+        {
+            // Init test here
+
+            var hrv1Test = new HRV1_Alg();
+
+            var testintervals = new double[] { 1, 1000, 1001, 7, 5, 0, -10, 100 };
+            var vectortestintervals = Vector<double>.Build.Dense(testintervals);
+
+            var expectedintervals = new double[] { 7, 100 };
+            var vectorexpectedintervals = Vector<double>.Build.Dense(expectedintervals);
+
+
+            // access private fields externally
+
+            PrivateObject obj = new PrivateObject(hrv1Test);
+            obj.SetField("rrIntervals", vectortestintervals);
+
+            // Process test here
+
+            obj.Invoke("intervalsCorection");
+            var actualintervals = (Vector<double>)obj.GetField("rrIntervals");
+
+            // Assert results
+
+            Assert.AreEqual(vectorexpectedintervals, actualintervals);
+
+
+        }
 
     }
 }
