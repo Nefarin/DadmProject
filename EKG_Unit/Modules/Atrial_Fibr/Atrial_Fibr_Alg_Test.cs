@@ -597,5 +597,27 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             CollectionAssert.AreEqual(result.Item2, realresult.Item2);
             CollectionAssert.AreEqual(result.Item3, realresult.Item3);
         }
+
+        [TestMethod]
+        [Description("Test if SilhouetteCoefficient is correct")]
+        public void SilhouetteCoefficientTest()
+        {
+            //init
+            List<Atrial_Fibr_Alg.DataPoint> raw_data = new List<Atrial_Fibr_Alg.DataPoint>();
+            raw_data.Add(new Atrial_Fibr_Alg.DataPoint(137, 147, 0));
+            raw_data.Add(new Atrial_Fibr_Alg.DataPoint(147, 156, 0));
+            raw_data.Add(new Atrial_Fibr_Alg.DataPoint(156, 129, 1));
+            raw_data.Add(new Atrial_Fibr_Alg.DataPoint(129, 130, 2));
+            raw_data.Add(new Atrial_Fibr_Alg.DataPoint(130, 123, 1));
+            double result = 0.447;
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            object[] args = { raw_data };
+            //test
+            double realresult = Convert.ToDouble(obj.Invoke("SilhouetteCoefficient", args));
+            //results
+            Assert.AreEqual(result, realresult, 0.001);
+        }
+
     }
 }
