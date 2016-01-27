@@ -75,7 +75,7 @@ namespace EKG_Project.Modules.HRV1
         #endregion
         private void instantsToIntervals()
         {
-			this.rrIntervals = Vector<double>.Build.Dense(this.rInstants.Count-1, (i) => this.rSamples[i+1] - this.rSamples[i]);
+			this.rrIntervals = Vector<double>.Build.Dense(this.rInstants.Count-1, (i) => this.rInstants[i+1] - this.rInstants[i]);
         }
 
         
@@ -125,6 +125,7 @@ namespace EKG_Project.Modules.HRV1
             succesiveDiffs.MapInplace(x => Math.Abs(x));
 
             //SDSD = Statistics.StandardDeviation(succesiveDiffs);
+
             NN50 = 0;
             foreach (double x in succesiveDiffs) { NN50 = (x > 50) ? NN50 + 1 : NN50; }
             pNN50 = 100 * NN50 / this.rrIntervals.Count;
