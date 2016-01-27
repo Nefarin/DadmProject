@@ -56,6 +56,14 @@ namespace EKG_Project.Modules.HRT
             }
         }
 
+        public void PrintVector(double[] Signal)
+        {
+            for (int i = 0; i < Signal.Length; i++)
+            {
+                Console.WriteLine(Signal[i]);
+            }
+        }
+
         public void PrintVector(double[,] Signal)
         {
             for (int i = 0; i < Signal.GetLength(0); i++)
@@ -100,24 +108,34 @@ namespace EKG_Project.Modules.HRT
             return nrVPC;
         }
 
-        public double[,] MakeTachogram(double[] VPC, double[] rrIntervals)
+        public Tuple<double[,], double[]> MakeTachogram(double[] VPC, double[] rrIntervals)
         {
             int back = 5;
             int foward = 15;
             int sum = back + foward + 1;
+            double[] after = new double[VPC.GetLength(0)];
+            double[] before = new double[VPC.GetLength(0)];
+            double[] TO = new double[VPC.GetLength(0)];
             int i = 0;
-            double[,] VPCTachogram = new double[sum,VPC.GetLength(0)];
+            double[,] VPCTachogram = new double[sum, VPC.GetLength(0)];
             foreach (int nrVPC in VPC)
             {
-                if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Length)) {
+                if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Length))
+                {
                     for (int k = (nrVPC - back); k < (nrVPC + foward + 1); k++)
                     {
-                        VPCTachogram[k + back -nrVPC,i] = rrIntervals[k];
+                        VPCTachogram[k + back - nrVPC, i] = rrIntervals[k];
                     }
                 }
-                i++;
+                if ((nrVPC - 2) > 0 && ((nrVPC + 2) < rrIntervals.Length))
+                {
+                    after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
+                    before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
+                    TO[i] = (after[i] - before[i]) / before[i];
+                }
             }
-            return VPCTachogram;
+            i++;
+            return Tuple.Create(VPCTachogram, TO);
         }
 
 
