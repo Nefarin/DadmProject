@@ -50,8 +50,8 @@ namespace EKG_Project.Modules.HRT
 
         public void PrintVector(int[] Signal)
         {
-            for (int i =0; i<Signal.Length; i++)
-            { 
+            for (int i = 0; i < Signal.Length; i++)
+            {
                 Console.WriteLine(Signal[i]);
             }
         }
@@ -79,62 +79,132 @@ namespace EKG_Project.Modules.HRT
 
         public Vector<double> rrTimesShift(Vector<double> rrPeaks)
         {
-            for (int i=0; i<rrPeaks.Count;i++)
+            for (int i = 0; i < rrPeaks.Count; i++)
             {
                 rrPeaks[i]++;
             }
             return rrPeaks;
         }
 
-        public Vector<double> GetNrVPC(double[] rrTimes, int[] rrTimesVPC, int VPCcount)
+        public int[] checkVPCifnotNULL(int[] rrTimesVPC)
+        {
+            int numToRemove = 0;
+            rrTimesVPC = rrTimesVPC.Where(val => val != numToRemove).ToArray();
+            return rrTimesVPC;
+        }
+
+        public int[] missClassificationCorrection(bool[] miss, int[] klasa)
+        {
+            int k = 0;
+            int[] newklasa = new int[klasa.Length];
+            for (int i = 0; i < klasa.Length - 1; i++)
+            {
+                if (!miss[i])
+                {
+                    newklasa[k] = klasa[i];
+                    k++;
+                }
+            }
+            return newklasa;
+        }
+
+        public int[] GetNrVPC(double[] rrTimes, int[] rrTimesVPC, int VPCcount)
         {
             if (rrTimes == null || rrTimesVPC == null) throw new ArgumentNullException();
             if (rrTimes.Length < rrTimesVPC.Length) throw new ArgumentOutOfRangeException();
-            if (rrTimesVPC.Length < VPCcount || VPCcount < 0 ) throw new ArgumentOutOfRangeException();
-
-            double[] nrVPCArray;
-            nrVPCArray = new double[VPCcount];
-            for (int i = 0; i < VPCcount; i++)
+            if (rrTimesVPC.Length < VPCcount || VPCcount < 0) throw new ArgumentOutOfRangeException();
+            int remove = 0;
+            int[] nrVPCArray;
+            bool[] missClass = new bool[VPCcount];
+            nrVPCArray = new int[VPCcount];
+            for (int i = 0; i < VPCcount - 1; i++)
             {
-                for (int j = 0; j < rrTimes.Length; j++)
+                missClass[i] = true;
+                for (int j = 0; j < rrTimes.Length - 1; j++)
                 {
                     if (rrTimes[j] == rrTimesVPC[i])
                     {
                         nrVPCArray[i] = j;
+                        //Console.Write(i);
+                        //Console.Write("      ");
+                        //Console.Write(j);
+                        //Console.Write("      ");
+                        //Console.Write(rrTimes[j]);
+                        //Console.Write("      ");
+                        //Console.WriteLine(rrTimesVPC[i]);
+                        missClass[i] = false;
+
                     }
                 }
-            }
-            Vector<double> nrVPC = Vector<double>.Build.DenseOfArray(nrVPCArray);
-            return nrVPC;
+                if (missClass[i])
+                {
+                    missClass[i] = true;
+                    remove++;
+                }
+                    //{
+                    //Console.Write(i);
+                    //Console.Write("      ");
+                    //Console.WriteLine("błąd detekcji - nie ma piku odpowiadającego przypisaniu do klasy");
+
+
+                    //}
+                }
+             nrVPCArray = missClassificationCorrection(missClass, nrVPCArray);
+            nrVPCArray = removeRedundant(nrVPCArray, remove);
+        //Vector<double> nrVPC = Vector<double>.Build.DenseOfArray(nrVPCArray);
+        return nrVPCArray;
         }
 
-        public Tuple<double[,], double[]> MakeTachogram(double[] VPC, double[] rrIntervals)
+        public int[] removeRedundant(int[] array, int ile)
+        {
+            int k = 0;
+            int arraysize = array.Length;
+            int size = arraysize - ile;
+
+            int[] newarray = new int[size];
+            {
+                for (int i = 0; i < size -1; i++)
+                {
+                    if (array[i] != 0)
+                    {
+                        newarray[k] = array[i];
+                        k++;
+                    }
+                }
+                return newarray;
+            }
+        }
+
+        public Tuple<double[,], double[]> MakeTachogram(int[] VPC, double[] rrIntervals)
         {
             int back = 5;
             int foward = 15;
             int sum = back + foward + 1;
+            
             double[] after = new double[VPC.GetLength(0)];
             double[] before = new double[VPC.GetLength(0)];
             double[] TO = new double[VPC.GetLength(0)];
             int i = 0;
-            double[,] VPCTachogram = new double[sum, VPC.GetLength(0)];
+            double[,] VPCTachogram = new double[sum, VPC.GetLength(0)-1];
             foreach (int nrVPC in VPC)
             {
-                if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Length))
-                {
-                    for (int k = (nrVPC - back); k < (nrVPC + foward + 1); k++)
+               if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Length))
                     {
-                        VPCTachogram[k + back - nrVPC, i] = rrIntervals[k];
+                        for (int k = (nrVPC - back); k < (nrVPC + foward + 1); k++)
+                        { 
+                                VPCTachogram[k + back - nrVPC, i] = rrIntervals[k];
+                                
+                            }
                     }
+                    if ((nrVPC - 2) > 0 && ((nrVPC + 2) < rrIntervals.Length))
+                    {
+                        after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
+                        before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
+                        TO[i] = (after[i] - before[i]) / before[i];
+                    }
+                    i++;
                 }
-                if ((nrVPC - 2) > 0 && ((nrVPC + 2) < rrIntervals.Length))
-                {
-                    after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
-                    before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
-                    TO[i] = (after[i] - before[i]) / before[i];
-                }
-            }
-            i++;
+            //Console.WriteLine(i);
             return Tuple.Create(VPCTachogram, TO);
         }
 

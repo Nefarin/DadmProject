@@ -28,7 +28,7 @@ namespace EKG_Project.Modules.HRT
         Vector<double> _rpeaksTime;
         Vector<double> _classTime;
         int _VPCcount;
-        Vector<double> _nrVPC;
+        int[] _nrVPC;
         Tuple<double[,], double[]> FinalResults;
 
 
@@ -77,8 +77,8 @@ namespace EKG_Project.Modules.HRT
                     InputBasicData = InputBasicDataWorker.BasicData;
 
                     Fs = (int)InputBasicData.Frequency;
-                    Console.Write("Częstotliwość: ");
-                    Console.WriteLine(Fs);
+                    //Console.Write("Częstotliwość: ");
+                    //Console.WriteLine(Fs);
                 }
                 catch (Exception e)
                 {
@@ -137,7 +137,7 @@ namespace EKG_Project.Modules.HRT
                         else {; }
                     }
                      _classSelected = Klasy.ToArray();
-                    //_classSelected = Vector<double>.Build.DenseOfArray(Klasy.ToArray());
+            
                     _VPCcount = _classSelected.Length;
                     if (_classSelected.Length == 0)
                     {
@@ -145,9 +145,9 @@ namespace EKG_Project.Modules.HRT
                     }
                     else
                     {
-                        Console.Write("Jest ");
-                        Console.Write(_VPCcount);
-                        Console.WriteLine(" załamków VPC");
+                        //Console.Write("Jest ");
+                        //Console.Write(_VPCcount);
+                        //Console.WriteLine(" załamków VPC");
                     }
                 }
                 catch (Exception e)
@@ -156,20 +156,12 @@ namespace EKG_Project.Modules.HRT
                 }
 
 
-                //_currentChannelIndex = 0;
-                //_samplesProcessed = 0;
-                //HRT_Algorythms.PrintVector(_rpeaksSelected);
-                //_rpeaksTime =HRT_Algorythms.ChangeVectorIntoTimeDomain(_rpeaksSelected, _fs);
-                //_classTime = HRT_Algorythms.ChangeVectorIntoTimeDomain(_classSelected, _fs);
+             
 
-
-
-                //double[] _rpeaksTimeArray;
-                //double[] _classTimeArray;
-                //_rpeaksTimeArray = _rpeaksTime.ToArray();
-                //_classTimeArray =_classTime.ToArray()
                 _rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
+                _classSelected = HRT_Algorythms.checkVPCifnotNULL(_classSelected);
                 _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classSelected, _VPCcount);
+
             }
         }
 
@@ -200,10 +192,10 @@ namespace EKG_Project.Modules.HRT
             //Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             //HRT_Algorythms.PrintVector(_classSelected);
             //HRT_Algorythms.PrintVector(_nrVPC);
-            FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC.ToArray(), _rrintervalsSelected.ToArray());
-            //HRT_Algorythms.PrintVector(Tachogram);
+            FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
+            HRT_Algorythms.PrintVector(FinalResults.Item1);
             //HRT_Algorythms.PrintVector(_nrVPC);
-            HRT_Algorythms.PrintVector(FinalResults.Item2);
+            //HRT_Algorythms.PrintVector(FinalResults.Item2);
             _ended = true;
         }
             
@@ -290,7 +282,7 @@ namespace EKG_Project.Modules.HRT
             while (true)
             {
                 if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress());
+                //Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
             }
         }
