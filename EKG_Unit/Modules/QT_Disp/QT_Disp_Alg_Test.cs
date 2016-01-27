@@ -107,7 +107,7 @@ namespace EKG_Unit.Modules.QT_Disp
         }
 
         /// <summary>
-        /// 
+        /// Below, there are test for all the exceptions that could be encountered while running programme
         /// </summary>
         [TestMethod]
         [Description("Test if method returns -1, 0 when contructor parameters QRSonset= -1 and Tend = -1")]
@@ -285,5 +285,25 @@ namespace EKG_Unit.Modules.QT_Disp
 
             DataToCalculate data = new DataToCalculate(onset, end, tend, sampl, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, rpeak);
         }
+
+        [TestMethod]
+        [Description("Test if method parameter from WAVES module are consistent")]
+        [ExpectedException(typeof(ArgumentNullException), "Waves not working good, QRS onset > QRS End - recognition impossible")]
+        public void test_DataToCalculate_input()
+        {
+            QT_Disp_Alg test = new QT_Disp_Alg();
+
+            PrivateObject obj = new PrivateObject(test);
+            double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662,
+            -0.041548435, -0.092222265, -0.13023595, -0.15420422, -0.16411052, -0.16140441, -0.14840957, -0.12827963, };
+
+            Vector<double> sampl = Vector<double>.Build.DenseOfArray(signalTab);
+            int onset = 12;
+            int end = 10;
+            int tend = 14;
+            double[] rpeak = { 0, 15 };
+
+            DataToCalculate data = new DataToCalculate(onset, end, tend, sampl, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, rpeak);
+           }
     }
 }
