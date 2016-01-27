@@ -9,7 +9,56 @@ namespace EKG_Unit.Modules.HRV_DFA
     [TestClass]
     public class HRV_DFA_Alg_Test
     {
-        //Test for subsidary methods
+        //Testing main methods
+
+        //Testing subsidary methods
+        //CumulativeSum
+        [TestMethod]
+        [Description("Test if CumulativeSum works properly")]
+        public void CumulativeSum_Test()
+        {
+            double[] testArray = { 6, 10, 3, 1, 8 };
+            double[] expectedResults = { 6, 16, 19, 20, 28 };
+
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            double[] result = test.CumulativeSum(testArray);
+            CollectionAssert.AreEqual(expectedResults, result);
+        }
+        [TestMethod]
+        [Description("Test if output vector is equaly long as input vector")]
+        public void CumulativeSum_VectorsEqualityTest()
+        {
+            double[] testArray = { 6, 10, 3, 1, 8 };
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            double[] result = test.CumulativeSum(testArray);
+            int testArrayLength = testArray.Length;
+            int resultArrayLength = result.Length;
+            Assert.AreEqual(testArrayLength, resultArrayLength);
+        }
+
+        //IntegrateDfa
+        [TestMethod]
+        [Description("Test if output vector is equaly long as input vector")]
+        public void IntegrateDfa_VectorsEqualityTest()
+        {
+            double[] inputArray = { 6, 10, 3, 1, 8 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(inputArray);
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.IntegrateDfa(testVector);
+            int testVectorLength = testVector.Count;
+            int resultVectorLength = result.Count;
+            Assert.AreEqual(testVectorLength, resultVectorLength);
+        }
+        [TestMethod]
+        [Description("Test if empty input is given")]
+        [ExpectedException(typeof(NullReferenceException))]
+        public void IntegrateDfa_NullArgumentTest()
+        {
+            Vector<double> testInput = null;
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.IntegrateDfa(testInput);
+        }
+
         //ConvertToLog
         [TestMethod]
         [Description("Test if ConvertToLog works properly")]
@@ -47,7 +96,7 @@ namespace EKG_Unit.Modules.HRV_DFA
             Tuple<double[], Vector<double>> results = test.LinearSquare(testVectorX, testVectorY);
         }
         [TestMethod]
-        [Description("Test if output line is equaly long as input vector")]
+        [Description("Test if output vector is equaly long as input vector")]
         public void LinearSquare_OutputLineEqualTest()
         {
             double[] testX = { 1, 2, 3, 4, 5 };

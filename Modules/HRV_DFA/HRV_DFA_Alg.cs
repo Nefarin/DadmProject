@@ -23,11 +23,12 @@ namespace EKG_Project.Modules.HRV_DFA
         Vector<double> vecparam2;
         Vector<double> logN;
         Vector<double> logFn;
+
         
         static void Main(string[] args)
         {
             //read data from file
-            TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\inervals\RR_100.txt");
+            TempInput.setInputFilePath(@"C:\Users\Paulina\Desktop\inervals\wyniki.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
             HRV_DFA_Alg dfa = new HRV_DFA_Alg();
@@ -289,7 +290,7 @@ namespace EKG_Project.Modules.HRV_DFA
         {
             double average = intervals.Sum() / intervals.Count();
             Vector<double> a = intervals.Subtract(average);
-            Vector<double> b = a.PointwiseMultiply(a);      ///sprawdzić bez potęgowania 
+            Vector<double> b = a.PointwiseMultiply(a);      
             double[] sum = CumulativeSum(b.ToArray());
 
             Vector<double> output = Vector<double>.Build.DenseOfArray(sum);
@@ -337,12 +338,12 @@ namespace EKG_Project.Modules.HRV_DFA
         public Vector<double> RemoveZeros(Vector<double> input)
         {
             int counter = 0;
-            for (int i = 0; i < input.Count() - 1; i++)
+            for (int i = 0; i < input.Count(); i++)
             {
                 if (input[i] != 0)
                 {
                     input[i] = input[i];
-                    counter = i;
+                    counter = i+1;
                 }
                 else
                 {
