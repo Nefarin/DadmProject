@@ -86,8 +86,8 @@ namespace EKG_Unit.Modules.HRT
         {
             HRT_Params testParams = new HRT_Params("Test");
 
-            double[] testrrTimesArray = { 0, 0.15, 0.30, 0.45, 0.60, 0.75, 0.9, 1.05 };
-            double[] testrrTimesVPCArray = { 0.30, 0.60, 1.05 };
+            double[] testrrTimesArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
+            int[] testrrTimesVPCArray = { 30, 60, 105 };
             int testVPCcount = 3;
 
             double[] testnrVPCArray = { 2, 4, 7 };
@@ -106,8 +106,8 @@ namespace EKG_Unit.Modules.HRT
         {
             HRT_Params testParams = new HRT_Params("Test");
 
-            double[] testrrTimesArray = { 0, 0.15, 0.30, 0.45, 0.60, 0.75, 0.9, 1.05 };
-            double[] testrrTimesVPCArray = { 0.30, 0.60, 1.55 };
+            double[] testrrTimesArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
+            int[] testrrTimesVPCArray = { 30, 60, 155 };
             int testVPCcount = 3;
 
             double[] testnrVPCArray = { 2, 4, 7 };
@@ -128,7 +128,7 @@ namespace EKG_Unit.Modules.HRT
             HRT_Params testParams = new HRT_Params("Test");
 
             double[] testrrTimesArray = null;
-            double[] testrrTimesVPCArray = { 0.30, 0.60, 1.55 };
+            int[] testrrTimesVPCArray = { 30, 60, 155 };
             int testVPCcount = 3;
 
             HRT_Alg testAlg = new HRT_Alg();
@@ -143,8 +143,8 @@ namespace EKG_Unit.Modules.HRT
         {
             HRT_Params testParams = new HRT_Params("Test");
 
-            double[] testrrTimesArray = { 0, 0.15, 0.30, 0.45, 0.60, 0.75, 0.9, 1.05 };
-            double[] testrrTimesVPCArray = { 0.30, 0.60, 1.55 };
+            double[] testrrTimesArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
+            int[] testrrTimesVPCArray = { 30, 60, 155 };
             int testVPCcount = 4;
 
             HRT_Alg testAlg = new HRT_Alg();
@@ -159,8 +159,8 @@ namespace EKG_Unit.Modules.HRT
         {
             HRT_Params testParams = new HRT_Params("Test");
 
-            double[] testrrTimesArray = { 0.30, 0.60, 1.55 };
-            double[] testrrTimesVPCArray = { 0, 0.15, 0.30, 0.45, 0.60, 0.75, 0.9, 1.05 };
+            double[] testrrTimesArray = { 30, 60, 155 };
+            int[] testrrTimesVPCArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
             int testVPCcount = 8;
 
             HRT_Alg testAlg = new HRT_Alg();
