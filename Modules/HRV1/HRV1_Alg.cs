@@ -158,10 +158,6 @@ namespace EKG_Project.Modules.HRV1
         /// This method calculates Lomb-Scargle periodogram of signal
         /// http://www.mathworks.com/help/signal/ref/plomb.html#lomb
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="t"></param>
-        /// <param name="x"></param>
-        /// <returns></returns>
         #endregion
         public void lombScargle()
         {
@@ -206,6 +202,72 @@ namespace EKG_Project.Modules.HRV1
                 }
             }
             this.PSD = LS;
+        }
+
+
+        /// <summary>
+        /// Another implementation of Lomb-Scargle periodogram
+        /// </summary>
+        public void lombScargle2()
+        {
+            Vector<double> tau;
+            Vector<double> psd;
+            Vector<double> omega;
+
+            double mean = Statistics.Mean(this.rrIntervals);
+            double var = Statistics.Variance(this.rrIntervals);
+
+            int psdlength = this.rrIntervals.Count;
+            double timespan = this.rInstants.Last() - this.rInstants.First();
+            double pi = Math.PI;
+
+            omega = Vector<double>.Build.Dense(2 * psdlength, i => (i + 1) * 2 * (pi / timespan));
+            psd = Vector<double>.Build.Dense(2 * psdlength);
+            this.PSD = Vector<double>.Build.Dense(2 * psdlength);
+
+            var sins = Vector<double>.Build.Dense(psdlength, j => Math.Sin(2 * omega[j] * this.rInstants[j]));
+            var coss = Vector<double>.Build.Dense(psdlength, j => Math.Cos(2 * omega[j] * this.rInstants[j]));
+            double sinsum = sins.Sum();
+            double cossum = coss.Sum();
+            tau = Vector<double>.Build.Dense(2 * psdlength, i => Math.Atan2(sinsum, cossum) / (2 * omega[i]));
+
+            /*
+            for (int i = 0; i<2*psdlength; i++)
+            {
+                double sinsum = 0;
+                double cossum = 0;
+                for (int j = 0; j<psdlength; i++)
+                {
+                    sinsum += Math.Sin(2 * omega[j] * this.rInstants[j]);
+                    cossum += Math.Cos(2 * omega[j] * this.rInstants[j]);
+                }
+                tau[i] = (Math.Atan2(sinsum, cossum) / (2*omega[i]));
+            }
+            */
+
+            double stdcos, stdsin, cos2, sin2;
+
+            for (int i = 0; i < (2*psdlength); i++) 
+            {
+                stdcos = 0;
+                cos2 = 0;
+                stdsin = 0;
+                sin2 = 0;
+                for (int j = 0; j<psdlength; j++)
+                {
+                    stdcos += (this.rrIntervals[j] - mean) * Math.Cos(omega[i] * (this.rInstants[j] - tau[i]));
+                    stdsin += (this.rrIntervals[j] - mean) * Math.Sin(omega[i] * (this.rInstants[j] - tau[i]));
+                    //stdsin *= stdsin;
+                    //stdcos *= stdcos;
+                    stdsin += stdsin;
+                    stdcos += stdcos;
+                    cos2 += Math.Pow(Math.Cos(omega[i] * (this.rInstants[j] - tau[i])), 2);
+                    sin2 += Math.Pow(Math.Sin(omega[i] * (this.rInstants[j] - tau[i])), 2);
+                }
+                this.PSD[i] = ((stdcos / cos2 + stdsin / sin2) / (2 * var));
+            }
+            //this.PSD = psd;
+            this.f = Vector<double>.Build.Dense(omega.Count, i => omega[i] / (2 * pi));
         }
 
 
