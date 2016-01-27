@@ -162,7 +162,6 @@ namespace EKG_Project.Modules.R_Peaks
             if (squaredSignal == null) throw new ArgumentNullException();
             if (fs == 0) throw new ArgumentException();
             double[] integratedSignal = new double[squaredSignal.Length];
-            //double[] normIntSignal = new double[squaredSignal.Length];
             double window = Math.Round(0.15 * fs);
             Delay += Convert.ToUInt32(Math.Round(window / 2));
             IList<double> hi_coeff = new List<double>();
@@ -207,16 +206,26 @@ namespace EKG_Project.Modules.R_Peaks
                     potRs.Add(i);
                 }
             }
-            int j = 1;                          //remove maximas which are closer to previous maximum than distance
-            double prevR = potRs.First();
-            while (j < potRs.Count)
+            if (potRs.Count > 0)
             {
-                if (potRs[j] - prevR < distanceInSamples)
-                    potRs.RemoveAt(j);
-                else
+                int j = 1;                          //remove maximas which are closer to previous maximum than distance
+                double prevR = potRs.First();
+                while (j < potRs.Count)
                 {
-                    prevR = potRs[j];
-                    j++;
+                    if (potRs[j] - prevR < distanceInSamples)
+                    {
+                        if (signal[Convert.ToInt32(potRs[j])] <= signal[Convert.ToInt32(prevR)])
+                            potRs.RemoveAt(j);
+                        else {
+                            prevR = potRs[j];
+                            potRs.RemoveAt(j - 1);
+                        }
+                    }
+                    else
+                    {
+                        prevR = potRs[j];
+                        j++;
+                    }
                 }
             }
             return potRs;
@@ -235,7 +244,7 @@ namespace EKG_Project.Modules.R_Peaks
         public Vector<double> CutSignal(Vector<double> inputSignal, int begin, int end)
         {
             if (inputSignal == null) throw new ArgumentNullException();
-            if (end <= begin) throw new ArgumentException();
+            if (end <= begin) throw new ArgumentException("End is lower than begin");
             int len = end - begin + 1;
             double[] cuttedSignal = new double[len];
             for (int i = 0; i < len; i++)
@@ -255,6 +264,7 @@ namespace EKG_Project.Modules.R_Peaks
         public Vector<double> Diff(Vector<double> signal)
         {
             if (signal == null) throw new ArgumentNullException();
+            if (signal.Count < 1) throw new ArgumentOutOfRangeException("Vector must be at least 2 long.");
             Vector<double> diffSignal = Vector<double>.Build.Dense(signal.Count - 1);
             signal.SubVector(1, signal.Count - 1).Subtract(signal.SubVector(0, signal.Count - 1), diffSignal);
             return diffSignal;
@@ -835,6 +845,9 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public Vector<double> TransformImf(Vector<double>[] imfs, uint fs)
         {
+            if (imfs == null) throw new ArgumentNullException();
+            if (fs == 0) throw new ArgumentException();
+            foreach(var imf in imfs) { if (imf.Count != imfs[0].Count) throw new ArgumentOutOfRangeException("Lenghts of vectors in array must be tha same"); }
             //result Vector
             Vector<double> imfSum = Vector<double>.Build.Dense(imfs[0].Count - 2);
             //integrating window
@@ -873,6 +886,7 @@ namespace EKG_Project.Modules.R_Peaks
             return imfSum;
         }
 
+
         #region
         /// <summary>
         /// Function that filters the signal by lowpass IIR filter (cutoff frequency equals 2Hz, 1st order)
@@ -883,6 +897,9 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public double[] LPFiltering(double[] signal, uint samplingFrequency)
         {
+            if (signal == null) throw new ArgumentNullException();
+            if (samplingFrequency == 0) throw new ArgumentException();
+            if (signal.Length == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             double[] hf = new double[] { 0.0172, 0.0172, 1, -0.9657 };
             OnlineIirFilter filter = new OnlineIirFilter(hf);
             double[] signal_f = filter.ProcessSamples(signal);
@@ -899,11 +916,15 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public List<double> FindPeaksTh(double[] signal)
         {
+            if (signal == null) throw new ArgumentNullException();
             List<double> potRs = new List<double>();
-            double th = 0.00005;
+            double minS = signal.Min();
+            double maxS = signal.Max();   
+            double th = 0.02;
             for (int i = 1; i < signal.Length - 1; i++)
             {
-                if ((signal[i] > signal[i - 1]) && (signal[i] > signal[i + 1]) && signal[i] > th)
+                double normSignal = (signal[i] - minS) / (maxS - minS);
+                if ((signal[i] > signal[i - 1]) && (signal[i] > signal[i + 1]) && normSignal > th)
                 {
                     potRs.Add(i);
                 }
