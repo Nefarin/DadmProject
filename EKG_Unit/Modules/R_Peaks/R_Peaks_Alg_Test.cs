@@ -488,7 +488,16 @@ namespace EKG_Unit.Modules.R_Peaks
             R_Peaks_Alg test = new R_Peaks_Alg();
             double[] testResult = test.HilbertTransform(testArray);
         }
-        // TEST - co jeśli pusta tablica na wejściu -> wyjątek dot pustej tablicy!
+
+        [TestMethod]
+        [Description("Test if HilbertTransform works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void HilbertTransformEmptyTest()
+        {
+            double[] testArray = new double[] { };
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.HilbertTransform(testArray);
+        }
 
         // Perform Filtering
         [TestMethod]
@@ -554,6 +563,16 @@ namespace EKG_Unit.Modules.R_Peaks
             double[] testResult = test.Filtering(fs, fl, fh, testArray);
         }
 
+        [TestMethod]
+        [Description("Test if Filtering works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void FilteringEmptyTest()
+        {
+            double[] testArray = new double[] { };
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Filtering(25, 5, 12, testArray);
+        }
+
         // Integration for Hilbert method
         [TestMethod]
         [Description("Test if Integration works properly")]
@@ -616,6 +635,16 @@ namespace EKG_Unit.Modules.R_Peaks
             double[] testResult = test.Integration(testArray, fs);
         }
 
+        [TestMethod]
+        [Description("Test if Integration works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void IntegrationEmptyTest()
+        {
+            double[] testArray = new double[] { };
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Integration(testArray, 10);
+        }
+
         // Locating peaks for Hilbert method
         [TestMethod]
         [Description("Test if FindPeak works properly")]
@@ -669,11 +698,46 @@ namespace EKG_Unit.Modules.R_Peaks
             double[] testResult = test.FindPeak(testArray, testVector);
         }
 
-        
+        [TestMethod]
+        [Description("Test if FindPeak works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void FindPeakEmptyTest()
+        {
+            double[] testArray = new double[] { };
+            double[] testArray2 = new double[] { };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray2);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.FindPeak(testArray, testVector);
+        }
+
+        [TestMethod]
+        [Description("Test if FindPeak works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void FindPeakEmptyTest1()
+        {
+            double[] testArray = new double[] { 1, 2, 3 };
+            double[] testArray2 = new double[] { };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray2);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.FindPeak(testArray, testVector);
+        }
+
+        [TestMethod]
+        [Description("Test if FindPeak works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void FindPeakEmptyTest2()
+        {
+            double[] testArray = new double[] { };
+            double[] testArray2 = new double[] { 1, 2, 3 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray2);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.FindPeak(testArray, testVector);
+        }
+
         // __________________________________________________________________________________________
 
-            // Tests for PAN TOMPKINS functions
-            // Derivative for PT method
+        // Tests for PAN TOMPKINS functions
+        // Derivative for PT method
         [TestMethod]
         [Description("Test if Derivative works properly")]
         public void DerivativeTest()
@@ -704,6 +768,16 @@ namespace EKG_Unit.Modules.R_Peaks
         public void DerivativeNullTest()
         {
             double[] testArray = null;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Derivative(testArray);
+        }
+
+        [TestMethod]
+        [Description("Test if Derivative works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void DerivativeEmptyTest()
+        {
+            double[] testArray = new double[] { };
             R_Peaks_Alg test = new R_Peaks_Alg();
             double[] testResult = test.Derivative(testArray);
         }
@@ -739,6 +813,16 @@ namespace EKG_Unit.Modules.R_Peaks
         public void SquaringNullTest()
         {
             double[] testArray = null;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Squaring(testArray);
+        }
+
+        [TestMethod]
+        [Description("Test if Squaring works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void SquaringEmptyTest()
+        {
+            double[] testArray = new double[] { };
             R_Peaks_Alg test = new R_Peaks_Alg();
             double[] testResult = test.Squaring(testArray);
         }
@@ -788,9 +872,18 @@ namespace EKG_Unit.Modules.R_Peaks
             R_Peaks_Alg test = new R_Peaks_Alg();
             double[] testResult = test.Integrating(testArray, fs);
         }
-        // ____________________________________ZERKNIJ NA TO_____________________________________________
 
-        // Finding Peaks peaks for PT method
+        [TestMethod]
+        [Description("Test if Integrating works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void IntegratingEmptyTest()
+        {
+            double[] testArray = new double[] { };
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            double[] testResult = test.Integrating(testArray, 15);
+        }
+
+        // Finding Peaks for PT method
         [TestMethod]
         [Description("Test if FindPeaks works properly")]
         public void FindPeaksTest()
@@ -799,7 +892,6 @@ namespace EKG_Unit.Modules.R_Peaks
             double dist = 0.5;
             double[] testArray = { 2, 0, 1, -2, 9, -2, 0, 1, 0, 1 };
             double[] resultArray = { 4 };
-            //List<double> resultList = new List<double>(resultArray);
 
             R_Peaks_Alg test = new R_Peaks_Alg();
             List<double> testResult = test.FindPeaks(testArray, fs, dist);
@@ -864,7 +956,17 @@ namespace EKG_Unit.Modules.R_Peaks
             List<double> testResult = test.FindPeaks(testArray, fs, dist);
         }
 
-        // Test for other functions
+        [TestMethod]
+        [Description("Test if FindPeaks works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void FindPeaksEmptyTest()
+        {
+            double[] testArray = new double[] { };
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            List<double> testResult = test.FindPeaks(testArray, 10, 0.5);
+        }
+
+        // Tests for other functions
         // CutSignal function
         [TestMethod]
         [Description("Test if CutSignal works properly")]
@@ -925,6 +1027,19 @@ namespace EKG_Unit.Modules.R_Peaks
             Vector<double> testResult = test.CutSignal(testVector, begin, end);
         }
 
+        [TestMethod]
+        [Description("Test if CutSignal works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void CutSignalEmptyTest()
+        {
+            int begin = 2;
+            int end = 5;
+            double[] testArray = new double[] { };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.CutSignal(testVector, begin, end);
+        }
+
         // Diff function
         [TestMethod]
         [Description("Test if Diff works properly")]
@@ -975,7 +1090,218 @@ namespace EKG_Unit.Modules.R_Peaks
             Vector<double> testResult = test.Diff(testVector);
         }
 
+        [TestMethod]
+        [Description("Test if Diff works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void DiffEmptyTest()
+        {
+            double[] testArray = new double[] { };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.Diff(testVector);
+        }
+
+        // RRinMS function
+        [TestMethod]
+        [Description("Test if RRinMS works properly")]
+        public void RRinMSTest()
+        {
+            uint fs = 10;
+            double[] testArray = { 0, 11, 22, 32, 43, 53 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] resultArray = { 1100, 1100, 1000, 1100, 1000 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.RRinMS(testVector, fs);
+            Assert.AreEqual(testResult, resultVector);
+        }
+
+        [TestMethod]
+        [Description("Test if RRinMS works properly - not equality test")]
+        public void RRinMSTest2()
+        {
+            uint fs = 10;
+            double[] testArray = { 0, 11, 22, 32, 43, 53 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] resultArray = { 11, 11, 10, 11, 10 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.RRinMS(testVector, fs);
+            Assert.AreNotEqual(testResult, resultVector);
+        }
+
+        [TestMethod]
+        [Description("Test if RRinMS throws exception if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void RRinMSNullTest()
+        {
+            Vector<double> testVector = null;
+            uint fs = 10;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.RRinMS(testVector, fs);
+        }
+
+        [TestMethod]
+        [Description("Test if RRinMS throws exception if fs equals zero")]
+        [ExpectedException(typeof(ArgumentException), "Non-positive frequency value given as parameter")]
+        public void RRinMSZeroTest()
+        {
+            uint fs = 0;
+            double[] testArray = { 0, 11, 22, 32, 43, 53 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.RRinMS(testVector, fs);
+        }
+
+        [TestMethod]
+        [Description("Test if RRinMS works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void RRinMSEmptyTest()
+        {
+            uint fs = 5;
+            double[] testArray = new double[] { };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.RRinMS(testVector, fs);
+        }
+
+
         // ____________________________________DOTĄD DZIAŁAM!_____________________________________________
+
+        //Tests for Hilbert algorithm 
+  /*      [TestMethod]
+        [Description("Test if Hilbert works properly")]
+        public void HilbertTest()
+        {
+            uint fs = 31;
+            double[] testArray = { 1, 1, 1, 0, 0, 1, 1, 0, 0, -3, 12, -3, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 2, 1, 0, -2, 11, -3, -1, 0, 0, 1, 1, 0, 0, 1, 1, 0, -1, 12, -4, -1, 0, 0, 0, 1, 1, 0, 0, 1 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] resultArray = { 10, 26, 39 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.Hilbert(testVector, fs);
+            Assert.AreEqual(testResult, resultVector);
+        }*/
+
+        [TestMethod]
+        [Description("Test if Hilbert works properly - not equality test")]
+        public void HilbertTest2()
+        {
+            uint fs = 31;
+            double[] testArray = { 1, 1, 1, 0, 0, 1, 1, 0, 0, -3, 12, -3, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 2, 1, 0, -2, 11, -3, -1, 0, 0, 1, 1, 0, 0, 1, 1, 0, -1, 12, -4, -1, 0, 0, 0, 1, 1, 0, 0, 1 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] resultArray = { 12, 28, 41 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.Hilbert(testVector, fs);
+            Assert.AreNotEqual(testResult, resultVector);
+        }
+
+        [TestMethod]
+        [Description("Test if Hilbert throws exception if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void HilbertNullTest()
+        {
+            Vector<double> testVector = null;
+            uint fs = 31;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.Hilbert(testVector, fs);
+        }
+
+        [TestMethod]
+        [Description("Test if Hilbert throws exception if fs equals zero")]
+        [ExpectedException(typeof(ArgumentException), "Non-positive frequency value given as parameter")]
+        public void HilbertZeroTest()
+        {
+            uint fs = 0;
+            double[] testArray = { 2, 2, 0, 0, 1, 1, 0, 0, -3, 12, -4, 0, 0, 0, 2, 5, 3, 2, 0, 0 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.Hilbert(testVector, fs);
+        }
+
+        [TestMethod]
+        [Description("Test if Hilbert works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void HilbertEmptyTest()
+        {
+            uint fs = 31;
+            double[] testArray = new double[] { };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.Hilbert(testVector, fs);
+        }
+
+        //Tests for Pan-Tompkins algorithm 
+        /*
+        [TestMethod]
+        [Description("Test if PanTompkins works properly")]
+        public void PanTompkinsTest()
+        {
+            uint fs = 31;
+            double[] testArray = { 1, 1, 1, 0, 0, 1, 1, 0, 0, -3, 12, -3, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 2, 1, 0, -2, 11, -3, -1, 0, 0, 1, 1, 0, 0, 1, 1, 0, -1, 12, -4, -1, 0, 0, 0, 1, 1, 0, 0, 1 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] resultArray = { 10, 26, 39 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.PanTompkins(testVector, fs);
+            Assert.AreEqual(testResult, resultVector);
+        }*/
+
+        [TestMethod]
+        [Description("Test if PanTompkins works properly - not equality test")]
+        public void PanTompkinsTest2()
+        {
+            uint fs = 31;
+            double[] testArray = { 1, 1, 1, 0, 0, 1, 1, 0, 0, -3, 12, -3, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 2, 1, 0, -2, 11, -3, -1, 0, 0, 1, 1, 0, 0, 1, 1, 0, -1, 12, -4, -1, 0, 0, 0, 1, 1, 0, 0, 1 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] resultArray = { 12, 28, 41 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.PanTompkins(testVector, fs);
+            Assert.AreNotEqual(testResult, resultVector);
+        }
+
+        [TestMethod]
+        [Description("Test if PanTompkins throws exception if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void PanTompkinsNullTest()
+        {
+            Vector<double> testVector = null;
+            uint fs = 31;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.PanTompkins(testVector, fs);
+        }
+
+        [TestMethod]
+        [Description("Test if PanTompkins throws exception if fs equals zero")]
+        [ExpectedException(typeof(ArgumentException), "Non-positive frequency value given as parameter")]
+        public void PanTompkinsZeroTest()
+        {
+            uint fs = 0;
+            double[] testArray = { 2, 2, 0, 0, 1, 1, 0, 0, -3, 12, -4, 0, 0, 0, 2, 5, 3, 2, 0, 0 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.PanTompkins(testVector, fs);
+        }
+
+        [TestMethod]
+        [Description("Test if PanTompkins works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void PanTompkinsEmptyTest()
+        {
+            uint fs = 31;
+            double[] testArray = new double[] { };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.PanTompkins(testVector, fs);
+        }
         //...
 
     }
