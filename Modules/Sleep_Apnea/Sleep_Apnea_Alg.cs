@@ -34,22 +34,19 @@ namespace EKG_Project.Modules.Sleep_Apnea
         
         List<List<double>> findIntervals(List<uint> R_detected, int freq)
         {
+            var timeInSec = new List<double>(R_detected.Count-1);
+            var rrDist = new List<double>(R_detected.Count-1);
+            new List<double>(R_detected.Count-1);
+
+            for (int i = 0; i < R_detected.Count()- 1; i++)
+            {
+                timeInSec.Add(((double)R_detected[i]) / freq);
+                rrDist.Add(((double)R_detected[i + 1] - R_detected[i]) / freq);
+            }
 
             List<List<double>> RR = new List<List<double>>(2);
-            RR.Add(new List<double>(R_detected.Count));
-            RR.Add(new List<double>(R_detected.Count));
-
-            for (int i = 0; i < R_detected.Count(); i++)
-            {
-                RR[0].Add((double)(R_detected[i]));
-            }
-            for (int i = 0; i < R_detected.Count() - 1; i++)
-            {
-                RR[1].Add((((double)R_detected[i + 1] - R_detected[i]) / freq));
-            }
-
-            RR[1].Add(0.0);
-
+            RR.Add(timeInSec);
+            RR.Add(rrDist);
             return RR;
         }
 
@@ -63,103 +60,40 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
         List<List<double>> averageFilter(List<List<double>> RR)
         {
-            int okno = 41;
-            int length = RR[0].Count;
-            double sum = 0;
-            int licznik = 0;
-            bool[] correct = new bool[length];
+            int meanFilterWindowLength = 41;
 
-            //filter fo samples from 1 to (okno-1)/2
-            //exclude intervals which lie outside the range of 0.4 to 2.0 sec
-            for (int i = 0; i <= okno; i++)
+            List<double> rrDistFiltered = new List<double>(RR[1].Count);
+            List<double> timeInSecFiltered = new List<double>(RR[0].Count);
+
+            for (int i = 0; i < RR[1].Count - meanFilterWindowLength; i++)
             {
-                if (RR[1][i] > 0.4 && RR[1][i] < 2.0)
+                List<double> meanWindow = RR[1].GetRange(i, meanFilterWindowLength);
+
+                double sum = 0;
+                int counter = 0;
+                for(int j = 0 ; j < meanFilterWindowLength ; j++)
                 {
-                    sum += RR[1][i];
-                    licznik += 1;
-                }
-            }
-
-            double mean = sum / licznik;
-
-            for (int i = 0; i < (okno - 1) / 2; i++)
-            {
-                if (RR[1][i] > 0.8 * mean && RR[1][i] < 1.2 * mean)
-                    correct[i] = true;
-                else
-                    correct[i] = false;
-            }
-
-            //filter fo samples from (okno+1)/2 to length -(okno-1)/2
-            sum = 0;
-            licznik = 0;
-
-            for (int i = (okno + 1) / 2; i <= length - (okno - 1) / 2; i++)
-            {
-                for (int z = i - (okno - 1) / 2; z <= i + (okno - 1) / 2; z++)
-                {
-                    if (RR[1][i] > 0.4 && RR[1][i] < 2.0)
+                    if(meanWindow[j] > 0.4 && meanWindow[j] < 2.0 && j != meanFilterWindowLength/2)
                     {
-                        sum += RR[1][i];
-                        licznik += 1;
+                        sum = sum + meanWindow[j];
+                        counter++;
                     }
                 }
-                mean = sum / licznik;
-                if (RR[1][i] > 0.8 * mean && RR[1][i] < 1.2 * mean)
-                    correct[i] = true;
-                else
-                    correct[i] = false;
 
-            }
-
-            //filter fo samples from length-(okno-1)/2 to length
-            sum = 0;
-            licznik = 0;
-
-            for (int i = length - (okno - 1) / 2; i < length; i++)
-            {
-                if (RR[1][i] > 0.4 && RR[1][i] < 2.0)
+                int currentIndex = meanFilterWindowLength / 2 + i;
+                double currentMean = sum / counter;
+                if (currentMean * 0.8 < RR[1][currentIndex] && currentMean * 1.2 > RR[1][currentIndex])
                 {
-                    sum += RR[1][i];
-                    licznik += 1;
-                }
+                    rrDistFiltered.Add(RR[1][currentIndex]);
+                    timeInSecFiltered.Add(RR[0][currentIndex]);
+                }              
             }
 
-            mean = sum / licznik;
+            List<List<double>> RRFiltered = new List<List<double>>(2);
+            RRFiltered.Add(timeInSecFiltered);
+            RRFiltered.Add(rrDistFiltered);
 
-            for (int i = length - (okno - 1) / 2; i < length; i++)
-            {
-                if (RR[1][i] > 0.8 * mean && RR[1][i] < 1.2 * mean)
-                    correct[i] = true;
-                else
-                    correct[i] = false;
-            }
-
-            //create new array and write filtered samples            
-            List<List<double>> RR_average = new List<List<double>>(2);
-            RR_average.Add(new List<double>());
-            RR_average.Add(new List<double>());
-
-            for (int i = 0; i < length; i++)
-            {
-                if (correct[i] == true)
-                {
-                    RR_average[0].Add(RR[0][i]);
-                    RR_average[1].Add(RR[1][i]);
-                }
-            }
-
-            for (int i = 1; i < length - 1; i++)
-            {
-                if (correct[i] == false)
-                {
-                    RR_average[0].Add(RR[0][i]);
-                    RR_average[1].Add((RR[0][i - 1] + RR[1][i + 1]) / 2);
-                }
-            }
-
-            return RR_average;
-
+            return RRFiltered;
         }
 
         #region
@@ -167,70 +101,38 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// Function that resamples RR intervals on 1Hz frequency
         /// </summary>
         /// <param name="freq"> frequency of sampling for signal</param>
-        /// <param name="RR_average"> Signal - RR intervals filtered </param>
+        /// <param name="RRFiltered"> Signal - RR intervals filtered </param>
         /// <returns> Resampled RR intervals</returns>
-        #endregion
-        //resampling on 1Hz frequency        
-        List<List<double>> resampling(List<List<double>> RR_average, int freq)
+        #endregion   
+        List<List<double>> resampling(List<List<double>> RRFiltered, int resampFreq)
         {
-            int n_start = (int)RR_average[0][1];
-            int n_stop = (int)RR_average[0][RR_average[0].Count - 1];
-            int size = (int)Math.Floor(((double)n_stop - n_start) / freq) + 1;
+            int estimatedSamplesCountAfterResampling = (int)((RRFiltered[0][RRFiltered[0].Count] - RRFiltered[0][0]) * resampFreq + 1);
+            List<double> rrDistResampled = new List<double>(estimatedSamplesCountAfterResampling);
+            List<double> timeInSecResampled = new List<double>(estimatedSamplesCountAfterResampling);
 
-            //create new array and fill with equally distant samples            
-            List<List<double>> RR_res = new List<List<double>>(2);
-            RR_res.Add(new List<double>(size));
-            RR_res.Add(new List<double>(size));
-
-            int j = n_start;
-            for (int i = 0; i < size; i++)
+            double x = RRFiltered[0][0];
+            for (int i = 0; i < RRFiltered[0].Count-1; i++)
             {
-                RR_res[0].Add(j);
-                j += freq;
-            }
+                double x1 = RRFiltered[0][i];
+                double x2 = RRFiltered[0][i+1];
+                double y1 = RRFiltered[1][i];
+                double y2 = RRFiltered[1][i+1];
 
-            //calculations for first sample
-            double tm1 = RR_average[0][0];
-            double tm2 = RR_average[0][1];
-            double rr1 = RR_average[1][0];
-            double rr2 = RR_average[1][1];
-            double a = (rr1 - rr2) / (tm1 - tm2);
-            double b = rr1 - a * tm1;
-            RR_res[1].Add(a * RR_res[0][0] + b);
+                double a = (y1 - y2) / (x1 - x2);
+                double b = y1 - a * x1;
 
-            if (RR_average[1][RR_average[0].Count - 1] == 0)
-                RR_average[1][RR_average[0].Count - 1] = RR_average[1][RR_average[0].Count - 2];
-
-            //calculations for last sample
-            tm1 = RR_average[0][RR_average[0].Count - 2];
-            tm2 = RR_average[0][RR_average[0].Count - 1];
-            rr1 = RR_average[1][RR_average[0].Count - 2];
-            rr2 = RR_average[1][RR_average[0].Count - 1];
-            a = (rr1 - rr2) / (tm1 - tm2);
-            b = rr1 - a * tm1;
-            RR_res[1].Add(a * RR_res[0][size - 1] + b);
-
-            //calculations for 2 to last-1 samples
-            for (int k = 1; k < size - 1; k++)
-            {
-                int i = 0;
-                while (i < RR_average[0].Count - 2 && RR_average[0][i] < RR_res[0][k])
+                while (x < x2)
                 {
-                    if (RR_average[0][i + 1] > RR_res[0][k])
-                        break;
-                    else
-                        i = i + 1;
+                    timeInSecResampled.Add(x);
+                    rrDistResampled.Add(a * x + b);
                 }
-                tm1 = RR_average[0][i];
-                tm2 = RR_average[0][i + 1];
-                rr1 = RR_average[1][i];
-                rr2 = RR_average[1][i + 1];
-                a = (rr1 - rr2) / (tm1 - tm2);
-                b = rr1 - a * tm2;
-                RR_res[1].Add(a * RR_res[0][k] + b);
             }
 
-            return RR_res;
+            List<List<double>> RRResampled = new List<List<double>>(2);
+            RRResampled.Add(timeInSecResampled);
+            RRResampled.Add(rrDistResampled);
+
+            return RRResampled;
         }
 
         #region
@@ -241,47 +143,73 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// <returns> Filtered RR intervals</returns>
         #endregion
               
-        List<List<double>> HPLP(List<List<double>> RR_res)
+        List<List<double>> HPLP(List<List<double>> RRResampled)
         {
-            //high-pass filter
-            List<double> Z1 = new List<double>(RR_res[0].Count());
-            Z1.Add(0.0);
+            List<List<double>> RRHP = HP(RRResampled);
+            List<List<double>> RRLP = LP(RRHP);
+            return RRLP;
+        }
 
-            double CUTOFF = 0.01;
-            double RC = 1 / (CUTOFF * 2 * 3.14);
-            double dt = 1;
+        private List<List<double>> LP(List<List<double>> RRHP)
+        {
+            List<double> rrDistLP = new List<double>(RRHP[1].Count);
+            List<double> timeInSecLP = new List<double>(RRHP[0].Count);
+
+            int LPFilterWindowLength = 5;
+            double sum = 0;
+            int filterIndex = 0;
+            double[] LPFilterWindow = new double[LPFilterWindowLength];
+
+            for (int i = 0; i < RRHP[1].Count; i++)
+            {
+                LPFilterWindow[filterIndex] = RRHP[1][i];
+                sum += RRHP[1][i];
+                filterIndex++;
+
+                if(i < LPFilterWindowLength)
+                {
+                    continue;
+                }
+
+                double newValue = sum / LPFilterWindowLength;
+                rrDistLP.Add(newValue);
+                timeInSecLP.Add(RRHP[0][i-(LPFilterWindowLength/2)]);
+
+                if(filterIndex >= LPFilterWindowLength)
+                {
+                    filterIndex = 0;
+                }
+
+                sum -= LPFilterWindow[filterIndex];
+            }
+
+            List<List<double>> RRLP = new List<List<double>>(2);
+            RRLP.Add(timeInSecLP);
+            RRLP.Add(rrDistLP);
+
+            return RRLP;
+        }
+
+        private List<List<double>> HP(List<List<double>> RRResampled)
+        {
+            List<double> rrDistHP = new List<double>(RRResampled[1].Count);
+
+            double cutoff = 0.01;
+            double RC = 1.0 / (cutoff * 2 * Math.PI);
+            double dt = 1.0;
             double alpha = RC / (RC + dt);
+            double prevValue = 0;
 
-            for (int j = 1; j < RR_res[0].Count(); j++)
+            for (int i = 1; i < RRResampled[1].Count; i++)
             {
-                Z1.Add(alpha * (Z1[j - 1] + RR_res[1][j] - RR_res[1][j - 1]));
+                prevValue = alpha * (prevValue + RRResampled[1][i] - RRResampled[1][i - 1]);
+                rrDistHP.Add(prevValue);
             }
 
-            //low-pass filter
-            List<double> Z2 = new List<double>(RR_res[0].Count());
-            Z2.Add(0.0);
-
-            CUTOFF = 0.09;
-            RC = 1 / (CUTOFF * 2 * 3.14);
-            dt = 1;
-            alpha = dt / (RC + dt);
-
-            for (int j = 1; j < Z1.Count(); j++)
-            {
-                Z2.Add(Z2[j - 1] + (alpha * (Z1[j] - Z2[j - 1])));
-            }
-
-            List<List<double>> RR_HPLP = new List<List<double>>(2);
-            RR_HPLP.Add(new List<double>());
-            RR_HPLP.Add(new List<double>());
-
-            for (int i = 0; i < RR_res[0].Count; i++)
-            {
-                RR_HPLP[0].Add(RR_res[0][i]);
-                RR_HPLP[1].Add(RR_res[1][i]);
-            }
-
-            return RR_HPLP;
+            List<List<double>> RRHP = new List<List<double>>(2);
+            RRHP.Add(RRResampled[0].GetRange(1, RRResampled[0].Count-1));
+            RRHP.Add(rrDistHP);
+            return RRHP;
         }
 
 
@@ -289,28 +217,23 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// <summary>
         /// Function that creates Hilbert transform for signal
         /// </summary>
-        /// <param name="RR_HPLP"> Signal - RR intervals filtered </param>
+        /// <param name="RRHPLP"> Signal - RR intervals filtered </param>
         /// <returns> Hilbert's amplitudes and frequencies </returns>
         #endregion
 
-        void hilbert(List<List<double>> RR_HPLP, ref List<List<double>> h_amp, ref List<List<double>> h_freq)
+        void hilbert(List<List<double>> RRHPLP, ref List<List<double>> hAmp, ref List<List<double>> hFreq)
         {
-            Complex[] hilb = MatlabHilbert(RR_HPLP[1].ToArray());
+            Complex[] hilb = MatlabHilbert(RRHPLP[1].ToArray());
 
-            double Fs = 1.0 / (RR_HPLP[0][1] - RR_HPLP[0][0]);
+            double Fs = 1.0 / (RRHPLP[0][1] - RRHPLP[0][0]);
 
-            h_amp.Add(new List<double>(RR_HPLP[0].Count));
-            h_freq.Add(new List<double>(RR_HPLP[0].Count));
-            h_amp.Add(new List<double>(RR_HPLP[0].Count));
-            h_freq.Add(new List<double>(RR_HPLP[0].Count));
+            List<double> amp = new List<double>(RRHPLP[1].Count);
+            List<double> freq = new List<double>(RRHPLP[1].Count);
 
             //Writing time and values
-            for (int i = 0; i < hilb.Length; i++)
+            for (int i = 0; i < hilb.Length-1; i++)
             {
-                h_amp[0].Add(RR_HPLP[0][i]);
-                h_freq[0].Add(RR_HPLP[0][i]);
-
-                h_amp[1].Add(Complex.Abs(hilb[i]));
+                amp.Add(Complex.Abs(hilb[i]));
 
                 if (i < hilb.Length - 1)
                 {
@@ -319,14 +242,15 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     double phase2 = hilb[i + 1].Phase;
                     if (phase2 < 0) phase2 = Math.PI * 2 + phase2;
 
-                    double freq = Fs / (2 * Math.PI) * (phase2 - phase);
-                    h_freq[1].Add(freq);
-                }
-                else
-                {
-                    h_freq[1].Add(0.0);
+                    double frequency = Fs / (2 * Math.PI) * (phase2 - phase);
+                    freq.Add(frequency);
                 }
             }
+
+            hAmp.Add(RRHPLP[0].GetRange(0, RRHPLP[0].Count - 1));
+            hFreq.Add(RRHPLP[0].GetRange(0, RRHPLP[0].Count - 1));
+            hAmp.Add(amp);
+            hFreq.Add(freq);
         }
 
         private static Complex[] MatlabHilbert(double[] xr)
@@ -334,7 +258,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             var x = (from sample in xr select new Complex(sample, 0)).ToArray();
             Fourier.BluesteinForward(x, FourierOptions.Default);
             var h = new double[x.Length];
-            var fftLengthIsOdd = (x.Length | 1) == 1;
+            var fftLengthIsOdd = (x.Length & 1) == 1;
             if (fftLengthIsOdd)
             {
                 h[0] = 1;
@@ -356,120 +280,77 @@ namespace EKG_Project.Modules.Sleep_Apnea
             return x;
         }
 
+        void medianFilter(List<List<double>> hFreq, List<List<double>> hAmp)
+        {
+            medianFilter(hAmp);
+            medianFilter(hFreq);
+        }
+
         #region
         /// <summary>
         /// Function that filters signal using a moving window of 60 points
         /// </summary>
         /// <param name="h_freq"> Signal - Hilbert's frequencies </param>
-        /// <param name="h_amp"> Signal - Hilbert's amplitudes </param>
+        /// <param name="h"> Signal - Hilbert's amplitudes </param>
         /// <returns> Filtered amplitudes and frequencies </returns>
         #endregion
 
-        void median_filter(List<List<double>> h_freq, List<List<double>> h_amp)
+        void medianFilter(List<List<double>> h)
         {
-            int window_median = 60;
-            double[] amp = new double[window_median];
-            double[] freq = new double[window_median];
-            int i, j, k, l;
-            double median_amp = 0, median_freq = 0;
+            List<double> hAmpFiltered = new List<double>(h[1].Count);
+            List<double> hFreqFiltered = new List<double>(h[1].Count);
 
-            //Filter for samples divisible by 60
-            for (i = 0; i < h_freq[0].Count; i++)
-            {
-                if (i % window_median == 0 && i > 0)
-                {
-                    k = (i / window_median) - 1;
-                    l = 0;
-                    for (j = 0 + window_median * k; j < window_median + window_median * k; j++)
-                    {
-                        freq[l] = h_freq[1][j];
-                        amp[l] = h_amp[1][j];
-                        l++;
-                    }
-                    //Sorting arrays                    
-                    Array.Sort(freq);
-                    Array.Sort(amp);
-                    //Finding the median of the arrays
-                    if (freq.Length % 2 != 0)
-                    {
-                        median_freq = freq[(int)((freq.Length - 1) / 2)];
-                        median_amp = amp[(int)((amp.Length - 1) / 2)];
-                    }
-                    else
-                    {
-                        median_freq = (freq[(int)(Math.Floor(((double)freq.Length - 1) / 2))] + freq[(int)(Math.Floor(((double)freq.Length - 1) / 2)) + 1]) * 0.5;
-                        median_amp = (amp[(int)(Math.Floor(((double)amp.Length - 1) / 2))] + amp[(int)(Math.Floor(((double)amp.Length - 1) / 2)) + 1]) * 0.5;
-                    }
-                    //Writing filtered samples in output arrays
-                    for (j = 0 + window_median * k; j < window_median + window_median * k; j++)
-                    {
-                        h_freq[1][j] = median_freq;
-                        h_amp[1][j] = median_amp;
-                    }
-                }
-            }
+            int medianFilterWindowLength = 181;
+            int filterIndex = 0;
+            int sortedWindowIndex = 0;
+            double[] medianFilterWindow = new double[medianFilterWindowLength];
+            double[] sortedMedianFilterWindow = new double[medianFilterWindowLength];
 
-            //Filter for another samples
-            if (h_freq[0].Count() % window_median != 0)
+            for (int i = 0; i < h[1].Count; i++)
             {
-                int start_id = (int)(Math.Floor((double)h_freq[0].Count / window_median) * window_median);
-                int stop_id = h_freq[0].Count - 1;
-                double[] amp1 = new double[stop_id - start_id + 1];
-                double[] freq1 = new double[stop_id - start_id + 1];
-                j = start_id;
-                for (i = 0; i < freq1.Length; i++)
+                medianFilterWindow[filterIndex] = h[1][i];
+                sortedMedianFilterWindow[sortedWindowIndex] = h[1][i];
+                filterIndex++;         
+                if (i < medianFilterWindowLength)
                 {
-                    freq1[i] = h_freq[1][j];
-                    amp1[i] = h_amp[1][j];
-                    j++;
+                    sortedWindowIndex++;
+                    continue;                    
                 }
-                //Sorting arrays
-                Array.Sort(freq1);
-                Array.Sort(amp1);
-                //Finding the median of the arrays
-                if (freq1.Length % 2 != 0)
+
+                Array.Sort(sortedMedianFilterWindow);
+
+                double median = 0.0;
+                if(medianFilterWindowLength % 2 == 0)
                 {
-                    median_freq = freq1[(int)((freq1.Length - 1) / 2)];
-                    median_amp = amp1[(int)((amp1.Length - 1) / 2)];
+                    median = (sortedMedianFilterWindow[medianFilterWindowLength / 2 - 1] + sortedMedianFilterWindow[medianFilterWindowLength / 2]) / 2.0;
                 }
                 else
                 {
-                    median_freq = (freq1[(int)(Math.Floor(((double)freq1.Length - 1) / 2))] + freq1[(int)(Math.Floor(((double)freq1.Length - 1) / 2)) + 1]) * 0.5;
-                    median_amp = (amp1[(int)(Math.Floor(((double)amp1.Length - 1) / 2))] + amp1[(int)(Math.Floor(((double)amp1.Length - 1) / 2)) + 1]) * 0.5;
+                    median = sortedMedianFilterWindow[medianFilterWindowLength/2];
                 }
-                //Writing filtered samples to output arrays
-                for (i = start_id; i <= stop_id; i++)
+                hAmpFiltered.Add(median);
+
+                if (filterIndex >= medianFilterWindowLength)
                 {
-                    h_freq[1][i] = median_freq;
-                    h_amp[1][i] = median_amp;
+                    filterIndex = 0;
                 }
+
+                double oldestValue = medianFilterWindow[filterIndex];
+                sortedWindowIndex = Array.FindIndex(sortedMedianFilterWindow, x => x == oldestValue);
             }
+
+            h[1] = hAmpFiltered;
+            h[0] = h[0].GetRange(medianFilterWindowLength / 2, hAmpFiltered.Count);
         }
 
         //Normalization of amplitude signal
-        void amp_filter(List<List<double>> h_amp)
+        void ampNormalization(List<List<double>> hAmp)
         {
-            double sum = 0;
-            for (int i = 0; i < h_amp[0].Count; i++)
-                sum += h_amp[1][i];
-            double mean = sum / h_amp[0].Count;
+            double mean = hAmp[1].Average();
 
-            //Writing values to output array
-            for (int i = 0; i < h_amp[0].Count; i++)
+            for(int i = 0 ; i < hAmp[1].Count ; i++)
             {
-                h_amp[1][i] = h_amp[1][i] * (1 / mean);
-            }
-
-            //Changing the field from samples numbers to time
-            double[] time = new double[h_amp[0].Count];
-            for (int i = 0; i < h_amp[0].Count(); i++)
-            {
-                time[i] = (h_amp[0][i] - h_amp[0][0]) / (h_amp[0][1] - h_amp[0][0]);
-            }
-
-            for (int i = 0; i < h_amp[0].Count(); i++)
-            {
-                h_amp[0][i] = time[i];
+                hAmp[1][i] = hAmp[1][i] / mean;
             }
         }
 
@@ -477,26 +358,22 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// <summary>
         /// Function that detects Apnea(if the frequency goes below 0,06 Hz and the amplitude goes above max amplitude the same time)
         /// </summary>
-        /// <param name="h_freq"> Signal - filtered Hilbert's frequencies </param>
-        /// <param name="h_amp"> Signal - filtered Hilbert's amplitudes </param>
+        /// <param name="hFreq"> Signal - filtered Hilbert's frequencies </param>
+        /// <param name="hAmp"> Signal - filtered Hilbert's amplitudes </param>
         /// <returns> The percentage value of sleep apnea in signal (il_Apnea), Hilbert's amplitudes (h_amp) and time periods for which detected apnea (Detected_Apnea) </returns>
         #endregion
-
-
-        List<Tuple<int, int>> apnea_detection(List<List<double>> h_amp, List<List<double>> h_freq, out double il_Apnea)
+        void detectApnea(List<List<double>> hAmp, List<List<double>> hFreq, out List<bool> detected, out List<double> time)
         {
-
-
             //Finding the minimum and maximum Hilbert amplitudes
-            int i;
+            
             double a, b, min_amp, max_amp, mid, y_amp, y_freq;
-            min_amp = 9999;
+            min_amp = double.MaxValue;
             max_amp = 0;
 
-            for (i = 0; i < h_amp[0].Count(); i++)
+            for (int i = 0; i < hAmp[1].Count(); i++)
             {
-                if (h_amp[1][i] > max_amp) max_amp = h_amp[1][i];
-                if (h_amp[1][i] < min_amp) min_amp = h_amp[1][i];
+                if (hAmp[1][i] > max_amp) max_amp = hAmp[1][i];
+                if (hAmp[1][i] < min_amp) min_amp = hAmp[1][i];
             }
             //The minimum Hilbert amplitude threshold (a linear function of the minimum and maximum Hilbert amplitudes):
             a = -0.555; b = 1.3;
@@ -508,47 +385,96 @@ namespace EKG_Project.Modules.Sleep_Apnea
             y_freq = 0.06;
 
             //Apnea detection
-            bool[] detect = new bool[h_amp[0].Count];
-            for (i = 0; i < h_amp[0].Count; i++)
-            {
-                if (h_amp[1][i] >= y_amp && h_freq[1][i] <= y_freq) detect[i] = true;
-                else detect[i] = false;
-            }
+            double analysisStep = 60; //60 sec for step
+            double analysisWindowLength = 5 * analysisStep; //5 min for analysis window
 
-            //Checking if the duration of sleep apnea is longer than 60 seconds
-            List<Tuple<int, int>> Detected_Apnea = new List<Tuple<int, int>>();
-            int counter = 0;
-            int counter2 = 0;
-            for (i = 0; i < detect.Length; i++)
+            detected = new List<bool>(hAmp[0].Count);
+            time = new List<double>(hAmp[0].Count);
+
+            bool quit = false;
+            int ii = 0;
+            while(true)
             {
-                if (detect[i] == false)
+                int j = ii;
+                double sumAmp = 0;
+                double sumFreq = 0;
+                while (hAmp[0][j] - hAmp[0][ii] < analysisWindowLength)
                 {
-                    if (counter >= 60)
+                    if(j == hAmp[0].Count - 1)
                     {
-                        Detected_Apnea.Add(new Tuple<int, int>(i - 1 - counter, i - 1));
-                        counter2 = counter2 + counter;
+                        quit = true;
+                        break;
                     }
-                    counter = 0;
+                    sumAmp += hAmp[1][j];
+                    sumFreq += hFreq[1][j];
+                    j++;
+                }
+                sumAmp -= hAmp[1][j];
+                sumFreq -= hFreq[1][j];
+                double meanAmp = sumAmp / (j - ii - 1);
+                double meanFreq = sumFreq / (j - ii - 1);
+
+                if (meanAmp > y_amp && meanFreq < y_freq)
+                {
+                    detected.Add(true);
                 }
                 else
                 {
-                    counter = counter + 1;
+                    detected.Add(false);
+                }
+                time.Add(hAmp[0][ii]);
+
+                int oldii = ii;
+                while(hAmp[0][ii] - hAmp[0][oldii] < analysisStep)
+                {
+                    if(ii ==  hAmp[0].Count-1)
+                    {
+                        quit = true;
+                        break;
+                    }
+                    ii++;
+                }
+
+                if(quit)
+                {
+                    break;
+                }
+            }         
+        }
+
+        List<Tuple<int, int>> setResult(List<bool> detected, List<double> time, out double ilApnea)
+        {
+            //Calculating the percentage of sleep apnea         
+            int posCount = 0;
+            int negCount = 0;
+            List<Tuple<int, int>> detectedApnea = new List<Tuple<int, int>>();
+            double start = -1;
+            for (int i = 0; i < detected.Count; i++)
+            {
+                if (detected[i])
+                {
+                    posCount++;
+                    if (start == -1)
+                    {
+                        start = time[i];
+                    }
+                    else if (i == detected.Count - 1)
+                    {
+                        detectedApnea.Add(new Tuple<int, int>((int)start, (int)time[i]));
+                    }
+                }
+                else
+                {
+                    negCount++;
+                    if (start != -1)
+                    {
+                        detectedApnea.Add(new Tuple<int, int>((int)start, (int)time[i]));
+                    }
                 }
             }
+            ilApnea = ((double)posCount) / (posCount + negCount);
 
-            //Calculating the percentage of sleep apnea         
-
-            il_Apnea = (counter2 / detect.Length) * 100;
-
-
-
-            if (Detected_Apnea.Count == 0)
-            {
-                Detected_Apnea.Add(new Tuple<int, int>(0, 0));
-            }
-
-
-            return Detected_Apnea;
+            return detectedApnea;
         }
 
 
