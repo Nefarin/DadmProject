@@ -136,14 +136,15 @@ namespace EKG_Project.Modules.T_Wave_Alt
         public Vector<double> calculateACI(List<Vector<double>> TWavesArray, Vector<double> medianVector)
         {
             Vector<double> ACIVector = Vector<double>.Build.Dense(TWavesArray.Count);
-            for (int j = 0; j < TWavesArray.Count; j++)
+
+            int WaveIndex = 0;
+            foreach (Vector<double> currentTWave in TWavesArray)
             {
                 double sumNom = 0;
                 double sumDenom = 0;
-                Vector<double> currentTWave = TWavesArray[j];
 
                 int count = 0;
-                foreach (int singleSample in currentTWave)
+                foreach (double singleSample in currentTWave)
                 {
                     double ACI_auxNom = singleSample * medianVector[count];
                     double ACI_auxDenom = medianVector[count] * medianVector[count];
@@ -152,7 +153,8 @@ namespace EKG_Project.Modules.T_Wave_Alt
                     count++;
                 }
                 
-                ACIVector[j] = sumNom/sumDenom;
+                ACIVector[WaveIndex] = sumNom/sumDenom;
+                WaveIndex++;
             }
 
             return ACIVector;

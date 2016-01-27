@@ -12,7 +12,6 @@ namespace EKG_Unit.Modules.T_Wave_Alt
     {
         // TODO
         // buildTWavesArray right border test
-        // whole Alg test
         // division by zero tests
 
         [TestMethod]
@@ -46,8 +45,8 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             // Assert results
 
-            Assert.AreEqual(resultVector1,desiredList[0]);
-            Assert.AreEqual(resultVector2,desiredList[1]);
+            Assert.AreEqual(resultVector1, desiredList[0]);
+            Assert.AreEqual(resultVector2, desiredList[1]);
 
 
         }
@@ -131,7 +130,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
         public void calculateMedianTWaveEvenTest()
         {
             // Init test here
-            
+
             double[] testArray1 = { 2, 5 };
             double[] testArray2 = { 3, 6 };
             double[] testArray3 = { 4, 7 };
@@ -206,7 +205,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
             double[] testArray3 = { 3, 6, 4 };
 
             double[] testMedian = { 3, 6, 4 };
-            
+
             double[] testACIArray = { 1, 1, 1 };
 
             Vector<double> testVector1 = Vector<double>.Build.DenseOfArray(testArray1);
@@ -271,6 +270,46 @@ namespace EKG_Unit.Modules.T_Wave_Alt
         }
 
         [TestMethod]
+        [Description("Tests if ACI are calculated properly - other values")]
+        public void calculateACITest3()
+        {
+            // Init test here
+
+            double[] testArray1 = { 0.1, 0.41, 0.6 };
+            double[] testArray2 = { 0.12, 0.4, 0.61 };
+            double[] testArray3 = { 3.1, 0.14, 0.42 };
+
+            double[] testMedian = { 0.115, 0.385, 0.605 };
+
+            double[] testACIArray = { 1.009, 1.018, 1.26 };
+
+            Vector<double> testVector1 = Vector<double>.Build.DenseOfArray(testArray1);
+            Vector<double> testVector2 = Vector<double>.Build.DenseOfArray(testArray2);
+            Vector<double> testVector3 = Vector<double>.Build.DenseOfArray(testArray3);
+            Vector<double> testMedianVec = Vector<double>.Build.DenseOfArray(testMedian);
+            Vector<double> testACI = Vector<double>.Build.DenseOfArray(testACIArray);
+            List<Vector<double>> testList = new List<Vector<double>>();
+            testList.Add(testVector1);
+            testList.Add(testVector2);
+            testList.Add(testVector3);
+
+            T_Wave_Alt_Alg testAlgs = new T_Wave_Alt_Alg();
+
+            // Process test here
+
+            Vector<double> receivedACI = testAlgs.calculateACI(testList, testMedianVec);
+
+            // Assert results
+            double epsylon = 0.001;
+            int iter = 0;
+            foreach (double element in testACI)
+            {
+                Assert.AreEqual(testACI[iter], receivedACI[iter], epsylon);
+                iter++;
+            }
+        }
+
+        [TestMethod]
         [Description("Tests if fluctuations are detected properly (with multiple 1s in a row)")]
         public void findFluctuationsTest1()
         {
@@ -278,7 +317,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             double[] testACIArray1 = { 0.34, 0.59, 1.4, -0.56, 0, 0, 1, 1, 1.23, 1.85, 0.83, 1.2 };
             Vector<double> testACIVector1 = Vector<double>.Build.DenseOfArray(testACIArray1);
-   
+
             List<int> testFlucList1 = new List<int>();
             testFlucList1.Add(0);
             testFlucList1.Add(0);
@@ -373,11 +412,76 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             // Process test here
 
-           List<Tuple<int,int>> receivedList = testAlgs.alternansDetection(testAlternansVector,testTEndsList1);
+            List<Tuple<int, int>> receivedList = testAlgs.alternansDetection(testAlternansVector, testTEndsList1);
 
             // Assert results
 
             CollectionAssert.AreEqual(testFinalList1, receivedList);
+        }
+
+        [TestMethod]
+        [Description("Whole algorithm test - mock values")]
+        public void wholeSequenceTest()
+        {
+            // Init test here
+            // Inputs
+            double[] testArray = { 0, 0.5, 3.2, 0.1, 0.41, 0.6, 0,
+                                   0, 0.5, 3, 0.12, 0.4, 0.61, 0,
+                                   0, 0.5, 3.1, 0.14, 0.42, 0.61, 0,
+                                   0, 0.5, 3.3, 0.11, 0.68, 0.62, 0,
+                                   0, 0.5, 3.6, 0.09, 0.36, 0.58, 0,
+                                   0, 0.5, 3.1, 0.22, 0.74, 0.6, 0,
+                                   0, 0.5, 3, 0.08, 0.37, 0.61, 0,
+                                   0, 0.5, 3.2, 0.16, 0.68, 0.43, 0,
+                                   0, 0.5, 3.3, 0.07, 0.4, 0.64, 0,
+                                   0, 0.5, 3.1, 0.09, 0.42, 0.67, 0 };
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+
+            List<int> testTEndList = new List<int>();
+            testTEndList.Add(5);
+            testTEndList.Add(12);
+            testTEndList.Add(18);
+            testTEndList.Add(26);
+            testTEndList.Add(33);
+            testTEndList.Add(39);
+            testTEndList.Add(47);
+            testTEndList.Add(55);
+            testTEndList.Add(61);
+            testTEndList.Add(67);
+
+            // Desired outputs:
+            Tuple<int, int> record1 = new Tuple<int, int>(33, 1);
+            Tuple<int, int> record2 = new Tuple<int, int>(39, 1);
+            Tuple<int, int> record3 = new Tuple<int, int>(47, 1);
+            Tuple<int, int> record4 = new Tuple<int, int>(55, 1);
+            Tuple<int, int> record5 = new Tuple<int, int>(61, 1);
+            Tuple<int, int> record6 = new Tuple<int, int>(67, 1);
+
+            List<Tuple<int, int>> testFinalList1 = new List<Tuple<int, int>>();
+            testFinalList1.Add(record1);
+            testFinalList1.Add(record2);
+            testFinalList1.Add(record3);
+            testFinalList1.Add(record4);
+            testFinalList1.Add(record5);
+            testFinalList1.Add(record6);
+
+            T_Wave_Alt_Alg testAlgs = new T_Wave_Alt_Alg();
+
+            // Process test here
+
+            testAlgs.Fs = 20;
+            List<Vector<double>> T_WavesArray = testAlgs.buildTWavesArray(testVector, testTEndList);
+            Vector<double> medianT_Wave = testAlgs.calculateMedianTWave(T_WavesArray);
+            Vector<double> ACI = testAlgs.calculateACI(T_WavesArray, medianT_Wave);
+            List<int> Flucts = testAlgs.findFluctuations(ACI);
+            Vector<double> Alternans1 = testAlgs.findAlternans(Flucts);
+            List<Tuple<int, int>> finalDetection = testAlgs.alternansDetection(Alternans1, testTEndList);
+
+            // Assert results
+
+            CollectionAssert.AreEqual(testFinalList1, finalDetection);
+
         }
     }
 }
