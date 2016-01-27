@@ -21,6 +21,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
         }
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public Atrial_Fibr_Data()
         {
             AfDetection = new List<Tuple<bool, Vector<double>, string, string>>();

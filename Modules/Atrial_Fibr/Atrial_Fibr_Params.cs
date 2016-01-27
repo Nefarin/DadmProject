@@ -11,23 +11,43 @@ namespace EKG_Project.Modules.Atrial_Fibr
     {
         private Detect_Method _method;
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public Detect_Method Method
         {
             get { return _method; }
             set { _method = value; }
         }
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public Atrial_Fibr_Params(Detect_Method method, string analysisName)
         {
             this.Method = method;
             this.AnalysisName = analysisName;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public Atrial_Fibr_Params(string analysisName) : this()
         {
             this.AnalysisName = analysisName;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public Atrial_Fibr_Params() : base()
         {
             this.Method = Detect_Method.STATISTIC;
