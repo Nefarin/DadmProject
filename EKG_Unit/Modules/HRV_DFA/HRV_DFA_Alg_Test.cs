@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules.HRV_DFA;
-using System.Collections.Generic;
+using MathNet.Numerics;
 
 namespace EKG_Unit.Modules.HRV_DFA
 {
@@ -10,6 +10,71 @@ namespace EKG_Unit.Modules.HRV_DFA
     public class HRV_DFA_Alg_Test
     {
         //Testing main methods
+        //ComputeDfaFluctuation
+        [TestMethod]
+        [Description("Test if not null is returned")]
+        public void ComputeDfaFluctuation_NotNullTest()
+        {
+            double[] values = Generate.LinearRange(5, 1, 20);
+            double[] samples = { 61, 14, 12, 35, 26, 33, 43, 23, 43, 22, 56, 32, 23 };
+            Vector<double> samplesVec = Vector<double>.Build.DenseOfArray(samples);
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.ComputeDfaFluctuation(samplesVec, values);
+            Assert.IsNotNull(result);
+        }
+        [TestMethod]
+        [Description("Test if input data is to short")]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ComputeDfaFluctuations_NullInputTest()
+        {
+            double[] values = Generate.LinearRange(5, 1, 20);
+            Vector<double> samplesVec = null;
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.ComputeDfaFluctuation(samplesVec, values);
+            Assert.IsNull(result);
+        }
+
+        //CommputeInBox
+        [TestMethod]
+        [Description("Test if not null is returned")]
+        public void ComputeInBox_NotNullOutputTest()
+        {
+            double[] input1 = { 1, 3, 6, 5, 8, 11 };
+            double[] input2 = { 2, 4, 6, 8, 10, 12 };
+            Vector<double> input1v = Vector<double>.Build.DenseOfArray(input1);
+            Vector<double> input2v = Vector<double>.Build.DenseOfArray(input2);
+            int a = 7;
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            double result = test.ComputeInBox(input1v, input2v, a);
+            Assert.IsNotNull(result);
+
+        }
+        [TestMethod]
+        [Description("Test if not equaly long input vectors are given")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ComputeInBox_InputsTest()
+        {
+            double[] input1 = { 1, 3, 6, 5, 8, 11 };
+            double[] input2 = { 2, 4, 6};
+            Vector<double> input1v = Vector<double>.Build.DenseOfArray(input1);
+            Vector<double> input2v = Vector<double>.Build.DenseOfArray(input2);
+            int a = 7;
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            double result = test.ComputeInBox(input1v, input2v, a);
+        }
+        [TestMethod]
+        [Description("Test if one null input is given")]
+        [ExpectedException(typeof(NullReferenceException))]
+        public void ComputeInBox_OneNullTest()
+        {
+            double[] input1 = { 1, 3, 6, 5, 8, 11 };
+            Vector<double> input1v = Vector<double>.Build.DenseOfArray(input1);
+            Vector<double> input2v = null;
+            int a = 7;
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            double result = test.ComputeInBox(input1v, input2v, a);
+            Assert.IsNull(result);
+        }
 
         //Testing subsidary methods
         //CumulativeSum

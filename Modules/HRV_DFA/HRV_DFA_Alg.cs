@@ -255,14 +255,14 @@ namespace EKG_Project.Modules.HRV_DFA
                         yn = localTrend.Item2;
 
                         // dfa fluctuation function F(n)
-                        fluctuations[i] = ComputeInBox(y, yn, winCount, sig_length);
+                        fluctuations[i] = ComputeInBox(y, yn, sig_length);
                     }
                 }
             }
             return fluctuations;
         }
 
-        public double ComputeInBox(Vector<double> y_integrated, Vector<double> y_fitted, int box_quantity, int intervals_length)
+        public double ComputeInBox(Vector<double> y_integrated, Vector<double> y_fitted, int intervals_length)
         {
             Vector<double> y_k = y_integrated;
             Vector<double> y_n = y_fitted;
