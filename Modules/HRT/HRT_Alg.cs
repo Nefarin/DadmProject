@@ -179,14 +179,16 @@ namespace EKG_Project.Modules.HRT
             int foward = 15;
             int sum = back + foward + 1;
 
-            double[] after = new double[VPC.GetLength(0)];
-            double[] before = new double[VPC.GetLength(0)];
-            double[] TO = new double[VPC.GetLength(0)];
-            double[] TS = new double[VPC.GetLength(0)];
+            double[] after = new double[VPC.GetLength(0)-1];
+            double[] before = new double[VPC.GetLength(0)-1];
+            double[] TO = new double[VPC.GetLength(0)-1];
+            double[] TS = new double[VPC.GetLength(0)-1];
             int i = 0;
             double[,] VPCTachogram = new double[sum, VPC.GetLength(0) - 1];
+
             foreach (int nrVPC in VPC)
             {
+
                 if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Length))
                 {
                     for (int k = (nrVPC - back); k < (nrVPC + foward); k++)
@@ -213,9 +215,7 @@ namespace EKG_Project.Modules.HRT
                         }
                     }
                 }
-                //else Console.WriteLine(i);
                 i++;
-               
             }
             return Tuple.Create(VPCTachogram, TO, TS);
         }
