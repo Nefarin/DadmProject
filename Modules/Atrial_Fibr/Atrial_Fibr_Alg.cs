@@ -406,52 +406,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                  Ii1[j] = _RR.At(i+1);
                  j++;    
             }
-            
-            double[] A1 = new double[Ii.Length];
-            for (int i = 0; i < Ii.Length;i++)
-            {
-                A1[i] = Ii[i] - Ii1[i];
-            }
-            double[] A2 = new double[A1.Length];
-
-            for(int i=0;i<A1.Length;i++)
-            {
-                A2[i] = Math.Pow(A1[i],2);
-            }
-
-            double suma = 0;
-            for(int i = 0; i < A2.Length; i++)
-            {
-                suma += A2[i];
-            }
-
-            double[] A3 = new double [A1.Length];
-            for (int i = 0; i < A1.Length; i++)
-            {
-                A3[i] = Math.Abs(A1[i]);
-            }
-
-            double suma_modul = 0;
-            for (int i = 0; i < A3.Length; i++)
-            {
-                suma_modul += A3[i];
-            }
-
-            double C,D,E,F,G,d;
-            C = suma / (2 * length - 2);
-            D = suma_modul / ((length - 1) * Math.Sqrt(2));
-            E = Math.Pow(D, 2);
-            F = Math.Sqrt(C - E);
-
-            double sum = 0;
-            for(int i = 0; i < Ii.Length; i++)
-            {
-                sum += Ii[i];
-            }
-
-            G = (-_RR.At(1) - _RR.At(_RR.Count - 1) + 2 * sum) / (2 * length - 2);
-            d = F / G;
-
+            double d = dCoeff(Ii, Ii1, _RR);
             if (d <= 0.06)
                 AF = false;
             else
@@ -475,6 +430,58 @@ namespace EKG_Project.Modules.Atrial_Fibr
         }
 
         //Funkcje i klasy pomocnicze do metody nieliniowej////////////////////////////////////////////////////////////////
+        private double dCoeff(double[] Ii,double[] Ii1, Vector<double> _RR)
+        {
+            int length = _RR.Count;
+            double[] A1 = new double[Ii.Length];
+            for (int i = 0; i < Ii.Length; i++)
+            {
+                A1[i] = Ii[i] - Ii1[i];
+            }
+            double[] A2 = new double[A1.Length];
+
+            for (int i = 0; i < A1.Length; i++)
+            {
+                A2[i] = Math.Pow(A1[i], 2);
+            }
+
+            double suma = 0;
+            for (int i = 0; i < A2.Length; i++)
+            {
+                suma += A2[i];
+            }
+
+            double[] A3 = new double[A1.Length];
+            for (int i = 0; i < A1.Length; i++)
+            {
+                A3[i] = Math.Abs(A1[i]);
+            }
+
+            double suma_modul = 0;
+            for (int i = 0; i < A3.Length; i++)
+            {
+                suma_modul += A3[i];
+            }
+
+            double C, D, E, F, G, d;
+            C = suma / (2 * length - 2);
+            D = suma_modul / ((length - 1) * Math.Sqrt(2));
+            E = Math.Pow(D, 2);
+            F = Math.Sqrt(C - E);
+
+            double sum = 0;
+            for (int i = 0; i < Ii.Length; i++)
+            {
+                sum += Ii[i];
+            }
+
+            G = (-_RR.At(0) - _RR.At(_RR.Count - 1) + 2 * sum) / (2 * length - 2);
+            d = F / G;
+            return d;
+        }
+
+
+
         #region Documentation
         /// <summary>
         /// Data point in clustering. Contain information about coordinates and number of cluster.
