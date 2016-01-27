@@ -118,11 +118,12 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         private void OneQrsComplex(double singleQrsOnset, double signleQrsEnd, double singleQrsR)
         {
-            int qrsLength = (int)(signleQrsEnd - singleQrsOnset + 1);
-            SingleQrs = Vector<double>.Build.Dense(qrsLength);
-
-            if ((int)singleQrsOnset != -1) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
+           
+            if (((int)singleQrsOnset != -1) && ((int)signleQrsEnd != -1)) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
             {
+                int qrsLength = (int)(signleQrsEnd - singleQrsOnset + 1);
+                SingleQrs = Vector<double>.Build.Dense(qrsLength);
+
                 Signal.CopySubVectorTo(SingleQrs, sourceIndex: (int)singleQrsOnset, targetIndex: 0,
                     count: qrsLength);
                 Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
@@ -305,7 +306,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="fs"></param>
         /// <returns></returns>
         #endregion
-        Tuple<int, Vector<double>> CountCoeff(Tuple<int, Vector<double>> _QrsComplexOne, uint fs)
+        public Tuple<int, Vector<double>> CountCoeff(Tuple<int, Vector<double>> _QrsComplexOne, uint fs)
         {
             Vector<double> singleCoeffVect;
             singleCoeffVect = Vector<double>.Build.Dense(4); // (5) jeśli dodamy czas trwania zespołu
