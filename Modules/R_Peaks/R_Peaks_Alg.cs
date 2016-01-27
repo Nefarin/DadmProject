@@ -94,6 +94,7 @@ namespace EKG_Project.Modules.R_Peaks
         {
             if (rawSignal == null) throw new ArgumentNullException();
             if (samplingFreq <= 0 || lowCutOff < 0 || highCutOff <=0) throw new ArgumentOutOfRangeException();
+            if (rawSignal.Length == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             //TO DO: add cutoffs as constants not param? NOPE!
             Delay += 10;
             IList<double> coef = new List<double>();
@@ -119,6 +120,7 @@ namespace EKG_Project.Modules.R_Peaks
         public double[] Derivative(double[] filteredSignal)
         {
             if (filteredSignal == null) throw new ArgumentNullException();
+            if (filteredSignal.Length == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             Delay += 2;
             IList<double> hd_coef = new List<double>();
             double[] hd_array = { -1, -2, 0, 2, 1 };
@@ -141,6 +143,7 @@ namespace EKG_Project.Modules.R_Peaks
         public double[] Squaring(double[] derivativeSignal)
         {
             if (derivativeSignal == null) throw new ArgumentNullException();
+            if (derivativeSignal.Length == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             double[] squaredSignal = new double[derivativeSignal.Length];
             for (int i = 0; i < derivativeSignal.Length; i++)
             {
@@ -161,6 +164,7 @@ namespace EKG_Project.Modules.R_Peaks
         {
             if (squaredSignal == null) throw new ArgumentNullException();
             if (fs == 0) throw new ArgumentException();
+            if (squaredSignal.Length == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             double[] integratedSignal = new double[squaredSignal.Length];
             double window = Math.Round(0.15 * fs);
             Delay += Convert.ToUInt32(Math.Round(window / 2));
@@ -197,6 +201,7 @@ namespace EKG_Project.Modules.R_Peaks
         {
             if (signal == null) throw new ArgumentNullException();
             if (fs == 0) throw new ArgumentException();
+            if (signal.Length == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             List<double> potRs = new List<double>();
             double distanceInSamples = fs * distanceInSec;
             for (int i = 1; i < signal.Length - 1; i++)
@@ -245,6 +250,7 @@ namespace EKG_Project.Modules.R_Peaks
         {
             if (inputSignal == null) throw new ArgumentNullException();
             if (end <= begin) throw new ArgumentException("End is lower than begin");
+            if (inputSignal.Count == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             int len = end - begin + 1;
             double[] cuttedSignal = new double[len];
             for (int i = 0; i < len; i++)
@@ -265,6 +271,7 @@ namespace EKG_Project.Modules.R_Peaks
         {
             if (signal == null) throw new ArgumentNullException();
             if (signal.Count < 1) throw new ArgumentOutOfRangeException("Vector must be at least 2 long.");
+            if (signal.Count == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             Vector<double> diffSignal = Vector<double>.Build.Dense(signal.Count - 1);
             signal.SubVector(1, signal.Count - 1).Subtract(signal.SubVector(0, signal.Count - 1), diffSignal);
             return diffSignal;
@@ -479,6 +486,7 @@ namespace EKG_Project.Modules.R_Peaks
         public double[] HilbertTransform(double[] filteredSignal)
         {
             if (filteredSignal == null) throw new ArgumentNullException();
+            if (filteredSignal.Length == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             double pi = Math.PI;
             IList<double> d = new List<double>();
             d.Add(1 / (pi * filteredSignal.Length));
@@ -505,6 +513,7 @@ namespace EKG_Project.Modules.R_Peaks
         {
             if (htSignal == null) throw new ArgumentNullException();
             if (fs == 0) throw new ArgumentException();
+            if (htSignal.Length == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             double[] int1Signal = new double[htSignal.Length];
             double window = Math.Round(0.36 * fs);
             Delay += Convert.ToUInt32(Math.Round(window / 2));
@@ -546,6 +555,7 @@ namespace EKG_Project.Modules.R_Peaks
         public double[] FindPeak(double[] integratedSignal, Vector<double> signal)
         {
             if (integratedSignal == null) throw new ArgumentNullException();
+            if (integratedSignal.Length == 0 || signal.Count == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             if (signal == null) throw new NullReferenceException();
             // finding threshold
             double tempMax = integratedSignal.Max();
@@ -909,7 +919,7 @@ namespace EKG_Project.Modules.R_Peaks
 
         #region
         /// <summary>
-        /// Function that locates the peaks in signal which are higher than thershold (0.00005)
+        /// Function that locates the peaks in signal which are higher than threshold (0.00005)
         /// </summary>
         /// <param name="signal"> Signal in which peaks should be located</param>
         /// <returns> List of indexes of localosations of peaks in signal</returns>
@@ -942,6 +952,9 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public Vector<double> PanTompkins(Vector<double> signalECG, uint samplingFrequency)
         {
+            if (signalECG == null) throw new ArgumentNullException();
+            if (samplingFrequency == 0) throw new ArgumentException();
+            if (signalECG.Count == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             //Init
             double fd = 5;
             double fg = 15;
@@ -976,6 +989,9 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public Vector<double> Hilbert(Vector<double> signalECG, uint samplingFrequency)
         {
+            if (signalECG == null) throw new ArgumentNullException();
+            if (samplingFrequency == 0) throw new ArgumentException();
+            if (signalECG.Count == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             //Init
             double fd = 5;
             double fg = 15;
@@ -1028,6 +1044,9 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public Vector<double> RRinMS(Vector<double> locsR, uint samplingFrequency)
         {
+            if (locsR == null) throw new ArgumentNullException();
+            if (samplingFrequency <= 0) throw new ArgumentException();
+            if (locsR.Count == 0) throw new ArgumentOutOfRangeException("Array is empty.");
             Vector<double> RRms = Diff(locsR);
             RRms.Multiply(Math.Round(1000 / Convert.ToDouble(samplingFrequency), 3), RRms);
             return RRms;
