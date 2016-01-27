@@ -320,7 +320,7 @@ namespace EKG_Project.Modules.QT_Disp
             if (R_Peak.Count() != 2) throw new InvalidDataException("Wrong parameters for R_Peak");
             if(samples.Count != (R_Peak[1]- R_Peak[0])) throw new ArgumentNullException("Samples wrong length");
             if(QRS_onset > QRS_End && (QRS_onset !=-1 || QRS_End !=- 1)) throw new ArgumentNullException("Waves not working good, QRS onset > QRS End - recognition impossible");
-            if(QRS_End > T_End_Global && (QRS_End != -1 || T_End_Global !=-1) ) throw new ArgumentNullException("Waves not working good, QRS End > T_End- recognition impossible");
+            if(QRS_End > T_End_Global && (T_End_Global !=-1) ) throw new ArgumentNullException("Waves not working good, QRS End > T_End- recognition impossible");
             if(Fs < 0) throw new ArgumentNullException("Wrong Frequency parameter");
             
             this.QRS_onset = QRS_onset;

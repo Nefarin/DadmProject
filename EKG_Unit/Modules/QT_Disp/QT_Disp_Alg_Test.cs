@@ -36,7 +36,7 @@ namespace EKG_Unit.Modules.QT_Disp
             DataToCalculate data = new DataToCalculate();
 
             double[] testArray = { 1};
-
+            
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);    
             Vector<double> result = data.diff(testVector);
         }
@@ -169,13 +169,12 @@ namespace EKG_Unit.Modules.QT_Disp
                 0.018387776, 0.064885728, 0.11667983, 0.1699266, 0.21990291, 0.26194305, 0.29193246, };
            
             Vector<double> sampl = Vector<double>.Build.DenseOfArray(signalTab);
-            int onset = -1;
+            int onset = 192;
             //onset 192
             int end = 225;
             int tend = -1;
             //352
             double[] rpeak = { 204, 606 };
-            //Vector<double> Rpeak = Vector<double>.Build.DenseOfArray(rpeak);
            
             //test.TODoInInit(onset, tend, end, Rpeak, T_End_Method.TANGENT, QT_Calc_Method.FRIDERICA, (uint)360);
             //test.ToDoInProccessData(sampl, 0);
@@ -183,7 +182,7 @@ namespace EKG_Unit.Modules.QT_Disp
                                                           
             int result = data.FindT_End();
             Tuple<int, double> result2 = data.Calc_QT_Interval();
-
+            
             Assert.AreEqual(-1, result);
             Assert.AreEqual(0, result2.Item2);
         }
@@ -261,7 +260,7 @@ namespace EKG_Unit.Modules.QT_Disp
         }
 
         [TestMethod]
-        [Description("Test if method parameter proper samples vector length")]
+        [Description("Test if method parameter samples vector gets proper length")]
         [ExpectedException(typeof(ArgumentNullException), "Samples wrong length")]
         public void test_DataToCalculate_6()
         {
@@ -367,5 +366,28 @@ namespace EKG_Unit.Modules.QT_Disp
 
             DataToCalculate data = new DataToCalculate(onset, end, tend, sampl, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, rpeak);
         }
+
+        //[TestMethod]
+        //[Description("Test if sampling frequency of signal is given correctly")]
+        //[ExpectedException(typeof(ArgumentNullException), "Wrong Frequency parameter")]
+        //public void test_DataToCalculate_freq()
+        //{
+            //QT_Disp_Alg test = new QT_Disp_Alg();
+
+            //PrivateObject obj = new PrivateObject(test);
+            //double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662,
+            //-0.041548435, -0.092222265, -0.13023595, -0.15420422, -0.16411052, -0.16140441, -0.14840957, -0.12827963, };
+
+            //Vector<double> sampl = Vector<double>.Build.DenseOfArray(signalTab);
+            //int onset = 10;
+            //int end = 12;
+            //int tend = 14;
+            //double[] rpeak = { 0, 15 };
+            //int Fs = -50;
+
+          //  DataToCalculate data = new DataToCalculate(onset, end, tend, sampl, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, Fs, rpeak);
+        //}
+
+
     }
 }
