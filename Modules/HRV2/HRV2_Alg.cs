@@ -11,8 +11,8 @@ namespace EKG_Project.Modules.HRV2
     public partial class HRV2_Alg
     {
 
-
         private Vector<double> _rrIntervals;
+        private double _histogramCount;
         #region Documentation
         /// <summary>
         /// Sets and gets RR intervals
@@ -30,6 +30,19 @@ namespace EKG_Project.Modules.HRV2
                 return _rrIntervals;
             }
         }
+        
+        public double histogramCount
+        {
+             set
+            {
+                _histogramCount = value;
+            }
+            get
+            {
+                return _histogramCount;
+            }
+           
+         }
 
         #region Documentation
         /// <summary>
