@@ -424,7 +424,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="path"></param>
         /// <returns></returns>
         #endregion
-        List<Vector<double>> loadFile(string path)
+        public List<Vector<double>> loadFile(string path)
         {
             List<Vector<double>> coefficients = new List<Vector<double>>(); //inicjalizacja listy wektorów z jednego pliku
             using (StreamReader sr = new StreamReader(path))

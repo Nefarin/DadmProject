@@ -2,6 +2,8 @@
 using EKG_Project.Modules.Heart_Class;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MathNet.Numerics.LinearAlgebra;
+using EKG_Project.IO;
+using System.Collections.Generic;
 
 
 namespace EKG_Unit.Modules.Heart_Class
@@ -454,8 +456,88 @@ namespace EKG_Unit.Modules.Heart_Class
 
         }
 
+        [TestMethod]
+        [Description("Test if method counts classes properly  - equality test")]
+        public void KnnTest1()
+        {
+            int R = 13;
+            int K = 3;
+            Vector<double> testCoefficients;
+            testCoefficients = Vector<double>.Build.Dense(4);
+            testCoefficients[0] = 3.3063;
+            testCoefficients[1] = 1.0897;
+            testCoefficients[2] = 0.0793;
+            testCoefficients[3] = 0.3750;
 
+            Tuple<int, Vector<double>> testDataTuple = new Tuple<int, Vector<double>>(R, testCoefficients);
+            int expectedClass = 1;
+            Tuple<int, int> expectedResult = new Tuple<int, int>(R, expectedClass);
 
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+            
+            DebugECGPath loader = new DebugECGPath();
+            List<Vector<double>> trainDataList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
+            List<Vector<double>> trainClassList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
 
+                int oneClassElement;
+                List<int> trainClass;
+                trainClass = new List<int>();
+                foreach (var item in trainClassList)
+                {
+                    foreach (var element in item)
+                    {
+                        oneClassElement = (int)element;
+                        trainClass.Add(oneClassElement);
+                    }
+
+                }
+
+            Tuple<int, int> testResult = testAlgs.TestKnn(trainDataList, testDataTuple, trainClass, K);
+
+            Assert.AreEqual(expectedResult, testResult);
+
+        }
+
+        [TestMethod]
+        [Description("Test if method counts classes properly  - not equality test. Malinowska factor for V - beat")]
+        public void KnnTest2()
+        {
+            int R = 13;
+            int K = 3;
+            Vector<double> testCoefficients;
+            testCoefficients = Vector<double>.Build.Dense(4);
+            testCoefficients[0] = 9.3063;
+            testCoefficients[1] = 1.0897;
+            testCoefficients[2] = 0.0793;
+            testCoefficients[3] = 0.3750;
+
+            Tuple<int, Vector<double>> testDataTuple = new Tuple<int, Vector<double>>(R, testCoefficients);
+            int expectedClass = 1;
+            Tuple<int, int> expectedResult = new Tuple<int, int>(R, expectedClass);
+
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+
+            DebugECGPath loader = new DebugECGPath();
+            List<Vector<double>> trainDataList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
+            List<Vector<double>> trainClassList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
+
+            int oneClassElement;
+            List<int> trainClass;
+            trainClass = new List<int>();
+            foreach (var item in trainClassList)
+            {
+                foreach (var element in item)
+                {
+                    oneClassElement = (int)element;
+                    trainClass.Add(oneClassElement);
+                }
+
+            }
+
+            Tuple<int, int> testResult = testAlgs.TestKnn(trainDataList, testDataTuple, trainClass, K);
+
+            Assert.AreNotEqual(expectedResult, testResult);
+
+        }
     }
 }
