@@ -263,5 +263,42 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             //results
             CollectionAssert.AreEqual(result, realresult);
         }
+
+        [TestMethod]
+        [Description("Test if min index in array is correct")]
+        public void MinIndexTest()
+        {
+            //init
+            double[] testArray = { 137, 147, 156, 129, 130, 123.0, 129, 138, 138, 162, 138, 161, 123.4, 144, 157, 156, 142, 136, 118.9, 136, 158, 139, 178, 158, 164, 126, 135, 134, 173, 171, 170, 143 };
+            double result = 18;
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            object[] args = { testArray };
+            //test
+            double realresult = Convert.ToDouble(obj.Invoke("MinIndex", args));
+            //results
+            Assert.AreEqual(result, realresult);
+        }
+
+        [TestMethod]
+        [Description("Test if ElucidanDistance in array is correct")]
+        public void ElucidanDistanceTest()
+        {
+            //init
+            Atrial_Fibr_Alg.DataPoint dataPoint = new Atrial_Fibr_Alg.DataPoint(105, 125);
+            Atrial_Fibr_Alg.DataPoint mean = new Atrial_Fibr_Alg.DataPoint(100, 100);
+            double result = 25.495;
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            object[] args = { dataPoint, mean };
+            //test
+            double realresult = Convert.ToDouble(obj.Invoke("ElucidanDistance", args));
+            //results
+            Assert.AreEqual(result, realresult, 0.001);
+        }
+
+
+
+
     }
 }
