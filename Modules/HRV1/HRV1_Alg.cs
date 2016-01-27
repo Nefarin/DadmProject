@@ -215,7 +215,6 @@ namespace EKG_Project.Modules.HRV1
             Vector<double> omega;
 
             double mean = Statistics.Mean(this.rrIntervals);
-            //double std = Statistics.StandardDeviation(this.rrIntervals);
             double var = Statistics.Variance(this.rrIntervals);
 
             int psdlength = this.rrIntervals.Count;
@@ -223,10 +222,16 @@ namespace EKG_Project.Modules.HRV1
             double pi = Math.PI;
 
             omega = Vector<double>.Build.Dense(2 * psdlength, i => (i + 1) * 2 * (pi / timespan));
-            tau = Vector<double>.Build.Dense(2 * psdlength);
             psd = Vector<double>.Build.Dense(2 * psdlength);
+            this.PSD = Vector<double>.Build.Dense(2 * psdlength);
 
+            var sins = Vector<double>.Build.Dense(psdlength, j => Math.Sin(2 * omega[j] * this.rInstants[j]));
+            var coss = Vector<double>.Build.Dense(psdlength, j => Math.Cos(2 * omega[j] * this.rInstants[j]));
+            double sinsum = sins.Sum();
+            double cossum = coss.Sum();
+            tau = Vector<double>.Build.Dense(2 * psdlength, i => Math.Atan2(sinsum, cossum) / (2 * omega[i]));
 
+            /*
             for (int i = 0; i<2*psdlength; i++)
             {
                 double sinsum = 0;
@@ -238,27 +243,33 @@ namespace EKG_Project.Modules.HRV1
                 }
                 tau[i] = (Math.Atan2(sinsum, cossum) / (2*omega[i]));
             }
+            */
 
-            for (int i = 0; i<2*psdlength; i++)
+            double stdcos, stdsin, cos2, sin2;
+
+            for (int i = 0; i < (2*psdlength); i++) 
             {
-                double stdcos = 0;
-                double cos2 = 0;
-                double stdsin = 0;
-                double sin2 = 0;
-                for (int j = 0; j<psdlength; i++)
+                stdcos = 0;
+                cos2 = 0;
+                stdsin = 0;
+                sin2 = 0;
+                for (int j = 0; j<psdlength; j++)
                 {
                     stdcos += (this.rrIntervals[j] - mean) * Math.Cos(omega[i] * (this.rInstants[j] - tau[i]));
                     stdsin += (this.rrIntervals[j] - mean) * Math.Sin(omega[i] * (this.rInstants[j] - tau[i]));
-                    stdsin *= stdsin;
-                    stdcos *= stdcos;
+                    //stdsin *= stdsin;
+                    //stdcos *= stdcos;
+                    stdsin += stdsin;
+                    stdcos += stdcos;
                     cos2 += Math.Pow(Math.Cos(omega[i] * (this.rInstants[j] - tau[i])), 2);
                     sin2 += Math.Pow(Math.Sin(omega[i] * (this.rInstants[j] - tau[i])), 2);
                 }
-                psd[i] = ((stdcos / cos2 + stdsin / sin2) / (2 * var));
+                this.PSD[i] = ((stdcos / cos2 + stdsin / sin2) / (2 * var));
             }
-            this.PSD = psd;
+            //this.PSD = psd;
             this.f = Vector<double>.Build.Dense(omega.Count, i => omega[i] / (2 * pi));
         }
+
 
         #region
         /// <summary>

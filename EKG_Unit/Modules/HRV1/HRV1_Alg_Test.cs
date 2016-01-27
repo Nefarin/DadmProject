@@ -138,9 +138,8 @@ namespace EKG_Unit.Modules.HRV1
 
             var testintervals = Vector<double>.Build.Dense(10, i => i);
             var testinstants = Vector<double>.Build.Dense(10, i => i);
-            var testfreq = Vector<double>.Build.Dense(10, i => (double)i / 10);
 
-            var expectedArr = new double[] { 0, 52.3607, 14.4721, 7.6393, 5.5279, 2.5000, 5.5279, 7.6393, 14.4721, 52.3607 };
+            var expectedArr = new double[] { 7.5789, 5.3340, 59.8628, 12.6528, 2.3629, 14.6560, 30.4796, 4.9389, 6.2248, 82.4832, 4.5316, 3.1664, 75.0937, 4.6414, 1.3376, 9.1844, 4.3423, 1.4853, 2.3137, 82.2037 };
             var expectedResult = Vector<double>.Build.Dense(expectedArr);
 
             // access private fields externally
@@ -148,7 +147,6 @@ namespace EKG_Unit.Modules.HRV1
             PrivateObject obj = new PrivateObject(hrv1Test);
             obj.SetField("rrIntervals", testintervals);
             obj.SetField("rInstants", testinstants);
-            obj.SetField("f", testfreq);
 
             // Process test here
 
