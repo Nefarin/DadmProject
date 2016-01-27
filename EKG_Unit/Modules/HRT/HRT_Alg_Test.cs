@@ -90,13 +90,17 @@ namespace EKG_Unit.Modules.HRT
             int[] testrrTimesVPCArray = { 30, 60, 105 };
             int testVPCcount = 3;
 
-            double[] testnrVPCArray = { 2, 4, 7 };
+            int[] resultnrVPCArray = { 2, 4, 7 };
 
-            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(testnrVPCArray);
+            
+            //Vector<double> resultVector = Vector<double>.Build.DenseOfArray(testnrVPCArray);
 
             HRT_Alg testAlg = new HRT_Alg();
-            Vector<double> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
-            Assert.AreEqual(testResult, resultVector);
+            int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            //Vector<double> testVector = Vector<double>.Build.DenseOfArray(testrrTimesVPCArray);
+            //Vector<double> resultVector = Vector<double>.Build.DenseOfArray(testArray);
+            Assert.AreEqual(resultnrVPCArray[2], testResult[2] );
+            CollectionAssert.AreEqual(resultnrVPCArray, testResult );
 
         }
 
@@ -110,13 +114,13 @@ namespace EKG_Unit.Modules.HRT
             int[] testrrTimesVPCArray = { 30, 60, 155 };
             int testVPCcount = 3;
 
-            double[] testnrVPCArray = { 2, 4, 7 };
+            int[] resultnrVPCArray = { 2, 4, 7 };
 
-            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(testnrVPCArray);
+            //Vector<double> resultVector = Vector<double>.Build.DenseOfArray(testnrVPCArray);
 
             HRT_Alg testAlg = new HRT_Alg();
-            Vector<double> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
-            Assert.AreNotEqual(testResult, resultVector);
+            int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            Assert.AreNotEqual(testResult, resultnrVPCArray);
 
         }
 
@@ -132,7 +136,7 @@ namespace EKG_Unit.Modules.HRT
             int testVPCcount = 3;
 
             HRT_Alg testAlg = new HRT_Alg();
-            Vector<double> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
             
         }
 
@@ -148,7 +152,7 @@ namespace EKG_Unit.Modules.HRT
             int testVPCcount = 4;
 
             HRT_Alg testAlg = new HRT_Alg();
-            Vector<double> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
 
         }
 
@@ -164,7 +168,55 @@ namespace EKG_Unit.Modules.HRT
             int testVPCcount = 8;
 
             HRT_Alg testAlg = new HRT_Alg();
-            Vector<double> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+
+        }
+
+        //removeRedundant
+        [TestMethod]
+        [Description("Test if funcion properly remove redundant elements - equality test")]
+        public void removeRedundant1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            int[] testArray = { 2, 4, 6, 8, 10, 12, 14 };
+            int testLength = 3;
+            
+            int[] expectedArray = { 2, 4, 6, 8 };
+
+            HRT_Alg testAlg = new HRT_Alg();
+            int[] actualArray = testAlg.removeRedundant(testArray, testLength);
+            CollectionAssert.AreEqual(actualArray, expectedArray);
+
+        }
+
+        [TestMethod]
+        [Description("Test if removeRedundant throws null if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void removeRedundantNullTest()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            int[] testArray = null;
+            int testLength = 3;
+
+            HRT_Alg testAlg = new HRT_Alg();
+            int[] actualArray = testAlg.removeRedundant(testArray, testLength);
+            
+        }
+
+        [TestMethod]
+        [Description("Test if removeRedundant throws null if argument is out of range")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Length parameter must be grather than 0 and smaller than given array size")]
+        public void removeRedundantOutOfRangeTest()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            int[] testArray = { 2, 4, 6, 8 };
+            int testLength = 5;
+
+            HRT_Alg testAlg = new HRT_Alg();
+            int[] actualArray = testAlg.removeRedundant(testArray, testLength);
 
         }
 
