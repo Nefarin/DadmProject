@@ -539,5 +539,38 @@ namespace EKG_Unit.Modules.Heart_Class
             Assert.AreNotEqual(expectedResult, testResult);
 
         }
+
+        [TestMethod]
+        [Description("Test if method performs whole classification correctly  - equality test")]
+        public void Classification1()
+        {
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            int qrsOnset = 5;
+            int qrsEnd = 29;
+            double R = 13;
+            int expectedClass = 1;
+            uint fs = 360;
+            //testAlgs.Fs= 360;
+            
+            double[] testArray =
+            {
+                -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335, -0.38369, -0.39605,
+                -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486, 0.86883, 0.84255, 0.72056, 0.52455,
+                0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399, -0.28368, -0.21097, -0.1402, -0.090148,
+                -0.070429, -0.080307, -0.11024, -0.1458
+            };
+            Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
+            //testAlgs.Signal = exampleSignal;
+            Tuple<int, int> expectedResult = new Tuple<int, int>((int)R, expectedClass);
+
+
+            object[] args = { exampleSignal, qrsOnset, qrsEnd, R, fs };
+            obj.Invoke("Classification", args);
+
+            Assert.AreEqual(expectedResult, testAlgs.ClassificationResultOne);
+
+        }
     }
 }

@@ -32,7 +32,7 @@ namespace EKG_Project.Modules.Heart_Class
         private double pnRatio;
         private double speedAmpltudeRatio;
         private double fastSample;
-        private uint fs;
+        private uint _fs;
         private int qrsLength; 
         private Heart_Class_Data HeartClassData;
         private List<Vector<double>> coefficients; //lista współczynników kształtu dla zbioru treningowego
@@ -51,7 +51,7 @@ namespace EKG_Project.Modules.Heart_Class
             pnRatio = new double();
             speedAmpltudeRatio = new double();
             fastSample = new double();
-            fs = new uint();
+            Fs = new uint();
             qrsLength = _qrssignal.Count();
             HeartClassData = new Heart_Class_Data();
             List<Vector<double>> coefficients = new List<Vector<double>>();
@@ -75,11 +75,12 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="qrsEnd"></param>
         /// <returns></returns>
         #endregion
-        Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R)
+        Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R, uint fs)
         {
+            Fs = fs;
             Signal = loadedSignal;
             OneQrsComplex(qrsOnset, qrsEnd, R);
-            CountCoeff(QrsComplexOne, fs);
+            CountCoeff(QrsComplexOne, Fs);
             int numberOfNeighbors = 3;
 
             //WCZYTANIE ZBIORU TRENINGOWEGO
@@ -526,6 +527,12 @@ namespace EKG_Project.Modules.Heart_Class
         {
             get { return _classificationResultOne; }
             set { _classificationResultOne = value; }
+        }
+
+        public uint Fs
+        {
+            get { return _fs; }
+            set { _fs = value; }
         }
     }
 
