@@ -32,9 +32,15 @@ namespace EKG_Project.IO
         uint sampleAmount;
 
         /// <summary>
-        /// Stores signals
+        /// Stores array of leads
         /// </summary>
-        List<Tuple<string, Vector<double>>> signals;
+        string[] leads;
+
+        /// <summary>
+        /// Stores reference to loaded record
+        /// </summary>
+        Record record;
+
         Basic_Data _data;
 
         /// <summary>
@@ -59,9 +65,7 @@ namespace EKG_Project.IO
         }
 
         //METHODS
-        /// <summary>
-        /// Saves Basic Data in internal XML file
-        /// </summary>
+        /*
         public void SaveResult()
         {
             foreach (var property in Data.GetType().GetProperties())
@@ -79,22 +83,27 @@ namespace EKG_Project.IO
                 }
             }
         }
+         * */
+
+        public void SaveResult()
+        {
+            Basic_Test_Data_Worker dataWorker = new Basic_Test_Data_Worker(analysisName);
+            dataWorker.SaveAttribute(Basic_Attributes.Frequency, frequency);
+        }
 
         /// <summary>
-        /// Calls method loadMITBIHFile and sets Basic Data
+        /// Calls method loadMITBIHFile, get lead names and frequency from file
         /// </summary>
         /// <param name="path">input file path</param>
         public void ConvertFile(string path)
         {
             loadMITBIHFile(path);
-            Data = new Basic_Data();
-            Data.Frequency = frequency;
-            Data.Signals = signals;
-            Data.SampleAmount = sampleAmount;
+            getLeads();
+            getFrequency();
         }
 
         /// <summary>
-        /// Loads MIT BIH input file and gets data from it
+        /// Loads MIT BIH input file
         /// </summary>
         /// <param name="path">input file path</param>
         public void loadMITBIHFile(string path)
@@ -102,28 +111,110 @@ namespace EKG_Project.IO
             string recordName = Path.GetFileNameWithoutExtension(path);
             string directory = Path.GetDirectoryName(path);
             Wfdb.WfdbPath = directory;
-            Record record = new Record(recordName);
+            record = new Record(recordName);
+        }
+
+        /// <summary>
+        /// Gets part of signal from input file
+        /// </summary>
+        /// <param name="lead">lead name</param>
+        /// <param name="startIndex">start index</param>
+        /// <param name="length">length</param>
+        /// <returns>vector of samples</returns>
+        public Vector<Double> getSignal(string lead, int startIndex, int length)
+        {
             record.Open();
-
-            frequency = (uint) record.SamplingFrequency;
-
-            signals = new List<Tuple<string, Vector<double>>>();
+            Vector<Double> vector = null;
             foreach (Signal signal in record.Signals)
             {
-                sampleAmount = (uint) signal.NumberOfSamples;
-
-                string lead = signal.Description;
-
-                List<Sample> samples = signal.ReadAll();
-                double[] convertedSamples = samples.Select(sample => sample.ToPhys()).ToArray();
-                Vector<double> vector = Vector<double>.Build.Dense(convertedSamples.Length);
-                vector.SetValues(convertedSamples);
-
-                Tuple<string, Vector<double>> readSignal = Tuple.Create(lead, vector);
-                signals.Add(readSignal);
+                if (signal.Description == lead)
+                {
+                    double[] convertedSamples = new double[length];
+                    signal.Seek(startIndex);
+                    for (int i = 0; i < length; i++)
+                    {
+                        if (signal.IsEof)
+                        {
+                            throw new IndexOutOfRangeException();
+                        }
+                        Sample sample = signal.ReadNext();
+                        convertedSamples[i] = sample.ToPhys();
+                    }
+                    vector = Vector<double>.Build.Dense(convertedSamples.Length);
+                    vector.SetValues(convertedSamples);
+                }
             }
-
             record.Dispose();
+            return vector;
         }
+
+        /// <summary>
+        /// Gets lead names from input file
+        /// </summary>
+        public string[] getLeads()
+        {
+            record.Open();
+            leads = new string[Signal.GetSignalsCount(record)];
+            int i = 0;
+            foreach (Signal signal in record.Signals)
+            {
+                leads[i] = signal.Description;
+                i++;
+            }
+            record.Dispose();
+
+            return leads;
+        }
+
+        /// <summary>
+        /// Gets frequency from input file
+        /// </summary>
+        public uint getFrequency()
+        {
+            record.Open();
+            frequency = (uint)record.SamplingFrequency;
+            record.Dispose();
+
+            return frequency;
+
+        }
+
+        public uint getNumberOfSamples(string lead)
+        {
+            uint numberOfSamples = 0;
+            record.Open();
+            foreach (Signal signal in record.Signals)
+            {
+                if (signal.Description == lead)
+                {
+                    numberOfSamples = (uint) signal.NumberOfSamples;
+                }
+            }
+            record.Dispose();
+            return numberOfSamples;
+        }
+
+        public static void Main()
+        {
+            IECGPath pathBuilder = new DebugECGPath();
+            string directory = pathBuilder.getDataPath();
+
+            MITBIHConverter mitbih = new MITBIHConverter("TestAnalysis");
+            mitbih.loadMITBIHFile(System.IO.Path.Combine(directory, "100.dat"));
+            mitbih.getLeads();
+            Console.WriteLine(mitbih.leads[0]);
+            Console.WriteLine(mitbih.leads[1]);
+            mitbih.getFrequency();
+            Console.WriteLine(mitbih.frequency);
+            Vector<Double> v = mitbih.getSignal(mitbih.leads[0], 649990, 10);
+            foreach (var val in v)
+                Console.WriteLine(val);
+
+            Basic_Test_Data_Worker worker = new Basic_Test_Data_Worker("TestAnalysis");
+            worker.SaveSignal(mitbih.leads[0], false, v);
+            Console.Read();
+        }
+
+
     }
 }
