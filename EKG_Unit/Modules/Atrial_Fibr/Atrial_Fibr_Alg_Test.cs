@@ -297,6 +297,28 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             Assert.AreEqual(result, realresult, 0.001);
         }
 
+        [TestMethod]
+        [Description("Test if Cluster is really empty")]
+        public void EmptyClusterTest()
+        {
+            //init
+            List<Atrial_Fibr_Alg.DataPoint> data = new List<Atrial_Fibr_Alg.DataPoint>();
+            data.Add(new Atrial_Fibr_Alg.DataPoint(137, 147,0));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(147, 156,1));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(156, 129,2));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(129, 130,1));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(130, 123,1));
+            //SetField("String", Object);
+            bool result = false;
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            object[] args = { data };
+            //test
+            bool realresult = Convert.ToBoolean(obj.Invoke("EmptyCluster", args));
+            //results
+            Assert.AreEqual(result, realresult);
+        }
+
 
 
 
