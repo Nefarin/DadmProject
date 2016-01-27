@@ -498,6 +498,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 B = 0.0;
                 Cluster = 0;
             }
+
+            public DataPoint(double a, double b, int c)
+            {
+                A = a;
+                B = b;
+                Cluster = c;
+            }
             public bool Equals(DataPoint point)
             {
                 return (point.A == A) && (point.B == B) && (point.Cluster == Cluster);
