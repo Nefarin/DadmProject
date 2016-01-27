@@ -31,14 +31,14 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// <param name="R_detected"> Signal - number of samples for R peaks </param>
         /// <returns> RR intervals</returns>
         #endregion
-        
+
         List<List<double>> findIntervals(List<uint> R_detected, int freq)
         {
-            var timeInSec = new List<double>(R_detected.Count-1);
-            var rrDist = new List<double>(R_detected.Count-1);
-            new List<double>(R_detected.Count-1);
+            var timeInSec = new List<double>(R_detected.Count - 1);
+            var rrDist = new List<double>(R_detected.Count - 1);
+            new List<double>(R_detected.Count - 1);
 
-            for (int i = 0; i < R_detected.Count()- 1; i++)
+            for (int i = 0; i < R_detected.Count() - 1; i++)
             {
                 timeInSec.Add(((double)R_detected[i]) / freq);
                 rrDist.Add(((double)R_detected[i + 1] - R_detected[i]) / freq);
@@ -71,9 +71,9 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
                 double sum = 0;
                 int counter = 0;
-                for(int j = 0 ; j < meanFilterWindowLength ; j++)
+                for (int j = 0; j < meanFilterWindowLength; j++)
                 {
-                    if(meanWindow[j] > 0.4 && meanWindow[j] < 2.0 && j != meanFilterWindowLength/2)
+                    if (meanWindow[j] > 0.4 && meanWindow[j] < 2.0 && j != meanFilterWindowLength / 2)
                     {
                         sum = sum + meanWindow[j];
                         counter++;
@@ -86,7 +86,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 {
                     rrDistFiltered.Add(RR[1][currentIndex]);
                     timeInSecFiltered.Add(RR[0][currentIndex]);
-                }              
+                }
             }
 
             List<List<double>> RRFiltered = new List<List<double>>(2);
@@ -106,17 +106,17 @@ namespace EKG_Project.Modules.Sleep_Apnea
         #endregion   
         List<List<double>> resampling(List<List<double>> RRFiltered, int resampFreq)
         {
-            int estimatedSamplesCountAfterResampling = (int)((RRFiltered[0][RRFiltered[0].Count] - RRFiltered[0][0]) * resampFreq + 1);
+            int estimatedSamplesCountAfterResampling = (int)((RRFiltered[0][RRFiltered[0].Count - 1] - RRFiltered[0][0]) * resampFreq + 1);
             List<double> rrDistResampled = new List<double>(estimatedSamplesCountAfterResampling);
             List<double> timeInSecResampled = new List<double>(estimatedSamplesCountAfterResampling);
 
             double x = RRFiltered[0][0];
-            for (int i = 0; i < RRFiltered[0].Count-1; i++)
+            for (int i = 0; i < RRFiltered[0].Count - 1; i++)
             {
                 double x1 = RRFiltered[0][i];
-                double x2 = RRFiltered[0][i+1];
+                double x2 = RRFiltered[0][i + 1];
                 double y1 = RRFiltered[1][i];
-                double y2 = RRFiltered[1][i+1];
+                double y2 = RRFiltered[1][i + 1];
 
                 double a = (y1 - y2) / (x1 - x2);
                 double b = y1 - a * x1;
@@ -125,6 +125,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 {
                     timeInSecResampled.Add(x);
                     rrDistResampled.Add(a * x + b);
+                    x += (1.0 / resampFreq);
                 }
             }
 
@@ -133,21 +134,6 @@ namespace EKG_Project.Modules.Sleep_Apnea
             RRResampled.Add(rrDistResampled);
 
             return RRResampled;
-        }
-
-        #region
-        /// <summary>
-        /// Function that filters RR intervals with highpass and lowpass filters
-        /// </summary>
-        /// <param name="RR_res"> Signal - RR intervals resampled </param>
-        /// <returns> Filtered RR intervals</returns>
-        #endregion
-              
-        List<List<double>> HPLP(List<List<double>> RRResampled)
-        {
-            List<List<double>> RRHP = HP(RRResampled);
-            List<List<double>> RRLP = LP(RRHP);
-            return RRLP;
         }
 
         private List<List<double>> LP(List<List<double>> RRHP)
@@ -166,16 +152,16 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 sum += RRHP[1][i];
                 filterIndex++;
 
-                if(i < LPFilterWindowLength)
+                if (i < LPFilterWindowLength)
                 {
                     continue;
                 }
 
                 double newValue = sum / LPFilterWindowLength;
                 rrDistLP.Add(newValue);
-                timeInSecLP.Add(RRHP[0][i-(LPFilterWindowLength/2)]);
+                timeInSecLP.Add(RRHP[0][i - (LPFilterWindowLength / 2)]);
 
-                if(filterIndex >= LPFilterWindowLength)
+                if (filterIndex >= LPFilterWindowLength)
                 {
                     filterIndex = 0;
                 }
@@ -207,7 +193,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             }
 
             List<List<double>> RRHP = new List<List<double>>(2);
-            RRHP.Add(RRResampled[0].GetRange(1, RRResampled[0].Count-1));
+            RRHP.Add(RRResampled[0].GetRange(1, RRResampled[0].Count - 1));
             RRHP.Add(rrDistHP);
             return RRHP;
         }
@@ -231,7 +217,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             List<double> freq = new List<double>(RRHPLP[1].Count);
 
             //Writing time and values
-            for (int i = 0; i < hilb.Length-1; i++)
+            for (int i = 0; i < hilb.Length - 1; i++)
             {
                 amp.Add(Complex.Abs(hilb[i]));
 
@@ -310,23 +296,23 @@ namespace EKG_Project.Modules.Sleep_Apnea
             {
                 medianFilterWindow[filterIndex] = h[1][i];
                 sortedMedianFilterWindow[sortedWindowIndex] = h[1][i];
-                filterIndex++;         
+                filterIndex++;
                 if (i < medianFilterWindowLength)
                 {
                     sortedWindowIndex++;
-                    continue;                    
+                    continue;
                 }
 
                 Array.Sort(sortedMedianFilterWindow);
 
                 double median = 0.0;
-                if(medianFilterWindowLength % 2 == 0)
+                if (medianFilterWindowLength % 2 == 0)
                 {
                     median = (sortedMedianFilterWindow[medianFilterWindowLength / 2 - 1] + sortedMedianFilterWindow[medianFilterWindowLength / 2]) / 2.0;
                 }
                 else
                 {
-                    median = sortedMedianFilterWindow[medianFilterWindowLength/2];
+                    median = sortedMedianFilterWindow[medianFilterWindowLength / 2];
                 }
                 hAmpFiltered.Add(median);
 
@@ -348,7 +334,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         {
             double mean = hAmp[1].Average();
 
-            for(int i = 0 ; i < hAmp[1].Count ; i++)
+            for (int i = 0; i < hAmp[1].Count; i++)
             {
                 hAmp[1][i] = hAmp[1][i] / mean;
             }
@@ -365,7 +351,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         void detectApnea(List<List<double>> hAmp, List<List<double>> hFreq, out List<bool> detected, out List<double> time)
         {
             //Finding the minimum and maximum Hilbert amplitudes
-            
+
             double a, b, min_amp, max_amp, mid, y_amp, y_freq;
             min_amp = double.MaxValue;
             max_amp = 0;
@@ -393,14 +379,14 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
             bool quit = false;
             int ii = 0;
-            while(true)
+            while (true)
             {
                 int j = ii;
                 double sumAmp = 0;
                 double sumFreq = 0;
                 while (hAmp[0][j] - hAmp[0][ii] < analysisWindowLength)
                 {
-                    if(j == hAmp[0].Count - 1)
+                    if (j == hAmp[0].Count - 1)
                     {
                         quit = true;
                         break;
@@ -425,9 +411,9 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 time.Add(hAmp[0][ii]);
 
                 int oldii = ii;
-                while(hAmp[0][ii] - hAmp[0][oldii] < analysisStep)
+                while (hAmp[0][ii] - hAmp[0][oldii] < analysisStep)
                 {
-                    if(ii ==  hAmp[0].Count-1)
+                    if (ii == hAmp[0].Count - 1)
                     {
                         quit = true;
                         break;
@@ -435,11 +421,11 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     ii++;
                 }
 
-                if(quit)
+                if (quit)
                 {
                     break;
                 }
-            }         
+            }
         }
 
         List<Tuple<int, int>> setResult(List<bool> detected, List<double> time, out double ilApnea)

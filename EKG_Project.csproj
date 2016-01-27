@@ -462,6 +462,15 @@
     <None Include="IO\data\100.atr" />
     <None Include="IO\data\100.dat" />
     <None Include="IO\data\100.hea" />
+    <None Include="IO\data\rpeaks.csv" />
+    <None Include="IO\data\rr_dist.csv" />
+    <None Include="IO\data\rr_dist_filtered.csv" />
+    <None Include="IO\data\rr_dist_HP.csv" />
+    <None Include="IO\data\rr_dist_resampled.csv" />
+    <None Include="IO\data\time_in_sec.csv" />
+    <None Include="IO\data\time_in_sec_filtered.csv" />
+    <None Include="IO\data\time_in_sec_HP.csv" />
+    <None Include="IO\data\time_in_sec_resampled.csv" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
