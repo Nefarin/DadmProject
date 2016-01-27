@@ -156,75 +156,84 @@ namespace EKG_Project.Modules.Atrial_Fibr
         #endregion
         private Tuple<bool, Vector<double>, double> detectAF(Vector<double> _rrIntervals, Vector<double> _rPeaks, uint fs, Atrial_Fibr_Params _method)
         {
-            double tmp;
-            bool[] detectedIntervals;
-            int dividingFactor, nrOfParts;
-            double lengthOfDetection=0;
-
-            if (_method.Method== Detect_Method.STATISTIC)
+            if (_rrIntervals.Exists(x => x <= 0))
             {
-                dividingFactor = 32;
+                pointsDetected = Vector<Double>.Build.Dense(1);
+                Tuple<bool, Vector<double>, double> result = Tuple.Create(false, pointsDetected, 0.0);
+                return result;
             }
             else
             {
-                dividingFactor = 30;
-            }
-            tmp = _rrIntervals.Count / dividingFactor;
-            nrOfParts = Convert.ToInt32(Math.Floor(tmp));
-            Vector<double> partOfRrIntervals = Vector<double>.Build.Dense(dividingFactor);
-            detectedIntervals = new bool[nrOfParts*dividingFactor];
-            bool detectedPart = false;
-            for (int i = 0; i < nrOfParts; i++)
-            {
-                _rrIntervals.CopySubVectorTo(partOfRrIntervals, i * dividingFactor, 0, dividingFactor);
+                double tmp;
+                bool[] detectedIntervals;
+                int dividingFactor, nrOfParts;
+                double lengthOfDetection = 0;
+
                 if (_method.Method == Detect_Method.STATISTIC)
                 {
-                    detectedPart = detectAFStat(partOfRrIntervals);
+                    dividingFactor = 32;
                 }
                 else
                 {
-                    detectedPart = detectAFPoin(partOfRrIntervals);
+                    dividingFactor = 30;
                 }
-                
-                for (int j = 0; j < dividingFactor; j++)
+                tmp = _rrIntervals.Count / dividingFactor;
+                nrOfParts = Convert.ToInt32(Math.Floor(tmp));
+                Vector<double> partOfRrIntervals = Vector<double>.Build.Dense(dividingFactor);
+                detectedIntervals = new bool[nrOfParts * dividingFactor];
+                bool detectedPart = false;
+                for (int i = 0; i < nrOfParts; i++)
                 {
-                    detectedIntervals[i*dividingFactor + j] = detectedPart;
+                    _rrIntervals.CopySubVectorTo(partOfRrIntervals, i * dividingFactor, 0, dividingFactor);
+                    if (_method.Method == Detect_Method.STATISTIC)
+                    {
+                        detectedPart = detectAFStat(partOfRrIntervals);
+                    }
+                    else
+                    {
+                        detectedPart = detectAFPoin(partOfRrIntervals);
+                    }
+
+                    for (int j = 0; j < dividingFactor; j++)
+                    {
+                        detectedIntervals[i * dividingFactor + j] = detectedPart;
+                    }
                 }
-            }
-            double lengthOfDetectedIntervals = 0.0;
-            bool afDetected = false;
-            for (int i=0; i < detectedIntervals.Length; i++)
-            {
-                if (detectedIntervals[i])
-                {
-                    lengthOfDetectedIntervals += _rrIntervals.At(i);
-                    afDetected = true;
-                }
-            }
-            if (afDetected)
-            {
-                pointsDetected = Vector<Double>.Build.Dense(Convert.ToInt32(lengthOfDetectedIntervals));
-                int lastIndex = 0;
+                double lengthOfDetectedIntervals = 0.0;
+                bool afDetected = false;
                 for (int i = 0; i < detectedIntervals.Length; i++)
                 {
                     if (detectedIntervals[i])
                     {
-                        int j;
-                        for (j = 0; j <  _rrIntervals.At(i); j++)
-                        {
-                            pointsDetected.At(j + lastIndex, _rPeaks.At(i) + j);
-                        }
-                        lastIndex += j;
+                        lengthOfDetectedIntervals += _rrIntervals.At(i);
+                        afDetected = true;
                     }
                 }
-                double lengthOfSignal = (_rPeaks.At(_rPeaks.Count-1) - _rPeaks.At(0)) / fs;
+                if (afDetected)
+                {
+                    pointsDetected = Vector<Double>.Build.Dense(Convert.ToInt32(lengthOfDetectedIntervals));
+                    int lastIndex = 0;
+                    for (int i = 0; i < detectedIntervals.Length; i++)
+                    {
+                        if (detectedIntervals[i])
+                        {
+                            int j;
+                            for (j = 0; j < _rrIntervals.At(i); j++)
+                            {
+                                pointsDetected.At(j + lastIndex, _rPeaks.At(i) + j);
+                            }
+                            lastIndex += j;
+                        }
+                    }
+                    double lengthOfSignal = (_rPeaks.At(_rPeaks.Count - 1) - _rPeaks.At(0)) / fs;
+                }
+                else
+                {
+                    pointsDetected = Vector<Double>.Build.Dense(1);
+                }
+                Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetectedIntervals / fs);
+                return result;
             }
-            else
-            {
-                pointsDetected=Vector<Double>.Build.Dense(1);
-            }
-            Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetectedIntervals/fs);
-            return result;
         }
         //Funkcje pomocnicze do metody statystycznej///////////////////////////////////////////////////////////////////
         #region Documentation
@@ -484,7 +493,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
 
             public DataPoint()
-            { }
+            {
+                A = 0;
+                B = 0;
+                Cluster = 0;
+            }
         }
 
         //Inicjalizacja////////////////////////////////////////////////////////////////
