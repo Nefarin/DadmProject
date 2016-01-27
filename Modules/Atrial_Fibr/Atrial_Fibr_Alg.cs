@@ -821,15 +821,9 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private double SilhouetteCoefficient(List<DataPoint> _rawDataToCluster)
         {
             double SilhouetteCoeff = new double();
-            List<double> distanceIn_a = new List<double>();
-            List<double> distanceIn_b = new List<double>();
-            List<double> distanceOut_a = new List<double>();
-            List<double> distanceOut_b = new List<double>();
+            List<double> distanceIn = new List<double>();
+            List<double> distanceOut = new List<double>();
             List<double> Silh = new List<double>();
-            double a_mean_In = new double();
-            double b_mean_In = new double();
-            double a_mean_Out = new double();
-            double b_mean_Out = new double();
             double dist_In = new double();
             double dist_Out = new double();
 
@@ -841,64 +835,34 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     {
                         if (i != j)
                         {
-                            distanceIn_a.Add(Math.Abs(_rawDataToCluster[j].A - _rawDataToCluster[i].A));
-                            distanceIn_b.Add(Math.Abs(_rawDataToCluster[j].B - _rawDataToCluster[i].B));
+                            distanceIn.Add(Math.Sqrt(Math.Pow(_rawDataToCluster[j].A - _rawDataToCluster[i].A,2)+ Math.Pow(_rawDataToCluster[j].B - _rawDataToCluster[i].B, 2)));
                         }
                     }
                     else
                     {
-                        distanceOut_a.Add(Math.Abs(_rawDataToCluster[j].A - _rawDataToCluster[i].A));
-                        distanceOut_b.Add(Math.Abs(_rawDataToCluster[j].B - _rawDataToCluster[i].B));
+                        distanceOut.Add(Math.Sqrt(Math.Pow(_rawDataToCluster[j].A - _rawDataToCluster[i].A, 2) + Math.Pow(_rawDataToCluster[j].B - _rawDataToCluster[i].B, 2)));
                     }
                 }
 
-                if (distanceIn_a.Count == 0)
-                {
-                    a_mean_In =0.0;
-                    b_mean_In = 0.0;
-                    a_mean_Out = distanceOut_a.Average();
-                    b_mean_Out = distanceOut_b.Average();
-                }
-
-                else if (distanceOut_a.Count == 0)
-                {
-                    a_mean_Out = 0.0;
-                    b_mean_Out = 0.0;
-                    a_mean_In = distanceIn_a.Average();
-                    b_mean_In = distanceIn_b.Average();
-                }
-
-                else
-                {
-                    a_mean_In = distanceIn_a.Average();
-                    b_mean_In = distanceIn_b.Average();
-                    a_mean_Out = distanceOut_a.Average();
-                    b_mean_Out = distanceOut_b.Average();
-                }
-
-                if (a_mean_In == 0.0)
+                if (distanceIn.Count == 0)
                 {
                     dist_In = 0.0;
-                    dist_Out = (Math.Sqrt(Math.Pow(a_mean_Out, 2) + Math.Pow(b_mean_Out, 2)));
+                    dist_Out = distanceOut.Average();
                 }
 
-                else if (a_mean_Out == 0.0)
+                else if (distanceOut.Count == 0)
                 {
                     dist_Out = 0.0;
-                    dist_In = (Math.Sqrt(Math.Pow(a_mean_In, 2) + Math.Pow(b_mean_In, 2)));
+                    dist_In = distanceIn.Average();
                 }
 
                 else
                 {
-                    dist_In = (Math.Sqrt(Math.Pow(a_mean_In, 2) + Math.Pow(b_mean_In, 2)));
-                    dist_Out = (Math.Sqrt(Math.Pow(a_mean_Out, 2) + Math.Pow(b_mean_Out, 2)));
+                    dist_In = distanceIn.Average();
+                    dist_Out = distanceOut.Average();
                 }
 
                 Silh.Add(Math.Abs(dist_Out - dist_In) / Math.Max(dist_Out, dist_In));
-                distanceIn_a.Clear();
-                distanceIn_b.Clear();
-                distanceOut_a.Clear();
-                distanceOut_b.Clear();
             }
             SilhouetteCoeff = Silh.Average();
 
