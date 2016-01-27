@@ -261,33 +261,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             //test
             List<Atrial_Fibr_Alg.DataPoint> realresult = (List<Atrial_Fibr_Alg.DataPoint>)obj.Invoke("InitilizeRawData", args);
             //results
-            Console.WriteLine("predykcje");
-            //foreach (Atrial_Fibr_Alg.DataPoint re in result)
-            //{
-            //    Console.WriteLine(re.A);
-            //    Console.WriteLine(re.B);
-            //    Console.WriteLine(re.Cluster);
-            //}
-
-            //Console.WriteLine("wyniki");
-            //foreach (Atrial_Fibr_Alg.DataPoint re in realresult)
-            //{
-            //    Console.WriteLine(re.A);
-            //    Console.WriteLine(re.B);
-            //    Console.WriteLine(re.Cluster);
-            //}
-            Assert.AreEqual(result.Count, realresult.Count);
-            for (int i= 0;i< result.Count; i++)
-            {
-                Assert.AreEqual(result[i].A, realresult[i].A);
-                Assert.AreEqual(result[i].B, realresult[i].B);
-                Assert.AreEqual(result[i].Cluster, realresult[i].Cluster);
-                Assert.AreEqual(result[i], realresult[i]);
-
-            }
-            //Assert.AreEqual(result, realresult);
-
-
+            CollectionAssert.AreEqual(result, realresult);
         }
     }
 }

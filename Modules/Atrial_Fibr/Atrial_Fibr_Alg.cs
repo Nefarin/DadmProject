@@ -480,7 +480,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// Data point in clustering. Contain information about coordinates and number of cluster.
         /// </summary>
         #endregion
-        public class DataPoint
+        public class DataPoint : System.Object
         {
             public double A { get; set; }
             public double B { get; set; }
@@ -494,9 +494,47 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
             public DataPoint()
             {
-                A = 0;
-                B = 0;
+                A = 0.0;
+                B = 0.0;
                 Cluster = 0;
+            }
+            public bool Equals(DataPoint point)
+            {
+                return (point.A == A) && (point.B == B) && (point.Cluster == Cluster);
+            }
+
+            public override bool Equals(System.Object obj)
+            {
+                // If parameter is null return false.
+                if (obj == null)
+                {
+                    return false;
+                }
+
+                // If parameter cannot be cast to Point return false.
+                DataPoint point = obj as DataPoint;
+                if ((System.Object)point == null)
+                {
+                    return false;
+                }
+
+                // Return true if the fields match:
+                return (A == point.A) && (B == point.B) && (Cluster == point.Cluster);
+            }
+            public override int GetHashCode()
+            {
+                int tmp = Convert.ToInt32(A) + Convert.ToInt32(B) + Cluster;
+                return tmp;
+            }
+
+            public static bool operator ==(DataPoint point1, DataPoint point2)
+            {
+                return (point1.A == point2.A) && (point1.B == point2.B) && (point1.Cluster == point2.Cluster);
+            }
+
+            public static bool operator !=(DataPoint point1, DataPoint point2)
+            {
+                return (point1.A != point2.A) || (point1.B != point2.B) ||(point1.Cluster != point2.Cluster);
             }
         }
 
