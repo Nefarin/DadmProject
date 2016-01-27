@@ -609,7 +609,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             raw_data.Add(new Atrial_Fibr_Alg.DataPoint(156, 129, 1));
             raw_data.Add(new Atrial_Fibr_Alg.DataPoint(129, 130, 2));
             raw_data.Add(new Atrial_Fibr_Alg.DataPoint(130, 123, 1));
-            double result = 0.447;
+            double result = 0.3599;
             Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
             PrivateObject obj = new PrivateObject(testAlg);
             object[] args = { raw_data };
@@ -617,6 +617,35 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             double realresult = Convert.ToDouble(obj.Invoke("SilhouetteCoefficient", args));
             //results
             Assert.AreEqual(result, realresult, 0.001);
+        }
+
+        [TestMethod]
+        [Description("Test if Cluster method is correct")]
+        public void ClusterTest()
+        {
+            //init
+            List<Atrial_Fibr_Alg.DataPoint> raw_data = new List<Atrial_Fibr_Alg.DataPoint>();
+            raw_data.Add(new Atrial_Fibr_Alg.DataPoint(5, 5, 0));
+            raw_data.Add(new Atrial_Fibr_Alg.DataPoint(10, 10, 0));
+            raw_data.Add(new Atrial_Fibr_Alg.DataPoint(15, 15, 0));
+            List<Atrial_Fibr_Alg.DataPoint> norm_data = new List<Atrial_Fibr_Alg.DataPoint>();
+            norm_data.Add(new Atrial_Fibr_Alg.DataPoint(-0.3193, -0.3193, 0));
+            norm_data.Add(new Atrial_Fibr_Alg.DataPoint(0.0259, 0.0259, 0));
+            norm_data.Add(new Atrial_Fibr_Alg.DataPoint(0.3711, 0.3711, 0));
+            List<Atrial_Fibr_Alg.DataPoint> clusters = new List<Atrial_Fibr_Alg.DataPoint>();
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            obj.SetField("amountOfCluster", 3);
+            object[] args = { raw_data, norm_data, clusters };
+            //test
+
+            List<Atrial_Fibr_Alg.DataPoint> result = new List<Atrial_Fibr_Alg.DataPoint>();
+            result.Add(new Atrial_Fibr_Alg.DataPoint(5, 5, 0));
+            result.Add(new Atrial_Fibr_Alg.DataPoint(10, 10, 1));
+            result.Add(new Atrial_Fibr_Alg.DataPoint(15, 15, 2));
+            List<Atrial_Fibr_Alg.DataPoint> realresult = (List<Atrial_Fibr_Alg.DataPoint>)obj.Invoke("Cluster", args);
+            //results
+            CollectionAssert.AreEqual(result, realresult);
         }
 
     }
