@@ -22,7 +22,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             object[] args = { testVector };
             double delta = 0.001;
             //test
-            double realresult= Convert.ToDouble(obj.Invoke("TPR",args));
+            double realresult = Convert.ToDouble(obj.Invoke("TPR", args));
             //results
             Assert.AreEqual(realresult, result, delta);
         }
@@ -59,7 +59,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             //test
             double realresult = Convert.ToDouble(obj.Invoke("SE", args));
             //results
-            Assert.AreEqual(result, realresult,  delta);
+            Assert.AreEqual(result, realresult, delta);
         }
         [TestMethod]
         [Description("Test if SE is correct for healthy signal")]
@@ -155,21 +155,21 @@ namespace EKG_Unit.Modules.Atrial_Fibr
         {
             //init
             double[] rrintArray = { 85, 84, 82, 83, 84, 89, 94, 101, 101, 99, 97, 96, 95, 95, 97, 98, 97, 94, 95, 98, 95, 97, 101, 103, 95, 95, 97, 98, 97, 97, 100, 100 };
-            double[] rpeaksArray = { 720061, 720146, 720230, 720312, 720395, 720479, 720568, 720662, 720763, 720864, 720963, 721060, 721156, 721251, 721346, 721443, 721541, 721638, 721732, 721827, 721925, 722020, 722117, 722218, 722321, 722416, 722511, 722608, 722706, 722803, 722900, 723000};
-            double[] resultArray = { 0};
+            double[] rpeaksArray = { 720061, 720146, 720230, 720312, 720395, 720479, 720568, 720662, 720763, 720864, 720963, 721060, 721156, 721251, 721346, 721443, 721541, 721638, 721732, 721827, 721925, 722020, 722117, 722218, 722321, 722416, 722511, 722608, 722706, 722803, 722900, 723000 };
+            double[] resultArray = { 0 };
             Vector<double> rrintVector = Vector<double>.Build.DenseOfArray(rrintArray);
             Vector<double> rpeaksVector = Vector<double>.Build.DenseOfArray(rpeaksArray);
             Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
             uint fs = 128;
             bool resultbool = false;
             double resultdouble = 0;
-            Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC,"test");
+            Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC, "test");
             Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
             PrivateObject obj = new PrivateObject(testAlg);
-            object[] args = { rrintVector, rpeaksVector ,fs,param};
+            object[] args = { rrintVector, rpeaksVector, fs, param };
             Tuple<bool, Vector<double>, double> result = Tuple.Create(resultbool, resultVector, resultdouble);
             //test
-            Tuple<bool, Vector<double>, double> realresult = (Tuple < bool, Vector< double >, double> )obj.Invoke("detectAF", args);
+            Tuple<bool, Vector<double>, double> realresult = (Tuple<bool, Vector<double>, double>)obj.Invoke("detectAF", args);
             //results
             Assert.AreEqual(result, realresult);
         }
@@ -181,7 +181,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             //init
             double[] rrintArray = { 137, 147, 156, 129, 130, 123, 129, 138, 138, 162, 138, 161, 123, 144, 157, 156, 142, 136, 118, 136, 158, 139, 178, 158, 164, 126, 135, 134, 173, 171, 170, 143 };
             double[] rpeaksArray = { 140, 277, 424, 580, 709, 839, 962, 1091, 1229, 1367, 1529, 1667, 1828, 1951, 2095, 2252, 2408, 2550, 2686, 2804, 2940, 3098, 3237, 3415, 3573, 3737, 3863, 3998, 4132, 4305, 4476, 4646 };
-            double[] resultArray =new double [ 4646-140+143];
+            double[] resultArray = new double[4646 - 140 + 143];
             for (int i = 0; i < 4649; i++)
             {
                 resultArray[i] = i + 140;
@@ -200,7 +200,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             //test
             Tuple<bool, Vector<double>, double> realresult = (Tuple<bool, Vector<double>, double>)obj.Invoke("detectAF", args);
             //results
-            Assert.AreEqual(realresult.Item1,result.Item1 );
+            Assert.AreEqual(realresult.Item1, result.Item1);
             Assert.AreEqual(realresult.Item2, result.Item2);
             Assert.AreEqual(realresult.Item3, result.Item3, 0.001);
         }
@@ -233,8 +233,8 @@ namespace EKG_Unit.Modules.Atrial_Fibr
         public void InitilizeRawDataTest()
         {
             //init
-            double[] testArray1 = { 137, 147, 156, 129, 130, 123, 129, 138, 138, 162, 138};
-            double[] testArray2 = { 147, 156, 129, 130, 123, 129, 138, 138, 162, 138, 161};
+            double[] testArray1 = { 137, 147, 156, 129, 130, 123, 129, 138, 138, 162, 138 };
+            double[] testArray2 = { 147, 156, 129, 130, 123, 129, 138, 138, 162, 138, 161 };
             List<Atrial_Fibr_Alg.DataPoint> result = new List<Atrial_Fibr_Alg.DataPoint>();
             result.Add(new Atrial_Fibr_Alg.DataPoint(137, 147));
             result.Add(new Atrial_Fibr_Alg.DataPoint(147, 156));
@@ -249,7 +249,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             result.Add(new Atrial_Fibr_Alg.DataPoint(138, 161));
             Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
             PrivateObject obj = new PrivateObject(testAlg);
-            object[] args = { testArray1 , testArray2 };
+            object[] args = { testArray1, testArray2 };
             //test
             List<Atrial_Fibr_Alg.DataPoint> realresult = (List<Atrial_Fibr_Alg.DataPoint>)obj.Invoke("InitilizeRawData", args);
             //results
@@ -295,11 +295,11 @@ namespace EKG_Unit.Modules.Atrial_Fibr
         {
             //init
             List<Atrial_Fibr_Alg.DataPoint> data = new List<Atrial_Fibr_Alg.DataPoint>();
-            data.Add(new Atrial_Fibr_Alg.DataPoint(137, 147,0));
-            data.Add(new Atrial_Fibr_Alg.DataPoint(147, 156,1));
-            data.Add(new Atrial_Fibr_Alg.DataPoint(156, 129,2));
-            data.Add(new Atrial_Fibr_Alg.DataPoint(129, 130,1));
-            data.Add(new Atrial_Fibr_Alg.DataPoint(130, 123,1));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(137, 147, 0));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(147, 156, 1));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(156, 129, 2));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(129, 130, 1));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(130, 123, 1));
             bool result = true;
             Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
             PrivateObject obj = new PrivateObject(testAlg);
@@ -344,7 +344,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             Vector<double> rrVector = Vector<double>.Build.DenseOfArray(rrArray);
             Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
             PrivateObject obj = new PrivateObject(testAlg);
-            object[] args = { Ii, Ii1,rrVector };
+            object[] args = { Ii, Ii1, rrVector };
             //test
             double realresult = Convert.ToDouble(obj.Invoke("dCoeff", args));
             //results
@@ -360,7 +360,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             double result = 0.0152;
             double delta = 0.0001;
             double[] Ii = { 85, 84, 82, 83, 84, 89, 94, 101, 101, 99, 97, 96, 95, 95, 97, 98, 97, 94, 95, 98, 95, 97, 101, 103, 95, 95, 97, 98, 97 };
-            double[] Ii1 = {  84, 82, 83, 84, 89, 94, 101, 101, 99, 97, 96, 95, 95, 97, 98, 97, 94, 95, 98, 95, 97, 101, 103, 95, 95, 97, 98, 97, 97 };
+            double[] Ii1 = { 84, 82, 83, 84, 89, 94, 101, 101, 99, 97, 96, 95, 95, 97, 98, 97, 94, 95, 98, 95, 97, 101, 103, 95, 95, 97, 98, 97, 97 };
             Vector<double> rrVector = Vector<double>.Build.DenseOfArray(rrArray);
             Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
             PrivateObject obj = new PrivateObject(testAlg);
@@ -435,8 +435,8 @@ namespace EKG_Unit.Modules.Atrial_Fibr
         public void detectAFTestAFPoin()
         {
             //init
-            double[] rrintArray = { 137, 147, 156, 129, 130, 123, 129, 138, 138, 162, 138, 161, 123, 144, 157, 156, 142, 136, 118, 136, 158, 139, 178, 158, 164, 126, 135, 134, 173, 171};
-            double[] rpeaksArray = { 140, 277, 424, 580, 709, 839, 962, 1091, 1229, 1367, 1529, 1667, 1828, 1951, 2095, 2252, 2408, 2550, 2686, 2804, 2940, 3098, 3237, 3415, 3573, 3737, 3863, 3998, 4132, 4305};
+            double[] rrintArray = { 137, 147, 156, 129, 130, 123, 129, 138, 138, 162, 138, 161, 123, 144, 157, 156, 142, 136, 118, 136, 158, 139, 178, 158, 164, 126, 135, 134, 173, 171 };
+            double[] rpeaksArray = { 140, 277, 424, 580, 709, 839, 962, 1091, 1229, 1367, 1529, 1667, 1828, 1951, 2095, 2252, 2408, 2550, 2686, 2804, 2940, 3098, 3237, 3415, 3573, 3737, 3863, 3998, 4132, 4305 };
             double[] resultArray = new double[4305 - 140 + 171];
             for (int i = 0; i < (4305 - 140 + 171); i++)
             {
@@ -537,6 +537,65 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             //results
             Assert.AreEqual(result.Item1, realresult.Item1);
             CollectionAssert.AreEqual(result.Item2, realresult.Item2);
+        }
+
+        [TestMethod]
+        [Description("Test if updating cluster membership is correct")]
+        public void UpdateClusterMembershipTest()
+        {
+            //init
+            List<Atrial_Fibr_Alg.DataPoint> data = new List<Atrial_Fibr_Alg.DataPoint>();
+            data.Add(new Atrial_Fibr_Alg.DataPoint(5, 5, 0));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(5, 5, 0));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(10, 10, 1));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(10, 10, 1));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(15, 15, 2));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(15, 15, 2));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(6, 6, 1));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(11, 11, 2));
+            List<Atrial_Fibr_Alg.DataPoint> data2 = new List<Atrial_Fibr_Alg.DataPoint>();
+            data2.Add(new Atrial_Fibr_Alg.DataPoint(-0.3193, -0.3193, 0));
+            data2.Add(new Atrial_Fibr_Alg.DataPoint(-0.3193, -0.3193, 0));
+            data2.Add(new Atrial_Fibr_Alg.DataPoint(0.0259, 0.0259, 1));
+            data2.Add(new Atrial_Fibr_Alg.DataPoint(0.0259, 0.0259, 1));
+            data2.Add(new Atrial_Fibr_Alg.DataPoint(0.3711, 0.3711, 2));
+            data2.Add(new Atrial_Fibr_Alg.DataPoint(0.3711, 0.3711, 2));
+            data2.Add(new Atrial_Fibr_Alg.DataPoint(-0.2503, -0.2503, 1));
+            data2.Add(new Atrial_Fibr_Alg.DataPoint(0.0949, 0.0949, 2));
+            List<Atrial_Fibr_Alg.DataPoint> resut1 = new List<Atrial_Fibr_Alg.DataPoint>();
+            resut1.Add(new Atrial_Fibr_Alg.DataPoint(5, 5, 0));
+            resut1.Add(new Atrial_Fibr_Alg.DataPoint(5, 5, 0));
+            resut1.Add(new Atrial_Fibr_Alg.DataPoint(10, 10, 1));
+            resut1.Add(new Atrial_Fibr_Alg.DataPoint(10, 10, 1));
+            resut1.Add(new Atrial_Fibr_Alg.DataPoint(15, 15, 2));
+            resut1.Add(new Atrial_Fibr_Alg.DataPoint(15, 15, 2));
+            resut1.Add(new Atrial_Fibr_Alg.DataPoint(6, 6, 0));
+            resut1.Add(new Atrial_Fibr_Alg.DataPoint(11, 11, 1));
+            List<Atrial_Fibr_Alg.DataPoint> result2 = new List<Atrial_Fibr_Alg.DataPoint>();
+            result2.Add(new Atrial_Fibr_Alg.DataPoint(-0.3193, -0.3193, 0));
+            result2.Add(new Atrial_Fibr_Alg.DataPoint(-0.3193, -0.3193, 0));
+            result2.Add(new Atrial_Fibr_Alg.DataPoint(0.0259, 0.0259, 1));
+            result2.Add(new Atrial_Fibr_Alg.DataPoint(0.0259, 0.0259, 1));
+            result2.Add(new Atrial_Fibr_Alg.DataPoint(0.3711, 0.3711, 2));
+            result2.Add(new Atrial_Fibr_Alg.DataPoint(0.3711, 0.3711, 2));
+            result2.Add(new Atrial_Fibr_Alg.DataPoint(-0.2503, -0.2503, 0));
+            result2.Add(new Atrial_Fibr_Alg.DataPoint(0.0949, 0.0949, 1));
+            List<Atrial_Fibr_Alg.DataPoint> clusters = new List<Atrial_Fibr_Alg.DataPoint>();
+            clusters.Add(new Atrial_Fibr_Alg.DataPoint(-0.3193, -0.3193, 0));
+            clusters.Add(new Atrial_Fibr_Alg.DataPoint(-0.0662, -0.0662, 1));
+            clusters.Add(new Atrial_Fibr_Alg.DataPoint(0.2790, 0.2790, 2));
+            bool resultBool = true;
+            Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>, List<Atrial_Fibr_Alg.DataPoint>> result = new Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>, List<Atrial_Fibr_Alg.DataPoint>>(resultBool, result2, resut1);
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            obj.SetField("amountOfCluster", 3);
+            object[] args = { data, data2, clusters };
+            //test
+            Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>, List<Atrial_Fibr_Alg.DataPoint>> realresult = (Tuple<bool, List<Atrial_Fibr_Alg.DataPoint>, List<Atrial_Fibr_Alg.DataPoint>>)obj.Invoke("UpdateClusterMembership", args);
+            //results
+            Assert.AreEqual(result.Item1, realresult.Item1);
+            CollectionAssert.AreEqual(result.Item2, realresult.Item2);
+            CollectionAssert.AreEqual(result.Item3, realresult.Item3);
         }
     }
 }
