@@ -426,12 +426,9 @@ namespace EKG_Project.Modules.Waves
 
         public static void Main()
         {
-            Waves_Params param = new Waves_Params(Wavelet_Type.haar, 2, "TestAnalysis100", 500);
-            Waves_Alg tesciki = new Waves_Alg(param);
-            double[] signalArray = { 1, 2, 3, 4, 5, 9, 7, 7, 8, 24, 9 };
-            Vector<double> signalVector = Vector<double>.Build.DenseOfArray(signalArray);
-            double dupa = tesciki.derivSquare(4, signalVector);
-            Console.Write(dupa);
+            Waves_Params param = new Waves_Params(Wavelet_Type.db3, 2, "TestAnalysis100", 500);
+            
+            
             //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
             //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
             //Vector<double> ecg = TempInput.getSignal();

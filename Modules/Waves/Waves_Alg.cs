@@ -54,7 +54,7 @@ namespace EKG_Project.Modules.Waves
 
         }
 
-        public List<Vector<double>> ListHaarDWT(Vector<double> signal, int n)
+        private List<Vector<double>> ListHaarDWT(Vector<double> signal, int n)
         {
             //Work just like wavedec but use only haar wavelet
             // http://www.mathworks.com/help/wavelet/ref/wavedec.html
@@ -88,7 +88,7 @@ namespace EKG_Project.Modules.Waves
         /// </summary>
         /// <returns> list of details and approximation coefficients</returns>
         #endregion
-        public List<Vector<double>> ListDWT(Vector<double> signal, int n, Wavelet_Type waveType)
+        private List<Vector<double>> ListDWT(Vector<double> signal, int n, Wavelet_Type waveType)
         {
             double[] Hfilter = { 0 };
             double[] Lfilter = { 0 };
@@ -145,7 +145,7 @@ namespace EKG_Project.Modules.Waves
         /// This method finds location of QRS-ends and QRS-onsets
         /// </summary>
         #endregion
-        public void DetectQRS(List<int> currentQRSonsetsPart, List<int> currentQRSendsPart, 
+        private void DetectQRS(List<int> currentQRSonsetsPart, List<int> currentQRSendsPart, 
             Vector<double> currentECG, Vector<double> currentRpeaks, int offset, uint freq)
         {
             currentQRSonsetsPart.Clear();
@@ -177,7 +177,7 @@ namespace EKG_Project.Modules.Waves
         /// </summary>
         /// <returns> index of founded QRS-onset or -1 if not found</returns>
         #endregion
-        public int FindQRSOnset(double drightEnd, double dmiddleR, Vector<double> dwt, int offset,
+        private int FindQRSOnset(double drightEnd, double dmiddleR, Vector<double> dwt, int offset,
             Vector<double> currentECG , uint freq)
         {
             int decompLevel = _params.DecompositionLevel;
@@ -224,11 +224,12 @@ namespace EKG_Project.Modules.Waves
         /// </summary>
         /// <returns> index of founded QRS-end or -1 if not found</returns>
         #endregion
-        public int FindQRSEnd(double dmiddleR, double dleftEnd, Vector<double> dwt, int offset, Vector<double> currentECG, uint freq)
+        private int FindQRSEnd(double dmiddleR, double dleftEnd, Vector<double> dwt, int offset, Vector<double> currentECG, uint freq)
         {
             int decompLevel = _params.DecompositionLevel;
             int middleR = (int)dmiddleR;
             int leftEnd = (int)dleftEnd;
+            leftEnd -= (2 << decompLevel);
             int sectionEnd = (leftEnd >> decompLevel);
             int qrsEndInd = (middleR >> decompLevel);
             //int length = 250 * (int)InputData.Frequency;
@@ -240,7 +241,7 @@ namespace EKG_Project.Modules.Waves
 
 
 
-            if (qrsEndInd + len >= dwt.Count || len < 1 || qrsEndInd < 0)
+            if (qrsEndInd + len > dwt.Count || len < 1 || qrsEndInd < 0)
             {
                 return -1;
             }
@@ -279,7 +280,7 @@ namespace EKG_Project.Modules.Waves
             }
 
         }
-        double lastNderivSquares(int n, int index, Vector<double> signal)
+        private double lastNderivSquares(int n, int index, Vector<double> signal)
         {
             double res = 0;
             for (int i = 0; i < n; i++)
@@ -288,7 +289,7 @@ namespace EKG_Project.Modules.Waves
             }
             return res;
         }
-        double nextNderivSquares(int n, int index, Vector<double> signal)
+        private double nextNderivSquares(int n, int index, Vector<double> signal)
         {
             double res = 0;
             for (int i = 0; i < n; i++)
@@ -297,7 +298,7 @@ namespace EKG_Project.Modules.Waves
             }
             return res;
         }
-        public double derivSquare(int index, Vector<double> signal)
+        private double derivSquare(int index, Vector<double> signal)
         {
             double res = 0;
             if (index - 2 > 0 && index + 2 < signal.Count)
@@ -427,7 +428,7 @@ namespace EKG_Project.Modules.Waves
         {
             double tmax_val, thr; // initialization of T-wave maximum and threshold variables
             int window, break_window, tmax_loc, tend; // initialization of T-wave maximum location, Tends location and window variables
-
+            int maxTendVal = currentECG.Count-3;
 
             window = Convert.ToInt32(frequency * 0.3); // window length
             break_window = Convert.ToInt32(frequency * 0.35); // length of window to break searching for maximum
@@ -453,7 +454,7 @@ namespace EKG_Project.Modules.Waves
                 while (currentECG[tend] > currentECG[tend + 1] || ((tmax_val - currentECG[tend] < thr) && (tmax_val - currentECG[tend] > -(tmax_val * 0.01)))) // find local minimum and check if threshold is exceeded
                 {
                     tend++; // move forward in samples
-                    if (tend > ends_loc + break_window) // check if current location exceeded length of break window
+                    if (tend > ends_loc + break_window || tend > maxTendVal) // check if current location exceeded length of break window
                     {
                         tend = -1; // set location to -1
                         break;
