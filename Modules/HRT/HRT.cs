@@ -29,6 +29,7 @@ namespace EKG_Project.Modules.HRT
         Vector<double> _classTime;
         int _VPCcount;
         Vector<double> _nrVPC;
+        double[,] Tachogram;
 
 
 
@@ -198,9 +199,9 @@ namespace EKG_Project.Modules.HRT
             // HRT_Algorythms.PrintVector(_rrintervalsSelected);
             //Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             //HRT_Algorythms.PrintVector(_classSelected);
-            HRT_Algorythms.PrintVector(_nrVPC);
-
-
+            //HRT_Algorythms.PrintVector(_nrVPC);
+            Tachogram = HRT_Algorythms.MakeTachogram(_nrVPC.ToArray(), _rrintervalsSelected.ToArray());
+            HRT_Algorythms.PrintVector(Tachogram);
             _ended = true;
         }
             
