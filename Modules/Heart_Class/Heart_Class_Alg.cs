@@ -104,7 +104,7 @@ namespace EKG_Project.Modules.Heart_Class
             }
 
 
-            return ClassificationResultOne = TestKnn(trainDataList, QrsCoeffOne, trainClass, 3);
+            return ClassificationResultOne = TestKnn(trainDataList, QrsCoeffOne, trainClass, numberOfNeighbors);
    
         }
 
@@ -335,7 +335,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="K"></param>
         /// <returns></returns>
         #endregion
-        Tuple<int, int> TestKnn(List<Vector<double>> trainSamples, Tuple<int, Vector<double>> testSamples,
+        public Tuple<int, int> TestKnn(List<Vector<double>> trainSamples, Tuple<int, Vector<double>> testSamples,
            List<int> trainClasses, int K)
         {
             Tuple< int, int> testResults;
@@ -403,7 +403,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="sample2"></param>
         /// <returns></returns>
         #endregion
-        double GetDistance(Vector<double> sample1, Vector<double> sample2)
+        public double GetDistance(Vector<double> sample1, Vector<double> sample2)
         {
             var distance = 0.0;
             // zakładamy że sample 1 i sample 2 są tej samej długości 

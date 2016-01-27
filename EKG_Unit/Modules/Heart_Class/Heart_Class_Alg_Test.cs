@@ -410,5 +410,52 @@ namespace EKG_Unit.Modules.Heart_Class
             Tuple<int, Vector<double>> testResult = testAlgs.CountCoeff(testAlgs.QrsComplexOne, fs);
 
         }
+
+        [TestMethod]
+        [Description("Test if method counts the distance between two vectors properly - equality test")]
+        public void GetDistance1()
+        {
+            double[] testArray1 = { 1, 2, -3, 4, -5, 6, 7, -1.5, 3.25 };
+            double[] testArray2 = {2, 8, 2.5, -2, 4, 12, 3, -5, 9.3};
+            double expectedResult = 16.8850;
+
+            Vector<double> testVector1 = Vector<double>.Build.DenseOfArray(testArray1);
+            Vector<double> testVector2 = Vector<double>.Build.DenseOfArray(testArray2);
+
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+            double testResult = testAlgs.GetDistance(testVector1, testVector2);
+
+            expectedResult = System.Math.Round(expectedResult, 3);
+            testResult = System.Math.Round(testResult, 3);
+
+            Assert.AreEqual(expectedResult, testResult);
+
+        }
+
+        [TestMethod]
+        [Description("Test if method throw exception (index out of range), when vectors are not the same length")]
+        [ExpectedException(typeof(IndexOutOfRangeException), "Index goes beyond the array")]
+        public void GetDistance2()
+        {
+            double[] testArray1 = { 1, 2, -3, 4, -5, 6, 7, -1.5, 3.25 };
+            double[] testArray2 = { 2, 8, 2.5, -2, 4, 12, 3, -5 };
+            double expectedResult = 16.8850;
+
+            Vector<double> testVector1 = Vector<double>.Build.DenseOfArray(testArray1);
+            Vector<double> testVector2 = Vector<double>.Build.DenseOfArray(testArray2);
+
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+            double testResult = testAlgs.GetDistance(testVector1, testVector2);
+
+            expectedResult = System.Math.Round(expectedResult, 3);
+            testResult = System.Math.Round(testResult, 3);
+
+            Assert.AreEqual(expectedResult, testResult);
+
+        }
+
+
+
+
     }
 }
