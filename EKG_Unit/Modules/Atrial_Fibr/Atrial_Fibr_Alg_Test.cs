@@ -609,7 +609,7 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             raw_data.Add(new Atrial_Fibr_Alg.DataPoint(156, 129, 1));
             raw_data.Add(new Atrial_Fibr_Alg.DataPoint(129, 130, 2));
             raw_data.Add(new Atrial_Fibr_Alg.DataPoint(130, 123, 1));
-            double result = 0.447;
+            double result = 0.3599;
             Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
             PrivateObject obj = new PrivateObject(testAlg);
             object[] args = { raw_data };
