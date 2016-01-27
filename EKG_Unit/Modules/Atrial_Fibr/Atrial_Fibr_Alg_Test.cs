@@ -460,5 +460,30 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             Assert.AreEqual(realresult.Item2, result.Item2);
             Assert.AreEqual(realresult.Item3, result.Item3, 0.001);
         }
+        [TestMethod]
+        [Description("Test if data normalization is correct")]
+        public void NormalizeDataTest()
+        {
+            //init
+            List<Atrial_Fibr_Alg.DataPoint> data = new List<Atrial_Fibr_Alg.DataPoint>();
+            data.Add(new Atrial_Fibr_Alg.DataPoint(137, 147));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(147, 156));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(156, 129));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(129, 130));
+            data.Add(new Atrial_Fibr_Alg.DataPoint(130, 123));
+            List<Atrial_Fibr_Alg.DataPoint> result = new List<Atrial_Fibr_Alg.DataPoint>();
+            result.Add(new Atrial_Fibr_Alg.DataPoint(-0.0262, 0.0649));
+            result.Add(new Atrial_Fibr_Alg.DataPoint(0.0673, 0.1234));
+            result.Add(new Atrial_Fibr_Alg.DataPoint(0.1515, -0.0519));
+            result.Add(new Atrial_Fibr_Alg.DataPoint(-0.1010, -0.0455));
+            result.Add(new Atrial_Fibr_Alg.DataPoint(-0.0916, -0.0909));
+            Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
+            PrivateObject obj = new PrivateObject(testAlg);
+            object[] args = { data };
+            //test
+            List<Atrial_Fibr_Alg.DataPoint> realresult = (List<Atrial_Fibr_Alg.DataPoint>)obj.Invoke("NormalizeData", args);
+            //results
+            CollectionAssert.AreEqual(result, realresult);
+        }
     }
 }

@@ -514,7 +514,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
             public bool Equals(DataPoint point)
             {
-                return (point.A == A) && (point.B == B) && (point.Cluster == Cluster);
+                return (Math.Abs(A - point.A) < 0.0001) && (Math.Abs(B - point.B) < 0.0001) && (Cluster == point.Cluster);
             }
 
             public override bool Equals(System.Object obj)
@@ -533,7 +533,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 }
 
                 // Return true if the fields match:
-                return (A == point.A) && (B == point.B) && (Cluster == point.Cluster);
+                return (Math.Abs(A - point.A)<0.0001) && (Math.Abs(B - point.B)<0.0001) && (Cluster == point.Cluster);
             }
             public override int GetHashCode()
             {
