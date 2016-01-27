@@ -66,10 +66,32 @@ namespace EKG_Project.Modules.T_Wave_Alt
         /// <param name="fs">Sampling frequency</param>
         /// <returns>Average T-length in samples</returns>
         #endregion
-        public void calculateTLength()
+        private void calculateTLength()
         {
             double t_length1 = this.Fs * 0.15;
             this.TLength = Convert.ToInt32(t_length1);
+        }
+
+        #region Documentation
+        /// <summary>
+        /// This function checks if all of the medians are equal to 0; if so, it changes the median to standard value.
+        /// </summary>
+        /// <param name="medianVector">Median T-wave vector</param>
+        /// <returns>True if all of the vectors elements are 0, false otherwise.</returns>
+        #endregion
+        private bool medianZeroCheck(Vector<double> medianVector)
+        {
+            bool isZero = true;
+            foreach (double element in medianVector)
+            {
+                if (element != 0)
+                {
+                    isZero = false;
+                    break;
+                }
+            }
+
+            return isZero;
         }
 
         #region Documentation
@@ -86,7 +108,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
             int tLength = this.TLength;
             List<Vector<double>> TWavesArray = new List<Vector<double>>();
             foreach (int currentTEnd in tEndsList) {
-                if (currentTEnd + 1 >= tLength)
+                if (currentTEnd + 1 >= tLength && currentTEnd >= 0 && currentTEnd < loadedSignal.Count)
                 {
                     Vector<double> newTWave = loadedSignal.SubVector(currentTEnd - tLength + 1, tLength);
                     TWavesArray.Add(newTWave);
@@ -124,7 +146,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
 
             return medianVector;
         }
-
+   
         #region Documentation
         /// <summary>
         /// This function calculates ACI values for all of the detected T-waves
@@ -136,6 +158,8 @@ namespace EKG_Project.Modules.T_Wave_Alt
         public Vector<double> calculateACI(List<Vector<double>> TWavesArray, Vector<double> medianVector)
         {
             Vector<double> ACIVector = Vector<double>.Build.Dense(TWavesArray.Count);
+
+            if (medianZeroCheck(medianVector)) medianVector = medianVector + 1;
 
             int WaveIndex = 0;
             foreach (Vector<double> currentTWave in TWavesArray)
@@ -152,7 +176,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
                     sumDenom = sumDenom + ACI_auxDenom;
                     count++;
                 }
-                
+               
                 ACIVector[WaveIndex] = sumNom/sumDenom;
                 WaveIndex++;
             }
