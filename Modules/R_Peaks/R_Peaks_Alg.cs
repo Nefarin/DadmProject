@@ -290,6 +290,10 @@ namespace EKG_Project.Modules.R_Peaks
         #endregion
         public Vector<double> findRs(double[] integratedSignal, Vector<double> filteredSignal, uint fs)
         {
+            if (integratedSignal == null || filteredSignal == null) throw new ArgumentNullException();
+            if (integratedSignal.Length == 0 || filteredSignal.Count == 0) throw new ArgumentOutOfRangeException("Array is empty.");
+            if (fs == 0) throw new ArgumentException();
+
             Vector<double> integratedSignalV = Vector<double>.Build.DenseOfArray(integratedSignal);
 
             //init temp values
@@ -473,7 +477,7 @@ namespace EKG_Project.Modules.R_Peaks
 
             if (locsR.Count == 0)
             {
-                throw new Exception();
+                throw new Exception("No Rs found");
             }
             return Vector<double>.Build.DenseOfEnumerable(locsR);
         }

@@ -832,12 +832,14 @@ namespace EKG_Unit.Modules.R_Peaks
         [Description("Test if Integrating works properly")]
         public void IntegratingTest()
         {
-            double[] testArray = { 1, 0, 2, -1, 5, 3, 0, -1};
-            double[] resultArray = { 0.5, 0.5, 1, 0.5, 2, 4, 1.5, 0 };
+            double[] testArray = { 1, 0, 2, -1, 5, 3, 0};
+            double[] resultArray = { 0, 0, 1, 0, 2, 4, 1.5};
 
             R_Peaks_Alg test = new R_Peaks_Alg();
             double[] testResult = test.Integrating(testArray, 10);
-            CollectionAssert.AreEqual(testResult, resultArray);
+            Vector<double> testR = Vector<double>.Build.DenseOfArray(testResult);
+            Vector<double> res = Vector<double>.Build.DenseOfArray(resultArray);
+            Assert.AreEqual(testR, res);
         }
 
         [TestMethod]
@@ -853,7 +855,7 @@ namespace EKG_Unit.Modules.R_Peaks
         }
 
         [TestMethod]
-        [Description("Test if Integration throws exception if argument is not initialized")]
+        [Description("Test if Integrating throws exception if argument is not initialized")]
         [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
         public void IntegratingNullTest()
         {
@@ -863,7 +865,7 @@ namespace EKG_Unit.Modules.R_Peaks
         }
 
         [TestMethod]
-        [Description("Test if Integration throws exception if fs equals zero")]
+        [Description("Test if Integrating throws exception if fs equals zero")]
         [ExpectedException(typeof(ArgumentException), "Non-positive frequency value given as parameter")]
         public void IntegratingZeroTest()
         {
@@ -964,6 +966,70 @@ namespace EKG_Unit.Modules.R_Peaks
             double[] testArray = new double[] { };
             R_Peaks_Alg test = new R_Peaks_Alg();
             List<double> testResult = test.FindPeaks(testArray, 10, 0.5);
+        }
+
+        // FindRs for PT method
+        [TestMethod]
+        [Description("Test if FindRs works properly")]
+        public void FindRsTest()
+        {
+            double[] testArray = { 1, 0, 2, -1, 5, 3, 0, -1 };
+            double[] testArray1 = { 0.5, 0.5, 1, 0.5, 2, 4, 1.5, 0 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray1);
+            double[] resultArray = { 4};
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.findRs(testArray, testVector, 10);
+
+            Assert.AreEqual(testResult, resultVector);
+        }
+
+        [TestMethod]
+        [Description("Test if FindRs throws exception if there are no peaks in signal")]
+        [ExpectedException(typeof(Exception), "No Rs found")]
+        public void FindRsTest2()
+        {
+            double[] testArray = { 0, 0, 0, 0, 0, 0, 0 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.findRs(testArray, testVector, 10 );
+        }
+
+        [TestMethod]
+        [Description("Test if FindRs throws exception if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void FindRsNullTest()
+        {
+            double[] testArray = { 1, 2, 3 };
+            Vector<double> testVector = null;
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.findRs(testArray, testVector, 10);
+        }
+
+        [TestMethod]
+        [Description("Test if FindRs throws exception if fs equals zero")]
+        [ExpectedException(typeof(ArgumentException), "Non-positive frequency value given as parameter")]
+        public void FindRsZeroTest()
+        {
+            uint fs = 0;
+            double[] testArray = { 1, 1, 2, 3, 5, 2, 0, -1, 0, 1 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.findRs(testArray, testVector, fs);
+        }
+
+        [TestMethod]
+        [Description("Test if FindPeaks works properly if array is empty - not null")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void FindRsEmptyTest()
+        {
+            double[] testArray = new double[] { };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.findRs(testArray, testVector, 10);
         }
 
         // Tests for other functions
@@ -1171,7 +1237,7 @@ namespace EKG_Unit.Modules.R_Peaks
         // ____________________________________DOTĄD DZIAŁAM!_____________________________________________
 
         //Tests for Hilbert algorithm 
-  /*      [TestMethod]
+       [TestMethod]
         [Description("Test if Hilbert works properly")]
         public void HilbertTest()
         {
@@ -1184,7 +1250,7 @@ namespace EKG_Unit.Modules.R_Peaks
             R_Peaks_Alg test = new R_Peaks_Alg();
             Vector<double> testResult = test.Hilbert(testVector, fs);
             Assert.AreEqual(testResult, resultVector);
-        }*/
+        }
 
         [TestMethod]
         [Description("Test if Hilbert works properly - not equality test")]
@@ -1237,21 +1303,21 @@ namespace EKG_Unit.Modules.R_Peaks
         }
 
         //Tests for Pan-Tompkins algorithm 
-        /*
+        
         [TestMethod]
         [Description("Test if PanTompkins works properly")]
         public void PanTompkinsTest()
         {
-            uint fs = 31;
-            double[] testArray = { 1, 1, 1, 0, 0, 1, 1, 0, 0, -3, 12, -3, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 2, 1, 0, -2, 11, -3, -1, 0, 0, 1, 1, 0, 0, 1, 1, 0, -1, 12, -4, -1, 0, 0, 0, 1, 1, 0, 0, 1 };
+            uint fs = 360;
+            double[] testArray = { -0.00038, -0.0031, -0.012, -0.029, -0.051, -0.071, -0.081, -0.081, -0.074, -0.067, -0.065, -0.068, -0.075, -0.082, -0.084, -0.081, -0.073, -0.063, -0.055, -0.047, -0.041, -0.036, -0.031, -0.029, -0.033, -0.043, -0.056, -0.066, -0.07, -0.069, -0.066, -0.065, -0.067, -0.073, -0.079, -0.086, -0.095, -0.1, -0.11, -0.1, -0.092, -0.079, -0.075, -0.081, -0.09, -0.096, -0.095, -0.089, -0.084, -0.085, -0.09, -0.094, -0.096, -0.095, -0.095, -0.096, -0.096, -0.092, -0.083, -0.075, -0.075, -0.087, -0.11, -0.14, -0.16, -0.18, -0.19, -0.21, -0.21, -0.19, -0.13, -0.029, 0.09, 0.21, 0.31, 0.41, 0.5, 0.59, 0.65, 0.62, 0.48, 0.24, -0.03, -0.24, -0.32, -0.3, -0.21, -0.13, -0.083, -0.085, -0.11, -0.14, -0.15, -0.15, -0.13, -0.12, -0.12, -0.13, -0.13, -0.13, -0.12, -0.11, -0.11, -0.11, -0.12, -0.12, -0.12, -0.12, -0.11, -0.11, -0.11, -0.1, -0.096, -0.09, -0.088, -0.091, -0.096, -0.098, -0.096, -0.093, -0.091, -0.094, -0.098, -0.097, -0.091, -0.082, -0.076, -0.076, -0.08, -0.085, -0.087, -0.085, -0.082, -0.08, -0.079, -0.079, -0.078, -0.08, -0.085, -0.09, -0.093, -0.09, -0.083, -0.076, -0.074, -0.075, -0.076, -0.074, -0.069, -0.067, -0.07, -0.078, -0.085, -0.086, -0.081, -0.076, -0.077, -0.085, -0.097, -0.11, -0.11, -0.11, -0.1, -0.1, -0.11, -0.12, -0.12, -0.13, -0.13, -0.14, -0.14, -0.14, -0.14, -0.14, -0.14, -0.15, -0.15, -0.15, -0.15, -0.14, -0.14, -0.14, -0.14, -0.14, -0.13, -0.12, -0.11, -0.094, -0.083, -0.071, -0.058, -0.046, -0.038, -0.032, -0.028, -0.019, -0.0039, 0.013, 0.027, 0.036, 0.04, 0.046, 0.054, 0.062, 0.066, 0.065, 0.062, 0.06, 0.06, 0.06, 0.057, 0.05, 0.042, 0.038, 0.039, 0.044, 0.049, 0.05, 0.047, 0.043, 0.041, 0.041, 0.04, 0.037, 0.033, 0.03, 0.029, 0.029, 0.027, 0.023, 0.019, 0.019, 0.025, 0.032, 0.034, 0.026, 0.012, -0.0021, -0.0092, -0.0093, -0.0064, -0.0048, -0.0052, -0.0058, -0.0064, -0.009, -0.015, -0.024, -0.029, -0.028, -0.02, -0.011, -0.0064, -0.0076, -0.013, -0.016, -0.015, -0.0096, -0.0064, -0.0092, -0.017, -0.025, -0.031, -0.032, -0.03, -0.027, -0.023, -0.019, -0.017, -0.02, -0.026, -0.032, -0.035, -0.033, -0.028, -0.022, -0.018, -0.019, -0.021, -0.022, -0.018, -0.013, -0.0094, -0.0097, -0.014, -0.019, -0.021, -0.022, -0.021, -0.021, -0.02, -0.015, -0.0087, -0.0031, -0.0024, -0.008, -0.018, -0.026, -0.03, -0.028, -0.025, -0.021, -0.019, -0.014, -0.0062, 0.0043, 0.013, 0.018, 0.02, 0.021, 0.025, 0.029, 0.03, 0.027, 0.023, 0.021, 0.023, 0.027, 0.029, 0.028, 0.025, 0.023, 0.022, 0.022, 0.019, 0.012, 0.0021, -0.0064, -0.012, -0.015, -0.017, -0.019, -0.019, -0.017, -0.013, -0.012, -0.018, -0.029, -0.041, -0.049, -0.048, -0.041, -0.033, -0.029, -0.029, -0.03, -0.03, -0.029, -0.029, -0.031, -0.033, -0.032, -0.03, -0.029, -0.034, -0.047, -0.066, -0.084, -0.1, -0.12, -0.13, -0.14, -0.11, -0.046, 0.056, 0.18, 0.29, 0.38, 0.46, 0.52, 0.6, 0.68, 0.71, 0.66, 0.49, 0.24, -0.048, -0.28, -0.41, -0.43, -0.35, -0.25, -0.17, -0.12, -0.11, -0.12, -0.13, -0.13, -0.13, -0.12, -0.11, -0.1, -0.1, -0.1, -0.098, -0.095, -0.094, -0.097, -0.099, -0.097, -0.09, -0.081, -0.076, -0.079, -0.086, -0.09, -0.088, -0.079, -0.07, -0.066, -0.066, -0.067, -0.067, -0.064, -0.061, -0.059, -0.059, -0.057, -0.055, -0.052, -0.053, -0.056, -0.059, -0.059, -0.054, -0.047, -0.043, -0.044, -0.048, -0.051, -0.052, -0.051, -0.05, -0.051, -0.052, -0.052, -0.05, -0.048, -0.049, -0.053, -0.057, -0.057, -0.053, -0.05, -0.051, -0.059, -0.07, -0.076, -0.076 };
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
-            double[] resultArray = { 10, 26, 39 };
+            double[] resultArray = { 78, 372 };
             Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
 
             R_Peaks_Alg test = new R_Peaks_Alg();
             Vector<double> testResult = test.PanTompkins(testVector, fs);
             Assert.AreEqual(testResult, resultVector);
-        }*/
+        }
 
         [TestMethod]
         [Description("Test if PanTompkins works properly - not equality test")]
