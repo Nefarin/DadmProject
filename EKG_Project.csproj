@@ -221,6 +221,7 @@
     <Compile Include="Architecture\ProcessingStates\NextModule.cs" />
     <Compile Include="Architecture\ProcessingStates\NextStats.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\ProcessFile.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessingEnded.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessModule.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessStats.cs" />
@@ -298,6 +299,7 @@
     <Compile Include="IO\ECG_Baseline_New_Data_Worker.cs" />
     <Compile Include="IO\ECG_Worker.cs" />
     <Compile Include="IO\FileLoader.cs" />
+    <Compile Include="IO\FileProcessor.cs" />
     <Compile Include="IO\Flutter_Data_Worker.cs" />
     <Compile Include="IO\Flutter_New_Data_Worker.cs" />
     <Compile Include="IO\Heart_Axis_Data_Worker.cs" />

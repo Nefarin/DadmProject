@@ -151,7 +151,7 @@ namespace EKG_Project.IO
         /// <summary>
         /// Gets lead names from input file
         /// </summary>
-        public void getLeads()
+        public string[] getLeads()
         {
             record.Open();
             leads = new string[Signal.GetSignalsCount(record)];
@@ -162,17 +162,36 @@ namespace EKG_Project.IO
                 i++;
             }
             record.Dispose();
+
+            return leads;
         }
 
         /// <summary>
         /// Gets frequency from input file
         /// </summary>
-        public void getFrequency()
+        public uint getFrequency()
         {
             record.Open();
             frequency = (uint)record.SamplingFrequency;
             record.Dispose();
 
+            return frequency;
+
+        }
+
+        public uint getNumberOfSamples(string lead)
+        {
+            uint numberOfSamples = 0;
+            record.Open();
+            foreach (Signal signal in record.Signals)
+            {
+                if (signal.Description == lead)
+                {
+                    numberOfSamples = (uint) signal.NumberOfSamples;
+                }
+            }
+            record.Dispose();
+            return numberOfSamples;
         }
 
         public static void Main()
@@ -187,7 +206,7 @@ namespace EKG_Project.IO
             Console.WriteLine(mitbih.leads[1]);
             mitbih.getFrequency();
             Console.WriteLine(mitbih.frequency);
-            Vector<Double> v = mitbih.getSignal(mitbih.leads[0], 649990, 9);
+            Vector<Double> v = mitbih.getSignal(mitbih.leads[0], 649990, 10);
             foreach (var val in v)
                 Console.WriteLine(val);
 
@@ -195,5 +214,7 @@ namespace EKG_Project.IO
             worker.SaveSignal(mitbih.leads[0], false, v);
             Console.Read();
         }
+
+
     }
 }
