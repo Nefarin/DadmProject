@@ -141,103 +141,83 @@ namespace EKG_Project.Modules.HRT
                     missClass[i] = true;
                     remove++;
                 }
-                    //{
-                    //Console.Write(i);
-                    //Console.Write("      ");
-                    //Console.WriteLine("błąd detekcji - nie ma piku odpowiadającego przypisaniu do klasy");
+                //{
+                //Console.Write(i);
+                //Console.Write("      ");
+                //Console.WriteLine("błąd detekcji - nie ma piku odpowiadającego przypisaniu do klasy");
 
 
-                    //}
-                }
-             nrVPCArray = missClassificationCorrection(missClass, nrVPCArray);
-            nrVPCArray = removeRedundant(nrVPCArray, remove);
-        //Vector<double> nrVPC = Vector<double>.Build.DenseOfArray(nrVPCArray);
-        return nrVPCArray;
-        }
-
-        public int[] removeRedundant(int[] array, int ile)
-        {
-            int k = 0;
-            int arraysize = array.Length;
-            int size = arraysize - ile;
-
-            int[] newarray = new int[size];
-            {
-                for (int i = 0; i < size -1; i++)
-                {
-                    if (array[i] != 0)
-                    {
-                        newarray[k] = array[i];
-                        k++;
-                    }
-                }
-                return newarray;
+                //}
             }
+            nrVPCArray = missClassificationCorrection(missClass, nrVPCArray);
+           
+            nrVPCArray = removeRedundant(nrVPCArray, remove);
+            //Vector<double> nrVPC = Vector<double>.Build.DenseOfArray(nrVPCArray);
+            return nrVPCArray;
         }
 
-        public Tuple<double[,], double[]> MakeTachogram(int[] VPC, double[] rrIntervals)
+        public int[] removeRedundant(int[] array, int length)
+        {
+            if (array == null) throw new ArgumentNullException();
+            if (length <= 0 || length >= array.Length) throw new ArgumentOutOfRangeException();
+
+            int arraySize = array.Length;
+            int newArraySize = arraySize - length;
+
+            int[] newArray = new int[newArraySize];
+
+            for (int i = 0; i < newArraySize; i++)
+            {
+                newArray[i] = array[i];
+            }
+            return newArray;
+        }
+
+        public Tuple<double[,], double[], double[]> MakeTachogram(int[] VPC, double[] rrIntervals)
         {
             int back = 5;
             int foward = 15;
             int sum = back + foward + 1;
-            
+
             double[] after = new double[VPC.GetLength(0)];
             double[] before = new double[VPC.GetLength(0)];
             double[] TO = new double[VPC.GetLength(0)];
+            double[] TS = new double[VPC.GetLength(0)];
             int i = 0;
-            double[,] VPCTachogram = new double[sum, VPC.GetLength(0)-1];
+            double[,] VPCTachogram = new double[sum, VPC.GetLength(0) - 1];
             foreach (int nrVPC in VPC)
             {
-               if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Length))
+                if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Length))
+                {
+                    for (int k = (nrVPC - back); k < (nrVPC + foward); k++)
                     {
-                        for (int k = (nrVPC - back); k < (nrVPC + foward + 1); k++)
-                        { 
-                                VPCTachogram[k + back - nrVPC, i] = rrIntervals[k];
-                                
-                            }
+                        VPCTachogram[k + back - nrVPC, i] = rrIntervals[k];
                     }
-                    if ((nrVPC - 2) > 0 && ((nrVPC + 2) < rrIntervals.Length))
+                    after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
+                    before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
+                    TO[i] = (after[i] - before[i]) / before[i];
+                    Tuple<double, double> p;
+                    for (int j = 0; j < foward - 5; j++)
                     {
-                        after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
-                        before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
-                        TO[i] = (after[i] - before[i]) / before[i];
+                        double[] xdata = new double[5];
+                        double[] ydata = new double[5];
+                        for (int n = 0; n < 5; n++)
+                        {
+                            xdata[n] = xdata[n] + (double)n;
+                            ydata[n] = rrIntervals[nrVPC + j + n];
+                        }
+                        p = Fit.Line(xdata, ydata);
+                        if (p.Item2 > TS[i])
+                        {
+                            TS[i] = p.Item2;
+                        }
                     }
-                    i++;
                 }
-            //Console.WriteLine(i);
-            return Tuple.Create(VPCTachogram, TO);
+                //else Console.WriteLine(i);
+                i++;
+               
+            }
+            return Tuple.Create(VPCTachogram, TO, TS);
         }
-
-
-//        back=5; foward=15; VPCtachogram = zeros(VPCcount, back+foward+1); k=0; TO=zeros(VPCcount,1); TS=zeros(VPCcount,2); after=zeros(VPCcount,1); before=zeros(VPCcount,1);
-//        figure; hold on; xlabel('# of RR interval '); ylabel('RR interval [ms]');
-//for i=1:VPCcount
-//    if nrVPC(i)-back>0 && nrVPC(i)+foward<length(rrIntervals) 
-//        VPCtachogram(i,:) = rrIntervals(nrVPC(i)-back:nrVPC(i)+foward);
-//        plot(VPCtachogram(i,:),'Color',[1 102/255 0]);
-//        k=k+1;
-//    end
-//    if nrVPC(i)-2>0 && nrVPC(i)+2<length(rrIntervals)
-//        after(i) = rrIntervals(nrVPC(i)+2)+rrIntervals(nrVPC(i)+3);
-//        before(i) = rrIntervals(nrVPC(i)-2)+rrIntervals(nrVPC(i)-3);
-//        TO(i) = (after(i)-before(i))/before(i);
-//        end
-//    for j=1:foward-5
-//        if nrVPC(i)+5<length(rrIntervals)
-//            TSnew = polyfit(1:5, [rrIntervals(nrVPC(i) + j), rrIntervals(nrVPC(i) + 1 + j), rrIntervals(nrVPC(i) + 2 + j), rrIntervals(nrVPC(i) + 3 + j), rrIntervals(nrVPC(i) + 4 + j)],1);
-//            if TSnew(1) > TS(i,1)
-//                TS(i,:)=TSnew;
-//                %k=j;
-//            end
-//        end
-//    end
-//    %TSfit = polyval(TS(k,1),[back+2+j back+j+5]);
-//    %plot(TSfit);
-
-
-
-
-
     }
-
 }

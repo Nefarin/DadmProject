@@ -29,7 +29,7 @@ namespace EKG_Project.Modules.HRT
         Vector<double> _classTime;
         int _VPCcount;
         int[] _nrVPC;
-        Tuple<double[,], double[]> FinalResults;
+        Tuple<double[,], double[], double[]> FinalResults;
 
 
  
@@ -156,8 +156,6 @@ namespace EKG_Project.Modules.HRT
                 }
 
 
-             
-
                 _rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
                 _classSelected = HRT_Algorythms.checkVPCifnotNULL(_classSelected);
                 _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classSelected, _VPCcount);
@@ -189,13 +187,13 @@ namespace EKG_Project.Modules.HRT
         {
             //HRT_Algorythms.PrintVector(_rpeaksSelected);
             // HRT_Algorythms.PrintVector(_rrintervalsSelected);
-            //Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             //HRT_Algorythms.PrintVector(_classSelected);
             //HRT_Algorythms.PrintVector(_nrVPC);
             FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
-            HRT_Algorythms.PrintVector(FinalResults.Item1);
-            //HRT_Algorythms.PrintVector(_nrVPC);
-            //HRT_Algorythms.PrintVector(FinalResults.Item2);
+            HRT_Algorythms.PrintVector(FinalResults.Item2);
+            HRT_Algorythms.PrintVector(FinalResults.Item3);
+
+
             _ended = true;
         }
             
