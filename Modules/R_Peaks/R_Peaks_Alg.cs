@@ -523,21 +523,28 @@ namespace EKG_Project.Modules.R_Peaks
             double[] int1Signal = new double[htSignal.Length];
             double window = Math.Round(0.36 * fs);
             Delay += Convert.ToUInt32(Math.Round(window / 2));
+            double[] delayCompensation = new double[Delay];
+            for (int i = 0; i < Delay; i++)
+            {
+                delayCompensation[i] = 0;
+            }
+            double[] temp0Signal = new double[htSignal.Length + Delay];
+            htSignal.CopyTo(temp0Signal, 0);
+            delayCompensation.CopyTo(temp0Signal, htSignal.Length);
+
             IList<double> hi_coeff = new List<double>();
             for (int i = 0; i < (window+1); i++)
             {
                 hi_coeff.Add((1 / window) + 1);
             }
             OnlineFirFilter integrationFilter = new OnlineFirFilter(hi_coeff);
-            int1Signal = integrationFilter.ProcessSamples(htSignal);
+            int1Signal = integrationFilter.ProcessSamples(temp0Signal);
             Vector<double> tempSignal = Vector<double>.Build.DenseOfArray(int1Signal);
             
             // correcting signal length
-            Vector<double> int2Signal = CutSignal(tempSignal, Convert.ToInt32(Math.Round(window / 2)), htSignal.Length - 1);
-            int sigLength = htSignal.Length - Convert.ToInt32(Math.Round(window / 2));
-            /*
-            double[] int2Signal = tempSignal.ToArray();
-            int sigLength = int2Signal.Length;*/
+            Vector<double> int2Signal = CutSignal(tempSignal, Convert.ToInt32(Delay), int1Signal.Length - 1);
+            int sigLength = int2Signal.Count;
+
             // normalization
             double tempMax = int2Signal.Maximum();
             double tempMin = int2Signal.Minimum();
