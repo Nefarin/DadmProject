@@ -192,7 +192,7 @@ namespace EKG_Project.IO
             throw new NotImplementedException();
         }
 
-        public string[] getLeads()
+        public List<string> getLeads()
         {
             throw new NotImplementedException();
         }

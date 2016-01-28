@@ -26,23 +26,11 @@ namespace EKG_Project.IO
         private string analysisName;
 
         /// <summary>
-        /// Stores Basic_Attributes
-        /// </summary>
-        private Basic_Attributes attributes;
-
-        /// <summary>
         /// Stores current number of samples
         /// </summary>
         private uint currentNumberOfSamples;
 
-        /// <summary>
-        /// Gets or sets Basic_Attributes
-        /// </summary>
-        public Basic_Attributes Attributes
-        {
-            get { return attributes; }
-            set { attributes = value; }
-        }
+        private uint numberOfLeads;
 
         public Basic_New_Data_Worker() 
         {
@@ -80,11 +68,18 @@ namespace EKG_Project.IO
                 currentNumberOfSamples = LoadAttribute(Basic_Attributes.NumberOfSamples);
             }
 
-            foreach (var sample in signal)
+            try
             {
-                sw.WriteLine(sample.ToString());
-                currentNumberOfSamples++;
+                foreach (var sample in signal)
+                {
+                    sw.WriteLine(sample.ToString());
+                    currentNumberOfSamples++;
+                }
+            }catch(System.NullReferenceException e)
+            {
+                Console.WriteLine(e);
             }
+            
             SaveAttribute(Basic_Attributes.NumberOfSamples, currentNumberOfSamples);
             sw.Close();
 
@@ -171,17 +166,69 @@ namespace EKG_Project.IO
             uint readValue = Convert.ToUInt32(readLine);
             return readValue;
         }
-        
-        public static void Main()
+
+        /// <summary>
+        /// Saves lead names and gets its number
+        /// </summary>
+        /// <param name="leads">list of leads</param>
+        public void SaveLeads(List<string> leads)
         {
-            Basic_New_Data_Worker worker = new Basic_New_Data_Worker("TestAnalysis");
-            Vector<double> vector = worker.LoadSignal("V5", 500000, 100);
-            worker.SaveSignal("III", false, vector);
-            Console.WriteLine("Current number of samples in file: " + worker.currentNumberOfSamples);
-            worker.SaveAttribute(Basic_Attributes.Frequency, 360);
-            uint frequency = worker.LoadAttribute(Basic_Attributes.Frequency);
-            Console.WriteLine("Frequency: " + frequency);
-            Console.Read();
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_Leads" + ".txt";
+            string pathOut = System.IO.Path.Combine(directory, fileName);
+
+            StreamWriter sw = new StreamWriter(pathOut);
+            foreach (var lead in leads)
+            {
+                sw.WriteLine(lead);
+            }
+            sw.Close();
+
+            numberOfLeads = (uint) leads.Count();
         }
+
+        /// <summary>
+        /// Loads lead names and gets its number
+        /// </summary>
+        /// <returns>list of leads</returns>
+        public List<string> LoadLeads()
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_Leads" + ".txt";
+            string pathIn = System.IO.Path.Combine(directory, fileName);
+
+            List<string> leads = new List<string>();
+            StreamReader sr = new StreamReader(pathIn);
+            while(!sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                leads.Add(readLine);
+            }
+            sr.Close();
+
+            numberOfLeads = (uint)leads.Count();
+
+            return leads;
+        }
+
+        /// <summary>
+        /// Deletes all analysis files with Basic_Data
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileNamePattern = analysisName + "_" + moduleName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+
+        }
+
     }
 }

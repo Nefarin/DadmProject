@@ -11,7 +11,7 @@ namespace EKG_Project.IO
     public interface IECGConverter
     {
         Vector<Double> getSignal(string lead, int startIndex, int length);
-        string[] getLeads();
+        List<string> getLeads();
         void SaveResult();
         uint getFrequency();
         uint getNumberOfSamples(string lead);
