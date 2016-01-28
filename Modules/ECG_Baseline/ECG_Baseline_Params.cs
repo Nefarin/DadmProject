@@ -15,6 +15,7 @@ namespace EKG_Project.Modules.ECG_Baseline
         private Filtr_Type _type;                 //typ filtracji
         private double _fcLow;                    //częstotliwość odcięcia dolnoprzepustowy
         private double _fcHigh;                   //częstotliwość odcięcia górnoprzepustowy
+        private double _mi;                       //Współczynnik adaptacji LMS
         private int _windowSizeLow;               //szerokość okna filtracji dolnoprzepustowy
         private int _windowSizeHigh;              //szerokość okna filtracji górnoprzepustowy
         private int _orderLow;                    //rząd filtru dolnoprzepustowy
@@ -58,7 +59,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.OrderHigh = orderHigh;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSize, string analysisName) // konstruktor MOVING_AVG, SAV_GOL, LMS LOW, HIGH
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSize, string analysisName) // konstruktor MOVING_AVG, SAV_GOL LOW, HIGH
         {
             this.Method = method;
             this.AnalysisName = analysisName;
@@ -69,11 +70,33 @@ namespace EKG_Project.Modules.ECG_Baseline
                 this.WindowSizeHigh = windowSize;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSizeLow, int windowSizeHigh, string analysisName) // konstruktor MOVING_AVG, SAV_GOL, LMS BAND
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSizeLow, int windowSizeHigh, string analysisName) // konstruktor MOVING_AVG, SAV_GOL BAND
         {
             this.Method = method;
             this.AnalysisName = analysisName;
             this.Type = type;
+            this.WindowSizeLow = windowSizeLow;
+            this.WindowSizeHigh = windowSizeHigh;
+        }
+
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSize, string analysisName, double mi) // konstruktor LMS LOW, HIGH
+        {
+            this.Method = method;
+            this.AnalysisName = analysisName;
+            this.Type = type;
+            this.Mi = mi;
+            if (type == Filtr_Type.LOWPASS)
+                this.WindowSizeLow = windowSize;
+            else if (type == Filtr_Type.HIGHPASS)
+                this.WindowSizeHigh = windowSize;
+        }
+
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSizeLow, int windowSizeHigh, string analysisName, double mi) // konstruktor LMS BAND
+        {
+            this.Method = method;
+            this.AnalysisName = analysisName;
+            this.Type = type;
+            this.Mi = mi;
             this.WindowSizeLow = windowSizeLow;
             this.WindowSizeHigh = windowSizeHigh;
         }
@@ -177,6 +200,21 @@ namespace EKG_Project.Modules.ECG_Baseline
                     _fcHigh = value;
                 else
                     _fcHigh = 0;
+            }
+        }
+
+        public double Mi
+        {
+            get
+            {
+                return _mi;
+            }
+            set
+            {
+                if (_mi >= 0 && _mi <= 1)
+                    _mi = value;
+                else
+                    _mi = 0.07;
             }
         }
 
