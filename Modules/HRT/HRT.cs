@@ -204,10 +204,19 @@ namespace EKG_Project.Modules.HRT
                 }
                 _classSelected = Klasy.ToArray();
 
+                /**************************************************/
+                //TU SIĘ MA DZIAC CALY ARGORYTM KROK PO KROKU
+                //*************************************************/
                 _rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
                 _classSelected = HRT_Algorythms.checkVPCifnotNULL(_classSelected);
                 _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classSelected, _VPCcount);
 
+            }
+            else
+            {
+                //NASZE DANE WYJSCIOWE PRZYGOTOWAC I WYSLAC DO ZAPISU
+                OutputWorker.Save(OutputData);
+                _ended = true;
             }
 
             //HRT_Algorythms.PrintVector(_rpeaksSelected);
@@ -265,13 +274,6 @@ namespace EKG_Project.Modules.HRT
             List<Tuple<string, double, double, double>> _tachogramSlopeValues = new List<Tuple<string, double, double, double>>();
             _tachogramSlopeValues.Add(t2);
 
-
-                    
-
-
-
-
-            _ended = true;
         }
             
 
