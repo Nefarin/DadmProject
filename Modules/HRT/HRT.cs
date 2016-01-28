@@ -11,7 +11,6 @@ namespace EKG_Project.Modules.HRT
 {
     public class HRT : IModule
     {
-        //zmienne
         private bool _ended;
         private bool _aborted;
         private int _currentChannelIndex;
@@ -30,12 +29,15 @@ namespace EKG_Project.Modules.HRT
         int _VPCcount;
         int[] _nrVPC;
         Tuple<double[,], double[], double[]> FinalResults;
-        double TurbulenceOnsetMean;
-        double TurbulenceSlopeMean;
-        double TurbulenceSlopeMax;
-        double TurbulenceSlopeMin;
-        double TurbulenceOnsetMax;
-        double TurbulenceOnsetMin;
+        double _turbulenceOnsetMean;
+        double _turbulenceSlopeMean;
+        double _turbulenceSlopeMax;
+        double _turbulenceSlopeMin;
+        double _turbulenceOnsetMax;
+        double _turbulenceOnsetMin;
+        double[,] _tachogram;
+        double[] _turbulenceSlope;
+        double[] _turbulenceOnset;
 
 
 
@@ -43,18 +45,21 @@ namespace EKG_Project.Modules.HRT
         //stworzenie obiektów workerów poszczególnych klas 
         private HRT_Params _params;
         private HRT_Data_Worker _outputWorker;
+        private HRT_Data _outputData;
         private R_Peaks_Data_Worker _inputRpeaksWorker;
+        private R_Peaks_Data _inputRpeaksData;
         private Heart_Class_Data_Worker _inputHeartClassWorker;
+        private Heart_Class_Data _inputHeartClassData;
         private Basic_Data_Worker _inputBasicDataWorker;
         private Basic_Data _inputBasicData;
         HRT_Alg HRT_Algorythms = new HRT_Alg();
 
-        //stworzenie obiektów danych poszczególnych klas
-        private HRT_Data _outputData;
-        private R_Peaks_Data _inputRpeaksData;
-        private Heart_Class_Data _inputHeartClassData;
 
-        
+
+
+
+
+
 
         public void Abort()
         {
@@ -191,37 +196,59 @@ namespace EKG_Project.Modules.HRT
 
         private void processData()
         {
+
             //HRT_Algorythms.PrintVector(_rpeaksSelected);
             // HRT_Algorythms.PrintVector(_rrintervalsSelected);
             //HRT_Algorythms.PrintVector(_classSelected);
             //HRT_Algorythms.PrintVector(_nrVPC);
             FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
-            //HRT_Algorythms.PrintVector(FinalResults.Item1);
+            HRT_Algorythms.PrintVector(FinalResults.Item3);
 
-            TurbulenceOnsetMean = (HRT_Algorythms.CountMean(FinalResults.Item2));
-            Console.Write("Turbulence Onset Mean: ");
-            Console.WriteLine(TurbulenceOnsetMean);
+            //_turbulenceOnsetMean = (HRT_Algorythms.CountMean(FinalResults.Item2));
+            //Console.Write("Turbulence Onset Mean: ");
+            //Console.WriteLine(_turbulenceOnsetMean);
 
-            TurbulenceSlopeMean = HRT_Algorythms.CountMean(FinalResults.Item3);
-            Console.Write("Turbulence Slope Mean: ");
-            Console.WriteLine(TurbulenceSlopeMean);
+            //_turbulenceSlopeMean = HRT_Algorythms.CountMean(FinalResults.Item3);
+            //Console.Write("Turbulence Slope Mean: ");
+            //Console.WriteLine(_turbulenceSlopeMean);
 
-            TurbulenceOnsetMax = HRT_Algorythms.CountMax(FinalResults.Item2);
-            Console.Write("Turbulence Onset Max: ");
-            Console.WriteLine(TurbulenceOnsetMax);
+            //_turbulenceOnsetMax = HRT_Algorythms.CountMax(FinalResults.Item2);
+            //Console.Write("Turbulence Onset Max: ");
+            //Console.WriteLine(_turbulenceOnsetMax);
 
-            TurbulenceOnsetMin = HRT_Algorythms.CountMin(FinalResults.Item2);
-            Console.Write("Turbulence Onset Min ");
-            Console.WriteLine(TurbulenceOnsetMin);
+            //_turbulenceOnsetMin = HRT_Algorythms.CountMin(FinalResults.Item2);
+            //Console.Write("Turbulence Onset Min ");
+            //Console.WriteLine(_turbulenceOnsetMin);
 
-            TurbulenceSlopeMax = HRT_Algorythms.CountMax(FinalResults.Item3);
-            Console.Write("Turbulence Slope Max: ");
-            Console.WriteLine(TurbulenceSlopeMax);
+            //_turbulenceSlopeMax = HRT_Algorythms.CountMax(FinalResults.Item3);
+            //Console.Write("Turbulence Slope Max: ");
+            //Console.WriteLine(_turbulenceSlopeMax);
 
-            TurbulenceSlopeMin = HRT_Algorythms.CountMin(FinalResults.Item3);
-            Console.Write("Turbulence Slope Min: ");
-            Console.WriteLine(TurbulenceSlopeMin);
+            //_turbulenceSlopeMin = HRT_Algorythms.CountMin(FinalResults.Item3);
+            //Console.Write("Turbulence Slope Min: ");
+            //Console.WriteLine(_turbulenceSlopeMin);
 
+
+            Tuple<string, double[,]> t3 = Tuple.Create("I", FinalResults.Item1);
+            List<Tuple<string, double[,]>> _tachogram = new List<Tuple<string, double[,]>>();
+            _tachogram.Add(t3);
+
+            Tuple<string, double[]> t4 = Tuple.Create("I", FinalResults.Item2);
+            List<Tuple<string, double[]>> _turbulenceOnset = new List<Tuple<string, double[]>>();
+            _turbulenceOnset.Add(t4);
+
+            Tuple<string, double[]> t5 = Tuple.Create("I", FinalResults.Item3);
+            List<Tuple<string, double[]>> _turbulenceSlope = new List<Tuple<string, double[]>>();
+            _turbulenceOnset.Add(t5);
+
+            Tuple<string, double, double, double> t1 = Tuple.Create("I", _turbulenceOnsetMean, _turbulenceOnsetMax, _turbulenceOnsetMin);
+            List<Tuple<string, double, double, double>> _tachogramOnsetValues = new List<Tuple<string, double, double, double>>();
+            _tachogramOnsetValues.Add(t1);
+
+            Tuple<string, double, double, double> t2 = Tuple.Create("I", _turbulenceSlopeMean, _turbulenceSlopeMax, _turbulenceSlopeMin);
+            List<Tuple<string, double, double, double>> _tachogramSlopeValues = new List<Tuple<string, double, double, double>>();
+            _tachogramSlopeValues.Add(t2);
+            
 
             _ended = true;
         }

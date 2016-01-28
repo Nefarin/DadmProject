@@ -228,7 +228,6 @@ namespace EKG_Project.Modules.HRT
             return mean;
         }
 
-
         public double CountMax(double[] vec)
         {
             double max;
