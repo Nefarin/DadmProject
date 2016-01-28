@@ -74,10 +74,11 @@ namespace EKG_Project.Modules.QT_Disp
         /// <param name="samples">Vector with a cut signal</param>
         /// <param name="index">An index of a current R peak</param>
         /// <returns>T End local index</returns>
-        public int ToDoInProccessData(Vector<double> samples, int index)
+        public Tuple<int,double> ToDoInProccessData(Vector<double> samples, int index)
         {
+            
             //check if we have a good arguments
-            if(samples.Count == 0)
+            if (samples.Count == 0)
             {
                 throw new InvalidOperationException("Empty samples");
             }
@@ -128,7 +129,7 @@ namespace EKG_Project.Modules.QT_Disp
                 this.T_End_local.Add(result.Item1);
             }
             // return a T_End index if bad recognition assign -1
-            return result.Item1;
+            return result;
         }
         /// <summary>
         /// This method calculate a mean QT interval from one drain
@@ -136,13 +137,14 @@ namespace EKG_Project.Modules.QT_Disp
         /// <returns>QT interval mean</returns>
         public double getMean()
         {
-            //creat a list with zero element to compare
-            List<double> zero = new List<double>(1);
-            zero.Add(0);
+           
+           
             // here we store a mean value
             double mean;
+            int zeroElements = QT_INTERVALS.FindAll(s => s.Equals(0)).Count;
+            Console.WriteLine("zero elements in qt interval list: \t" +zeroElements);
             // chceck if a drain was calculate correct            
-            if(QT_INTERVALS.Except(zero).Count() == 0)
+            if (QT_INTERVALS.Count() == zeroElements)
             {
                 // QT interval list include only element with zero values so something go wrong if we are here
                 mean = 0;
@@ -151,7 +153,7 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 // if there is some elements we calculate a mean
                 // we count only good values so we count all QT interval expext 0
-                mean = QT_intervals.Sum() / QT_intervals.Except(zero).Count();
+                mean = QT_intervals.Sum() / (QT_intervals.Count()-zeroElements);
             }           
             return mean;
         }
@@ -237,6 +239,8 @@ namespace EKG_Project.Modules.QT_Disp
             string path_output_end = Path.Combine(path_data, "res_QT_Disp", "QRS_End.txt");
             string path_output_tend = Path.Combine(path_data, "res_QT_Disp", "T_End.txt");
             string path_output_rpeak = Path.Combine(path_data, "res_QT_Disp", "R_Peak.txt");
+            string path_output_my_t_end = Path.Combine(path_data, "res_QT_Disp", "output_end.txt");
+            string path_output_qt_intervals = Path.Combine(path_data, "res_QT_Disp", "output_qt.txt");
 
             List<int> onset = new List<int>();
             List<int> end = new List<int>();
@@ -267,15 +271,15 @@ namespace EKG_Project.Modules.QT_Disp
             TempInput.setInputFilePath(path_output);            
             signal = TempInput.getSignal();
 
-
+            Tuple<int, double> result;
             //create object like we do in interface
             QT_Disp_Alg data = new QT_Disp_Alg();
             // read list from waves, r_peaks  and params 
-            data.TODoInInit(onset, tend, end, R_Peaks, T_End_Method.PARABOLA, QT_Calc_Method.FRAMIGHAMA, 360);
+            data.TODoInInit(onset, tend, end, R_Peaks, T_End_Method.TANGENT, QT_Calc_Method.FRAMIGHAMA, 360);
             List<Tuple<int, double>> output = new List<Tuple<int, double>>();
             // variable to store output
-            double[] t_end = new double[22];
-            double[] qt_interval = new double[22];
+            double[] t_end = new double[21];
+            double[] qt_interval = new double[21];
             //signal cutting
            
             for(int i=0; i<data.R_Peaks.Count-1; i++)
@@ -283,9 +287,16 @@ namespace EKG_Project.Modules.QT_Disp
                 samples = signal.SubVector((int)data.R_Peaks.ElementAt(i),
                    (int)(data.R_Peaks.ElementAt(i + 1) - data.R_Peaks.ElementAt(i)));
                 // cutted signal between neighbour R_Peaks
-                data.ToDoInProccessData(samples, i);             
+                result = data.ToDoInProccessData(samples, i);
+                t_end[i] = result.Item1;
+                qt_interval[i] = result.Item2;             
                
             }
+            // write t_ends and qt intervals to file
+            TempInput.setOutputFilePath(path_output_my_t_end);
+            TempInput.writeFile(360,Vector<double>.Build.DenseOfArray(t_end));
+            TempInput.setOutputFilePath(path_output_qt_intervals);
+            TempInput.writeFile(360, Vector<double>.Build.DenseOfArray(qt_interval));
             // Show output that will be saved in file 
             Console.WriteLine("QT local:\t" + data.getLocal() + "\nQT_mean:\t" + data.getMean() + "\nQT_std:\t\t" + data.getStd());
 
