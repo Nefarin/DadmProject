@@ -18,28 +18,28 @@ namespace EKG_Project.Modules.ECG_Baseline
 
                 //TODO: Comments kkkkkk ccccc
 
-                int L = signal.Count;
+                int signal_length = signal.Count;
                 int DCGain = 1;
 
-                double[] DoubleArray = new double[L];
+                double[] DoubleArray = new double[signal_length];
                 DoubleArray = signal.ToArray();
 
-                Complex[] ComplexArray = new Complex[L];
+                Complex[] ComplexArray = new Complex[signal_length];
 
-                for (int i = 0; i < L; i++)
+                for (int i = 0; i < signal_length; i++)
                 {
                     ComplexArray[i] = new Complex(DoubleArray[i], 0);
                 }
 
                 Fourier.Forward(ComplexArray, FourierOptions.Matlab);
 
-                double binWidth, binFreq, gain;
+                double signallength_double = signal_length, binWidth, binFreq, gain;
 
                 if (fc > 0)
                 {
-                    binWidth = fs / L;
+                    binWidth = fs / signal_length;
 
-                    for (int i = 0; i < (L / 2); i++)
+                    for(int i = 0; i < (signallength_double / 2); i++)
                     {
                         binFreq = binWidth * (i + 1);
                         gain = DCGain / Math.Sqrt(1 + Math.Pow(binFreq / fc, 2.0 * order));
@@ -48,13 +48,13 @@ namespace EKG_Project.Modules.ECG_Baseline
                             gain = 1 - gain;
                         }
                         ComplexArray[i] *= gain;
-                        ComplexArray[L - 1 - i] *= gain;
+                        ComplexArray[signal_length - 1 - i] *= gain;
                     }
                 }
 
                 Fourier.Inverse(ComplexArray, FourierOptions.Matlab);
 
-                for (int i = 0; i < L; i++)
+                for (int i = 0; i < signal_length; i++)
                 {
                     DoubleArray[i] = ComplexArray[i].Real;
                 }
@@ -103,7 +103,7 @@ namespace EKG_Project.Modules.ECG_Baseline
 
                     dest = coeff * bufor;
                     err = filtered_signal[i] - dest;
-
+ 
                     coeff.Add(2 * mi * err * bufor, coeff);
 
                     //coeff = coeff + (2 * mi * err * bufor);
@@ -286,7 +286,7 @@ namespace EKG_Project.Modules.ECG_Baseline
         /*
         static void Main()
         {
-            double[] input_signal = {10,22,24,42,37,77,89,22,63,9};
+            double[] input_signal = {10,22,24,42,37,77,89,22,63,9,11};
          
             Vector<double> signal = Vector<double>.Build.DenseOfArray(input_signal);
             int signal_size = signal.Count;
@@ -309,8 +309,8 @@ namespace EKG_Project.Modules.ECG_Baseline
             System.Console.WriteLine(signal_filtered3.ToString());
             System.Console.WriteLine("Press any key to exit.");
             System.Console.ReadKey();
-        }
-        */
+        }*/
+        
 
     }
 
