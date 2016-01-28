@@ -192,6 +192,7 @@ namespace EKG_Project.Modules.HRT
                 _rpeaksSelected = InputRpeaksData.RPeaks[_currentChannelIndex].Item2;
                 _rrintervalsSelected = InputRpeaksData.RRInterval[_currentChannelIndex].Item2;
 
+                _class = InputHeartClassData.ClassificationResult;
                 List<int> Klasy = new List<int>();
                 foreach (Tuple<int, int> _licznik in _class)
                 {
@@ -209,7 +210,12 @@ namespace EKG_Project.Modules.HRT
                 //*************************************************/
                 _rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
                 _classSelected = HRT_Algorythms.checkVPCifnotNULL(_classSelected);
+                _VPCcount = _classSelected.Length;
+
                 _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classSelected, _VPCcount);
+
+                Tuple<double[,], double[], double[], double[,], double[,]> FinalResults;
+                FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
 
             }
             else
@@ -254,25 +260,25 @@ namespace EKG_Project.Modules.HRT
             //Console.WriteLine(_turbulenceSlopeMin);
 
 
-            Tuple<string, double[,]> t3 = Tuple.Create("I", FinalResults.Item1);
-            List<Tuple<string, double[,]>> _tachogram = new List<Tuple<string, double[,]>>();
-            _tachogram.Add(t3);
+            //Tuple<string, double[,]> t3 = Tuple.Create("I", FinalResults.Item1);
+            //List<Tuple<string, double[,]>> _tachogram = new List<Tuple<string, double[,]>>();
+            //_tachogram.Add(t3);
 
-            Tuple<string, double[]> t4 = Tuple.Create("I", FinalResults.Item2);
-            List<Tuple<string, double[]>> _turbulenceOnset = new List<Tuple<string, double[]>>();
-            _turbulenceOnset.Add(t4);
+            //Tuple<string, double[]> t4 = Tuple.Create("I", FinalResults.Item2);
+            //List<Tuple<string, double[]>> _turbulenceOnset = new List<Tuple<string, double[]>>();
+            //_turbulenceOnset.Add(t4);
 
-            Tuple<string, double[]> t5 = Tuple.Create("I", FinalResults.Item3);
-            List<Tuple<string, double[]>> _turbulenceSlope = new List<Tuple<string, double[]>>();
-            _turbulenceOnset.Add(t5);
+            //Tuple<string, double[]> t5 = Tuple.Create("I", FinalResults.Item3);
+            //List<Tuple<string, double[]>> _turbulenceSlope = new List<Tuple<string, double[]>>();
+            //_turbulenceOnset.Add(t5);
 
-            Tuple<string, double, double, double> t1 = Tuple.Create("I", _turbulenceOnsetMean, _turbulenceOnsetMax, _turbulenceOnsetMin);
-            List<Tuple<string, double, double, double>> _tachogramOnsetValues = new List<Tuple<string, double, double, double>>();
-            _tachogramOnsetValues.Add(t1);
+            //Tuple<string, double, double, double> t1 = Tuple.Create("I", _turbulenceOnsetMean, _turbulenceOnsetMax, _turbulenceOnsetMin);
+            //List<Tuple<string, double, double, double>> _tachogramOnsetValues = new List<Tuple<string, double, double, double>>();
+            //_tachogramOnsetValues.Add(t1);
 
-            Tuple<string, double, double, double> t2 = Tuple.Create("I", _turbulenceSlopeMean, _turbulenceSlopeMax, _turbulenceSlopeMin);
-            List<Tuple<string, double, double, double>> _tachogramSlopeValues = new List<Tuple<string, double, double, double>>();
-            _tachogramSlopeValues.Add(t2);
+            //Tuple<string, double, double, double> t2 = Tuple.Create("I", _turbulenceSlopeMean, _turbulenceSlopeMax, _turbulenceSlopeMin);
+            //List<Tuple<string, double, double, double>> _tachogramSlopeValues = new List<Tuple<string, double, double, double>>();
+            //_tachogramSlopeValues.Add(t2);
 
         }
             
