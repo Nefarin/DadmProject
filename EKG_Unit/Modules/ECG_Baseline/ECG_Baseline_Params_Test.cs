@@ -16,9 +16,9 @@ namespace EKG_Unit.Modules.ECG_Baseline
            Assert.AreEqual (Filtr_Method.BUTTERWORTH, param.Method);
            Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
            Assert.AreEqual(50, param.FcLow);
-           Assert.AreEqual(0.5, param.FcHigh);
-           Assert.AreEqual(3, param.OrderLow);
-           Assert.AreEqual(3, param.OrderHigh);
+           Assert.AreEqual(2, param.FcHigh);
+           Assert.AreEqual(30, param.OrderLow);
+           Assert.AreEqual(30, param.OrderHigh);
         }
         [TestMethod]
         [Description("Test if Butterworth LP constructor works properly")]
