@@ -79,7 +79,7 @@ namespace EKG_Project.IO
         /// Loads ClassificationResult from txt file
         /// </summary>
         /// <param name="lead">lead</param>
-        /// <returns>classification result tuple</returns>
+        /// <returns>classification result list</returns>
         #endregion
         public List<Tuple<int, int>> LoadClassificationResult(string lead, int startIndex, int length)
         {
