@@ -180,9 +180,10 @@ namespace EKG_Unit.Modules.HRT
             HRT_Params testParams = new HRT_Params("Test");
 
             int[] testArray = { 2, 4, 6, 8, 10, 12, 14 };
-            int testLength = 3;
-            
-            int[] expectedArray = { 2, 4, 6, 8 };
+            int testLength = 0;
+
+            int[] expectedArray = { 2, 4, 6, 8, 10, 12, 14 };
+            //int[] expectedArray = { 2, 4, 6, 8 };
 
             HRT_Alg testAlg = new HRT_Alg();
             int[] actualArray = testAlg.removeRedundant(testArray, testLength);
