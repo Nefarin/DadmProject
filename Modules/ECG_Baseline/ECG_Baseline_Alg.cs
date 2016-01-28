@@ -14,7 +14,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             public Vector<double> butterworth(Vector<double> signal, double fs, double fc, int order, Filtr_Type type)
             {
 
-                //TODO: Comments kkkkkk ccccc
+                //TODO: Comments
 
                 int signal_length = signal.Count;
                 int DCGain = 1;
@@ -31,13 +31,13 @@ namespace EKG_Project.Modules.ECG_Baseline
 
                 Fourier.Forward(ComplexArray, FourierOptions.Matlab);
 
-                double binWidth, binFreq, gain;
+                double signallength_double = signal_length, binWidth, binFreq, gain;
 
                 if (fc > 0)
                 {
                     binWidth = fs / signal_length;
 
-                    for(int i = 0; i < (signal_length/2); i++)
+                    for(int i = 0; i < (signallength_double / 2); i++)
                     {
                         binFreq = binWidth * (i+1);
                         gain = DCGain / Math.Sqrt(1 + Math.Pow(binFreq/fc, 2.0 * order));
@@ -199,7 +199,7 @@ namespace EKG_Project.Modules.ECG_Baseline
         /*
         static void Main()
         {
-            double[] input_signal = {10,22,24,42,37,77,89,22,63,9};
+            double[] input_signal = {10,22,24,42,37,77,89,22,63,9,11};
          
             Vector<double> signal = Vector<double>.Build.DenseOfArray(input_signal);
             int signal_size = signal.Count;
@@ -208,22 +208,21 @@ namespace EKG_Project.Modules.ECG_Baseline
             Vector<double> signal_filtered2 = Vector<double>.Build.Dense(signal_size, 0);
             Vector<double> signal_filtered3 = Vector<double>.Build.Dense(signal_size, 0);
 
-            Filter newFilter = new Filter();
-            signal_filtered = newFilter.savitzky_golay(signal, window_size, 0);
+            //Filter newFilter = new Filter();
+            //signal_filtered = newFilter.savitzky_golay(signal, window_size, 0);
 
-            Filter newFilter2 = new Filter();
-            signal_filtered2 = newFilter2.lms(signal, signal_filtered, 50);
+            //Filter newFilter2 = new Filter();
+            //signal_filtered2 = newFilter2.lms(signal, signal_filtered, 50);
 
-            //Filter newFilter3 = new Filter();
-            //signal_filtered3 = newFilter3.butterworth(signal, 20, 1, 3, 1);
-
-            System.Console.WriteLine(signal_filtered.ToString());
-            System.Console.WriteLine(signal_filtered2.ToString());
+            Filter newFilter3 = new Filter();
+            signal_filtered3 = newFilter3.butterworth(signal, 20, 1, 3, Filtr_Type.LOWPASS);
+            //System.Console.WriteLine(signal_filtered.ToString());
+            //System.Console.WriteLine(signal_filtered2.ToString());
             //System.Console.WriteLine(signal_filtered3.ToString());
             System.Console.WriteLine("Press any key to exit.");
             System.Console.ReadKey();
-        }
-        */
+        }*/
+        
 
     }
 
