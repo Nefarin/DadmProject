@@ -11,6 +11,8 @@ namespace EKG_Project.Modules.ECG_Baseline
     {
         public class Filter
         {
+            //========================================================================================================
+
             public Vector<double> butterworth(Vector<double> signal, double fs, double fc, int order, Filtr_Type type)
             {
 
@@ -37,10 +39,10 @@ namespace EKG_Project.Modules.ECG_Baseline
                 {
                     binWidth = fs / L;
 
-                    for(int i = 0; i < (L/2); i++)
+                    for (int i = 0; i < (L / 2); i++)
                     {
-                        binFreq = binWidth * (i+1);
-                        gain = DCGain / Math.Sqrt(1 + Math.Pow(binFreq/fc, 2.0 * order));
+                        binFreq = binWidth * (i + 1);
+                        gain = DCGain / Math.Sqrt(1 + Math.Pow(binFreq / fc, 2.0 * order));
                         if (type == Filtr_Type.HIGHPASS)
                         {
                             gain = 1 - gain;
@@ -62,11 +64,29 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             }
 
-            public Vector<double> lms(Vector<double> signal, Vector<double> filtered_signal, int window_size)
+            public Vector<double> butterworth(Vector<double> signal, double fs, double fc_low, int order_low, double fc_high, int order_high, Filtr_Type type = Filtr_Type.BANDPASS)
+            {
+                if (type == Filtr_Type.BANDPASS)
+                {
+                    int signal_size = signal.Count;
+                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                    lp_filtered_signal = butterworth(signal, fs, fc_low, order_low, Filtr_Type.LOWPASS);
+                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                    hp_filtered_signal = butterworth(lp_filtered_signal, fs, fc_high, order_high, Filtr_Type.HIGHPASS);
+
+                    return hp_filtered_signal;
+                }
+
+                return signal;
+            }
+
+            //========================================================================================================
+
+            public Vector<double> lms(Vector<double> signal, Vector<double> filtered_signal, int window_size, double mi = 0.07)
             {
                 int signal_size = signal.Count;
 
-                double mi = 0.07; //Współczynnik szybkości adaptacji
+                //double mi = 0.07; //Współczynnik szybkości adaptacji
 
                 Vector<double> coeff = Vector<double>.Build.Dense(window_size, 0); //Wektor z wagami filtru
                 Vector<double> bufor = Vector<double>.Build.Dense(window_size, 0); //Inicjalizacja bufora sygnału wejściowego
@@ -75,7 +95,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 double dest;
                 double err;
 
-                for(int i = 0; i<signal_size; i++)
+                for (int i = 0; i < signal_size; i++)
                 {
 
                     bufor.CopySubVectorTo(bufor, 0, 1, window_size - 1);
@@ -83,8 +103,8 @@ namespace EKG_Project.Modules.ECG_Baseline
 
                     dest = coeff * bufor;
                     err = filtered_signal[i] - dest;
- 
-                    coeff.Add(2 * mi * err * bufor,coeff);
+
+                    coeff.Add(2 * mi * err * bufor, coeff);
 
                     //coeff = coeff + (2 * mi * err * bufor);
 
@@ -95,6 +115,38 @@ namespace EKG_Project.Modules.ECG_Baseline
                 return out_signal;
 
             }
+
+            public Vector<double> lms(Vector<double> signal, double fs, int window_size, Filtr_Type type, double mi = 0.07)
+            {
+                if (type == Filtr_Type.LOWPASS)
+                {
+                    int signal_size = signal.Count;
+                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                    lp_filtered_signal = butterworth(signal, fs, 50, 30, Filtr_Type.LOWPASS);
+                    return lms(signal, lp_filtered_signal, window_size, mi);
+                }
+                if (type == Filtr_Type.HIGHPASS)
+                {
+                    int signal_size = signal.Count;
+                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                    hp_filtered_signal = butterworth(signal, fs, 2, 30, Filtr_Type.HIGHPASS);
+                    return lms(signal, hp_filtered_signal, window_size, mi);
+                }
+                if (type == Filtr_Type.BANDPASS)
+                {
+                    int signal_size = signal.Count;
+                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                    lp_filtered_signal = butterworth(signal, fs, 50, 30, Filtr_Type.LOWPASS);
+                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                    hp_filtered_signal = butterworth(lp_filtered_signal, fs, 2, 30, Filtr_Type.HIGHPASS);
+
+                    return lms(signal, hp_filtered_signal, window_size, mi);
+                }
+
+                return signal;
+            }
+
+            //========================================================================================================
 
             public Vector<double> savitzky_golay(Vector<double> signal, int window_size, Filtr_Type type)
             {
@@ -158,6 +210,24 @@ namespace EKG_Project.Modules.ECG_Baseline
                 return output_signal;
             }
 
+            public Vector<double> savitzky_golay(Vector<double> signal, int window_size_low, int window_size_high, Filtr_Type type = Filtr_Type.BANDPASS)
+            {
+                if (type == Filtr_Type.BANDPASS)
+                {
+                    int signal_size = signal.Count;
+                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                    lp_filtered_signal = savitzky_golay(signal, window_size_low, Filtr_Type.LOWPASS);
+                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                    hp_filtered_signal = savitzky_golay(lp_filtered_signal, window_size_high, Filtr_Type.HIGHPASS);
+
+                    return hp_filtered_signal;
+                }
+
+                return signal;
+            }
+
+            //========================================================================================================
+
             public Vector<double> moving_average(Vector<double> signal, int window_size, Filtr_Type type)
             {
                 int signal_size = signal.Count; //rozmiar sygału wejściowego
@@ -194,6 +264,23 @@ namespace EKG_Project.Modules.ECG_Baseline
                 return signal_filtered; //sygnał przefiltrowany
 
             }
+
+            public Vector<double> moving_average(Vector<double> signal, int window_size_low, int window_size_high, Filtr_Type type = Filtr_Type.BANDPASS)
+            {
+                if (type == Filtr_Type.BANDPASS)
+                {
+                    int signal_size = signal.Count;
+                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                    lp_filtered_signal = moving_average(signal, window_size_low, Filtr_Type.LOWPASS);
+                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                    hp_filtered_signal = moving_average(lp_filtered_signal, window_size_high, Filtr_Type.HIGHPASS);
+
+                    return hp_filtered_signal;
+                }
+
+                return signal;
+            }
+
         }
 
         /*
@@ -209,17 +296,17 @@ namespace EKG_Project.Modules.ECG_Baseline
             Vector<double> signal_filtered3 = Vector<double>.Build.Dense(signal_size, 0);
 
             Filter newFilter = new Filter();
-            signal_filtered = newFilter.savitzky_golay(signal, window_size, 0);
+            signal_filtered = newFilter.savitzky_golay(signal, 10, 10, Filtr_Type.BANDPASS);
 
             Filter newFilter2 = new Filter();
-            signal_filtered2 = newFilter2.lms(signal, signal_filtered, 50);
+            signal_filtered2 = newFilter2.lms(signal, 10, 10, Filtr_Type.BANDPASS, 0.000001);
 
-            //Filter newFilter3 = new Filter();
-            //signal_filtered3 = newFilter3.butterworth(signal, 20, 1, 3, 1);
+            Filter newFilter3 = new Filter();
+            signal_filtered3 = newFilter3.butterworth(signal,100, 2,2,4,4, Filtr_Type.BANDPASS);
 
             System.Console.WriteLine(signal_filtered.ToString());
             System.Console.WriteLine(signal_filtered2.ToString());
-            //System.Console.WriteLine(signal_filtered3.ToString());
+            System.Console.WriteLine(signal_filtered3.ToString());
             System.Console.WriteLine("Press any key to exit.");
             System.Console.ReadKey();
         }
