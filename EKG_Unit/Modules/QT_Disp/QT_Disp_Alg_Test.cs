@@ -107,10 +107,31 @@ namespace EKG_Unit.Modules.QT_Disp
         }
 
         /// <summary>
-        /// Below, there are test for all the exceptions that could be encountered while running programme
+        /// Below, there is the empty list exception test for method TODoInInit 
         /// </summary>
         [TestMethod]
-        [Description("Test if method returns -1, 0 when contructor parameters QRSonset= -1 and Tend = -1")]
+        [Description("Test of TODoInInit if lists not empty")]
+        [ExpectedException(typeof(ArgumentNullException), "QRS_onset empty list")]
+        public void testQT_Disp_Alg_Inittest()
+        {
+            QT_Disp_Alg test = new QT_Disp_Alg();
+            PrivateObject obj = new PrivateObject(test);
+            List<int> onset = new List<int>();
+            List<int> end = new List<int>(); //test works the same if QRS_end list is empty
+            end.Add(155);
+            List<int> tend = new List<int>(); //and T_end_global list is empty ;
+            tend.Add(200);
+            double[] rpeak = { 204, 606 };
+            Vector<double> Rpeak = Vector<double>.Build.DenseOfArray(rpeak);
+
+            test.TODoInInit(onset, tend, end, Rpeak, T_End_Method.TANGENT, QT_Calc_Method.FRIDERICA, (uint)360);
+        }
+
+        /// <summary>
+        /// Below, there are tests for all the exceptions that could be encountered while running programme
+        /// </summary>
+        [TestMethod]
+        [Description("Test if method returns -1, 0 when contructor parameters Tend_Global = -1")]
         public void testQT_Disp_Alg2()
         {//check if this is correct...
             QT_Disp_Alg test = new QT_Disp_Alg();
@@ -170,7 +191,6 @@ namespace EKG_Unit.Modules.QT_Disp
            
             Vector<double> sampl = Vector<double>.Build.DenseOfArray(signalTab);
             int onset = 192;
-            //onset 192
             int end = 225;
             int tend = -1;
             //352
