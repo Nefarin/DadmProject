@@ -152,7 +152,7 @@ namespace EKG_Project.Modules.QT_Disp
             else
             {
                 // if there is some elements we calculate a mean
-                // we count only good values so we count all QT interval expext 0
+                // we count only good values so we count all QT interval except 0
                 mean = QT_intervals.Sum() / (QT_intervals.Count()-zeroElements);
             }           
             return mean;
@@ -165,20 +165,23 @@ namespace EKG_Project.Modules.QT_Disp
         {
             //here we store a standard deviation value
             double std;
-            //creat a list with zero element to compare
-            List<double> zero = new List<double>(1);
-            zero.Add(0);
-            // chceck if a drain was calculate correct      
-            if (QT_INTERVALS.Except(zero).Count() == 0)
+            //List<double> std_base = new List<double>;
+            
+            // chceck if a drain was calculate correctly      
+            if (QT_INTERVALS.Exists(q => q > 0))
             {
-                // QT interval list include only element with zero values so something go wrong if we are here
-                std = 0;
+                // if there are any elements, we calculate a standard deviation
+
+                //subtract 0 elements before the std calculation
+                //zeros indicate the lack of QT interval and not the value of interval - cannot be counted
+            int std_base = QT_INTERVALS.RemoveAll(x => x.Equals(0));
+                std = QT_INTERVALS.StandardDeviation();
             }
             else
             {
-                // if there is some elements we calculate a standard deviation
-                // we get only good values so we count all QT interval expext 0
-                std = QT_intervals.Except(zero).StandardDeviation();
+                // if QT interval list include only element with zero values (means something go wrong if we are here)
+                std = 0;
+                
             }           
             return std;
         }
@@ -275,7 +278,7 @@ namespace EKG_Project.Modules.QT_Disp
             //create object like we do in interface
             QT_Disp_Alg data = new QT_Disp_Alg();
             // read list from waves, r_peaks  and params 
-            data.TODoInInit(onset, tend, end, R_Peaks, T_End_Method.TANGENT, QT_Calc_Method.FRAMIGHAMA, 360);
+            data.TODoInInit(onset, tend, end, R_Peaks, T_End_Method.PARABOLA, QT_Calc_Method.FRAMIGHAMA, 360);
             List<Tuple<int, double>> output = new List<Tuple<int, double>>();
             // variable to store output
             double[] t_end = new double[21];
