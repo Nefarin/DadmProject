@@ -72,15 +72,27 @@ namespace EKG_Project.Modules.HRT
             return _ended;
         }
 
+        /**************************************************/
+        //inicjalizacja modulu
+        /**************************************************/
         public void Init(ModuleParams parameters) {
 
             Params = parameters as HRT_Params;
             string _analysisName = Params.AnalysisName;
+
             Aborted = false;
+
             if (!Runnable() ) _ended = true;
-            else {
+            else
+            {
                 _ended = false;
 
+                /**************************************************/
+                //wczytanie danych z odprowadzen
+                //*************************************************/
+                /**************************************************/
+                //proba pobrania parametrow z modulu basic
+                //*************************************************/
                 try
                 {
                     InputBasicDataWorker = new Basic_Data_Worker(_analysisName);
@@ -94,83 +106,38 @@ namespace EKG_Project.Modules.HRT
                 {
                     Abort();
                 }
-
+                                
+                /**************************************************/
+                //proba pobrania parametrow z modulu r_peaks
+                /**************************************************/
                 try
                 {
                     InputRpeaksWorker = new R_Peaks_Data_Worker(_analysisName);
                     InputRpeaksWorker.Load();
                     InputRpeaksData = InputRpeaksWorker.Data;
-                    _rpeaks = InputRpeaksData.RPeaks;
-                    _rrintervals = InputRpeaksData.RRInterval;
-
-                    //selekcja kanałów, na razie biorę tylko I
-                    foreach (Tuple<string, Vector<double>> _licznik in _rpeaks)
-                    {
-                        if (_licznik.Item1 == "I") {
-                            _rpeaksSelected = _licznik.Item2;
-                        }
-                        else {; }
-                    }
-                    foreach (Tuple<string, Vector<double>> _licznik in _rrintervals)
-                    {
-                        if (_licznik.Item1 == "I")
-                        { 
-                            _rrintervalsSelected = _licznik.Item2;
-                        }
-                        else {; }
-                    }
                 }
                 catch (Exception e)
                 {
                     Abort();
                 }
-
-
-
-
+                                
+                /**************************************************/
+                //proba pobrania parametrow z modulu heart_class
+                /**************************************************/
                 try
                 {
                     InputHeartClassWorker = new Heart_Class_Data_Worker(_analysisName);
                     InputHeartClassWorker.Load();
                     InputHeartClassData = InputHeartClassWorker.Data;
-                    _class = InputHeartClassData.ClassificationResult;
-
-
-                    List<int> Klasy = new List<int>();
-                    foreach (Tuple<int, int> _licznik in _class)
-                    {
-                        if (_licznik.Item2 == 1)
-                        {
-                            Klasy.Add(_licznik.Item1);
-
-                        }
-                        else {; }
-                    }
-                     _classSelected = Klasy.ToArray();
-            
-                    _VPCcount = _classSelected.Length;
-                    if (_classSelected.Length == 0)
-                    {
-                        Console.WriteLine("Brak załamków VPC");
-                    }
-                    else
-                    {
-                        //Console.Write("Jest ");
-                        //Console.Write(_VPCcount);
-                        //Console.WriteLine(" załamków VPC");
-                    }
                 }
                 catch (Exception e)
                 {
                     Abort();
                 }
 
-
-                _rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
-                _classSelected = HRT_Algorythms.checkVPCifnotNULL(_classSelected);
-                _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classSelected, _VPCcount);
-
-
+                /**************************************************/
+                //dane wyjściowe - inicjalizacja
+                /**************************************************/
                 try
                 {
                     OutputWorker = new HRT_Data_Worker(Params.AnalysisName);
@@ -181,6 +148,11 @@ namespace EKG_Project.Modules.HRT
                     Abort();
                 }
 
+                /**************************************************/
+                //ustawienie liczby odprowadzen i bierzacego kanalu
+                /**************************************************/
+                _currentChannelIndex = 0;
+                NumberOfChannels = InputRpeaksData.RPeaks.Count;
 
             }
         }
@@ -205,19 +177,46 @@ namespace EKG_Project.Modules.HRT
             return Aborted;
         }
 
+        /**************************************************/
+        //glowny proces wykonywania modulu
+        //*************************************************/
         private void processData()
         {
+            if(_currentChannelIndex < NumberOfChannels)
+            {
+                /**************************************************/
+                //wykonywane sa obliczenia algorytmu dla kazdego z
+                //odprowadzen, ktore sa dostepne
+                //*************************************************/
+                
+                _rpeaksSelected = InputRpeaksData.RPeaks[_currentChannelIndex].Item2;
+                _rrintervalsSelected = InputRpeaksData.RRInterval[_currentChannelIndex].Item2;
+
+                List<int> Klasy = new List<int>();
+                foreach (Tuple<int, int> _licznik in _class)
+                {
+                    if (_licznik.Item2 == 1)
+                    {
+                        Klasy.Add(_licznik.Item1);
+
+                    }
+                    else {; }
+                }
+                _classSelected = Klasy.ToArray();
+
+                _rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
+                _classSelected = HRT_Algorythms.checkVPCifnotNULL(_classSelected);
+                _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classSelected, _VPCcount);
+
+            }
 
             //HRT_Algorythms.PrintVector(_rpeaksSelected);
             // HRT_Algorythms.PrintVector(_rrintervalsSelected);
             //HRT_Algorythms.PrintVector(_classSelected);
             //HRT_Algorythms.PrintVector(_nrVPC);
-            FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
+            //** FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
             //Tuple<double[,], double[,]> SlopeVisualization;
             //SlopeVisualization = LinearSquarePrepareResults(p.Item2, j);
-
-
-
 
             //HRT_Algorythms.PrintVector(FinalResults.Item3);
 
