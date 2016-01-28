@@ -309,8 +309,8 @@ namespace EKG_Project.Modules.ECG_Baseline
             System.Console.WriteLine(signal_filtered3.ToString());
             System.Console.WriteLine("Press any key to exit.");
             System.Console.ReadKey();
-        }*/
-        
+        }
+        */
 
     }
 
