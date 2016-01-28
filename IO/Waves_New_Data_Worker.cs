@@ -140,5 +140,46 @@ namespace EKG_Project.IO
 
             return list;
         }
+
+        /// <summary>
+        /// Gets number of Waves_Attributes samples 
+        /// </summary>
+        /// <param name="atr">Waves_Attributes</param>
+        /// <param name="lead">lead</param>
+        /// <returns>samples</returns>
+        public uint getNumberOfSamples(Waves_Attributes atr, string lead)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
+            string path = Path.Combine(directory, fileName);
+
+            uint count = 0;
+            using (StreamReader r = new StreamReader(path))
+            {
+                while (r.ReadLine() != null)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Deletes all analysis files with Waves_Data
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileNamePattern = analysisName + "_" + moduleName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+
+        }
     }
 }

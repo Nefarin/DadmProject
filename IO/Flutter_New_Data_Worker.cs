@@ -77,5 +77,22 @@ namespace EKG_Project.IO
             Tuple<int, int> tuple = Tuple.Create(convertedItem1, convertedItem2);
             return tuple;
         }
+
+        /// <summary>
+        /// Deletes all analysis files with Flutter_Data
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileNamePattern = analysisName + "_" + moduleName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+
+        }
     }
 }

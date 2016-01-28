@@ -78,5 +78,22 @@ namespace EKG_Project.IO
             double readValue = Convert.ToDouble(readLine);
             return readValue;
         }
+
+        /// <summary>
+        /// Deletes all analysis files with Heart_Axis_Data
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileNamePattern = analysisName + "_" + moduleName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+
+        }
     }
 }
