@@ -142,7 +142,7 @@ namespace EKG_Project.Modules.QT_Disp
             // here we store a mean value
             double mean;
             int zeroElements = QT_INTERVALS.FindAll(s => s.Equals(0)).Count;
-            Console.WriteLine("zero elements in qt interval list: \t" +zeroElements);
+           
             // chceck if a drain was calculate correct            
             if (QT_INTERVALS.Count() == zeroElements)
             {
@@ -199,7 +199,8 @@ namespace EKG_Project.Modules.QT_Disp
             try
             {
                 //if yes,  we calculate a local QT disperssion
-                local = QT_intervals.Max() - QT_intervals.Except(zero).Min();
+                int std_base = QT_INTERVALS.RemoveAll(x => x.Equals(0));
+                local = QT_intervals.Max() - QT_intervals.Min();
             }
             catch(System.InvalidOperationException ex)
             {
@@ -278,7 +279,7 @@ namespace EKG_Project.Modules.QT_Disp
             //create object like we do in interface
             QT_Disp_Alg data = new QT_Disp_Alg();
             // read list from waves, r_peaks  and params 
-            data.TODoInInit(onset, tend, end, R_Peaks, T_End_Method.PARABOLA, QT_Calc_Method.FRAMIGHAMA, 360);
+            data.TODoInInit(onset, tend, end, R_Peaks, T_End_Method.TANGENT, QT_Calc_Method.FRAMIGHAMA, 360);
             List<Tuple<int, double>> output = new List<Tuple<int, double>>();
             // variable to store output
             double[] t_end = new double[21];
