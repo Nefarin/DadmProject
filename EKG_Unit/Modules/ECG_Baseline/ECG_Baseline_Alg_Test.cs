@@ -252,11 +252,11 @@ namespace EKG_Unit.Modules.ECG_Baseline
         }
 
         [TestMethod]
-        [Description("Test if LMS LP method returns proper values")]
+        [Description("Test if LMS LowPass method returns proper values")]
         public void LMSLowPassTest()
         {
             double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
-            double[] resultArray = { 0.00000, 0.56000, 5.86880, -26.38586, 255.61202, -2155.77962, 23949.11075, -499803.79529, 29527205.55922, -2242067864.11451, 182349064975.68800, -18692941606262.80000, 2167497459981610.00000, -263267085426246000.00000, 33454186668971100000.00000, -4344925839486270000000.00000, 578846977867839000000000.00000, -79548164342263400000000000.00000, 15570874781327400000000000000.00000, -18614211988508500000000000000000.00000 };
+            double[] resultArray = { 0, 0.000121574342594726, 0.00127067584450675, 0.00256762812086248, 0.00177364722960814, 0.00211926204064925, 0.00390863744536996, 0.00891253160718405, 0.0239684711975802, 0.0286993750454615, 0.0400923764285664, 0.0695486753066789, 0.0758021483151843, 0.0851889059364655, 0.0886454778064214, 0.0958970676536276, 0.119820616779919, 0.158564161731197, 0.433641107383302, 1.23752605246487 };
 
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
             Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
@@ -267,7 +267,63 @@ namespace EKG_Unit.Modules.ECG_Baseline
             }
 
             ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
-            Vector<double> actual = target.lms(testVector, 360, 50, Filtr_Type.LOWPASS, 0.000001);
+            Vector<double> actual = target.lms(testVector, 360, 50, Filtr_Type.BANDPASS, 0.000001);
+
+            for (int i = 0; i < actual.Count; i++)
+            {
+                actual[i] = System.Math.Round(actual[i], 3);
+            }
+
+            System.Console.WriteLine(actual.ToString());
+            Assert.AreEqual(resultVector, actual);
+        }
+
+
+        [TestMethod]
+        [Description("Test if LMS LP method returns proper values")]
+        public void LMSHighPassTest()
+        {
+            double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
+            double[] resultArray = { 0, 4.00000000000000e-06, 8.79998560000002e-05, 0.00100998964801670, 0.00107586810931184, 0.00107176965426736, 0.00215958579237459, 0.00558473914513914, 0.0201031242830191, 0.0394228003615180, 0.0410897860746374, 0.0714849767635253, 0.0925725836135533, 0.101191785750685, 0.110583350977116, 0.103585621833041, 0.114080429837007, 0.116692482610497, 0.344122620993915, 1.92946016022332 };
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            for (int i = 0; i < resultVector.Count; i++)
+            {
+                resultVector[i] = System.Math.Round(resultVector[i], 3);
+            }
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.lms(testVector, 360, 50, Filtr_Type.HIGHPASS, 0.000001);
+
+            for (int i = 0; i < actual.Count; i++)
+            {
+                actual[i] = System.Math.Round(actual[i], 3);
+            }
+
+            System.Console.WriteLine(actual.ToString());
+            Assert.AreEqual(resultVector, actual);
+        }
+
+
+        [TestMethod]
+        [Description("Test if LMS BandPass method returns proper values")]
+        public void LMSBandPassTest()
+        {
+            double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
+            double[] resultArray = { 0, 0.000121574342594726, 0.00127067584450675, 0.00256762812086248, 0.00177364722960815, 0.00211926204064925, 0.00390863744536996, 0.00891253160718405, 0.0239684711975802, 0.0286993750454615, 0.0400923764285664, 0.0695486753066789, 0.0758021483151843, 0.0851889059364655, 0.0886454778064214, 0.0958970676536276, 0.119820616779919, 0.158564161731197, 0.433641107383302, 1.23752605246487 };
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            for (int i = 0; i < resultVector.Count; i++)
+            {
+                resultVector[i] = System.Math.Round(resultVector[i], 3);
+            }
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.lms(testVector, 360, 50, Filtr_Type.BANDPASS, 0.000001);
 
             for (int i = 0; i < actual.Count; i++)
             {
