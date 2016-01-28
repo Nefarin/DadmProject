@@ -97,7 +97,7 @@ namespace EKG_Project.Modules.HRT
         {
             int k = 0;
             int[] newklasa = new int[klasa.Length];
-            for (int i = 0; i < klasa.Length - 1; i++)
+            for (int i = 0; i < klasa.Length; i++)
             {
                 if (!miss[i])
                 {
@@ -117,10 +117,10 @@ namespace EKG_Project.Modules.HRT
             int[] nrVPCArray;
             bool[] missClass = new bool[VPCcount];
             nrVPCArray = new int[VPCcount];
-            for (int i = 0; i < VPCcount - 1; i++)
+            for (int i = 0; i < VPCcount; i++)
             {
                 missClass[i] = true;
-                for (int j = 0; j < rrTimes.Length - 1; j++)
+                for (int j = 0; j < rrTimes.Length; j++)
                 {
                     if (rrTimes[j] == rrTimesVPC[i])
                     {
@@ -128,9 +128,9 @@ namespace EKG_Project.Modules.HRT
                         //Console.Write(i);
                         //Console.Write("      ");
                         //Console.Write(j);
-                        //Console.Write("      ");
-                        //Console.Write(rrTimes[j]);
-                        //Console.Write("      ");
+                        //Console.Write("***");
+                        //Console.Write(nrVPCArray[i]);
+                        //Console.Write("***      ");
                         //Console.WriteLine(rrTimesVPC[i]);
                         missClass[i] = false;
 
@@ -159,7 +159,7 @@ namespace EKG_Project.Modules.HRT
         public int[] removeRedundant(int[] array, int length)
         {
             if (array == null) throw new ArgumentNullException();
-            if (length <= 0 || length >= array.Length) throw new ArgumentOutOfRangeException();
+            if (length < 0 || length >= array.Length) throw new ArgumentOutOfRangeException();
 
             int arraySize = array.Length;
             int newArraySize = arraySize - length;
@@ -179,12 +179,12 @@ namespace EKG_Project.Modules.HRT
             int foward = 15;
             int sum = back + foward ;
 
-            double[] after = new double[VPC.GetLength(0)-1];
-            double[] before = new double[VPC.GetLength(0)-1];
-            double[] TO = new double[VPC.GetLength(0)-1];
-            double[] TS = new double[VPC.GetLength(0)-1];
+            double[] after = new double[VPC.GetLength(0)];
+            double[] before = new double[VPC.GetLength(0)];
+            double[] TO = new double[VPC.GetLength(0)];
+            double[] TS = new double[VPC.GetLength(0)];
             int i = 0;
-            double[,] VPCTachogram = new double[sum, VPC.GetLength(0)-1];
+            double[,] VPCTachogram = new double[sum, VPC.GetLength(0)];
 
             foreach (int nrVPC in VPC)
             {
