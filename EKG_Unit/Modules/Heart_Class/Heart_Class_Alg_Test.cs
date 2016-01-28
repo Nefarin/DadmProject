@@ -316,7 +316,27 @@ namespace EKG_Unit.Modules.Heart_Class
             Assert.AreNotEqual(expectedResult, testResult);
 
         }
-        
+
+
+        [TestMethod]
+        [Description("Test if method calculates the distances Q-R and R-S properly - not equality test")]
+        public void DistancesFromR1()
+        {
+            
+            uint fs = 360;
+            int expectedNumberOfSamplesQR = 23;
+            int expectedNumberOfSamplesRS = 34;
+
+            Tuple<int, int> expectedResult = new Tuple<int, int>(expectedNumberOfSamplesQR, expectedNumberOfSamplesRS);
+           
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+            Tuple<int, int> testResult = testAlgs.DistancesFromR(fs);
+
+
+            Assert.AreEqual(expectedResult, testResult);
+
+        }
+
         [TestMethod]
         [Description("Test if method set correct QRS complex  - equality test")]
         public void OneQrsComplex1()
@@ -324,9 +344,10 @@ namespace EKG_Unit.Modules.Heart_Class
             Heart_Class_Alg testAlgs = new Heart_Class_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
-            double qrsOnset = 5;
-            double qrsEnd = 29;
+            int qrsOnset = 5;
+            int qrsEnd = 29;
             double R = 13;
+            uint fs = 360;
             double[] testArray =
             {
                 -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335, -0.38369, -0.39605,
@@ -347,69 +368,240 @@ namespace EKG_Unit.Modules.Heart_Class
             Vector<double> expectedVector = Vector<double>.Build.DenseOfArray(expectedArray);
             Tuple < int, Vector < double >> expectedResult = new Tuple<int, Vector<double>>((int)R, expectedVector);
 
-            object[] args = { qrsOnset, qrsEnd, R };
+            object[] args = { qrsOnset, qrsEnd, R, fs };
             obj.Invoke("OneQrsComplex", args);
 
             Assert.AreEqual(expectedResult, testAlgs.QrsComplexOne);
 
         }
 
-      
         [TestMethod]
-        [Description("Test if method throws null, when qrsOnser or qrsEnd is -1")]
-        [ExpectedException(typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+        [Description("Test if method set arbitrary values, when qrsOnset or qrsEnd is -1")]
         public void OneQrsComplex2()
         {
             Heart_Class_Alg testAlgs = new Heart_Class_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
-            double qrsOnset = 5;
-            double qrsEnd = -1;
-            double R = 13;
+            int qrsOnset = 15;
+            int qrsEnd = -1;
+            double R = 30;
             uint fs = 360;
             double[] testArray =
             {
-                -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335, -0.38369, -0.39605,
-                -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486, 0.86883, 0.84255, 0.72056, 0.52455,
-                0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399, -0.28368, -0.21097, -0.1402, -0.090148,
-                -0.070429, -0.080307, -0.11024, -0.1458
+                -0.086264, -0.096522,   -0.099909,  -0.096139,   -0.086465,   -0.073789,   -0.062517,   -0.057074,   -0.060127,   -0.071301,   -0.086807,   -0.10118,    -0.10969,    -0.10975,    -0.10166,    -0.088353,
+                -0.074281,   -0.064497,   -0.063391,   -0.072903,   -0.091486,   -0.1141, -0.13362, -0.14414,    -0.14401,    -0.13699,    -0.13126,    -0.13644,    -0.16032,    -0.20561,    -0.26753,    -0.33335,
+                -0.38369,    -0.39605,    -0.35046,    -0.236,  -0.055888,   0.17117, 0.41375, 0.63385, 0.79486, 0.86883, 0.84255, 0.72056, 0.52455, 0.28928, 0.055008,    -0.14166,    -0.27553,    -0.33743,    -0.33399,
+                -0.28368,    -0.21097,    -0.1402, -0.090148,   -0.070429,   -0.080307,   -0.11024,    -0.1458, -0.17298,    -0.18275,    -0.17326,    -0.14924,    -0.11914,    -0.091773,   -0.073821,   -0.068456,
+                -0.074897,   -0.088698,   -0.10303,    -0.1111
             };
+
             Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
             testAlgs.Signal = exampleSignal;
+            
+            double[] expectedArray =
+            {   -0.057074,
+                -0.060127, -0.071301, -0.086807, -0.10118, -0.10969, -0.10975, -0.10166, -0.088353,
+                -0.074281, -0.064497, -0.063391, -0.072903, -0.091486, -0.1141, -0.13362, -0.14414,
+                -0.14401, -0.13699, -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335,
+                -0.38369, -0.39605, -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486,
+                0.86883, 0.84255, 0.72056, 0.52455, 0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399,
+                -0.28368, -0.21097, -0.1402, -0.090148, -0.070429, -0.080307, -0.11024, -0.1458,
+                -0.17298, -0.18275, -0.17326, -0.14924, -0.11914, -0.091773
+            };
 
-            object[] args = { qrsOnset, qrsEnd, R };
+            Vector<double> expectedVector = Vector<double>.Build.DenseOfArray(expectedArray);
+            Tuple<int, Vector<double>> expectedResult = new Tuple<int, Vector<double>>((int)R, expectedVector);
+
+            object[] args = { qrsOnset, qrsEnd, R, fs };
             obj.Invoke("OneQrsComplex", args);
 
-            Tuple<int, Vector<double>> testResult = testAlgs.CountCoeff(testAlgs.QrsComplexOne, fs);
+            Assert.AreEqual(expectedResult, testAlgs.QrsComplexOne);
 
         }
 
         [TestMethod]
-        [Description("Test if method throws null, when qrsOnser and qrsEnd is -1")]
-        [ExpectedException(typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+        [Description("Test if method set arbitrary values, when qrsOnser and qrsEnd is -1")]
         public void OneQrsComplex3()
         {
             Heart_Class_Alg testAlgs = new Heart_Class_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
-            double qrsOnset = -1;
-            double qrsEnd = -1;
-            double R = 13;
+            int qrsOnset = -1;
+            int qrsEnd = -1;
+            double R = 30;
             uint fs = 360;
             double[] testArray =
             {
-                -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335, -0.38369, -0.39605,
-                -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486, 0.86883, 0.84255, 0.72056, 0.52455,
-                0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399, -0.28368, -0.21097, -0.1402, -0.090148,
-                -0.070429, -0.080307, -0.11024, -0.1458
+                -0.086264, -0.096522,   -0.099909,  -0.096139,   -0.086465,   -0.073789,   -0.062517,   -0.057074,   -0.060127,   -0.071301,   -0.086807,   -0.10118,    -0.10969,    -0.10975,    -0.10166,    -0.088353,
+                -0.074281,   -0.064497,   -0.063391,   -0.072903,   -0.091486,   -0.1141, -0.13362, -0.14414,    -0.14401,    -0.13699,    -0.13126,    -0.13644,    -0.16032,    -0.20561,    -0.26753,    -0.33335,
+                -0.38369,    -0.39605,    -0.35046,    -0.236,  -0.055888,   0.17117, 0.41375, 0.63385, 0.79486, 0.86883, 0.84255, 0.72056, 0.52455, 0.28928, 0.055008,    -0.14166,    -0.27553,    -0.33743,    -0.33399,
+                -0.28368,    -0.21097,    -0.1402, -0.090148,   -0.070429,   -0.080307,   -0.11024,    -0.1458, -0.17298,    -0.18275,    -0.17326,    -0.14924,    -0.11914,    -0.091773,   -0.073821,   -0.068456,
+                -0.074897,   -0.088698,   -0.10303,    -0.1111
             };
+
             Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
             testAlgs.Signal = exampleSignal;
 
-            object[] args = { qrsOnset, qrsEnd, R };
+            double[] expectedArray =
+            {   -0.057074,
+                -0.060127, -0.071301, -0.086807, -0.10118, -0.10969, -0.10975, -0.10166, -0.088353,
+                -0.074281, -0.064497, -0.063391, -0.072903, -0.091486, -0.1141, -0.13362, -0.14414,
+                -0.14401, -0.13699, -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335,
+                -0.38369, -0.39605, -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486,
+                0.86883, 0.84255, 0.72056, 0.52455, 0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399,
+                -0.28368, -0.21097, -0.1402, -0.090148, -0.070429, -0.080307, -0.11024, -0.1458,
+                -0.17298, -0.18275, -0.17326, -0.14924, -0.11914, -0.091773
+            };
+
+            Vector<double> expectedVector = Vector<double>.Build.DenseOfArray(expectedArray);
+            Tuple<int, Vector<double>> expectedResult = new Tuple<int, Vector<double>>((int)R, expectedVector);
+
+            object[] args = { qrsOnset, qrsEnd, R, fs };
             obj.Invoke("OneQrsComplex", args);
 
-            Tuple<int, Vector<double>> testResult = testAlgs.CountCoeff(testAlgs.QrsComplexOne, fs);
+            Assert.AreEqual(expectedResult, testAlgs.QrsComplexOne);
+
+        }
+
+        [TestMethod]
+        [Description("Test if method set arbitrary values, when both qrsOnset or qrsEnd are larger than arbitrary. So when something is not okay in Waves ")]
+        public void OneQrsComplex4()
+        {
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            int qrsOnset = 5;
+            int qrsEnd = 70;
+            double R = 30;
+            uint fs = 360;
+            double[] testArray =
+            {
+                -0.086264, -0.096522,   -0.099909,  -0.096139,   -0.086465,   -0.073789,   -0.062517,   -0.057074,   -0.060127,
+                -0.071301,   -0.086807,   -0.10118,    -0.10969,    -0.10975,    -0.10166,    -0.088353,
+                -0.074281,   -0.064497,   -0.063391,   -0.072903,   -0.091486,   -0.1141, -0.13362, -0.14414,
+                -0.14401,    -0.13699,    -0.13126,    -0.13644,    -0.16032,    -0.20561,    -0.26753,    -0.33335,
+                -0.38369,    -0.39605,    -0.35046,    -0.236,  -0.055888,   0.17117, 0.41375, 0.63385, 0.79486, 0.86883,
+                0.84255, 0.72056, 0.52455, 0.28928, 0.055008,    -0.14166,    -0.27553,    -0.33743,    -0.33399,
+                -0.28368,    -0.21097,    -0.1402, -0.090148,   -0.070429,   -0.080307,   -0.11024,    -0.1458,
+                -0.17298,    -0.18275,    -0.17326,    -0.14924,    -0.11914,    -0.091773,   -0.073821,   -0.068456,
+                -0.074897,   -0.088698,   -0.10303,    -0.1111
+            };
+
+            Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
+            testAlgs.Signal = exampleSignal;
+
+            double[] expectedArray =
+            {   -0.057074,
+                -0.060127, -0.071301, -0.086807, -0.10118, -0.10969, -0.10975, -0.10166, -0.088353,
+                -0.074281, -0.064497, -0.063391, -0.072903, -0.091486, -0.1141, -0.13362, -0.14414,
+                -0.14401, -0.13699, -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335,
+                -0.38369, -0.39605, -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486,
+                0.86883, 0.84255, 0.72056, 0.52455, 0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399,
+                -0.28368, -0.21097, -0.1402, -0.090148, -0.070429, -0.080307, -0.11024, -0.1458,
+                -0.17298, -0.18275, -0.17326, -0.14924, -0.11914, -0.091773
+            };
+
+            Vector<double> expectedVector = Vector<double>.Build.DenseOfArray(expectedArray);
+            Tuple<int, Vector<double>> expectedResult = new Tuple<int, Vector<double>>((int)R, expectedVector);
+
+            object[] args = { qrsOnset, qrsEnd, R, fs };
+            obj.Invoke("OneQrsComplex", args);
+
+            Assert.AreEqual(expectedResult, testAlgs.QrsComplexOne);
+
+        }
+
+        [TestMethod]
+        [Description("Test if method set arbitrary value for qrsEnd  if it's larger than arbitrary. So when something is not okay in Waves ")]
+        public void OneQrsComplex5()
+        {
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            int qrsOnset = 10;
+            int qrsEnd = 70;
+            double R = 30;
+            uint fs = 360;
+            double[] testArray =
+            {
+                -0.086264, -0.096522,   -0.099909,  -0.096139,   -0.086465,   -0.073789,   -0.062517,   -0.057074,   -0.060127,
+                -0.071301,   -0.086807,   -0.10118,    -0.10969,    -0.10975,    -0.10166,    -0.088353,
+                -0.074281,   -0.064497,   -0.063391,   -0.072903,   -0.091486,   -0.1141, -0.13362, -0.14414,
+                -0.14401,    -0.13699,    -0.13126,    -0.13644,    -0.16032,    -0.20561,    -0.26753,    -0.33335,
+                -0.38369,    -0.39605,    -0.35046,    -0.236,  -0.055888,   0.17117, 0.41375, 0.63385, 0.79486, 0.86883,
+                0.84255, 0.72056, 0.52455, 0.28928, 0.055008,    -0.14166,    -0.27553,    -0.33743,    -0.33399,
+                -0.28368,    -0.21097,    -0.1402, -0.090148,   -0.070429,   -0.080307,   -0.11024,    -0.1458,
+                -0.17298,    -0.18275,    -0.17326,    -0.14924,    -0.11914,    -0.091773,   -0.073821,   -0.068456,
+                -0.074897,   -0.088698,   -0.10303,    -0.1111
+            };
+
+            Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
+            testAlgs.Signal = exampleSignal;
+
+            double[] expectedArray =
+            {   -0.086807,   -0.10118,    -0.10969,    -0.10975,    -0.10166,    -0.088353,
+                -0.074281,   -0.064497,   -0.063391,   -0.072903,   -0.091486,   -0.1141, -0.13362, -0.14414,
+                -0.14401,    -0.13699,    -0.13126,    -0.13644,    -0.16032,    -0.20561,    -0.26753, -0.33335,
+                -0.38369, -0.39605, -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486,
+                0.86883, 0.84255, 0.72056, 0.52455, 0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399,
+                -0.28368, -0.21097, -0.1402, -0.090148, -0.070429, -0.080307, -0.11024, -0.1458,
+                -0.17298, -0.18275, -0.17326, -0.14924, -0.11914, -0.091773
+            };
+
+            Vector<double> expectedVector = Vector<double>.Build.DenseOfArray(expectedArray);
+            Tuple<int, Vector<double>> expectedResult = new Tuple<int, Vector<double>>((int)R, expectedVector);
+
+            object[] args = { qrsOnset, qrsEnd, R, fs };
+            obj.Invoke("OneQrsComplex", args);
+
+            Assert.AreEqual(expectedResult, testAlgs.QrsComplexOne);
+
+        }
+
+        [TestMethod]
+        [Description("Test if method set arbitrary values, when both qrsOnset or qrsEnd are larger than arbitrary. So when something is not okay in Waves ")]
+        public void OneQrsComplex6()
+        {
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            int qrsOnset = 5;
+            int qrsEnd = 50;
+            double R = 30;
+            uint fs = 360;
+            double[] testArray =
+            {
+                -0.086264, -0.096522,   -0.099909,  -0.096139,   -0.086465,   -0.073789,   -0.062517,   -0.057074,   -0.060127,
+                -0.071301,   -0.086807,   -0.10118,    -0.10969,    -0.10975,    -0.10166,    -0.088353,
+                -0.074281,   -0.064497,   -0.063391,   -0.072903,   -0.091486,   -0.1141, -0.13362, -0.14414,
+                -0.14401,    -0.13699,    -0.13126,    -0.13644,    -0.16032,    -0.20561,    -0.26753,    -0.33335,
+                -0.38369,    -0.39605,    -0.35046,    -0.236,  -0.055888,   0.17117, 0.41375, 0.63385, 0.79486, 0.86883,
+                0.84255, 0.72056, 0.52455, 0.28928, 0.055008,    -0.14166,    -0.27553,    -0.33743,    -0.33399,
+                -0.28368,    -0.21097,    -0.1402, -0.090148,   -0.070429,   -0.080307,   -0.11024,    -0.1458,
+                -0.17298,    -0.18275,    -0.17326,    -0.14924,    -0.11914,    -0.091773,   -0.073821,   -0.068456,
+                -0.074897,   -0.088698,   -0.10303,    -0.1111
+            };
+
+            Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
+            testAlgs.Signal = exampleSignal;
+
+            double[] expectedArray =
+            {   -0.057074,
+                -0.060127, -0.071301, -0.086807, -0.10118, -0.10969, -0.10975, -0.10166, -0.088353,
+                -0.074281, -0.064497, -0.063391, -0.072903, -0.091486, -0.1141, -0.13362, -0.14414,
+                -0.14401, -0.13699, -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335,
+                -0.38369, -0.39605, -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486,
+                0.86883, 0.84255, 0.72056, 0.52455, 0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399
+ 
+            };
+
+            Vector<double> expectedVector = Vector<double>.Build.DenseOfArray(expectedArray);
+            Tuple<int, Vector<double>> expectedResult = new Tuple<int, Vector<double>>((int)R, expectedVector);
+
+            object[] args = { qrsOnset, qrsEnd, R, fs };
+            obj.Invoke("OneQrsComplex", args);
+
+            Assert.AreEqual(expectedResult, testAlgs.QrsComplexOne);
 
         }
 

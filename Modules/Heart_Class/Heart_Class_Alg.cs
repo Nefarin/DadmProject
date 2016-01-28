@@ -57,25 +57,51 @@ namespace EKG_Project.Modules.Heart_Class
             List<Vector<double>> coefficients = new List<Vector<double>>();
         }
 
+        public static void Main()
+        {
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+           
+
+            int qrsOnset = 5;
+            int qrsEnd = 29;
+            double R = 13;
+            uint fs = 360;
+            double[] testArray =
+            {
+                -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335, -0.38369, -0.39605,
+                -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486, 0.86883, 0.84255, 0.72056, 0.52455,
+                0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399, -0.28368, -0.21097, -0.1402, -0.090148,
+                -0.070429, -0.080307, -0.11024, -0.1458
+            };
+            Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
+            testAlgs.Signal = exampleSignal;
+
+            
+            object[] args = { qrsOnset, qrsEnd, R, fs };
+           //testAlgs.QrsComplexOne = OneQrsComplex(qrsOnset, qrsEnd, R, fs);
+
+            
+        }
+
 
         #region Documentation
-        /// <summary>
-        /// Test method of Heart_Class module
-        /// </summary>
-        #endregion
+            /// <summary>
+            /// Test method of Heart_Class module
+            /// </summary>
+            #endregion
 
-        #region Documentation
-        /// <summary>
-        /// TODO 
-        /// </summary>
-        /// <param name="loadedSignal"></param>
-        /// <param name="fs"></param>
-        /// <param name="R"></param>
-        /// <param name="qrsOnset"></param>
-        /// <param name="qrsEnd"></param>
-        /// <returns></returns>
-        #endregion
-        Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R, uint fs)
+            #region Documentation
+            /// <summary>
+            /// TODO 
+            /// </summary>
+            /// <param name="loadedSignal"></param>
+            /// <param name="fs"></param>
+            /// <param name="R"></param>
+            /// <param name="qrsOnset"></param>
+            /// <param name="qrsEnd"></param>
+            /// <returns></returns>
+            #endregion
+            Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R, uint fs)
         {
             Fs = fs;
             Signal = loadedSignal;
@@ -109,6 +135,21 @@ namespace EKG_Project.Modules.Heart_Class
    
         }
 
+        public Tuple<int, int> DistancesFromR(uint fs)
+        {
+            double maxQRTime = 0.063;
+            double maxRSTime = 0.094;
+            double samplingInterval = 1 / (double)fs;
+            double numberOfSamplesQR = Math.Round(maxQRTime / samplingInterval);
+            double numberOfSamplesRS = Math.Round(maxRSTime / samplingInterval);
+
+            int QRSamples = (int)(numberOfSamplesQR);
+            int RSSamples = (int)(numberOfSamplesRS);
+
+            Tuple<int, int> result = new Tuple<int, int>(QRSamples, RSSamples);
+            return result;
+        }
+
         #region Documentation
         /// <summary>
         /// This method uses data from WAVES module (Qrs_onset and Qrs_end) and extracts single QRS complex, creating tuple which contains int value - number of R peaks corresponding to the QRS complex, and vector - containing following signal samples. 
@@ -119,33 +160,55 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         private void OneQrsComplex(int singleQrsOnset, int signleQrsEnd, double singleQrsR, uint fs)
         {
+            /*
             double maxQRTime = 0.063;
             double maxRSTime = 0.094;
             double samplingInterval = 1/fs;
-            int numberOfSamplesQR = (int)(maxQRTime/samplingInterval);
-            int numberOfSamplesRS = (int)(maxRSTime / samplingInterval);
+            double numberOfSamplesQR = (maxQRTime/samplingInterval);
+            double numberOfSamplesRS = (maxRSTime / samplingInterval);
 
-            int qrsOnsetNew = singleQrsOnset;
-            int qrsEndNew = signleQrsEnd;
+            int QRSamples = (int)numberOfSamplesQR;
+            int RSSamples = (int) numberOfSamplesRS;
+            */
+            Tuple<int, int> qrsDistances = DistancesFromR(fs);
+
+            //int qrsOnsetNew = singleQrsOnset;
+            //int qrsEndNew = signleQrsEnd;
 
             if ((singleQrsOnset != -1) && (signleQrsEnd != -1)) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
             {
-                if (((int) singleQrsR - singleQrsOnset) > numberOfSamplesQR)
+                
+                if (((int) singleQrsR - singleQrsOnset) > qrsDistances.Item1)
                 {
-                    qrsOnsetNew = (int) singleQrsR - numberOfSamplesQR;
+                    singleQrsOnset = (int) singleQrsR - qrsDistances.Item1;
                 }
-
-                if ((signleQrsEnd - (int) singleQrsR) > numberOfSamplesRS)
+                else {}
+                if ((signleQrsEnd - (int) singleQrsR) > qrsDistances.Item2)
                 {
-                    qrsEndNew = (int) singleQrsR + numberOfSamplesRS;
+                    signleQrsEnd = (int) singleQrsR + qrsDistances.Item2;
                 }
-                    int qrsLength = (qrsEndNew - qrsOnsetNew + 1);
+                else {}
+                
+                
+                    int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
                     SingleQrs = Vector<double>.Build.Dense(qrsLength);
 
-                    Signal.CopySubVectorTo(SingleQrs, sourceIndex: qrsOnsetNew, targetIndex: 0,
+                    Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
                         count: qrsLength);
-                    Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
-                    QrsComplexOne = a;
+                    QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
+            }
+            else
+            {
+                singleQrsOnset = (int)singleQrsR - qrsDistances.Item1;
+                signleQrsEnd = (int)singleQrsR + qrsDistances.Item2;
+
+                int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
+                SingleQrs = Vector<double>.Build.Dense(qrsLength);
+
+                Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
+                    count: qrsLength);
+                QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
+
             }
         }
 
