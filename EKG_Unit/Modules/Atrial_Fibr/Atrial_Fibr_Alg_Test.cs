@@ -205,28 +205,22 @@ namespace EKG_Unit.Modules.Atrial_Fibr
             Assert.AreEqual(realresult.Item3, result.Item3, 0.001);
         }
         [TestMethod]
-        [Description("Test if detection of AF is correct for signal with 0 and negative rr intervals")]
+        [Description("Test if throw exeption for signal with 0 and negative rr intervals")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "RR intervals are 0 or negative")]
         public void detectAFTestwrongrr()
         {
             //init
             double[] rrintArray = { 85, 84, 82, 83, 84, 0, 94, 101, 101, 99, 97, -10, 95, 95, 97, 98, 97, 94, 95, 98, 95, 0, -1, 103, 95, 95, 97, 98, 97, 97, 100, 100 };
             double[] rpeaksArray = { 720061, 720146, 720230, 720312, 720395, 720479, 720568, 720662, 720763, 720864, 720963, 721060, 721156, 721251, 721346, 721443, 721541, 721638, 721732, 721827, 721925, 722020, 722117, 722218, 722321, 722416, 722511, 722608, 722706, 722803, 722900, 723000 };
-            double[] resultArray = { 0 };
             Vector<double> rrintVector = Vector<double>.Build.DenseOfArray(rrintArray);
             Vector<double> rpeaksVector = Vector<double>.Build.DenseOfArray(rpeaksArray);
-            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
             uint fs = 128;
-            bool resultbool = false;
-            double resultdouble = 0;
             Atrial_Fibr_Params param = new Atrial_Fibr_Params(Detect_Method.STATISTIC, "test");
             Atrial_Fibr_Alg testAlg = new Atrial_Fibr_Alg();
             PrivateObject obj = new PrivateObject(testAlg);
             object[] args = { rrintVector, rpeaksVector, fs, param };
-            Tuple<bool, Vector<double>, double> result = Tuple.Create(resultbool, resultVector, resultdouble);
             //test
             Tuple<bool, Vector<double>, double> realresult = (Tuple<bool, Vector<double>, double>)obj.Invoke("detectAF", args);
-            //results
-            Assert.AreEqual(result, realresult);
         }
         [TestMethod]
         [Description("Test if creating list of data points for clusterization is correct.")]
