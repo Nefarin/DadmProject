@@ -13,6 +13,7 @@ namespace EKG_Project.Architecture.ProcessingStates
         {
             if (process.FileProcessor.Ended())
             {
+                process.Modules.FileLoaded = true;
                 process.Communication.SendProcessingEvent(new FileLoaded());
                 timeoutState = new Idle(5);
             }

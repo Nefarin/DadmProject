@@ -18,10 +18,13 @@ namespace EKG_Project.GUI
     /// </summary>
     public partial class AnalysisControl : UserControl, INotifyPropertyChanged
     {
+        private enum ABORT_MODE { ABORT_ANALYSIS, ABORT_LOADING_FILE, ABORT_STATS_CALC};
         private bool _analysisInProgress = false;
 
         public string outputPdfPath;
         public string inputFilePath;
+
+        private ABORT_MODE _abortMode;
 
         public bool AnalysisInProgress
         {
@@ -66,6 +69,11 @@ namespace EKG_Project.GUI
             {
                 inputFilePath = fileDialog.FileName;
                 Communication.SendGUIMessage(new LoadFile(inputFilePath));
+                panel.Visibility = Visibility.Visible;
+                progressBar.IsIndeterminate = true;
+                analysisLabel.Content = "Loading file.. Please wait";
+                buttonAbort.Content = "Cancel";
+                _abortMode = ABORT_MODE.ABORT_LOADING_FILE;
             }
 
         }
@@ -87,6 +95,7 @@ namespace EKG_Project.GUI
                 BeginAnalysis analysisParams = new BeginAnalysis(moduleParams);
                 Communication.SendGUIMessage(analysisParams);
                 moduleParams = new Dictionary<AvailableOptions, ModuleParams>();
+                _abortMode = ABORT_MODE.ABORT_ANALYSIS;
             }
             else
             {
@@ -122,6 +131,8 @@ namespace EKG_Project.GUI
             loadFileButton.IsEnabled = false;
             pdfButton.IsEnabled = false;
             startAnalyseButton.IsEnabled = false;
+            analysisLabel.Content = "Analysis in progress..";
+            buttonAbort.Content = "Abort analysis";
         }
 
         public void processingEnded()
@@ -176,12 +187,16 @@ namespace EKG_Project.GUI
         public void fileLoaded()
         {
             startAnalyseButton.IsEnabled = true;
+            panel.Visibility = Visibility.Hidden;
+            progressBar.IsIndeterminate = false;
             MessageBox.Show("File loaded successfully.");
         }
 
         public void fileError()
         {
             startAnalyseButton.IsEnabled = false;
+            panel.Visibility = Visibility.Hidden;
+            progressBar.IsIndeterminate = false;
             MessageBox.Show("File could not be loaded successfully.");
 
         }
@@ -189,6 +204,8 @@ namespace EKG_Project.GUI
         public void fileNotLoaded()
         {
             startAnalyseButton.IsEnabled = false;
+            panel.Visibility = Visibility.Hidden;
+            progressBar.IsIndeterminate = false;
             MessageBox.Show("File not found during analysis.");
 
         }
@@ -253,6 +270,13 @@ namespace EKG_Project.GUI
             panel.Visibility = Visibility.Hidden;
         }
 
+        public void loadingAborted()
+        {
+            panel.Visibility = Visibility.Hidden;
+            loadFileButton.IsEnabled = true;
+            MessageBox.Show("Loading file aborted.");
+        }
+
         /// <summary>
         /// analyzeEvent - do not delete - just develop - will be used by both GUI and Architects
         /// </summary>
@@ -265,7 +289,18 @@ namespace EKG_Project.GUI
 
         private void buttonAbort_Click(object sender, RoutedEventArgs e)
         {
-            Communication.SendGUIMessage(new AbortAnalysis());
+            switch(_abortMode)
+            {
+                case (ABORT_MODE.ABORT_ANALYSIS):
+                    Communication.SendGUIMessage(new AbortAnalysis());
+                    break;
+                case (ABORT_MODE.ABORT_LOADING_FILE):
+                    Communication.SendGUIMessage(new AbortLoadingFile());
+                    break;
+                case (ABORT_MODE.ABORT_STATS_CALC):
+                    break;
+            }
+            
         }
     }
 }

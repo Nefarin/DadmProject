@@ -201,6 +201,7 @@
     <Compile Include="Architecture\GUIMessages\FileLoadingError.cs" />
     <Compile Include="Architecture\GUIMessages\FileNotLoaded.cs" />
     <Compile Include="Architecture\GUIMessages\IGUIMessage.cs" />
+    <Compile Include="Architecture\GUIMessages\LoadingAborted.cs" />
     <Compile Include="Architecture\GUIMessages\ModuleProgress.cs" />
     <Compile Include="Architecture\GUIMessages\ProcessingEnded.cs" />
     <Compile Include="Architecture\GUIMessages\StatsCalculationBegun.cs" />
@@ -209,6 +210,7 @@
     <Compile Include="Architecture\Modules.cs" />
     <Compile Include="Architecture\ProcessingStates\Abort.cs" />
     <Compile Include="Architecture\ProcessingStates\AbortAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\AbortLoadingFile.cs" />
     <Compile Include="Architecture\ProcessingStates\AbortTest.cs" />
     <Compile Include="Architecture\ProcessingStates\BeginAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\BeginStatsCalculation.cs" />

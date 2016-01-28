@@ -49,7 +49,7 @@ namespace EKG_Project.Architecture.ProcessingStates
                 converter.ConvertFile(Path);
                 process.Converter = converter;
                 Console.WriteLine(process.Modules.AnalysisName);
-                FileProcessor fp = new FileProcessor(converter, process.Modules.AnalysisName, 400000);
+                FileProcessor fp = new FileProcessor(converter, process.Modules.AnalysisName, 5000);
                 process.FileProcessor = fp;
                 timeoutState = new ProcessFile();
 
