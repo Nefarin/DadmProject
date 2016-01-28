@@ -8,22 +8,25 @@ namespace EKG_Project.Modules.TestModule3
 {
     public class TestModule3 : IModule
     {
+        private enum STATE {INIT, BEGIN_CHANNEL, PROCESS_CHANNEL, NEXT_CHANNEL, END};
         private bool _ended;
         private bool _aborted;
 
         private int _currentChannelIndex;
         private int _currentChannelLength;
-        private int _samplesProcessed;
+        private string _currentLeadName;
+        private string[] _leads;
+        private int _currentIndex;
         private int _numberOfChannels;
 
-        private Basic_Data_Worker _inputWorker;
-        private TestModule3_Data_Worker _outputWorker;
+        private Basic_New_Data_Worker _worker;
 
-        private TestModule3_Data _outputData;
+        private Basic_Data _outputData;
         private Basic_Data _inputData;
         private TestModule3_Params _params;
 
         private Vector<Double> _currentVector;
+        private STATE _state;
 
         public void Abort()
         {
@@ -43,28 +46,28 @@ namespace EKG_Project.Modules.TestModule3
 
         public void Init(ModuleParams parameters)
         {
-            //Params = parameters as TestModule3_Params;
-            //Aborted = false;
-            //if (!Runnable()) _ended = true;
-            //else
-            //{
-            //    _ended = false;
+            try
+            {
+                _params = parameters as TestModule3_Params;
+            }
+            catch (Exception e)
+            {
+                Abort();
+                return;
+            }
 
-            //    InputWorker = new Basic_Data_Worker(Params.AnalysisName);
-            //    InputWorker.Load();
-            //    InputData = InputWorker.BasicData;
+            if (!Runnable())
+            {
+                _ended = true;
+            }
+            else
+            {
+                Worker = new Basic_New_Data_Worker(Params.AnalysisName);
+                InputData = new Basic_Data();
+                OutputData = new Basic_Data();
+                _state = STATE.INIT;        
 
-            //    OutputWorker = new TestModule3_Data_Worker(Params.AnalysisName);
-            //    OutputData = new TestModule3_Data(InputData.Frequency, InputData.SampleAmount);
-                
-            //    _currentChannelIndex = 0;
-            //    _samplesProcessed = 0;
-            //    NumberOfChannels = InputData.Signals.Count;
-            //    _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-            //    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-
-            //}
-
+            }
         }
 
         public void ProcessData()
@@ -75,7 +78,7 @@ namespace EKG_Project.Modules.TestModule3
 
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0/NumberOfChannels) * ((double) _samplesProcessed / (double) _currentChannelLength));
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0/NumberOfChannels) * ((double) _currentIndex/ (double) _currentChannelLength));
         }
 
         public bool Runnable()
@@ -85,43 +88,35 @@ namespace EKG_Project.Modules.TestModule3
 
         private void processData()
         {
-            //int channel = _currentChannelIndex;
-            //int startIndex = _samplesProcessed;
-            //int step = Params.Step;
-
-            //if (channel < NumberOfChannels)
-            //{
-            //    if (startIndex + step > _currentChannelLength)
-            //    {
-            //        scaleSamples(channel, startIndex, _currentChannelLength - startIndex);
-            //        OutputData.Output.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
-            //        _currentChannelIndex++;
-            //        if (_currentChannelIndex < NumberOfChannels)
-            //        {
-            //            _samplesProcessed = 0;
-            //            _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-            //            _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-            //        }
-
-
-            //    }
-            //    else
-            //    {
-            //        scaleSamples(channel, startIndex, step);
-            //        _samplesProcessed = startIndex + step;
-            //    }
-            //}
-            //else
-            //{
-            //    OutputWorker.Save(OutputData);
-            //    _ended = true;
-            //}
-
-
+            switch (_state)
+            {
+                case (STATE.INIT):
+                    _currentChannelIndex = -1;
+                    _currentIndex = 0;
+                    _numberOfChannels = 2; //Tutaj bedzie zmiana po poprawie workerów
+                    _currentChannelLength = (int) Worker.LoadAttribute(Basic_Attributes.NumberOfSamples); //Tutaj bedzie zmiana po poprawie workerow
+                    _leads = null; //Tutaj bedzie zmiana po poprawie workerów
+                    _state = STATE.BEGIN_CHANNEL;
+                    break;
+                case (STATE.BEGIN_CHANNEL):
+                    _currentChannelIndex++;
+                    _currentLeadName = _leads[_currentChannelIndex];
+                    break;
+                case (STATE.PROCESS_CHANNEL):
+                    break;
+                case (STATE.NEXT_CHANNEL):
+                    break;
+                case (STATE.END):
+                    _ended = true;
+                    break;
+                default:
+                    Abort();
+                    break;
+            }
 
         }
 
-        public TestModule3_Data OutputData
+        public Basic_Data OutputData
         {
             get
             {
@@ -186,45 +181,16 @@ namespace EKG_Project.Modules.TestModule3
             }
         }
 
-        public Basic_Data_Worker InputWorker
+        public Basic_New_Data_Worker Worker
         {
             get
             {
-                return _inputWorker;
+                return _worker;
             }
 
             set
             {
-                _inputWorker = value;
-            }
-        }
-
-        public TestModule3_Data_Worker OutputWorker
-        {
-            get
-            {
-                return _outputWorker;
-            }
-
-            set
-            {
-                _outputWorker = value;
-            }
-        }
-
-        public static void Main()
-        {
-            TestModule3_Params param = new TestModule3_Params(-2, 5000, "Analysis6");
-            //TestModule3_Params param = null;
-            TestModule3 testModule = new TestModule3();
-            testModule.Init(param);
-            while (true)
-            {
-                //Console.WriteLine("Press key to continue.");
-                //Console.Read();
-                if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress());
-                testModule.ProcessData();
+                _worker = value;
             }
         }
     }
