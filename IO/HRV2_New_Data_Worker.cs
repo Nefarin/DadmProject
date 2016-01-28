@@ -10,9 +10,10 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
-    public enum Qt_Disp_Attributes { QT_disp_local, QT_mean, QT_std };
-    public enum Qt_Disp_Signal { T_End_Local, QT_Intervals};
-    class Qt_Disp_New_Data_Worker
+    public enum HRV2_Attributes { Tinn, TriangleIndex, SD1, SD2, ElipseCenter };
+    public enum HRV2_Signal { PoincarePlotData_x, PoincarePlotData_y };
+
+    class HRV2_New_Data_Worker
     {
         //FIELDS
         /// <summary>
@@ -25,35 +26,30 @@ namespace EKG_Project.IO
         /// </summary>
         private string analysisName;
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public Qt_Disp_New_Data_Worker() 
+        public HRV2_New_Data_Worker() 
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
         }
 
-        /// <summary>
-        /// Parameterized constructor
-        /// </summary>
-        /// <param name="analysisName">analysis name</param>
-        public Qt_Disp_New_Data_Worker(String analysisName): this()
+        public HRV2_New_Data_Worker(String analysisName)  : this()
         {
             this.analysisName = analysisName;
         }
 
+        #region Documentation
         /// <summary>
-        /// Saves parts of T_End_Local signal in txt file
+        /// Saves part of HRV2_Signal in txt file
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="signal">signal</param>
-        public void SaveTEndLocal(string lead, bool mode, List<int> signal)
+        /// <param name="signal">HRV2_Signal</param>
+        #endregion
+        public void SaveSignal(HRV2_Signal atr, string lead, bool mode, Vector<double> signal)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_T_End_Local" + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string pathOut = Path.Combine(directory, fileName);
 
             StreamWriter sw = new StreamWriter(pathOut, mode);
@@ -61,22 +57,22 @@ namespace EKG_Project.IO
             {
                 sw.WriteLine(sample.ToString());
             }
-                
             sw.Close();
         }
 
         /// <summary>
-        /// Loads parts of T_End_Local signal from txt file
+        /// Loads parts of HRV2_Signal from txt file
         /// </summary>
+        /// <param name="atr">HRV2_Signal</param>
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
         /// <param name="length">length</param>
-        /// <returns>T_End_Local list</returns>
-        public List<int> LoadTEndLocal(string lead, int startIndex, int length)
+        /// <returns>HRV2_Signal</returns>
+        public Vector<double> LoadSignal(HRV2_Signal atr, string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_T_End_Local" + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string pathIn = Path.Combine(directory, fileName);
 
             StreamReader sr = new StreamReader(pathIn);
@@ -90,8 +86,7 @@ namespace EKG_Project.IO
             }
 
             iterator = 0;
-
-            List<int> list = new List<int>();
+            double[] readSamples = new double[length];
             while (iterator < length)
             {
                 if (sr.EndOfStream)
@@ -100,89 +95,24 @@ namespace EKG_Project.IO
                 }
 
                 string readLine = sr.ReadLine();
-                int readValue = Convert.ToInt32(readLine);
-                list.Add(readValue);
+                readSamples[iterator] = Convert.ToDouble(readLine);
                 iterator++;
             }
 
             sr.Close();
 
-            return list;
+            Vector<double> vector = Vector<double>.Build.Dense(readSamples.Length);
+            vector.SetValues(readSamples);
+            return vector;
         }
 
         /// <summary>
-        /// Saves parts of QT_Intervals signal in txt file
+        /// Gets number of HRV2_Signal samples 
         /// </summary>
-        /// <param name="lead">lead</param>
-        /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="signal">signal</param>
-        public void SaveQTIntervals(string lead, bool mode, List<double> signal)
-        {
-            string moduleName = this.GetType().Name;
-            moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_QT_Intervals" + ".txt";
-            string pathOut = Path.Combine(directory, fileName);
-
-            StreamWriter sw = new StreamWriter(pathOut, mode);
-            foreach (var sample in signal)
-            {
-                sw.WriteLine(sample.ToString());
-            }
-            sw.Close();
-        }
-
-        /// <summary>
-        /// Loads parts of QT_Intervals signal from txt file
-        /// </summary>
-        /// <param name="lead">lead</param>
-        /// <param name="startIndex">start index</param>
-        /// <param name="length">length</param>
-        /// <returns>QT_Intervals list</returns>
-        public List<double> LoadQTIntervals(string lead, int startIndex, int length)
-        {
-            string moduleName = this.GetType().Name;
-            moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_QT_Intervals" + ".txt";
-            string pathIn = Path.Combine(directory, fileName);
-
-            StreamReader sr = new StreamReader(pathIn);
-
-            //pomijane linie ...
-            int iterator = 0;
-            while (iterator < startIndex && !sr.EndOfStream)
-            {
-                string readLine = sr.ReadLine();
-                iterator++;
-            }
-
-            iterator = 0;
-
-            List<double> list = new List<double>();
-            while (iterator < length)
-            {
-                if (sr.EndOfStream)
-                {
-                    throw new IndexOutOfRangeException();
-                }
-
-                string readLine = sr.ReadLine();
-                double readValue = Convert.ToDouble(readLine);
-                list.Add(readValue);
-                iterator++;
-            }
-
-            sr.Close();
-
-            return list;
-        }
-
-        /// <summary>
-        /// Gets number of Qt_Disp_Signal samples 
-        /// </summary>
-        /// <param name="atr">Qt_Disp_Signal</param>
+        /// <param name="atr">HRV2_Signal</param>
         /// <param name="lead">lead</param>
         /// <returns>samples</returns>
-        public uint getNumberOfSamples(Qt_Disp_Signal atr, string lead)
+        public uint getNumberOfSamples(HRV2_Signal atr, string lead)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -200,16 +130,116 @@ namespace EKG_Project.IO
             return count;
         }
 
+        #region Documentation
         /// <summary>
-        /// Saves Qt_Disp_Attributes in txt file
+        /// Saves Histogram in txt file
         /// </summary>
-        /// <param name="atr">Qt_Disp_Attributes</param>
-        /// <param name="value">value</param>
-        public void SaveAttribute(Qt_Disp_Attributes atr, double value)
+        /// <param name="lead">lead</param>
+        /// <param name="mode">true:append, false:overwrite file</param>
+        /// <param name="result">histogram data</param>
+        #endregion
+        public void SaveHistogram(string lead, bool mode, List<Tuple<double, double>> results)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + atr + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_Histogram" + ".txt";
+            string pathOut = Path.Combine(directory, fileName);
+
+            StreamWriter sw = new StreamWriter(pathOut, mode);
+            foreach (var result in results)
+            {
+                sw.WriteLine(result.Item1);
+                sw.WriteLine(result.Item2);
+                sw.WriteLine("---");
+            }
+
+            sw.Close();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads Histogram from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>histogram data list</returns>
+        #endregion
+        public List<Tuple<double, double>> LoadHistogram(string lead, int startIndex, int length)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_Histogram" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+            List<Tuple<double, double>> list = new List<Tuple<double, double>>();
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+                string item1 = sr.ReadLine();
+                double convertedItem1 = Convert.ToDouble(item1);
+
+                string item2 = sr.ReadLine();
+                double convertedItem2 = Convert.ToDouble(item2);
+
+                Tuple<double, double> tuple = Tuple.Create(convertedItem1, convertedItem2);
+                list.Add(tuple);
+
+                sr.ReadLine();
+                iterator++;
+            }
+            sr.Close();
+
+
+            return list;
+        }
+
+        /// <summary>
+        /// Loads Histogram number of samples
+        /// </summary>
+        /// <param name="lead"></param>
+        /// <returns></returns>
+        public uint getHistogramNumberOfSamples(string lead)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_Histogram" + ".txt";
+            string path = Path.Combine(directory, fileName);
+
+            uint count = 0;
+            using (StreamReader r = new StreamReader(path))
+            {
+                while (r.ReadLine() != null)
+                {
+                    count++;
+                }
+            }
+
+            count = count / 3;
+            return count;
+        }
+
+        /// <summary>
+        /// Saves HRV2_Attributes
+        /// </summary>
+        /// <param name="atr">attribute</param>
+        /// <param name="value">value</param>
+        public void SaveAttribute(HRV2_Attributes atr, string lead, double value)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string pathOut = System.IO.Path.Combine(directory, fileName);
 
             StreamWriter sw = new StreamWriter(pathOut);
@@ -218,15 +248,15 @@ namespace EKG_Project.IO
         }
 
         /// <summary>
-        /// Loads Qt_Disp_Attributes from txt file
+        /// Loads HRV2_Attributes
         /// </summary>
-        /// <param name="atr">Qt_Disp_Attributes</param>
+        /// <param name="atr">atribute</param>
         /// <returns>value</returns>
-        public double LoadAttribute(Qt_Disp_Attributes atr)
+        public double LoadAttribute(HRV2_Attributes atr, string lead)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + atr + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string pathIn = System.IO.Path.Combine(directory, fileName);
 
             StreamReader sr = new StreamReader(pathIn);
@@ -238,7 +268,7 @@ namespace EKG_Project.IO
         }
 
         /// <summary>
-        /// Deletes all analysis files with Qt_Disp_Data
+        /// Deletes all analysis files with HRV2_Data
         /// </summary>
         public void DeleteFiles()
         {

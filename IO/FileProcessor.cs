@@ -13,7 +13,7 @@ namespace EKG_Project.IO
         private int _currentIndex;
         private int _step;
         private int _currentLeadLength;
-        private string[] _leads;
+        private List<string> _leads;
         private string _analysisName;
         private IECGConverter _converter;
         private State _state;
@@ -54,7 +54,7 @@ namespace EKG_Project.IO
             _analysisName = analysisName;
             _state = State.INIT;
             _leads = Converter.getLeads();
-            _numberOfLeads = _leads.Length;
+            _numberOfLeads = _leads.Count;
             _ended = false;
             Step = step;
             _worker = new Basic_New_Data_Worker(_analysisName);

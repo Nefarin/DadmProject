@@ -118,5 +118,22 @@ namespace EKG_Project.IO
             vector.SetValues(readSamples);
             return vector;
         }
+
+        /// <summary>
+        /// Deletes all analysis files with Basic_Data
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileNamePattern = analysisName + "_" + moduleName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+
+        }
     }
 }
