@@ -91,15 +91,10 @@ namespace EKG_Unit.Modules.HRT
             int testVPCcount = 3;
 
             int[] resultnrVPCArray = { 2, 4, 7 };
-
             
-            //Vector<double> resultVector = Vector<double>.Build.DenseOfArray(testnrVPCArray);
-
             HRT_Alg testAlg = new HRT_Alg();
             int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
-            //Vector<double> testVector = Vector<double>.Build.DenseOfArray(testrrTimesVPCArray);
-            //Vector<double> resultVector = Vector<double>.Build.DenseOfArray(testArray);
-            Assert.AreEqual(resultnrVPCArray[2], testResult[2] );
+            //Assert.AreEqual(resultnrVPCArray[2], testResult[2] );
             CollectionAssert.AreEqual(resultnrVPCArray, testResult );
 
         }
@@ -115,8 +110,6 @@ namespace EKG_Unit.Modules.HRT
             int testVPCcount = 3;
 
             int[] resultnrVPCArray = { 2, 4, 7 };
-
-            //Vector<double> resultVector = Vector<double>.Build.DenseOfArray(testnrVPCArray);
 
             HRT_Alg testAlg = new HRT_Alg();
             int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
@@ -180,10 +173,9 @@ namespace EKG_Unit.Modules.HRT
             HRT_Params testParams = new HRT_Params("Test");
 
             int[] testArray = { 2, 4, 6, 8, 10, 12, 14 };
-            int testLength = 0;
+            int testLength = 3;
 
-            int[] expectedArray = { 2, 4, 6, 8, 10, 12, 14 };
-            //int[] expectedArray = { 2, 4, 6, 8 };
+            int[] expectedArray = { 2, 4, 6, 8 };
 
             HRT_Alg testAlg = new HRT_Alg();
             int[] actualArray = testAlg.removeRedundant(testArray, testLength);
@@ -218,6 +210,25 @@ namespace EKG_Unit.Modules.HRT
 
             HRT_Alg testAlg = new HRT_Alg();
             int[] actualArray = testAlg.removeRedundant(testArray, testLength);
+
+        }
+
+        //rrTimesShift
+        [TestMethod]
+        [Description("Test if vector shitfs properly - equality test")]
+        public void rrTimesShift1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            double[] resultArray = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+            
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Vector<double> testResult = testAlg.rrTimesShift(testVector);
+            Assert.AreEqual(testResult, resultVector);
 
         }
 
