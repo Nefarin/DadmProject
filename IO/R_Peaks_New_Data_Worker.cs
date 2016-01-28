@@ -11,7 +11,7 @@ using System.Diagnostics;
 namespace EKG_Project.IO
 {
     public enum R_Peaks_Attributes { RPeaks, RRInterval };
-    class R_Peaks_New_Data_Worker
+    public class R_Peaks_New_Data_Worker
     {
         //FIELDS
         /// <summary>

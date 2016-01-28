@@ -11,7 +11,7 @@ namespace EKG_Project.IO
     /// Class that saves and loads ECG_Baseline_Data from internal file
     /// </summary>
     #endregion
-    class ECG_Baseline_New_Data_Worker
+    public class ECG_Baseline_New_Data_Worker
     {
         //FIELDS
         #region Documentation

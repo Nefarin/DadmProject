@@ -10,7 +10,7 @@ namespace EKG_Project.IO
     /// Class that saves and loads Heart_Class_Data chunks from internal text file
     /// </summary>
     #endregion
-    class Heart_Class_New_Data_Worker
+    public class Heart_Class_New_Data_Worker
     {
         //FIELDS
         #region Documentation

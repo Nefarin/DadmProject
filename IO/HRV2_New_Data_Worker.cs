@@ -13,7 +13,7 @@ namespace EKG_Project.IO
     public enum HRV2_Attributes { Tinn, TriangleIndex, SD1, SD2, ElipseCenter };
     public enum HRV2_Signal { PoincarePlotData_x, PoincarePlotData_y };
 
-    class HRV2_New_Data_Worker
+    public class HRV2_New_Data_Worker
     {
         //FIELDS
         /// <summary>

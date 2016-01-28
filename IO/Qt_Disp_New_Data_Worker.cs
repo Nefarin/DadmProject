@@ -12,7 +12,7 @@ namespace EKG_Project.IO
 {
     public enum Qt_Disp_Attributes { QT_disp_local, QT_mean, QT_std };
     public enum Qt_Disp_Signal { T_End_Local, QT_Intervals};
-    class Qt_Disp_New_Data_Worker
+    public class Qt_Disp_New_Data_Worker
     {
         //FIELDS
         /// <summary>

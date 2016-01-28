@@ -7,7 +7,7 @@ using System.IO;
 
 namespace EKG_Project.IO
 {
-    class Flutter_New_Data_Worker
+    public class Flutter_New_Data_Worker
     {
         //FIELDS
         /// <summary>

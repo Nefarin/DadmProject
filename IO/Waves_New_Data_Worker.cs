@@ -15,7 +15,7 @@ namespace EKG_Project.IO
     /// Class that saves and loads Waves_Data chunks from internal text file
     /// </summary>
     #endregion
-    class Waves_New_Data_Worker
+    public class Waves_New_Data_Worker
     {
         //FIELDS
         #region Documentation

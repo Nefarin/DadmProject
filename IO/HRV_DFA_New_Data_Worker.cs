@@ -2,11 +2,11 @@
 using System.IO;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules;
-using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
-    public class Atrial_Fibr_New_Data_Worker
+    public enum HRV_DFA_Signals { DfaNumberN, DfaValueFn, ParamAlpha, Fluctuations };
+    public class HRV_DFA_New_Data_Worker
     {
         //FIELDS
         #region Documentation
@@ -28,7 +28,7 @@ namespace EKG_Project.IO
         /// Default constructor
         /// </summary>
         #endregion
-        public Atrial_Fibr_New_Data_Worker() 
+        public HRV_DFA_New_Data_Worker() 
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
@@ -39,41 +39,41 @@ namespace EKG_Project.IO
         /// Parameterized constructor
         /// </summary>
         #endregion
-        public Atrial_Fibr_New_Data_Worker(String analysisName) : this()
+        public HRV_DFA_New_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
 
-        #region Documentation
         /// <summary>
-        /// Saves part of AfDetection signal in txt file
+        /// Saves parts of HRV_DFA_Signals in txt file
         /// </summary>
+        /// <param name="atr">HRV_DFA_Signals</param>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="signal">AfDetection</param>
-        #endregion
-        public void SaveAfDetection(string lead, bool mode, Tuple<bool, Vector<double>, string, string> results)
+        /// <param name="results">results</param>
+        public void SaveSignal(HRV_DFA_Signals atr, string lead, bool mode, Tuple<Vector<double>, Vector<double>> results)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
-            string pathOut = Path.Combine(directory, fileName);
+            string fileNameX = analysisName + "_" + moduleName + "_" + lead + "_" + atr + "_X" + ".txt";
+            string pathOutX = Path.Combine(directory, fileNameX);
 
-            StreamWriter sw = new StreamWriter(pathOut, mode);
-            foreach (var sample in results.Item2)
+            StreamWriter sw = new StreamWriter(pathOutX, mode);
+            foreach (var sample in results.Item1)
             {
                 sw.WriteLine(sample.ToString());
             }
             sw.Close();
 
-            string fileNameAtr = analysisName + "_" + moduleName + "_" + lead + "_Atr" + ".txt";
-            string pathOutAtr = Path.Combine(directory, fileNameAtr);
-            StreamWriter swAtr = new StreamWriter(pathOutAtr, mode);
+            string fileNameY = analysisName + "_" + moduleName + "_" + lead + "_" + atr + "_Y" + ".txt";
+            string pathOutY = Path.Combine(directory, fileNameY);
 
-            swAtr.WriteLine(results.Item1.ToString());
-            swAtr.WriteLine(results.Item3);
-            swAtr.WriteLine(results.Item4);
-            swAtr.Close();
+            StreamWriter swY = new StreamWriter(pathOutY, mode);
+            foreach (var sample in results.Item2)
+            {
+                swY.WriteLine(sample.ToString());
+            }
+            swY.Close();
         }
 
         #region Documentation
@@ -85,68 +85,72 @@ namespace EKG_Project.IO
         /// <param name="length">vector length</param>
         /// <returns>AfDetection tuple</returns>
         #endregion
-        public Tuple<bool, Vector<double>, string, string> LoadAfDetection(string lead, int startIndex, int length)
+        public Tuple<Vector<double>, Vector<double>> LoadSignal(HRV_DFA_Signals atr, string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
-            string pathIn = Path.Combine(directory, fileName);
+            string fileNameX = analysisName + "_" + moduleName + "_" + lead + "_" + atr + "_X" + ".txt";
+            string pathInX = Path.Combine(directory, fileNameX);
 
-            StreamReader sr = new StreamReader(pathIn);
+            StreamReader srX = new StreamReader(pathInX);
+
+            string fileNameY = analysisName + "_" + moduleName + "_" + lead + "_" + atr + "_Y" + ".txt";
+            string pathInY = Path.Combine(directory, fileNameY);
+
+            StreamReader srY = new StreamReader(pathInY);
 
             //pomijane linie ...
             int iterator = 0;
-            while (iterator < startIndex && !sr.EndOfStream)
+            while (iterator < startIndex && !srX.EndOfStream)
             {
-                string readLine = sr.ReadLine();
+                srX.ReadLine();
+                srY.ReadLine();
                 iterator++;
             }
 
             iterator = 0;
-            double[] readSamples = new double[length];
+            double[] readSamplesX = new double[length];
+            double[] readSamplesY = new double[length];
             while (iterator < length)
             {
-                if (sr.EndOfStream)
+                if (srX.EndOfStream)
                 {
                     throw new IndexOutOfRangeException();
                 }
 
-                string readLine = sr.ReadLine();
-                readSamples[iterator] = Convert.ToDouble(readLine);
+                string readLineX = srX.ReadLine();
+                readSamplesX[iterator] = Convert.ToDouble(readLineX);
+
+                string readLineY = srY.ReadLine();
+                readSamplesY[iterator] = Convert.ToDouble(readLineY);
+
                 iterator++;
             }
 
-            sr.Close();
+            srX.Close();
+            srY.Close();
 
-            Vector<double> vector = Vector<double>.Build.Dense(readSamples.Length);
-            vector.SetValues(readSamples);
+            Vector<double> vectorX = Vector<double>.Build.Dense(readSamplesX.Length);
+            vectorX.SetValues(readSamplesX);
 
-            string fileNameAtr = analysisName + "_" + moduleName + "_" + lead + "_Atr" + ".txt";
-            string pathInAtr = Path.Combine(directory, fileNameAtr);
-            StreamReader srAtr = new StreamReader(pathInAtr);
+            Vector<double> vectorY = Vector<double>.Build.Dense(readSamplesY.Length);
+            vectorY.SetValues(readSamplesY);
 
-            string readLine1 = srAtr.ReadLine();
-            bool value1 = Convert.ToBoolean(readLine1);
-
-            string readLine3 = srAtr.ReadLine();
-
-            string readLine4 = srAtr.ReadLine();
-
-            Tuple<bool, Vector<double>, string, string> tuple = Tuple.Create(value1, vector, readLine3, readLine4);
+            Tuple<Vector<double>, Vector<double>> tuple = Tuple.Create(vectorX, vectorY);
 
             return tuple;
         }
 
         /// <summary>
-        /// Gets number of AfDetection vector samples 
+        /// Gets number of HRV_DFA_Signals vector samples 
         /// </summary>
         /// <param name="lead">lead</param>
         /// <returns>number of samples</returns>
-        public uint getNumberOfSamples(string lead)
+        public uint getNumberOfSamples(HRV_DFA_Signals atr, string lead)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + "_X" + ".txt";
             string path = Path.Combine(directory, fileName);
 
             uint count = 0;
@@ -161,7 +165,7 @@ namespace EKG_Project.IO
         }
 
         /// <summary>
-        /// Deletes all analysis files with Atrial_Fibr_Data
+        /// Deletes all analysis files with HRV_DFA_Data
         /// </summary>
         public void DeleteFiles()
         {
