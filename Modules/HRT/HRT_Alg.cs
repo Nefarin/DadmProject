@@ -173,8 +173,9 @@ namespace EKG_Project.Modules.HRT
             return newArray;
         }
 
-        public Tuple<double[,], double[], double[]> MakeTachogram(int[] VPC, double[] rrIntervals)
+        public Tuple<double[,], double[], double[], double[,], double[,]> MakeTachogram(int[] VPC, double[] rrIntervals)
         {
+
             int back = 5;
             int foward = 15;
             int sum = back + foward ;
@@ -184,9 +185,11 @@ namespace EKG_Project.Modules.HRT
             double[] before = new double[VPC.GetLength(0)];
             double[] TO = new double[VPC.GetLength(0)];
             double[] TS = new double[VPC.GetLength(0)];
-            Tuple<double[,], double[,]> SlopeVisualization;
             int i = 0;
+            int m = 0;
             double[,] VPCTachogram = new double[sum, VPC.GetLength(0)];
+            double[,] xx = new double[VPC.Length, 5];
+            double[,] yy = new double[VPC.Length, 5];
 
             foreach (int nrVPC in VPC)
             {
@@ -213,20 +216,21 @@ namespace EKG_Project.Modules.HRT
                         Vector<double>  x = Vector<double>.Build.DenseOfArray(xdata);
                         Vector<double>  y = Vector<double>.Build.DenseOfArray(ydata);
                         p = LinearSquare(x, y);
-                        
-                        //SlopeVisualization = LinearSquarePrepareResults(p.Item2, j);
-                        //PrintVector(p.Item2.);
-                        
+                                               
                         if (p.Item1[0] > TS[i])
                         {
                             TS[i] = p.Item1[0];
-                            //nrprobe[i] = j;
+                            for (int n = 0; n < 5; n++)
+                            {
+                                xx[i, n] = j + n;
+                                yy[i, n] = p.Item2.At(n);
+                            }
                         }
                     }
                 }
                 i++;
             }
-            return Tuple.Create(VPCTachogram, TO, TS);
+            return Tuple.Create(VPCTachogram, TO, TS, xx, yy);
         }
 
         public double CountMean (double[] vec)
@@ -251,8 +255,9 @@ namespace EKG_Project.Modules.HRT
 
 
         //od pauliny, jak będzie na głównym repo to zrobić odwołania do jej implementacji
+        //nie pisać testów bo nie nasza funkcja :)
         public Tuple<double[], Vector<double>> LinearSquare(Vector<double> x, Vector<double> y)
-        {
+        { 
             Vector<double> y_approx = Vector<double>.Build.Dense(y.Count());
             double[] P = new double[2];
             double n = y.Count();
@@ -277,33 +282,6 @@ namespace EKG_Project.Modules.HRT
             Tuple<double[], Vector<double>> output = new Tuple<double[], Vector<double>>(P, y_approx);
 
             return output;
-        }
-
-
-        #region
-        /// <summary>
-        /// Function that prepare vector for IO module, to visualise VPC tachogram Slope
-        /// </summary>
-        /// <param name="wektor"> values of tachogramu (y values)</param>
-        /// <param name="nrProbki"> nr of probes (x values) </param>
-        /// <returns> tuple with two arrays: first with 5 values in row where highest slope was detected; second with values of tachogram, </returns>
-        #endregion
-        public Tuple<double[,], double[,]> LinearSquarePrepareResults(Vector<double>wektor, double nrProbki)
-        {
-            double[,] x = new double[5,wektor.Count / 5];
-            double[,] y = new double[5, wektor.Count / 5];
-            int k = 0;
-            for (int j = 0; j < wektor.Count / 5; j++)
-            {
-                for (int i = 0; i < 5; i++)
-                {
-                    x[j, i] = i+nrProbki;
-                    y[j, i] = wektor[k++];
-                }
-            }
-
-            Tuple<double[,], double[,]> wynik =  Tuple.Create(x, y);
-            return wynik;
         }
 
     }
