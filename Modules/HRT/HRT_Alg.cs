@@ -178,11 +178,13 @@ namespace EKG_Project.Modules.HRT
             int back = 5;
             int foward = 15;
             int sum = back + foward ;
+            int[] nrprobe = new int[VPC.Length];
 
             double[] after = new double[VPC.GetLength(0)-1];
             double[] before = new double[VPC.GetLength(0)-1];
             double[] TO = new double[VPC.GetLength(0)-1];
             double[] TS = new double[VPC.GetLength(0)-1];
+            Tuple<double[,], double[,]> SlopeVisualization;
             int i = 0;
             double[,] VPCTachogram = new double[sum, VPC.GetLength(0)-1];
 
@@ -198,7 +200,7 @@ namespace EKG_Project.Modules.HRT
                     after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
                     before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
                     TO[i] = (after[i] - before[i]) / before[i];
-                    Tuple<double, double> p;
+                    Tuple<double[], Vector<double>> p;
                     for (int j = 0; j < foward - 5; j++)
                     {
                         double[] xdata = new double[5];
@@ -208,10 +210,17 @@ namespace EKG_Project.Modules.HRT
                             xdata[n] = xdata[n] + (double)n;
                             ydata[n] = rrIntervals[nrVPC + j + n];
                         }
-                        p = Fit.Line(xdata, ydata);
-                        if (p.Item2 > TS[i])
+                        Vector<double>  x = Vector<double>.Build.DenseOfArray(xdata);
+                        Vector<double>  y = Vector<double>.Build.DenseOfArray(ydata);
+                        p = LinearSquare(x, y);
+                        
+                        //SlopeVisualization = LinearSquarePrepareResults(p.Item2, j);
+                        //PrintVector(p.Item2.);
+                        
+                        if (p.Item1[0] > TS[i])
                         {
-                            TS[i] = p.Item2;
+                            TS[i] = p.Item1[0];
+                            //nrprobe[i] = j;
                         }
                     }
                 }
@@ -239,5 +248,63 @@ namespace EKG_Project.Modules.HRT
             double min;
             return min = vec.Min();
         }
+
+
+        //od pauliny, jak będzie na głównym repo to zrobić odwołania do jej implementacji
+        public Tuple<double[], Vector<double>> LinearSquare(Vector<double> x, Vector<double> y)
+        {
+            Vector<double> y_approx = Vector<double>.Build.Dense(y.Count());
+            double[] P = new double[2];
+            double n = y.Count();
+            // Subsidiary variables
+            double sumX = x.Sum();
+            double sumX2 = x.PointwiseMultiply(x).Sum();
+            double sumY = y.Sum();
+            Vector<double> xy = x.PointwiseMultiply(y);
+            double sumXY = (xy).Sum();
+            // Coeffitients for y = pa * x + pb
+            double pa = (n * sumXY - sumX * sumY) / (n * sumX2 - Math.Pow(sumX, 2));
+            double pb = (sumY * sumX2 - sumX * sumXY) / (n * sumX2 - Math.Pow(sumX, 2));
+            // Generate interpolated line 
+            for (int i = 0; i < y_approx.Count(); i++)
+            {
+                y_approx[i] = pa * x[i] + pb;
+            }
+
+            P[0] = pa;
+            P[1] = pb;
+
+            Tuple<double[], Vector<double>> output = new Tuple<double[], Vector<double>>(P, y_approx);
+
+            return output;
+        }
+
+
+        #region
+        /// <summary>
+        /// Function that prepare vector for IO module, to visualise VPC tachogram Slope
+        /// </summary>
+        /// <param name="wektor"> values of tachogramu (y values)</param>
+        /// <param name="nrProbki"> nr of probes (x values) </param>
+        /// <returns> tuple with two arrays: first with 5 values in row where highest slope was detected; second with values of tachogram, </returns>
+        #endregion
+        public Tuple<double[,], double[,]> LinearSquarePrepareResults(Vector<double>wektor, double nrProbki)
+        {
+            double[,] x = new double[5,wektor.Count / 5];
+            double[,] y = new double[5, wektor.Count / 5];
+            int k = 0;
+            for (int j = 0; j < wektor.Count / 5; j++)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    x[j, i] = i+nrProbki;
+                    y[j, i] = wektor[k++];
+                }
+            }
+
+            Tuple<double[,], double[,]> wynik =  Tuple.Create(x, y);
+            return wynik;
+        }
+
     }
 }

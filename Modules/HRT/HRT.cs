@@ -86,7 +86,6 @@ namespace EKG_Project.Modules.HRT
                     InputBasicDataWorker = new Basic_Data_Worker(_analysisName);
                     InputBasicDataWorker.Load();
                     InputBasicData = InputBasicDataWorker.BasicData;
-
                     Fs = (int)InputBasicData.Frequency;
                     //Console.Write("Częstotliwość: ");
                     //Console.WriteLine(Fs);
@@ -171,6 +170,18 @@ namespace EKG_Project.Modules.HRT
                 _classSelected = HRT_Algorythms.checkVPCifnotNULL(_classSelected);
                 _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classSelected, _VPCcount);
 
+
+                try
+                {
+                    OutputWorker = new HRT_Data_Worker(Params.AnalysisName);
+                    OutputData = new HRT_Data();
+                }
+                catch (Exception e)
+                {
+                    Abort();
+                }
+
+
             }
         }
 
@@ -202,7 +213,13 @@ namespace EKG_Project.Modules.HRT
             //HRT_Algorythms.PrintVector(_classSelected);
             //HRT_Algorythms.PrintVector(_nrVPC);
             FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
-            HRT_Algorythms.PrintVector(FinalResults.Item3);
+            //Tuple<double[,], double[,]> SlopeVisualization;
+            //SlopeVisualization = LinearSquarePrepareResults(p.Item2, j);
+
+
+
+
+            //HRT_Algorythms.PrintVector(FinalResults.Item3);
 
             //_turbulenceOnsetMean = (HRT_Algorythms.CountMean(FinalResults.Item2));
             //Console.Write("Turbulence Onset Mean: ");
@@ -248,7 +265,12 @@ namespace EKG_Project.Modules.HRT
             Tuple<string, double, double, double> t2 = Tuple.Create("I", _turbulenceSlopeMean, _turbulenceSlopeMax, _turbulenceSlopeMin);
             List<Tuple<string, double, double, double>> _tachogramSlopeValues = new List<Tuple<string, double, double, double>>();
             _tachogramSlopeValues.Add(t2);
-            
+
+
+                    
+
+
+
 
             _ended = true;
         }
@@ -329,7 +351,7 @@ namespace EKG_Project.Modules.HRT
 
         public static void Main() {
 
-            HRT_Params param = new HRT_Params("TestAnalysisEgz");
+            HRT_Params param = new HRT_Params("TestAnalysisEgz");   
 
             HRT testModule = new HRT();
             testModule.Init(param);
