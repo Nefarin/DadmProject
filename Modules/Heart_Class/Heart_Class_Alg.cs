@@ -79,7 +79,7 @@ namespace EKG_Project.Modules.Heart_Class
         {
             Fs = fs;
             Signal = loadedSignal;
-            OneQrsComplex(qrsOnset, qrsEnd, R);
+            OneQrsComplex(qrsOnset, qrsEnd, R, Fs);
             CountCoeff(QrsComplexOne, Fs);
             int numberOfNeighbors = 3;
 
@@ -117,18 +117,35 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="signleQrsEnd"></param>
         /// <param name="singleQrsR"></param>
         #endregion
-        private void OneQrsComplex(double singleQrsOnset, double signleQrsEnd, double singleQrsR)
+        private void OneQrsComplex(int singleQrsOnset, int signleQrsEnd, double singleQrsR, uint fs)
         {
-           
-            if (((int)singleQrsOnset != -1) && ((int)signleQrsEnd != -1)) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
-            {
-                int qrsLength = (int)(signleQrsEnd - singleQrsOnset + 1);
-                SingleQrs = Vector<double>.Build.Dense(qrsLength);
+            double maxQRTime = 0.063;
+            double maxRSTime = 0.094;
+            double samplingInterval = 1/fs;
+            int numberOfSamplesQR = (int)(maxQRTime/samplingInterval);
+            int numberOfSamplesRS = (int)(maxRSTime / samplingInterval);
 
-                Signal.CopySubVectorTo(SingleQrs, sourceIndex: (int)singleQrsOnset, targetIndex: 0,
-                    count: qrsLength);
-                Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
-                QrsComplexOne = a;
+            int qrsOnsetNew = singleQrsOnset;
+            int qrsEndNew = signleQrsEnd;
+
+            if ((singleQrsOnset != -1) && (signleQrsEnd != -1)) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
+            {
+                if (((int) singleQrsR - singleQrsOnset) > numberOfSamplesQR)
+                {
+                    qrsOnsetNew = (int) singleQrsR - numberOfSamplesQR;
+                }
+
+                if ((signleQrsEnd - (int) singleQrsR) > numberOfSamplesRS)
+                {
+                    qrsEndNew = (int) singleQrsR + numberOfSamplesRS;
+                }
+                    int qrsLength = (qrsEndNew - qrsOnsetNew + 1);
+                    SingleQrs = Vector<double>.Build.Dense(qrsLength);
+
+                    Signal.CopySubVectorTo(SingleQrs, sourceIndex: qrsOnsetNew, targetIndex: 0,
+                        count: qrsLength);
+                    Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
+                    QrsComplexOne = a;
             }
         }
 

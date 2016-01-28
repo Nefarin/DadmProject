@@ -552,7 +552,6 @@ namespace EKG_Unit.Modules.Heart_Class
             double R = 13;
             int expectedClass = 1;
             uint fs = 360;
-            //testAlgs.Fs= 360;
             
             double[] testArray =
             {
@@ -562,10 +561,8 @@ namespace EKG_Unit.Modules.Heart_Class
                 -0.070429, -0.080307, -0.11024, -0.1458
             };
             Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
-            //testAlgs.Signal = exampleSignal;
             Tuple<int, int> expectedResult = new Tuple<int, int>((int)R, expectedClass);
-
-
+            
             object[] args = { exampleSignal, qrsOnset, qrsEnd, R, fs };
             obj.Invoke("Classification", args);
 
