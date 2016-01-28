@@ -160,8 +160,8 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             Assert.AreEqual(rrDistResampledMatlab.Count, result[1].Count);
             for (int i = 0; i < result[0].Count; i++)
             {
-                Assert.AreEqual(timeInSecResampledMatlab[i], result[0][i], 1);
-                Assert.AreEqual(rrDistResampledMatlab[i], result[1][i], 1);
+                Assert.AreEqual(timeInSecResampledMatlab[i], result[0][i], 0.1);
+                Assert.AreEqual(rrDistResampledMatlab[i], result[1][i], 0.1);
             }
         }
 
@@ -214,12 +214,234 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             Assert.AreEqual(rrDistHPMatlab.Count, result[1].Count);
             for (int i = 0; i < result[0].Count; i++)
             {
-                Assert.AreEqual(timeInSecHPMatlab[i], result[0][i], 1);
-                Assert.AreEqual(rrDistHPMatlab[i], result[1][i], 1);
+                Assert.AreEqual(timeInSecHPMatlab[i], result[0][i], 0.0001);
+                Assert.AreEqual(rrDistHPMatlab[i], result[1][i], 0.0001);
             }
         }
 
+        [TestMethod]
+        [Description("Test lowpass")]
+        public void Sleep_Apnea_LP_Test1()
+        {
+            // Init test here
+            Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
+            Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
 
+            // input
+            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec_HP.csv");
+            List<double> timeInSecHPMatlab = new List<double>();
+            foreach (string line in lines)
+            {
+                timeInSecHPMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist_HP.csv");
+            List<double> rrDistHPMatlab = new List<double>();
+            foreach (string line in lines)
+            {
+                rrDistHPMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+
+            List<List<double>> RRHP = new List<List<double>>();
+            RRHP.Add(timeInSecHPMatlab);
+            RRHP.Add(rrDistHPMatlab);
+
+            // ouput
+            lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec_LP.csv");
+            List<double> timeInSecLPMatlab = new List<double>();
+            foreach (string line in lines)
+            {
+                timeInSecLPMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist_LP.csv");
+            List<double> rrDistLPMatlab = new List<double>();
+            foreach (string line in lines)
+            {
+                rrDistLPMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+
+            // Process test here
+            List<List<double>> result = (List<List<double>>)obj.Invoke("LP", RRHP);
+
+            // Assert results
+            Assert.AreEqual(timeInSecLPMatlab.Count, result[0].Count);
+            Assert.AreEqual(rrDistLPMatlab.Count, result[1].Count);
+            for (int i = 0; i < result[0].Count; i++)
+            {
+                Assert.AreEqual(timeInSecLPMatlab[i], result[0][i], 0.0001);
+                Assert.AreEqual(rrDistLPMatlab[i], result[1][i], 0.0001);
+            }
+        }
+
+        [TestMethod]
+        [Description("Test ampNormalization")]
+        public void Sleep_Apnea_amp_normalization_Test1()
+        {
+            // Init test here
+            Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
+            Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            // input
+            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\h_time_in_sec.csv");
+            List<double> hTimeInSec = new List<double>();
+            foreach (string line in lines)
+            {
+                hTimeInSec.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+            lines = ReadFile("..\\..\\..\\IO\\data\\h_amp_filtered.csv");
+            List<double> hAmpFiltered = new List<double>();
+            foreach (string line in lines)
+            {
+                hAmpFiltered.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+
+            List<List<double>> hAmp = new List<List<double>>();
+            hAmp.Add(hTimeInSec);
+            hAmp.Add(hAmpFiltered);
+
+            // ouput
+            lines = ReadFile("..\\..\\..\\IO\\data\\h_amp_normalised.csv");
+            List<double> hAmpNormalisedMatlab = new List<double>();
+            foreach (string line in lines)
+            {
+                hAmpNormalisedMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+
+            // Process test here
+            obj.Invoke("ampNormalization", hAmp);
+
+            // Assert results
+            Assert.AreEqual(hAmpNormalisedMatlab.Count, hAmp[1].Count);
+            Assert.AreEqual(hTimeInSec.Count, hAmp[0].Count);
+            for (int i = 0; i < hAmp[1].Count; i++)
+            {
+                Assert.AreEqual(hAmpNormalisedMatlab[i], hAmp[1][i], 0.001);
+                Assert.AreEqual(hTimeInSec[i], hAmp[0][i], 0.001);
+            }
+        }
+
+        [TestMethod]
+        [Description("Test detectApnea")]
+        public void Sleep_Apnea_detect_apnea_Test1()
+        {
+            // Init test here
+            Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
+            Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            // input
+            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\h_time_in_sec.csv");
+            List<double> hTimeInSec = new List<double>();
+            foreach (string line in lines)
+            {
+                hTimeInSec.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+            lines = ReadFile("..\\..\\..\\IO\\data\\h_amp_normalised.csv");
+            List<double> hAmpNormalised = new List<double>();
+            foreach (string line in lines)
+            {
+                hAmpNormalised.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+            lines = ReadFile("..\\..\\..\\IO\\data\\h_freq_filtered.csv");
+            List<double> hFreqFiltered = new List<double>();
+            foreach (string line in lines)
+            {
+                hFreqFiltered.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+
+            List<List<double>> hAmp = new List<List<double>>();
+            hAmp.Add(hTimeInSec);
+            hAmp.Add(hAmpNormalised);
+            List<List<double>> hFreq = new List<List<double>>();
+            hFreq.Add(hTimeInSec);
+            hFreq.Add(hFreqFiltered);
+
+            // ouput
+            lines = ReadFile("..\\..\\..\\IO\\data\\detected.csv");
+            List<bool> detectedMatlab = new List<bool>();
+            foreach (string line in lines)
+            {
+                detectedMatlab.Add(int.Parse(line) == 0 ? false : true);
+            }
+            lines = ReadFile("..\\..\\..\\IO\\data\\alg_ann.csv");
+            List<double> algAnnMatlab = new List<double>();
+            foreach (string line in lines)
+            {
+                algAnnMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+            List<bool> detected = new List<bool>();
+            List<double> time = new List<double>(); //Ticking away the moments that make up a dull day 
+
+            // Process test here
+            obj.Invoke("detectApnea", hAmp, hFreq, detected, time);
+
+            // Assert results
+            Assert.AreEqual(detectedMatlab.Count, detected.Count);
+            Assert.AreEqual(algAnnMatlab.Count, time.Count);
+            for (int i = 0; i < detected.Count; i++)
+            {
+                Assert.AreEqual(detectedMatlab[i], detected[i]);
+                Assert.AreEqual(algAnnMatlab[i], time[i], 1.0);
+            }
+        }
+
+        [TestMethod]
+        [Description("Test hilbert")]
+        public void Sleep_Apnea_hilbert_Test1()
+        {
+            // Init test here
+            Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
+            Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            // input
+            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec_LP.csv");
+            List<double> timeInSecLPMatlab = new List<double>();
+            foreach (string line in lines)
+            {
+                timeInSecLPMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist_LP.csv");
+            List<double> rrDistLPMatlab = new List<double>();
+            foreach (string line in lines)
+            {
+                rrDistLPMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+
+            List<List<double>> RRLP = new List<List<double>>();
+            RRLP.Add(timeInSecLPMatlab);
+            RRLP.Add(rrDistLPMatlab);
+
+            // ouput
+            lines = ReadFile("..\\..\\..\\IO\\data\\h_amp.csv");
+            List<double> hAmpMatlab = new List<double>();
+            foreach (string line in lines)
+            {
+                hAmpMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+            lines = ReadFile("..\\..\\..\\IO\\data\\h_freq.csv");
+            List<double> hFreqMatlab = new List<double>();
+            foreach (string line in lines)
+            {
+                hFreqMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+
+            List<List<double>> hAmp = new List<List<double>>();
+            List<List<double>> hFreq = new List<List<double>>();
+
+            // Process test here
+            obj.Invoke("hilbert", RRLP, hAmp, hFreq);
+
+            // Assert results
+            Assert.AreEqual(hAmpMatlab.Count, hAmp[1].Count);
+            Assert.AreEqual(timeInSecLPMatlab.Count - 1, hAmp[0].Count);
+            for (int i = 0; i < hAmp[1].Count; i++)
+            {
+                Assert.AreEqual(hAmpMatlab[i], hAmp[1][i], 0.001);
+                Assert.AreEqual(timeInSecLPMatlab[i], hAmp[0][i], 1);
+            }
+        }
 
 
         List<string> ReadFile(string name)
