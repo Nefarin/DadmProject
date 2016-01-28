@@ -28,7 +28,7 @@ namespace EKG_Project.Modules.HRT
         Vector<double> _classTime;
         int _VPCcount;
         int[] _nrVPC;
-        Tuple<double[,], double[], double[]> FinalResults;
+        Tuple<double[,], double[], double[], double[,], double[,]> FinalResults;
         double _turbulenceOnsetMean;
         double _turbulenceSlopeMean;
         double _turbulenceSlopeMax;
@@ -104,6 +104,9 @@ namespace EKG_Project.Modules.HRT
                     _rrintervals = InputRpeaksData.RRInterval;
 
                     //selekcja kanałów, na razie biorę tylko I
+
+                    int _currentChannelIndex = 0;
+                    Vector<double> currentVector = InputRpeaksData.RPeaks[_currentChannelIndex].Item2;
                     foreach (Tuple<string, Vector<double>> _licznik in _rpeaks)
                     {
                         if (_licznik.Item1 == "I") {
@@ -209,7 +212,7 @@ namespace EKG_Project.Modules.HRT
         {
 
             //HRT_Algorythms.PrintVector(_rpeaksSelected);
-            // HRT_Algorythms.PrintVector(_rrintervalsSelected);
+            //HRT_Algorythms.PrintVector(_rrintervalsSelected);
             //HRT_Algorythms.PrintVector(_classSelected);
             //HRT_Algorythms.PrintVector(_nrVPC);
             FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
@@ -219,7 +222,11 @@ namespace EKG_Project.Modules.HRT
 
 
 
-            //HRT_Algorythms.PrintVector(FinalResults.Item3);
+            HRT_Algorythms.PrintVector(FinalResults.Item1);
+            HRT_Algorythms.PrintVector(FinalResults.Item2);
+            HRT_Algorythms.PrintVector(FinalResults.Item3);
+            HRT_Algorythms.PrintVector(FinalResults.Item4);
+            HRT_Algorythms.PrintVector(FinalResults.Item5);
 
             //_turbulenceOnsetMean = (HRT_Algorythms.CountMean(FinalResults.Item2));
             //Console.Write("Turbulence Onset Mean: ");
