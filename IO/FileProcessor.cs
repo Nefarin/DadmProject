@@ -18,7 +18,7 @@ namespace EKG_Project.IO
         private IECGConverter _converter;
         private State _state;
         private bool _ended;
-        private Basic_Test_Data_Worker _worker;
+        private Basic_New_Data_Worker _worker;
 
         private int Step
         {
@@ -57,7 +57,7 @@ namespace EKG_Project.IO
             _numberOfLeads = _leads.Length;
             _ended = false;
             Step = step;
-            _worker = new Basic_Test_Data_Worker(_analysisName);
+            _worker = new Basic_New_Data_Worker(_analysisName);
         }
 
         public bool Ended()

@@ -87,7 +87,7 @@ namespace EKG_Project.IO
 
         public void SaveResult()
         {
-            Basic_Test_Data_Worker dataWorker = new Basic_Test_Data_Worker(analysisName);
+            Basic_New_Data_Worker dataWorker = new Basic_New_Data_Worker(analysisName);
             dataWorker.SaveAttribute(Basic_Attributes.Frequency, frequency);
         }
 
@@ -210,7 +210,7 @@ namespace EKG_Project.IO
             foreach (var val in v)
                 Console.WriteLine(val);
 
-            Basic_Test_Data_Worker worker = new Basic_Test_Data_Worker("TestAnalysis");
+            Basic_New_Data_Worker worker = new Basic_New_Data_Worker("TestAnalysis");
             worker.SaveSignal(mitbih.leads[0], false, v);
             Console.Read();
         }
