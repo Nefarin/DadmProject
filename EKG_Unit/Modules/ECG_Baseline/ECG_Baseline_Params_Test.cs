@@ -16,9 +16,9 @@ namespace EKG_Unit.Modules.ECG_Baseline
            Assert.AreEqual (Filtr_Method.BUTTERWORTH, param.Method);
            Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
            Assert.AreEqual(50, param.FcLow);
-           Assert.AreEqual(0.5, param.FcHigh);
-           Assert.AreEqual(3, param.OrderLow);
-           Assert.AreEqual(3, param.OrderHigh);
+           Assert.AreEqual(2, param.FcHigh);
+           Assert.AreEqual(30, param.OrderLow);
+           Assert.AreEqual(30, param.OrderHigh);
         }
         [TestMethod]
         [Description("Test if Butterworth LP constructor works properly")]
@@ -118,17 +118,41 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(0.5, param.Mi);
         }
         [TestMethod]
-        [Description("Test if BandPassConstructorForLMSMovingAverageSavitzkyGolay constructor works properly")]
-        public void BandPassConstructorForLMSMovingAverageSavitzkyGolayTest()
+        [Description("Test if Moving Average BandPass constructor works properly")]
+        public void MovingAvgBPConstructorTest()
         {
           
-            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 10, 100, "analysis");
-            Assert.AreEqual(Filtr_Method.LMS, param.Method);
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.BANDPASS, 10, 100, "analysis");
+            Assert.AreEqual(Filtr_Method.MOVING_AVG, param.Method);
+            Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
+            Assert.AreEqual("analysis", param.AnalysisName);
+            Assert.AreEqual(10, param.WindowSizeLow);
+            Assert.AreEqual(100, param.WindowSizeHigh);
+        }
+        [TestMethod]
+        [Description("Test if Savitzky Golay BandPass constructor works properly")]
+        public void SavitzkyGolayBPConstructorTest()
+        {
+
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.BANDPASS, 10, 100, "analysis");
+            Assert.AreEqual(Filtr_Method.SAV_GOL, param.Method);
             Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
             Assert.AreEqual("analysis", param.AnalysisName);
             Assert.AreEqual(10, param.WindowSizeLow);
             Assert.AreEqual(100, param.WindowSizeHigh);
         }
 
+        [TestMethod]
+        [Description("Test if LMS BandPass constructor works properly")]
+        public void LmsBPConstructorTest()
+        {
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 10, 90, "Analysis1", 0.5);
+            Assert.AreEqual(Filtr_Method.LMS, param.Method);
+            Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
+            Assert.AreEqual(10, param.WindowSizeLow);
+            Assert.AreEqual(90, param.WindowSizeHigh);
+            Assert.AreEqual("Analysis1", param.AnalysisName);
+            Assert.AreEqual(0.5, param.Mi);
+        }
     }
 }

@@ -67,7 +67,7 @@ namespace EKG_Unit.Modules.ECG_Baseline
         public void ButterworthBandPassTest()
         {
             double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
-            double[] resultArray = { 32.3643282005727, 20.0758852247596, 8.91923822080578, 2.41187284324484, 1.15437187737426, 3.50427665689673, 7.12650149527923, 10.2652306405650, 12.1552193306381, 12.6835991096352, 11.8538265613178, 9.66629432623774, 6.61987509331262, 4.28500933452372, 5.07436177505664, 10.8990754278231, 21.3952095102152, 33.1182767621193, 40.8370664692867, 40.5904809431651 };
+            double[] resultArray = { 2.45744345557991, -1.68204293128406, -4.27469867695616, -4.24472161824094, -2.31069580502097, -0.0357445380053719, 1.37593994217652, 1.70025470062549, 1.50904914030757, 1.47256308073577, 1.67832105808639, 1.49708669351868, 0.199765670238396, -2.13600411222992, -4.26956456906150, -4.47305241737448, -1.91645913917522, 2.29841061457380, 5.55089765485847, 5.60325199381815 };
 
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
             Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
@@ -78,7 +78,7 @@ namespace EKG_Unit.Modules.ECG_Baseline
             }
 
             ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
-            Vector<double> actual = target.butterworth(testVector, 360, 50, 10, Filtr_Type.BANDPASS);
+            Vector<double> actual = target.butterworth(testVector, 360, 50, 10, 50, 10, Filtr_Type.BANDPASS);
 
             for (int i = 0; i < actual.Count; i++)
             {
@@ -148,7 +148,7 @@ namespace EKG_Unit.Modules.ECG_Baseline
         public void SavitzkyGolayBandPassTest()
         {
             double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
-            double[] resultArray = { 2.65800865800865, 3.38528138528139, 3.62337662337663, 3.46753246753248, 3.15584415584407, 6.51515151515139, 8.24242424242408, 9.55844155844155, 13.0000000000000, 13.4242424242422, 12.5930735930738, 10.3290043290043, 7.69264069264068, 8.20346320346346, -0.969696969700635, 1.72727272727161, 16.1168831168861, 34.3419913419930, 55.0692640692650, 73.8354978354992 };
+            double[] resultArray = { -8.34395037998317, -9.03055382978838, -10.2557444378903, -11.9210396990331, -13.7850999651036, -12.0178409992440, -11.9190486944668, -12.2646994199750, -10.5147522289540, -11.8088198542433, -14.3817531239193, -18.4077968054546, -22.8231004282246, -24.1049390627322, -35.0812371301258, -34.1946376662769, -21.6193854386529, -5.20937889437704, 13.7052930432130, 30.6646713209614 };
 
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
             Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
@@ -159,7 +159,7 @@ namespace EKG_Unit.Modules.ECG_Baseline
             }
 
             ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
-            Vector<double> actual = target.savitzky_golay(testVector, 9, Filtr_Type.BANDPASS);
+            Vector<double> actual = target.savitzky_golay(testVector, 9, 87, Filtr_Type.BANDPASS);
 
             for (int i = 0; i < actual.Count; i++)
             {
@@ -229,7 +229,7 @@ namespace EKG_Unit.Modules.ECG_Baseline
         public void MovingAverageBandPassTest()
         {
             double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
-            double[] resultArray = { 1, 1.11111111111111, 1.88888888888889, 2.33333333333333, 2.33333333333333, 2.55555555555556, 3.11111111111111, 4.33333333333333, 6.77777777777778, 7.22222222222222, 7.88888888888889, 9.11111111111111, 9.11111111111111, 9.88888888888889, 10.1111111111111, 9.88888888888889, 9.22222222222222, 7.22222222222222, 16, 24.5555555555556 };
+            double[] resultArray = { 0,0.109833971902938,0.877394636015326,1.30651340996169,1.29118773946360,1.49553001277139,2.02681992337165,3.21072796934866,5.58876117496807,5.96168582375479,6.54916985951469,7.67816091954023,7.58492975734355,8.26053639846743,8.37803320561941,8.05363984674330,7.29246487867177,5.22094508301405,13.8263090676884,22.1111111111111 };
 
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
             Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
@@ -240,7 +240,7 @@ namespace EKG_Unit.Modules.ECG_Baseline
             }
 
             ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
-            Vector<double> actual = target.moving_average(testVector, 9, Filtr_Type.LOWPASS);
+            Vector<double> actual = target.moving_average(testVector, 9, 87, Filtr_Type.BANDPASS);
 
             for (int i = 0; i < actual.Count; i++)
             {
@@ -251,17 +251,14 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(resultVector, actual);
         }
 
-        /*
         [TestMethod]
         [Description("Test if LMS LP method returns proper values")]
         public void LMSLowPassTest()
         {
             double[] testArray = { 1, 2, 8, 5, 1, 3, 6, 12, 23, 5, 8, 19, 5, 8, 5, 4, 6, 5, 84, 85 };
-            double[] testFilteredArray = { 2, 2, 2, 4, 5, 1, 14, 12, 1, 6, 7, 15, 8, 8, 2, 7, 11, 10, 4, 5 };
             double[] resultArray = { 0.00000, 0.56000, 5.86880, -26.38586, 255.61202, -2155.77962, 23949.11075, -499803.79529, 29527205.55922, -2242067864.11451, 182349064975.68800, -18692941606262.80000, 2167497459981610.00000, -263267085426246000.00000, 33454186668971100000.00000, -4344925839486270000000.00000, 578846977867839000000000.00000, -79548164342263400000000000.00000, 15570874781327400000000000000.00000, -18614211988508500000000000000000.00000 };
 
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
-            Vector<double> testFilteredVector = Vector<double>.Build.DenseOfArray(testFilteredArray);
             Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
 
             for (int i = 0; i < resultVector.Count; i++)
@@ -270,7 +267,7 @@ namespace EKG_Unit.Modules.ECG_Baseline
             }
 
             ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
-            Vector<double> actual = target.lms(testVector, testFilteredVector, 50);
+            Vector<double> actual = target.lms(testVector, 360, 50, Filtr_Type.LOWPASS, 0.000001);
 
             for (int i = 0; i < actual.Count; i++)
             {
@@ -280,7 +277,7 @@ namespace EKG_Unit.Modules.ECG_Baseline
             System.Console.WriteLine(actual.ToString());
             Assert.AreEqual(resultVector, actual);
         }
-        */
+
     }
 
 }
