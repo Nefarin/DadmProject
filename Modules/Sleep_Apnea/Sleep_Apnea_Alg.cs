@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EKG_Project.IO;
 using EKG_Project.Modules.ECG_Baseline;
+using MathNet.Filtering.Median;
 
 
 namespace EKG_Project.Modules.Sleep_Apnea
@@ -152,7 +153,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 sum += RRHP[1][i];
                 filterIndex++;
 
-                if (i < LPFilterWindowLength)
+                if (i < LPFilterWindowLength - 1)
                 {
                     continue;
                 }
@@ -224,12 +225,28 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 if (i < hilb.Length - 1)
                 {
                     double phase = hilb[i].Phase;
-                    if (phase < 0) phase = Math.PI * 2 + phase;
+                    int rolls = 0;
+                    while (phase < 0)
+                    {
+                        phase += 2 * Math.PI;
+                        rolls++;
+                    }
+                    
                     double phase2 = hilb[i + 1].Phase;
-                    if (phase2 < 0) phase2 = Math.PI * 2 + phase2;
+                    rolls = 0;
+                    while (phase2 < 0)
+                    {
+                        phase2 += 2 * Math.PI;
+                        rolls++;
+                    }      
 
                     double frequency = Fs / (2 * Math.PI) * (phase2 - phase);
                     freq.Add(frequency);
+
+                    if(freq.Count == 81)
+                    {
+                        double lol = freq.Last();
+                    }
                 }
             }
 
@@ -262,77 +279,27 @@ namespace EKG_Project.Modules.Sleep_Apnea
             }
             Fourier.BluesteinInverse(x, FourierOptions.Default);
 
-
             return x;
         }
 
         void medianFilter(List<List<double>> hFreq, List<List<double>> hAmp)
         {
-            medianFilter(hAmp);
-            medianFilter(hFreq);
+            int medianFilterWindowSize = 181;
+            OnlineMedianFilter filter = new OnlineMedianFilter(medianFilterWindowSize);
+            hAmp[1] = filter.ProcessSamples(hAmp[1].ToArray()).ToList();
+            hFreq[1] = filter.ProcessSamples(hFreq[1].ToArray()).ToList();
         }
 
-        #region
-        /// <summary>
-        /// Function that filters signal using a moving window of 60 points
-        /// </summary>
-        /// <param name="h_freq"> Signal - Hilbert's frequencies </param>
-        /// <param name="h"> Signal - Hilbert's amplitudes </param>
-        /// <returns> Filtered amplitudes and frequencies </returns>
-        #endregion
-
-        void medianFilter(List<List<double>> h)
-        {
-            List<double> hAmpFiltered = new List<double>(h[1].Count);
-            List<double> hFreqFiltered = new List<double>(h[1].Count);
-
-            int medianFilterWindowLength = 181;
-            int filterIndex = 0;
-            int sortedWindowIndex = 0;
-            double[] medianFilterWindow = new double[medianFilterWindowLength];
-            double[] sortedMedianFilterWindow = new double[medianFilterWindowLength];
-
-            for (int i = 0; i < h[1].Count; i++)
-            {
-                medianFilterWindow[filterIndex] = h[1][i];
-                sortedMedianFilterWindow[sortedWindowIndex] = h[1][i];
-                filterIndex++;
-                if (i < medianFilterWindowLength)
-                {
-                    sortedWindowIndex++;
-                    continue;
-                }
-
-                Array.Sort(sortedMedianFilterWindow);
-
-                double median = 0.0;
-                if (medianFilterWindowLength % 2 == 0)
-                {
-                    median = (sortedMedianFilterWindow[medianFilterWindowLength / 2 - 1] + sortedMedianFilterWindow[medianFilterWindowLength / 2]) / 2.0;
-                }
-                else
-                {
-                    median = sortedMedianFilterWindow[medianFilterWindowLength / 2];
-                }
-                hAmpFiltered.Add(median);
-
-                if (filterIndex >= medianFilterWindowLength)
-                {
-                    filterIndex = 0;
-                }
-
-                double oldestValue = medianFilterWindow[filterIndex];
-                sortedWindowIndex = Array.FindIndex(sortedMedianFilterWindow, x => x == oldestValue);
-            }
-
-            h[1] = hAmpFiltered;
-            h[0] = h[0].GetRange(medianFilterWindowLength / 2, hAmpFiltered.Count);
-        }
 
         //Normalization of amplitude signal
         void ampNormalization(List<List<double>> hAmp)
         {
-            double mean = hAmp[1].Average();
+            double sum = 0;
+            for (int i = 0; i < hAmp[1].Count; i++)
+            {
+                sum += hAmp[1][i];
+            }
+            double mean = sum / hAmp[1].Count;
 
             for (int i = 0; i < hAmp[1].Count; i++)
             {
@@ -348,7 +315,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// <param name="hAmp"> Signal - filtered Hilbert's amplitudes </param>
         /// <returns> The percentage value of sleep apnea in signal (il_Apnea), Hilbert's amplitudes (h_amp) and time periods for which detected apnea (Detected_Apnea) </returns>
         #endregion
-        void detectApnea(List<List<double>> hAmp, List<List<double>> hFreq, out List<bool> detected, out List<double> time)
+        void detectApnea(List<List<double>> hAmp, List<List<double>> hFreq, List<bool> detected, List<double> time)
         {
             //Finding the minimum and maximum Hilbert amplitudes
 
@@ -371,11 +338,13 @@ namespace EKG_Project.Modules.Sleep_Apnea
             y_freq = 0.06;
 
             //Apnea detection
-            double analysisStep = 60; //60 sec for step
+            double analysisStep = 60.0; //60 sec for step
             double analysisWindowLength = 5 * analysisStep; //5 min for analysis window
 
-            detected = new List<bool>(hAmp[0].Count);
-            time = new List<double>(hAmp[0].Count);
+            if(detected == null || time == null)
+            {
+                throw new ArgumentNullException("listy detected i time nie zostały utworzone");
+            }
 
             bool quit = false;
             int ii = 0;
