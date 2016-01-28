@@ -99,21 +99,23 @@ namespace EKG_Unit.Modules.ECG_Baseline
         [Description("Test if LMS LowPass constructor works properly")]
         public void LmsLPConstructorTest()
         {
-            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.LOWPASS, 5, "Analysis1");
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.LOWPASS, 5, "Analysis1", 0.5);
             Assert.AreEqual(Filtr_Method.LMS, param.Method);
             Assert.AreEqual(Filtr_Type.LOWPASS, param.Type);
             Assert.AreEqual(5, param.WindowSizeLow);
             Assert.AreEqual("Analysis1", param.AnalysisName);
+            Assert.AreEqual(0.5, param.Mi);
         }
         [TestMethod]
         [Description("Test if LMS HighPass constructor works properly")]
         public void LmsHPConstructorTest()
         {
-            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.HIGHPASS, 90, "Analysis1");
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.HIGHPASS, 90, "Analysis1", 0.5);
             Assert.AreEqual(Filtr_Method.LMS, param.Method);
             Assert.AreEqual(Filtr_Type.HIGHPASS, param.Type);
             Assert.AreEqual(90, param.WindowSizeHigh);
             Assert.AreEqual("Analysis1", param.AnalysisName);
+            Assert.AreEqual(0.5, param.Mi);
         }
         [TestMethod]
         [Description("Test if BandPassConstructorForLMSMovingAverageSavitzkyGolay constructor works properly")]
