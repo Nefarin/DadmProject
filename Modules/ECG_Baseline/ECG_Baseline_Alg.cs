@@ -16,15 +16,15 @@ namespace EKG_Project.Modules.ECG_Baseline
 
                 //TODO: Comments kkkkkk ccccc
 
-                int L = signal.Count;
+                int signal_length = signal.Count;
                 int DCGain = 1;
 
-                double[] DoubleArray = new double[L];
+                double[] DoubleArray = new double[signal_length];
                 DoubleArray = signal.ToArray();
 
-                Complex[] ComplexArray = new Complex[L];
+                Complex[] ComplexArray = new Complex[signal_length];
 
-                for (int i = 0; i < L; i++)
+                for (int i = 0; i < signal_length; i++)
                 {
                     ComplexArray[i] = new Complex(DoubleArray[i], 0);
                 }
@@ -35,9 +35,9 @@ namespace EKG_Project.Modules.ECG_Baseline
 
                 if (fc > 0)
                 {
-                    binWidth = fs / L;
+                    binWidth = fs / signal_length;
 
-                    for(int i = 0; i < (L/2); i++)
+                    for(int i = 0; i < (signal_length/2); i++)
                     {
                         binFreq = binWidth * (i+1);
                         gain = DCGain / Math.Sqrt(1 + Math.Pow(binFreq/fc, 2.0 * order));
@@ -46,13 +46,13 @@ namespace EKG_Project.Modules.ECG_Baseline
                             gain = 1 - gain;
                         }
                         ComplexArray[i] *= gain;
-                        ComplexArray[L - 1 - i] *= gain;
+                        ComplexArray[signal_length - 1 - i] *= gain;
                     }
                 }
 
                 Fourier.Inverse(ComplexArray, FourierOptions.Matlab);
 
-                for (int i = 0; i < L; i++)
+                for (int i = 0; i < signal_length; i++)
                 {
                     DoubleArray[i] = ComplexArray[i].Real;
                 }
