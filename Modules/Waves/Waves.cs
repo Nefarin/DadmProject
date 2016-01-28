@@ -234,7 +234,6 @@ namespace EKG_Project.Modules.Waves
             }
 
 
-
         }
 
         private void cutSignals()

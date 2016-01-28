@@ -39,13 +39,13 @@ namespace EKG_Project.Modules.Waves
             }
             else if (_params.WaveType == Wavelet_Type.db2)
             {
-                _qrsEndTresh = 0.42;
-                _qrsOnsTresh = 0.22;
+                _qrsEndTresh = 0.12;
+                _qrsOnsTresh = 0.12;
             }
             else
             {
-                _qrsEndTresh = 0.4;
-                _qrsOnsTresh = 0.4;
+                _qrsEndTresh = 0.3;
+                _qrsOnsTresh = 0.3;
             }
 
             DetectQRS();
@@ -172,7 +172,7 @@ namespace EKG_Project.Modules.Waves
             _currentQRSendsPart.Clear();
             List<Vector<double>> dwt = new List<Vector<double>>();
             
-            dwt = ListDWT(_currentECG , _params.DecompositionLevel, _params.WaveType);
+            dwt = ListDWT(_currentECG , _params.DecompositionLevel, Wavelet_Type.haar);
 
             int d2size = dwt[_params.DecompositionLevel - 1].Count();
             int rSize = _params.RpeaksStep;
@@ -205,18 +205,23 @@ namespace EKG_Project.Modules.Waves
 
             int len = (middleR>>decompLevel) -(rightEnd >> decompLevel);
 
-            if (len < 1)
-                len = 1;
 
 
-            if  (len < 1 || sectionStart < 0)
+            if  ( sectionStart < 0)
                 return -1;
 
             if (sectionStart + len >= dwt.Count)
                 len = dwt.Count - sectionStart;
 
+            if (len < 1)
+                return -1;
+
             int qrsOnsetInd = dwt.SubVector(sectionStart, len).MinimumIndex() + sectionStart;
             double treshold = Math.Abs(dwt[qrsOnsetInd]) * _qrsOnsTresh;
+            Console.WriteLine("kurwa " + middleR);
+            Console.WriteLine("mac " + _currentECG.Count);
+            if (dmiddleR >= _currentECG.Count)
+                dmiddleR = _currentECG.Count - 1;
             double Rval = _currentECG[(int)dmiddleR];
             while (Math.Abs(dwt[qrsOnsetInd]) > treshold && qrsOnsetInd > sectionStart)
                 qrsOnsetInd--;
@@ -246,6 +251,7 @@ namespace EKG_Project.Modules.Waves
         {
             int middleR = (int)dmiddleR;
             int leftEnd = (int)dleftEnd;
+            leftEnd -= (2 << decompLevel);
             int sectionEnd = (leftEnd >> decompLevel);
             int qrsEndInd = (middleR >> decompLevel);
             int length = 250 * (int)InputData.Frequency;
@@ -257,7 +263,7 @@ namespace EKG_Project.Modules.Waves
 
 
 
-            if (qrsEndInd + len >= dwt.Count || len < 1 || qrsEndInd < 0)
+            if (qrsEndInd + len > dwt.Count || len < 1 || qrsEndInd < 0)
             {
                 return -1;
             }
@@ -301,10 +307,6 @@ namespace EKG_Project.Modules.Waves
                     qrsEndInd++;
                 while (nextNderivSquares(samples2analyse, qrsEndInd, _currentECG) > 0.02 * Rval && qrsEndInd < leftEnd)
                     qrsEndInd++;
-                //double val = Math.Abs(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[qrsEndInd]);
-                ////val = 12;
-                //while (Math.Abs(InputECGData.SignalsFiltered[_currentChannelIndex].Item2[qrsEndInd] - calcMean(qrsEndInd, sectionEnd)) > 0.4*val)
-                //    qrsEndInd++;
                 return qrsEndInd + _offset;
             }
                 
