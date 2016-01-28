@@ -17,6 +17,11 @@ namespace EKG_Project.IO
     {
         //FIELDS
         /// <summary>
+        /// Stores txt files directory
+        /// </summary>
+        private string directory;
+
+        /// <summary>
         /// Stores analysis name
         /// </summary>
         string analysisName;
@@ -54,7 +59,13 @@ namespace EKG_Project.IO
             }
         }
 
-        public MITBIHConverter(string MITBIHAnalysisName) 
+        public MITBIHConverter()
+        {
+            IECGPath pathBuilder = new DebugECGPath();
+            directory = pathBuilder.getTempPath();
+        }
+
+        public MITBIHConverter(string MITBIHAnalysisName) : this()
         {
             analysisName = MITBIHAnalysisName;
         }
@@ -206,6 +217,20 @@ namespace EKG_Project.IO
             }
             record.Dispose();
             return numberOfSamples;
+        }
+
+        /// <summary>
+        /// Deletes all analysis files
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string fileNamePattern = analysisName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
         }
 
         public static void Main()

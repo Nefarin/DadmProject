@@ -57,8 +57,6 @@ namespace EKG_Project.IO
             string pathOut = System.IO.Path.Combine(directory, fileName);
 
             StreamWriter sw = new StreamWriter(pathOut, mode); 
-            // true to append data to the file; false to overwrite the file.
-            // If the file does not exist, this constructor creates a new file.
             if(mode == false)
             {
                 currentNumberOfSamples = 0;
