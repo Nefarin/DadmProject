@@ -12,7 +12,7 @@ namespace EKG_Project.IO
 {
     public enum Basic_Attributes { Frequency, NumberOfSamples };
 
-    class Basic_Test_Data_Worker
+    public class Basic_New_Data_Worker
     {
         //FIELDS
         /// <summary>
@@ -44,13 +44,13 @@ namespace EKG_Project.IO
             set { attributes = value; }
         }
 
-        public Basic_Test_Data_Worker() 
+        public Basic_New_Data_Worker() 
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
         }
 
-        public Basic_Test_Data_Worker(String analysisName) : this()
+        public Basic_New_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
@@ -174,7 +174,7 @@ namespace EKG_Project.IO
         
         public static void Main()
         {
-            Basic_Test_Data_Worker worker = new Basic_Test_Data_Worker("TestAnalysis");
+            Basic_New_Data_Worker worker = new Basic_New_Data_Worker("TestAnalysis");
             Vector<double> vector = worker.LoadSignal("V5", 500000, 100);
             worker.SaveSignal("III", false, vector);
             Console.WriteLine("Current number of samples in file: " + worker.currentNumberOfSamples);
