@@ -28,9 +28,9 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.Method = Filtr_Method.BUTTERWORTH;
             this.Type = Filtr_Type.BANDPASS;
             this._fcLow = 50;
-            this._fcHigh = 0.5;
-            this.OrderLow = 31;
-            this.OrderHigh = 31;
+            this._fcHigh = 2;
+            this.OrderLow = 30;
+            this.OrderHigh = 30;
         }
 
         public ECG_Baseline_Params(string analysisName, Filtr_Method method, Filtr_Type type, int order, double fc) //konstruktor BUTTERWORTH LOW, HIGH
