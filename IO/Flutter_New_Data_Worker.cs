@@ -37,7 +37,7 @@ namespace EKG_Project.IO
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
         /// <param name="result">flutter annotations</param>
-        public void SaveSignal(string lead, bool mode, Tuple<int, int> result)
+        public void SaveSignal(string lead, bool mode, List<Tuple<int, int>> results)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -46,8 +46,12 @@ namespace EKG_Project.IO
 
             StreamWriter sw = new StreamWriter(pathOut, mode);
 
-            sw.WriteLine(result.Item1);
-            sw.WriteLine(result.Item2);
+            foreach (var result in results)
+            {
+                sw.WriteLine(result.Item1);
+                sw.WriteLine(result.Item2);
+                sw.WriteLine("---");
+            }
 
             sw.Close();
         }
@@ -56,8 +60,8 @@ namespace EKG_Project.IO
         /// Loads FlutterAnnotations from txt file
         /// </summary>
         /// <param name="lead">lead</param>
-        /// <returns>flutter annotations tuple</returns>
-        public Tuple<int, int> LoadSignal(string lead)
+        /// <returns>flutter annotations list</returns>
+        public List<Tuple<int, int>> LoadSignal(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -65,17 +69,62 @@ namespace EKG_Project.IO
             string pathIn = Path.Combine(directory, fileName);
 
             StreamReader sr = new StreamReader(pathIn);
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
 
-            string item1 = sr.ReadLine();
-            int convertedItem1 = Convert.ToInt32(item1);
+            iterator = 0;
+            List<Tuple<int, int>> list = new List<Tuple<int, int>>();
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+                string item1 = sr.ReadLine();
+                int convertedItem1 = Convert.ToInt32(item1);
 
-            string item2 = sr.ReadLine();
-            int convertedItem2 = Convert.ToInt32(item2);
+                string item2 = sr.ReadLine();
+                int convertedItem2 = Convert.ToInt32(item2);
 
+                Tuple<int, int> tuple = Tuple.Create(convertedItem1, convertedItem2);
+                list.Add(tuple);
+
+                sr.ReadLine();
+                iterator++;
+            }
             sr.Close();
 
-            Tuple<int, int> tuple = Tuple.Create(convertedItem1, convertedItem2);
-            return tuple;
+            return list;
+        }
+
+        /// <summary>
+        /// Gets number of FlutterAnnotations samples
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>number of samples</returns>
+        public uint getNumberOfSamples(string lead)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string path = Path.Combine(directory, fileName);
+
+            uint count = 0;
+            using (StreamReader r = new StreamReader(path))
+            {
+                while (r.ReadLine() != null)
+                {
+                    count++;
+                }
+            }
+
+            count = count / 3;
+            return count;
         }
 
         /// <summary>
