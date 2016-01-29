@@ -184,7 +184,6 @@ namespace EKG_Project.Modules.HRT
         {
             if (_currentChannelIndex < NumberOfChannels)
             {
-                
                 Console.Write(_currentChannelIndex);
                 Console.Write("/");
                 Console.WriteLine(NumberOfChannels);
@@ -196,9 +195,8 @@ namespace EKG_Project.Modules.HRT
 
                 //_rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
 
-                
+
                 // _classVentrical = HRT_Algorythms.checkVPCifnotNULL(_classVentrical);
-               
                 if  (_rpeaksSelected.Count < _classAll.Count)
                 {
                     Console.WriteLine("Wykryto więcej klas niż załamków, błędnie skonstruowany plik wejściowy");
@@ -213,7 +211,9 @@ namespace EKG_Project.Modules.HRT
                     else
                     {
                         _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classVentrical.ToArray());
+                       
                         _tachogram = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected);
+                        Console.WriteLine("**************************");
                         _classPrematureVentrical = HRT_Algorythms.SearchPrematureTurbulences(_tachogram, _nrVPC);
                         if (_classPrematureVentrical.Capacity == 0)
                         {
@@ -222,7 +222,7 @@ namespace EKG_Project.Modules.HRT
                         else
                         {
                             _tachogram = HRT_Algorythms.MakeTachogram(_classPrematureVentrical, _rrintervalsSelected);
-                            HRT_Algorythms.PrintVector(_tachogram);
+                            //HRT_Algorythms.PrintVector(_tachogram);
                         }
 
                         //    //FinalResults = HRT_Algorythms.FinalResults(_nrVPC, _rrintervalsSelected.ToArray());
