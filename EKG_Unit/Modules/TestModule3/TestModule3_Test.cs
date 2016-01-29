@@ -14,7 +14,7 @@ namespace EKG_Unit.Modules.TestModule3
         public void iterativeInterfaceTest()
         {
             IModule testModule = new EKG_Project.Modules.TestModule3.TestModule3();
-            TestModule3_Params param = new TestModule3_Params(5, 1000, "");
+            TestModule3_Params param = new TestModule3_Params(5, 1000, "abc123");
 
             testModule.Init(param);
             while (!testModule.Ended())

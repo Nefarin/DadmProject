@@ -445,6 +445,7 @@
     <Compile Include="Modules\TestModule3\TestModule3.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Alg.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Data.cs" />
+    <Compile Include="Modules\TestModule3\TestModule3_New_Data.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Params.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Stats.cs" />
     <Compile Include="Modules\TestModule\TestModule.cs" />

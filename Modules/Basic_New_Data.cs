@@ -7,7 +7,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules
 {
-    class Basic_New_Data
+    public class Basic_New_Data
     {
         private uint _frequency;
         private uint _numberOfSamples;
