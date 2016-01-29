@@ -143,11 +143,13 @@ namespace EKG_Project.Modules.R_Peaks
                                     _currentVector = _alg.EMD(_currentVector, InputData_basic.Frequency);
                                     break;
                                 }
-                                if (_currentVector.Count < 2) _currentVectorRRInterval = Vector<Double>.Build.Dense(1); 
-                                else _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
-                                //save results
-                                OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks,_currentLeadName, false, _currentVector);
-                                OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, false, _currentVectorRRInterval);
+                                OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, false, _currentVector);
+                                if (_currentVector.Count > 1)
+                                {
+                                    _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
+                                    //save results
+                                    OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, false, _currentVectorRRInterval);
+                                }
                                 //updating current index
                                 _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
                                 
@@ -188,12 +190,14 @@ namespace EKG_Project.Modules.R_Peaks
                                         break;
                                 }
                                 _currentVector.Add(_currentIndex, _currentVector);
-                                if (_currentVector.Count < 2) _currentVectorRRInterval = Vector<Double>.Build.Dense(1);
-                                else _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
                                 //save results
                                 OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, true, _currentVector);
-                                //TO DO: sprawdzic czy da sie policzyc RRms (wiecej niz 1 r znalezione)
-                                OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
+                                if (_currentVector.Count > 1)
+                                {
+                                    _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
+                                    //save results
+                                    OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
+                                }
                                 //updating current index
                                 _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
                             }
@@ -230,12 +234,14 @@ namespace EKG_Project.Modules.R_Peaks
                                     break;
                             }
                             _currentVector.Add(_currentIndex, _currentVector);
-                            if (_currentVector.Count < 2) _currentVectorRRInterval = Vector<Double>.Build.Dense(1);
-                            else _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
                             //save results
                             OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, true, _currentVector);
-                            //TO DO: sprawdzic czy da sie policzyc RRms (wiecej niz 1 r znalezione)
-                            OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
+                            if (_currentVector.Count > 1)
+                            {
+                                _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
+                                //save results
+                                OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
+                            }
                             //updating current index
                             _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
                         }
