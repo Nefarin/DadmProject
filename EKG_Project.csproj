@@ -48,7 +48,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.App</StartupObject>
+    <StartupObject>EKG_Project.IO.Sleep_Apnea_New_Data_Worker</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -343,6 +343,7 @@
     <Compile Include="IO\R_Peaks_Data_Worker.cs" />
     <Compile Include="IO\R_Peaks_New_Data_Worker.cs" />
     <Compile Include="IO\Sleep_Apnea_Data_Worker.cs" />
+    <Compile Include="IO\Sleep_Apnea_New_Data_Worker.cs" />
     <Compile Include="IO\ST_Segment_Data_Worker.cs" />
     <Compile Include="IO\TempInput.cs" />
     <Compile Include="IO\TestModule3_Data_Worker.cs" />
