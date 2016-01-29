@@ -217,7 +217,7 @@ namespace EKG_Project.Modules.HRT
 
         public List<int> SearchPrematureTurbulences(List<double[]> Tachogram, List<int> numerPikuVC)
         {
-            if (Tachogram.Capacity == numerPikuVC.Capacity) throw new ArgumentOutOfRangeException();
+           if (Tachogram.Count != numerPikuVC.Count) throw new ArgumentOutOfRangeException();
 
             double sumbefore = 0;
             double Mean=0;
