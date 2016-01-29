@@ -273,11 +273,55 @@ namespace EKG_Unit.Modules.HRT
 
             HRT_Alg testAlg = new HRT_Alg();
             List<int> resultPikVC = testAlg.SearchPrematureTurbulences(testTachogram, testPikVC);
-            Console.Write(resultPikVC[0]);
+            
             // Assert results
 
-            // CollectionAssert.AreEqual(resultPikVC(1), expectedPikVC(1));
-            Assert.AreEqual(resultPikVC[0], expectedPikVC[0]);
+             CollectionAssert.AreEqual(resultPikVC, expectedPikVC);
+            
+        }
+
+        //SearchPrematureTurbulences
+        [TestMethod]
+        [Description("Test function if properly searches premature turbulences but for another set of parameters - equality test")]
+        public void SearchPrematureTurbulences_EQTest_2()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testTachogram1 = { 708, 717, 714, 686, 431, 889, 694, 686, 700, 708, 717, 697, 694, 683, 664, 656, 669, 725, 708, 706, 686 };
+            double[] testTachogram2 = { 719, 697, 692, 656, 383, 975, 703, 700, 708, 714, 706, 686, 669, 669, 667, 711, 711, 697, 683, 667, 681 };
+            double[] testTachogram3 = { 636, 664, 672, 678, 461, 914, 697, 672, 653, 636, 647, 667, 683, 703, 681, 672, 642, 661, 656, 678, 694 };
+            double[] testTachogram4 = { 642, 647, 644, 653, 561, 831, 664, 639, 639, 617, 442, 911, 689, 700, 672, 653, 642, 661, 669, 706, 725 };
+            double[] testTachogram5 = { 664, 639, 639, 617, 442, 911, 689, 700, 672, 653, 642, 661, 669, 706, 725, 694, 681, 669, 681, 658, 669 };
+            List<double[]> testTachogram = new List<double[]>();
+            testTachogram.Add(testTachogram1);
+            testTachogram.Add(testTachogram2);
+            testTachogram.Add(testTachogram3);
+            testTachogram.Add(testTachogram4);
+            testTachogram.Add(testTachogram5);
+
+            List<int> testPikVC = new List<int>();
+            testPikVC.Add(568646);
+            testPikVC.Add(579800);
+            testPikVC.Add(608859);
+            testPikVC.Add(617523); //and should be rejected - test check this
+            testPikVC.Add(619136);
+
+            List<int> expectedPikVC = new List<int>();
+            expectedPikVC.Add(568646);
+            expectedPikVC.Add(579800);
+            expectedPikVC.Add(608859);
+            expectedPikVC.Add(619136);
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<int> resultPikVC = testAlg.SearchPrematureTurbulences(testTachogram, testPikVC);
+            
+            // Assert results
+
+            CollectionAssert.AreEqual(resultPikVC, expectedPikVC);
 
         }
 
