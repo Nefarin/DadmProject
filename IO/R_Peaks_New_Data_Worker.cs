@@ -10,52 +10,65 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Stores R_Peaks_Attributes
+    /// </summary>
+    #endregion
     public enum R_Peaks_Attributes { RPeaks, RRInterval };
+    #region Documentation
+    /// <summary>
+    /// Class that saves and loads R_Peaks_Data
+    /// </summary>
+    #endregion
     public class R_Peaks_New_Data_Worker
     {
         //FIELDS
+        #region Documentation
         /// <summary>
         /// Stores txt files directory
-        /// </summary>
+        /// </summary> 
+        #endregion
         private string directory;
 
+        #region Documentation
         /// <summary>
         /// Stores analysis name
-        /// </summary>
+        /// </summary> 
+        #endregion
         private string analysisName;
 
+        #region Documentation
         /// <summary>
-        /// Stores R_Peaks_Attributes
+        /// Default constructor
         /// </summary>
-        private R_Peaks_Attributes attributes;
-
-        /// <summary>
-        /// Gets or sets R_Peaks_Attributes
-        /// </summary>
-        public R_Peaks_Attributes Attributes
-        {
-            get { return attributes; }
-            set { attributes = value; }
-        }
-
+        #endregion
         public R_Peaks_New_Data_Worker() 
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
         }
 
+        #region Documentation
+        /// <summary>
+        /// Parametrized constructor
+        /// </summary>
+        /// <param name="analysisName">analysis name</param>
+        #endregion
         public R_Peaks_New_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves part of RPeaks/RRInterval signal in txt file
         /// </summary>
         /// <param name="atr">RPeaks/RRInterval</param>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="signal">signal</param>
+        /// <param name="signal">signal</param> 
+        #endregion
         public void SaveSignal(R_Peaks_Attributes atr, string lead, bool mode, Vector<double> signal)
         {
             string moduleName = this.GetType().Name;
@@ -73,6 +86,7 @@ namespace EKG_Project.IO
 
         }
 
+        #region Documentation
         /// <summary>
         /// Loads part of RPeaks/RRInterval signal from txt file
         /// </summary>
@@ -80,7 +94,8 @@ namespace EKG_Project.IO
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
         /// <param name="length">length</param>
-        /// <returns>signal</returns>
+        /// <returns>signal</returns> 
+        #endregion
         public Vector<double> LoadSignal(R_Peaks_Attributes atr, string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
@@ -119,9 +134,11 @@ namespace EKG_Project.IO
             return vector;
         }
 
+        #region Documentation
         /// <summary>
         /// Deletes all analysis files with Basic_Data
-        /// </summary>
+        /// </summary> 
+        #endregion
         public void DeleteFiles()
         {
             string moduleName = this.GetType().Name;

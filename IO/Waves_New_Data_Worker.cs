@@ -8,6 +8,11 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Stores Waves_Signal
+    /// </summary>
+    #endregion
     public enum Waves_Signal { QRSOnsets, QRSEnds, POnsets, PEnds, TEnds };
 
     #region Documentation

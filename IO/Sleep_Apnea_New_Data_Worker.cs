@@ -8,6 +8,11 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Class that saves and loads Sleep_Apnea_Data in txt files
+    /// </summary>
+    #endregion
     public class Sleep_Apnea_New_Data_Worker
     {
         //FIELDS
@@ -192,13 +197,15 @@ namespace EKG_Project.IO
             }
         }
 
+        #region Documentation
         /// <summary>
         /// Loads part of h_amp from txt files
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
         /// <param name="length">length</param>
-        /// <returns>h_amp</returns>
+        /// <returns>h_amp</returns> 
+        #endregion
         public List<List<double>> LoadHAmp(string lead, int[] startIndex, int[] length)
         {
             string moduleName = this.GetType().Name;
@@ -242,12 +249,14 @@ namespace EKG_Project.IO
             return exList;
         }
 
-        
+
+        #region Documentation
         /// <summary>
         /// Gets h_amp numebr of samples
         /// </summary>
         /// <param name="lead">lead</param>
-        /// <returns>array of number of samples</returns>
+        /// <returns>array of number of samples</returns> 
+        #endregion
         public uint[] getHAmpNumberOfSamples(string lead)
         {
             string moduleName = this.GetType().Name;

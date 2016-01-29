@@ -8,7 +8,17 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Stores HRV1_Signal
+    /// </summary>
+    #endregion
     public enum HRV1_Signal { TimeBasedParams, FreqBasedParams, FreqVector, PSD };
+    #region Documentation
+    /// <summary>
+    /// Class that saves and loads HRV1_Data in txt files
+    /// </summary>
+    #endregion
     public class HRV1_New_Data_Worker
     {
         //FIELDS
