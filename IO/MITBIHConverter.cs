@@ -17,6 +17,11 @@ namespace EKG_Project.IO
     {
         //FIELDS
         /// <summary>
+        /// Stores txt files directory
+        /// </summary>
+        private string directory;
+
+        /// <summary>
         /// Stores analysis name
         /// </summary>
         string analysisName;
@@ -27,14 +32,9 @@ namespace EKG_Project.IO
         uint frequency;
 
         /// <summary>
-        /// Stores number of samples
+        /// Stores list of leads
         /// </summary>
-        uint sampleAmount;
-
-        /// <summary>
-        /// Stores array of leads
-        /// </summary>
-        string[] leads;
+        List<string> leads;
 
         /// <summary>
         /// Stores reference to loaded record
@@ -59,7 +59,13 @@ namespace EKG_Project.IO
             }
         }
 
-        public MITBIHConverter(string MITBIHAnalysisName) 
+        public MITBIHConverter()
+        {
+            IECGPath pathBuilder = new DebugECGPath();
+            directory = pathBuilder.getTempPath();
+        }
+
+        public MITBIHConverter(string MITBIHAnalysisName) : this()
         {
             analysisName = MITBIHAnalysisName;
         }
@@ -89,6 +95,7 @@ namespace EKG_Project.IO
         {
             Basic_New_Data_Worker dataWorker = new Basic_New_Data_Worker(analysisName);
             dataWorker.SaveAttribute(Basic_Attributes.Frequency, frequency);
+            dataWorker.SaveLeads(leads);
         }
 
         /// <summary>
@@ -123,43 +130,61 @@ namespace EKG_Project.IO
         /// <returns>vector of samples</returns>
         public Vector<Double> getSignal(string lead, int startIndex, int length)
         {
-            record.Open();
             Vector<Double> vector = null;
-            foreach (Signal signal in record.Signals)
+            if (startIndex < 0)
             {
-                if (signal.Description == lead)
-                {
-                    double[] convertedSamples = new double[length];
-                    signal.Seek(startIndex);
-                    for (int i = 0; i < length; i++)
-                    {
-                        if (signal.IsEof)
-                        {
-                            throw new IndexOutOfRangeException();
-                        }
-                        Sample sample = signal.ReadNext();
-                        convertedSamples[i] = sample.ToPhys();
-                    }
-                    vector = Vector<double>.Build.Dense(convertedSamples.Length);
-                    vector.SetValues(convertedSamples);
-                }
+                throw new Exception();
             }
-            record.Dispose();
+            else
+            {
+                record.Open();
+                foreach (Signal signal in record.Signals)
+                {
+                    if (signal.Description == lead)
+                    {
+                        double[] convertedSamples = new double[length];
+                        signal.Seek(startIndex);
+                        for (int i = 0; i < length; i++)
+                        {
+                            if (signal.IsEof)
+                            {
+                                throw new IndexOutOfRangeException();
+                            }
+                            else
+                            {
+                                Sample sample = signal.ReadNext();
+                                convertedSamples[i] = sample.ToPhys();
+                            }
+                        }
+
+                        try
+                        {
+                            // obsługa length == 0
+                            vector = Vector<double>.Build.Dense(convertedSamples.Length);
+                            vector.SetValues(convertedSamples);
+                        }
+                        catch (System.ArgumentOutOfRangeException e) 
+                        {
+                            //Console.WriteLine(e);
+                        }
+                        
+                    }
+                }
+                record.Dispose();
+            }
             return vector;
         }
 
         /// <summary>
         /// Gets lead names from input file
         /// </summary>
-        public string[] getLeads()
+        public List<string> getLeads()
         {
             record.Open();
-            leads = new string[Signal.GetSignalsCount(record)];
-            int i = 0;
+            leads = new List<string>();
             foreach (Signal signal in record.Signals)
             {
-                leads[i] = signal.Description;
-                i++;
+                leads.Add(signal.Description);
             }
             record.Dispose();
 
@@ -192,6 +217,20 @@ namespace EKG_Project.IO
             }
             record.Dispose();
             return numberOfSamples;
+        }
+
+        /// <summary>
+        /// Deletes all analysis files
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string fileNamePattern = analysisName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
         }
 
         public static void Main()

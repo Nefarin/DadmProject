@@ -45,18 +45,18 @@ namespace EKG_Project.Modules.TestModule3
             Params = param; // parametry są lekkie, ich referncja dla wygody może być też tutaj
         }
 
-        private void scaleSamples()
+        public void scaleSamples()
         {
             CurrentVector = CurrentVector.Multiply(Params.Scale);
         }
 
-        private void addVector(Vector<Double> toAdd)
+        public void addVector(Vector<Double> toAdd)
         {
             if (toAdd == null) throw new ArgumentNullException();
             CurrentVector = CurrentVector.Add(toAdd);
         }
 
-        private void subVector(Vector<Double> toSub)
+        public void subVector(Vector<Double> toSub)
         {
             if (toSub == null) throw new ArgumentNullException();
             CurrentVector = CurrentVector.Subtract(toSub);

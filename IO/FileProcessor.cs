@@ -13,7 +13,7 @@ namespace EKG_Project.IO
         private int _currentIndex;
         private int _step;
         private int _currentLeadLength;
-        private string[] _leads;
+        private List<string> _leads;
         private string _analysisName;
         private IECGConverter _converter;
         private State _state;
@@ -54,7 +54,7 @@ namespace EKG_Project.IO
             _analysisName = analysisName;
             _state = State.INIT;
             _leads = Converter.getLeads();
-            _numberOfLeads = _leads.Length;
+            _numberOfLeads = _leads.Count;
             _ended = false;
             Step = step;
             _worker = new Basic_New_Data_Worker(_analysisName);
@@ -72,6 +72,7 @@ namespace EKG_Project.IO
                     _currentLeadIndex = -1;
                     _currentIndex = 0;
                     _state = State.NEXT;
+                    Converter.DeleteFiles();
                     break;
                 case (State.NEXT):
                     _currentLeadIndex++;
@@ -85,7 +86,7 @@ namespace EKG_Project.IO
                     else _state = State.END;   
                     break;
                 case (State.BEGIN_NEXT):
-                    Console.WriteLine(_currentLeadLength);
+                    //Console.WriteLine(_currentLeadLength);
                     try
                     {
                         Vector<double> vect = Converter.getSignal(_leads[_currentLeadIndex], _currentIndex, Step);
@@ -99,7 +100,7 @@ namespace EKG_Project.IO
                         {
                             Vector<double> vect = Converter.getSignal(_leads[_currentLeadIndex], _currentIndex, _currentLeadLength - _currentIndex);
                             _worker.SaveSignal(_leads[_currentLeadIndex], false, vect);
-                            _currentIndex += _currentLeadLength - _currentIndex - 1;
+                            _currentIndex += _currentLeadLength - _currentIndex;
                             _state = State.NEXT;
                         }
                         catch (OverflowException k)
@@ -126,7 +127,7 @@ namespace EKG_Project.IO
                             Vector<double> vect = Converter.getSignal(_leads[_currentLeadIndex], _currentIndex, _currentLeadLength - _currentIndex);
                             _worker.SaveSignal(_leads[_currentLeadIndex], true, vect);
                             _state = State.NEXT;
-                            _currentIndex += _currentLeadLength - _currentIndex - 1;
+                            _currentIndex += _currentLeadLength - _currentIndex;
                         }
                         catch (OverflowException k)
                         {
@@ -134,9 +135,10 @@ namespace EKG_Project.IO
                         }
 
                     }
-                    Console.WriteLine(_currentIndex);
+                    //Console.WriteLine(_currentIndex);
                     break;
                 case (State.END):
+                    _worker.SaveLeads(_leads);
                     _ended = true;
                     break;
                 default:
