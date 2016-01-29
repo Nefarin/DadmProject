@@ -125,11 +125,13 @@ namespace EKG_Project.IO
             return list;
         }
 
+        #region Documentation
         /// <summary>
         /// Gets number of ClassificationResult samples
         /// </summary>
         /// <param name="lead">lead</param>
         /// <returns>number of samples</returns>
+        #endregion
         public uint getNumberOfSamples(string lead)
         {
             string moduleName = this.GetType().Name;
@@ -150,10 +152,12 @@ namespace EKG_Project.IO
             return count;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves ChannelMliiDetected in txt file
         /// </summary>
         /// <param name="value">ChannelMliiDetected value</param>
+        #endregion
         public void SaveChannelMliiDetected(bool value)
         {
             string moduleName = this.GetType().Name;
@@ -166,10 +170,12 @@ namespace EKG_Project.IO
             sw.Close();
         }
 
+        #region Documentation
         /// <summary>
         /// Loads ChannelMliiDetected from txt file
         /// </summary>
         /// <returns>ChannelMliiDetected bool</returns>
+        #endregion
         public bool LoadChannelMliiDetected()
         {
             string moduleName = this.GetType().Name;
@@ -185,10 +191,12 @@ namespace EKG_Project.IO
             return readValue;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves CoefficientsForOneComplex in txt file
         /// </summary>
         /// <param name="value">CoefficientsForOneComplex</param>
+        #endregion
         public void SaveCoefficientsForOneComplex(string lead, Tuple<int, Vector<double>> value)
         {
             string moduleName = this.GetType().Name;
@@ -205,11 +213,13 @@ namespace EKG_Project.IO
             }
             sw.Close();
         }
-        
+
+        #region Documentation
         /// <summary>
         /// Loads CoefficientsForOneComplex from txt file
         /// </summary>
         /// <returns>CoefficientsForOneComplex tuple</returns>
+        #endregion
         public Tuple<int, Vector<double>> LoadCoefficientsForOneComplex(string lead)
         {
             string moduleName = this.GetType().Name;
@@ -239,9 +249,11 @@ namespace EKG_Project.IO
             return tuple;
         }
 
+        #region Documentation
         /// <summary>
         /// Deletes all analysis files with Heart_Class_Data
         /// </summary>
+        #endregion
         public void DeleteFiles()
         {
             string moduleName = this.GetType().Name;

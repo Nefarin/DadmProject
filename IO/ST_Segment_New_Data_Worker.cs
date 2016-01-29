@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EKG_Project.IO
 {
@@ -188,11 +185,157 @@ namespace EKG_Project.IO
             return list;
         }
 
-        // Atrybuty
-        //public int ConcaveCurves
-        //public int ConvexCurves
-        //public int IncreasingLines
-        //public int HorizontalLines
-        //public int DecreasingLines
+        #region Documentation
+        /// <summary>
+        /// Gets number of tJs samples
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>number of samples</returns>
+        #endregion
+        public uint tJs_getNumberOfSamples(string lead)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_tJsResult" + ".txt";
+            string path = Path.Combine(directory, fileName);
+
+            uint count = 0;
+            using (StreamReader r = new StreamReader(path))
+            {
+                while (r.ReadLine() != null)
+                {
+                    count++;
+                }
+            }
+
+            count = count / 2;
+            return count;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Gets number of tSTs samples
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>number of samples</returns>
+        #endregion
+        public uint tSTs_getNumberOfSamples(string lead)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_tSTsResult" + ".txt";
+            string path = Path.Combine(directory, fileName);
+
+            uint count = 0;
+            using (StreamReader r = new StreamReader(path))
+            {
+                while (r.ReadLine() != null)
+                {
+                    count++;
+                }
+            }
+
+            count = count / 2;
+            return count;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Saves, specified in enum, attribute in txt file
+        /// </summary>
+        /// <param name="attributes">Attribute name enum</param>
+        /// <param name="mode">StreamWriter mode</param>
+        /// <param name="lead">Lead</param>
+        /// <param name="attribute">Attribute value</param>
+        #endregion
+        public void SaveAttributes(ST_Segment_Attributes attribute, bool mode, string lead, int attributeValue)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string FileName;
+
+            switch (attribute)
+            {
+                case ST_Segment_Attributes.ConcaveCurves:
+                    FileName = analysisName + "_" + moduleName + "_" + lead + ST_Segment_Attributes.ConcaveCurves.ToString() + ".txt";
+                    break;
+                case ST_Segment_Attributes.ConvexCurves:
+                    FileName = analysisName + "_" + moduleName + "_" + lead + ST_Segment_Attributes.ConvexCurves.ToString() + ".txt";
+                    break;
+                case ST_Segment_Attributes.IncreasingLines:
+                    FileName = analysisName + "_" + moduleName + "_" + lead + ST_Segment_Attributes.IncreasingLines.ToString() + ".txt";
+                    break;
+                case ST_Segment_Attributes.HorizontalLines:
+                    FileName = analysisName + "_" + moduleName + "_" + lead + ST_Segment_Attributes.HorizontalLines.ToString() + ".txt";
+                    break;
+                case ST_Segment_Attributes.DecreasingLines:
+                    FileName = analysisName + "_" + moduleName + "_" + lead + ST_Segment_Attributes.DecreasingLines.ToString() + ".txt";
+                    break;
+                default:
+                    FileName = analysisName + "_" + moduleName + "_" + lead + "_unknown" + ".txt";
+                    break;
+            }
+
+            string PathOut = Path.Combine(directory, FileName);
+            StreamWriter sw = new StreamWriter(PathOut, mode);
+            sw.WriteLine(attribute);
+            sw.Close();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads, specified in enum, attribute from txt file
+        /// </summary>
+        /// <param name="attribute">Attribute name enum</param>
+        /// <param name="lead">Lead</param>
+        /// <returns></returns>
+        #endregion
+        public int LoadAttribute(ST_Segment_Attributes attribute, string lead)
+        {
+            int result = 0;
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string FileName = analysisName + "_" + moduleName + "_" + lead + attribute.ToString() + ".txt";
+            string pathIn = Path.Combine(directory, FileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+            string item = sr.ReadLine();
+            result = int.Parse(item);
+            sr.Close();
+
+            return result;
+        }
+        
+        #region Documentation
+        /// <summary>
+        /// Deletes all analysis files with ST_Segment_New_Data_Worker
+        /// </summary>
+        #endregion
+        public void DeleteFiles()
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileNamePattern = analysisName + "_" + moduleName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+        }
+    }
+
+    #region Documentation
+    /// <summary>
+    /// ST_Segment_Data attribute enum list
+    /// </summary>
+    #endregion
+    public enum ST_Segment_Attributes
+    {
+        ConcaveCurves,
+        ConvexCurves,
+        IncreasingLines,
+        HorizontalLines,
+        DecreasingLines
     }
 }
