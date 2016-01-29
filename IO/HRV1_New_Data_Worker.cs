@@ -8,36 +8,30 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.IO
 {
-    public enum Waves_Signal { QRSOnsets, QRSEnds, POnsets, PEnds, TEnds };
-
-    #region Documentation
-    /// <summary>
-    /// Class that saves and loads Waves_Data chunks from internal text file
-    /// </summary>
-    #endregion
-    public class Waves_New_Data_Worker
+    public enum HRV1_Signal { TimeBasedParams, FreqBasedParams, FreqVector, PSD };
+    public class HRV1_New_Data_Worker
     {
         //FIELDS
         #region Documentation
         /// <summary>
-        /// Stores internal XML file directory
+        /// Stores txt files directory
         /// </summary>
         #endregion
-        string directory;
+        private string directory;
 
         #region Documentation
         /// <summary>
         /// Stores analysis name
         /// </summary>
         #endregion
-        string analysisName;
+        private string analysisName;
 
         #region Documentation
         /// <summary>
         /// Default constructor
         /// </summary>
         #endregion
-        public Waves_New_Data_Worker()
+        public HRV1_New_Data_Worker() 
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
@@ -47,24 +41,22 @@ namespace EKG_Project.IO
         /// <summary>
         /// Parameterized constructor
         /// </summary>
-        /// <param name="analysisName"></param>
         #endregion
-        public Waves_New_Data_Worker(String analysisName) : this()
+        public HRV1_New_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
 
-        //METHODS
         #region Documentation
         /// <summary>
-        /// Saves part of Waves_Signal in txt file
+        /// Saves part of HRV1_Signal in txt file
         /// </summary>
-        /// <param name="atr">Waves_Signal</param>
+        /// <param name="atr">HRV1_Signal</param>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="signal">signal</param>
+        /// <param name="signal">HRV1_Signal</param>
         #endregion
-        public void SaveSignal(Waves_Signal atr, string lead, bool mode, List<int> signal)
+        public void SaveSignal(HRV1_Signal atr, string lead, bool mode, Vector<double> signal)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -81,15 +73,15 @@ namespace EKG_Project.IO
 
         #region Documentation
         /// <summary>
-        /// Loads parts of Waves_Signal from txt file
+        /// Loads part of HRV1_Signal from txt file
         /// </summary>
-        /// <param name="atr">Waves_Signal</param>
+        /// <param name="atr">HRV1_Signal</param>
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
         /// <param name="length">length</param>
-        /// <returns>Waves signal list</returns>
+        /// <returns>HRV1_Signal vector</returns>
         #endregion
-        public List<int> LoadSignal(Waves_Signal atr, string lead, int startIndex, int length)
+        public Vector<double> LoadSignal(HRV1_Signal atr, string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -107,8 +99,7 @@ namespace EKG_Project.IO
             }
 
             iterator = 0;
-
-            List<int> list = new List<int>();
+            double[] readSamples = new double[length];
             while (iterator < length)
             {
                 if (sr.EndOfStream)
@@ -117,25 +108,26 @@ namespace EKG_Project.IO
                 }
 
                 string readLine = sr.ReadLine();
-                int readValue = Convert.ToInt32(readLine);
-                list.Add(readValue);
+                readSamples[iterator] = Convert.ToDouble(readLine);
                 iterator++;
             }
 
             sr.Close();
 
-            return list;
+            Vector<double> vector = Vector<double>.Build.Dense(readSamples.Length);
+            vector.SetValues(readSamples);
+            return vector;
         }
 
         #region Documentation
         /// <summary>
-        /// Gets number of Waves_Signal samples 
+        /// Gets number of HRV1_Signal samples 
         /// </summary>
-        /// <param name="atr">Waves_Signal</param>
+        /// <param name="atr">HRV1_Signal</param>
         /// <param name="lead">lead</param>
         /// <returns>number of samples</returns> 
         #endregion
-        public uint getNumberOfSamples(Waves_Signal atr, string lead)
+        public uint getNumberOfSamples(HRV1_Signal atr, string lead)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -155,7 +147,7 @@ namespace EKG_Project.IO
 
         #region Documentation
         /// <summary>
-        /// Deletes all analysis files with Waves_Data
+        /// Deletes all analysis files with HRV1_Data
         /// </summary> 
         #endregion
         public void DeleteFiles()
