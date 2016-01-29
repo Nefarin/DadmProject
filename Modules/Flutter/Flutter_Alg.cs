@@ -17,6 +17,9 @@ namespace EKG_Project.Modules.Flutter
         private Vector<double> _samples; // próbki sygnału
         private double _fs;
 
+        List<int> _ecgPartStarts = new List<int>();
+        List<int> _ecgPartEnds = new List<int>();
+
         private const double RI_LOWER_LIMIT_FOR_AFL = 1.6;
         private const double RI_UPPER_LIMIT_FOR_AFL = 2.4;
 
@@ -46,7 +49,7 @@ namespace EKG_Project.Modules.Flutter
             return aflAnnotations;
         }
 
-        private static List<Tuple<int, int>> Detect(List<double[]> spectralDensityList, List<double[]> frequenciesList, List<double> powerList)
+        private List<Tuple<int, int>> Detect(List<double[]> spectralDensityList, List<double[]> frequenciesList, List<double> powerList)
         {
             bool[] aflDetected = new bool[spectralDensityList.Count];
 
@@ -73,16 +76,18 @@ namespace EKG_Project.Modules.Flutter
                 {
                     if (j % 2 == 0)
                     {
-                        RIPower += (spectralDensityList[i][leftIndex] + spectralDensityList[i][leftIndex + 1])
-                            * (frequenciesList[i][leftIndex + 1] - frequenciesList[i][leftIndex])
-                            * 0.5;
+                        double a = spectralDensityList[i][leftIndex];
+                        double b = spectralDensityList[i][leftIndex + 1];
+                        double h = frequenciesList[i][leftIndex + 1] - frequenciesList[i][leftIndex];
+                        RIPower += (a + b) * h * 0.5;
                         leftIndex--;
                     }
                     else
                     {
-                        RIPower += (spectralDensityList[i][rightIndex] + spectralDensityList[i][rightIndex - 1])
-                            * (frequenciesList[i][rightIndex] - frequenciesList[i][rightIndex - 1])
-                            * 0.5;
+                        double a = spectralDensityList[i][rightIndex];
+                        double b = spectralDensityList[i][rightIndex - 1];
+                        double h = frequenciesList[i][rightIndex] - frequenciesList[i][rightIndex - 1];
+                        RIPower += (a + b) * h * 0.5;
                         rightIndex++;
                     }
 
@@ -106,7 +111,7 @@ namespace EKG_Project.Modules.Flutter
 
                 }
 
-                double RI = frequenciesList[i][rightIndex] - frequenciesList[i][leftIndex];
+                double RI = frequenciesList[i][rightIndex-1] - frequenciesList[i][leftIndex+1];
 
                 if (RI > RI_LOWER_LIMIT_FOR_AFL && RI < RI_UPPER_LIMIT_FOR_AFL)
                 {
@@ -126,14 +131,14 @@ namespace EKG_Project.Modules.Flutter
                     }
                     else if (start != -1 && i == aflDetected.Length - 1)
                     {
-                        aflAnnotations.Add(new Tuple<int, int>(start, i));
+                        aflAnnotations.Add(new Tuple<int, int>(_ecgPartStarts[start], _ecgPartEnds[i]));
                     }
                 }
                 else
                 {
                     if (start != -1)
                     {
-                        aflAnnotations.Add(new Tuple<int, int>(start, i - 1));
+                        aflAnnotations.Add(new Tuple<int, int>(_ecgPartStarts[start], _ecgPartEnds[i - 1]));
                         start = -1;
                     }
                 }
@@ -300,6 +305,8 @@ namespace EKG_Project.Modules.Flutter
                     }
                 }
 
+                _ecgPartStarts.Add(start);
+                _ecgPartEnds.Add(end);
                 while (i < _QRSonsets.Count && start < _samples.Count && start <= _QRSonsets[i])
                 {
                     tmpEkgPart.Add(_samples[start]);
