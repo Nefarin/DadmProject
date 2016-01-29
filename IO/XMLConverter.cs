@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using MathNet.Numerics.LinearAlgebra;
@@ -16,6 +17,11 @@ namespace EKG_Project.IO
     public class XMLConverter : IECGConverter
     {
         //FIELDS
+        /// <summary>
+        /// Stores txt files directory
+        /// </summary>
+        private string directory;
+
         /// <summary>
         /// Stores analysis name
         /// </summary>
@@ -49,7 +55,13 @@ namespace EKG_Project.IO
             }
         }
 
-        public XMLConverter(string XMLAnalysisName) 
+        public XMLConverter()
+        {
+            IECGPath pathBuilder = new DebugECGPath();
+            directory = pathBuilder.getTempPath();
+        }
+
+        public XMLConverter(string XMLAnalysisName) : this()
         {
             analysisName = XMLAnalysisName;
         }
@@ -266,7 +278,7 @@ namespace EKG_Project.IO
             throw new NotImplementedException();
         }
 
-        public string[] getLeads()
+        public List<string> getLeads()
         {
             throw new NotImplementedException();
         }
@@ -274,6 +286,20 @@ namespace EKG_Project.IO
         public uint getNumberOfSamples(string lead)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes all analysis files
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string fileNamePattern = analysisName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
         }
     }
 }
