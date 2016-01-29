@@ -44,6 +44,7 @@ namespace EKG_Project.IO
         /// <summary>
         /// Parameterized constructor
         /// </summary>
+        /// <param name="analysisName">analysis name</param>
         #endregion
         public T_Wave_Alt_New_Data_Worker(String analysisName) : this()
         {

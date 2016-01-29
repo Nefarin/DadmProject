@@ -108,11 +108,9 @@ namespace EKG_Project.IO
             string pathIn2 = Path.Combine(directory, fileName2);
 
             StreamReader sr2 = new StreamReader(pathIn2);
-
-            uint sampleNumber = getNumberOfSamples(lead);
             //pomijane linie ...
             int iterator = 0;
-            while (iterator < startIndex && iterator < sampleNumber && !sr1.EndOfStream)
+            while (iterator < startIndex && !sr1.EndOfStream)
             {
                 sr1.ReadLine();
                 sr2.ReadLine();
@@ -121,7 +119,7 @@ namespace EKG_Project.IO
 
             iterator = 0;
             List<Tuple<int, int>> list = new List<Tuple<int, int>>();
-            while (iterator < length && iterator < sampleNumber)
+            while (iterator < length)
             {
                 if (sr1.EndOfStream)
                 {
@@ -214,14 +212,13 @@ namespace EKG_Project.IO
             string[] HAmpFiles = Directory.GetFiles(directory, fileNamePattern);
 
             int filesIndex = 0;
-            uint[] samplesNumber = getHAmpNumberOfSamples(lead);
             List<List<double>> exList = new List<List<double>>();
             foreach(var file in HAmpFiles)
             {
                 StreamReader sr = new StreamReader(file);
                 //pomijane linie ...
                 int iterator = 0;
-                while (iterator < startIndex[filesIndex] && iterator < samplesNumber[filesIndex] && !sr.EndOfStream)
+                while (iterator < startIndex[filesIndex] && !sr.EndOfStream)
                 {
                     string readLine = sr.ReadLine();
                     iterator++;
@@ -229,7 +226,7 @@ namespace EKG_Project.IO
 
                 iterator = 0;
                 List<double> inList = new List<double>();
-                while (iterator < length[filesIndex] && iterator < samplesNumber[filesIndex])
+                while (iterator < length[filesIndex])
                 {
                     if (sr.EndOfStream)
                     {
