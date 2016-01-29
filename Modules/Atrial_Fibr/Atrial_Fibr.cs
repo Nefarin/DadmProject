@@ -10,6 +10,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
 {
     public class Atrial_Fibr : IModule
     {
+        private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
         private bool _ended;
         private bool _aborted;
 
@@ -32,6 +33,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private Tuple<bool, Vector<double>, double> _tempClassResult;
         private Tuple<bool, Vector<double>, double> _ClassResult;
         Vector<double> pointsDetectedA;
+        private STATE _state;
 
         public void Abort()
         {
@@ -51,34 +53,68 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         public void Init(ModuleParams parameters)
         {
-            //Params = parameters as Atrial_Fibr_Params;
-            //Aborted = false;
-            //if (!Runnable()) _ended = true;
-            //else
-            //{
-            //    _ended = false;
-            //    InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
-            //    InputWorker_basic.Load();
-            //    InputData_basic = InputWorker_basic.BasicData;
+            try
+            {
+                _params = parameters as Atrial_Fibr_Params;
+            }
+            catch (Exception e)
+            {
+                Abort();
+                return;
+            }
 
-            //    InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-            //    InputRpeaksWorker.Load();
-            //    InputRpeaksData = InputRpeaksWorker.Data;
+            if (!Runnable())
+            {
+                _ended = true;
+            }
+            else
+            {
+                InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
+                InputWorker_basic.Load();
+                InputData_basic = InputWorker_basic.BasicData;
 
-            //    OutputWorker = new Atrial_Fibr_Data_Worker(Params.AnalysisName);
-            //    OutputData = new Atrial_Fibr_Data();
+                InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
+                InputRpeaksWorker.Load();
+                InputRpeaksData = InputRpeaksWorker.Data;
 
-            //    _currentChannelIndex = 0;
-            //    _samplesProcessed = 0;
-            //    NumberOfChannels = InputRpeaksData.RPeaks.Count;
-            //    _currentChannelLength = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.Count;
-            //    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-            //    _vectorOfIntervals = Vector<Double>.Build.Dense(_currentChannelLength);
-            //    _ClassResult = new Tuple<bool, Vector<double>, double>(false, pointsDetected, 0);
-            //    pointsDetectedA = Vector<double>.Build.Dense(Convert.ToInt32(InputData_basic.SampleAmount));
+                OutputWorker = new Atrial_Fibr_Data_Worker(Params.AnalysisName);
+                OutputData = new Atrial_Fibr_Data();
+                _state = STATE.INIT;
 
-            //}
+            }
         }
+
+
+        //public void Init(ModuleParams parameters)
+        //{
+        //Params = parameters as Atrial_Fibr_Params;
+        //Aborted = false;
+        //if (!Runnable()) _ended = true;
+        //else
+        //{
+        //    _ended = false;
+        //    InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
+        //    InputWorker_basic.Load();
+        //    InputData_basic = InputWorker_basic.BasicData;
+
+        //    InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
+        //    InputRpeaksWorker.Load();
+        //    InputRpeaksData = InputRpeaksWorker.Data;
+
+        //    OutputWorker = new Atrial_Fibr_Data_Worker(Params.AnalysisName);
+        //    OutputData = new Atrial_Fibr_Data();
+
+        //    _currentChannelIndex = 0;
+        //    _samplesProcessed = 0;
+        //    NumberOfChannels = InputRpeaksData.RPeaks.Count;
+        //    _currentChannelLength = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.Count;
+        //    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+        //    _vectorOfIntervals = Vector<Double>.Build.Dense(_currentChannelLength);
+        //    _ClassResult = new Tuple<bool, Vector<double>, double>(false, pointsDetected, 0);
+        //    pointsDetectedA = Vector<double>.Build.Dense(Convert.ToInt32(InputData_basic.SampleAmount));
+
+        //}
+        //}
 
         public void ProcessData()
         {
@@ -98,22 +134,110 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         private void processData()
         {
+            switch (_state)
+            {
+                //case (STATE.INIT):
+                //    _currentChannelIndex = -1;
+                //    _leads = InputWorker.LoadLeads().ToArray();
+                //    _numberOfChannels = _leads.Length;
+                //    _state = STATE.BEGIN_CHANNEL;
+                //    //_inputWorker.DeleteFiles(); Do not use yet - will try to handle this during loading.
+                //    break;
+                //case (STATE.BEGIN_CHANNEL):
+                //    _currentChannelIndex++;
+                //    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END;
+                //    else
+                //    {
+                //        _currentLeadName = _leads[_currentChannelIndex];
+                //        _currentChannelLength = (int)InputWorker.getNumberOfSamples(_currentLeadName);
+                //        _currentIndex = 0;
+                //        _state = STATE.PROCESS_FIRST_STEP;
+                //    }
+                //    break;
+                //case (STATE.PROCESS_FIRST_STEP):
+                //    if (_currentIndex + Params.Step > _currentChannelLength) _state = STATE.END_CHANNEL;
+                //    else
+                //    {
+                //        try
+                //        {
+                //            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, Params.Step);
+                //            _alg = new TestModule3_Alg(_currentVector, Params);
+                //            _alg.scaleSamples();
+                //            _currentVector = _alg.CurrentVector;
+                //            OutputWorker.SaveSignal(_currentLeadName, false, _currentVector);
+                //            _currentIndex += Params.Step;
+                //            _state = STATE.PROCESS_CHANNEL;
+                //        }
+                //        catch (Exception e)
+                //        {
+                //            _state = STATE.NEXT_CHANNEL;
+                //        }
+                //    }
+                //    break;
+                //case (STATE.PROCESS_CHANNEL): // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
+                //    if (_currentIndex + Params.Step > _currentChannelLength) _state = STATE.END_CHANNEL;
+                //    else
+                //    {
+                //        try
+                //        {
+                //            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, Params.Step);
+                //            _alg = new TestModule3_Alg(_currentVector, Params); // its possible to create just one instance somewhere in the Init - your choice
+                //            _alg.scaleSamples();
+                //            _currentVector = _alg.CurrentVector; // not needed, because reference is the same, but shows the point
+                //            OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
+                //            _currentIndex += Params.Step;
+                //            _state = STATE.PROCESS_CHANNEL;
+                //        }
+                //        catch (Exception e)
+                //        {
+                //            _state = STATE.NEXT_CHANNEL;
+                //        }
+                //    }
+
+                //    break;
+                //case (STATE.END_CHANNEL):
+                //    try
+                //    {
+                //        _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
+                //        _alg = new TestModule3_Alg(_currentVector, Params);
+                //        _currentVector = _alg.CurrentVector; // not needed, because reference is the same, but shows the point
+                //        _alg.scaleSamples();
+                //        OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
+                //        _state = STATE.NEXT_CHANNEL;
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        _state = STATE.NEXT_CHANNEL;
+                //    }
+                //    break;
+                //case (STATE.NEXT_CHANNEL):
+                //    _state = STATE.BEGIN_CHANNEL;
+                //    break;
+                //case (STATE.END):
+                //    _ended = true;
+                //    break;
+                //default:
+                //    Abort();
+                //    break;
+            }
+
+
 
             //int channel = _currentChannelIndex;
             //int startIndex = _samplesProcessed;
             //int step=480;
             //bool detected=false;
             //double lengthOfDetection = 0;
-            
+
             //if (channel < NumberOfChannels)
             //{
             //    int currentSample=0;
-                
+
             //    if (startIndex + step >= _currentChannelLength)
             //    {
             //        _currentVector = InputRpeaksData.RPeaks[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex-1);
             //        _vectorOfIntervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex-1).Multiply(InputData_basic.Frequency/1000);
-                    
+
             //        _tempClassResult = detectAF(_vectorOfIntervals, _currentVector, Convert.ToUInt32(InputData_basic.Frequency), Params);
             //        Vector<double> pointsDetected2;
             //        if (_tempClassResult.Item1 | _ClassResult.Item1)
@@ -130,14 +254,14 @@ namespace EKG_Project.Modules.Atrial_Fibr
             //            //int tmp = Convert.ToInt32(lengthOfDetection * InputData_basic.Frequency);
             //            pointsDetected2 = Vector<double>.Build.Dense(currentSample - 1);
             //            pointsDetectedA.CopySubVectorTo(pointsDetected2, 0, 0, currentSample - 1);
-                        
+
 
             //        }
             //        else
             //        {
             //            pointsDetected2 = Vector<double>.Build.Dense(1);
             //        }
-                    
+
             //        if (detected)
             //        {
             //            double percentOfDetection = _ClassResult.Item3 / (InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(InputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count-1) - InputRpeaksData.RPeaks[_currentChannelIndex].Item2.At(0))*100* Convert.ToUInt32(InputData_basic.Frequency);
@@ -177,7 +301,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             //            currentSample += _tempClassResult.Item2.Count ;
             //            _ClassResult = new Tuple<bool, Vector<double>, double>(detected, pointsDetectedA, lengthOfDetection);
             //        }
-                    
+
             //        _samplesProcessed = startIndex + step;
 
             //    }
