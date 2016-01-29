@@ -310,6 +310,7 @@
     <Compile Include="IO\Heart_Class_New_Data_Worker.cs" />
     <Compile Include="IO\Heart_Cluster_Data_Worker.cs" />
     <Compile Include="IO\HRT_Data_Worker.cs" />
+    <Compile Include="IO\HRT_New_Data_Worker.cs" />
     <Compile Include="IO\HRV1_Data_Worker.cs" />
     <Compile Include="IO\HRV1_New_Data_Worker.cs" />
     <Compile Include="IO\HRV2_Data_Worker.cs" />
