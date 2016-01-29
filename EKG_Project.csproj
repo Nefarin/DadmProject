@@ -48,7 +48,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.App</StartupObject>
+    <StartupObject>EKG_Project.Modules.TestModule3.TestModule3</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -508,6 +508,13 @@
     <Content Include="DLL\resetvars.vbs" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\temp\abc123temp_Basic_New_MLII.txt" />
+    <Resource Include="IO\temp\abc123temp_Basic_New_NumberOfSamples.txt" />
+    <Resource Include="IO\temp\abc123temp_Basic_New_V1.txt" />
+    <Resource Include="IO\temp\abc123_Basic_New_Leads.txt" />
+    <Resource Include="IO\temp\abc123_Basic_New_MLII.txt" />
+    <Resource Include="IO\temp\abc123_Basic_New_NumberOfSamples.txt" />
+    <Resource Include="IO\temp\abc123_Basic_New_V1.txt" />
     <Resource Include="Resources\logo.png" />
     <Resource Include="IO\temp\train_d_label.txt" />
     <Resource Include="IO\temp\train_d.txt" />

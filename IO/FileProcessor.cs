@@ -86,7 +86,7 @@ namespace EKG_Project.IO
                     else _state = State.END;   
                     break;
                 case (State.BEGIN_NEXT):
-                    Console.WriteLine(_currentLeadLength);
+                    //Console.WriteLine(_currentLeadLength);
                     try
                     {
                         Vector<double> vect = Converter.getSignal(_leads[_currentLeadIndex], _currentIndex, Step);
@@ -135,7 +135,7 @@ namespace EKG_Project.IO
                         }
 
                     }
-                    Console.WriteLine(_currentIndex);
+                    //Console.WriteLine(_currentIndex);
                     break;
                 case (State.END):
                     _worker.SaveLeads(_leads);

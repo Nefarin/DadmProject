@@ -48,7 +48,7 @@ namespace EKG_Project.Architecture.ProcessingStates
                 IECGConverter converter = fileLoader.Converter;
                 converter.ConvertFile(Path);
                 process.Converter = converter;
-                Console.WriteLine(process.Modules.AnalysisName);
+                //Console.WriteLine(process.Modules.AnalysisName);
                 FileProcessor fp = new FileProcessor(converter, process.Modules.AnalysisName, 5000);
                 process.FileProcessor = fp;
                 timeoutState = new ProcessFile();

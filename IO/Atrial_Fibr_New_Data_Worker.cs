@@ -1,43 +1,58 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+using MathNet.Numerics.LinearAlgebra;
+using EKG_Project.Modules;
+using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
-    public class Flutter_New_Data_Worker
+    public class Atrial_Fibr_New_Data_Worker
     {
         //FIELDS
+        #region Documentation
         /// <summary>
         /// Stores txt files directory
         /// </summary>
+        #endregion
         private string directory;
 
+        #region Documentation
         /// <summary>
         /// Stores analysis name
         /// </summary>
+        #endregion
         private string analysisName;
 
-        public Flutter_New_Data_Worker() 
+        #region Documentation
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        #endregion
+        public Atrial_Fibr_New_Data_Worker() 
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
         }
 
-        public Flutter_New_Data_Worker(String analysisName) : this()
+        #region Documentation
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        #endregion
+        public Atrial_Fibr_New_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
 
+        #region Documentation
         /// <summary>
-        /// Saves FlutterAnnotations in txt file
+        /// Saves part of AfDetection signal in txt file
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="result">flutter annotations</param>
-        public void SaveSignal(string lead, bool mode, List<Tuple<int, int>> results)
+        /// <param name="signal">AfDetection</param>
+        #endregion
+        public void SaveAfDetection(string lead, bool mode, Tuple<bool, Vector<double>, string, string> results)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -45,23 +60,32 @@ namespace EKG_Project.IO
             string pathOut = Path.Combine(directory, fileName);
 
             StreamWriter sw = new StreamWriter(pathOut, mode);
-
-            foreach (var result in results)
+            foreach (var sample in results.Item2)
             {
-                sw.WriteLine(result.Item1);
-                sw.WriteLine(result.Item2);
-                sw.WriteLine("---");
+                sw.WriteLine(sample.ToString());
             }
-
             sw.Close();
+
+            string fileNameAtr = analysisName + "_" + moduleName + "_" + lead + "_Atr" + ".txt";
+            string pathOutAtr = Path.Combine(directory, fileNameAtr);
+            StreamWriter swAtr = new StreamWriter(pathOutAtr, mode);
+
+            swAtr.WriteLine(results.Item1.ToString());
+            swAtr.WriteLine(results.Item3);
+            swAtr.WriteLine(results.Item4);
+            swAtr.Close();
         }
 
+        #region Documentation
         /// <summary>
-        /// Loads FlutterAnnotations from txt file
+        /// Loads part of AfDetection signal from txt file
         /// </summary>
         /// <param name="lead">lead</param>
-        /// <returns>flutter annotations list</returns>
-        public List<Tuple<int, int>> LoadSignal(string lead, int startIndex, int length)
+        /// <param name="startIndex">vector start index</param>
+        /// <param name="length">vector length</param>
+        /// <returns>AfDetection tuple</returns>
+        #endregion
+        public Tuple<bool, Vector<double>, string, string> LoadAfDetection(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -69,6 +93,7 @@ namespace EKG_Project.IO
             string pathIn = Path.Combine(directory, fileName);
 
             StreamReader sr = new StreamReader(pathIn);
+
             //pomijane linie ...
             int iterator = 0;
             while (iterator < startIndex && !sr.EndOfStream)
@@ -78,32 +103,42 @@ namespace EKG_Project.IO
             }
 
             iterator = 0;
-            List<Tuple<int, int>> list = new List<Tuple<int, int>>();
+            double[] readSamples = new double[length];
             while (iterator < length)
             {
                 if (sr.EndOfStream)
                 {
                     throw new IndexOutOfRangeException();
                 }
-                string item1 = sr.ReadLine();
-                int convertedItem1 = Convert.ToInt32(item1);
 
-                string item2 = sr.ReadLine();
-                int convertedItem2 = Convert.ToInt32(item2);
-
-                Tuple<int, int> tuple = Tuple.Create(convertedItem1, convertedItem2);
-                list.Add(tuple);
-
-                sr.ReadLine();
+                string readLine = sr.ReadLine();
+                readSamples[iterator] = Convert.ToDouble(readLine);
                 iterator++;
             }
+
             sr.Close();
 
-            return list;
+            Vector<double> vector = Vector<double>.Build.Dense(readSamples.Length);
+            vector.SetValues(readSamples);
+
+            string fileNameAtr = analysisName + "_" + moduleName + "_" + lead + "_Atr" + ".txt";
+            string pathInAtr = Path.Combine(directory, fileNameAtr);
+            StreamReader srAtr = new StreamReader(pathInAtr);
+
+            string readLine1 = srAtr.ReadLine();
+            bool value1 = Convert.ToBoolean(readLine1);
+
+            string readLine3 = srAtr.ReadLine();
+
+            string readLine4 = srAtr.ReadLine();
+
+            Tuple<bool, Vector<double>, string, string> tuple = Tuple.Create(value1, vector, readLine3, readLine4);
+
+            return tuple;
         }
 
         /// <summary>
-        /// Gets number of FlutterAnnotations samples
+        /// Gets number of AfDetection vector samples 
         /// </summary>
         /// <param name="lead">lead</param>
         /// <returns>number of samples</returns>
@@ -122,13 +157,11 @@ namespace EKG_Project.IO
                     count++;
                 }
             }
-
-            count = count / 3;
             return count;
         }
 
         /// <summary>
-        /// Deletes all analysis files with Flutter_Data
+        /// Deletes all analysis files with Atrial_Fibr_Data
         /// </summary>
         public void DeleteFiles()
         {

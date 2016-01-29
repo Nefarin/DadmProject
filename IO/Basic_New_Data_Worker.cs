@@ -25,11 +25,6 @@ namespace EKG_Project.IO
         /// </summary>
         private string analysisName;
 
-        /// <summary>
-        /// Stores current number of samples
-        /// </summary>
-        private uint currentNumberOfSamples;
-
         private uint numberOfLeads;
 
         public Basic_New_Data_Worker() 
@@ -57,28 +52,18 @@ namespace EKG_Project.IO
             string pathOut = System.IO.Path.Combine(directory, fileName);
 
             StreamWriter sw = new StreamWriter(pathOut, mode); 
-            if(mode == false)
-            {
-                currentNumberOfSamples = 0;
-            }
-            else
-            {
-                currentNumberOfSamples = LoadAttribute(Basic_Attributes.NumberOfSamples);
-            }
-
+           
             try
             {
                 foreach (var sample in signal)
                 {
                     sw.WriteLine(sample.ToString());
-                    currentNumberOfSamples++;
                 }
-            }catch(System.NullReferenceException e)
+            } catch(System.NullReferenceException e)
             {
-                Console.WriteLine(e);
+                //Console.WriteLine(e);
             }
             
-            SaveAttribute(Basic_Attributes.NumberOfSamples, currentNumberOfSamples);
             sw.Close();
 
         }
@@ -126,6 +111,29 @@ namespace EKG_Project.IO
             Vector<double> vector = Vector<double>.Build.Dense(readSamples.Length);
             vector.SetValues(readSamples);
             return vector;
+        }
+
+        /// <summary>
+        /// Gets number of signal samples 
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>number of samples</returns>
+        public uint getNumberOfSamples(string lead)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string path = Path.Combine(directory, fileName);
+
+            uint count = 0;
+            using (StreamReader r = new StreamReader(path))
+            {
+                while (r.ReadLine() != null)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace EKG_Project.IO
     /// <summary>
     /// Class that saves and loads Heart_Axis_Data from txt file
     /// </summary>
-    class Heart_Axis_New_Data_Worker
+    public class Heart_Axis_New_Data_Worker
     {
         //FIELDS
         /// <summary>

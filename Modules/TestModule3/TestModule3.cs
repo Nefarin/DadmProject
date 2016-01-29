@@ -8,7 +8,7 @@ namespace EKG_Project.Modules.TestModule3
 {
     public class TestModule3 : IModule
     {
-        private enum STATE {INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END};
+        private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
         private bool _ended;
         private bool _aborted;
 
@@ -68,7 +68,7 @@ namespace EKG_Project.Modules.TestModule3
                 OutputWorker = new Basic_New_Data_Worker(Params.AnalysisName + "temp"); // tutaj generalnie uzywacie swojego workera jako wyjsciowy, dla uproszczenia uzywam gotowego o innej nazwie
                 InputData = new Basic_New_Data();
                 OutputData = new Basic_New_Data();
-                _state = STATE.INIT;        
+                _state = STATE.INIT;
 
             }
         }
@@ -81,7 +81,7 @@ namespace EKG_Project.Modules.TestModule3
 
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0/NumberOfChannels) * ((double) _currentIndex/ (double) _currentChannelLength));
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_currentIndex / (double)_currentChannelLength));
         }
 
         public bool Runnable()
@@ -106,7 +106,7 @@ namespace EKG_Project.Modules.TestModule3
                     else
                     {
                         _currentLeadName = _leads[_currentChannelIndex];
-                        _currentChannelLength = (int)InputWorker.LoadAttribute(Basic_Attributes.NumberOfSamples); // there will be small change, but it should work
+                        _currentChannelLength = (int)InputWorker.getNumberOfSamples(_currentLeadName);
                         _currentIndex = 0;
                         _state = STATE.PROCESS_FIRST_STEP;
                     }
@@ -168,7 +168,7 @@ namespace EKG_Project.Modules.TestModule3
                     }
                     break;
                 case (STATE.NEXT_CHANNEL):
-                    _state = STATE.BEGIN_CHANNEL; 
+                    _state = STATE.BEGIN_CHANNEL;
                     break;
                 case (STATE.END):
                     _ended = true;
@@ -268,6 +268,20 @@ namespace EKG_Project.Modules.TestModule3
             set
             {
                 _outputWorker = value;
+            }
+        }
+
+        public static void Main(String[] args)
+        {
+            IModule testModule = new EKG_Project.Modules.TestModule3.TestModule3();
+            int scale = 5;
+            TestModule3_Params param = new TestModule3_Params(scale, 1000, "abc123");
+
+            testModule.Init(param);
+            while (!testModule.Ended())
+            {
+                testModule.ProcessData();
+                Console.WriteLine(testModule.Progress());
             }
         }
     }

@@ -165,7 +165,7 @@ namespace EKG_Project.IO
                         }
                         catch (System.ArgumentOutOfRangeException e) 
                         {
-                            Console.WriteLine(e);
+                            //Console.WriteLine(e);
                         }
                         
                     }

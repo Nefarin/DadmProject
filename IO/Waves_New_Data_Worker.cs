@@ -15,7 +15,7 @@ namespace EKG_Project.IO
     /// Class that saves and loads Waves_Data chunks from internal text file
     /// </summary>
     #endregion
-    class Waves_New_Data_Worker
+    public class Waves_New_Data_Worker
     {
         //FIELDS
         #region Documentation
@@ -132,7 +132,7 @@ namespace EKG_Project.IO
         /// </summary>
         /// <param name="atr">Waves_Signal</param>
         /// <param name="lead">lead</param>
-        /// <returns>samples</returns>
+        /// <returns>number of samples</returns>
         public uint getNumberOfSamples(Waves_Signal atr, string lead)
         {
             string moduleName = this.GetType().Name;
