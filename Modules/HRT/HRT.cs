@@ -215,17 +215,15 @@ namespace EKG_Project.Modules.HRT
                         _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classVentrical.ToArray());
                         _tachogram = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected);
                         _classPrematureVentrical = HRT_Algorythms.SearchPrematureTurbulences(_tachogram, _nrVPC);
-                        //HRT_Algorythms.PrintVector(_classPrematureVentrical);
-                        //    if (_classPrematureVentrical.Capacity == 0)
-                        //    {
-                        //        Console.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
-                        //    }
-                        //    else
-                        //    {
-                        //        _nrVPC = HRT_Algorythms.SearchPrematureTurbulences(_tachogram, _nrVPC);
-                        //        _tachogram = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected);
-                        //        HRT_Algorythms.PrintVector(_tachogram);
-                        //    }
+                        if (_classPrematureVentrical.Capacity == 0)
+                        {
+                            Console.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
+                        }
+                        else
+                        {
+                            _tachogram = HRT_Algorythms.MakeTachogram(_classPrematureVentrical, _rrintervalsSelected);
+                            HRT_Algorythms.PrintVector(_tachogram);
+                        }
 
                         //    //FinalResults = HRT_Algorythms.FinalResults(_nrVPC, _rrintervalsSelected.ToArray());
                         //    //HRT_Algorythms.PrintVector(FinalResults.Item1);

@@ -211,7 +211,6 @@ namespace EKG_Project.Modules.HRT
                     newTacho.Add(temparray);
                     i = 0;
                 }
-                
             }
             return newTacho;
         }
