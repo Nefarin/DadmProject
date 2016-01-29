@@ -278,7 +278,7 @@ namespace EKG_Project.IO
 
             string PathOut = Path.Combine(directory, FileName);
             StreamWriter sw = new StreamWriter(PathOut, mode);
-            sw.WriteLine(attribute);
+            sw.WriteLine(attributeValue);
             sw.Close();
         }
 
@@ -288,7 +288,7 @@ namespace EKG_Project.IO
         /// </summary>
         /// <param name="attribute">Attribute name enum</param>
         /// <param name="lead">Lead</param>
-        /// <returns></returns>
+        /// <returns>Attribute value</returns>
         #endregion
         public int LoadAttribute(ST_Segment_Attributes attribute, string lead)
         {
