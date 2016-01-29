@@ -83,6 +83,11 @@
     <Compile Include="Modules\Heart_Class\Heart_Class_Params_Test.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Stats_Test.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Test.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Alg_Test.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Data_Test.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Params_Test.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Stats_Test.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Test.cs" />
     <Compile Include="Modules\HRT\HRT_Alg_Test.cs" />
     <Compile Include="Modules\HRT\HRT_Data_Test.cs" />
     <Compile Include="Modules\HRT\HRT_Params_Test.cs" />
@@ -125,6 +130,7 @@
     <Compile Include="Modules\ST_Segment\ST_Segment_Test.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Alg_Test.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Params_Test.cs" />
+    <Compile Include="Modules\TestModule3\TestModule3_Test.cs" />
     <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Alg_Test.cs" />
     <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Data_Test.cs" />
     <Compile Include="Modules\T_Wave_Alt\T_Wave_Alt_Params_Test.cs" />
@@ -163,6 +169,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Modules\Heart_Class\Heart_Class.orderedtest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Modules\Heart_Cluster\Heart_Cluster.orderedtest">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Modules\HRT\HRT.orderedtest">
