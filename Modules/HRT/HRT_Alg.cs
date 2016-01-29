@@ -193,50 +193,49 @@ namespace EKG_Project.Modules.HRT
         public List<double[]> MakeTachogram(List<int> VPC, Vector<double> rrIntervals)
         {
             int back = 5;
-            int foward = 15;
-            int sum = back + foward;
-            double[] temparray = new double[VPC.Count];
+            int forward = 15;
+            int sum = back + forward;
+            PrintVector(VPC);
             List <double[]> newTacho = new List<double[]>();
             List<Tuple<double,double>> VPCTachogram = new List<Tuple<double,double>>();
             int i = 0;
-            foreach (int nrVPC in VPC)
+            foreach (int nrpikuVPC in VPC)
             {
-                if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Count))
+                if ((nrpikuVPC - back) > 0 && ((nrpikuVPC + forward) < rrIntervals.Count))
                 {
-                    for (int k = (nrVPC - back); k < (nrVPC + foward); k++)
+                    double[] temparray = new double[forward+back];
+                    for (int k = (nrpikuVPC - back); k < (nrpikuVPC + forward); k++)
                     {
                         temparray[i++] = rrIntervals[k];
-                        //VPCTachogram.Add([k + back - nrVPC, i])= rrIntervals[k];//[k + back - nrVPC, i]
                     }
                     newTacho.Add(temparray);
                     i = 0;
                 }
-                //i++;
+                
             }
             return newTacho;
         }
 
-        public List<int> SearchPrematureTurbulences(List<double[]> Tachogram, List<int> pikVC)
+        public List<int> SearchPrematureTurbulences(List<double[]> Tachogram, List<int> numerPikuVC)
         {
             double sumbefore = 0;
-            List<int> pikVCnew = new List<int>();
-            int size = 0;
+            double Mean=0;
+            List<int> nrpikuPVC = new List<int>();
             for (int i = 0; i < Tachogram.Count; i++)
             {
                 for (int j = 0; j < 4; j++)
                 {
                     sumbefore = sumbefore + Tachogram[i][j];
                 }
-
-                if (Tachogram[i][4] < (sumbefore / 4) && Tachogram[i][5] > (sumbefore / 4) && Tachogram[i][4] > 300 && Tachogram[i][5] < 2000)
+                Mean = (sumbefore / 4);
+                if (Tachogram[i][4] < Mean * 0.8 && Tachogram[i][5] > Mean*0.8 && Tachogram[i][4] > 300 && Tachogram[i][5] < 2000)
                 {
-                    int[] pikVCtemp = new int [++size];
-                    {
-                        pikVCnew.Add(pikVC[i]);
-                    }
+                   nrpikuPVC.Add(numerPikuVC[i]);
                 }
+                Mean = 0;
+                sumbefore = 0;
             }
-            return pikVCnew;
+            return nrpikuPVC;
         }
 
         public Tuple<double[], double[], double[,], double[,]> MainFunction(int[] VPC, double[] rrIntervals)
