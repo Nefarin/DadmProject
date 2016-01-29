@@ -11,26 +11,33 @@ namespace EKG_Project.Modules.R_Peaks
 {
     public class R_Peaks : IModule
     {
+        private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
         private bool _ended;
         private bool _aborted;
 
         private int _currentChannelIndex;
         private int _currentChannelLength;
-        private int _samplesProcessed;
-        private int _lastRPeak;
+        private string _currentLeadName;
+        private string[] _leads;
+        private int _currentIndex;
         private int _numberOfChannels;
+        //private int _samplesProcessed;
+        private int _lastRPeak;
         private int _numRPeaks;
 
-        private ECG_Baseline_Data_Worker _inputWorker;
-        private Basic_Data_Worker _inputWorker_basic;
-        private R_Peaks_Data_Worker _outputWorker;
+        private ECG_Baseline_New_Data_Worker _inputWorker;
+        private Basic_New_Data_Worker _inputWorker_basic;
+        private R_Peaks_New_Data_Worker _outputWorker;
 
         private R_Peaks_Data _outputData;
         private ECG_Baseline_Data _inputData;
         private Basic_Data _inputData_basic;
         private R_Peaks_Params _params;
 
+        private STATE _state;
+        private R_Peaks_Alg _alg;
         private Vector<Double> _currentVector;
+        //#####
         private Vector<double> _currentVectorRRInterval;
         private Vector<Double> _totalVector;
 
@@ -52,35 +59,40 @@ namespace EKG_Project.Modules.R_Peaks
 
         public void Init(ModuleParams parameters)
         {
-            //Params = parameters as R_Peaks_Params;
-            //Aborted = false;
-            //if (!Runnable()) _ended = true;
-            //else
-            //{
-            //    _ended = false;
+            try
+            {
+                _params = parameters as R_Peaks_Params;
+            }
+            catch (Exception e)
+            {
+                Abort();
+                return;
+            }
 
-            //    InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
-            //    InputWorker_basic.Load();
-            //    InputData_basic = InputWorker_basic.BasicData;
+            if (!Runnable())
+            {
+                _ended = true;
+            }
+            else
+            {
+                InputWorker_basic = new Basic_New_Data_Worker(Params.AnalysisName);
+                InputWorker = new ECG_Baseline_New_Data_Worker(Params.AnalysisName);
+                OutputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName); //+"temp" tez ma byc?
+                InputData_basic = new Basic_Data();
+                InputData = new ECG_Baseline_Data();
+                OutputData = new R_Peaks_Data();
+                _state = STATE.INIT;
+                //    _currentChannelIndex = 0;
+                //    _samplesProcessed = 0;
+                //    _lastRPeak = 0;
+                //    _numRPeaks = 0;
+                //    NumberOfChannels = InputData.SignalsFiltered.Count;
+                //    _currentChannelLength = InputData.SignalsFiltered[_currentChannelIndex].Item2.Count;
+                //    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                //    _currentVectorRRInterval = Vector<Double>.Build.Dense(_currentChannelLength);
+                //    _totalVector = Vector<Double>.Build.Dense(_currentChannelLength);
 
-            //    InputWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
-            //    InputWorker.Load();
-            //    InputData = InputWorker.Data;
-
-            //    OutputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-            //    OutputData = new R_Peaks_Data();
-
-            //    _currentChannelIndex = 0;
-            //    _samplesProcessed = 0;
-            //    _lastRPeak = 0;
-            //    _numRPeaks = 0;
-            //    NumberOfChannels = InputData.SignalsFiltered.Count;
-            //    _currentChannelLength = InputData.SignalsFiltered[_currentChannelIndex].Item2.Count;
-            //    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-            //    _currentVectorRRInterval = Vector<Double>.Build.Dense(_currentChannelLength);
-            //    _totalVector = Vector<Double>.Build.Dense(_currentChannelLength);
-
-            //}
+            }
         }
 
         public void ProcessData()
@@ -91,7 +103,7 @@ namespace EKG_Project.Modules.R_Peaks
 
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_currentIndex / (double)_currentChannelLength));
         }
 
         public bool Runnable()
@@ -101,6 +113,8 @@ namespace EKG_Project.Modules.R_Peaks
 
         private void processData()
         {
+
+
             //int channel = _currentChannelIndex;
             //int startIndex = (_samplesProcessed == 0) ? _samplesProcessed : _lastRPeak;
             //int step = 6000;    //efficiency is dependent?
@@ -274,7 +288,7 @@ namespace EKG_Project.Modules.R_Peaks
             }
         }
 
-        public ECG_Baseline_Data_Worker InputWorker
+        public ECG_Baseline_New_Data_Worker InputWorker
         {
             get
             {
@@ -300,7 +314,7 @@ namespace EKG_Project.Modules.R_Peaks
             }
         }
 
-        public Basic_Data_Worker InputWorker_basic
+        public Basic_New_Data_Worker InputWorker_basic
         {
             get
             {
@@ -313,7 +327,7 @@ namespace EKG_Project.Modules.R_Peaks
             }
         }
 
-        public R_Peaks_Data_Worker OutputWorker
+        public R_Peaks_New_Data_Worker OutputWorker
         {
             get
             {

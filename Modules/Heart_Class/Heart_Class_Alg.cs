@@ -32,7 +32,7 @@ namespace EKG_Project.Modules.Heart_Class
         private double pnRatio;
         private double speedAmpltudeRatio;
         private double fastSample;
-        private uint fs;
+        private uint _fs;
         private int qrsLength; 
         private Heart_Class_Data HeartClassData;
         private List<Vector<double>> coefficients; //lista współczynników kształtu dla zbioru treningowego
@@ -51,43 +51,72 @@ namespace EKG_Project.Modules.Heart_Class
             pnRatio = new double();
             speedAmpltudeRatio = new double();
             fastSample = new double();
-            fs = new uint();
+            Fs = new uint();
             qrsLength = _qrssignal.Count();
             HeartClassData = new Heart_Class_Data();
             List<Vector<double>> coefficients = new List<Vector<double>>();
         }
 
-
-        #region Documentation
-        /// <summary>
-        /// Test method of Heart_Class module
-        /// </summary>
-        #endregion
-
-        #region Documentation
-        /// <summary>
-        /// TODO 
-        /// </summary>
-        /// <param name="loadedSignal"></param>
-        /// <param name="fs"></param>
-        /// <param name="R"></param>
-        /// <param name="qrsOnset"></param>
-        /// <param name="qrsEnd"></param>
-        /// <returns></returns>
-        #endregion
-        Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R)
+        public static void Main()
         {
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+           
+
+            int qrsOnset = 5;
+            int qrsEnd = 29;
+            double R = 13;
+            uint fs = 360;
+            double[] testArray =
+            {
+                -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335, -0.38369, -0.39605,
+                -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486, 0.86883, 0.84255, 0.72056, 0.52455,
+                0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399, -0.28368, -0.21097, -0.1402, -0.090148,
+                -0.070429, -0.080307, -0.11024, -0.1458
+            };
+            Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
+            testAlgs.Signal = exampleSignal;
+
+            
+            object[] args = { qrsOnset, qrsEnd, R, fs };
+           //testAlgs.QrsComplexOne = OneQrsComplex(qrsOnset, qrsEnd, R, fs);
+
+            
+        }
+
+
+        #region Documentation
+            /// <summary>
+            /// Test method of Heart_Class module
+            /// </summary>
+            #endregion
+
+            #region Documentation
+            /// <summary>
+            /// TODO 
+            /// </summary>
+            /// <param name="loadedSignal"></param>
+            /// <param name="fs"></param>
+            /// <param name="R"></param>
+            /// <param name="qrsOnset"></param>
+            /// <param name="qrsEnd"></param>
+            /// <returns></returns>
+            #endregion
+            Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R, uint fs)
+        {
+            Fs = fs;
             Signal = loadedSignal;
-            OneQrsComplex(qrsOnset, qrsEnd, R);
-            CountCoeff(QrsComplexOne, fs);
+            OneQrsComplex(qrsOnset, qrsEnd, R, Fs);
+            CountCoeff(QrsComplexOne, Fs);
+            int numberOfNeighbors = 3;
+
             //WCZYTANIE ZBIORU TRENINGOWEGO
             DebugECGPath loader = new DebugECGPath();
             List<Vector<double>> trainDataList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
 
 
-            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-NV
+            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-SV
             List<Vector<double>> trainClassList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
-            // konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
+            //konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
             int oneClassElement;
             List<int> trainClass;
             trainClass = new List<int>();
@@ -102,8 +131,23 @@ namespace EKG_Project.Modules.Heart_Class
             }
 
 
-            return ClassificationResultOne = TestKnnCase(trainDataList, QrsCoeffOne, trainClass, 3);
+            return ClassificationResultOne = TestKnn(trainDataList, QrsCoeffOne, trainClass, numberOfNeighbors);
    
+        }
+
+        public Tuple<int, int> DistancesFromR(uint fs)
+        {
+            double maxQRTime = 0.063;
+            double maxRSTime = 0.094;
+            double samplingInterval = 1 / (double)fs;
+            double numberOfSamplesQR = Math.Round(maxQRTime / samplingInterval);
+            double numberOfSamplesRS = Math.Round(maxRSTime / samplingInterval);
+
+            int QRSamples = (int)(numberOfSamplesQR);
+            int RSSamples = (int)(numberOfSamplesRS);
+
+            Tuple<int, int> result = new Tuple<int, int>(QRSamples, RSSamples);
+            return result;
         }
 
         #region Documentation
@@ -114,17 +158,57 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="signleQrsEnd"></param>
         /// <param name="singleQrsR"></param>
         #endregion
-        private void OneQrsComplex(double singleQrsOnset, double signleQrsEnd, double singleQrsR)
+        private void OneQrsComplex(int singleQrsOnset, int signleQrsEnd, double singleQrsR, uint fs)
         {
-            int qrsLength = (int)(signleQrsEnd - singleQrsOnset + 1);
-            SingleQrs = Vector<double>.Build.Dense(qrsLength);
+            /*
+            double maxQRTime = 0.063;
+            double maxRSTime = 0.094;
+            double samplingInterval = 1/fs;
+            double numberOfSamplesQR = (maxQRTime/samplingInterval);
+            double numberOfSamplesRS = (maxRSTime / samplingInterval);
 
-            if ((int)singleQrsOnset != -1) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
+            int QRSamples = (int)numberOfSamplesQR;
+            int RSSamples = (int) numberOfSamplesRS;
+            */
+            Tuple<int, int> qrsDistances = DistancesFromR(fs);
+
+            //int qrsOnsetNew = singleQrsOnset;
+            //int qrsEndNew = signleQrsEnd;
+
+            if ((singleQrsOnset != -1) && (signleQrsEnd != -1)) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
             {
-                Signal.CopySubVectorTo(SingleQrs, sourceIndex: (int)singleQrsOnset, targetIndex: 0,
+                
+                if (((int) singleQrsR - singleQrsOnset) > qrsDistances.Item1)
+                {
+                    singleQrsOnset = (int) singleQrsR - qrsDistances.Item1;
+                }
+                else {}
+                if ((signleQrsEnd - (int) singleQrsR) > qrsDistances.Item2)
+                {
+                    signleQrsEnd = (int) singleQrsR + qrsDistances.Item2;
+                }
+                else {}
+                
+                
+                    int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
+                    SingleQrs = Vector<double>.Build.Dense(qrsLength);
+
+                    Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
+                        count: qrsLength);
+                    QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
+            }
+            else
+            {
+                singleQrsOnset = (int)singleQrsR - qrsDistances.Item1;
+                signleQrsEnd = (int)singleQrsR + qrsDistances.Item2;
+
+                int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
+                SingleQrs = Vector<double>.Build.Dense(qrsLength);
+
+                Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
                     count: qrsLength);
-                Tuple<int, Vector<double>> a = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
-                QrsComplexOne = a;
+                QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
+
             }
         }
 
@@ -137,7 +221,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="fs"></param>
         /// <returns></returns>
         #endregion
-        double CountMalinowskaFactor(Vector<double> _qrssignal, uint fs)
+        public double CountMalinowskaFactor(Vector<double> _qrssignal, uint fs)
         {
             double surface = Integrate(_qrssignal);
             double perimeter = Perimeter(_qrssignal, fs);
@@ -157,7 +241,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="_qrssignal"></param>
         /// <returns></returns>
         #endregion
-        double Integrate(Vector<double> _qrssignal)
+        public double Integrate(Vector<double> _qrssignal)
         {
 
             double result = 0;
@@ -179,7 +263,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="fs"></param>
         /// <returns></returns>
         #endregion
-        double Perimeter(Vector<double> _qrssignal, uint fs)
+        public double Perimeter(Vector<double> _qrssignal, uint fs)
         {
             qrsLength = _qrssignal.Count();
             double timeBtw2points = 1 / fs;
@@ -202,7 +286,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="_qrssignal"></param>
         /// <returns></returns>
         #endregion
-        double PnRatio(Vector<double> _qrssignal)
+        public double PnRatio(Vector<double> _qrssignal)
         {
             double result = 0;
             double positiveAmplitude = 0;
@@ -230,7 +314,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="_qrssignal"></param>
         /// <returns></returns>
         #endregion
-        double SpeedAmpRatio(Vector<double> _qrssignal)
+        public double SpeedAmpRatio(Vector<double> _qrssignal)
         {
             qrsLength = _qrssignal.Count();
             double[] speed = new double[qrsLength-2];
@@ -253,7 +337,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="_qrssignal"></param>
         /// <returns></returns>
         #endregion
-        double FastSampleCount(Vector<double> _qrssignal)
+        public double FastSampleCount(Vector<double> _qrssignal)
         {
            
             int qrsLength = _qrssignal.Count();
@@ -287,7 +371,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="fs"></param>
         /// <returns></returns>
         #endregion
-        double QrsDuration(Vector<double> _qrssignal, uint fs)
+        public double QrsDuration(Vector<double> _qrssignal, uint fs)
         {
             qrsLength = _qrssignal.Count();
             double samplingInterval = 1 / (double)fs;
@@ -303,7 +387,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="fs"></param>
         /// <returns></returns>
         #endregion
-        Tuple<int, Vector<double>> CountCoeff(Tuple<int, Vector<double>> _QrsComplexOne, uint fs)
+        public Tuple<int, Vector<double>> CountCoeff(Tuple<int, Vector<double>> _QrsComplexOne, uint fs)
         {
             Vector<double> singleCoeffVect;
             singleCoeffVect = Vector<double>.Build.Dense(4); // (5) jeśli dodamy czas trwania zespołu
@@ -332,7 +416,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="K"></param>
         /// <returns></returns>
         #endregion
-        Tuple<int, int> TestKnnCase(List<Vector<double>> trainSamples, Tuple<int, Vector<double>> testSamples,
+        public Tuple<int, int> TestKnn(List<Vector<double>> trainSamples, Tuple<int, Vector<double>> testSamples,
            List<int> trainClasses, int K)
         {
             Tuple< int, int> testResults;
@@ -349,7 +433,7 @@ namespace EKG_Project.Modules.Heart_Class
             }
 
 
-            // Performing KNN 
+            //KNN 
 
                 // Dla każdej próbki testowej, obliczane są odległości w stosunku do każdej z próbek treningowych 
 
@@ -400,7 +484,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="sample2"></param>
         /// <returns></returns>
         #endregion
-        double GetDistance(Vector<double> sample1, Vector<double> sample2)
+        public double GetDistance(Vector<double> sample1, Vector<double> sample2)
         {
             var distance = 0.0;
             // zakładamy że sample 1 i sample 2 są tej samej długości 
@@ -421,7 +505,7 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="path"></param>
         /// <returns></returns>
         #endregion
-        List<Vector<double>> loadFile(string path)
+        public List<Vector<double>> loadFile(string path)
         {
             List<Vector<double>> coefficients = new List<Vector<double>>(); //inicjalizacja listy wektorów z jednego pliku
             using (StreamReader sr = new StreamReader(path))
@@ -523,6 +607,12 @@ namespace EKG_Project.Modules.Heart_Class
         {
             get { return _classificationResultOne; }
             set { _classificationResultOne = value; }
+        }
+
+        public uint Fs
+        {
+            get { return _fs; }
+            set { _fs = value; }
         }
     }
 
