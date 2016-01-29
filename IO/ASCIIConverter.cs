@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
@@ -19,6 +16,11 @@ namespace EKG_Project.IO
     class ASCIIConverter : IECGConverter
     {
         //FIELDS
+        /// <summary>
+        /// Stores txt files directory
+        /// </summary>
+        private string directory;
+
         /// <summary>
         /// Stores analysis name
         /// </summary>
@@ -56,7 +58,13 @@ namespace EKG_Project.IO
             }
         }
 
-        public ASCIIConverter(string ASCIIAnalysisName)
+        public ASCIIConverter()
+        {
+            IECGPath pathBuilder = new DebugECGPath();
+            directory = pathBuilder.getTempPath();
+        }
+
+        public ASCIIConverter (string ASCIIAnalysisName) : this()
         {
             analysisName = ASCIIAnalysisName;
         }
@@ -128,7 +136,7 @@ namespace EKG_Project.IO
         /// Gets sampling frequency from input file
         /// </summary>
         /// <returns>sampling frequency</returns>
-        public uint getFrequency()
+       public uint getFrequency()
         {
             uint frequency = 0;
 
@@ -136,13 +144,11 @@ namespace EKG_Project.IO
 
             string readStartTime = columns[0][2];
             string cleanedStartTime = System.Text.RegularExpressions.Regex.Replace(readStartTime, @"\s+", "");
-            string startPattern = getTimeFormat(cleanedStartTime);
-            DateTime startTime = DateTime.ParseExact(cleanedStartTime, startPattern, CultureInfo.InvariantCulture);
+            DateTime startTime = DateTime.ParseExact(cleanedStartTime, "m:ss.fff", CultureInfo.InvariantCulture);
 
             string readStopTime = columns[0][lines.Length - 1].ToString();
             string cleanedStopTime = System.Text.RegularExpressions.Regex.Replace(readStopTime, @"\s+", "");
-            string stopPattern = getTimeFormat(cleanedStopTime);
-            DateTime stopTime = DateTime.ParseExact(cleanedStopTime, stopPattern, CultureInfo.InvariantCulture);
+            DateTime stopTime = DateTime.ParseExact(cleanedStopTime, "m:ss.fff", CultureInfo.InvariantCulture);
 
             TimeSpan totalTime = stopTime - startTime;
             uint totalTimeValue = Convert.ToUInt32(totalTime.TotalSeconds);
@@ -151,69 +157,74 @@ namespace EKG_Project.IO
             return frequency;
         }
 
-
-        public string getTimeFormat(string input)
-        {
-            string timeFormat = null;
-            if (input.Count() == 8)
-            {
-                timeFormat = "m:ss.fff";
-            }
-            else if (input.Count() == 9)
-            {
-                timeFormat = "mm:ss.fff";
-            }
-            else if (input.Count() == 11)
-            {
-                timeFormat = "h:mm:ss.fff";
-            }
-            else if (input.Count() == 12)
-            {
-                timeFormat = "hh:mm:ss.fff";
-            }
-            return timeFormat;
-
-        }
         /// <summary>
         /// Gets signals from input file
         /// </summary>
         /// <returns>signals</returns>
-        public List<Tuple<string, Vector<double>>> getSignals()
-        {
-            List<Tuple<string, Vector<double>>> Signals = new List<Tuple<string, Vector<double>>>();
-            for (int i = 1; i < columns.Count(); i++)
-            {
-                string leadName = columns[i][0];
-                string cleanedLeadName = System.Text.RegularExpressions.Regex.Replace(leadName, @"\s+", "");
+       public List<Tuple<string, Vector<double>>> getSignals()
+       {
+           List<Tuple<string, Vector<double>>> Signals = new List<Tuple<string, Vector<double>>>();
+           for (int i = 1; i < columns.Count(); i++)
+           {
+               string leadName = columns[i][0];
+               string cleanedLeadName = System.Text.RegularExpressions.Regex.Replace(leadName, @"\s+", "");
 
-                Vector<double> signal = Vector<double>.Build.Dense(lines.Length - 2);
-                for (int j = 2; j < lines.Count(); j++)
-                {
-                    double value = Convert.ToDouble(columns[i][j], new System.Globalization.NumberFormatInfo());
-                    int index = j - 2;
-                    signal.At(index, value);
-                }
+               Vector<double> signal = Vector<double>.Build.Dense(lines.Length - 2);
+               for (int j = 2; j < lines.Count(); j++)
+               {
+                   double value = Convert.ToDouble(columns[i][j], new System.Globalization.NumberFormatInfo());
+                   int index = j - 2;
+                   signal.At(index, value);
+               }
 
-                getSampleAmount(signal);
-                Tuple<string, Vector<double>> readedSignal = Tuple.Create(cleanedLeadName, signal);
-                Signals.Add(readedSignal);
-            }
+               getSampleAmount(signal);
+               Tuple<string, Vector<double>> readedSignal = Tuple.Create(cleanedLeadName, signal);
+               Signals.Add(readedSignal);
+           }
 
-            return Signals;
+           return Signals;
 
-        }
+       }
 
         /// <summary>
         /// Gets number of samples in signal
         /// </summary>
         /// <param name="signal">signal</param>
         /// <returns>number of samples</returns>
-        public uint getSampleAmount(Vector<double> signal)
+       public uint getSampleAmount(Vector<double> signal)
+       {
+           if (signal != null)
+               sampleAmount = (uint)signal.Count;
+           return sampleAmount;
+       }
+
+        public Vector<double> getSignal(string lead, int startIndex, int length)
         {
-            if (signal != null)
-                sampleAmount = (uint)signal.Count;
-            return sampleAmount;
+            throw new NotImplementedException();
         }
 
+        public List<string> getLeads()
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint getNumberOfSamples(string lead)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes all analysis files
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string fileNamePattern = analysisName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+        }
     }
 }

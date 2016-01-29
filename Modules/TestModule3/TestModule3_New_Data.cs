@@ -5,7 +5,7 @@ using MathNet.Numerics;
 
 namespace EKG_Project.Modules.TestModule3
 {
-    public class TestModule3_Data : ECG_Data
+    public class TestModule3_New_Data : ECG_Data
     {
         private uint _frequency;
         private uint _sampleAmount;
@@ -48,11 +48,11 @@ namespace EKG_Project.Modules.TestModule3
             }
         }
 
-        public TestModule3_Data()
+        public TestModule3_New_Data()
         {
 
         }
-        public TestModule3_Data(uint frequency, uint sampleAmount) : this()
+        public TestModule3_New_Data(uint frequency, uint sampleAmount) : this()
         {
             Frequency = frequency;
             SampleAmount = sampleAmount;
