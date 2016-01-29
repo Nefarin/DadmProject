@@ -11,7 +11,7 @@ namespace EKG_Project.IO
     /// Class that saves and loads ECG_Baseline_Data from internal file
     /// </summary>
     #endregion
-    class ECG_Baseline_New_Data_Worker
+    public class ECG_Baseline_New_Data_Worker
     {
         //FIELDS
         #region Documentation
@@ -117,6 +117,23 @@ namespace EKG_Project.IO
             Vector<double> vector = Vector<double>.Build.Dense(readSamples.Length);
             vector.SetValues(readSamples);
             return vector;
+        }
+
+        /// <summary>
+        /// Deletes all analysis files with ECG_Baseline_Data
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileNamePattern = analysisName + "_" + moduleName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+
         }
     }
 }
