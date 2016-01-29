@@ -14,30 +14,31 @@ namespace EKG_Project.Modules.HRT
         private bool _ended;
         private bool _aborted;
         private int _currentChannelIndex;
-        private int _currentChannelLength;
-        private int _samplesProcessed;
+        //private int _currentChannelLength;
+        //private int _samplesProcessed;
         private int _numberOfChannels;
         private int _fs;
         Vector<double> _rpeaksSelected;
         Vector<double> _rrintervalsSelected;
-        int[] _classSelected;
+        List<int> _classPrematureVentrical;
         List<Tuple<string, Vector<double>>> _rrintervals;
         List<Tuple<string, Vector<double>>> _rpeaks;
-        List<Tuple<int, int>> _class;
+        List<Tuple<int, int>> _classAll;
         Vector<double> _rpeaksTime;
         Vector<double> _classTime;
         int _VPCcount;
-        int[] _nrVPC;
-        Tuple<double[,], double[], double[]> FinalResults;
+        List<int> _nrVPC;
         double _turbulenceOnsetMean;
         double _turbulenceSlopeMean;
         double _turbulenceSlopeMax;
         double _turbulenceSlopeMin;
         double _turbulenceOnsetMax;
         double _turbulenceOnsetMin;
-        double[,] _tachogram;
+        List<double[]> _tachogram;
         double[] _turbulenceSlope;
         double[] _turbulenceOnset;
+        Tuple<double[,], double[], double[], double[,], double[,]> FinalResults;
+        List<int> _classVentrical;
 
 
 
@@ -99,8 +100,8 @@ namespace EKG_Project.Modules.HRT
                     InputBasicDataWorker.Load();
                     InputBasicData = InputBasicDataWorker.BasicData;
                     Fs = (int)InputBasicData.Frequency;
-                    //Console.Write("Częstotliwość: ");
-                    //Console.WriteLine(Fs);
+                    Console.Write("Częstotliwość: ");
+                    Console.WriteLine(Fs);
                 }
                 catch (Exception e)
                 {
@@ -164,9 +165,8 @@ namespace EKG_Project.Modules.HRT
         }
       
         public double Progress()
-        {
-            return 0;
-           // return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
+        { 
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels);
         }
 
         public bool Runnable() {
@@ -182,58 +182,65 @@ namespace EKG_Project.Modules.HRT
         //*************************************************/
         private void processData()
         {
-            if(_currentChannelIndex < NumberOfChannels)
+            if (_currentChannelIndex < NumberOfChannels)
             {
-                /**************************************************/
-                //wykonywane sa obliczenia algorytmu dla kazdego z
-                //odprowadzen, ktore sa dostepne
-                //*************************************************/
                 
+                Console.Write(_currentChannelIndex);
+                Console.Write("/");
+                Console.WriteLine(NumberOfChannels);
+
+
                 _rpeaksSelected = InputRpeaksData.RPeaks[_currentChannelIndex].Item2;
                 _rrintervalsSelected = InputRpeaksData.RRInterval[_currentChannelIndex].Item2;
+                _classAll = InputHeartClassData.ClassificationResult;
 
-                _class = InputHeartClassData.ClassificationResult;
-                List<int> Klasy = new List<int>();
-                foreach (Tuple<int, int> _licznik in _class)
+                //_rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
+
+                
+                // _classVentrical = HRT_Algorythms.checkVPCifnotNULL(_classVentrical);
+               
+                if  (_rpeaksSelected.Count < _classAll.Count)
                 {
-                    if (_licznik.Item2 == 1)
-                    {
-                        Klasy.Add(_licznik.Item1);
-
-                    }
-                    else {; }
+                    Console.WriteLine("Wykryto więcej klas niż załamków, błędnie skonstruowany plik wejściowy");
                 }
-                _classSelected = Klasy.ToArray();
-
-                /**************************************************/
-                //TU SIĘ MA DZIAC CALY ARGORYTM KROK PO KROKU
-                //*************************************************/
-                _rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
-                _classSelected = HRT_Algorythms.checkVPCifnotNULL(_classSelected);
-                _VPCcount = _classSelected.Length;
-
-                _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classSelected, _VPCcount);
-
-                Tuple<double[,], double[], double[], double[,], double[,]> FinalResults;
-                FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
-
+                else
+                {
+                    _classVentrical = HRT_Algorythms.TakeNonAtrialComplexes(_classAll);
+                    if (_classVentrical.Capacity == 0)
+                    {
+                        Console.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
+                    }
+                    else
+                    {
+                        _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classVentrical.ToArray());
+                        _tachogram = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
+                        _classPrematureVentrical = HRT_Algorythms.SearchPrematureTurbulences(_tachogram, _nrVPC);
+                        if (_classPrematureVentrical.Capacity == 0)
+                        {
+                            Console.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
+                        }
+                        else
+                        {
+                            _nrVPC = HRT_Algorythms.SearchPrematureTurbulences(_tachogram, _nrVPC);
+                            _tachogram = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
+                        }
+                        HRT_Algorythms.PrintVector(_tachogram);
+                        //FinalResults = HRT_Algorythms.FinalResults(_nrVPC, _rrintervalsSelected.ToArray());
+                        //HRT_Algorythms.PrintVector(FinalResults.Item1);
+                        //HRT_Algorythms.PrintVector(_classPrematureVentrical);
+                    }
+                }
             }
             else
             {
+                //_outputData._VPCtachogram.Add(FinalResults.Item1);
                 //NASZE DANE WYJSCIOWE PRZYGOTOWAC I WYSLAC DO ZAPISU
-                OutputWorker.Save(OutputData);
+                //OutputWorker.Save(OutputData);
                 _ended = true;
             }
 
-            //HRT_Algorythms.PrintVector(_rpeaksSelected);
-            // HRT_Algorythms.PrintVector(_rrintervalsSelected);
-            //HRT_Algorythms.PrintVector(_classSelected);
-            //HRT_Algorythms.PrintVector(_nrVPC);
-            //** FinalResults = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected.ToArray());
-            //Tuple<double[,], double[,]> SlopeVisualization;
-            //SlopeVisualization = LinearSquarePrepareResults(p.Item2, j);
+            _currentChannelIndex++;
 
-            //HRT_Algorythms.PrintVector(FinalResults.Item3);
 
             //_turbulenceOnsetMean = (HRT_Algorythms.CountMean(FinalResults.Item2));
             //Console.Write("Turbulence Onset Mean: ");
@@ -365,7 +372,9 @@ namespace EKG_Project.Modules.HRT
             while (true)
             {
                 if (testModule.Ended()) break;
-                //Console.WriteLine(testModule.Progress());
+                Console.Write("Progress: ");
+                Console.Write(testModule.Progress());
+                Console.WriteLine(" %");
                 testModule.ProcessData();
             }
         }

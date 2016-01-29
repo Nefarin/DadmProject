@@ -12,11 +12,17 @@ namespace EKG_Project.Modules.HRT
 {
     public class HRT_Alg
     {
-
-        public Vector<double> SearchVentricularTurbulences(Vector<double> Tachogram, Vector<double> RRTimes, Vector<double> RRTimesVC)
+        public List<int> TakeNonAtrialComplexes(List<Tuple<int,int>> _class)
         {
-
-            return Tachogram;
+            List<int> Klasy = new List<int>();
+            foreach (Tuple<int, int> _licznik in _class)
+            {
+                if (_licznik.Item2 == 1)
+                {
+                    Klasy.Add(_licznik.Item1);
+                }
+            }
+            return Klasy;
         }
 
         public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalInSampleDomain, int samplingFreq)
@@ -77,6 +83,14 @@ namespace EKG_Project.Modules.HRT
             }
         }
 
+        public void PrintVector(List<int> Signal)
+        {
+            foreach (int _licznik in Signal)
+            {
+                Console.WriteLine(_licznik);
+            }
+        }
+
         public Vector<double> rrTimesShift(Vector<double> rrPeaks)
         {
             for (int i = 0; i < rrPeaks.Count; i++)
@@ -108,11 +122,12 @@ namespace EKG_Project.Modules.HRT
             return newklasa;
         }
 
-        public int[] GetNrVPC(double[] rrTimes, int[] rrTimesVPC, int VPCcount)
+        public List<int> GetNrVPC(double[] rrTimes, int[] rrTimesVPC)
         {
+            int VPCcount = rrTimesVPC.Length;
             if (rrTimes == null || rrTimesVPC == null) throw new ArgumentNullException();
             if (rrTimes.Length < rrTimesVPC.Length) throw new ArgumentOutOfRangeException();
-            if (rrTimesVPC.Length < VPCcount || VPCcount < 0) throw new ArgumentOutOfRangeException();
+            if (VPCcount < 0) throw new ArgumentOutOfRangeException();
             int remove = 0;
             int[] nrVPCArray;
             bool[] missClass = new bool[VPCcount];
@@ -122,38 +137,27 @@ namespace EKG_Project.Modules.HRT
                 missClass[i] = true;
                 for (int j = 0; j < rrTimes.Length; j++)
                 {
-                    if (rrTimes[j] == rrTimesVPC[i])
-                    {
+                    if (rrTimesVPC[i] > (rrTimes[j] - 50) && rrTimesVPC[i] < (rrTimes[j] + 50)) 
+                    { 
                         nrVPCArray[i] = j;
-                        //Console.Write(i);
-                        //Console.Write("      ");
-                        //Console.Write(j);
-                        //Console.Write("      ");
-                        //Console.Write(rrTimes[j]);
-                        //Console.Write("      ");
-                        //Console.WriteLine(rrTimesVPC[i]);
                         missClass[i] = false;
-
                     }
                 }
                 if (missClass[i])
                 {
                     missClass[i] = true;
                     remove++;
+                    Console.Write(i);
+                    Console.Write("      ");
+                    Console.WriteLine("błąd detekcji - nie ma piku odpowiadającego przypisaniu do klasy");
                 }
-                //{
-                //Console.Write(i);
-                //Console.Write("      ");
-                //Console.WriteLine("błąd detekcji - nie ma piku odpowiadającego przypisaniu do klasy");
-
-
-                //}
             }
+
             nrVPCArray = missClassificationCorrection(missClass, nrVPCArray);
            
             nrVPCArray = removeRedundant(nrVPCArray, remove);
             //Vector<double> nrVPC = Vector<double>.Build.DenseOfArray(nrVPCArray);
-            return nrVPCArray;
+            return nrVPCArray.ToList();
         }
 
         public int[] removeRedundant(int[] array, int length)
@@ -173,7 +177,57 @@ namespace EKG_Project.Modules.HRT
             return newArray;
         }
 
-        public Tuple<double[,], double[], double[], double[,], double[,]> MakeTachogram(int[] VPC, double[] rrIntervals)
+        public List<double[]> MakeTachogram(List<int> VPC, double[] rrIntervals)
+        {
+            int back = 5;
+            int foward = 15;
+            int sum = back + foward;
+            double[] temparray = new double[VPC.Count];
+            List <double[]> newTacho = new List<double[]>();
+            List<Tuple<double,double>> VPCTachogram = new List<Tuple<double,double>>();
+            int i = 0;
+            foreach (int nrVPC in VPC)
+            {
+                if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Length))
+                {
+                    for (int k = (nrVPC - back); k < (nrVPC + foward); k++)
+                    {
+                        temparray[i++] = rrIntervals[k];
+                        //VPCTachogram.Add([k + back - nrVPC, i])= rrIntervals[k];//[k + back - nrVPC, i]
+                    }
+                    newTacho.Add(temparray);
+                    i = 0;
+                }
+                //i++;
+            }
+            return newTacho;
+        }
+
+        public List<int> SearchPrematureTurbulences(List<double[]> Tachogram, List<int> pikVC)
+        {
+            double sumbefore = 0;
+            List<int> pikVCnew = new List<int>();
+            int size = 0;
+            for (int i = 0; i < Tachogram.Count; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    sumbefore = sumbefore + Tachogram[i][j];
+                }
+
+                if (Tachogram[i][4] < (sumbefore / 4) && Tachogram[i][4] > (sumbefore / 4)) && Tachogram[i][4]] > 300 && Tachogram[i][5] < 2000)
+                {
+                    
+                    int[] pikVCtemp = new int [++size];
+                    {
+                        pikVCnew.Add(pikVC[i]);
+                    }
+                }
+            }
+            return pikVCnew;
+        }
+
+        public Tuple<double[], double[], double[,], double[,]> MainFunction(int[] VPC, double[] rrIntervals)
         {
 
             int back = 5;
@@ -186,23 +240,18 @@ namespace EKG_Project.Modules.HRT
             double[] TO = new double[VPC.GetLength(0)];
             double[] TS = new double[VPC.GetLength(0)];
             int i = 0;
-            int m = 0;
-            double[,] VPCTachogram = new double[sum, VPC.GetLength(0)];
+       
+            
             double[,] xx = new double[VPC.Length, 5];
             double[,] yy = new double[VPC.Length, 5];
 
             foreach (int nrVPC in VPC)
             {
-
                 if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Length))
                 {
-                    for (int k = (nrVPC - back); k < (nrVPC + foward); k++)
-                    {
-                        VPCTachogram[k + back - nrVPC, i] = rrIntervals[k];
-                    }
                     after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
                     before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
-                    TO[i] = (after[i] - before[i]) / before[i];
+                    TO[i] = 100 * (after[i] - before[i]) / before[i];
                     Tuple<double[], Vector<double>> p;
                     for (int j = 0; j < foward - 5; j++)
                     {
@@ -230,7 +279,7 @@ namespace EKG_Project.Modules.HRT
                 }
                 i++;
             }
-            return Tuple.Create(VPCTachogram, TO, TS, xx, yy);
+            return Tuple.Create(TO, TS, xx, yy);
         }
 
         public double CountMean (double[] vec)
