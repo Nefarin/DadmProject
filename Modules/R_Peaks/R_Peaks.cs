@@ -21,9 +21,6 @@ namespace EKG_Project.Modules.R_Peaks
         private string[] _leads;
         private int _currentIndex;
         private int _numberOfChannels;
-        //private int _samplesProcessed;
-        private int _lastRPeak;
-        private int _numRPeaks;
 
         private ECG_Baseline_New_Data_Worker _inputWorker;
         private Basic_New_Data_Worker _inputWorker_basic;
@@ -36,11 +33,10 @@ namespace EKG_Project.Modules.R_Peaks
 
         private STATE _state;
         private R_Peaks_Alg _alg;
+        private int _step;
         private Vector<Double> _currentVector;
-        //#####
-        private Vector<double> _currentVectorRRInterval;
-        private Vector<Double> _totalVector;
-
+                private Vector<double> _currentVectorRRInterval;
+  
         public void Abort()
         {
             Aborted = true;
@@ -81,17 +77,9 @@ namespace EKG_Project.Modules.R_Peaks
                 InputData_basic = new Basic_Data();
                 InputData = new ECG_Baseline_Data();
                 OutputData = new R_Peaks_Data();
-                _state = STATE.INIT;
-                //    _currentChannelIndex = 0;
-                //    _samplesProcessed = 0;
-                //    _lastRPeak = 0;
-                //    _numRPeaks = 0;
-                //    NumberOfChannels = InputData.SignalsFiltered.Count;
-                //    _currentChannelLength = InputData.SignalsFiltered[_currentChannelIndex].Item2.Count;
-                //    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                //    _currentVectorRRInterval = Vector<Double>.Build.Dense(_currentChannelLength);
-                //    _totalVector = Vector<Double>.Build.Dense(_currentChannelLength);
 
+                _step = 6000; //od fs?
+                _state = STATE.INIT;
             }
         }
 
@@ -113,114 +101,166 @@ namespace EKG_Project.Modules.R_Peaks
 
         private void processData()
         {
-
-
-            //int channel = _currentChannelIndex;
-            //int startIndex = (_samplesProcessed == 0) ? _samplesProcessed : _lastRPeak;
-            //int step = 6000;    //efficiency is dependent?
-
-            //if (channel < NumberOfChannels)
-            //{
-            //    if (startIndex + step >= _currentChannelLength)
-            //    {
-            //        _currentVector = InputData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
-            //        try {
-            //            switch (Params.Method)
-            //            {
-            //                case R_Peaks_Method.PANTOMPKINS:
-            //                    _currentVector = PanTompkins(_currentVector, InputData_basic.Frequency);
-            //                    break;
-            //                case R_Peaks_Method.HILBERT:
-            //                    _currentVector = Hilbert(_currentVector, InputData_basic.Frequency);
-            //                    break;
-            //                case R_Peaks_Method.EMD:
-            //                    _currentVector = EMD(_currentVector, InputData_basic.Frequency);
-            //                    break;
-            //            }
-            //            _currentVector.Add(startIndex, _currentVector);
-            //            _totalVector.SetSubVector(_numRPeaks, _currentVector.Count, _currentVector);
-            //            _numRPeaks = _numRPeaks + _currentVector.Count;
-            //        }
-            //        catch(Exception ex)
-            //        {
-            //            //no idea what logic put in this- no need any
-            //            //Console.WriteLine("No detected R peaks in final part of signal");
-            //        }
-            //        if (_numRPeaks == 1)
-            //        {
-            //            _currentVector = _totalVector.SubVector(0, 1);
-            //            _currentVectorRRInterval = _totalVector.SubVector(1, 1);
-            //        }
-            //        else if (_numRPeaks != 0)
-            //        {
-            //            _currentVector = _totalVector.SubVector(0, _numRPeaks);
-            //            _currentVectorRRInterval = RRinMS(_currentVector, InputData_basic.Frequency);
-            //        }
-            //        else
-            //        {
-            //            _currentVector = _totalVector.SubVector(0, 1);
-            //            _currentVectorRRInterval = _totalVector.SubVector(0, 1);
-            //        }
-
-            //        OutputData.RPeaks.Add(new Tuple<string, Vector<double>>(InputData.SignalsFiltered[_currentChannelIndex].Item1, _currentVector)); 
-            //        OutputData.RRInterval.Add(new Tuple<string, Vector<double>>(InputData.SignalsFiltered[_currentChannelIndex].Item1, _currentVectorRRInterval));
-            //        _currentChannelIndex++;
-            //        if (_currentChannelIndex < NumberOfChannels)
-            //        {
-            //            _samplesProcessed = 0;
-            //            _lastRPeak = 0;
-            //            _numRPeaks = 0;
-            //            _currentChannelLength = InputData.SignalsFiltered[_currentChannelIndex].Item2.Count;
-            //            _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-            //            _totalVector = Vector<Double>.Build.Dense(_currentChannelLength);
-            //        }
-
-            //    }
-            //    else
-            //    {
-            //        _currentVector = InputData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, step);
-            //        try
-            //        {
-            //            switch (Params.Method)
-            //            {
-            //                case R_Peaks_Method.PANTOMPKINS:
-            //                    _currentVector = PanTompkins(_currentVector, InputData_basic.Frequency);
-            //                    break;
-            //                case R_Peaks_Method.HILBERT:
-            //                    _currentVector = Hilbert(_currentVector, InputData_basic.Frequency);
-            //                    break;
-            //                case R_Peaks_Method.EMD:
-            //                    _currentVector = EMD(_currentVector, InputData_basic.Frequency);
-            //                    break;
-            //            }
-            //            _currentVector.Add(startIndex, _currentVector);
-            //            _totalVector.SetSubVector(_numRPeaks, _currentVector.Count, _currentVector);
-            //            _numRPeaks = _currentVector.Count + _numRPeaks;
-            //            _lastRPeak = Convert.ToInt32(_currentVector[_currentVector.Count - 1]) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
-            //        }
-            //        catch(Exception ex)
-            //        {
-            //            _lastRPeak = startIndex + step;
-            //            //Console.WriteLine("No detected R peaks in this part of signal");
-            //        }
-            //        //Vector<double> _currentVectorRRInterval = RRinMS(_currentVector, InputData_basic.Frequency);
-            //        _samplesProcessed = startIndex + step;
-                    
-            //    }
-            //}
-            //else
-            //{
-            //   /* Vector<double> Rp1 = OutputData.RPeaks[0].Item2;
-            //    Vector<double> Rp2 = OutputData.RPeaks[1].Item2;
-            //    TempInput.setOutputFilePath(@"D:\biomed\DADM\R-peaks\sig\100pt1.txt");
-            //    TempInput.writeFile(360, Rp1);
-            //    TempInput.setOutputFilePath(@"D:\biomed\DADM\R-peaks\sig\100pt2.txt");
-            //    TempInput.writeFile(360, Rp2);*/
-            //    OutputWorker.Save(OutputData);
-            //    _ended = true;
-            //}
-
-
+            switch (_state)
+            {
+                case (STATE.INIT):
+                    _currentChannelIndex = -1;
+                    _leads = InputWorker_basic.LoadLeads().ToArray();
+                    _numberOfChannels = _leads.Length;
+                    _alg = new R_Peaks_Alg();
+                    _state = STATE.BEGIN_CHANNEL;
+                    break;
+                case (STATE.BEGIN_CHANNEL):
+                    _currentChannelIndex++;
+                    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END;
+                    else
+                    {
+                        _currentLeadName = _leads[_currentChannelIndex];
+                        _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName);
+                        _currentIndex = 0;
+                        _state = STATE.PROCESS_FIRST_STEP;
+                    }
+                    break;
+                case (STATE.PROCESS_FIRST_STEP):
+                    if (_currentIndex + _step > _currentChannelLength) _state = STATE.END_CHANNEL;
+                    else
+                    {
+                        try
+                        {
+                            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
+                            try         //zagniezdzone wyjatki?????????
+                            {
+                                //choosing and performing algorithm
+                                switch (Params.Method)
+                                {
+                                case R_Peaks_Method.PANTOMPKINS:
+                                    _currentVector = _alg.PanTompkins(_currentVector, InputData_basic.Frequency);
+                                    break;
+                                case R_Peaks_Method.HILBERT:
+                                    _currentVector = _alg.Hilbert(_currentVector, InputData_basic.Frequency);
+                                    break;
+                                case R_Peaks_Method.EMD:
+                                    _currentVector = _alg.EMD(_currentVector, InputData_basic.Frequency);
+                                    break;
+                                }
+                                if (_currentVector.Count < 2) _currentVectorRRInterval = Vector<Double>.Build.Dense(1); 
+                                else _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
+                                //save results
+                                OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks,_currentLeadName, false, _currentVector);
+                                OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, false, _currentVectorRRInterval);
+                                //updating current index
+                                _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
+                                
+                            }
+                            catch(Exception ex)
+                            {
+                                _currentIndex = _currentIndex + _step;
+                                //Console.WriteLine("No detected R peaks in this part of signal");
+                            }
+                            _state = STATE.PROCESS_CHANNEL;
+                        }
+                        catch (Exception e)
+                        {
+                            _state = STATE.NEXT_CHANNEL;
+                        }
+                    }
+                    break;
+                case (STATE.PROCESS_CHANNEL):  // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
+                    if (_currentIndex + _step > _currentChannelLength) _state = STATE.END_CHANNEL;
+                    else
+                    {
+                        try
+                        {
+                            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
+                            try         //zagniezdzone wyjatki?????????
+                            {
+                                //choosing and performing algorithm
+                                switch (Params.Method)
+                                {
+                                    case R_Peaks_Method.PANTOMPKINS:
+                                        _currentVector = _alg.PanTompkins(_currentVector, InputData_basic.Frequency);
+                                        break;
+                                    case R_Peaks_Method.HILBERT:
+                                        _currentVector = _alg.Hilbert(_currentVector, InputData_basic.Frequency);
+                                        break;
+                                    case R_Peaks_Method.EMD:
+                                        _currentVector = _alg.EMD(_currentVector, InputData_basic.Frequency);
+                                        break;
+                                }
+                                _currentVector.Add(_currentIndex, _currentVector);
+                                if (_currentVector.Count < 2) _currentVectorRRInterval = Vector<Double>.Build.Dense(1);
+                                else _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
+                                //save results
+                                OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, true, _currentVector);
+                                //TO DO: sprawdzic czy da sie policzyc RRms (wiecej niz 1 r znalezione)
+                                OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
+                                //updating current index
+                                _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
+                            }
+                            catch (Exception ex)
+                            {
+                                _currentIndex = _currentIndex + _step;
+                                //Console.WriteLine("No detected R peaks in this part of signal");
+                            }
+                            _state = STATE.PROCESS_CHANNEL;
+                        }
+                        catch (Exception e)
+                        {
+                            _state = STATE.NEXT_CHANNEL;
+                        }
+                    }
+                    break;
+                case (STATE.END_CHANNEL):
+                    try
+                    {
+                        _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
+                        try         //zagniezdzone wyjatki?????????
+                        {
+                            //choosing and performing algorithm
+                            switch (Params.Method)
+                            {
+                                case R_Peaks_Method.PANTOMPKINS:
+                                    _currentVector = _alg.PanTompkins(_currentVector, InputData_basic.Frequency);
+                                    break;
+                                case R_Peaks_Method.HILBERT:
+                                    _currentVector = _alg.Hilbert(_currentVector, InputData_basic.Frequency);
+                                    break;
+                                case R_Peaks_Method.EMD:
+                                    _currentVector = _alg.EMD(_currentVector, InputData_basic.Frequency);
+                                    break;
+                            }
+                            _currentVector.Add(_currentIndex, _currentVector);
+                            if (_currentVector.Count < 2) _currentVectorRRInterval = Vector<Double>.Build.Dense(1);
+                            else _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
+                            //save results
+                            OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, true, _currentVector);
+                            //TO DO: sprawdzic czy da sie policzyc RRms (wiecej niz 1 r znalezione)
+                            OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
+                            //updating current index
+                            _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
+                        }
+                        catch (Exception ex)
+                        {
+                            _currentIndex = _currentIndex + _step;
+                            //Console.WriteLine("No detected R peaks in this part of signal");
+                        }
+                        _state = STATE.NEXT_CHANNEL;
+                    }
+                    catch(Exception e)
+                    {
+                        _state = STATE.NEXT_CHANNEL;
+                    }
+                        break;
+                case (STATE.NEXT_CHANNEL):
+                    _state = STATE.BEGIN_CHANNEL;
+                    break;
+                case (STATE.END):
+                    _ended = true;
+                    break;
+                default:
+                    Abort();
+                    break;
+            }
         }
 
         public R_Peaks_Data OutputData
@@ -340,19 +380,16 @@ namespace EKG_Project.Modules.R_Peaks
             }
         }
 
-        public static void Main()
+        public static void Main(String[] args)
         {
-            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.EMD, "TestAnalysis2");
-            //R_Peaks_Params param = null;
-            R_Peaks testModule = new R_Peaks();
+            IModule testModule = new EKG_Project.Modules.R_Peaks.R_Peaks();
+            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "abc123");
+
             testModule.Init(param);
-            while (true)
+            while (!testModule.Ended())
             {
-                //Console.WriteLine("Press key to continue.");
-                //Console.Read();
-                if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
+                Console.WriteLine(testModule.Progress());
             }
             Console.ReadKey();
         }
