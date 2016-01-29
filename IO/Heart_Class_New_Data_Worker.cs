@@ -253,7 +253,6 @@ namespace EKG_Project.IO
             {
                 File.Delete(file);
             }
-
         }
     }
 }
