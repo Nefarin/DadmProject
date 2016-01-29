@@ -91,6 +91,19 @@ namespace EKG_Project.Modules.HRT
             }
         }
 
+        public void PrintVector(List<double[]> Signal)
+        {
+            foreach (double[] _licznik in Signal)
+            {
+                foreach (double _licznik2 in _licznik)
+                {
+                    Console.Write(_licznik2);
+                    Console.Write(" ");
+                }
+                Console.WriteLine();
+            }
+        }
+
         public Vector<double> rrTimesShift(Vector<double> rrPeaks)
         {
             for (int i = 0; i < rrPeaks.Count; i++)
@@ -177,7 +190,7 @@ namespace EKG_Project.Modules.HRT
             return newArray;
         }
 
-        public List<double[]> MakeTachogram(List<int> VPC, double[] rrIntervals)
+        public List<double[]> MakeTachogram(List<int> VPC, Vector<double> rrIntervals)
         {
             int back = 5;
             int foward = 15;
@@ -188,7 +201,7 @@ namespace EKG_Project.Modules.HRT
             int i = 0;
             foreach (int nrVPC in VPC)
             {
-                if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Length))
+                if ((nrVPC - back) > 0 && ((nrVPC + foward) < rrIntervals.Count))
                 {
                     for (int k = (nrVPC - back); k < (nrVPC + foward); k++)
                     {
@@ -215,9 +228,8 @@ namespace EKG_Project.Modules.HRT
                     sumbefore = sumbefore + Tachogram[i][j];
                 }
 
-                if (Tachogram[i][4] < (sumbefore / 4) && Tachogram[i][4] > (sumbefore / 4)) && Tachogram[i][4]] > 300 && Tachogram[i][5] < 2000)
+                if (Tachogram[i][4] < (sumbefore / 4) && Tachogram[i][5] > (sumbefore / 4) && Tachogram[i][4] > 300 && Tachogram[i][5] < 2000)
                 {
-                    
                     int[] pikVCtemp = new int [++size];
                     {
                         pikVCnew.Add(pikVC[i]);
