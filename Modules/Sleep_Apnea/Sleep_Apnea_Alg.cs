@@ -1,16 +1,9 @@
-﻿using MathNet.Numerics;
+﻿using MathNet.Filtering.Median;
 using MathNet.Numerics.IntegralTransforms;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EKG_Project.IO;
-using EKG_Project.Modules.ECG_Baseline;
-using MathNet.Filtering.Median;
+using System.Numerics;
 
 
 namespace EKG_Project.Modules.Sleep_Apnea
@@ -217,6 +210,14 @@ namespace EKG_Project.Modules.Sleep_Apnea
             List<double> amp = new List<double>(RRHPLP[1].Count);
             List<double> freq = new List<double>(RRHPLP[1].Count);
 
+            double[] unwrapedPhases = new double[hilb.Length];
+            unwrapedPhases[0] = hilb[0].Phase;
+            for (int i = 1; i < hilb.Length; i++)
+            {
+                unwrapedPhases[i] = hilb[i].Phase -
+                    Math.Floor((hilb[i].Phase - unwrapedPhases[i - 1]) / (2.0 * Math.PI) + 0.5) * (2.0 * Math.PI);
+            }
+
             //Writing time and values
             for (int i = 0; i < hilb.Length - 1; i++)
             {
@@ -224,29 +225,8 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
                 if (i < hilb.Length - 1)
                 {
-                    double phase = hilb[i].Phase;
-                    int rolls = 0;
-                    while (phase < 0)
-                    {
-                        phase += 2 * Math.PI;
-                        rolls++;
-                    }
-                    
-                    double phase2 = hilb[i + 1].Phase;
-                    rolls = 0;
-                    while (phase2 < 0)
-                    {
-                        phase2 += 2 * Math.PI;
-                        rolls++;
-                    }      
-
-                    double frequency = Fs / (2 * Math.PI) * (phase2 - phase);
+                    double frequency = Fs / (2 * Math.PI) * (unwrapedPhases[i + 1] - unwrapedPhases[i]);
                     freq.Add(frequency);
-
-                    if(freq.Count == 81)
-                    {
-                        double lol = freq.Last();
-                    }
                 }
             }
 
@@ -341,7 +321,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             double analysisStep = 60.0; //60 sec for step
             double analysisWindowLength = 5 * analysisStep; //5 min for analysis window
 
-            if(detected == null || time == null)
+            if (detected == null || time == null)
             {
                 throw new ArgumentNullException("listy detected i time nie zostały utworzone");
             }

@@ -5,6 +5,12 @@ using EKG_Project.Modules.Sleep_Apnea;
 using System.Collections.Generic;
 using System.IO;
 using System.Globalization;
+using MathNet.Filtering.Median;
+using MathNet.Numerics.IntegralTransforms;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 
 
 namespace EKG_Unit.Modules.Sleep_Apnea
@@ -442,7 +448,6 @@ namespace EKG_Unit.Modules.Sleep_Apnea
                 Assert.AreEqual(timeInSecLPMatlab[i], hAmp[0][i], 1);
             }
         }
-
 
         List<string> ReadFile(string name)
         {
