@@ -29,7 +29,7 @@ namespace EKG_Project.Modules.ECG_Baseline
         //private ECG_Baseline_Data_Worker _outputWorker;
 
         private ECG_Baseline_Data _outputData;
-        private Basic_Data _inputData;
+        private Basic_New_Data _inputData;
         private ECG_Baseline_Params _params;
 
         ECG_Baseline_Alg.Filter _newFilter; //= new ECG_Baseline_Alg.Filter();  
@@ -83,8 +83,8 @@ namespace EKG_Project.Modules.ECG_Baseline
             else
             {
                 InputWorker = new Basic_New_Data_Worker(Params.AnalysisName);
-                OutputWorker = new ECG_Baseline_New_Data_Worker(Params.AnalysisName);
-                InputData = new Basic_Data();
+                OutputWorker = new ECG_Baseline_New_Data_Worker(Params.AnalysisName + "sprawdz");
+                InputData = new Basic_New_Data();
                 OutputData = new ECG_Baseline_Data();
 
                 _step = 6000; 
@@ -207,21 +207,9 @@ namespace EKG_Project.Modules.ECG_Baseline
                                         _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Params.WindowSizeHigh, Filtr_Type.BANDPASS);
                                     }
                                     break;
-                                    //case Filtr_Method.LMS:
-                                    //    //Zmienic parametr ad dlugosci wektora wspolczynnikow
-                                    //    if (Params.Type == Filtr_Type.LOWPASS)
-                                    //    {
-                                    //        _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowSizeLow, Filtr_Type.LOWPASS, Params.Mi);
-                                    //    }
-                                    //    if (Params.Type == Filtr_Type.HIGHPASS)
-                                    //    {
-                                    //        _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowSizeHigh, Filtr_Type.HIGHPASS, Params.Mi);
-                                    //    }
-                                    //    if (Params.Type == Filtr_Type.BANDPASS)
-                                    //    {
-                                    //        _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowSizeLow, Filtr_Type.BANDPASS, Params.Mi); 
-                                    //    }
-                                    //    break;
+                                case Filtr_Method.LMS:
+                                    _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
+                                    break;
                             }
 
                             OutputWorker.SaveSignal(_currentLeadName, false, _currentVector);
@@ -288,21 +276,9 @@ namespace EKG_Project.Modules.ECG_Baseline
                                         _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Params.WindowSizeHigh, Filtr_Type.BANDPASS);
                                     }
                                     break;
-                                    //case Filtr_Method.LMS:
-                                    //    //Zmienic parametr ad dlugosci wektora wspolczynnikow
-                                    //    if (Params.Type == Filtr_Type.LOWPASS)
-                                    //    {
-                                    //        _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowSizeLow, Filtr_Type.LOWPASS, Params.Mi);
-                                    //    }
-                                    //    if (Params.Type == Filtr_Type.HIGHPASS)
-                                    //    {
-                                    //        _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowSizeHigh, Filtr_Type.HIGHPASS, Params.Mi);
-                                    //    }
-                                    //    if (Params.Type == Filtr_Type.BANDPASS)
-                                    //    {
-                                    //        _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowSizeLow, Filtr_Type.BANDPASS, Params.Mi); 
-                                    //    }
-                                    //    break;
+                                case Filtr_Method.LMS:
+                                    _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
+                                    break;
                             }
 
                             OutputWorker.SaveSignal(_currentLeadName, false, _currentVector);
@@ -366,21 +342,9 @@ namespace EKG_Project.Modules.ECG_Baseline
                                     _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Params.WindowSizeHigh, Filtr_Type.BANDPASS);
                                 }
                                 break;
-                                //case Filtr_Method.LMS:
-                                //    //Zmienic parametr ad dlugosci wektora wspolczynnikow
-                                //    if (Params.Type == Filtr_Type.LOWPASS)
-                                //    {
-                                //        _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowSizeLow, Filtr_Type.LOWPASS, Params.Mi);
-                                //    }
-                                //    if (Params.Type == Filtr_Type.HIGHPASS)
-                                //    {
-                                //        _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowSizeHigh, Filtr_Type.HIGHPASS, Params.Mi);
-                                //    }
-                                //    if (Params.Type == Filtr_Type.BANDPASS)
-                                //    {
-                                //        _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowSizeLow, Filtr_Type.BANDPASS, Params.Mi); 
-                                //    }
-                                //    break;
+                            case Filtr_Method.LMS:
+                                _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
+                                break;
                         }
 
                         OutputWorker.SaveSignal(_currentLeadName, false, _currentVector);
@@ -630,7 +594,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             }
         }
 
-        public Basic_Data InputData
+        public Basic_New_Data InputData
         {
             get
             {
@@ -673,6 +637,7 @@ namespace EKG_Project.Modules.ECG_Baseline
         {
             IModule testModule = new EKG_Project.Modules.ECG_Baseline.ECG_Baseline();
             ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 10, "abc123");
+            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 50, "abc123", 0.07);
 
             testModule.Init(param);
             while (!testModule.Ended())
