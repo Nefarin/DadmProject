@@ -698,11 +698,7 @@ namespace EKG_Unit.Modules.HRT
 
             HRT_Alg testAlg = new HRT_Alg();
             List<double[]> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
-
-            HRT_Alg algorytm = new HRT_Alg();
-            algorytm.PrintVector(resultTachogram);
-            algorytm.PrintVector(expectedTachogram);
-
+                        
             // Assert results
 
             for (int iter = 0; iter < resultTachogram.Count; iter++)
@@ -710,6 +706,184 @@ namespace EKG_Unit.Modules.HRT
                 CollectionAssert.AreEqual(resultTachogram[iter], expectedTachogram[iter]);
             }
             
+        }
+
+        //MakeTachogram
+        [TestMethod]
+        [Description("Test function if properly prepares a tachogram")]
+        public void MakeTachogram_EQTest_2()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrIntervalsArray = { 728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 739, 703, 703,
+                                              428, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719};
+            Vector<double> testrrIntervalsVector = Vector<double>.Build.DenseOfArray(testrrIntervalsArray);
+
+            List<int> testVPC = new List<int>();
+            testVPC.Add(22);
+            testVPC.Add(82);
+
+            double[] expectedTachogramArray1 = { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            double[] expectedTachogramArray2 = { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<double[]> expectedTachogram = new List<double[]>();
+            expectedTachogram.Add(expectedTachogramArray1);
+            expectedTachogram.Add(expectedTachogramArray2);
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<double[]> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
+
+            // Assert results
+
+            for (int iter = 0; iter < resultTachogram.Count; iter++)
+            {
+                CollectionAssert.AreEqual(resultTachogram[iter], expectedTachogram[iter]);
+            }
+
+        }
+
+        //MakeTachogram
+        [TestMethod]
+        [Description("Test function if properly prepares a tachogram")]
+        public void MakeTachogram_EQTest_3()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrIntervalsArray = { 728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 739, 703, 703,
+                                              428, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719 };
+            Vector<double> testrrIntervalsVector = Vector<double>.Build.DenseOfArray(testrrIntervalsArray);
+
+            List<int> testVPC = new List<int>();
+            testVPC.Add(22);
+            testVPC.Add(82);
+            testVPC.Add(202);
+
+            double[] expectedTachogramArray1 = { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            double[] expectedTachogramArray2 = { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            double[] expectedTachogramArray3 = { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<double[]> expectedTachogram = new List<double[]>();
+            expectedTachogram.Add(expectedTachogramArray1);
+            expectedTachogram.Add(expectedTachogramArray2);
+            expectedTachogram.Add(expectedTachogramArray3);
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<double[]> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
+
+            //HRT_Alg algorytm = new HRT_Alg();
+            //algorytm.PrintVector(resultTachogram);
+            //algorytm.PrintVector(expectedTachogram);
+
+            // Assert results
+
+            for (int iter = 0; iter < resultTachogram.Count; iter++)
+            {
+                CollectionAssert.AreEqual(resultTachogram[iter], expectedTachogram[iter]);
+            }
+
+        }
+
+        //MakeTachogram
+        [TestMethod]
+        [Description("Test function if properly prepares a tachogram")]
+        public void MakeTachogram_EQTest_4()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrIntervalsArray = { 728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 739, 703, 703,
+                                              428, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719 };
+            Vector<double> testrrIntervalsVector = Vector<double>.Build.DenseOfArray(testrrIntervalsArray);
+
+            List<int> testVPC = new List<int>();
+            testVPC.Add(22);
+            testVPC.Add(82);
+            testVPC.Add(202);
+            testVPC.Add(232);
+
+            double[] expectedTachogramArray1 = { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            double[] expectedTachogramArray2 = { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            double[] expectedTachogramArray3 = { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<double[]> expectedTachogram = new List<double[]>();
+            expectedTachogram.Add(expectedTachogramArray1);
+            expectedTachogram.Add(expectedTachogramArray2);
+            expectedTachogram.Add(expectedTachogramArray3);
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<double[]> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
+
+            HRT_Alg algorytm = new HRT_Alg();
+            
+            // Assert results
+
+            for (int iter = 0; iter < resultTachogram.Count; iter++)
+            {
+                CollectionAssert.AreEqual(resultTachogram[iter], expectedTachogram[iter]);
+            }
+
         }
 
     }
