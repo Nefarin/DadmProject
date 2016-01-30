@@ -47,18 +47,26 @@ namespace EKG_Project.Architecture.ProcessingStates
 
                 IECGConverter converter = fileLoader.Converter;
                 converter.ConvertFile(Path);
-                converter.SaveResult();
-                process.Modules.FileLoaded = true;
+                process.Converter = converter;
+                Console.WriteLine(process.Modules.AnalysisName);
+                FileProcessor fp = new FileProcessor(converter, process.Modules.AnalysisName, 5000);
+                process.FileProcessor = fp;
+                timeoutState = new ProcessFile();
 
-                process.Communication.SendProcessingEvent(new FileLoaded());
+                //converter.ConvertFile(Path);
+                //converter.SaveResult();
+                //process.Modules.FileLoaded = true;
+
+                //process.Communication.SendProcessingEvent(new FileLoaded());
 
             }
             catch (Exception e)
             {
                 process.Communication.SendProcessingEvent(new FileLoadingError());
+                timeoutState = new Idle(5);
             }    
             
-            timeoutState = new Idle(5);
+
         }
     }
 }

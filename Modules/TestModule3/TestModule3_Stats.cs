@@ -68,36 +68,36 @@ namespace EKG_Project.Modules.TestModule3
         // jedynie odprowadzenia podzielmy - wasze powinny byc jednak zdecydowanie bardziej skomplikowane
         public void ProcessStats()
         {
-            switch(_currentState)
-            {
-                case (State.START_CHANNEL):
-                    _currentName = _data.Output[_currentChannelIndex].Item1;
-                    _currentState = State.CALCULATE;
-                    break;
-                case (State.CALCULATE):
-                    Vector<double> currentData = _data.Output[_currentChannelIndex].Item2;
-                    double mean = currentData.Sum() / currentData.Count;
-                    _strToStr.Add(_currentName + " mean value: ", mean.ToString()); //generalnie to jakie statystyki wasz moduł powinien wyznacać zależy przede wszystkim od was
-                    _strToObj.Add(_currentName + " mean value: ", mean);            //klucz nie jest tak ważny, bo i tak można je wszystkie później wyciągnąć automatycznie
-                                                                                    //jeżeli coś może się liczyć dłużej to musicie podzielić również sygnał na części
-                                                                                    // zależnie od modułu powinny sie tu znaleźć średnie, wariancje, odchylenia, ilości dobrze/źle
-                                                                                    // wykrytych rzeczy, jakieś porównanie klasyfikacji etc. - możliwe, że niektóre moduły zostawią
-                                                                                    // tą funkcje po prostu pustą (chociaż zdecydowana większość powinna ją uzupełnić - narazie jedynymi
-                                                                                    // wyjątkami, które widze są Heart_Axis i ECG_Baseline
-                    _currentState = State.NEXT_CHANNEL;
-                    break;
-                case (State.NEXT_CHANNEL):
-                    _currentChannelIndex++;
-                    if (_currentChannelIndex >= _data.Output.Count)
-                    {
-                        _currentState = State.END;
-                    }
-                    else _currentState = State.START_CHANNEL;
-                    break;
-                case (State.END):
-                    _ended = true;
-                    break;
-            }
+            //switch(_currentState)
+            //{
+            //    case (State.START_CHANNEL):
+            //        _currentName = _data.Output[_currentChannelIndex].Item1;
+            //        _currentState = State.CALCULATE;
+            //        break;
+            //    case (State.CALCULATE):
+            //        Vector<double> currentData = _data.Output[_currentChannelIndex].Item2;
+            //        double mean = currentData.Sum() / currentData.Count;
+            //        _strToStr.Add(_currentName + " mean value: ", mean.ToString()); //generalnie to jakie statystyki wasz moduł powinien wyznacać zależy przede wszystkim od was
+            //        _strToObj.Add(_currentName + " mean value: ", mean);            //klucz nie jest tak ważny, bo i tak można je wszystkie później wyciągnąć automatycznie
+            //                                                                        //jeżeli coś może się liczyć dłużej to musicie podzielić również sygnał na części
+            //                                                                        // zależnie od modułu powinny sie tu znaleźć średnie, wariancje, odchylenia, ilości dobrze/źle
+            //                                                                        // wykrytych rzeczy, jakieś porównanie klasyfikacji etc. - możliwe, że niektóre moduły zostawią
+            //                                                                        // tą funkcje po prostu pustą (chociaż zdecydowana większość powinna ją uzupełnić - narazie jedynymi
+            //                                                                        // wyjątkami, które widze są Heart_Axis i ECG_Baseline
+            //        _currentState = State.NEXT_CHANNEL;
+            //        break;
+            //    case (State.NEXT_CHANNEL):
+            //        _currentChannelIndex++;
+            //        if (_currentChannelIndex >= _data.Output.Count)
+            //        {
+            //            _currentState = State.END;
+            //        }
+            //        else _currentState = State.START_CHANNEL;
+            //        break;
+            //    case (State.END):
+            //        _ended = true;
+            //        break;
+            //}
         }
 
         public static void Main(String[] args)
