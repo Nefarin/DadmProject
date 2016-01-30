@@ -47,14 +47,18 @@ namespace EKG_Project.Modules.HRT
         private Basic_Data_Worker _inputBasicDataWorker;
         private Basic_Data _inputBasicData;
         
-        Tuple<double[], double[]> _meanTurbulenceOnsetPLOT;
+       
+
         int[] _xaxis;
-        
-        List<Tuple<int[], double[]>> _tachogramMeanGUI;
+
+
 
         //zmienne wyjścia GUI
-        
         List<Tuple<int[], List<double[]>>> _tachogramGUI = new List<Tuple<int[], List<double[]>>>();
+        List<Tuple<int[], double[]>> _tachogramMeanGUI = new List<Tuple<int[], double[]>>();
+        List<Tuple<int[], double[]>> _meanTurbulenceOnsetGUI = new List<Tuple<int[], double[]>>();
+        List<Tuple<double[], double[]>> _turbulenceSlopeGUI = new List<Tuple<double[], double[]>>();
+
 
 
 
@@ -224,32 +228,48 @@ namespace EKG_Project.Modules.HRT
                         }
                         else
                         {
+                            Tuple<int[], double[]> _meanTurbulenceOnset;
+                            
+
                             _tachogram = HRT_Algorythms.MakeTachogram(_classPrematureVentrical, _rrintervals);
                             _turbulenceOnset = HRT_Algorythms.TurbulenceOnsetsForPDF(_classPrematureVentrical, _rrintervals);
                             _turbulenceSlope = HRT_Algorythms.PrepareTurbulenceSlopeToGUIandPLOT(_classPrematureVentrical, _rrintervals);
-                            _meanTurbulenceOnsetPLOT = HRT_Algorythms.PrepareMeanTurbulenceOnsetToPLOT(_tachogram);
+
+                            
+
+
+
+                            _meanTurbulenceOnset = HRT_Algorythms.PrepareMeanTurbulenceOnsetToPLOT(_tachogram);
                             _meanTachogram = HRT_Algorythms.MeanTachogram(_tachogram);
-                           
-                           
 
-                            //_xaxis = HRT_Algorythms.xPlot();
-                            //_tachogramPrepare = Tuple.Create(_xaxis, _tachogram);
-                            //_meanTachogramPrepare = Tuple.Create(_xaxis, _meanTachogram);
-                            //_meanTurbulenceOnsetPLOTPrepare = Tuple.Create(_meanTurbulenceOnsetPLOT);
+                            Tuple<int[], List<double[]>> _tachogramPrepare;
+                            Tuple<int[], double[]> _meanTachogramPrepare;
+                            Tuple<double[], double[]> _turbulenceSlopePrepare;
+                            // Tuple<double[], double[]> _meanTurbulenceOnsetPLOTPrepare;
 
 
-                            //Tuple<int[], List<double[]>> _tachogramPrepare;
-                            //Tuple<int[], double[]> _meanTachogramPrepare;
-                            //Tuple<double[], double[]> _meanTurbulenceOnsetPLOTPrepare;
+
+                            _xaxis = HRT_Algorythms.xPlot();
+                            _tachogramPrepare = Tuple.Create(_xaxis, _tachogram);
+                            _meanTachogramPrepare = Tuple.Create(_xaxis, _meanTachogram);
+                            _turbulenceSlopePrepare = Tuple.Create(_turbulenceSlope.Item2, _turbulenceSlope.Item3);
 
 
-                            //_tachogramGUI.Add(_tachogramPrepare);
-                            //_tachogramMeanGUI.Add(_meanTachogramPrepare);
-                            //_TOmeanPoints.Add(__meanTurbulenceOnsetPLOTPrepare);
 
-                            //HRT_Algorythms.PrintVector(_tachogram);
+                            _tachogramGUI.Add(_tachogramPrepare);
+                            _tachogramMeanGUI.Add(_meanTachogramPrepare);
+                            _meanTurbulenceOnsetGUI.Add(_meanTurbulenceOnset);
+                            _turbulenceSlopeGUI.Add(_turbulenceSlopePrepare);
 
-                            //_turbulenceOnsetMean = HRT_Algorythms.PrepareMeanTurbulenceOnsetforGUI(_tachogram);
+                            HRT_Algorythms.PrintVector(_turbulenceSlopePrepare);
+
+                            ////    HRT_Algorythms.PrintVector(_turbulenceSlopeGUI);
+                            //// _TOmeanPoints.Add(__meanTurbulenceOnsetPLOTPrepare);
+                            //// _meanTurbulenceOnsetPLOTPrepare.Add(_meanTurbulenceOnsetPLOT);
+
+
+
+                            ////_turbulenceOnsetMean = HRT_Algorythms.PrepareMeanTurbulenceOnsetforGUI(_tachogram);
                             ;
                         }
                     }

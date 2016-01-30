@@ -112,15 +112,44 @@ namespace EKG_Project.Modules.HRT
             }
             Console.WriteLine();
         }
+
+        public void PrintVector(Tuple<int[], double[]> Signal)
+        {
+            foreach (int _licznik in Signal.Item1)
+            {
+                Console.Write(_licznik);
+                Console.Write(" ");
+            }
+            Console.WriteLine();
+            foreach (double _licznik in Signal.Item2)
+            {
+                Console.Write(_licznik);
+                Console.Write(" ");
+            }
+            Console.WriteLine();
+        }
+
         public void PrintVector(List<Tuple<int[], List<double[]>>> Signal)
         {
             foreach (Tuple<int[], List<double[]>> _licznik in Signal)
             {
                 PrintVector(_licznik);
+                Console.WriteLine();
             }
             
         }
 
+        public void PrintVector(List<Tuple<int[], double[]>> Signal)
+        {
+            foreach (Tuple<int[], double[]> _licznik in Signal)
+            {
+                
+                    PrintVector(_licznik);
+                Console.WriteLine();
+
+            }
+
+        }
         public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalInSampleDomain, int samplingFreq)
         {
             if (SignalInSampleDomain == null) throw new ArgumentNullException();
@@ -433,7 +462,7 @@ namespace EKG_Project.Modules.HRT
         /// </summary>
         /// <param name="tacho"> tachograms
         /// <returns> x and y coordinates to plot</returns>
-        public Tuple<double[],double[]> PrepareMeanTurbulenceOnsetToPLOT(List<double[]>tacho)
+        public Tuple<int[],double[]> PrepareMeanTurbulenceOnsetToPLOT(List<double[]>tacho)
         {
             List<double> listBefore3 = new List<double>();
             List<double> listBefore4 = new List<double>();
@@ -462,7 +491,7 @@ namespace EKG_Project.Modules.HRT
             double sumAfter = (sumAfter7Suma + sumAfter8Suma)/2;
             
 
-            double[] x = { 3, 4 , 7, 8 };
+            int[] x = { 3, 4 , 7, 8 };
             double[] y = { sumBefore, sumBefore, sumAfter, sumAfter };
             return Tuple.Create(x, y);
 
@@ -475,27 +504,33 @@ namespace EKG_Project.Modules.HRT
         /// <param name="VPC"> numbers of probes of peaks R classified as VPC
         /// <param name="rrIntervals"> intevals between R peaks
         /// <returns>  Return values of turbulence slope (max linear regresion) from every channel and prepare coordinates to plot max TS</returns>
-        public Tuple<List<double>,double[],double[]> PrepareTurbulenceSlopeToGUIandPLOT(List<int> VPC, Vector<double> rrIntervals)
+        public Tuple<List<double>, double[], double[]> PrepareTurbulenceSlopeToGUIandPLOT(List<int> VPC, Vector<double> rrIntervals)
         {
-           
+
             int sum = back + front;
 
             double[] TS = new double[VPC.Count];
+            for (int j = 0; j < VPC.Count; j++)
+            {
+                TS[j] = -1000;
+            }
             int i = 0;
 
-
-            double[] xx = new double[ 5];
-            double[] yy = new double[ 5];
+           
+            double[] xx = new double[5];
+            double[] yy = new double[5];
 
             foreach (int nrVPC in VPC)
-            {
+            { 
                 Tuple<double[], Vector<double>> p;
-                for (int j = 0; j < front - 5; j++)
+                for (int j = 0; j < front; j++)
                 {
+                    
                     double[] xdata = new double[5];
                     double[] ydata = new double[5];
                     for (int n = 0; n < 5; n++)
                     {
+                       
                         xdata[n] = xdata[n] + (double)n;
                         ydata[n] = rrIntervals[nrVPC + j + n];
                     }
@@ -515,9 +550,11 @@ namespace EKG_Project.Modules.HRT
                 }
                 i++;
             }
-            List<double>TSnew = TS.ToList();
-            return Tuple.Create(TSnew,xx, yy);
+            PrintVector(TS);
+            List<double> TSnew = TS.ToList();
+            return Tuple.Create(TSnew, xx, yy);
         }
+
 
 
         /// <summary>
