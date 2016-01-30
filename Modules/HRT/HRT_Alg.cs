@@ -13,6 +13,8 @@ namespace EKG_Project.Modules.HRT
     public class HRT_Alg
     {
         //Additional methods
+        int front = 5;
+        int back = 15;
 
         public void PrintVector(Vector<double> Signal)
         {
@@ -405,9 +407,8 @@ namespace EKG_Project.Modules.HRT
         /// <returns> List of Turbulence Onset</returns>
         public List<double> TurbulenceOnsetsForPDF(List<int> VPC, Vector<double> rrIntervals)  
         {
-            int back = 5;
-            int forward = 15;
-            int sum = back + forward;
+           
+            int sum = back + front;
 
             double[] after = new double[VPC.Capacity];
             double[] before = new double[VPC.Capacity];
@@ -476,9 +477,8 @@ namespace EKG_Project.Modules.HRT
         /// <returns>  Return values of turbulence slope (max linear regresion) from every channel and prepare coordinates to plot max TS</returns>
         public Tuple<List<double>,double[],double[]> PrepareTurbulenceSlopeToGUIandPLOT(List<int> VPC, Vector<double> rrIntervals)
         {
-            int back = 5;
-            int forward = 15;
-            int sum = back + forward;
+           
+            int sum = back + front;
 
             double[] TS = new double[VPC.Count];
             int i = 0;
@@ -490,7 +490,7 @@ namespace EKG_Project.Modules.HRT
             foreach (int nrVPC in VPC)
             {
                 Tuple<double[], Vector<double>> p;
-                for (int j = 0; j < forward - 5; j++)
+                for (int j = 0; j < front - 5; j++)
                 {
                     double[] xdata = new double[5];
                     double[] ydata = new double[5];
@@ -526,7 +526,7 @@ namespace EKG_Project.Modules.HRT
         /// <returns>  array of indexes for xaxis to plot  (-4 -4 ...14 16)
         public int[] xPlot()
         {
-            int[] xaxis = new int[20];
+            int[] xaxis = new int[back+front];
             for (int i = 0; i < 20; i++)
             {
                 xaxis[i] = i - 4;
@@ -534,6 +534,31 @@ namespace EKG_Project.Modules.HRT
             return xaxis;
         }
 
+        /// <summary>
+        /// Return average tachogram from all tachograms to plot 
+        /// </summary>
+        /// <param name="tacho">tachogram
+        /// <returns>   Return average tachogram from all tachograms /returns>
+        public double[] MeanTachogram(List<double[]> tacho)
+        {
+            double sumTach = 0;
+            double[] meanTach =new double[back+front];
+            int k = 0;
+            for (int i =0; i<(back+front); i++)
+            {
+                foreach (double[] tach in tacho)
+                {
+                    sumTach = sumTach + tach[k];
+                }
+                
+                meanTach[k] = sumTach / tacho.Count;
+                k++;
+                sumTach = 0;
+            }
+
+            return meanTach;
+        }
+            
 
         //od pauliny, jak będzie na głównym repo to zrobić odwołania do jej implementacji
         //nie pisać testów bo nie nasza funkcja :)
