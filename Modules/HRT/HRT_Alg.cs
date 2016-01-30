@@ -12,41 +12,7 @@ namespace EKG_Project.Modules.HRT
 {
     public class HRT_Alg
     {
-        public List<int> TakeNonAtrialComplexes(List<Tuple<int,int>> _class)
-        {
-
-
-            List<int> Klasy = new List<int>();
-            foreach (Tuple<int, int> _licznik in _class)
-            {
-                if (_licznik.Item2 == 1)
-                {
-                    Klasy.Add(_licznik.Item1);
-                }
-            }
-            return Klasy;
-        }
-
-        public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalInSampleDomain, int samplingFreq)
-        {
-            if (SignalInSampleDomain == null) throw new ArgumentNullException();
-            if (samplingFreq <= 0) throw new ArgumentOutOfRangeException();
-            Vector<double> SignalInTimeDomain;
-            SignalInTimeDomain = 1000 * SignalInSampleDomain / samplingFreq;
-            return SignalInTimeDomain;
-        }
-
-        public Vector<double> ChangeVectorIntoTimeDomain(int[] SignalInSampleDomain, int samplingFreq)
-        {
-            double[] Sig = new double[SignalInSampleDomain.Length];
-            Vector<double> SignalInTimeDomain = Vector<double>.Build.Dense(SignalInSampleDomain.Length);
-            int i = 0;
-            foreach (int counter in SignalInSampleDomain)
-            {
-                Sig[i++] = 1000 * counter / samplingFreq;
-            }
-            return Vector<double>.Build.DenseOfArray(Sig);
-        }
+        //Additional methods
 
         public void PrintVector(Vector<double> Signal)
         {
@@ -72,10 +38,10 @@ namespace EKG_Project.Modules.HRT
             }
         }
 
-        public void PrintVector(Tuple<double[],double[]> Signal)
+        public void PrintVector(Tuple<double[], double[]> Signal)
         {
-            foreach (double x in Signal.Item1 )
-            { 
+            foreach (double x in Signal.Item1)
+            {
                 Console.WriteLine(x);
             }
             foreach (double x in Signal.Item2)
@@ -120,14 +86,35 @@ namespace EKG_Project.Modules.HRT
 
         public void PrintVector(List<double> Signal)
         {
-            
+
             foreach (double _licznik2 in Signal)
             {
                 Console.Write(_licznik2);
                 Console.Write(" ");
             }
             Console.WriteLine();
-            
+
+        }
+
+        public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalInSampleDomain, int samplingFreq)
+        {
+            if (SignalInSampleDomain == null) throw new ArgumentNullException();
+            if (samplingFreq <= 0) throw new ArgumentOutOfRangeException();
+            Vector<double> SignalInTimeDomain;
+            SignalInTimeDomain = 1000 * SignalInSampleDomain / samplingFreq;
+            return SignalInTimeDomain;
+        }
+
+        public Vector<double> ChangeVectorIntoTimeDomain(int[] SignalInSampleDomain, int samplingFreq)
+        {
+            double[] Sig = new double[SignalInSampleDomain.Length];
+            Vector<double> SignalInTimeDomain = Vector<double>.Build.Dense(SignalInSampleDomain.Length);
+            int i = 0;
+            foreach (int counter in SignalInSampleDomain)
+            {
+                Sig[i++] = 1000 * counter / samplingFreq;
+            }
+            return Vector<double>.Build.DenseOfArray(Sig);
         }
 
         public Vector<double> rrTimesShift(Vector<double> rrPeaks)
@@ -146,6 +133,23 @@ namespace EKG_Project.Modules.HRT
             return rrTimesVPC;
         }
 
+        public int[] removeRedundant(int[] array, int length)
+        {
+            if (array == null) throw new ArgumentNullException();
+            if (length < 0 || length >= array.Length) throw new ArgumentOutOfRangeException();
+
+            int arraySize = array.Length;
+            int newArraySize = arraySize - length;
+
+            int[] newArray = new int[newArraySize];
+
+            for (int i = 0; i < newArraySize; i++)
+            {
+                newArray[i] = array[i];
+            }
+            return newArray;
+        }
+
         public int[] missClassificationCorrection(bool[] miss, int[] klasa)
         {
             int k = 0;
@@ -161,6 +165,112 @@ namespace EKG_Project.Modules.HRT
             return newklasa;
         }
 
+        public Tuple<double[], double[], double[,], double[,]> StatisticsToPDF(int[] VPC, List<double> rrIntervals)
+        {
+
+            int back = 5;
+            int forward = 15;
+            int sum = back + forward;
+            int[] nrprobe = new int[VPC.Length];
+
+            double[] after = new double[VPC.GetLength(0)];
+            double[] before = new double[VPC.GetLength(0)];
+            double[] TO = new double[VPC.GetLength(0)];
+            double[] TS = new double[VPC.GetLength(0)];
+            int i = 0;
+
+
+            double[,] xx = new double[VPC.Length, 5];
+            double[,] yy = new double[VPC.Length, 5];
+
+            foreach (int nrVPC in VPC)
+            {
+                if ((nrVPC - back) > 0 && ((nrVPC + forward) < rrIntervals.Capacity))
+                {
+                    after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
+                    before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
+                    TO[i] = 100 * (after[i] - before[i]) / before[i];
+                    Tuple<double[], Vector<double>> p;
+                    for (int j = 0; j < forward - 5; j++)
+                    {
+                        double[] xdata = new double[5];
+                        double[] ydata = new double[5];
+                        for (int n = 0; n < 5; n++)
+                        {
+                            xdata[n] = xdata[n] + (double)n;
+                            ydata[n] = rrIntervals[nrVPC + j + n];
+                        }
+                        Vector<double> x = Vector<double>.Build.DenseOfArray(xdata);
+                        Vector<double> y = Vector<double>.Build.DenseOfArray(ydata);
+                        p = LinearSquare(x, y);
+
+                        if (p.Item1[0] > TS[i])
+                        {
+                            TS[i] = p.Item1[0];
+                            for (int n = 0; n < 5; n++)
+                            {
+                                xx[i, n] = j + n;
+                                yy[i, n] = p.Item2.At(n);
+                            }
+                        }
+                    }
+                }
+                i++;
+            }
+            return Tuple.Create(TO, TS, xx, yy);
+        }
+
+        public double CountMean(double[] vec)
+        {
+            double suma = vec.Sum();
+            double dlugosc = vec.Length;
+            double mean = suma / dlugosc;
+            return mean;
+        }
+
+        public double CountMax(double[] vec)
+        {
+            double max;
+            return max = vec.Max();
+        }
+
+        public double CountMin(double[] vec)
+        {
+            double min;
+            return min = vec.Min();
+        }
+
+        //METHODS
+        #region
+        /// <summary>
+        /// Function search for ventricular complex
+        /// </summary>
+        /// <param name="_class"> all peaks detected, with marked class;
+        /// <returns> Ventricular complexes</returns>
+        #endregion
+        public List<int> TakeNonAtrialComplexes(List<Tuple<int,int>> _class)
+        {
+
+
+            List<int> Klasy = new List<int>();
+            foreach (Tuple<int, int> _licznik in _class)
+            {
+                if (_licznik.Item2 == 1)
+                {
+                    Klasy.Add(_licznik.Item1);
+                }
+            }
+            return Klasy;
+        }
+
+        #region
+        /// <summary>
+        /// Which peak is VPC
+        /// </summary>
+        /// <param name="rrTimes"> numbers of probes of peaks 
+        /// <param name="rrTimesVPC"> numbers of probes of peaks R classified as VPC
+        /// <returns> Which R peak was classified as Ventricular complex</returns>
+        #endregion
         public List<int> GetNrVPC(double[] rrTimes, int[] rrTimesVPC)
         {
             int VPCcount = rrTimesVPC.Length;
@@ -204,23 +314,12 @@ namespace EKG_Project.Modules.HRT
             return nrVPCArray.ToList();
         }
 
-        public int[] removeRedundant(int[] array, int length)
-        {
-            if (array == null) throw new ArgumentNullException();
-            if (length < 0 || length >= array.Length) throw new ArgumentOutOfRangeException();
-
-            int arraySize = array.Length;
-            int newArraySize = arraySize - length;
-
-            int[] newArray = new int[newArraySize];
-
-            for (int i = 0; i < newArraySize; i++)
-            {
-                newArray[i] = array[i];
-            }
-            return newArray;
-        }
-
+        /// <summary>
+        /// Create list of tachograms
+        /// </summary>
+        /// <param name="VPC"> numbers of probes of peaks R classified as VPC
+        /// <param name=" rrIntervals"> intevals between R peaks
+        /// <returns> Tachograms</returns>
         public List<double[]> MakeTachogram(List<int> VPC, Vector<double> rrIntervals)
         {
             int back = 5;
@@ -245,6 +344,12 @@ namespace EKG_Project.Modules.HRT
             return newTacho;
         }
 
+        /// <summary>
+        /// Which complexes are premature
+        /// </summary>
+        /// <param name="Tachogram"> list of tachograms
+        /// <param name="  numerPikuVC"> Which R peak was classified as VPC
+        /// <returns> Which R peak was classified as VPC</returns>
         public List<int> SearchPrematureTurbulences(List<double[]> Tachogram, List<int> numerPikuVC)
         {
            if (Tachogram.Count != numerPikuVC.Count) throw new ArgumentOutOfRangeException();
@@ -269,70 +374,13 @@ namespace EKG_Project.Modules.HRT
             return nrpikuPVC;
         }
 
-        public int PrepareDataForGUI(List<double[]>d)
-        {
-
-            return 0;
-        }
-
-
-        //nie rob do tego testów
-        public Tuple<double[], double[], double[,], double[,]> StatisticsToPDF(int[] VPC, List<double> rrIntervals)
-        {
-
-            int back = 5;
-            int forward = 15;
-            int sum = back + forward ;
-            int[] nrprobe = new int[VPC.Length];
-
-            double[] after = new double[VPC.GetLength(0)];
-            double[] before = new double[VPC.GetLength(0)];
-            double[] TO = new double[VPC.GetLength(0)];
-            double[] TS = new double[VPC.GetLength(0)];
-            int i = 0;
-       
-            
-            double[,] xx = new double[VPC.Length, 5];
-            double[,] yy = new double[VPC.Length, 5];
-
-            foreach (int nrVPC in VPC)
-            {
-                if ((nrVPC - back) > 0 && ((nrVPC + forward) < rrIntervals.Capacity))
-                {
-                    after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
-                    before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
-                    TO[i] = 100 * (after[i] - before[i]) / before[i];
-                    Tuple<double[], Vector<double>> p;
-                    for (int j = 0; j < forward - 5; j++)
-                    {
-                        double[] xdata = new double[5];
-                        double[] ydata = new double[5];
-                        for (int n = 0; n < 5; n++)
-                        {
-                            xdata[n] = xdata[n] + (double)n;
-                            ydata[n] = rrIntervals[nrVPC + j + n];
-                        }
-                        Vector<double>  x = Vector<double>.Build.DenseOfArray(xdata);
-                        Vector<double>  y = Vector<double>.Build.DenseOfArray(ydata);
-                        p = LinearSquare(x, y);
-                                               
-                        if (p.Item1[0] > TS[i])
-                        {
-                            TS[i] = p.Item1[0];
-                            for (int n = 0; n < 5; n++)
-                            {
-                                xx[i, n] = j + n;
-                                yy[i, n] = p.Item2.At(n);
-                            }
-                        }
-                    }
-                }
-                i++;
-            }
-            return Tuple.Create(TO, TS, xx, yy);
-        }
-
-        public List<double> PrepareStatisticTurbulenceOnset(List<int> VPC, Vector<double> rrIntervals)  
+        /// <summary>
+        /// Prepare List of Turbulence Onsets to print
+        /// </summary>
+        /// <param name="VPC"> numbers of probes of peaks R classified as VPC
+        /// <param name="rrIntervals"> ntevals between R peaks
+        /// <returns> List of Turbulence Onset</returns>
+        public List<double> TurbulenceOnsetsForPDF(List<int> VPC, Vector<double> rrIntervals)  
         {
             int back = 5;
             int forward = 15;
@@ -355,6 +403,12 @@ namespace EKG_Project.Modules.HRT
             return TO; 
         }
 
+
+        /// <summary>
+        /// Prepare points to plot of Mean Turbulece Onset
+        /// </summary>
+        /// <param name="tacho"> tachograms
+        /// <returns> x and y coordinates to plot</returns>
         public Tuple<double[],double[]> PrepareMeanTurbulenceOnsetToPLOT(List<double[]>tacho)
         {
             List<double> listBefore3 = new List<double>();
@@ -391,7 +445,13 @@ namespace EKG_Project.Modules.HRT
         }
 
 
-        public Tuple<List<double>,double[,],double[,]> PrepareStatisticAndPLOTTurbulenceSlope(List<int> VPC, Vector<double> rrIntervals)
+        /// <summary>
+        /// Return values of turbulence slope (max linear regresion) from every channel and prepare coordinates to plot max TS
+        /// </summary>
+        /// <param name="VPC"> numbers of probes of peaks R classified as VPC
+        /// <param name="rrIntervals"> intevals between R peaks
+        /// <returns>  Return values of turbulence slope (max linear regresion) from every channel and prepare coordinates to plot max TS</returns>
+        public Tuple<List<double>,double[],double[]> PrepareTurbulenceSlopeToGUIandPLOT(List<int> VPC, Vector<double> rrIntervals)
         {
             int back = 5;
             int forward = 15;
@@ -401,8 +461,8 @@ namespace EKG_Project.Modules.HRT
             int i = 0;
 
 
-            double[,] xx = new double[VPC.Count, 5];
-            double[,] yy = new double[VPC.Count, 5];
+            double[] xx = new double[ 5];
+            double[] yy = new double[ 5];
 
             foreach (int nrVPC in VPC)
             {
@@ -425,8 +485,8 @@ namespace EKG_Project.Modules.HRT
                         TS[i] = p.Item1[0];
                         for (int n = 0; n < 5; n++)
                         {
-                            xx[i, n] = j + n + 5;
-                            yy[i, n] = p.Item2.At(n);
+                            xx[n] = j + n + 5;
+                            yy[n] = p.Item2.At(n);
                         }
                     }
                 }
@@ -437,27 +497,19 @@ namespace EKG_Project.Modules.HRT
         }
 
 
-        public double CountMean (double[] vec)
+        /// <summary>
+        /// Create 
+        /// </summary>
+        /// <returns>  array of indexes for xaxis to plot  (-4 -4 ...14 16)
+        public int[] xPlot()
         {
-            double suma = vec.Sum();
-            double dlugosc = vec.Length;
-            double mean = suma / dlugosc;
-            return mean;
+            int[] xaxis = new int[20];
+            for (int i = 0; i < 20; i++)
+            {
+                xaxis[i] = i - 4;
+            }
+            return xaxis;
         }
-
-        public double CountMax(double[] vec)
-        {
-            double max;
-            return max = vec.Max();
-        }
-
-        public double CountMin(double[] vec)
-        {
-            double min;
-            return min = vec.Min();
-        }
-
-
 
 
         //od pauliny, jak będzie na głównym repo to zrobić odwołania do jej implementacji

@@ -14,19 +14,14 @@ namespace EKG_Project.Modules.HRT
         private bool _ended;
         private bool _aborted;
         private int _currentChannelIndex;
-        //private int _currentChannelLength;
-        //private int _samplesProcessed;
+        private int _currentChannelLength;
+        private int _samplesProcessed;
         private int _numberOfChannels;
         private int _fs;
         Vector<double> _rpeaksSelected;
         Vector<double> _rrintervals;
         List<int> _classPrematureVentrical;
-       // List<Tuple<string, Vector<double>>> _rrintervals;
-        List<Tuple<string, Vector<double>>> _rpeaks;
         List<Tuple<int, int>> _classAll;
-        Vector<double> _rpeaksTime;
-        Vector<double> _classTime;
-        int _VPCcount;
         List<int> _nrVPC;
         double _turbulenceOnsetMean;
         double _turbulenceSlopeMean;
@@ -35,11 +30,9 @@ namespace EKG_Project.Modules.HRT
         double _turbulenceOnsetMax;
         double _turbulenceOnsetMin;
         List<double[]> _tachogram;
-        Tuple<double[,], double[], double[], double[,], double[,]> FinalResults;
         List<int> _classVentrical;
         List<double> _turbulenceOnset;
-        Tuple<List<double>,double[,],double[,]> _turbulenceSlope;
-
+        Tuple<List<double>,double[],double[]> _turbulenceSlope;
 
 
         //stworzenie obiektów workerów poszczególnych klas 
@@ -52,14 +45,19 @@ namespace EKG_Project.Modules.HRT
         private Heart_Class_Data _inputHeartClassData;
         private Basic_Data_Worker _inputBasicDataWorker;
         private Basic_Data _inputBasicData;
-        HRT_Alg HRT_Algorythms = new HRT_Alg();
+        
         Tuple<double[], double[]> _meanTurbulenceOnsetPLOT;
+        int[] _xaxis;
+
+        //zmienne wyjścia GUI
+        Tuple<int[],List<double[]>> _tachogramPrepare;
+        List<Tuple<int[], List<double[]>>> _tachogramGUI;
 
 
 
 
 
-
+        HRT_Alg HRT_Algorythms = new HRT_Alg();
 
 
         public void Abort()
@@ -79,6 +77,7 @@ namespace EKG_Project.Modules.HRT
         public void Init(ModuleParams parameters) {
 
             Params = parameters as HRT_Params;
+            
             string _analysisName = Params.AnalysisName;
 
             Aborted = false;
@@ -226,13 +225,15 @@ namespace EKG_Project.Modules.HRT
                         else
                         {
                             _tachogram = HRT_Algorythms.MakeTachogram(_classPrematureVentrical, _rrintervals);
-                            _turbulenceOnset = HRT_Algorythms.PrepareStatisticTurbulenceOnset(_classPrematureVentrical, _rrintervals);
-                            _turbulenceSlope = HRT_Algorythms.PrepareStatisticAndPLOTTurbulenceSlope(_classPrematureVentrical, _rrintervals);
+                            _turbulenceOnset = HRT_Algorythms.TurbulenceOnsetsForPDF(_classPrematureVentrical, _rrintervals);
+                            _turbulenceSlope = HRT_Algorythms.PrepareTurbulenceSlopeToGUIandPLOT(_classPrematureVentrical, _rrintervals);
                             _meanTurbulenceOnsetPLOT = HRT_Algorythms.PrepareMeanTurbulenceOnsetToPLOT(_tachogram);
 
-                            HRT_Algorythms.PrintVector(_tachogram);
+                            //HRT_Algorythms.PrintVector(_tachogram);
 
-
+                            _xaxis = HRT_Algorythms.xPlot();
+                            _tachogramPrepare = Tuple.Create(_xaxis, _tachogram);
+                            _tachogramGUI.Add(_tachogramPrepare);
 
                             //_turbulenceOnsetMean = HRT_Algorythms.PrepareMeanTurbulenceOnsetforGUI(_tachogram);
                             ;
@@ -242,7 +243,8 @@ namespace EKG_Project.Modules.HRT
             }
             else
             {
-                //_outputData._VPCtachogram.Add(FinalResults.Item1);
+               // _outputData._TurbulenceOnset.Add();
+               // _outputData._VPCtachogram.Add(FinalResults.Item1);
                 //NASZE DANE WYJSCIOWE PRZYGOTOWAC I WYSLAC DO ZAPISU
                 //OutputWorker.Save(OutputData);
                 _ended = true;
@@ -251,64 +253,12 @@ namespace EKG_Project.Modules.HRT
             _currentChannelIndex++;
 
 
-            //_turbulenceOnsetMean = (HRT_Algorythms.CountMean(FinalResults.Item2));
-            //Console.Write("Turbulence Onset Mean: ");
-            //Console.WriteLine(_turbulenceOnsetMean);
-
-            //_turbulenceSlopeMean = HRT_Algorythms.CountMean(FinalResults.Item3);
-            //Console.Write("Turbulence Slope Mean: ");
-            //Console.WriteLine(_turbulenceSlopeMean);
-
-            //_turbulenceOnsetMax = HRT_Algorythms.CountMax(FinalResults.Item2);
-            //Console.Write("Turbulence Onset Max: ");
-            //Console.WriteLine(_turbulenceOnsetMax);
-
-            //_turbulenceOnsetMin = HRT_Algorythms.CountMin(FinalResults.Item2);
-            //Console.Write("Turbulence Onset Min ");
-            //Console.WriteLine(_turbulenceOnsetMin);
-
-            //_turbulenceSlopeMax = HRT_Algorythms.CountMax(FinalResults.Item3);
-            //Console.Write("Turbulence Slope Max: ");
-            //Console.WriteLine(_turbulenceSlopeMax);
-
-            //_turbulenceSlopeMin = HRT_Algorythms.CountMin(FinalResults.Item3);
-            //Console.Write("Turbulence Slope Min: ");
-            //Console.WriteLine(_turbulenceSlopeMin);
-
-
-            //Tuple<string, double[,]> t3 = Tuple.Create("I", FinalResults.Item1);
-            //List<Tuple<string, double[,]>> _tachogram = new List<Tuple<string, double[,]>>();
-            //_tachogram.Add(t3);
-
-            //Tuple<string, double[]> t4 = Tuple.Create("I", FinalResults.Item2);
-            //List<Tuple<string, double[]>> _turbulenceOnset = new List<Tuple<string, double[]>>();
-            //_turbulenceOnset.Add(t4);
-
-            //Tuple<string, double[]> t5 = Tuple.Create("I", FinalResults.Item3);
-            //List<Tuple<string, double[]>> _turbulenceSlope = new List<Tuple<string, double[]>>();
-            //_turbulenceOnset.Add(t5);
-
-            //Tuple<string, double, double, double> t1 = Tuple.Create("I", _turbulenceOnsetMean, _turbulenceOnsetMax, _turbulenceOnsetMin);
-            //List<Tuple<string, double, double, double>> _tachogramOnsetValues = new List<Tuple<string, double, double, double>>();
-            //_tachogramOnsetValues.Add(t1);
-
-            //Tuple<string, double, double, double> t2 = Tuple.Create("I", _turbulenceSlopeMean, _turbulenceSlopeMax, _turbulenceSlopeMin);
-            //List<Tuple<string, double, double, double>> _tachogramSlopeValues = new List<Tuple<string, double, double, double>>();
-            //_tachogramSlopeValues.Add(t2);
+           
 
         }
             
 
-
-
-
-
-
-
-
-
-
-
+        
         //Accessors (getters and setters)
         public HRT_Data_Worker OutputWorker
         {
