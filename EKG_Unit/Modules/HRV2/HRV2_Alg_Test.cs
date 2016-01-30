@@ -57,12 +57,12 @@ namespace EKG_Unit.Modules.HRV2
             PrivateObject obj = new PrivateObject(testAlgs);
             obj.SetField("_rrIntervals", testVector);
 
-            obj.Invoke("PoincarePlot_x()");
+            obj.Invoke("PoincarePlot_x");
+            obj.Invoke("PoincarePlot_y");
+            double x = ((Vector<double>)obj.GetField("RR_intervals_x")).Count;
+            double y = ((Vector<double>)obj.GetField("RR_intervals_y")).Count;
 
-            double test_x = 4;
-            double result_x = ((Vector<double>)obj.GetField("RR_intervals_x")).Count;
-
-            Assert.AreEqual(test_x, result_x);
+            Assert.AreEqual(x, y);
         }
 
 
