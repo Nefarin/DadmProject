@@ -33,16 +33,6 @@ namespace EKG_Project.Modules.HRV2
             }
             return HistogramList;
         }
-        public double histogramCounts()
-        {
-            int histogramCount = 0;
-            ObservableCollection<Sample> samples = _currentHistogram.Samples;
-            foreach (Sample s in samples )
-            {
-                histogramCount += s.Count;
-            }
-            return histogramCount;
-        }
 
         #region Documentation
         /// <summary>
