@@ -19,9 +19,9 @@ namespace EKG_Project.Modules.HRT
         private int _numberOfChannels;
         private int _fs;
         Vector<double> _rpeaksSelected;
-        Vector<double> _rrintervalsSelected;
+        Vector<double> _rrintervals;
         List<int> _classPrematureVentrical;
-        List<Tuple<string, Vector<double>>> _rrintervals;
+       // List<Tuple<string, Vector<double>>> _rrintervals;
         List<Tuple<string, Vector<double>>> _rpeaks;
         List<Tuple<int, int>> _classAll;
         Vector<double> _rpeaksTime;
@@ -35,11 +35,10 @@ namespace EKG_Project.Modules.HRT
         double _turbulenceOnsetMax;
         double _turbulenceOnsetMin;
         List<double[]> _tachogram;
-        double[] _turbulenceSlope;
-        double[] _turbulenceOnset;
         Tuple<double[,], double[], double[], double[,], double[,]> FinalResults;
         List<int> _classVentrical;
-
+        List<double> _turbulenceOnset;
+        Tuple<List<double>,double[,],double[,]> _turbulenceSlope;
 
 
 
@@ -190,7 +189,7 @@ namespace EKG_Project.Modules.HRT
 
 
                 _rpeaksSelected = InputRpeaksData.RPeaks[_currentChannelIndex].Item2;
-                _rrintervalsSelected = InputRpeaksData.RRInterval[_currentChannelIndex].Item2;
+                _rrintervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2;
                 _classAll = InputHeartClassData.ClassificationResult;
 
                 //_rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
@@ -211,9 +210,8 @@ namespace EKG_Project.Modules.HRT
                     else
                     {
                         _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classVentrical.ToArray());
-                       
-                        _tachogram = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervalsSelected);
-                        Console.WriteLine("**************************");
+
+                        _tachogram = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervals);
                         _classPrematureVentrical = HRT_Algorythms.SearchPrematureTurbulences(_tachogram, _nrVPC);
                         if (_classPrematureVentrical.Capacity == 0)
                         {
@@ -221,13 +219,11 @@ namespace EKG_Project.Modules.HRT
                         }
                         else
                         {
-                            _tachogram = HRT_Algorythms.MakeTachogram(_classPrematureVentrical, _rrintervalsSelected);
-                            //HRT_Algorythms.PrintVector(_tachogram);
-                        }
-
-                        //    //FinalResults = HRT_Algorythms.FinalResults(_nrVPC, _rrintervalsSelected.ToArray());
-                        //    //HRT_Algorythms.PrintVector(FinalResults.Item1);
-                        //    //HRT_Algorythms.PrintVector(_classPrematureVentrical);
+                            _tachogram = HRT_Algorythms.MakeTachogram(_classPrematureVentrical, _rrintervals);
+                            _turbulenceOnset = HRT_Algorythms.PrepareStatisticTurbulenceOnset(_classPrematureVentrical, _rrintervals);
+                            _turbulenceSlope = HRT_Algorythms.PrepareStatisticAndGUITurbulenceSlope(_classPrematureVentrical, _rrintervals);
+                            //HRT_Algorythms.PrintVector(_turbulenceSlope.Item3);
+;                        }
                     }
                 }
             }
