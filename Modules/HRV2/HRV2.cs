@@ -111,62 +111,62 @@ namespace EKG_Project.Modules.HRV2
                         _state = STATE.PROCESS_FIRST_STEP;
                     }
                     break;
-                case (STATE.PROCESS_FIRST_STEP):
-                    if (_currentIndex + Params.Step > _currentChannelLength) _state = STATE.END_CHANNEL;
-                    else
-                    {
-                        try
-                        {
-                            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, Params.Step);
-                            _alg = new HRV2_Alg(_currentVector, Params);
-                            _alg.scaleSamples();
-                            _currentVector = _alg.CurrentVector;
-                            OutputWorker.SaveSignal(_currentLeadName, false, _currentVector);
-                            _currentIndex += Params.Step;
-                            _state = STATE.PROCESS_CHANNEL;
-                        }
-                        catch (Exception e)
-                        {
-                            _state = STATE.NEXT_CHANNEL;
-                        }
-                    }
-                    break;
-                case (STATE.PROCESS_CHANNEL): // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
-                    if (_currentIndex + Params.Step > _currentChannelLength) _state = STATE.END_CHANNEL;
-                    else
-                    {
-                        try
-                        {
-                            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, Params.Step);
-                            _alg = new HRV2_Alg(_currentVector, Params); // its possible to create just one instance somewhere in the Init - your choice
-                            _alg.scaleSamples();
-                            _currentVector = _alg.CurrentVector; // not needed, because reference is the same, but shows the point
-                            OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
-                            _currentIndex += Params.Step;
-                            _state = STATE.PROCESS_CHANNEL;
-                        }
-                        catch (Exception e)
-                        {
-                            _state = STATE.NEXT_CHANNEL;
-                        }
-                    }
+                //case (STATE.PROCESS_FIRST_STEP):
+                //    if (_currentIndex + Params.Step > _currentChannelLength) _state = STATE.END_CHANNEL;
+                //    else
+                //    {
+                //        try
+                //        {
+                //            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, Params.Step);
+                //            _alg = new HRV2_Alg(_currentVector, Params);
+                //            _alg.scaleSamples();
+                //            _currentVector = _alg.CurrentVector;
+                //            OutputWorker.SaveSignal(_currentLeadName, false, _currentVector);
+                //            _currentIndex += Params.Step;
+                //            _state = STATE.PROCESS_CHANNEL;
+                //        }
+                //        catch (Exception e)
+                //        {
+                //            _state = STATE.NEXT_CHANNEL;
+                //        }
+                //    }
+                //    break;
+                //case (STATE.PROCESS_CHANNEL): // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
+                //    if (_currentIndex + Params.Step > _currentChannelLength) _state = STATE.END_CHANNEL;
+                //    else
+                //    {
+                //        try
+                //        {
+                //            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, Params.Step);
+                //            _alg = new HRV2_Alg(_currentVector, Params); // its possible to create just one instance somewhere in the Init - your choice
+                //            _alg.scaleSamples();
+                //            _currentVector = _alg.CurrentVector; // not needed, because reference is the same, but shows the point
+                //            OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
+                //            _currentIndex += Params.Step;
+                //            _state = STATE.PROCESS_CHANNEL;
+                //        }
+                //        catch (Exception e)
+                //        {
+                //            _state = STATE.NEXT_CHANNEL;
+                //        }
+                //    }
 
-                    break;
-                case (STATE.END_CHANNEL):
-                    try
-                    {
-                        _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
-                        _alg = new HRV2_Alg(_currentVector, Params);
-                        _currentVector = _alg.CurrentVector; // not needed, because reference is the same, but shows the point
-                        _alg.scaleSamples();
-                        OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
-                        _state = STATE.NEXT_CHANNEL;
-                    }
-                    catch (Exception e)
-                    {
-                        _state = STATE.NEXT_CHANNEL;
-                    }
-                    break;
+                //    break;
+                //case (STATE.END_CHANNEL):
+                //    try
+                //    {
+                //        _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
+                //        _alg = new HRV2_Alg(_currentVector, Params);
+                //        _currentVector = _alg.CurrentVector; // not needed, because reference is the same, but shows the point
+                //        _alg.scaleSamples();
+                //        OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
+                //        _state = STATE.NEXT_CHANNEL;
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        _state = STATE.NEXT_CHANNEL;
+                //    }
+                //    break;
                 case (STATE.NEXT_CHANNEL):
                     _state = STATE.BEGIN_CHANNEL;
                     break;

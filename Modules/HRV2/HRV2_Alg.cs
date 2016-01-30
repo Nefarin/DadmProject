@@ -88,24 +88,24 @@ namespace EKG_Project.Modules.HRV2
             //TriangleIndex.cs
             TriangleIndex();
         }
-        public static void Main()
-        {
-            //read data from file
-            //TempInput.setInputFilePath(@"C:\Users\Ewa\Desktop\DADM_projekt\DadmProject\RR_100.txt");
-            TempInput.setInputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\RR_100.txt");
-            uint fs = TempInput.getFrequency();
-            Vector<double> sig = TempInput.getSignal();
+        //public static void Main()
+        //{
+        //    //read data from file
+        //    //TempInput.setInputFilePath(@"C:\Users\Ewa\Desktop\DADM_projekt\DadmProject\RR_100.txt");
+        //    TempInput.setInputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\RR_100.txt");
+        //    uint fs = TempInput.getFrequency();
+        //    Vector<double> sig = TempInput.getSignal();
             
-            HRV2_Alg Analise = new HRV2_Alg();
-            Analise.RRIntervals = sig;
-            Analise.Interpolation();
-            Analise.HRV2_Anlalysis();
+        //    HRV2_Alg Analise = new HRV2_Alg();
+        //    Analise.RRIntervals = sig;
+        //    Analise.Interpolation();
+        //    Analise.HRV2_Anlalysis();
             
-            //write result to dat file
-            //TempInput.setOutputFilePath("resultTriInx.txt");
-            TempInput.setOutputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\resultHistogram1.txt");
-            TempInput.writeFile(Analise.HistogramToVisualisation());
-            //Console.ReadLine();
-        }
+        //    //write result to dat file
+        //    //TempInput.setOutputFilePath("resultTriInx.txt");
+        //    TempInput.setOutputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\resultHistogram1.txt");
+        //    TempInput.writeFile(Analise.HistogramToVisualisation());
+        //    //Console.ReadLine();
+        //}
     }
 }

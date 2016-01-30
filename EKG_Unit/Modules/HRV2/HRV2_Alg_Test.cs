@@ -13,22 +13,16 @@ namespace EKG_Unit.Modules.HRV2
         [Description("Test if vectors RRIntervals and Counts in histogram are equal")]
         public void HistogramCountsTest()
         {
+            double[] testArray = { 1, 2, 3, 4, 5, 6, 6, 7, 4, 4, 4 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
 
             HRV2_Alg testAlgs = new HRV2_Alg();
-            
-            //testAlgs.HRV2_Anlalysis();
-            //testAlgs.histogramCounts();
-            
+            testAlgs.RRIntervals = testVector;
+
+            testAlgs.HRV2_Anlalysis();
+
             double histoCounts =  testAlgs.histogramCount; 
             double RRIntervalVectorLength = testAlgs.RRIntervals.Count;
-
-            PrivateObject obj = new PrivateObject(testAlgs);
-
-            // Process test here
-
-            obj.Invoke("EqualVectors");
-
-            // Assert results
 
             Assert.AreEqual(histoCounts, RRIntervalVectorLength);
         }
@@ -37,19 +31,15 @@ namespace EKG_Unit.Modules.HRV2
         [Description("Test if Tinn is calculate properly")]
         public void TinnTest()
         {
-
-            HRV2_Alg testAlgs = new HRV2_Alg();
-
             double[] testArray = { 1, 2, 3, 4, 5 };
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
 
+            HRV2_Alg testAlgs = new HRV2_Alg();
             testAlgs.RRIntervals = testVector;
+            testAlgs.HRV2_Anlalysis();
+
             double testTinn = testAlgs.Tinn;
             double resultTinn = 4;
-
-            PrivateObject obj = new PrivateObject(testAlgs);
-
-            obj.Invoke("Tinn OK");
 
             Assert.AreEqual(testTinn, resultTinn);
         }
