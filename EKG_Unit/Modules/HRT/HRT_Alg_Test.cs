@@ -7,13 +7,22 @@ using System.IO;
 
 namespace EKG_Unit.Modules.HRT
 {
+    //Allows create and initalize List of 2-element tuples.
+    public class TupleList<T1, T2> : List<Tuple<T1, T2>>
+    {
+        public void Add(T1 item, T2 item2)
+        {
+            Add(new Tuple<T1, T2>(item, item2));
+        }
+    }
+
     [TestClass]
     public class HRT_Alg_Test
     {
         //ChangeVectorIntoTimeDomain
         [TestMethod]
         [Description("Test if vector changes into time domain properly - equality test")]
-        public void ChangeVectorIntoTimeDomainTest1()
+        public void ChangeVectorIntoTimeDomain_EQTest_1()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
@@ -32,7 +41,7 @@ namespace EKG_Unit.Modules.HRT
 
         [TestMethod]
         [Description("Test if vector changes into time domain properly - not equality test")]
-        public void ChangeVectorIntoTimeDomainTest2()
+        public void ChangeVectorIntoTimeDomain_NonEQTest_2()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
@@ -52,7 +61,7 @@ namespace EKG_Unit.Modules.HRT
         [TestMethod]
         [Description("Test if ChangeVectorIntoTimeDomain throws null if argument is not initialized")]
         [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
-        public void ChangeVectorIntoTimeDomainNullTest()
+        public void ChangeVectorIntoTimeDomain_NullTest()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
@@ -84,93 +93,182 @@ namespace EKG_Unit.Modules.HRT
         //GetNrVPC
         [TestMethod]
         [Description("Test if funcion properly finds VPC nr by R_peak index - equality test")]
-        public void GetNrVPC1()
+        public void GetNrVPC_EQTest_1()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
-            double[] testrrTimesArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
-            int[] testrrTimesVPCArray = { 30, 60, 105 };
-            int testVPCcount = 3;
+            // Init test here
 
-            int[] resultnrVPCArray = { 2, 4, 7 };
-            
+            double[] testrrTimesArray = { 100, 1000, 2000, 2500, 3000, 4000, 5000, 1200 };
+            int[] testrrTimesVPCArray = { 120, 2022, 3010 };
+
+            // Process test here
+
+            List<int> resultnrVPCArray = new List<int>();
+            resultnrVPCArray.Add(0);
+            resultnrVPCArray.Add(2);
+            resultnrVPCArray.Add(4);
+
+            // Assert results
+
             HRT_Alg testAlg = new HRT_Alg();
-           // int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
-            //Assert.AreEqual(resultnrVPCArray[2], testResult[2] );
-           // CollectionAssert.AreEqual(resultnrVPCArray, testResult );
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
+            CollectionAssert.AreEqual(resultnrVPCArray, testResult );
 
         }
 
+        //GetNrVPC
         [TestMethod]
-        [Description("Test if funcion properly finds VPC nr by R_peak index - not equality test")]
-        public void GetNrVPC2()
+        [Description("Test if funcion properly finds VPC nr by R_peak index - equality test")]
+        public void GetNrVPC_EQTest_2()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
-            double[] testrrTimesArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
-            int[] testrrTimesVPCArray = { 30, 60, 155 };
-            int testVPCcount = 3;
+            // Init test here
 
-            int[] resultnrVPCArray = { 2, 4, 7 };
+            double[] testrrTimesArray = { 198,  460,  709,  966,  1223, 1480, 1742,
+                                          2016, 2288, 2551, 2804, 3053, 3304, 3564,
+                                          3836, 4103, 4372, 4636, 4902, 5155, 5408,
+                                          5562, 5924, 6196, 6469, 6737, 6997, 7247,
+                                          7507, 7768, 7923, 8291, 8565, 8830, 9094,
+                                          9351, 9601, 9846, 10106,10381,10646,10909,
+                                          11169,11425,11677,11932,12188,12450,12626 };
+            int[] testrrTimesVPCArray = { 3030, 5401, 9116 };
+
+            // Process test here
+
+            List<int> resultnrVPCArray = new List<int>();
+            resultnrVPCArray.Add(11);
+            resultnrVPCArray.Add(20);
+            resultnrVPCArray.Add(34);
+
+            // Assert results
 
             HRT_Alg testAlg = new HRT_Alg();
-           // int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
-           // Assert.AreNotEqual(testResult, resultnrVPCArray);
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
+            CollectionAssert.AreEqual(resultnrVPCArray, testResult);
 
         }
 
+        //GetNrVPC
+        [TestMethod]
+        [Description("Test if funcion properly finds VPC nr by R_peak index - equality test")]
+        public void GetNrVPC_EQTest_3()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrTimesArray = { 198,  460,  709,  966,  1223, 1480, 1742,
+                                          2016, 2288, 2551, 2804, 3053, 3304, 3564,
+                                          3836, 4103, 4372, 4636, 4902, 5155, 5408,
+                                          5562, 5924, 6196, 6469, 6737, 6997, 7247,
+                                          7507, 7768, 7923, 8291, 8565, 8830, 9094,
+                                          9351, 9601, 9846, 10106,10381,10646,10909,
+                                          11169,11425,11677,11932,12188,12450,12626 };
+            int[] testrrTimesVPCArray = { 202, 2060, 3798, 5560, 7556, 9400, 11169 };
+
+            // Process test here
+
+            List<int> resultnrVPCArray = new List<int>();
+            resultnrVPCArray.Add(0);
+            resultnrVPCArray.Add(7);
+            resultnrVPCArray.Add(14);
+            resultnrVPCArray.Add(21);
+            resultnrVPCArray.Add(28);
+            resultnrVPCArray.Add(35);
+            resultnrVPCArray.Add(42);
+
+            // Assert results
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
+            CollectionAssert.AreEqual(resultnrVPCArray, testResult);
+
+        }
+
+        // GetNrVPC
         [TestMethod]
         [Description("Test if GetNrVPC throws null if argument is not initialized")]
         [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
-        public void GetNrVPCNullTest()
+        public void GetNrVPC_NullTest_1()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
+            // Init test here
+
             double[] testrrTimesArray = null;
             int[] testrrTimesVPCArray = { 30, 60, 155 };
-            int testVPCcount = 3;
+
+            // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
-           // int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
             
+        }
+
+        // GetNrVPC
+        [TestMethod]
+        [Description("Test if GetNrVPC throws null if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void GetNrVPC_EmptyArrayTest_2()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrTimesArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
+            int[] testrrTimesVPCArray = { };
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
+
         }
 
         [TestMethod]
         [Description("Test if GetNrVPC throws null if argument is out of ranged")]
         [ExpectedException(typeof(ArgumentOutOfRangeException), "Parameter out of range")]
-        public void GetNrVPCOutOfRangeTest1()
+        public void GetNrVPC_OutOfRangeTest_1()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
-            double[] testrrTimesArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
+            // Init test here
+
+            double[] testrrTimesArray = { };
             int[] testrrTimesVPCArray = { 30, 60, 155 };
-            int testVPCcount = 4;
+            
+            // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
-          //  int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
 
         }
 
         [TestMethod]
         [Description("Test if GetNrVPC throws null if argument is out of ranged")]
         [ExpectedException(typeof(ArgumentOutOfRangeException), "rrTimesVPC array is larger than rrTimes array")]
-        public void GetNrVPCOutOfRangeTest2()
+        public void GetNrVPC_OutOfRangeTest_2()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
+            // Init test here
+
             double[] testrrTimesArray = { 30, 60, 155 };
             int[] testrrTimesVPCArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
-            int testVPCcount = 8;
+            
+            // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
-           // int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
 
         }
 
         //removeRedundant
         [TestMethod]
         [Description("Test if funcion properly remove redundant elements - equality test")]
-        public void removeRedundant1()
+        public void removeRedundant_EQTest_1()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
@@ -188,7 +286,7 @@ namespace EKG_Unit.Modules.HRT
         [TestMethod]
         [Description("Test if removeRedundant throws null if argument is not initialized")]
         [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
-        public void removeRedundantNullTest()
+        public void removeRedundant_NullTest()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
@@ -203,7 +301,7 @@ namespace EKG_Unit.Modules.HRT
         [TestMethod]
         [Description("Test if removeRedundant throws null if argument is out of range")]
         [ExpectedException(typeof(ArgumentOutOfRangeException), "Length parameter must be grather than 0 and smaller than given array size")]
-        public void removeRedundantOutOfRangeTest()
+        public void removeRedundant_OutOfRangeTest()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
@@ -218,7 +316,7 @@ namespace EKG_Unit.Modules.HRT
         //rrTimesShift
         [TestMethod]
         [Description("Test if vector shitfs properly - equality test")]
-        public void rrTimesShift1()
+        public void rrTimesShift_EQTest_1()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
@@ -401,6 +499,175 @@ namespace EKG_Unit.Modules.HRT
             HRT_Alg testAlg = new HRT_Alg();
             List<int> resultPikVC = testAlg.SearchPrematureTurbulences(testTachogram, testPikVC);
                       
+        }
+
+        //TakeNonAtrialComplexes
+        [TestMethod]
+        [Description("Test function if properly takes non atrial complexes - equality test")]
+        public void TakeNonAtrialComplexes_EQTest_1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+                      
+            List<Tuple<int, int>> testClass = new TupleList<int, int>
+            {
+                {  198, 1 },
+                {  460, 1 },
+                {  709, 1 },
+                {  966, 1 },
+                { 1223, 1 },
+                { 1480, 1 },
+                { 1742, 1 },
+                { 2016, 1 },
+                { 2288, 1 },
+                { 2551, 1 },
+                { 2804, 1 },
+                { 3053, 1 },
+                { 3304, 1 },
+                { 3564, 1 },
+                { 3836, 1 },
+                { 4103, 1 },
+                { 4372, 1 },
+                { 4636, 1 },
+                { 4902, 1 },
+                { 5155, 1 }
+            };                  
+
+            List<int> expectedResult = new List<int>();
+            expectedResult.Add(198);
+            expectedResult.Add(460);
+            expectedResult.Add(709);
+            expectedResult.Add(966);
+            expectedResult.Add(1223);
+            expectedResult.Add(1480);
+            expectedResult.Add(1742);
+            expectedResult.Add(2016);
+            expectedResult.Add(2288);
+            expectedResult.Add(2551);
+            expectedResult.Add(2804);
+            expectedResult.Add(3053);
+            expectedResult.Add(3304);
+            expectedResult.Add(3564);
+            expectedResult.Add(3836);
+            expectedResult.Add(4103);
+            expectedResult.Add(4372);
+            expectedResult.Add(4636);
+            expectedResult.Add(4902);
+            expectedResult.Add(5155);
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<int> testResult = testAlg.TakeNonAtrialComplexes(testClass);
+
+            // Assert results
+
+            CollectionAssert.AreEqual(testResult, expectedResult);
+
+        }
+
+        //TakeNonAtrialComplexes
+        [TestMethod]
+        [Description("Test function if properly takes non atrial complexes - diffrent set of parameters - equality test")]
+        public void TakeNonAtrialComplexes_EQTest_2()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            List<Tuple<int, int>> testClass = new TupleList<int, int>
+            {
+                {  198, 1 },
+                {  460, 0 },
+                {  709, 1 },
+                {  966, 0 },
+                { 1223, 0 },
+                { 1480, 1 },
+                { 1742, 2 },
+                { 2016, 2 },
+                { 2288, 1 },
+                { 2551, 1 },
+                { 2804, 0 },
+                { 3053, 1 },
+                { 3304, 1 },
+                { 3564, 0 },
+                { 3836, 1 },
+                { 4103, 1 },
+                { 4372, 3 },
+                { 4636, 1 },
+                { 4902, 2 },
+                { 5155, 1 }
+            };
+
+            List<int> expectedResult = new List<int>();
+            expectedResult.Add(198);            
+            expectedResult.Add(709);
+            expectedResult.Add(1480);  
+            expectedResult.Add(2288);
+            expectedResult.Add(2551);            
+            expectedResult.Add(3053);
+            expectedResult.Add(3304);            
+            expectedResult.Add(3836);
+            expectedResult.Add(4103);            
+            expectedResult.Add(4636);            
+            expectedResult.Add(5155);
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<int> testResult = testAlg.TakeNonAtrialComplexes(testClass);
+
+            // Assert results
+
+            CollectionAssert.AreEqual(testResult, expectedResult);
+
+        }
+
+        //TakeNonAtrialComplexes
+        [TestMethod]
+        [Description("Test function if properly takes non atrial complexes - extreme set of parameters - equality test")]
+        public void TakeNonAtrialComplexes_EQTest_3()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            List<Tuple<int, int>> testClass = new TupleList<int, int>
+            {
+                {  198, 0 },
+                {  460, 0 },
+                {  709, 2 },
+                {  966, 0 },
+                { 1223, 0 },
+                { 1480, 0 },
+                { 1742, 2 },
+                { 2016, 2 },
+                { 2288, 3 },
+                { 2551, 0 },
+                { 2804, 0 },
+                { 3053, 0 },
+                { 3304, 2 },
+                { 3564, 0 },
+                { 3836, 0 },
+                { 4103, 2 },
+                { 4372, 3 },
+                { 4636, 0 },
+                { 4902, 2 },
+                { 5155, 0 }
+            };
+
+            List<int> expectedResult = new List<int>();
+         
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<int> testResult = testAlg.TakeNonAtrialComplexes(testClass);
+
+            // Assert results
+
+            CollectionAssert.AreEqual(testResult, expectedResult);
+
         }
 
     }
