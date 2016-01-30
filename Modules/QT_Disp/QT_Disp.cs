@@ -168,7 +168,27 @@ namespace EKG_Project.Modules.QT_Disp
                     {
                         if (_indexesProcessed < _currentChannelR_Peaks_indexes)
                         {
-                            //need to be implemented
+                            if (_currentChannelR_Peaks_indexes - _indexesProcessed > _maxInputIndexes)
+                            {
+                                _amountOfIndexesInInput = _maxInputIndexes;
+                            }
+                            else
+                            {
+                                _amountOfIndexesInInput = _currentChannelR_Peaks_indexes - _indexesProcessed;
+                            }
+                            R_Peaks = InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput);  //stores r peaks
+                            _currentIndex = (int)R_Peaks.ElementAt(0);     // get first index in r peaks
+                            _currentLength = (int)(R_Peaks.ElementAt(1) - R_Peaks.ElementAt(0)); //get length between the first and next one r peak
+
+                            QT_Disp_Algorithms.TODoInInit(InputWavesWorker.LoadSignal(Waves_Attributes.QRSOnsets, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
+                                InputWavesWorker.LoadSignal(Waves_Attributes.TEnds, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
+                                InputWavesWorker.LoadSignal(Waves_Attributes.QRSEnds, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
+                                InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
+                                _params.TEndMethod, _params.QTMethod, InputBasicWorker.LoadAttribute(Basic_Attributes.Frequency)
+                            );
+                            _indexesProcessed += _amountOfIndexesInInput;
+                            _state = STATE.PROCESS_CHANNEL;
+                            step = 0;
 
                         }
                         else
@@ -222,87 +242,7 @@ namespace EKG_Project.Modules.QT_Disp
                     Abort();
                     break;
             }
-            //int channel = _currentChannelIndex;
-            //int startIndex = _samplesProcessed;
-            //bool end = false;                       //if we exceed number of channels
-            ////check if a channel is in a range
-            //if (channel < NumberOfChannels)
-            //{
-            //    //here we check if we get the last element in R peak
-            //    if (R_Peak_step >= InputRPeaksData.RPeaks[_currentChannelIndex].Item2.Count-1)
-            //    {
-
-            //        // here we creat a temp array to store a T_End index
-            //        int[] temp = new int[R_Peak_step];
-            //        //coping
-            //        T_End_Index.CopyTo(temp);
-            //        //adding calculated parameters for actual drain
-            //        OutputData.QT_mean.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getMean()));
-            //        OutputData.QT_disp_local.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getLocal()));
-            //        OutputData.QT_std.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, getStd()));
-            //        OutputData.T_End_Local.Add(Tuple.Create(InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item1, temp.ToList()));
-            //        //saving data
-            //        OutputWorker.Save(OutputData);
-            //        //go to next channel
-            //        _currentChannelIndex++;
-            //        //check if we do not exceed the numbers of channels
-            //        if (_currentChannelIndex < NumberOfChannels)
-            //        {
-            //            // here we clear our t_end_index from previous channel
-            //            T_End_Index.Clear();
-            //            // here we clear our qt interval list from previous channel
-            //            DeleteQT_Intervals();
-            //            // new start index 
-            //            _samplesProcessed = (int)InputRPeaksData.RPeaks[_currentChannelIndex].Item2.ElementAt(0);
-            //            // set new R peak step at begin
-            //            R_Peak_step = 0;
-            //            _currentChannelLength = InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item2.Count;
-            //            _currentVector = Vector<double>.Build.Dense(_currentChannelLength);
-            //            // get points from waves r peaks and basic data from current channel
-            //            TODoInInit(InputWavesData.QRSOnsets[_currentChannelIndex].Item2, InputWavesData.TEnds[_currentChannelIndex].Item2,
-            //                InputWavesData.QRSEnds[_currentChannelIndex].Item2, InputRPeaksData.RPeaks[_currentChannelIndex].Item2,
-            //                Params.TEndMethod, Params.QTMethod, InputBasicData.Frequency);
-
-            //        }
-            //        else
-            //        {
-            //            //if we exceed number of channel we set true
-            //            end = true;
-
-            //        }
-            //    }
-            //    else
-            //    {
-            //        // we are here with every r peak 
-            //        // get current vector a signal between actual R peak and previos
-            //        _currentVector = InputECGBaselineData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(startIndex, step);
-            //        // filling T_End index
-            //        T_End_Index.Add(ToDoInProccessData(_currentVector, R_Peak_step-1));
-            //        // set new startIndex for next processdata calling
-            //        _samplesProcessed = startIndex + step;
-            //    }
-            //}
-            //else
-            //{
-            //    //if we finish 
-            //    //calculate a qt disp global
-            //    OutputData.QT_disp_global = CalculateQT_Disp(NumberOfChannels);
-            //    //saving data
-            //    OutputWorker.Save(OutputData);
-            //    _ended = true;
-            //    end = true;
-            //}
-            //if (!end)
-            //{
-            //    //we are here with every processdata calling excepting the p
-            //    R_Peak_step += 1;
-            //    //only for tests
-            //    /*Console.WriteLine("R Peak index:\t\t" + R_Peak_step);
-            //    Console.WriteLine("Current channel:\t" + _currentChannelIndex);*/
-            //    //
-            //    //set a new step
-            //    step = (int)InputRPeaksData.RPeaks[_currentChannelIndex].Item2[R_Peak_step] - (int)InputRPeaksData.RPeaks[_currentChannelIndex].Item2[R_Peak_step - 1];
-            //}
+      
         }
         //Getters and Setters
         public bool Aborted
@@ -503,10 +443,10 @@ namespace EKG_Project.Modules.QT_Disp
                 _r_peaks = value;
             }
         }
-        /*public static void Main()
+        public static void Main()
         {
             QT_Disp_Params param = new QT_Disp_Params();
-            param.AnalysisName = "QtTest2";
+            //param.AnalysisName = "TestAnalysis";
             QT_Disp testModule = new QT_Disp();
             testModule.Init(param);
             while (true)
@@ -520,7 +460,7 @@ namespace EKG_Project.Modules.QT_Disp
             Console.WriteLine("Finish");
             Console.ReadKey();         
 
-        }*/
+        }/*
         public static void Main(String[] args)
         {
             QT_Disp_Stats stats = new QT_Disp_Stats();
@@ -539,7 +479,7 @@ namespace EKG_Project.Modules.QT_Disp
             }
             Console.Read();
 
-        }
+        }*/
 
 
 
