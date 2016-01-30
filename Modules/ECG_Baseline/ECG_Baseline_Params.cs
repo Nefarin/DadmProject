@@ -18,6 +18,7 @@ namespace EKG_Project.Modules.ECG_Baseline
         private double _mi;                       //Współczynnik adaptacji LMS
         private int _windowSizeLow;               //szerokość okna filtracji dolnoprzepustowy
         private int _windowSizeHigh;              //szerokość okna filtracji górnoprzepustowy
+        private int _windowLMS;                   //szerokość okna w algorytmie LMS
         private int _orderLow;                    //rząd filtru dolnoprzepustowy
         private int _orderHigh;                   //rząd filtru górnoprzepustowy
 
@@ -79,27 +80,18 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.WindowSizeHigh = windowSizeHigh;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSize, string analysisName, double mi) // konstruktor LMS LOW, HIGH
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowLMS, string analysisName, double mi) // konstruktor LMS LOW, HIGH, BAND
         {
             this.Method = method;
             this.AnalysisName = analysisName;
             this.Type = type;
             this.Mi = mi;
             if (type == Filtr_Type.LOWPASS)
-                this.WindowSizeLow = windowSize;
+                this.WindowSizeLow = windowLMS;
             else if (type == Filtr_Type.HIGHPASS)
-                this.WindowSizeHigh = windowSize;
+                this.WindowSizeHigh = windowLMS;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSizeLow, int windowSizeHigh, string analysisName, double mi) // konstruktor LMS BAND
-        {
-            this.Method = method;
-            this.AnalysisName = analysisName;
-            this.Type = type;
-            this.Mi = mi;
-            this.WindowSizeLow = windowSizeLow;
-            this.WindowSizeHigh = windowSizeHigh;
-        }
 
         public Filtr_Method Method
         {
@@ -215,6 +207,21 @@ namespace EKG_Project.Modules.ECG_Baseline
                     _mi = value;
                 else
                     _mi = 0.07;
+            }
+        }
+
+        public int WindowLMS
+        {
+            get
+            {
+                return _windowLMS;
+            }
+            set
+            {
+                if (_windowLMS >= 0)
+                    _windowLMS = value;
+                else
+                    _windowLMS = 0;
             }
         }
 
