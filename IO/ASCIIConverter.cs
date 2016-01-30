@@ -187,5 +187,19 @@ namespace EKG_Project.IO
            return sampleAmount;
        }
 
+        public Vector<double> getSignal(string lead, int startIndex, int length)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string[] getLeads()
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint getNumberOfSamples(string lead)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
