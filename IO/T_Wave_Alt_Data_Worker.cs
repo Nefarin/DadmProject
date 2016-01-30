@@ -89,16 +89,16 @@ namespace EKG_Project.IO
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
 
-                int[] alternansIndexArray = basicData.AlternansIndexArray;
+                //int[] alternansIndexArray = basicData.AlternansIndexArray;
 
                 XmlElement AlternansIndexArrayNode = file.CreateElement(string.Empty, "AlternansIndexArray", string.Empty);
                 
                 StringBuilder builder = new StringBuilder();
-                foreach (var value in alternansIndexArray)
-                {
-                    builder.Append(value.ToString());
-                    builder.Append(" ");
-                }
+                //foreach (var value in alternansIndexArray)
+                //{
+                //    builder.Append(value.ToString());
+                //    builder.Append(" ");
+                //}
                 string samplesText = builder.ToString();
 
                 XmlText samplesValue = file.CreateTextNode(samplesText);
@@ -138,7 +138,7 @@ namespace EKG_Project.IO
                                                .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                                                .Select(point => int.Parse(point))
                                                .ToArray();
-                    basicData.AlternansIndexArray = convertedNode;
+                    //basicData.AlternansIndexArray = convertedNode;
                 }
             }
             this.Data = basicData;
