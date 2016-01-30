@@ -19,15 +19,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private int _samplesProcessed;
         private int _numberOfChannels;
 
-        private R_Peaks_Data_Worker _inputRpeaksWorker;
-        private Atrial_Fibr_Data_Worker _outputWorker;
+        private R_Peaks_New_Data_Worker _inputRpeaksWorker;
+        //private Atrial_Fibr_New_Data_Worker _outputWorker;
 
         private R_Peaks_Data _inputRpeaksData;
         private Atrial_Fibr_Data _outputData;
 
         private Atrial_Fibr_Params _params;
         private Basic_Data _inputData_basic;
-        private Basic_Data_Worker _inputWorker_basic;
+        private Basic_New_Data_Worker _inputWorker_basic;
         private Vector<Double> _currentVector;
         private Vector<Double> _vectorOfIntervals;
         private Tuple<bool, Vector<double>, double> _tempClassResult;
@@ -69,18 +69,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
             else
             {
-                InputWorker_basic = new Basic_Data_Worker(Params.AnalysisName);
-                InputWorker_basic.Load();
-                InputData_basic = InputWorker_basic.BasicData;
-
-                InputRpeaksWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-                InputRpeaksWorker.Load();
-                InputRpeaksData = InputRpeaksWorker.Data;
-
-                OutputWorker = new Atrial_Fibr_Data_Worker(Params.AnalysisName);
+                //InputWorker_basic = new Basic_New_Data_Worker(Params.AnalysisName);
+                //InputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName);
+                InputData_basic = new Basic_Data();
+                //InputData = new R_Peaks_Data();
+                //OutputWorker = new Atrial_Fibr_New_Data_Worker(Params.AnalysisName);
                 OutputData = new Atrial_Fibr_Data();
                 _state = STATE.INIT;
-
             }
         }
 
@@ -136,25 +131,24 @@ namespace EKG_Project.Modules.Atrial_Fibr
         {
             switch (_state)
             {
-                //case (STATE.INIT):
-                //    _currentChannelIndex = -1;
-                //    _leads = InputWorker.LoadLeads().ToArray();
-                //    _numberOfChannels = _leads.Length;
-                //    _state = STATE.BEGIN_CHANNEL;
-                //    //_inputWorker.DeleteFiles(); Do not use yet - will try to handle this during loading.
-                //    break;
-                //case (STATE.BEGIN_CHANNEL):
-                //    _currentChannelIndex++;
-                //    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END;
-                //    else
-                //    {
-                //        _currentLeadName = _leads[_currentChannelIndex];
-                //        _currentChannelLength = (int)InputWorker.getNumberOfSamples(_currentLeadName);
-                //        _currentIndex = 0;
-                //        _state = STATE.PROCESS_FIRST_STEP;
-                //    }
-                //    break;
-                //case (STATE.PROCESS_FIRST_STEP):
+                case (STATE.INIT):
+                    _currentChannelIndex = -1;
+                   // _leads = InputWorker.LoadLeads().ToArray();
+                    //_numberOfChannels = _leads.Length;
+                   _state = STATE.BEGIN_CHANNEL;
+                   break;
+                case (STATE.BEGIN_CHANNEL):
+                    _currentChannelIndex++;
+                    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END;
+                    else
+                    {
+                  //      _currentLeadName = _leads[_currentChannelIndex];
+                  //      _currentChannelLength = (int)InputWorker.getNumberOfSamples(_currentLeadName);
+                  //      _currentIndex = 0;
+                        _state = STATE.PROCESS_FIRST_STEP;
+                    }
+                    break;
+                case (STATE.PROCESS_FIRST_STEP):
                 //    if (_currentIndex + Params.Step > _currentChannelLength) _state = STATE.END_CHANNEL;
                 //    else
                 //    {
@@ -173,8 +167,8 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 //            _state = STATE.NEXT_CHANNEL;
                 //        }
                 //    }
-                //    break;
-                //case (STATE.PROCESS_CHANNEL): // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
+                break;
+                case (STATE.PROCESS_CHANNEL): // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
                 //    if (_currentIndex + Params.Step > _currentChannelLength) _state = STATE.END_CHANNEL;
                 //    else
                 //    {
@@ -194,8 +188,8 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 //        }
                 //    }
 
-                //    break;
-                //case (STATE.END_CHANNEL):
+                    break;
+                case (STATE.END_CHANNEL):
                 //    try
                 //    {
                 //        _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
@@ -218,7 +212,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 //    break;
                 //default:
                 //    Abort();
-                //    break;
+                    break;
             }
 
 
@@ -330,11 +324,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
             get { return _outputData; }
             set { _outputData = value; }
         }
-        Atrial_Fibr_Data_Worker OutputWorker
-        {
-            get { return _outputWorker; }
-            set { _outputWorker = value; }
-        }
+        //Atrial_Fibr_Data_Worker OutputWorker
+        //{
+        //    get { return _outputWorker; }
+        //    set { _outputWorker = value; }
+        //}
 
         public int NumberOfChannels
         {
@@ -342,17 +336,17 @@ namespace EKG_Project.Modules.Atrial_Fibr
             set { _numberOfChannels = value; }
         }
 
-        public Basic_Data_Worker InputWorker_basic
-        {
-            get { return _inputWorker_basic; }
-            set { _inputWorker_basic = value; }
-        }
+        //public Basic_Data_Worker InputWorker_basic
+        //{
+        //    get { return _inputWorker_basic; }
+        //    set { _inputWorker_basic = value; }
+        //}
 
-        public R_Peaks_Data_Worker InputRpeaksWorker
-        {
-            get { return _inputRpeaksWorker; }
-            set { _inputRpeaksWorker = value; }
-        }
+        //public R_Peaks_Data_Worker InputRpeaksWorker
+        //{
+        //    get { return _inputRpeaksWorker; }
+        //    set { _inputRpeaksWorker = value; }
+        //}
 
         public R_Peaks_Data InputRpeaksData
         {
