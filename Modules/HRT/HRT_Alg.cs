@@ -14,6 +14,8 @@ namespace EKG_Project.Modules.HRT
     {
         public List<int> TakeNonAtrialComplexes(List<Tuple<int,int>> _class)
         {
+
+
             List<int> Klasy = new List<int>();
             foreach (Tuple<int, int> _licznik in _class)
             {
@@ -67,6 +69,18 @@ namespace EKG_Project.Modules.HRT
             for (int i = 0; i < Signal.Length; i++)
             {
                 Console.WriteLine(Signal[i]);
+            }
+        }
+
+        public void PrintVector(Tuple<double[],double[]> Signal)
+        {
+            foreach (double x in Signal.Item1 )
+            { 
+                Console.WriteLine(x);
+            }
+            foreach (double x in Signal.Item2)
+            {
+                Console.WriteLine(x);
             }
         }
 
@@ -150,6 +164,11 @@ namespace EKG_Project.Modules.HRT
         public List<int> GetNrVPC(double[] rrTimes, int[] rrTimesVPC)
         {
             int VPCcount = rrTimesVPC.Length;
+            if (rrTimes == null) throw new ArgumentNullException();
+            if (rrTimesVPC.Length == 0) throw new ArgumentOutOfRangeException();
+            if (rrTimes.Length < rrTimesVPC.Length) throw new ArgumentOutOfRangeException();
+            if (VPCcount < 0) throw new ArgumentOutOfRangeException();
+
             if (rrTimes == null || rrTimesVPC == null) throw new ArgumentNullException();
             if (rrTimes.Length < rrTimesVPC.Length) throw new ArgumentOutOfRangeException();
             if (VPCcount < 0) throw new ArgumentOutOfRangeException();
@@ -256,6 +275,8 @@ namespace EKG_Project.Modules.HRT
             return 0;
         }
 
+
+        //nie rob do tego testów
         public Tuple<double[], double[], double[,], double[,]> StatisticsToPDF(int[] VPC, List<double> rrIntervals)
         {
 
@@ -324,18 +345,53 @@ namespace EKG_Project.Modules.HRT
 
             foreach (int nrVPC in VPC)
             {
-                if ((nrVPC - back) > 0 && ((nrVPC + forward) < rrIntervals.Count))
-                {
-                    after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
-                    before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
-                    TO.Add(100 * (after[i] - before[i]) / before[i]);
-                }
+                
+                after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
+                before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
+                TO.Add(100 * (after[i] - before[i]) / before[i]);
+                
                 i++;
             }
             return TO; 
         }
 
-        public Tuple<List<double>,double[,],double[,]> PrepareStatisticAndGUITurbulenceSlope(List<int> VPC, Vector<double> rrIntervals)
+        public Tuple<double[],double[]> PrepareMeanTurbulenceOnsetToPLOT(List<double[]>tacho)
+        {
+            List<double> listBefore3 = new List<double>();
+            List<double> listBefore4 = new List<double>();
+            List<double> listAfter7 = new List<double>();
+            List<double> listAfter8 = new List<double>();
+
+            double sumBefore3Suma = 0;
+            double sumBefore4Suma = 0;
+            double sumAfter7Suma = 0;
+            double sumAfter8Suma = 0;
+
+            foreach (double[] tach in tacho)
+            {
+                listBefore3.Add(tach[2]);
+                listBefore4.Add(tach[3]);
+                listAfter7.Add(tach[6]);
+                listAfter8.Add(tach[7]);
+            }
+            sumBefore3Suma = listBefore3.Sum()/tacho.Count;
+            sumBefore4Suma = listBefore4.Sum() / tacho.Count;
+            sumAfter7Suma = listAfter7.Sum() / tacho.Count;
+            sumAfter8Suma = listAfter8.Sum() / tacho.Count;
+
+
+            double sumBefore = (sumBefore3Suma + sumBefore4Suma)/2;
+            double sumAfter = (sumAfter7Suma + sumAfter8Suma)/2;
+            
+
+            double[] x = { 3, 4 , 7, 8 };
+            double[] y = { sumBefore, sumBefore, sumAfter, sumAfter };
+            return Tuple.Create(x, y);
+
+        }
+
+
+        public Tuple<List<double>,double[,],double[,]> PrepareStatisticAndPLOTTurbulenceSlope(List<int> VPC, Vector<double> rrIntervals)
         {
             int back = 5;
             int forward = 15;
@@ -350,41 +406,35 @@ namespace EKG_Project.Modules.HRT
 
             foreach (int nrVPC in VPC)
             {
-                if ((nrVPC - back) > 0 && ((nrVPC + forward) < rrIntervals.Count))
+                Tuple<double[], Vector<double>> p;
+                for (int j = 0; j < forward - 5; j++)
                 {
-                    
-                    Tuple<double[], Vector<double>> p;
-                    for (int j = 0; j < forward - 5; j++)
+                    double[] xdata = new double[5];
+                    double[] ydata = new double[5];
+                    for (int n = 0; n < 5; n++)
                     {
-                        double[] xdata = new double[5];
-                        double[] ydata = new double[5];
+                        xdata[n] = xdata[n] + (double)n;
+                        ydata[n] = rrIntervals[nrVPC + j + n];
+                    }
+                    Vector<double> x = Vector<double>.Build.DenseOfArray(xdata);
+                    Vector<double> y = Vector<double>.Build.DenseOfArray(ydata);
+                    p = LinearSquare(x, y);
+
+                    if (p.Item1[0] > TS[i])
+                    {
+                        TS[i] = p.Item1[0];
                         for (int n = 0; n < 5; n++)
                         {
-                            xdata[n] = xdata[n] + (double)n;
-                            ydata[n] = rrIntervals[nrVPC + j + n];
-                        }
-                        Vector<double> x = Vector<double>.Build.DenseOfArray(xdata);
-                        Vector<double> y = Vector<double>.Build.DenseOfArray(ydata);
-                        p = LinearSquare(x, y);
-
-                        if (p.Item1[0] > TS[i])
-                        {
-                            TS[i] = p.Item1[0];
-                            for (int n = 0; n < 5; n++)
-                            {
-                                xx[i, n] = j + n;
-                                yy[i, n] = p.Item2.At(n);
-                            }
+                            xx[i, n] = j + n + 5;
+                            yy[i, n] = p.Item2.At(n);
                         }
                     }
                 }
                 i++;
             }
-           List<double>TSnew = TS.ToList();
+            List<double>TSnew = TS.ToList();
             return Tuple.Create(TSnew,xx, yy);
         }
-
-       
 
 
         public double CountMean (double[] vec)
@@ -406,6 +456,8 @@ namespace EKG_Project.Modules.HRT
             double min;
             return min = vec.Min();
         }
+
+
 
 
         //od pauliny, jak będzie na głównym repo to zrobić odwołania do jej implementacji

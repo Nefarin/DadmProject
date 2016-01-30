@@ -53,6 +53,7 @@ namespace EKG_Project.Modules.HRT
         private Basic_Data_Worker _inputBasicDataWorker;
         private Basic_Data _inputBasicData;
         HRT_Alg HRT_Algorythms = new HRT_Alg();
+        Tuple<double[], double[]> _meanTurbulenceOnsetPLOT;
 
 
 
@@ -192,17 +193,20 @@ namespace EKG_Project.Modules.HRT
                 _rrintervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2;
                 _classAll = InputHeartClassData.ClassificationResult;
 
+             
                 //_rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
 
 
                 // _classVentrical = HRT_Algorythms.checkVPCifnotNULL(_classVentrical);
-                if  (_rpeaksSelected.Count < _classAll.Count)
+                if (_rpeaksSelected.Count < _classAll.Count)
                 {
                     Console.WriteLine("Wykryto więcej klas niż załamków, błędnie skonstruowany plik wejściowy");
                 }
                 else
                 {
                     _classVentrical = HRT_Algorythms.TakeNonAtrialComplexes(_classAll);
+
+                  
                     if (_classVentrical.Capacity == 0)
                     {
                         Console.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
@@ -210,9 +214,11 @@ namespace EKG_Project.Modules.HRT
                     else
                     {
                         _nrVPC = HRT_Algorythms.GetNrVPC(_rpeaksSelected.ToArray(), _classVentrical.ToArray());
-
                         _tachogram = HRT_Algorythms.MakeTachogram(_nrVPC, _rrintervals);
                         _classPrematureVentrical = HRT_Algorythms.SearchPrematureTurbulences(_tachogram, _nrVPC);
+
+
+
                         if (_classPrematureVentrical.Capacity == 0)
                         {
                             Console.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
@@ -221,9 +227,16 @@ namespace EKG_Project.Modules.HRT
                         {
                             _tachogram = HRT_Algorythms.MakeTachogram(_classPrematureVentrical, _rrintervals);
                             _turbulenceOnset = HRT_Algorythms.PrepareStatisticTurbulenceOnset(_classPrematureVentrical, _rrintervals);
-                            _turbulenceSlope = HRT_Algorythms.PrepareStatisticAndGUITurbulenceSlope(_classPrematureVentrical, _rrintervals);
-                            //HRT_Algorythms.PrintVector(_turbulenceSlope.Item3);
-;                        }
+                            _turbulenceSlope = HRT_Algorythms.PrepareStatisticAndPLOTTurbulenceSlope(_classPrematureVentrical, _rrintervals);
+                            _meanTurbulenceOnsetPLOT = HRT_Algorythms.PrepareMeanTurbulenceOnsetToPLOT(_tachogram);
+
+                            HRT_Algorythms.PrintVector(_tachogram);
+
+
+
+                            //_turbulenceOnsetMean = HRT_Algorythms.PrepareMeanTurbulenceOnsetforGUI(_tachogram);
+                            ;
+                        }
                     }
                 }
             }
