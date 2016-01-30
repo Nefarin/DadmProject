@@ -86,7 +86,7 @@ namespace EKG_Project.Modules.HRV2
             //Tinn.cs
             makeTinn();
             //TriangleIndex.cs
-            TriangleIndex();
+            makeTriangleIndex();
         }
         //public static void Main()
         //{

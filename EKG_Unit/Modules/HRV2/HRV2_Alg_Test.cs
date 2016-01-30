@@ -47,5 +47,24 @@ namespace EKG_Unit.Modules.HRV2
             Assert.AreEqual(testTinn, resultTinn);
         }
 
+
+        [TestMethod]
+        [Description("Test if Triangle Index is calculate properly")]
+        public void TriangleIndexTest()
+        {
+            double[] testArray = { 1,1,2,2,2,3,3,3,3,4,5,5,5,5,5,5,5,5,5,5,6,7};
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            HRV2_Alg testAlgs = new HRV2_Alg();
+
+            PrivateObject obj = new PrivateObject(testAlgs);
+            obj.SetField("_rrIntervals", testVector);
+
+            obj.Invoke("makeTriangleIndex");
+            
+            double testTriangleIndex = (double)obj.GetField("triangleIndex");
+            double resultTriangleIndex = 2;
+
+            Assert.AreEqual(testTriangleIndex, resultTriangleIndex);
+        }
     }
 }

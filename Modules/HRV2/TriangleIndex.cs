@@ -7,7 +7,18 @@ namespace EKG_Project.Modules.HRV2
 
     public partial class HRV2_Alg
     {
-        double triangleIndex;
+        private double triangleIndex;
+        public double TriangleIndex
+        {
+            set
+            {
+                triangleIndex = value;
+            }
+            get
+            {
+                return triangleIndex;
+            }
+        }
         #region Documentation
         /// <summary>
         /// Write to Triangle Index coefficient, which is 
@@ -15,7 +26,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public void TriangleIndex()
+        private void makeTriangleIndex()
         {
             //Vector<double> RRIntervaals = InputData.RRInterval[_outputIndex].Item2;
             triangleIndex = (double)_rrIntervals.Count/(double)_currentHistogram.MaxCount;
