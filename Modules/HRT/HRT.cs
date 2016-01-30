@@ -51,7 +51,7 @@ namespace EKG_Project.Modules.HRT
 
         //zmienne wyjścia GUI
         Tuple<int[],List<double[]>> _tachogramPrepare;
-        List<Tuple<int[], List<double[]>>> _tachogramGUI;
+        List<Tuple<int[], List<double[]>>> _tachogramGUI = new List<Tuple<int[], List<double[]>>>();
 
 
 
@@ -233,7 +233,14 @@ namespace EKG_Project.Modules.HRT
 
                             _xaxis = HRT_Algorythms.xPlot();
                             _tachogramPrepare = Tuple.Create(_xaxis, _tachogram);
+
+                            
+
+                            
+
                             _tachogramGUI.Add(_tachogramPrepare);
+
+                            HRT_Algorythms.PrintVector(_tachogramGUI);
 
                             //_turbulenceOnsetMean = HRT_Algorythms.PrepareMeanTurbulenceOnsetforGUI(_tachogram);
                             ;

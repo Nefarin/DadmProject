@@ -96,6 +96,29 @@ namespace EKG_Project.Modules.HRT
 
         }
 
+        public void PrintVector(Tuple<int[], List<double[]>> Signal) 
+        { 
+            foreach (int _licznik in Signal.Item1)
+            {
+                Console.Write(_licznik);
+                Console.Write(" ");
+            }
+            Console.WriteLine();
+            foreach (double[] _licznik in Signal.Item2)
+            {
+                PrintVector(_licznik);
+            }
+            Console.WriteLine();
+        }
+        public void PrintVector(List<Tuple<int[], List<double[]>>> Signal)
+        {
+            foreach (Tuple<int[], List<double[]>> _licznik in Signal)
+            {
+                PrintVector(_licznik);
+            }
+            
+        }
+
         public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalInSampleDomain, int samplingFreq)
         {
             if (SignalInSampleDomain == null) throw new ArgumentNullException();
