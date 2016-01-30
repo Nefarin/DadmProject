@@ -11,7 +11,7 @@ namespace EKG_Unit.Modules.HRV2
     {
         [TestMethod]
         [Description("Test if vectors RRIntervals and Counts in histogram are equal")]
-        public void scaleSamplesTest1()
+        public void HistogramCountsTest()
         {
 
             HRV2_Alg testAlgs = new HRV2_Alg();
@@ -32,5 +32,27 @@ namespace EKG_Unit.Modules.HRV2
 
             Assert.AreEqual(histoCounts, RRIntervalVectorLength);
         }
+
+        [TestMethod]
+        [Description("Test if Tinn is calculate properly")]
+        public void TinnTest()
+        {
+
+            HRV2_Alg testAlgs = new HRV2_Alg();
+
+            double[] testArray = { 1, 2, 3, 4, 5 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+
+            testAlgs.RRIntervals = testVector;
+            double testTinn = testAlgs.Tinn;
+            double resultTinn = 4;
+
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            obj.Invoke("Tinn OK");
+
+            Assert.AreEqual(testTinn, resultTinn);
+        }
+
     }
 }
