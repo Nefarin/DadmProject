@@ -325,5 +325,83 @@ namespace EKG_Unit.Modules.HRT
 
         }
 
+        //SearchPrematureTurbulences
+        [TestMethod]
+        [Description("Test function if properly searches premature turbulences but for the hardest set of parameters - equality test")]
+        public void SearchPrematureTurbulences_EQTest_3()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testTachogram1 = { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714, 692 };
+            double[] testTachogram2 = { 753, 764, 722, 717, 433, 986,  703, 725, 742, 728, 728, 703, 694, 675, 711, 739, 739, 717, 733, 714, 689 };
+            double[] testTachogram3 = { 689, 706, 719, 758, 587, 1022, 700, 694, 678, 711, 736, 736, 725, 739, 728, 689, 675, 708, 736, 753, 725 };
+            double[] testTachogram4 = { 708, 708, 694, 711, 601, 820, 744, 711, 689, 697, 708, 736, 744, 717, 742, 719, 700, 678, 708, 714, 750 };
+            double[] testTachogram5 = { 753, 742, 739, 706, 394, 989,  742, 739, 750, 739, 728, 706, 714, 711, 708, 722, 753, 764, 736, 700, 692 };
+            List<double[]> testTachogram = new List<double[]>();
+            testTachogram.Add(testTachogram1);
+            testTachogram.Add(testTachogram2);
+            testTachogram.Add(testTachogram3);
+            testTachogram.Add(testTachogram4);
+            testTachogram.Add(testTachogram5);
+
+            List<int> testPikVC = new List<int>();
+            testPikVC.Add(74300); //and should be rejected - test check this
+            testPikVC.Add(102115);
+            testPikVC.Add(108027); //and should be rejected - test check this
+            testPikVC.Add(118344); //and should be rejected - test check this
+            testPikVC.Add(126112);
+
+            List<int> expectedPikVC = new List<int>();
+            expectedPikVC.Add(102115);                   
+            expectedPikVC.Add(126112);
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<int> resultPikVC = testAlg.SearchPrematureTurbulences(testTachogram, testPikVC);
+
+            // Assert results
+
+            CollectionAssert.AreEqual(resultPikVC, expectedPikVC);
+
+        }
+
+        //SearchPrematureTurbulences
+        [TestMethod]
+        [Description("Test function if properly handle exception of missmach size of the lists")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Both list must have the same amound of the elements")]
+        public void SearchPrematureTurbulences_OutOfRangeTest()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testTachogram1 = { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714, 692 };
+            double[] testTachogram2 = { 753, 764, 722, 717, 433, 986, 703, 725, 742, 728, 728, 703, 694, 675, 711, 739, 739, 717, 733, 714, 689 };
+            double[] testTachogram3 = { 689, 706, 719, 758, 587, 1022, 700, 694, 678, 711, 736, 736, 725, 739, 728, 689, 675, 708, 736, 753, 725 };
+            double[] testTachogram4 = { 708, 708, 694, 711, 601, 820, 744, 711, 689, 697, 708, 736, 744, 717, 742, 719, 700, 678, 708, 714, 750 };
+            double[] testTachogram5 = { 753, 742, 739, 706, 394, 989, 742, 739, 750, 739, 728, 706, 714, 711, 708, 722, 753, 764, 736, 700, 692 };
+            List<double[]> testTachogram = new List<double[]>();
+            testTachogram.Add(testTachogram1);
+            testTachogram.Add(testTachogram2);
+            testTachogram.Add(testTachogram3);
+            testTachogram.Add(testTachogram4);
+            testTachogram.Add(testTachogram5);
+
+            List<int> testPikVC = new List<int>();
+            testPikVC.Add(74300); 
+            testPikVC.Add(102115);
+            testPikVC.Add(108027);
+            testPikVC.Add(118344); //one PikVC is missing 
+                   
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<int> resultPikVC = testAlg.SearchPrematureTurbulences(testTachogram, testPikVC);
+                      
+        }
+
     }
 }
