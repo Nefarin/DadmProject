@@ -1,12 +1,11 @@
 ﻿/*
     TODO:
-        1 zaimplementowac metode samplesToInstants() - pomnożyć numery próbek razy dt / podzielić fs
-        2 zaimplenentowac metode instantsToIntervals() - odejmować próbki od siebie
-        3 zaimplenetowac cala reszte
-        4 podlaczyc do interfejsow
+        1 Poprawic plomba
         5 Testy, testy, testy...
-        ???
-        PROFIT
+        6 ???
+        7 nie ma numer 2,3 i 4
+        7 PROFIT
+        8 ps. numer 7 jest dwa razy
 */
 
 
@@ -14,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MathNet;
 using MathNet.Numerics.LinearAlgebra;
@@ -31,6 +31,7 @@ namespace EKG_Project.Modules.HRV1
     public class HRV1_Alg
     {
         // Declaration of time parameters
+		private double AVNN;
         private double SDNN;
         private double RMSSD;
         private double SDSD;
@@ -38,6 +39,7 @@ namespace EKG_Project.Modules.HRV1
         private double pNN50;
 
         // Declaration od frequency parameters
+		private double TP;
         private double HF;
         private double LF;
         private double VLF;
@@ -54,6 +56,8 @@ namespace EKG_Project.Modules.HRV1
         private double Fs;  // sampling frequency of original ECG signal
         private double dt;  // time interval between consecutive samples of original ECG signal
 
+
+        /*
         #region
         /// <summary>
         /// This methods calculates vector rInstants based on values of Fs and rSamples
@@ -61,9 +65,9 @@ namespace EKG_Project.Modules.HRV1
         #endregion
         private void samplesToInstants(Vector<double> rSamples, double Fs )
         {
-          ;
+			this.rInstants = Vector<double>.Build.Dense(this.rSamples.Count, (i) => this.rSamples[i] * dt);
         }
-
+        */
         
 
         #region
@@ -73,10 +77,37 @@ namespace EKG_Project.Modules.HRV1
         #endregion
         private void instantsToIntervals()
         {
-    ;
+			this.rrIntervals = Vector<double>.Build.Dense(this.rInstants.Count-1, (i) => this.rInstants[i+1] - this.rInstants[i]);
         }
 
         
+		#region
+        /// <summary>
+        /// Function for correcting instants vector for vaulty beats
+        /// </summary>
+        #endregion
+        private void intervalsCorection()
+        {
+            double ectoThreshHi = 1000;
+            double ectoThreshLo = 5;
+            List<double> rrIntervals_temp = new List<double>();
+
+            for (int i = 0; i < this.rrIntervals.Count; ++i)
+            {
+                if (this.rrIntervals[i] > ectoThreshLo && this.rrIntervals[i] < ectoThreshHi)
+                {
+                    rrIntervals_temp.Add(rrIntervals[i]);
+                }
+            }
+            rrIntervals = Vector<double>.Build.Dense(rrIntervals_temp.ToArray());
+            rInstants = Vector<double>.Build.Dense(rrIntervals.Count + 1, (i) => 0);
+            for (int i = 1; i < rInstants.Count; ++i)
+            {
+                rInstants[i] = rInstants[i - 1] + rrIntervals[i - 1];
+            }
+        }
+
+
         #region
         /// <summary>
         /// This method calculates time-based parameters
@@ -84,17 +115,23 @@ namespace EKG_Project.Modules.HRV1
         #endregion
         private void calculateTimeBased()
         {
-    
+            AVNN = this.rrIntervals.Sum() / this.rrIntervals.Count;
+            SDNN = Statistics.StandardDeviation(this.rrIntervals);
 
-    SDNN = 0;
-            RMSSD = 0;
-            SDSD = 0;
+            var sdL = this.rrIntervals.SubVector(0, this.rrIntervals.Count - 1);
+            var sdR = this.rrIntervals.SubVector(1, this.rrIntervals.Count - 1);
+            var succesiveDiffs = sdR.Subtract(sdL);
+            
+
+            RMSSD = Statistics.RootMeanSquare(succesiveDiffs);
+            succesiveDiffs.MapInplace(x => Math.Abs(x));
+
+            //SDSD = Statistics.StandardDeviation(succesiveDiffs);
+
             NN50 = 0;
-            pNN50 = 0;
+            foreach (double x in succesiveDiffs) { NN50 = (x > 50) ? NN50 + 1 : NN50; }
+            pNN50 = 100 * NN50 / this.rrIntervals.Count;
         }
-
-
-       
 
 
         #region
@@ -107,27 +144,28 @@ namespace EKG_Project.Modules.HRV1
         /// <param name="step"></param>
         /// <returns></returns>
         #endregion
-        private Vector<double> gnerateFreqVector(double fMin, double fMax, double step)
+        private void generateFreqVector(double fMin, double fMax, int elementsCount)
         {
-            var elementsCount = (int)Math.Ceiling((fMax - fMin) / step) + 1;
-            var f = Vector<double>.Build.Dense(elementsCount, (i) => fMin + i*step);
-            return f;
+            //var elementsCount = (int)Math.Ceiling((fMax - fMin) / step) + 1;
+            //f = Vector<double>.Build.Dense(elementsCount, (i) => fMin + i*step);
+            double step = (fMax - fMin) / elementsCount;
+            f = Vector<double>.Build.Dense(elementsCount, (i) => fMin + i * step);
         }
 
 
-        #region
+		#region
         /// <summary>
         /// This method calculates Lomb-Scargle periodogram of signal
         /// http://www.mathworks.com/help/signal/ref/plomb.html#lomb
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="t"></param>
-        /// <param name="x"></param>
-        /// <returns></returns>
         #endregion
-        public static Vector<double> lombScargle(Vector<double> f, Vector<double> t, Vector<double> x)
+        public void lombScargle()
         {
-            // TODO: upewnic sie ze wektory maja sensowna dlugosc
+            // TODO: problem z f = 0
+            // TODO: dlugosc periodo = najmnieszja dlugosc f inst lub interval
+
+            var t = rInstants;
+            var x = rrIntervals;
 
             var lsLen = f.Count;  // periodogram length equal to the length of frequenies vector
             var pi = Math.PI;
@@ -144,67 +182,145 @@ namespace EKG_Project.Modules.HRV1
             for (int i = 0; i < lsLen; ++i)
             {
                 w = W[i];
+                if (w == 0) { LS[i] = 0; }
+                else
+                {
+                    // calculate tau for current w
+                    tauNumerator = Vector<double>.Build.Dense(lsLen, (k) => Math.Sin(2 * w * t[k])).Sum();
+                    tauDenominator = Vector<double>.Build.Dense(lsLen, (k) => Math.Cos(2 * w * t[k])).Sum();
+                    tau = Math.Atan2(tauNumerator, tauDenominator) / (2 * w);
 
-                // calculate tau for current w
-                tauNumerator = Vector<double>.Build.Dense(lsLen, (k) => Math.Sin(2 * w * t[k])).Sum();
-                tauDenominator = Vector<double>.Build.Dense(lsLen, (k) => Math.Cos(2 * w * t[k])).Sum();
-                tau = Math.Atan2(tauNumerator, tauDenominator) / (2 * w);
+                    // calculate partial expressions for periodogram
+                    PN1 = Vector<double>.Build.Dense(lsLen, (j) => (x[j] - mean) * Math.Cos(w * (t[j] - tau))).Sum();
+                    PN2 = Vector<double>.Build.Dense(lsLen, (j) => (x[j] - mean) * Math.Sin(w * (t[j] - tau))).Sum();
+                    PD1 = Vector<double>.Build.Dense(lsLen, (j) => Math.Pow(Math.Cos(w * (t[j] - tau)), 2)).Sum();
+                    PD2 = Vector<double>.Build.Dense(lsLen, (j) => Math.Pow(Math.Sin(w * (t[j] - tau)), 2)).Sum();
 
-                // calculate partial expressions for periodogram
-                PN1 = Vector<double>.Build.Dense(lsLen, (j) => (x[j] - mean) * Math.Cos(w * (t[j] - tau))).Sum();
-                PN2 = Vector<double>.Build.Dense(lsLen, (j) => (x[j] - mean) * Math.Sin(w * (t[j] - tau))).Sum();
-                PD1 = Vector<double>.Build.Dense(lsLen, (j) => Math.Pow(Math.Cos(w * (t[j] - tau)), 2)).Sum();
-                PD2 = Vector<double>.Build.Dense(lsLen, (j) => Math.Pow(Math.Sin(w * (t[j] - tau)), 2)).Sum();
-
-                // calculate power at given w from partial expressions
-                P = (1 / (2 * std2)) * ((Math.Pow(PN1, 2) / PD1) + Math.Pow(PN2, 2) / PD2);
-                LS[i] = P;
+                    // calculate power at given w from partial expressions
+                    P = (1 / (2 * std2)) * ((Math.Pow(PN1, 2) / PD1) + Math.Pow(PN2, 2) / PD2);
+                    LS[i] = P;
+                }
             }
-            return LS;
+            this.PSD = LS;
         }
 
 
-#region
-/// <summary>
-/// This function calculates frequency-based parameters
-/// </summary>
-#endregion
-private void calculateFreqBased()
-{
-    var temp_vec = Vector<double>.Build.Dense(f.Count, 1);
-    //Obliczenie mocy widma w zakresie wysokich częstotliwości (0,15-0,4Hz)
-    for (int i = 0; i < f.Count; i++)
-    {
-        if (f[i] >= 0.15 && f[i] < 0.4)
+        /// <summary>
+        /// Another implementation of Lomb-Scargle periodogram
+        /// </summary>
+        public void lombScargle2()
         {
-            HF = temp_vec[i] + HF;
-        }
-    }
+            Vector<double> tau;
+            Vector<double> psd;
+            Vector<double> omega;
 
-    //Wyznaczenie mocy widma w zakresie niskich częstotliwości (0,04-0,15Hz)
-        for (int i = 0; i < f.Count; i++)
-    {
-        if (f[i] > 0.04 && f[i] < 0.15)
-        {
-            LF = temp_vec[i] + LF;
-        }
-    }
+            double mean = Statistics.Mean(this.rrIntervals);
+            double var = Statistics.Variance(this.rrIntervals);
 
-    //Obliczenie mocy widma w zakresie bardzo niskich częstotliwości (0,003-0,04Hz)
-       for (int i = 0; i < f.Count; i++)
-    {
-        if (f[i] > 0.003 && f[i] < 0.04)
-        {
-            VLF = temp_vec[i] + VLF;
+            int psdlength = this.rrIntervals.Count;
+            double timespan = this.rInstants.Last() - this.rInstants.First();
+            double pi = Math.PI;
+
+            omega = Vector<double>.Build.Dense(2 * psdlength, i => (i + 1) * 2 * (pi / timespan));
+            psd = Vector<double>.Build.Dense(2 * psdlength);
+            this.PSD = Vector<double>.Build.Dense(2 * psdlength);
+
+            var sins = Vector<double>.Build.Dense(psdlength, j => Math.Sin(2 * omega[j] * this.rInstants[j]));
+            var coss = Vector<double>.Build.Dense(psdlength, j => Math.Cos(2 * omega[j] * this.rInstants[j]));
+            double sinsum = sins.Sum();
+            double cossum = coss.Sum();
+            tau = Vector<double>.Build.Dense(2 * psdlength, i => Math.Atan2(sinsum, cossum) / (2 * omega[i]));
+
+            /*
+            for (int i = 0; i<2*psdlength; i++)
+            {
+                double sinsum = 0;
+                double cossum = 0;
+                for (int j = 0; j<psdlength; i++)
+                {
+                    sinsum += Math.Sin(2 * omega[j] * this.rInstants[j]);
+                    cossum += Math.Cos(2 * omega[j] * this.rInstants[j]);
+                }
+                tau[i] = (Math.Atan2(sinsum, cossum) / (2*omega[i]));
+            }
+            */
+
+            double stdcos, stdsin, cos2, sin2;
+
+            for (int i = 0; i < (2*psdlength); i++) 
+            {
+                stdcos = 0;
+                cos2 = 0;
+                stdsin = 0;
+                sin2 = 0;
+                for (int j = 0; j<psdlength; j++)
+                {
+                    stdcos += (this.rrIntervals[j] - mean) * Math.Cos(omega[i] * (this.rInstants[j] - tau[i]));
+                    stdsin += (this.rrIntervals[j] - mean) * Math.Sin(omega[i] * (this.rInstants[j] - tau[i]));
+                    //stdsin *= stdsin;
+                    //stdcos *= stdcos;
+                    stdsin += stdsin;
+                    stdcos += stdcos;
+                    cos2 += Math.Pow(Math.Cos(omega[i] * (this.rInstants[j] - tau[i])), 2);
+                    sin2 += Math.Pow(Math.Sin(omega[i] * (this.rInstants[j] - tau[i])), 2);
+                }
+                this.PSD[i] = ((stdcos / cos2 + stdsin / sin2) / (2 * var));
+            }
+            //this.PSD = psd;
+            this.f = Vector<double>.Build.Dense(omega.Count, i => omega[i] / (2 * pi));
         }
-    }
+
+
+        #region
+        /// <summary>
+        /// This function calculates frequency-based parameters
+        /// </summary>
+        #endregion
+        private void calculateFreqBased()
+        {
+            generateFreqVector(0, 1, this.rrIntervals.Count);
+            lombScargle();
+
+            double df = (double)1000 / rrIntervals.Count;
+            var temp_vec = Vector<double>.Build.Dense(PSD.Count, (i) => PSD[i]*df);
+            
+            TP = VLF = LF = HF = 0;
+
+            //for (int i = 0; i < f.Count; i++){ TP = temp_vec[i] + TP; };
+
+            //Obliczenie całkowitej mocy widma
+            TP = temp_vec.Sum();
+
+            //Obliczenie mocy widma w zakresie wysokich częstotliwości (0,15-0,4Hz)
+            for (int i = 0; i < f.Count; i++)
+            {
+                if (f[i] >= 0.15 && f[i] < 0.4)
+                {
+                    HF = temp_vec[i] + HF;
+                }
+            }
+
+            //Wyznaczenie mocy widma w zakresie niskich częstotliwości (0,04-0,15Hz)
+            for (int i = 0; i < f.Count; i++)
+            {
+                if (f[i] > 0.04 && f[i] < 0.15)
+                {
+                    LF = temp_vec[i] + LF;
+                }
+            }
+
+            //Obliczenie mocy widma w zakresie bardzo niskich częstotliwości (0,003-0,04Hz)
+               for (int i = 0; i < f.Count; i++)
+            {
+                if (f[i] > 0.003 && f[i] < 0.04)
+                {
+                    VLF = temp_vec[i] + VLF;
+                }
+            }
 
             //Obliczenie stosunku mocy widm niskich częstotliwości do mocy widm wysokich częstotliwości
             LFHF = LF / HF;
-}
-
-
-
+        }
 
 
 
@@ -213,44 +329,52 @@ private void calculateFreqBased()
 /// 'Main' mehod used for code debugging and testing
 /// </summary>
 #endregion
-public static void AlgoTest()
+public static void Main()
         {
-           // Console.WriteLine("Hello Matylda!");
+            Console.WriteLine("Hello Matylda!");
+            var hrv1Test = new HRV1_Alg();
 
-           // // do testowania nalezy odkomentowac odpowiednia linijke, a zakomentowac pozostale
-           // //string dataPath = "F:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na duzym komputerze Michala
-           //// string dataPath = "C:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na laptopie Michala
-           // string dataPath = "...\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na komputerze Matyldy
-           // string filename = "NSR001.txt"; // plik zawiera 'ladny' wycinek z tachogramu RR sygnalu NSR001
-           // dataPath = dataPath + filename;
+            var testintervals = new double[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            hrv1Test.rrIntervals = Vector<double>.Build.Dense(testintervals);
+            hrv1Test.rInstants = Vector<double>.Build.Dense(testintervals);
 
-           // var hrv = new HRV1();
+            hrv1Test.generateFreqVector(0, 1, 10);
+            Console.WriteLine(hrv1Test.f);
 
-           // // wczytywanie danych - tutaj trzeba bedzie dostosowac do nowego modulu IO, kiedy sie pojawi
-           // TempInput.setInputFilePath(dataPath);
-           // hrv.rSamples = TempInput.getSignal();
-           // hrv.Fs = TempInput.getFrequency();
-           // hrv.dt = 1 / hrv.Fs;
+            hrv1Test.lombScargle();
+            Console.WriteLine(hrv1Test.PSD);
 
-           // //hrv.samplesToInstants();
-           // //hrv.instantsToIntervals();
-           // hrv.f = hrv.gnerateFreqVector(0, 1, (double)1/1000);
-           // //Console.WriteLine(hrv.f);
+            // do testowania nalezy odkomentowac odpowiednia linijke, a zakomentowac pozostale
+            //string dataPath = "F:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na duzym komputerze Michala
+            // string dataPath = "C:\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na laptopie Michala
+            //string dataPath = "...\\Dropbox\\Studia\\DADM\\Projekt\\CiSzarp\\TestData\\"; // scieazka do tesotwych danych na komputerze Matyldy
+            //string filename = "NSR001.txt"; // plik zawiera 'ladny' wycinek z tachogramu RR sygnalu NSR001
+            //dataPath = dataPath + filename;
 
-           // // testowanie lomba
-           // double[] fSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
-           // var f = Vector<double>.Build.Dense(fSrc);
-           // var xSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
-           // var x = Vector<double>.Build.Dense(xSrc);
-           // var ySrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
-           // var y = Vector<double>.Build.Dense(ySrc);
-           // hrv.PSD = lombScargle(f, x, y);
-           // Console.WriteLine(hrv.PSD);
+            //var hrv = new HRV1();
 
-           // //dalej heja
+            // wczytywanie danych - tutaj trzeba bedzie dostosowac do nowego modulu IO, kiedy sie pojawi
+            //TempInput.setInputFilePath(dataPath);
+            // hrv.rSamples = TempInput.getSignal();
+            // hrv.Fs = TempInput.getFrequency();
+            // hrv.dt = 1 / hrv.Fs;
 
+            //hrv.samplesToInstants();
+            //hrv.instantsToIntervals();
+            //hrv.generateFreqVector(0, 1, (double)1/1000);
+            //Console.WriteLine(hrv.f);
 
+            // testowanie lomba
+            //     double[] fSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
+            //      var f = Vector<double>.Build.Dense(fSrc);
+            //      var xSrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
+            //      var x = Vector<double>.Build.Dense(xSrc);
+            //     var ySrc = new double[] { 1, 2, 4, 5, 6, 7, 8, 9, 10 };
+            //     var y = Vector<double>.Build.Dense(ySrc);
+            //hrv.PSD = lombScargle();
+            // Console.WriteLine(hrv.PSD);
 
+            //dalej heja
         }
     }
 }
