@@ -19,7 +19,6 @@ namespace EKG_Unit.Modules.HRV2
 
             PrivateObject obj = new PrivateObject(testAlgs);
             obj.SetField("_rrIntervals", testVector);
-
             //obj.Invoke("Histogram");
 
             //double histoCounts = (double)obj.GetField("histogramCount"); 
@@ -66,5 +65,25 @@ namespace EKG_Unit.Modules.HRV2
 
             Assert.AreEqual(testTriangleIndex, resultTriangleIndex);
         }
+        [TestMethod]
+        [Description("Test if x counts are equal y counts")]
+        public void PoincareTest()
+        {
+            double[] testArray = { 1, 2, 3, 4, 5 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            HRV2_Alg testAlgs = new HRV2_Alg();
+
+            PrivateObject obj = new PrivateObject(testAlgs);
+            obj.SetField("_rrIntervals", testVector);
+
+            obj.Invoke("PoincarePlot_x");
+            obj.Invoke("PoincarePlot_y");
+            double x = ((Vector<double>)obj.GetField("RR_intervals_x")).Count;
+            double y = ((Vector<double>)obj.GetField("RR_intervals_y")).Count;
+
+            Assert.AreEqual(x, y);
+        }
+
+
     }
 }
