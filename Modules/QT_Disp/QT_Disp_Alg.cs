@@ -214,6 +214,7 @@ namespace EKG_Project.Modules.QT_Disp
         public void DeleteQT_Intervals()
         {           
             QT_INTERVALS.Clear();
+            T_END_LOCAL.Clear();
         }
         //getters and setters
         public List<double> QT_INTERVALS
@@ -227,6 +228,17 @@ namespace EKG_Project.Modules.QT_Disp
                 QT_intervals = value;
             }
 
+        }
+        public List<int> T_END_LOCAL
+        {
+            get
+            {
+                return T_End_local;
+            }
+            set
+            {
+                T_End_local = value;
+            }
         }
         public static void Main()
         {
