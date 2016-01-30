@@ -886,5 +886,39 @@ namespace EKG_Unit.Modules.HRT
 
         }
 
+        //MeanTachogram
+        [TestMethod]
+        [Description("Test function if properly count mean of the given tachograms - equality test")]
+        public void MeanTachogram_EQTest_1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testTachogram1 = { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714 };
+            double[] testTachogram2 = { 753, 764, 722, 717, 433, 986, 703, 725, 742, 728, 728, 703, 694, 675, 711, 739, 739, 717, 733, 714 };
+            double[] testTachogram3 = { 689, 706, 719, 758, 587, 1022, 700, 694, 678, 711, 736, 736, 725, 739, 728, 689, 675, 708, 736, 753 };
+            double[] testTachogram4 = { 708, 708, 694, 711, 601, 820, 744, 711, 689, 697, 708, 736, 744, 717, 742, 719, 700, 678, 708, 714 };
+            double[] testTachogram5 = { 753, 742, 739, 706, 394, 989, 742, 739, 750, 739, 728, 706, 714, 711, 708, 722, 753, 764, 736, 700 };
+            List<double[]> testTachogram = new List<double[]>();
+            testTachogram.Add(testTachogram1);
+            testTachogram.Add(testTachogram2);
+            testTachogram.Add(testTachogram3);
+            testTachogram.Add(testTachogram4);
+            testTachogram.Add(testTachogram5);
+            
+            double[] expectedMeanTachogram = { 725.6, 731.2, 719.2, 720.6, 520.8, 963.4, 721.2, 721.6, 725.2, 723.8, 722.2, 714.6, 715.4, 708.4, 722.2, 718.8, 722.8, 718.4, 731.4, 719 };
+            
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            double[] resultTachogram = testAlg.MeanTachogram(testTachogram);
+            HRT_Alg algorytm = new HRT_Alg();
+            algorytm.PrintVector(resultTachogram);
+            // Assert results
+
+            CollectionAssert.AreEqual(expectedMeanTachogram, resultTachogram);
+
+        }
     }
 }
