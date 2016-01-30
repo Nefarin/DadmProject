@@ -28,7 +28,7 @@ namespace EKG_Unit.Modules.HRT
 
             double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
             double[] resultArray = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
-            int samplingFreq =  100 ;
+            int samplingFreq = 100;
 
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
             Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
@@ -70,7 +70,7 @@ namespace EKG_Unit.Modules.HRT
 
             HRT_Alg testAlg = new HRT_Alg();
             Vector<double> testResult = testAlg.ChangeVectorIntoTimeDomain(testVector, samplingFreq);
-            
+
         }
 
         [TestMethod]
@@ -113,7 +113,7 @@ namespace EKG_Unit.Modules.HRT
 
             HRT_Alg testAlg = new HRT_Alg();
             List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
-            CollectionAssert.AreEqual(resultnrVPCArray, testResult );
+            CollectionAssert.AreEqual(resultnrVPCArray, testResult);
 
         }
 
@@ -204,7 +204,7 @@ namespace EKG_Unit.Modules.HRT
 
             HRT_Alg testAlg = new HRT_Alg();
             List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
-            
+
         }
 
         // GetNrVPC
@@ -238,7 +238,7 @@ namespace EKG_Unit.Modules.HRT
 
             double[] testrrTimesArray = { };
             int[] testrrTimesVPCArray = { 30, 60, 155 };
-            
+
             // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
@@ -257,7 +257,7 @@ namespace EKG_Unit.Modules.HRT
 
             double[] testrrTimesArray = { 30, 60, 155 };
             int[] testrrTimesVPCArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
-            
+
             // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
@@ -295,7 +295,7 @@ namespace EKG_Unit.Modules.HRT
 
             HRT_Alg testAlg = new HRT_Alg();
             int[] actualArray = testAlg.removeRedundant(testArray, testLength);
-            
+
         }
 
         [TestMethod]
@@ -322,7 +322,7 @@ namespace EKG_Unit.Modules.HRT
 
             double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
             double[] resultArray = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-            
+
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
             Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
 
@@ -338,14 +338,14 @@ namespace EKG_Unit.Modules.HRT
         public void SearchPrematureTurbulences_EQTest_1()
         {
             HRT_Params testParams = new HRT_Params("Test");
-            
+
             // Init test here
 
             double[] testTachogram1 = { 733, 738, 702, 702, 427, 1005, 755, 758, 744, 722, 694, 722, 725, 721, 720, 725, 736, 733, 713, 694, 680 };
             double[] testTachogram2 = { 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681, 722, 764, 736, 731, 722, 711, 700, 708, 711 };
             double[] testTachogram3 = { 700, 708, 711, 728, 489, 1006, 736, 708, 689, 697, 686, 733, 747, 742, 717, 733, 719, 694, 697, 708, 733 };
             double[] testTachogram4 = { 706, 703, 692, 742, 475, 1039, 728, 728, 697, 703, 711, 706, 728, 736, 764, 733, 692, 689, 458, 969, 753 };
-            double[] testTachogram5 = { 764, 733, 692, 689, 458, 969,  753, 750, 736, 714, 728, 708, 692, 703, 711, 739, 753, 747, 708, 681, 706 };
+            double[] testTachogram5 = { 764, 733, 692, 689, 458, 969, 753, 750, 736, 714, 728, 708, 692, 703, 711, 739, 753, 747, 708, 681, 706 };
             List<double[]> testTachogram = new List<double[]>();
             testTachogram.Add(testTachogram1);
             testTachogram.Add(testTachogram2);
@@ -371,11 +371,11 @@ namespace EKG_Unit.Modules.HRT
 
             HRT_Alg testAlg = new HRT_Alg();
             List<int> resultPikVC = testAlg.SearchPrematureTurbulences(testTachogram, testPikVC);
-            
+
             // Assert results
 
-             CollectionAssert.AreEqual(resultPikVC, expectedPikVC);
-            
+            CollectionAssert.AreEqual(resultPikVC, expectedPikVC);
+
         }
 
         //SearchPrematureTurbulences
@@ -416,7 +416,7 @@ namespace EKG_Unit.Modules.HRT
 
             HRT_Alg testAlg = new HRT_Alg();
             List<int> resultPikVC = testAlg.SearchPrematureTurbulences(testTachogram, testPikVC);
-            
+
             // Assert results
 
             CollectionAssert.AreEqual(resultPikVC, expectedPikVC);
@@ -433,10 +433,10 @@ namespace EKG_Unit.Modules.HRT
             // Init test here
 
             double[] testTachogram1 = { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714, 692 };
-            double[] testTachogram2 = { 753, 764, 722, 717, 433, 986,  703, 725, 742, 728, 728, 703, 694, 675, 711, 739, 739, 717, 733, 714, 689 };
+            double[] testTachogram2 = { 753, 764, 722, 717, 433, 986, 703, 725, 742, 728, 728, 703, 694, 675, 711, 739, 739, 717, 733, 714, 689 };
             double[] testTachogram3 = { 689, 706, 719, 758, 587, 1022, 700, 694, 678, 711, 736, 736, 725, 739, 728, 689, 675, 708, 736, 753, 725 };
             double[] testTachogram4 = { 708, 708, 694, 711, 601, 820, 744, 711, 689, 697, 708, 736, 744, 717, 742, 719, 700, 678, 708, 714, 750 };
-            double[] testTachogram5 = { 753, 742, 739, 706, 394, 989,  742, 739, 750, 739, 728, 706, 714, 711, 708, 722, 753, 764, 736, 700, 692 };
+            double[] testTachogram5 = { 753, 742, 739, 706, 394, 989, 742, 739, 750, 739, 728, 706, 714, 711, 708, 722, 753, 764, 736, 700, 692 };
             List<double[]> testTachogram = new List<double[]>();
             testTachogram.Add(testTachogram1);
             testTachogram.Add(testTachogram2);
@@ -452,7 +452,7 @@ namespace EKG_Unit.Modules.HRT
             testPikVC.Add(126112);
 
             List<int> expectedPikVC = new List<int>();
-            expectedPikVC.Add(102115);                   
+            expectedPikVC.Add(102115);
             expectedPikVC.Add(126112);
 
             // Process test here
@@ -489,16 +489,16 @@ namespace EKG_Unit.Modules.HRT
             testTachogram.Add(testTachogram5);
 
             List<int> testPikVC = new List<int>();
-            testPikVC.Add(74300); 
+            testPikVC.Add(74300);
             testPikVC.Add(102115);
             testPikVC.Add(108027);
             testPikVC.Add(118344); //one PikVC is missing 
-                   
+
             // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
             List<int> resultPikVC = testAlg.SearchPrematureTurbulences(testTachogram, testPikVC);
-                      
+
         }
 
         //TakeNonAtrialComplexes
@@ -509,7 +509,7 @@ namespace EKG_Unit.Modules.HRT
             HRT_Params testParams = new HRT_Params("Test");
 
             // Init test here
-                      
+
             List<Tuple<int, int>> testClass = new TupleList<int, int>
             {
                 {  198, 1 },
@@ -532,7 +532,7 @@ namespace EKG_Unit.Modules.HRT
                 { 4636, 1 },
                 { 4902, 1 },
                 { 5155, 1 }
-            };                  
+            };
 
             List<int> expectedResult = new List<int>();
             expectedResult.Add(198);
@@ -601,16 +601,16 @@ namespace EKG_Unit.Modules.HRT
             };
 
             List<int> expectedResult = new List<int>();
-            expectedResult.Add(198);            
+            expectedResult.Add(198);
             expectedResult.Add(709);
-            expectedResult.Add(1480);  
+            expectedResult.Add(1480);
             expectedResult.Add(2288);
-            expectedResult.Add(2551);            
+            expectedResult.Add(2551);
             expectedResult.Add(3053);
-            expectedResult.Add(3304);            
+            expectedResult.Add(3304);
             expectedResult.Add(3836);
-            expectedResult.Add(4103);            
-            expectedResult.Add(4636);            
+            expectedResult.Add(4103);
+            expectedResult.Add(4636);
             expectedResult.Add(5155);
 
             // Process test here
@@ -658,7 +658,7 @@ namespace EKG_Unit.Modules.HRT
             };
 
             List<int> expectedResult = new List<int>();
-         
+
             // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
@@ -666,8 +666,50 @@ namespace EKG_Unit.Modules.HRT
 
             // Assert results
 
-            CollectionAssert.AreEqual(testResult, expectedResult);
+            CollectionAssert.AreEqual(expectedResult, testResult);
 
+        }
+
+        //MakeTachogram
+        [TestMethod]
+        [Description("Test function if properly prepares a tachogram")]
+        public void MakeTachogram_EQTest_1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrIntervalsArray = { 728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 739, 703, 703,
+                                              428, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719 };
+            Vector<double> testrrIntervalsVector = Vector<double>.Build.DenseOfArray(testrrIntervalsArray);
+
+            List<int> testVPC = new List<int>();
+            testVPC.Add(22);
+
+            double[] expectedTachogramArray1 = { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<double[]> expectedTachogram = new List<double[]>();
+            expectedTachogram.Add(expectedTachogramArray1);
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<double[]> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
+
+            HRT_Alg algorytm = new HRT_Alg();
+            algorytm.PrintVector(resultTachogram);
+            algorytm.PrintVector(expectedTachogram);
+
+            // Assert results
+
+            for (int iter = 0; iter < resultTachogram.Count; iter++)
+            {
+                CollectionAssert.AreEqual(resultTachogram[iter], expectedTachogram[iter]);
+            }
+            
         }
 
     }
