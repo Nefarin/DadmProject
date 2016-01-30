@@ -86,10 +86,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.AnalysisName = analysisName;
             this.Type = type;
             this.Mi = mi;
-            if (type == Filtr_Type.LOWPASS)
-                this.WindowSizeLow = windowLMS;
-            else if (type == Filtr_Type.HIGHPASS)
-                this.WindowSizeHigh = windowLMS;
+            this.WindowLMS = windowLMS;
         }
 
 
