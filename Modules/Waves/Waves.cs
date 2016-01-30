@@ -427,8 +427,12 @@ namespace EKG_Project.Modules.Waves
         public static void Main()
         {
             Waves_Params param = new Waves_Params(Wavelet_Type.db3, 2, "TestAnalysis100", 500);
-            
-            
+            List<Tuple<int, int>> chuj = new List<Tuple<int, int>>();
+            chuj.Add(new Tuple<int, int>(6, 6));
+            foreach(Tuple<int, int> dupa in chuj)
+            {
+                Console.WriteLine("chuj");
+            }
             //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
             //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
             //Vector<double> ecg = TempInput.getSignal();
