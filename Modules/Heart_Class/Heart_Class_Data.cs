@@ -14,31 +14,8 @@ namespace EKG_Project.Modules.Heart_Class
         //output:
         private List<Tuple<int, int>> _classificationResult;
         private bool _channelMLIIDetected;
-
-        //niezrealizowane:
-        private uint _totalNumberOfQrsComplex;
-        private uint _numberOfClass;
-        private double _percentOfNormalComplex;
-        private Qrs_Class _cluster;
-
-
-        public uint TotalNumberOfQrsComplex
-        {
-            get { return _totalNumberOfQrsComplex; }
-            set { _totalNumberOfQrsComplex = value; }
-        }
-
-        public uint NumberOfClass
-        {
-            get { return _numberOfClass; }
-            set { _numberOfClass = value; }
-        }
-
-        public double PercentOfNormalComplex
-        {
-            get { return _percentOfNormalComplex; }
-            set { _percentOfNormalComplex = value; }
-        }
+        private Tuple<int, Vector<double>> _coefficientsForOneComplex;
+        
 
         public List<Tuple<int, int>> ClassificationResult
         {
@@ -52,30 +29,12 @@ namespace EKG_Project.Modules.Heart_Class
             set { _channelMLIIDetected = value; }
         }
 
-
-        public class Qrs_Class
+        public Tuple<int, Vector<double>> CoefficientsForOneComplex
         {
-            private int _indexOfClass;
-            private int _numberOfQrsComplex;
-            private int _indexOfRepresentative;
-
-            public int IndexOfClass
-            {
-                get { return _indexOfClass; }
-
-            }
-
-            public int NumberOfQrsComplex
-            {
-                get{ return _numberOfQrsComplex; }
-            }
-
-            public int IndexOfRepresentative
-            {
-                get  { return _indexOfRepresentative; }
-            }
-
+            get { return _coefficientsForOneComplex; }
+            set { _coefficientsForOneComplex = value; }
         }
+        
         #region Documentation
         /// <summary>
         /// Not parameterized constructor of Heart_Class_Data.cs data class
@@ -85,6 +44,8 @@ namespace EKG_Project.Modules.Heart_Class
         {
             _classificationResult = new List<Tuple<int, int>>();
             ChannelMliiDetected = new bool();
+            _coefficientsForOneComplex = new Tuple<int, Vector<double>>(0,Vector<double>.Build.Dense(4));
+
         }
     }
 }

@@ -160,7 +160,7 @@ namespace EKG_Project.Modules.Heart_Class
             //    else
             //    {
             //        _tempClassResult = Classification(InputECGbaselineData.SignalsFiltered[_channel2].Item2,
-            //                            QRSOnSet, QRSEnds, R);
+            //                            QRSOnSet, QRSEnds, R); // UWAGA -> dodać do argumentów fs !!! bo jak nie to exceptiony!
             //        OutputData.ClassificationResult.Add(_tempClassResult);
 
             //        _samplesProcessed++;

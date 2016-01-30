@@ -156,12 +156,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
         #endregion
         private Tuple<bool, Vector<double>, double> detectAF(Vector<double> _rrIntervals, Vector<double> _rPeaks, uint fs, Atrial_Fibr_Params _method)
         {
+            if (_rrIntervals.Exists(x => x <= 0)) throw new ArgumentOutOfRangeException("RR intervals are 0 or negative");
             double tmp;
             bool[] detectedIntervals;
             int dividingFactor, nrOfParts;
-            double lengthOfDetection=0;
+            double lengthOfDetection = 0;
 
-            if (_method.Method== Detect_Method.STATISTIC)
+            if (_method.Method == Detect_Method.STATISTIC)
             {
                 dividingFactor = 32;
             }
@@ -172,7 +173,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             tmp = _rrIntervals.Count / dividingFactor;
             nrOfParts = Convert.ToInt32(Math.Floor(tmp));
             Vector<double> partOfRrIntervals = Vector<double>.Build.Dense(dividingFactor);
-            detectedIntervals = new bool[nrOfParts*dividingFactor];
+            detectedIntervals = new bool[nrOfParts * dividingFactor];
             bool detectedPart = false;
             for (int i = 0; i < nrOfParts; i++)
             {
@@ -185,28 +186,24 @@ namespace EKG_Project.Modules.Atrial_Fibr
                 {
                     detectedPart = detectAFPoin(partOfRrIntervals);
                 }
-                
+
                 for (int j = 0; j < dividingFactor; j++)
                 {
-                    detectedIntervals[i*dividingFactor + j] = detectedPart;
+                    detectedIntervals[i * dividingFactor + j] = detectedPart;
                 }
             }
             double lengthOfDetectedIntervals = 0.0;
             bool afDetected = false;
-            for (int i=0; i < detectedIntervals.Length; i++)
+            for (int i = 0; i < detectedIntervals.Length; i++)
             {
                 if (detectedIntervals[i])
                 {
                     lengthOfDetectedIntervals += _rrIntervals.At(i);
                     afDetected = true;
-                    Console.WriteLine("lengthOfDetectedIntervals");
-                    Console.WriteLine(lengthOfDetectedIntervals);
                 }
             }
             if (afDetected)
             {
-                Console.WriteLine("lengthOfDetectedIntervals");
-                Console.WriteLine(lengthOfDetectedIntervals);
                 pointsDetected = Vector<Double>.Build.Dense(Convert.ToInt32(lengthOfDetectedIntervals));
                 int lastIndex = 0;
                 for (int i = 0; i < detectedIntervals.Length; i++)
@@ -214,20 +211,20 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     if (detectedIntervals[i])
                     {
                         int j;
-                        for (j = 0; j <  _rrIntervals.At(i)-1; j++)
+                        for (j = 0; j < _rrIntervals.At(i); j++)
                         {
                             pointsDetected.At(j + lastIndex, _rPeaks.At(i) + j);
                         }
                         lastIndex += j;
                     }
                 }
-                double lengthOfSignal = (_rPeaks.At(_rPeaks.Count-1) - _rPeaks.At(0)) / fs;
+                double lengthOfSignal = (_rPeaks.At(_rPeaks.Count - 1) - _rPeaks.At(0)) / fs;
             }
             else
             {
-                pointsDetected=Vector<Double>.Build.Dense(1);
+                pointsDetected = Vector<Double>.Build.Dense(1);
             }
-            Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetectedIntervals/fs);
+            Tuple<bool, Vector<double>, double> result = Tuple.Create(afDetected, pointsDetected, lengthOfDetectedIntervals / fs);
             return result;
         }
         //Funkcje pomocnicze do metody statystycznej///////////////////////////////////////////////////////////////////
@@ -240,7 +237,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         #endregion
         double TPR(Vector<double> _RR)
         {
-            int turningPoints = 0;
+            double turningPoints = 0;
             for (int i = 1; i < (_RR.Count - 1); i++)
             {
                 if (((_RR.At(i - 1) < _RR.At(i)) && (_RR.At(i + 1) < _RR.At(i))) || ((_RR.At(i - 1) > _RR.At(i)) && (_RR.At(i + 1) > _RR.At(i))))
@@ -248,7 +245,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     turningPoints++;
                 }
             }
-            return tpr = turningPoints / ((2 * 30 - 4) / 3);
+            return tpr = turningPoints / ((2 * 32 - 4) / 3);
         }
 
         #region Documentation
@@ -260,7 +257,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         #endregion
         double SE(Vector<double> _RR)
         {
-            double[] histogram = new double[8];
+            double[] histogram = { 0, 0, 0, 0, 0, 0, 0, 0 };
             double dzielnik = 0.0;
             double maxRr = _RR.Maximum();
             double minRr = _RR.Minimum();
@@ -269,34 +266,30 @@ namespace EKG_Project.Modules.Atrial_Fibr
             Vector<double> _RR1;
             _RR1 = _RR;
             List<Tuple<int, double>> listOfElements = new List<Tuple<int, double>>();
-            for (int i = 0; i < 8; i++)
+            int i;
+            for (i = 0; i < 7; i++)
             {
-                if (i < 7)
-                {
-                    for (int k = 0; k < _RR1.Count; k++)
+                 for (int k = 0; k < _RR1.Count; k++)
+                 {
+                    Tuple<int, double> elements = _RR1.Find(element => (element >= tmp && element < (tmp + width)));
+                    if (elements != null)
                     {
-                        Tuple<int, double> elements = _RR1.Find(element => (element >= tmp && element < (tmp + width)));
-                        if (elements != null)
-                        {
-                            listOfElements.Add(elements);
-                            _RR1.ClearSubVector(elements.Item1, 1);
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        listOfElements.Add(elements);
+                        _RR1.ClearSubVector(elements.Item1, 1);
                     }
-                    dzielnik = listOfElements.Count / 24.0;
-                    histogram[i] = dzielnik;
-                    listOfElements.Clear();
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
-                {
-                    dzielnik = (32 - (histogram.Sum() * 24.0)) / 24.0;
-                    histogram[i] = dzielnik;
-                }
+                dzielnik = listOfElements.Count / 24.0;
+                histogram[i] = dzielnik;
+                listOfElements.Clear();
                 tmp += width;
             }
+            dzielnik = (32 - (histogram.Sum() * 24.0)) / 24.0;
+            histogram[7] = dzielnik;
+            tmp += width;
             double se = 0;
             foreach (double a in histogram)
             {
@@ -405,52 +398,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                  Ii1[j] = _RR.At(i+1);
                  j++;    
             }
-            
-            double[] A1 = new double[Ii.Length];
-            for (int i = 0; i < Ii.Length;i++)
-            {
-                A1[i] = Ii[i] - Ii1[i];
-            }
-            double[] A2 = new double[A1.Length];
-
-            for(int i=0;i<A1.Length;i++)
-            {
-                A2[i] = Math.Pow(A1[i],2);
-            }
-
-            double suma = 0;
-            for(int i = 0; i < A2.Length; i++)
-            {
-                suma += A2[i];
-            }
-
-            double[] A3 = new double [A1.Length];
-            for (int i = 0; i < A1.Length; i++)
-            {
-                A3[i] = Math.Abs(A1[i]);
-            }
-
-            double suma_modul = 0;
-            for (int i = 0; i < A3.Length; i++)
-            {
-                suma_modul += A3[i];
-            }
-
-            double C,D,E,F,G,d;
-            C = suma / (2 * length - 2);
-            D = suma_modul / ((length - 1) * Math.Sqrt(2));
-            E = Math.Pow(D, 2);
-            F = Math.Sqrt(C - E);
-
-            double sum = 0;
-            for(int i = 0; i < Ii.Length; i++)
-            {
-                sum += Ii[i];
-            }
-
-            G = (-_RR.At(1) - _RR.At(_RR.Count - 1) + 2 * sum) / (2 * length - 2);
-            d = F / G;
-
+            double d = dCoeff(Ii, Ii1, _RR);
             if (d <= 0.06)
                 AF = false;
             else
@@ -474,12 +422,64 @@ namespace EKG_Project.Modules.Atrial_Fibr
         }
 
         //Funkcje i klasy pomocnicze do metody nieliniowej////////////////////////////////////////////////////////////////
+        private double dCoeff(double[] Ii,double[] Ii1, Vector<double> _RR)
+        {
+            int length = _RR.Count;
+            double[] A1 = new double[Ii.Length];
+            for (int i = 0; i < Ii.Length; i++)
+            {
+                A1[i] = Ii[i] - Ii1[i];
+            }
+            double[] A2 = new double[A1.Length];
+
+            for (int i = 0; i < A1.Length; i++)
+            {
+                A2[i] = Math.Pow(A1[i], 2);
+            }
+
+            double suma = 0;
+            for (int i = 0; i < A2.Length; i++)
+            {
+                suma += A2[i];
+            }
+
+            double[] A3 = new double[A1.Length];
+            for (int i = 0; i < A1.Length; i++)
+            {
+                A3[i] = Math.Abs(A1[i]);
+            }
+
+            double suma_modul = 0;
+            for (int i = 0; i < A3.Length; i++)
+            {
+                suma_modul += A3[i];
+            }
+
+            double C, D, E, F, G, d;
+            C = suma / (2 * length - 2);
+            D = suma_modul / ((length - 1) * Math.Sqrt(2));
+            E = Math.Pow(D, 2);
+            F = Math.Sqrt(C - E);
+
+            double sum = 0;
+            for (int i = 0; i < Ii.Length; i++)
+            {
+                sum += Ii[i];
+            }
+
+            G = (-_RR.At(0) - _RR.At(_RR.Count - 1) + 2 * sum) / (2 * length - 2);
+            d = F / G;
+            return d;
+        }
+
+
+
         #region Documentation
         /// <summary>
         /// Data point in clustering. Contain information about coordinates and number of cluster.
         /// </summary>
         #endregion
-        public class DataPoint
+        public class DataPoint : System.Object
         {
             public double A { get; set; }
             public double B { get; set; }
@@ -492,7 +492,56 @@ namespace EKG_Project.Modules.Atrial_Fibr
             }
 
             public DataPoint()
-            { }
+            {
+                A = 0.0;
+                B = 0.0;
+                Cluster = 0;
+            }
+
+            public DataPoint(double a, double b, int c)
+            {
+                A = a;
+                B = b;
+                Cluster = c;
+            }
+            public bool Equals(DataPoint point)
+            {
+                return (Math.Abs(A - point.A) < 0.0001) && (Math.Abs(B - point.B) < 0.0001) && (Cluster == point.Cluster);
+            }
+
+            public override bool Equals(System.Object obj)
+            {
+                // If parameter is null return false.
+                if (obj == null)
+                {
+                    return false;
+                }
+
+                // If parameter cannot be cast to Point return false.
+                DataPoint point = obj as DataPoint;
+                if ((System.Object)point == null)
+                {
+                    return false;
+                }
+
+                // Return true if the fields match:
+                return (Math.Abs(A - point.A)<0.0001) && (Math.Abs(B - point.B)<0.0001) && (Cluster == point.Cluster);
+            }
+            public override int GetHashCode()
+            {
+                int tmp = Convert.ToInt32(A) + Convert.ToInt32(B) + Cluster;
+                return tmp;
+            }
+
+            public static bool operator ==(DataPoint point1, DataPoint point2)
+            {
+                return (point1.A == point2.A) && (point1.B == point2.B) && (point1.Cluster == point2.Cluster);
+            }
+
+            public static bool operator !=(DataPoint point1, DataPoint point2)
+            {
+                return (point1.A != point2.A) || (point1.B != point2.B) ||(point1.Cluster != point2.Cluster);
+            }
         }
 
         //Inicjalizacja////////////////////////////////////////////////////////////////
@@ -764,15 +813,9 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private double SilhouetteCoefficient(List<DataPoint> _rawDataToCluster)
         {
             double SilhouetteCoeff = new double();
-            List<double> distanceIn_a = new List<double>();
-            List<double> distanceIn_b = new List<double>();
-            List<double> distanceOut_a = new List<double>();
-            List<double> distanceOut_b = new List<double>();
+            List<double> distanceIn = new List<double>();
+            List<double> distanceOut = new List<double>();
             List<double> Silh = new List<double>();
-            double a_mean_In = new double();
-            double b_mean_In = new double();
-            double a_mean_Out = new double();
-            double b_mean_Out = new double();
             double dist_In = new double();
             double dist_Out = new double();
 
@@ -784,64 +827,34 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     {
                         if (i != j)
                         {
-                            distanceIn_a.Add(Math.Abs(_rawDataToCluster[j].A - _rawDataToCluster[i].A));
-                            distanceIn_b.Add(Math.Abs(_rawDataToCluster[j].B - _rawDataToCluster[i].B));
+                            distanceIn.Add(Math.Sqrt(Math.Pow(_rawDataToCluster[j].A - _rawDataToCluster[i].A,2)+ Math.Pow(_rawDataToCluster[j].B - _rawDataToCluster[i].B, 2)));
                         }
                     }
                     else
                     {
-                        distanceOut_a.Add(Math.Abs(_rawDataToCluster[j].A - _rawDataToCluster[i].A));
-                        distanceOut_b.Add(Math.Abs(_rawDataToCluster[j].B - _rawDataToCluster[i].B));
+                        distanceOut.Add(Math.Sqrt(Math.Pow(_rawDataToCluster[j].A - _rawDataToCluster[i].A, 2) + Math.Pow(_rawDataToCluster[j].B - _rawDataToCluster[i].B, 2)));
                     }
                 }
 
-                if (distanceIn_a.Count == 0)
-                {
-                    a_mean_In =0.0;
-                    b_mean_In = 0.0;
-                    a_mean_Out = distanceOut_a.Average();
-                    b_mean_Out = distanceOut_b.Average();
-                }
-
-                else if (distanceOut_a.Count == 0)
-                {
-                    a_mean_Out = 0.0;
-                    b_mean_Out = 0.0;
-                    a_mean_In = distanceIn_a.Average();
-                    b_mean_In = distanceIn_b.Average();
-                }
-
-                else
-                {
-                    a_mean_In = distanceIn_a.Average();
-                    b_mean_In = distanceIn_b.Average();
-                    a_mean_Out = distanceOut_a.Average();
-                    b_mean_Out = distanceOut_b.Average();
-                }
-
-                if (a_mean_In == 0.0)
+                if (distanceIn.Count == 0)
                 {
                     dist_In = 0.0;
-                    dist_Out = (Math.Sqrt(Math.Pow(a_mean_Out, 2) + Math.Pow(b_mean_Out, 2)));
+                    dist_Out = distanceOut.Average();
                 }
 
-                else if (a_mean_Out == 0.0)
+                else if (distanceOut.Count == 0)
                 {
                     dist_Out = 0.0;
-                    dist_In = (Math.Sqrt(Math.Pow(a_mean_In, 2) + Math.Pow(b_mean_In, 2)));
+                    dist_In = distanceIn.Average();
                 }
 
                 else
                 {
-                    dist_In = (Math.Sqrt(Math.Pow(a_mean_In, 2) + Math.Pow(b_mean_In, 2)));
-                    dist_Out = (Math.Sqrt(Math.Pow(a_mean_Out, 2) + Math.Pow(b_mean_Out, 2)));
+                    dist_In = distanceIn.Average();
+                    dist_Out = distanceOut.Average();
                 }
 
                 Silh.Add(Math.Abs(dist_Out - dist_In) / Math.Max(dist_Out, dist_In));
-                distanceIn_a.Clear();
-                distanceIn_b.Clear();
-                distanceOut_a.Clear();
-                distanceOut_b.Clear();
             }
             SilhouetteCoeff = Silh.Average();
 
