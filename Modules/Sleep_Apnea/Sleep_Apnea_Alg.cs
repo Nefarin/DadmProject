@@ -34,8 +34,15 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
             for (int i = 0; i < R_detected.Count() - 1; i++)
             {
-                timeInSec.Add(((double)R_detected[i]) / freq);
-                rrDist.Add(((double)R_detected[i + 1] - R_detected[i]) / freq);
+
+                double r1 = (double)R_detected[i];
+                timeInSec.Add(r1 / freq);
+
+                double r2 = (double)R_detected[i + 1];
+
+                double rr = r2 - r1;
+
+                rrDist.Add(rr / freq);
             }
 
             List<List<double>> RR = new List<List<double>>(2);
@@ -97,7 +104,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// <param name="freq"> frequency of sampling for signal</param>
         /// <param name="RRFiltered"> Signal - RR intervals filtered </param>
         /// <returns> Resampled RR intervals</returns>
-        #endregion   
+        #endregion
         List<List<double>> resampling(List<List<double>> RRFiltered, int resampFreq)
         {
             int estimatedSamplesCountAfterResampling = (int)((RRFiltered[0][RRFiltered[0].Count - 1] - RRFiltered[0][0]) * resampFreq + 1);
@@ -210,6 +217,9 @@ namespace EKG_Project.Modules.Sleep_Apnea
             List<double> amp = new List<double>(RRHPLP[1].Count);
             List<double> freq = new List<double>(RRHPLP[1].Count);
 
+            //double[] phases = hilb.Select(x => x.Phase).ToArray();
+            //unwrap(phases, phases.Length);
+
             double[] unwrapedPhases = new double[hilb.Length];
             unwrapedPhases[0] = hilb[0].Phase;
             for (int i = 1; i < hilb.Length; i++)
@@ -236,7 +246,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             hFreq.Add(freq);
         }
 
-        private static Complex[] MatlabHilbert(double[] xr)
+        private Complex[] MatlabHilbert(double[] xr)
         {
             var x = (from sample in xr select new Complex(sample, 0)).ToArray();
             Fourier.BluesteinForward(x, FourierOptions.Default);
