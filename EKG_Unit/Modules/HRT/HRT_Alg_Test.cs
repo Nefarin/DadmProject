@@ -97,51 +97,134 @@ namespace EKG_Unit.Modules.HRT
         {
             HRT_Params testParams = new HRT_Params("Test");
 
-            double[] testrrTimesArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
-            int[] testrrTimesVPCArray = { 30, 60, 105 };
-            int testVPCcount = 3;
+            // Init test here
 
-            int[] resultnrVPCArray = { 2, 4, 7 };
-            
+            double[] testrrTimesArray = { 100, 1000, 2000, 2500, 3000, 4000, 5000, 1200 };
+            int[] testrrTimesVPCArray = { 120, 2022, 3010 };
+
+            // Process test here
+
+            List<int> resultnrVPCArray = new List<int>();
+            resultnrVPCArray.Add(0);
+            resultnrVPCArray.Add(2);
+            resultnrVPCArray.Add(4);
+
+            // Assert results
+
             HRT_Alg testAlg = new HRT_Alg();
-           // int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
-            //Assert.AreEqual(resultnrVPCArray[2], testResult[2] );
-           // CollectionAssert.AreEqual(resultnrVPCArray, testResult );
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
+            CollectionAssert.AreEqual(resultnrVPCArray, testResult );
 
         }
 
+        //GetNrVPC
         [TestMethod]
-        [Description("Test if funcion properly finds VPC nr by R_peak index - not equality test")]
-        public void GetNrVPC_NonEQTest_2()
+        [Description("Test if funcion properly finds VPC nr by R_peak index - equality test")]
+        public void GetNrVPC_EQTest_2()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
-            double[] testrrTimesArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
-            int[] testrrTimesVPCArray = { 30, 60, 155 };
-            int testVPCcount = 3;
+            // Init test here
 
-            int[] resultnrVPCArray = { 2, 4, 7 };
+            double[] testrrTimesArray = { 198,  460,  709,  966,  1223, 1480, 1742,
+                                          2016, 2288, 2551, 2804, 3053, 3304, 3564,
+                                          3836, 4103, 4372, 4636, 4902, 5155, 5408,
+                                          5562, 5924, 6196, 6469, 6737, 6997, 7247,
+                                          7507, 7768, 7923, 8291, 8565, 8830, 9094,
+                                          9351, 9601, 9846, 10106,10381,10646,10909,
+                                          11169,11425,11677,11932,12188,12450,12626 };
+            int[] testrrTimesVPCArray = { 3030, 5401, 9116 };
+
+            // Process test here
+
+            List<int> resultnrVPCArray = new List<int>();
+            resultnrVPCArray.Add(11);
+            resultnrVPCArray.Add(20);
+            resultnrVPCArray.Add(34);
+
+            // Assert results
 
             HRT_Alg testAlg = new HRT_Alg();
-           // int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
-           // Assert.AreNotEqual(testResult, resultnrVPCArray);
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
+            CollectionAssert.AreEqual(resultnrVPCArray, testResult);
 
         }
 
+        //GetNrVPC
+        [TestMethod]
+        [Description("Test if funcion properly finds VPC nr by R_peak index - equality test")]
+        public void GetNrVPC_EQTest_3()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrTimesArray = { 198,  460,  709,  966,  1223, 1480, 1742,
+                                          2016, 2288, 2551, 2804, 3053, 3304, 3564,
+                                          3836, 4103, 4372, 4636, 4902, 5155, 5408,
+                                          5562, 5924, 6196, 6469, 6737, 6997, 7247,
+                                          7507, 7768, 7923, 8291, 8565, 8830, 9094,
+                                          9351, 9601, 9846, 10106,10381,10646,10909,
+                                          11169,11425,11677,11932,12188,12450,12626 };
+            int[] testrrTimesVPCArray = { 202, 2060, 3798, 5560, 7556, 9400, 11169 };
+
+            // Process test here
+
+            List<int> resultnrVPCArray = new List<int>();
+            resultnrVPCArray.Add(0);
+            resultnrVPCArray.Add(7);
+            resultnrVPCArray.Add(14);
+            resultnrVPCArray.Add(21);
+            resultnrVPCArray.Add(28);
+            resultnrVPCArray.Add(35);
+            resultnrVPCArray.Add(42);
+
+            // Assert results
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
+            CollectionAssert.AreEqual(resultnrVPCArray, testResult);
+
+        }
+
+        // GetNrVPC
         [TestMethod]
         [Description("Test if GetNrVPC throws null if argument is not initialized")]
         [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
-        public void GetNrVPC_NullTest()
+        public void GetNrVPC_NullTest_1()
         {
             HRT_Params testParams = new HRT_Params("Test");
 
+            // Init test here
+
             double[] testrrTimesArray = null;
             int[] testrrTimesVPCArray = { 30, 60, 155 };
-            int testVPCcount = 3;
+
+            // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
-            //int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
             
+        }
+
+        // GetNrVPC
+        [TestMethod]
+        [Description("Test if GetNrVPC throws null if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Array must not be empty")]
+        public void GetNrVPC_EmptyArrayTest_2()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrTimesArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
+            int[] testrrTimesVPCArray = { };
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
+
         }
 
         [TestMethod]
@@ -151,12 +234,15 @@ namespace EKG_Unit.Modules.HRT
         {
             HRT_Params testParams = new HRT_Params("Test");
 
-            double[] testrrTimesArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
+            // Init test here
+
+            double[] testrrTimesArray = { };
             int[] testrrTimesVPCArray = { 30, 60, 155 };
-            int testVPCcount = 4;
+            
+            // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
-          //  int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
 
         }
 
@@ -167,12 +253,15 @@ namespace EKG_Unit.Modules.HRT
         {
             HRT_Params testParams = new HRT_Params("Test");
 
+            // Init test here
+
             double[] testrrTimesArray = { 30, 60, 155 };
             int[] testrrTimesVPCArray = { 0, 15, 30, 45, 60, 75, 90, 105 };
-            int testVPCcount = 8;
+            
+            // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
-           // int[] testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray, testVPCcount);
+            List<int> testResult = testAlg.GetNrVPC(testrrTimesArray, testrrTimesVPCArray);
 
         }
 
