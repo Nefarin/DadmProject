@@ -12,7 +12,17 @@ namespace EKG_Project.Modules.ECG_Baseline
         public class Filter
         {
             //========================================================================================================
-
+            #region
+            /// <summary>
+            /// Butterworth filter. Method that filters the input ECG signal by Butterworth filter.
+            /// This function allows to selec type of filter: lowpass or highpass.
+            /// <param name="signal">The raw ECG signal that is filtered</param>
+            /// <param name="fs">Sampling frequency of signal</param>
+            /// <param name="fc">Cut-off frequency of signal</param>
+            /// <param name="order">Filter order</param>
+            /// <param name="type">Filter type: lowpass or highpass</param>
+            /// <returns>The result of this method of filtration is the filtered signal by low- or highpass butterworth filter</returns>
+            #endregion
             public Vector<double> butterworth(Vector<double> signal, double fs, double fc, int order, Filtr_Type type)
             {
 
@@ -64,6 +74,19 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             }
 
+            #region
+            /// <summary>
+            /// Overloaded functions 'butterworth()' that allows to do bandpass filter by butterworth filter.
+            /// </summary>
+            /// <param name="signal">The raw ECG signal that is filtered</param>
+            /// <param name="fs">Sampling frequency of signal</param>
+            /// <param name="fc_low">Lower cut-off frequency of fignal</param>
+            /// <param name="order_low">Lower filter order</param>
+            /// <param name="fc_high">Upper cut-off frequency of signal</param>
+            /// <param name="order_high">Upper filter order</param>
+            /// <param name="type">Filter type</param>
+            /// <returns>The result of this method of filtration is the filtered signal by bandpass butterworth filter</returns>
+            #endregion
             public Vector<double> butterworth(Vector<double> signal, double fs, double fc_low, int order_low, double fc_high, int order_high, Filtr_Type type = Filtr_Type.BANDPASS)
             {
                 if (type == Filtr_Type.BANDPASS)
@@ -81,7 +104,16 @@ namespace EKG_Project.Modules.ECG_Baseline
             }
 
             //========================================================================================================
-
+            #region
+            /// <summary>
+            /// Least mean squares filter. Method that filters the input ECG signal by LMS filter.
+            /// </summary>
+            /// <param name="signal">The raw ECG signal that is filtered</param>
+            /// <param name="filtered_signal">Filtered reference signal by butterworth filter with certain parameters that are dependent on the type of filtration</param>
+            /// <param name="window_size">Number of the weighting coefficients of adaptation</param>
+            /// <param name="mi">Speed of adaptation coefficient which value is between 0 and 1</param>
+            /// <returns>The result of this method of filtration is the filtered signal by LMS filter</returns>
+            #endregion
             public Vector<double> lms(Vector<double> signal, Vector<double> filtered_signal, int window_size, double mi = 0.07)
             {
                 int signal_size = signal.Count;
@@ -116,6 +148,18 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             }
 
+            #region
+            /// <summary>
+            /// Overloaded functions 'lms()' that allows to filter the input signal by LMS filter.
+            /// This function allows to selec type of filter: lowpass, highpass or bandpass.
+            /// </summary>
+            /// <param name="signal">The raw ECG signal that is filtered</param>
+            /// <param name="fs">Sampling frequency of signal</param>
+            /// <param name="window_size">Number of the weighting coefficients of adaptation</param>
+            /// <param name="type">Filter type</param>
+            /// <param name="mi">Speed of adaptation coefficient which value is between 0 and 1</param>
+            /// <returns>>The result of this method of filtration is the filtered signal by low-, high- or bandpass LMS filter</returns>
+            #endregion
             public Vector<double> lms(Vector<double> signal, double fs, int window_size, Filtr_Type type, double mi = 0.07)
             {
                 if (type == Filtr_Type.LOWPASS)
@@ -148,6 +192,14 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             //========================================================================================================
 
+            /// <summary>
+            /// Savitzky-Golay's filter. Method that filters the input ECG signal by Savitzky-Golay's filter.
+            /// This function allows to selec type of filter: lowpass or highpass.
+            /// </summary>
+            /// <param name="signal">The raw ECG signal that is filtered</param>
+            /// <param name="window_size">Size of filtration window</param>
+            /// <param name="type">Filter type</param>
+            /// <returns>The result of this method of filtration is the filtered signal by low- or highpass Savitzky-Golay's filter</returns>
             public Vector<double> savitzky_golay(Vector<double> signal, int window_size, Filtr_Type type)
             {
 
@@ -210,6 +262,14 @@ namespace EKG_Project.Modules.ECG_Baseline
                 return output_signal;
             }
 
+            /// <summary>
+            /// Overloaded function 'savitzky-golay()' that allows to do bandpass filter by Saviztky-Golay's filter
+            /// </summary>
+            /// <param name="signal">The raw ECG signal that is filtered<</param>
+            /// <param name="window_size_low">Size of lower filtration window</param>
+            /// <param name="window_size_high">Size of upper filtration window</param>
+            /// <param name="type">Filter type</param>
+            /// <returns>The result of this method of filtration is the filtered signal by bandpass Savitzky-Golay's filter</returns>
             public Vector<double> savitzky_golay(Vector<double> signal, int window_size_low, int window_size_high, Filtr_Type type = Filtr_Type.BANDPASS)
             {
                 if (type == Filtr_Type.BANDPASS)
@@ -227,7 +287,14 @@ namespace EKG_Project.Modules.ECG_Baseline
             }
 
             //========================================================================================================
-
+            /// <summary>
+            /// Moving average filter. Method that filters the input ECG signal by moving average filter.
+            /// This function allows to selec type of filter: lowpass or highpass.
+            /// </summary>
+            /// <param name="signal">The raw ECG signal that is filtered</param>
+            /// <param name="window_size">Size of filtration window</param>
+            /// <param name="type">Filter type</param>
+            /// <returns>The result of this method of filtration is the filtered signal by low- or highpass moving average filter</returns>
             public Vector<double> moving_average(Vector<double> signal, int window_size, Filtr_Type type)
             {
                 int signal_size = signal.Count; //rozmiar sygału wejściowego
@@ -264,7 +331,14 @@ namespace EKG_Project.Modules.ECG_Baseline
                 return signal_filtered; //sygnał przefiltrowany
 
             }
-
+            /// <summary>
+            /// Overloaded function 'moving_average' that allows to do bandpass filter by moving average filter
+            /// </summary>
+            /// <param name="signal">The raw ECG signal that is filtered<</param>
+            /// <param name="window_size_low">Size of lower filtration window</param>
+            /// <param name="window_size_high">Size of upper filtration window</param>
+            /// <param name="type">Filter type</param>
+            /// <returns>The result of this method of filtration is the filtered signal by bandpass moving average filter</returns>
             public Vector<double> moving_average(Vector<double> signal, int window_size_low, int window_size_high, Filtr_Type type = Filtr_Type.BANDPASS)
             {
                 if (type == Filtr_Type.BANDPASS)
