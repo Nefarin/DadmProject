@@ -165,15 +165,15 @@ namespace EKG_Project.Modules.ECG_Baseline
                                 case Filtr_Method.BUTTERWORTH:
                                     if (Params.Type == Filtr_Type.LOWPASS)
                                     {
-                                        _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                                        _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
                                     }
                                     if (Params.Type == Filtr_Type.HIGHPASS)
                                     {
-                                        _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                                        _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
                                     }
                                     if (Params.Type == Filtr_Type.BANDPASS)
                                     {
-                                        _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Params.FcHigh, Params.OrderHigh, Filtr_Type.BANDPASS);
+                                        _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcLow, Params.OrderLow, Params.FcHigh, Params.OrderHigh, Filtr_Type.BANDPASS);
                                     }
                                     break;
                                 case Filtr_Method.SAV_GOL:
@@ -192,7 +192,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                                     }
                                     break;
                                 case Filtr_Method.LMS:
-                                    _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
+                                    _currentVector = _newFilter.lms(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
                                     break;
                             }
 
@@ -236,15 +236,15 @@ namespace EKG_Project.Modules.ECG_Baseline
                                 case Filtr_Method.BUTTERWORTH:
                                     if (Params.Type == Filtr_Type.LOWPASS)
                                     {
-                                        _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                                        _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
                                     }
                                     if (Params.Type == Filtr_Type.HIGHPASS)
                                     {
-                                        _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                                        _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
                                     }
                                     if (Params.Type == Filtr_Type.BANDPASS)
                                     {
-                                        _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Params.FcHigh, Params.OrderHigh, Filtr_Type.BANDPASS);
+                                        _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcLow, Params.OrderLow, Params.FcHigh, Params.OrderHigh, Filtr_Type.BANDPASS);
                                     }
                                     break;
                                 case Filtr_Method.SAV_GOL:
@@ -262,7 +262,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                                     }
                                     break;
                                 case Filtr_Method.LMS:
-                                    _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
+                                    _currentVector = _newFilter.lms(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
                                     break;
                             }
 
@@ -311,15 +311,15 @@ namespace EKG_Project.Modules.ECG_Baseline
                             case Filtr_Method.BUTTERWORTH:
                                 if (Params.Type == Filtr_Type.LOWPASS)
                                 {
-                                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                                    _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
                                 }
                                 if (Params.Type == Filtr_Type.HIGHPASS)
                                 {
-                                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                                    _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
                                 }
                                 if (Params.Type == Filtr_Type.BANDPASS)
                                 {
-                                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Params.FcHigh, Params.OrderHigh, Filtr_Type.BANDPASS);
+                                    _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcLow, Params.OrderLow, Params.FcHigh, Params.OrderHigh, Filtr_Type.BANDPASS);
                                 }
                                 break;
                             case Filtr_Method.SAV_GOL:
@@ -339,7 +339,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                                 }
                                 break;
                             case Filtr_Method.LMS:
-                                _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
+                                _currentVector = _newFilter.lms(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
                                 break;
                         }
 
