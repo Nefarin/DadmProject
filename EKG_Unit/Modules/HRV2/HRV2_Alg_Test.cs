@@ -84,6 +84,25 @@ namespace EKG_Unit.Modules.HRV2
             Assert.AreEqual(x, y);
         }
 
+        [TestMethod]
+        [Description("Test if...)]
+        public void Test()
+        {
+            double[] testArray = { 1, 2, 3, 4, 5 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            HRV2_Alg testAlgs = new HRV2_Alg();
+
+            PrivateObject obj = new PrivateObject(testAlgs);
+            obj.SetField("_rrIntervals", testVector);
+
+            obj.Invoke("makeTinn");
+
+            double testTinn = (double)obj.GetField("tinn");
+            double resultTinn = 4;
+
+            Assert.AreEqual(testTinn, resultTinn);
+        }
+
 
     }
 }

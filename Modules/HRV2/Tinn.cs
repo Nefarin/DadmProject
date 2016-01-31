@@ -29,8 +29,14 @@ namespace EKG_Project.Modules.HRV2
         #endregion
             private void makeTinn()
         {
-            //Vector<double> RRIntervals = InputData.RRInterval[_currentChannelIndex].Item2;
-            tinn = (_rrIntervals.Max() - _rrIntervals.Min());
+            try
+            {
+                tinn = (_rrIntervals.Max() - _rrIntervals.Min());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }

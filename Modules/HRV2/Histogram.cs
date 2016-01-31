@@ -23,7 +23,14 @@ namespace EKG_Project.Modules.HRV2
 
         public List<Tuple<double,double>> HistogramToVisualisation()
         {
-            _currentHistogram = new Histogram2(binLength, _rrIntervals);
+            try
+            {
+                _currentHistogram = new Histogram2(binLength, _rrIntervals);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
             ObservableCollection<Sample> samples = _currentHistogram.Samples;
             List<Tuple<double, double>> HistogramList = new List<Tuple<double, double>>();
 
