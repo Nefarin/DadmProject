@@ -566,11 +566,8 @@ namespace EKG_Project.Modules.HRT
         /// <param name="VPC"> numbers of probes of peaks R classified as VPC
         /// <param name="rrIntervals"> intevals between R peaks
         /// <returns>  Return values of turbulence slope (max linear regresion) from every channel and prepare coordinates to plot max TS</returns>
-        public Tuple<List<double>, double[], double[]> TurbulenceSlopeGUIandPDF(List<int> VPC, Vector<double> rrIntervals)
+        public Tuple<List<double>, int[], double[]> TurbulenceSlopeGUIandPDF(List<int> VPC, Vector<double> rrIntervals)
         {
-
-            int sum = back + front;
-
             double[] TS = new double[VPC.Count];
             for (int j = 0; j < VPC.Count; j++)
             {
@@ -579,7 +576,7 @@ namespace EKG_Project.Modules.HRT
             int i = 0;
 
            
-            double[] xx = new double[5];
+            int[] xx = new int[5];
             double[] yy = new double[5];
 
             foreach (int nrVPC in VPC)

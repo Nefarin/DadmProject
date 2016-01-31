@@ -27,7 +27,7 @@ namespace EKG_Project.Modules.HRT
         private List<double[]> _tachogram;
         private List<int> _classVentrical;
         private List<double> _turbulenceOnset;
-        private Tuple<List<double>,double[],double[]> _turbulenceSlope;
+        private Tuple<List<double>,int[],double[]> _turbulenceSlope;
         private double[] _meanTachogram;
         private int[] _xaxis;
 
@@ -44,8 +44,8 @@ namespace EKG_Project.Modules.HRT
 
         private List<Tuple<string, int[], List<double[]>>> _tachogramGUI = new List<Tuple<string, int[], List<double[]>>>();
         private List<Tuple<string, int[], double[]>> _tachogramMeanGUI = new List<Tuple<string, int[], double[]>>();
-        private List<Tuple<string, int[], double[]>> _meanTurbulenceOnsetGUI = new List<Tuple<string, int[], double[]>>();
-        private List<Tuple<string, double[], double[]>> _turbulenceSlopeMaxGUI = new List<Tuple<string, double[], double[]>>();
+        private List<Tuple<string, int[], double[]>> _turbulenceOnsetmeanGUI = new List<Tuple<string, int[], double[]>>();
+        private List<Tuple<string, int[], double[]>> _turbulenceSlopeMaxGUI = new List<Tuple<string, int[], double[]>>();
 
         private List<Tuple<string, List<double>>> _turbulenceOnsetPDF = new List<Tuple<string, List<double>>>();
         private List<Tuple<string, List<double>>> _turbulenceSlopePDF = new List<Tuple<string, List<double>>>();
@@ -239,7 +239,7 @@ namespace EKG_Project.Modules.HRT
 
                             _tachogramGUI.Add(Tuple.Create(_channelName, _xaxis, _tachogram));
                             _tachogramMeanGUI.Add(Tuple.Create(_channelName, _xaxis, _meanTachogram));
-                            _meanTurbulenceOnsetGUI.Add(Tuple.Create(_channelName, _meanTurbulenceOnset.Item1, _meanTurbulenceOnset.Item2));
+                            _turbulenceOnsetmeanGUI.Add(Tuple.Create(_channelName, _meanTurbulenceOnset.Item1, _meanTurbulenceOnset.Item2));
                             _turbulenceSlopeMaxGUI.Add(Tuple.Create(_channelName, _turbulenceSlope.Item2, _turbulenceSlope.Item3));
 
 
@@ -247,10 +247,8 @@ namespace EKG_Project.Modules.HRT
                             _turbulenceSlopePDF.Add(Tuple.Create(_channelName, _turbulenceSlope.Item1));
 
 
-                            HRT_Algorythms.PrintVector(_turbulenceOnsetPDF);
+                            HRT_Algorythms.PrintVector(_turbulenceSlopeMaxGUI);
 
-                           
-                            ;
                         }
                     }
                 }
