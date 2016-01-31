@@ -271,6 +271,7 @@ namespace EKG_Project.Modules.Heart_Class
                         // 4. Nowy obieg pętli: nowy step - kolejny
                         // smaplesProcessed jest do kolejnych elementow R, QRSOnsets, QRSend
                         // currentIndex jest do pobierania sygnału z ECGBaseline
+                        // ZLE co jak qrsEnd ==-1? trzeba isc po Rpeakach!
                         int QRSOnSet = InputWavesWorker.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName, _samplesProcessed,
                                 _numberProcessedComplexes)[0];
                         int QRSEnds = InputWavesWorker.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName, _samplesProcessed,
