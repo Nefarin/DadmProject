@@ -52,6 +52,11 @@ namespace EKG_Project.Modules.Waves
         }
         public Waves_Params(Wavelet_Type waveType, int decompositionLevel, string analysisName, int rpeaksStep)
         {
+            if (decompositionLevel < 1)
+                throw new ArgumentOutOfRangeException("Decomposition level below 1");
+
+            if (rpeaksStep < 1)
+                throw new ArgumentOutOfRangeException("R-peaks step size below 1");
             this.WaveType = waveType;
             this.DecompositionLevel = decompositionLevel;
             this.AnalysisName = analysisName;
@@ -60,7 +65,7 @@ namespace EKG_Project.Modules.Waves
 
         public Waves_Params() : base()
         {
-            _waveType = Wavelet_Type.db2;
+            _waveType = Wavelet_Type.haar;
             DecompositionLevel = 3;
             RpeaksStep = 500;
         }

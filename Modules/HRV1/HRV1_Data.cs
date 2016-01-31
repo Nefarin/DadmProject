@@ -12,9 +12,8 @@ namespace EKG_Project.Modules.HRV1
 
         private List<Tuple<string, Vector<double>>> _timeBasedParams;
         private List<Tuple<string, Vector<double>>> _freqBasedParams;
-        private List<Tuple<string, Vector<double>>> _rInstants;
-        private List<Tuple<string, Vector<double>>> _rrIntervals;
-
+        private List<Tuple<string, Vector<double>>> _freqVector;
+        private List<Tuple<string, Vector<double>>> _PSD;
 
         public List<Tuple<string, Vector<double>>> TimeBasedParams
         {
@@ -40,6 +39,36 @@ namespace EKG_Project.Modules.HRV1
             }
         }
 
+        public List<Tuple<string, Vector<double>>> FreqVector
+        {
+            get
+            {
+                return _freqVector;
+            }
+            set
+            {
+                _freqVector = value;
+            }
+        }
+
+        public List<Tuple<string, Vector<double>>> PSD
+        {
+            get
+            {
+                return _PSD;
+            }
+            set
+            {
+                _PSD = value;
+            }
+        }
+
+        // depreciated - to be removed
+        private List<Tuple<string, Vector<double>>> _rInstants;
+        // depreciated - to be removed
+        private List<Tuple<string, Vector<double>>> _rrIntervals;
+
+        // obsolete - to be removed
         public List<Tuple<string, Vector<double>>> RInstants
         {
             get
@@ -52,6 +81,7 @@ namespace EKG_Project.Modules.HRV1
             }
         }
 
+        // obsolete - to be rempoved
         public List<Tuple<string, Vector<double>>> RRIntervals
         {
             get

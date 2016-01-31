@@ -4,8 +4,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.Modules.R_Peaks;
-using MathNet.Numerics.Statistics;
 
 namespace EKG_Project.Modules.HRV2
 {
@@ -13,28 +11,57 @@ namespace EKG_Project.Modules.HRV2
     public partial class HRV2_Alg
     {
         private const float binLength = 7.8125f;
+        Histogram2 _currentHistogram;
 
-        //public Histogram2 makeHistogram()
-        //{
-        //    Vector<double> RRIntervals = InputData.RRInterval[_outputIndex].Item2;
-        //    //int binAmount = (int)((RRIntervals.AbsoluteMaximum() - RRIntervals.AbsoluteMinimum()) / 7.8125); //the amount of the bins
-        //    Console.WriteLine(RRIntervals.Max());
-        //    Console.ReadLine();
-        //    // _currentHistogram = new Histogram(RRIntervals, binAmount);
-        //    _currentHistogram = new Histogram2(binLength, RRIntervals);
-        //    return _currentHistogram;
-        //}
-        
+        #region Documentation
+        /// <summary>
+        /// Returns a List<Tuple<double.double>>. 
+        /// First is average value of the bin and the second is count of the bin. 
+        /// </summary>
+        /// 
+        #endregion
+
+        public List<Tuple<double,double>> HistogramToVisualisation()
+        {
+            _currentHistogram = new Histogram2(binLength, _rrIntervals);
+            ObservableCollection<Sample> samples = _currentHistogram.Samples;
+            List<Tuple<double, double>> HistogramList = new List<Tuple<double, double>>();
+
+            foreach (Sample s in samples)
+            {
+                HistogramList.Add(s.HistogramToVisualise());
+            }
+            return HistogramList;
+        }
+        public double histogramCounts()
+        {
+            int histogramCount = 0;
+            ObservableCollection<Sample> samples = _currentHistogram.Samples;
+            foreach (Sample s in samples )
+            {
+                histogramCount += s.Count;
+            }
+            return histogramCount;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// This histogram is made for caluculations (triangle index)
+        /// We made our own class HRV2.Histogram2
+        /// </summary>
+        /// 
+        #endregion
+
         public class Sample
         {
             public int Count { get; set; }
             public float LowestValue { get; set; }
             public float HighestValue { get; set; }
-            public float AverageValue
+            public double AverageValue
             {
                 get
                 {
-                    return (LowestValue + HighestValue) / 2;
+                    return Math.Round(((LowestValue + HighestValue)/2));
                 }
             }
 
@@ -46,6 +73,13 @@ namespace EKG_Project.Modules.HRV2
                     HighestValue,
                     Count);
             }
+
+            public Tuple<double, double> HistogramToVisualise()
+            {
+                Tuple<double, double> bin = new Tuple<double, double>(AverageValue, Count);
+                return bin;
+            }
+
         }
 
         public class Histogram2
@@ -72,7 +106,6 @@ namespace EKG_Project.Modules.HRV2
                 this.INPUT = input;
                 _width = width;
                 _samples = new ObservableCollection<Sample>();
-                //ensureDataLoaded();
             }
 
             public Histogram2()
@@ -111,6 +144,7 @@ namespace EKG_Project.Modules.HRV2
 
             private void groupSamples(List<Double> samples)
             {
+                samples.Sort();
                 double start = samples[0];
                 List<List<Double>> _helperListOfSampleList = new List<List<Double>>();
                 List<Double> _helperSampleList = new List<Double>();
@@ -126,7 +160,6 @@ namespace EKG_Project.Modules.HRV2
                 }
                 try
                 {
-                    //checkCountOfSamples(_helperListOfSampleList, samples);
                     createSampleList(_helperListOfSampleList);
                 }
                 catch (Exception e)
@@ -155,6 +188,7 @@ namespace EKG_Project.Modules.HRV2
                     _samples.Add(sample);
                 }
             }
+            
 
             #region Debug functions
 
