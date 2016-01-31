@@ -38,8 +38,6 @@ namespace EKG_Project.Modules.ECG_Baseline
         private int _step;
 
         //Filter _newFilter = new Filter();
-        //private Vector<Double> _temporaryVector;
-        // private Vector<Double> _temporaryVector2;
 
         /*
         public ECG_Baseline()
@@ -91,29 +89,6 @@ namespace EKG_Project.Modules.ECG_Baseline
                 _state = STATE.INIT;
             }
 
-            //Params = parameters as ECG_Baseline_Params;
-            //Aborted = false;
-            //if (!Runnable()) _ended = true;
-            //else
-            //{
-            //    _ended = false;
-
-            //    InputWorker = new Basic_Data_Worker(Params.AnalysisName);
-            //    InputWorker.Load();
-            //    InputData = InputWorker.BasicData;
-
-            //    OutputWorker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
-            //    OutputData = new ECG_Baseline_Data();
-
-            //    _currentChannelIndex = 0;
-            //    _samplesProcessed = 0;
-            //    NumberOfChannels = InputData.Signals.Count;
-            //    _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-            //    //_currentVector = InputData.Signals[_currentChannelIndex].Item2.CopySubVectorTo(_currentVector,0,0, _currentChannelLength); //Vector<Double>.Build.Dense(_currentChannelLength);
-            //    //InputData.Signals[_currentChannelIndex].Item2.CopySubVectorTo(_currentVector, 0, 0, _currentChannelLength);
-            //    _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-            //    _temporaryVector2 = Vector<Double>.Build.Dense(_currentChannelLength);
-            //}
         }
 
         public void ProcessData()
@@ -161,6 +136,9 @@ namespace EKG_Project.Modules.ECG_Baseline
                         try
                         {
                             _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
+                            Console.WriteLine("===========================================");
+                            Console.WriteLine(InputData.Frequency);
+                            Console.WriteLine("===========================================");
                             //System.Console.WriteLine(_currentVector.ToString());
                             //System.Console.WriteLine(Params.Method);
                             //Selecting filtration method
@@ -198,8 +176,10 @@ namespace EKG_Project.Modules.ECG_Baseline
                                     if (Params.Type == Filtr_Type.LOWPASS)
                                     {
                                         //System.Console.WriteLine(Params.Method);
-                                        //System.Console.WriteLine(Params.Method);
+                                        //System.Console.WriteLine("=========================");
                                         _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                        //_currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                        //System.Console.WriteLine("============Po filtracji============");
                                         //System.Console.WriteLine("=========================");
                                         //System.Console.WriteLine(_currentVector.ToString());
                                     }
@@ -270,7 +250,12 @@ namespace EKG_Project.Modules.ECG_Baseline
                                 case Filtr_Method.SAV_GOL:
                                     if (Params.Type == Filtr_Type.LOWPASS)
                                     {
+                                        //System.Console.WriteLine(_currentVector.ToString());
+                                        //System.Console.WriteLine("========================");
+                                        //_currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
                                         _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                        //System.Console.WriteLine("============Po filtracji============");
+                                        //System.Console.WriteLine("========================");
                                         //System.Console.WriteLine(_currentVector.ToString());
                                     }
                                     if (Params.Type == Filtr_Type.HIGHPASS)
@@ -337,6 +322,8 @@ namespace EKG_Project.Modules.ECG_Baseline
                             case Filtr_Method.SAV_GOL:
                                 if (Params.Type == Filtr_Type.LOWPASS)
                                 {
+                                    System.Console.WriteLine("END CHANNEL");
+                                    //_currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
                                     _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
                                 }
                                 if (Params.Type == Filtr_Type.HIGHPASS)
@@ -360,189 +347,6 @@ namespace EKG_Project.Modules.ECG_Baseline
                         _state = STATE.NEXT_CHANNEL;
                     }
                     break;
-
-                //int channel = _currentChannelIndex;
-                //int startIndex = _samplesProcessed;
-                //int step = 1000;
-
-                //if (channel < NumberOfChannels)
-                //{
-                //    if (startIndex + step >= _currentChannelLength)
-                //    {
-
-
-                //        _currentVector = InputData.Signals[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
-
-                //        switch (Params.Method)
-                //        {
-                //            case Filtr_Method.MOVING_AVG:
-                //                if (Params.Type == Filtr_Type.LOWPASS)
-                //                {
-                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.HIGHPASS)
-                //                {
-                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.BANDPASS)
-                //                {
-                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                break;
-                //            case Filtr_Method.BUTTERWORTH:
-                //                if (Params.Type == Filtr_Type.LOWPASS)
-                //                {
-                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.HIGHPASS)
-                //                {
-                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.BANDPASS)
-                //                {
-                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
-                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                break;
-                //            case Filtr_Method.SAV_GOL:
-                //                if (Params.Type == Filtr_Type.LOWPASS)
-                //                {
-                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.HIGHPASS)
-                //                {
-                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.BANDPASS)
-                //                {
-                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                break;
-                //            case Filtr_Method.LMS:
-                //                if (Params.Type == Filtr_Type.LOWPASS)
-                //                {
-                //                    _temporaryVector = _currentVector;
-                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeLow);
-                //                }
-                //                if (Params.Type == Filtr_Type.HIGHPASS)
-                //                {
-                //                    _temporaryVector = _currentVector;
-                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
-                //                }
-                //                if (Params.Type == Filtr_Type.BANDPASS)
-                //                {
-                //                    _temporaryVector = _currentVector;
-                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                    _temporaryVector = _newFilter.savitzky_golay(_temporaryVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
-                //                }
-                //                break;
-                //        }
-
-                //        _currentVector.CopySubVectorTo(_temporaryVector2, 0, startIndex, _currentVector.Count);
-                //        //OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
-                //        OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _temporaryVector2));
-                //        _currentChannelIndex++;
-
-                //        if (_currentChannelIndex < NumberOfChannels)
-                //        {
-                //            _samplesProcessed = 0;
-                //            _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
-                //            _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-                //            _temporaryVector2 = Vector<Double>.Build.Dense(_currentChannelLength);
-                //        }
-
-
-                //    }
-                //    else
-                //    {
-
-                //        _currentVector = InputData.Signals[_currentChannelIndex].Item2.SubVector(startIndex, step);
-
-                //        switch (Params.Method)
-                //        {
-                //            case Filtr_Method.MOVING_AVG:
-                //                if (Params.Type == Filtr_Type.LOWPASS)
-                //                {
-                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.HIGHPASS)
-                //                {
-                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.BANDPASS)
-                //                {
-                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                break;
-                //            case Filtr_Method.BUTTERWORTH:
-                //                if (Params.Type == Filtr_Type.LOWPASS)
-                //                {
-                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.HIGHPASS)
-                //                {
-                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.BANDPASS)
-                //                {
-                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
-                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                break;
-                //            case Filtr_Method.SAV_GOL:
-                //                if (Params.Type == Filtr_Type.LOWPASS)
-                //                {
-                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.HIGHPASS)
-                //                {
-                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                if (Params.Type == Filtr_Type.BANDPASS)
-                //                {
-                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                }
-                //                break;
-                //            case Filtr_Method.LMS:
-                //                if (Params.Type == Filtr_Type.LOWPASS)
-                //                {
-                //                    _temporaryVector = _currentVector;
-                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeLow);
-                //                }
-                //                if (Params.Type == Filtr_Type.HIGHPASS)
-                //                {
-                //                    _temporaryVector = _currentVector;
-                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
-                //                }
-                //                if (Params.Type == Filtr_Type.BANDPASS)
-                //                {
-                //                    _temporaryVector = _currentVector;
-                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                //                    _temporaryVector = _newFilter.savitzky_golay(_temporaryVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
-                //                }
-                //                break;
-
-                //        }
-                //        _currentVector.CopySubVectorTo(_temporaryVector2, 0, startIndex, _currentVector.Count);
-                //        //OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
-                //        _samplesProcessed = startIndex + step;
-                //    }
-                //}
-                //else
-                //{ 
-                //    OutputWorker.Save(OutputData);
-                //    _ended = true;
-                //}
                 case (STATE.NEXT_CHANNEL):
                     _state = STATE.BEGIN_CHANNEL;
                     break;
@@ -651,14 +455,15 @@ namespace EKG_Project.Modules.ECG_Baseline
         {
             IModule testModule = new EKG_Project.Modules.ECG_Baseline.ECG_Baseline();
             //ECG_Baseline_Params param = new ECG_Baseline_Params();
-            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 10, "abc123");
+            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 300, "abc123");
+            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.HIGHPASS, 110, "abc123");
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 50, "abc123", 0.07);
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 50, "abc123");
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.HIGHPASS, 50, "abc123");
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.BANDPASS, 10, 50, "abc123");
-            //ECG_Baseline_Params param = new ECG_Baseline_Params("abc123", Filtr_Method.BUTTERWORTH, Filtr_Type.LOWPASS, 5, 10 );
+            ECG_Baseline_Params param = new ECG_Baseline_Params("abc123", Filtr_Method.BUTTERWORTH, Filtr_Type.LOWPASS, 5, 10 );
             //ECG_Baseline_Params param = new ECG_Baseline_Params("abc123", Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS, 5, 10);
-            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.BANDPASS, 5, 10, 5, 50, "abc123");
+            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.BANDPASS, 5, 10, 5, 50, "abc123");
 
 
             testModule.Init(param);
@@ -667,7 +472,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 testModule.ProcessData();
                 Console.WriteLine(testModule.Progress());
             }
-            //Console.ReadKey();
+            Console.ReadKey();
         }
     }
 }
