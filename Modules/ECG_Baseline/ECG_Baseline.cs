@@ -197,7 +197,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                             }
 
                             _lastVectorElement = _currentVector.Last();
-                            OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
+                            OutputWorker.SaveSignal(_currentLeadName, false, _currentVector);
                             _currentIndex += _step;
                             _state = STATE.PROCESS_CHANNEL;
                         }
