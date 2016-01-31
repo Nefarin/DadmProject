@@ -23,6 +23,7 @@ namespace EKG_Project.Modules.R_Peaks
         private int _numberOfChannels;
 
         private ECG_Baseline_New_Data_Worker _inputWorker;
+        //private Basic_New_Data_Worker _inputWorker;
         private Basic_New_Data_Worker _inputWorker_basic;
         private R_Peaks_New_Data_Worker _outputWorker;
 
@@ -33,6 +34,7 @@ namespace EKG_Project.Modules.R_Peaks
 
         private STATE _state;
         private R_Peaks_Alg _alg;
+        private uint _frequency;
         private int _step;
         private Vector<Double> _currentVector;
                 private Vector<double> _currentVectorRRInterval;
@@ -73,13 +75,15 @@ namespace EKG_Project.Modules.R_Peaks
             {
                 InputWorker_basic = new Basic_New_Data_Worker(Params.AnalysisName);
                 InputWorker = new ECG_Baseline_New_Data_Worker(Params.AnalysisName);
+                //InputWorker = new Basic_New_Data_Worker(Params.AnalysisName);
                 OutputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName); //+"temp" tez ma byc?
                 InputData_basic = new Basic_Data();
                 InputData = new ECG_Baseline_Data();
                 OutputData = new R_Peaks_Data();
 
+                _frequency = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
                 //_step = 6000; //od fs?
-                _step = Convert.ToInt32(InputData_basic.Frequency*16);
+                _step = Convert.ToInt32(_frequency*16);
                 _state = STATE.INIT;
             }
         }
@@ -138,24 +142,24 @@ namespace EKG_Project.Modules.R_Peaks
                                 switch (Params.Method)
                                 {
                                 case R_Peaks_Method.PANTOMPKINS:
-                                    _currentVector = _alg.PanTompkins(_currentVector, InputData_basic.Frequency);
+                                    _currentVector = _alg.PanTompkins(_currentVector, _frequency);
                                     break;
                                 case R_Peaks_Method.HILBERT:
-                                    _currentVector = _alg.Hilbert(_currentVector, InputData_basic.Frequency);
+                                    _currentVector = _alg.Hilbert(_currentVector, _frequency);
                                     break;
                                 case R_Peaks_Method.EMD:
-                                    _currentVector = _alg.EMD(_currentVector, InputData_basic.Frequency);
+                                    _currentVector = _alg.EMD(_currentVector, _frequency);
                                     break;
                                 }
                                 OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, false, _currentVector);
                                 if (_currentVector.Count > 1)
                                 {
-                                    _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
+                                    _currentVectorRRInterval = _alg.RRinMS(_currentVector, _frequency);
                                     //save results
                                     OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, false, _currentVectorRRInterval);
                                 }
                                 //updating current index
-                                _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
+                                _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(_frequency * 0.1);
                                 
                             }
                             catch(Exception ex)
@@ -185,13 +189,13 @@ namespace EKG_Project.Modules.R_Peaks
                                 switch (Params.Method)
                                 {
                                     case R_Peaks_Method.PANTOMPKINS:
-                                        _currentVector = _alg.PanTompkins(_currentVector, InputData_basic.Frequency);
+                                        _currentVector = _alg.PanTompkins(_currentVector, _frequency);
                                         break;
                                     case R_Peaks_Method.HILBERT:
-                                        _currentVector = _alg.Hilbert(_currentVector, InputData_basic.Frequency);
+                                        _currentVector = _alg.Hilbert(_currentVector, _frequency);
                                         break;
                                     case R_Peaks_Method.EMD:
-                                        _currentVector = _alg.EMD(_currentVector, InputData_basic.Frequency);
+                                        _currentVector = _alg.EMD(_currentVector, _frequency);
                                         break;
                                 }
                                 _currentVector.Add(_currentIndex, _currentVector);
@@ -199,12 +203,12 @@ namespace EKG_Project.Modules.R_Peaks
                                 OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, true, _currentVector);
                                 if (_currentVector.Count > 1)
                                 {
-                                    _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
+                                    _currentVectorRRInterval = _alg.RRinMS(_currentVector, _frequency);
                                     //save results
                                     OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
                                 }
                                 //updating current index
-                                _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
+                                _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(_frequency * 0.1);
                             }
                             catch (Exception ex)
                             {
@@ -230,13 +234,13 @@ namespace EKG_Project.Modules.R_Peaks
                             switch (Params.Method)
                             {
                                 case R_Peaks_Method.PANTOMPKINS:
-                                    _currentVector = _alg.PanTompkins(_currentVector, InputData_basic.Frequency);
+                                    _currentVector = _alg.PanTompkins(_currentVector, _frequency);
                                     break;
                                 case R_Peaks_Method.HILBERT:
-                                    _currentVector = _alg.Hilbert(_currentVector, InputData_basic.Frequency);
+                                    _currentVector = _alg.Hilbert(_currentVector, _frequency);
                                     break;
                                 case R_Peaks_Method.EMD:
-                                    _currentVector = _alg.EMD(_currentVector, InputData_basic.Frequency);
+                                    _currentVector = _alg.EMD(_currentVector, _frequency);
                                     break;
                             }
                             _currentVector.Add(_currentIndex, _currentVector);
@@ -244,12 +248,12 @@ namespace EKG_Project.Modules.R_Peaks
                             OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, true, _currentVector);
                             if (_currentVector.Count > 1)
                             {
-                                _currentVectorRRInterval = _alg.RRinMS(_currentVector, InputData_basic.Frequency);
+                                _currentVectorRRInterval = _alg.RRinMS(_currentVector, _frequency);
                                 //save results
                                 OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
                             }
                             //updating current index
-                            _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(InputData_basic.Frequency * 0.1);
+                            _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(_frequency * 0.1);
                         }
                         catch (Exception ex)
                         {
@@ -342,6 +346,7 @@ namespace EKG_Project.Modules.R_Peaks
         }
 
         public ECG_Baseline_New_Data_Worker InputWorker
+        //public Basic_New_Data_Worker InputWorker
         {
             get
             {
@@ -396,7 +401,7 @@ namespace EKG_Project.Modules.R_Peaks
         public static void Main(String[] args)
         {
             IModule testModule = new EKG_Project.Modules.R_Peaks.R_Peaks();
-            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "abc123");
+            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "Analysis");
 
             testModule.Init(param);
             while (!testModule.Ended())
