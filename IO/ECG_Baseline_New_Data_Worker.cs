@@ -119,9 +119,11 @@ namespace EKG_Project.IO
             return vector;
         }
 
+        #region Documentation
         /// <summary>
         /// Deletes all analysis files with ECG_Baseline_Data
-        /// </summary>
+        /// </summary> 
+        #endregion
         public void DeleteFiles()
         {
             string moduleName = this.GetType().Name;

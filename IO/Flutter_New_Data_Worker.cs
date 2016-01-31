@@ -7,73 +7,110 @@ using System.IO;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Class that saves and loads Flutter_Data in txt files
+    /// </summary>
+    #endregion
     public class Flutter_New_Data_Worker
     {
         //FIELDS
+        #region Documentation
         /// <summary>
         /// Stores txt files directory
-        /// </summary>
+        /// </summary> 
+        #endregion
         private string directory;
 
+        #region Documentation
         /// <summary>
         /// Stores analysis name
-        /// </summary>
+        /// </summary> 
+        #endregion
         private string analysisName;
 
+        #region Documentation
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        #endregion
         public Flutter_New_Data_Worker() 
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
         }
 
+        #region Documentation
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        #endregion
         public Flutter_New_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves FlutterAnnotations in txt file
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="result">flutter annotations</param>
-        public void SaveSignal(string lead, bool mode, List<Tuple<int, int>> results)
+        /// <param name="result">flutter annotations</param> 
+        #endregion
+        public void SaveFlutterAnnotations(string lead, bool mode, List<Tuple<int, int>> results)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
-            string pathOut = Path.Combine(directory, fileName);
+            string fileName1 = analysisName + "_" + moduleName + "_" + lead + "_FlutterAnnotations" + "_Item1" + ".txt";
+            string pathOut1 = Path.Combine(directory, fileName1);
 
-            StreamWriter sw = new StreamWriter(pathOut, mode);
-
+            StreamWriter sw1 = new StreamWriter(pathOut1, mode);
             foreach (var result in results)
             {
-                sw.WriteLine(result.Item1);
-                sw.WriteLine(result.Item2);
-                sw.WriteLine("---");
+                sw1.WriteLine(result.Item1);
             }
 
-            sw.Close();
+            sw1.Close();
+
+            string fileName2 = analysisName + "_" + moduleName + "_" + lead + "_FlutterAnnotations" + "_Item2" + ".txt";
+            string pathOut2 = Path.Combine(directory, fileName2);
+
+            StreamWriter sw2 = new StreamWriter(pathOut2, mode);
+            foreach (var result in results)
+            {
+                sw2.WriteLine(result.Item2);
+            }
+
+            sw2.Close();
         }
 
+        #region Documentation
         /// <summary>
         /// Loads FlutterAnnotations from txt file
         /// </summary>
         /// <param name="lead">lead</param>
-        /// <returns>flutter annotations list</returns>
-        public List<Tuple<int, int>> LoadSignal(string lead, int startIndex, int length)
+        /// <returns>flutter annotations list</returns> 
+        #endregion
+        public List<Tuple<int, int>> LoadFlutterAnnotations(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
-            string pathIn = Path.Combine(directory, fileName);
+            string fileName1 = analysisName + "_" + moduleName + "_" + lead + "_FlutterAnnotations" + "_Item1" + ".txt";
+            string pathIn1 = Path.Combine(directory, fileName1);
 
-            StreamReader sr = new StreamReader(pathIn);
+            StreamReader sr1 = new StreamReader(pathIn1);
+
+            string fileName2 = analysisName + "_" + moduleName + "_" + lead + "_FlutterAnnotations" + "_Item2" + ".txt";
+            string pathIn2 = Path.Combine(directory, fileName2);
+
+            StreamReader sr2 = new StreamReader(pathIn2);
             //pomijane linie ...
             int iterator = 0;
-            while (iterator < startIndex && !sr.EndOfStream)
+            while (iterator < startIndex && !sr1.EndOfStream)
             {
-                string readLine = sr.ReadLine();
+                sr1.ReadLine();
+                sr2.ReadLine();
                 iterator++;
             }
 
@@ -81,37 +118,39 @@ namespace EKG_Project.IO
             List<Tuple<int, int>> list = new List<Tuple<int, int>>();
             while (iterator < length)
             {
-                if (sr.EndOfStream)
+                if (sr1.EndOfStream)
                 {
                     throw new IndexOutOfRangeException();
                 }
-                string item1 = sr.ReadLine();
+                string item1 = sr1.ReadLine();
                 int convertedItem1 = Convert.ToInt32(item1);
 
-                string item2 = sr.ReadLine();
+                string item2 = sr2.ReadLine();
                 int convertedItem2 = Convert.ToInt32(item2);
+
 
                 Tuple<int, int> tuple = Tuple.Create(convertedItem1, convertedItem2);
                 list.Add(tuple);
-
-                sr.ReadLine();
                 iterator++;
             }
-            sr.Close();
+            sr1.Close();
+            sr2.Close();
 
             return list;
         }
 
+        #region Documentation
         /// <summary>
         /// Gets number of FlutterAnnotations samples
         /// </summary>
         /// <param name="lead">lead</param>
-        /// <returns>number of samples</returns>
+        /// <returns>number of samples</returns> 
+        #endregion
         public uint getNumberOfSamples(string lead)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_FlutterAnnotations" + "_Item1" + ".txt";
             string path = Path.Combine(directory, fileName);
 
             uint count = 0;
@@ -122,14 +161,14 @@ namespace EKG_Project.IO
                     count++;
                 }
             }
-
-            count = count / 3;
             return count;
         }
 
+        #region Documentation
         /// <summary>
         /// Deletes all analysis files with Flutter_Data
-        /// </summary>
+        /// </summary> 
+        #endregion
         public void DeleteFiles()
         {
             string moduleName = this.GetType().Name;

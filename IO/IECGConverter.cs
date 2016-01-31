@@ -16,7 +16,6 @@ namespace EKG_Project.IO
         uint getFrequency();
         uint getNumberOfSamples(string lead);
         void ConvertFile(string path);
-
         void DeleteFiles();
         
     }

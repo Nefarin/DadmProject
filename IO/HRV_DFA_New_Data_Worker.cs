@@ -5,7 +5,17 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Stores HRV_DFA_Signals
+    /// </summary>
+    #endregion
     public enum HRV_DFA_Signals { DfaNumberN, DfaValueFn, ParamAlpha, Fluctuations };
+    #region Documentation
+    /// <summary>
+    /// Class that saves and load HRV_DFA_Data in txt files
+    /// </summary>
+    #endregion
     public class HRV_DFA_New_Data_Worker
     {
         //FIELDS
@@ -44,13 +54,15 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves parts of HRV_DFA_Signals in txt file
         /// </summary>
         /// <param name="atr">HRV_DFA_Signals</param>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="results">results</param>
+        /// <param name="results">results</param> 
+        #endregion
         public void SaveSignal(HRV_DFA_Signals atr, string lead, bool mode, Tuple<Vector<double>, Vector<double>> results)
         {
             string moduleName = this.GetType().Name;
@@ -141,11 +153,13 @@ namespace EKG_Project.IO
             return tuple;
         }
 
+        #region Documentation
         /// <summary>
         /// Gets number of HRV_DFA_Signals vector samples 
         /// </summary>
         /// <param name="lead">lead</param>
-        /// <returns>number of samples</returns>
+        /// <returns>number of samples</returns> 
+        #endregion
         public uint getNumberOfSamples(HRV_DFA_Signals atr, string lead)
         {
             string moduleName = this.GetType().Name;
@@ -164,9 +178,11 @@ namespace EKG_Project.IO
             return count;
         }
 
+        #region Documentation
         /// <summary>
         /// Deletes all analysis files with HRV_DFA_Data
-        /// </summary>
+        /// </summary> 
+        #endregion
         public void DeleteFiles()
         {
             string moduleName = this.GetType().Name;
