@@ -248,7 +248,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                     samples.CopySubVectorTo(samples_destination, i, 0, window_size);
                     signal_extended.CopySubVectorTo(signal_extended_destination, i, 0, window_size);
 
-                    coeff = Fit.Polynomial(samples_destination.ToArray(), signal_extended_destination.ToArray(), 3, DirectRegressionMethod.NormalEquations);
+                    coeff = Fit.Polynomial(samples_destination.ToArray(), signal_extended_destination.ToArray(), 3, DirectRegressionMethod.QR);
                     output_signal_table[i] = coeff[3] * Math.Pow(samples[i + (window_size / 2)], 3) + coeff[2] * Math.Pow(samples[i + (window_size / 2)], 2) + coeff[1] * samples[i + (window_size / 2)] + coeff[0];
                 }
 
