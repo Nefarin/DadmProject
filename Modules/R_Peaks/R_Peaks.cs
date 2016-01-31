@@ -401,7 +401,7 @@ namespace EKG_Project.Modules.R_Peaks
         public static void Main(String[] args)
         {
             IModule testModule = new EKG_Project.Modules.R_Peaks.R_Peaks();
-            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "Analysis");
+            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "x");
 
             testModule.Init(param);
             while (!testModule.Ended())
