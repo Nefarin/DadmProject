@@ -187,18 +187,20 @@ namespace EKG_Project.Modules.Waves
 
             int len = (middleR >> decompLevel) - (rightEnd >> decompLevel);
 
-            if (len < 1)
-                len = 1;
-
-
-            if (len < 1 || sectionStart < 0)
+            if (sectionStart < 0)
                 return -1;
 
             if (sectionStart + len >= dwt.Count)
                 len = dwt.Count - sectionStart;
 
+            if (len < 1)
+                return -1;
+
             int qrsOnsetInd = dwt.SubVector(sectionStart, len).MinimumIndex() + sectionStart;
             double treshold = Math.Abs(dwt[qrsOnsetInd]) * _qrsOnsTresh;
+
+            if (dmiddleR >= currentECG.Count)
+                dmiddleR = currentECG.Count - 1;
 
             while (Math.Abs(dwt[qrsOnsetInd]) > treshold && qrsOnsetInd > sectionStart)
                 qrsOnsetInd--;
