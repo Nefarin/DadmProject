@@ -139,6 +139,7 @@ namespace EKG_Project.IO
                     break;
                 case (State.END):
                     _worker.SaveLeads(_leads);
+                    _worker.SaveAttribute(Basic_Attributes.Frequency, Converter.getFrequency());
                     _ended = true;
                     break;
                 default:

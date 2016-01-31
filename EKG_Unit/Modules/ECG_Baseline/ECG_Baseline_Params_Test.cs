@@ -102,7 +102,7 @@ namespace EKG_Unit.Modules.ECG_Baseline
             ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.LOWPASS, 5, "Analysis1", 0.5);
             Assert.AreEqual(Filtr_Method.LMS, param.Method);
             Assert.AreEqual(Filtr_Type.LOWPASS, param.Type);
-            Assert.AreEqual(5, param.WindowSizeLow);
+            Assert.AreEqual(5, param.WindowLMS);
             Assert.AreEqual("Analysis1", param.AnalysisName);
             Assert.AreEqual(0.5, param.Mi);
         }
@@ -113,7 +113,7 @@ namespace EKG_Unit.Modules.ECG_Baseline
             ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.HIGHPASS, 90, "Analysis1", 0.5);
             Assert.AreEqual(Filtr_Method.LMS, param.Method);
             Assert.AreEqual(Filtr_Type.HIGHPASS, param.Type);
-            Assert.AreEqual(90, param.WindowSizeHigh);
+            Assert.AreEqual(90, param.WindowLMS);
             Assert.AreEqual("Analysis1", param.AnalysisName);
             Assert.AreEqual(0.5, param.Mi);
         }
@@ -146,11 +146,11 @@ namespace EKG_Unit.Modules.ECG_Baseline
         [Description("Test if LMS BandPass constructor works properly")]
         public void LmsBPConstructorTest()
         {
-            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 10, 90, "Analysis1", 0.5);
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 10, "Analysis1", 0.5);
             Assert.AreEqual(Filtr_Method.LMS, param.Method);
             Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
-            Assert.AreEqual(10, param.WindowSizeLow);
-            Assert.AreEqual(90, param.WindowSizeHigh);
+            Assert.AreEqual(10, param.WindowLMS);
+            //Assert.AreEqual(90, param.WindowSizeHigh);
             Assert.AreEqual("Analysis1", param.AnalysisName);
             Assert.AreEqual(0.5, param.Mi);
         }

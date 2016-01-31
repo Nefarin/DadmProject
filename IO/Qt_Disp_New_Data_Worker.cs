@@ -10,45 +10,70 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Stores Qt_Disp_Attrubutes
+    /// </summary>
+    #endregion
     public enum Qt_Disp_Attributes { QT_disp_local, QT_mean, QT_std };
+    #region Documentation
+    /// <summary>
+    /// Stores Qt_Disp_Signal
+    /// </summary>
+    #endregion
     public enum Qt_Disp_Signal { T_End_Local, QT_Intervals};
+    #region Documentation
+    /// <summary>
+    /// Class that saves and loads Qt_Disp_Data in txt files
+    /// </summary>
+    #endregion
     public class Qt_Disp_New_Data_Worker
     {
         //FIELDS
+        #region Documentation
         /// <summary>
         /// Stores txt files directory
-        /// </summary>
+        /// </summary> 
+        #endregion
         private string directory;
 
+        #region Documentation
         /// <summary>
         /// Stores analysis name
-        /// </summary>
+        /// </summary> 
+        #endregion
         private string analysisName;
 
+        #region Documentation
         /// <summary>
         /// Default constructor
-        /// </summary>
+        /// </summary> 
+        #endregion
         public Qt_Disp_New_Data_Worker() 
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
         }
 
+        #region Documentation
         /// <summary>
         /// Parameterized constructor
         /// </summary>
-        /// <param name="analysisName">analysis name</param>
+        /// <param name="analysisName">analysis name</param> 
+        #endregion
         public Qt_Disp_New_Data_Worker(String analysisName): this()
         {
             this.analysisName = analysisName;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves parts of T_End_Local signal in txt file
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="signal">signal</param>
+        /// <param name="signal">signal</param> 
+        #endregion
         public void SaveTEndLocal(string lead, bool mode, List<int> signal)
         {
             string moduleName = this.GetType().Name;
@@ -65,13 +90,15 @@ namespace EKG_Project.IO
             sw.Close();
         }
 
+        #region Documentation
         /// <summary>
         /// Loads parts of T_End_Local signal from txt file
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
         /// <param name="length">length</param>
-        /// <returns>T_End_Local list</returns>
+        /// <returns>T_End_Local list</returns> 
+        #endregion
         public List<int> LoadTEndLocal(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
@@ -110,12 +137,14 @@ namespace EKG_Project.IO
             return list;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves parts of QT_Intervals signal in txt file
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="signal">signal</param>
+        /// <param name="signal">signal</param> 
+        #endregion
         public void SaveQTIntervals(string lead, bool mode, List<double> signal)
         {
             string moduleName = this.GetType().Name;
@@ -131,13 +160,15 @@ namespace EKG_Project.IO
             sw.Close();
         }
 
+        #region Documentation
         /// <summary>
         /// Loads parts of QT_Intervals signal from txt file
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
         /// <param name="length">length</param>
-        /// <returns>QT_Intervals list</returns>
+        /// <returns>QT_Intervals list</returns> 
+        #endregion
         public List<double> LoadQTIntervals(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
@@ -176,12 +207,14 @@ namespace EKG_Project.IO
             return list;
         }
 
+        #region Documentation
         /// <summary>
         /// Gets number of Qt_Disp_Signal samples 
         /// </summary>
         /// <param name="atr">Qt_Disp_Signal</param>
         /// <param name="lead">lead</param>
-        /// <returns>samples</returns>
+        /// <returns>samples</returns> 
+        #endregion
         public uint getNumberOfSamples(Qt_Disp_Signal atr, string lead)
         {
             string moduleName = this.GetType().Name;
@@ -200,11 +233,13 @@ namespace EKG_Project.IO
             return count;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves Qt_Disp_Attributes in txt file
         /// </summary>
         /// <param name="atr">Qt_Disp_Attributes</param>
-        /// <param name="value">value</param>
+        /// <param name="value">value</param> 
+        #endregion
         public void SaveAttribute(Qt_Disp_Attributes atr, double value)
         {
             string moduleName = this.GetType().Name;
@@ -217,11 +252,13 @@ namespace EKG_Project.IO
             sw.Close();
         }
 
+        #region Documentation
         /// <summary>
         /// Loads Qt_Disp_Attributes from txt file
         /// </summary>
         /// <param name="atr">Qt_Disp_Attributes</param>
-        /// <returns>value</returns>
+        /// <returns>value</returns> 
+        #endregion
         public double LoadAttribute(Qt_Disp_Attributes atr)
         {
             string moduleName = this.GetType().Name;
@@ -237,9 +274,11 @@ namespace EKG_Project.IO
             return readValue;
         }
 
+        #region Documentation
         /// <summary>
         /// Deletes all analysis files with Qt_Disp_Data
-        /// </summary>
+        /// </summary> 
+        #endregion
         public void DeleteFiles()
         {
             string moduleName = this.GetType().Name;
