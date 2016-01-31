@@ -15,7 +15,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             #region
             /// <summary>
             /// Butterworth filter. Method that filters the input ECG signal by Butterworth filter.
-            /// This function allows to selec type of filter: lowpass or highpass.
+            /// This function allows to select type of filter: lowpass or highpass.
             /// <param name="signal">The raw ECG signal that is filtered</param>
             /// <param name="fs">Sampling frequency of signal</param>
             /// <param name="fc">Cut-off frequency of signal</param>
@@ -151,7 +151,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             #region
             /// <summary>
             /// Overloaded functions 'lms()' that allows to filter the input signal by LMS filter.
-            /// This function allows to selec type of filter: lowpass, highpass or bandpass.
+            /// This function allows to select type of filter: lowpass, highpass or bandpass.
             /// </summary>
             /// <param name="signal">The raw ECG signal that is filtered</param>
             /// <param name="fs">Sampling frequency of signal</param>
@@ -194,7 +194,7 @@ namespace EKG_Project.Modules.ECG_Baseline
 
             /// <summary>
             /// Savitzky-Golay's filter. Method that filters the input ECG signal by Savitzky-Golay's filter.
-            /// This function allows to selec type of filter: lowpass or highpass.
+            /// This function allows to select type of filter: lowpass or highpass.
             /// </summary>
             /// <param name="signal">The raw ECG signal that is filtered</param>
             /// <param name="window_size">Size of filtration window</param>
@@ -289,7 +289,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             //========================================================================================================
             /// <summary>
             /// Moving average filter. Method that filters the input ECG signal by moving average filter.
-            /// This function allows to selec type of filter: lowpass or highpass.
+            /// This function allows to select type of filter: lowpass or highpass.
             /// </summary>
             /// <param name="signal">The raw ECG signal that is filtered</param>
             /// <param name="window_size">Size of filtration window</param>
