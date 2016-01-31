@@ -39,51 +39,51 @@ namespace EKG_Project.Modules.HRT
 
 
 
-        ///// <summary>
-        ///// List of tuples with tachograms for each VPC detected for every channel in signal
-        ///// </summary>
-        //List<Tuple<string, int[], List<double[]>>> _tachogramGUI = new List<Tuple<string, int[], List<double[]>>>();
+    ///// <summary>
+    ///// List of tuples with tachograms for each VPC detected for every channel in signal
+    ///// </summary>
+    //List<Tuple<string, int[], List<double[]>>> _tachogramGUI = new List<Tuple<string, int[], List<double[]>>>();
 
-        ///// <summary>
-        ///// List of tuples with average tachogram for each VPC detected for every channel in signal
-        ///// </summary>
-        //List<Tuple<string, int[], double[]>> _tachogramMeanGUI = new List<Tuple<string, int[], double[]>>();
+    //    /// <summary>
+    //    /// List of tuples with average tachogram for each VPC detected for every channel in signal
+    //    /// </summary>
+    //    List<Tuple<string, int[], double[]>> _tachogramMeanGUI = new List<Tuple<string, int[], double[]>>();
 
-        ///// 
-        ///// <summary>
-        ///// List of tuples with values of average value of Turbulence Onset for each VPC detected for every channel in signal
-        ///// </summary>
-        //List<Tuple<string, int[], double[]>> _turbulenceOnsetmeanGUI = new List<Tuple<string, int[], double[]>>();
+    //    /// 
+    //    /// <summary>
+    //    /// List of tuples with values of average value of Turbulence Onset for each VPC detected for every channel in signal
+    //    /// </summary>
+    //    List<Tuple<string, int[], double[]>> _turbulenceOnsetmeanGUI = new List<Tuple<string, int[], double[]>>();
 
 
-        ///// <summary>
-        ///// List of tuples with coordinates of largest slope (regression lines) for each VPC detected for every channel in signal
-        ///// </summary>
-        //List<Tuple<string, int[], double[]>> _turbulenceSlopeMaxGUI = new List<Tuple<string, int[], double[]>>();
+    //    /// <summary>
+    //    /// List of tuples with coordinates of largest slope (regression lines) for each VPC detected for every channel in signal
+    //    /// </summary>
+    //    List<Tuple<string, int[], double[]>> _turbulenceSlopeMaxGUI = new List<Tuple<string, int[], double[]>>();
 
-        ///// <summary>
-        ///// List of tuples with values of Turbulence Onset for each VPC detected for every channel in signal
-        ///// </summary>
-        //List<Tuple<string, List<double>>> _turbulenceOnsetPDF = new List<Tuple<string, List<double>>>();
+    //    /// <summary>
+    //    /// List of tuples with values of Turbulence Onset for each VPC detected for every channel in signal
+    //    /// </summary>
+    //    List<Tuple<string, List<double>>> _turbulenceOnsetPDF = new List<Tuple<string, List<double>>>();
 
-        ///// <summary>
-        ///// List of tuples with values of Turbulence Slope for each VPC detected for every channel in signal
-        ///// </summary>
-        //List<Tuple<string, List<double>>> _turbulenceSlopePDF = new List<Tuple<string, List<double>>>();
-        
+    //    /// <summary>
+    //    /// List of tuples with values of Turbulence Slope for each VPC detected for every channel in signal
+    //    /// </summary>
+    //    List<Tuple<string, List<double>>> _turbulenceSlopePDF = new List<Tuple<string, List<double>>>();
 
-        ///// <summary>
-        ///// Default constructor of HRT_Data Class (initialize empty lists of tuples)
-        ///// </summary>
-        //public HRT_Data()
-        //{
-        //    _tachogramGUI = new List<Tuple<string, int[], List<double[]>>>();
-        //    _tachogramMeanGUI = new List<Tuple<string, int[], double[]>>();
-        //    _turbulenceOnsetmeanGUI = new List<Tuple<string, int[], double[]>>();
-        //    _turbulenceSlopeMaxGUI = new List<Tuple<string, int[], double[]>>();
-        //    _turbulenceOnsetPDF = new List<Tuple<string, List<double>>>();
-        //    _turbulenceSlopePDF = new List<Tuple<string, List<double>>>();
-        //}
-     //}
-     #endregion
+
+    //    /// <summary>
+    //    /// Default constructor of HRT_Data Class (initialize empty lists of tuples)
+    //    /// </summary>
+    //    public HRT_Data()
+    //    {
+    //        _tachogramGUI = new List<Tuple<string, int[], List<double[]>>>();
+    //        _tachogramMeanGUI = new List<Tuple<string, int[], double[]>>();
+    //        _turbulenceOnsetmeanGUI = new List<Tuple<string, int[], double[]>>();
+    //        _turbulenceSlopeMaxGUI = new List<Tuple<string, int[], double[]>>();
+    //        _turbulenceOnsetPDF = new List<Tuple<string, List<double>>>();
+    //        _turbulenceSlopePDF = new List<Tuple<string, List<double>>>();
+    //    }
+    //}
+    #endregion
 }

@@ -1,24 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.Modules.Heart_Class;
 using EKG_Project.IO;
+using MathNet.Numerics.LinearAlgebra;
 
-
+q
 
 namespace EKG_Project.Modules.HRT
 {
     public class HRT : IModule
     {
+        private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
         private bool _ended;
         private bool _aborted;
+
         private int _currentChannelIndex;
         private int _currentChannelLength;
-        private int _samplesProcessed;
+        private string _currentLeadName;
+        private string[] _leads;
+        private int _currentIndex;
         private int _numberOfChannels;
+        private int _samplesProcessed;
         private int _fs;
 
+        private Basic_New_Data_Worker _inputWorker_basic;
+        private R_Peaks_New_Data_Worker _inputWorker_Rpeaks;
+        private Heart_Class_New_Data_Worker _inputWorker_HeartClass;
+        private HRT_New_Data_Worker _outputWorker;
+
+        private Basic_Data _inputData_basic;
+        private R_Peaks_Data _inputData_Rpeaks;
+        private Heart_Class_Data _inputData_HeartClass;
+        private HRT_Data _outputData;
+        private HRT_Params _params;
+
+
+        private STATE _state;
+        private HRT_Alg HRT_Algorythms;
         private Vector<double> _rpeaksSelected;
         private Vector<double> _rrintervals;
         private List<Tuple<int, int>> _classAll;
@@ -31,26 +54,20 @@ namespace EKG_Project.Modules.HRT
         private double[] _meanTachogram;
         private int[] _xaxis;
 
-        private HRT_Params _params;
-        private HRT_Data_Worker _outputWorker;
-        private HRT_Data _outputData;
-        private R_Peaks_Data_Worker _inputRpeaksWorker;
-        private R_Peaks_Data _inputRpeaksData;
-        private Heart_Class_Data_Worker _inputHeartClassWorker;
-        private Heart_Class_Data _inputHeartClassData;
-        private Basic_Data_Worker _inputBasicDataWorker;
-        private Basic_Data _inputBasicData;
-        private HRT_Alg HRT_Algorythms = new HRT_Alg();
-
         private List<Tuple<string, int[], List<double[]>>> _tachogramGUI = new List<Tuple<string, int[], List<double[]>>>();
         private List<Tuple<string, int[], double[]>> _tachogramMeanGUI = new List<Tuple<string, int[], double[]>>();
         private List<Tuple<string, int[], double[]>> _turbulenceOnsetmeanGUI = new List<Tuple<string, int[], double[]>>();
         private List<Tuple<string, int[], double[]>> _turbulenceSlopeMaxGUI = new List<Tuple<string, int[], double[]>>();
-
         private List<Tuple<string, List<double>>> _turbulenceOnsetPDF = new List<Tuple<string, List<double>>>();
         private List<Tuple<string, List<double>>> _turbulenceSlopePDF = new List<Tuple<string, List<double>>>();
 
         
+
+
+        //
+
+        //Aborted = false;
+
 
 
         public void Abort()
@@ -64,48 +81,53 @@ namespace EKG_Project.Modules.HRT
             return _ended;
         }
 
-        /**************************************************/
-        //inicjalizacja modulu
-        /**************************************************/
-        public void Init(ModuleParams parameters) {
+        public bool IsAborted()
+        {
+            return Aborted;
+        }
 
-            Params = parameters as HRT_Params;
-            
-            string _analysisName = Params.AnalysisName;
+        public void Init(ModuleParams parameters)
+        {
+            try
+            {
+                Params = parameters as HRT_Params;
+            }
+            catch (Exception e)
+            {
+                Abort();
+                return;
+            }
 
-            Aborted = false;
-
-            if (!Runnable() ) _ended = true;
+            if (!Runnable())
+            {
+                _ended = true;
+            }
             else
             {
-                _ended = false;
+                InputWorker_basic = new Basic_New_Data_Worker(Params.AnalysisName);
+                InputRpeaksWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName);
+                InputHeartClassWorker = new Heart_Class_New_Data_Worker(Params.AnalysisName);
+                OutputWorker = new HRT_New_Data_Worker(Params.AnalysisName);
+                InputData_basic = new Basic_Data();
+                InputData = new ECG_Baseline_Data();
+                OutputData = new R_Peaks_Data();
 
-                /**************************************************/
-                //wczytanie danych z odprowadzen
-                //*************************************************/
-                /**************************************************/
-                //proba pobrania parametrow z modulu basic
-                //*************************************************/
-                try
-                {
-                    InputBasicDataWorker = new Basic_Data_Worker(_analysisName);
-                    InputBasicDataWorker.Load();
-                    InputBasicData = InputBasicDataWorker.BasicData;
-                    Fs = (int)InputBasicData.Frequency;
-                    Console.Write("Częstotliwość: ");
-                    Console.WriteLine(Fs);
-                }
-                catch (Exception e)
-                {
-                    Abort();
-                }
+
+
+                InputBasicDataWorker.Load();
+                InputBasicData = InputBasicDataWorker.BasicData;
+                Fs = (int)InputBasicData.Frequency;
+                Console.Write("Częstotliwość: ");
+                Console.WriteLine(Fs);
+            }
+
                                 
                 /**************************************************/
                 //proba pobrania parametrow z modulu r_peaks
                 /**************************************************/
                 try
                 {
-                    InputRpeaksWorker = new R_Peaks_Data_Worker(_analysisName);
+                    
                     InputRpeaksWorker.Load();
                     InputRpeaksData = InputRpeaksWorker.Data;
                 }
@@ -119,7 +141,7 @@ namespace EKG_Project.Modules.HRT
                 /**************************************************/
                 try
                 {
-                    InputHeartClassWorker = new Heart_Class_Data_Worker(_analysisName);
+                    
                     InputHeartClassWorker.Load();
                     InputHeartClassData = InputHeartClassWorker.Data;
                 }
@@ -133,7 +155,7 @@ namespace EKG_Project.Modules.HRT
                 /**************************************************/
                 try
                 {
-                    OutputWorker = new HRT_Data_Worker(Params.AnalysisName);
+                    
                     OutputData = new HRT_Data();
                 }
                 catch (Exception e)
@@ -148,7 +170,9 @@ namespace EKG_Project.Modules.HRT
                 NumberOfChannels = InputRpeaksData.RPeaks.Count;
 
             }
-        }
+
+    
+    }
 
         public void ProcessData()
         {
@@ -268,73 +292,153 @@ namespace EKG_Project.Modules.HRT
            
 
         }
-            
-
-        
-        //Accessors (getters and setters)
-        public HRT_Data_Worker OutputWorker
-        {
-            get { return _outputWorker; }
-            set { _outputWorker = value; }
-        }
-        public R_Peaks_Data_Worker InputRpeaksWorker
-        {
-            get { return _inputRpeaksWorker; }
-            set { _inputRpeaksWorker = value; }
-        }
-        public Basic_Data_Worker InputBasicDataWorker
-        {
-            get { return _inputBasicDataWorker; }
-            set { _inputBasicDataWorker = value; }
-        }
-        public HRT_Params Params
-        {
-            get { return _params; }
-            set { _params = value; }
-        }
-        public Heart_Class_Data_Worker InputHeartClassWorker
-        {
-            get { return _inputHeartClassWorker; }
-            set { _inputHeartClassWorker = value; }
-        }
-        public R_Peaks_Data InputRpeaksData
-        {
-            get { return _inputRpeaksData; }
-            set { _inputRpeaksData = value; }
-        }
-        public Heart_Class_Data InputHeartClassData
-        {
-            get { return _inputHeartClassData; }
-            set { _inputHeartClassData = value; }
-        }
-        public HRT_Data OutputData
-        {
-            get { return _outputData; }
-            set { _outputData = value; }
-        }
-        public Basic_Data InputBasicData
-        {
-            get { return _inputBasicData; }
-            set { _inputBasicData = value; }
-        }
-        public bool Aborted
-        {
-            get { return _aborted; }
-            set { _aborted = value; }
-        }
-        public int NumberOfChannels
-        {
-            get { return _numberOfChannels; }
-            set { _numberOfChannels = value; }
-        }
-        public int Fs
-        {
-            get { return _fs;}
-            set{ _fs = value;}
-        }
 
 
-        public static void Main() {
+    public bool Aborted
+    {
+        get
+        {
+            return _aborted;
+        }
+
+        set
+        {
+            _aborted = value;
+        }
+    }
+
+    public int NumberOfChannels
+    {
+        get
+        {
+            return _numberOfChannels;
+        }
+
+        set
+        {
+            _numberOfChannels = value;
+        }
+    }
+
+    public Basic_New_Data_Worker InputWorker_basic
+    {
+        get
+        {
+            return _inputWorker_basic;
+        }
+
+        set
+        {
+            _inputWorker_basic = value;
+        }
+    }
+
+    public R_Peaks_New_Data_Worker InputWorker_Rpeaks
+    {
+        get
+        {
+            return _inputWorker_Rpeaks;
+        }
+
+        set
+        {
+            _inputWorker_Rpeaks = value;
+        }
+    }
+
+    public Heart_Class_New_Data_Worker InputWorker_HeartClass
+    {
+        get
+        {
+            return _inputWorker_HeartClass;
+        }
+
+        set
+        {
+            _inputWorker_HeartClass = value;
+        }
+    }
+
+    public HRT_New_Data_Worker OutputWorker
+    {
+        get
+        {
+            return _outputWorker;
+        }
+
+        set
+        {
+            _outputWorker = value;
+        }
+    }
+
+    public Basic_Data InputData_basic
+    {
+        get
+        {
+            return _inputData_basic;
+        }
+
+        set
+        {
+            _inputData_basic = value;
+        }
+    }
+
+    public R_Peaks_Data InputData_Rpeaks
+    {
+        get
+        {
+            return _inputData_Rpeaks;
+        }
+
+        set
+        {
+            _inputData_Rpeaks = value;
+        }
+    }
+
+    public Heart_Class_Data InputData_HeartClass
+    {
+        get
+        {
+            return _inputData_HeartClass;
+        }
+
+        set
+        {
+            _inputData_HeartClass = value;
+        }
+    }
+
+    public HRT_Data OutputData
+    {
+        get
+        {
+            return _outputData;
+        }
+
+        set
+        {
+            _outputData = value;
+        }
+    }
+
+    public HRT_Params Params
+    {
+        get
+        {
+            return _params;
+        }
+
+        set
+        {
+            _params = value;
+        }
+    }
+
+
+    public static void Main() {
 
             HRT_Params param = new HRT_Params("TestAnalysisEgz");   
 
