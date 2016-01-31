@@ -1,5 +1,6 @@
 ﻿using System;
 using EKG_Project.IO;
+using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.Modules.ECG_Baseline;
@@ -34,6 +35,8 @@ namespace EKG_Project.Modules.ECG_Baseline
 
         ECG_Baseline_Alg.Filter _newFilter; //= new ECG_Baseline_Alg.Filter();  
         private Vector<Double> _currentVector;
+        private double _lastVectorElement;
+        private double _firstVectorElement;
         private STATE _state;
         private int _step;
 
@@ -136,11 +139,12 @@ namespace EKG_Project.Modules.ECG_Baseline
                         try
                         {
                             _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
-                            Console.WriteLine("===========================================");
-                            Console.WriteLine(InputData.Frequency);
-                            Console.WriteLine("===========================================");
+                            //Console.WriteLine("===========================================");
+                            //Console.WriteLine(InputData.Frequency);
+                            //Console.WriteLine("===========================================");
                             //System.Console.WriteLine(_currentVector.ToString());
                             //System.Console.WriteLine(Params.Method);
+
                             //Selecting filtration method
                             switch (Params.Method)
                             {
@@ -175,13 +179,8 @@ namespace EKG_Project.Modules.ECG_Baseline
                                 case Filtr_Method.SAV_GOL:
                                     if (Params.Type == Filtr_Type.LOWPASS)
                                     {
-                                        //System.Console.WriteLine(Params.Method);
-                                        //System.Console.WriteLine("=========================");
                                         _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                                        //_currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                                        //System.Console.WriteLine("============Po filtracji============");
-                                        //System.Console.WriteLine("=========================");
-                                        //System.Console.WriteLine(_currentVector.ToString());
+
                                     }
                                     if (Params.Type == Filtr_Type.HIGHPASS)
                                     {
@@ -197,6 +196,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                                     break;
                             }
 
+                            _lastVectorElement = _currentVector.Last();
                             OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
                             _currentIndex += _step;
                             _state = STATE.PROCESS_CHANNEL;
@@ -250,13 +250,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                                 case Filtr_Method.SAV_GOL:
                                     if (Params.Type == Filtr_Type.LOWPASS)
                                     {
-                                        //System.Console.WriteLine(_currentVector.ToString());
-                                        //System.Console.WriteLine("========================");
-                                        //_currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
                                         _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                                        //System.Console.WriteLine("============Po filtracji============");
-                                        //System.Console.WriteLine("========================");
-                                        //System.Console.WriteLine(_currentVector.ToString());
                                     }
                                     if (Params.Type == Filtr_Type.HIGHPASS)
                                     {
@@ -271,6 +265,15 @@ namespace EKG_Project.Modules.ECG_Baseline
                                     _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
                                     break;
                             }
+
+                            //Removing of the filtering edge effects. For this purpose we calculate difference between 
+                            //last element of previous vector and first element of current vector. 
+                            //The result of difference is added to all elements of current vector.
+
+                            _firstVectorElement = _currentVector.First();
+                            double diffbtwelements = _lastVectorElement - _firstVectorElement;
+                            _currentVector.Add(diffbtwelements);
+                            _lastVectorElement = _currentVector.Last();
 
                             OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
                             _currentIndex += _step;
@@ -339,6 +342,15 @@ namespace EKG_Project.Modules.ECG_Baseline
                                 _currentVector = _newFilter.lms(_currentVector, InputData.Frequency, Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
                                 break;
                         }
+
+
+                        //Removing of the filtering edge effects. For this purpose we calculate difference between 
+                        //last element of previous vector and first element of current vector. 
+                        //The result of difference is added to all elements of current vector.
+                        _firstVectorElement = _currentVector.First();
+                        double diffbtwelements = _lastVectorElement - _firstVectorElement;
+                        _currentVector.Add(diffbtwelements);
+
                         OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
                         _state = STATE.NEXT_CHANNEL;
                     }
@@ -460,8 +472,8 @@ namespace EKG_Project.Modules.ECG_Baseline
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 50, "abc123", 0.07);
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 50, "abc123");
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.HIGHPASS, 50, "abc123");
-            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.BANDPASS, 10, 50, "abc123");
-            ECG_Baseline_Params param = new ECG_Baseline_Params("abc123", Filtr_Method.BUTTERWORTH, Filtr_Type.LOWPASS, 5, 10 );
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.BANDPASS, 10, 90, "abc123");
+            //ECG_Baseline_Params param = new ECG_Baseline_Params("abc123", Filtr_Method.BUTTERWORTH, Filtr_Type.LOWPASS, 5, 10 );
             //ECG_Baseline_Params param = new ECG_Baseline_Params("abc123", Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS, 5, 10);
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.BANDPASS, 5, 10, 5, 50, "abc123");
 
@@ -472,7 +484,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 testModule.ProcessData();
                 Console.WriteLine(testModule.Progress());
             }
-            //Console.ReadKey();
+            Console.ReadKey();
         }
     }
 }
