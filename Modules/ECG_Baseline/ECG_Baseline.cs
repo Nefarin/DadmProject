@@ -144,12 +144,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                     _state = STATE.BEGIN_CHANNEL;
                     break;
                 case (STATE.BEGIN_CHANNEL):
-                    System.Console.WriteLine("haloasdoadsoadspdaspadso");
                     _currentChannelIndex++;
-                    System.Console.WriteLine("======================");
-                    System.Console.WriteLine(_currentChannelIndex);
-                    System.Console.WriteLine("======================");
-                    System.Console.WriteLine(_numberOfChannels);
                     if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END;
                     else
                     {
@@ -166,7 +161,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                         try
                         {
                             _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
-                            System.Console.WriteLine(_currentVector.ToString());
+                            //System.Console.WriteLine(_currentVector.ToString());
                             //System.Console.WriteLine(Params.Method);
                             //Selecting filtration method
                             switch (Params.Method)
@@ -202,15 +197,11 @@ namespace EKG_Project.Modules.ECG_Baseline
                                 case Filtr_Method.SAV_GOL:
                                     if (Params.Type == Filtr_Type.LOWPASS)
                                     {
-                                        System.Console.WriteLine(Params.Method);
-                                        System.Console.WriteLine("============Window Size Low=============");
-                                        System.Console.WriteLine(Params.WindowSizeLow);
-                                        System.Console.WriteLine("============Window Size Low=============");
-                                        Vector<Double> _currentVector2;
-                                        _currentVector2 = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                                        System.Console.WriteLine("==============Vurenrenr===========");
-                                        System.Console.WriteLine(_currentVector2.ToString());
-                                        System.Console.WriteLine("==============Vurenrenr===========");
+                                        //System.Console.WriteLine(Params.Method);
+                                        //System.Console.WriteLine(Params.Method);
+                                        _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                                        //System.Console.WriteLine("=========================");
+                                        //System.Console.WriteLine(_currentVector.ToString());
                                     }
                                     if (Params.Type == Filtr_Type.HIGHPASS)
                                     {
@@ -281,8 +272,6 @@ namespace EKG_Project.Modules.ECG_Baseline
                                     {
                                         _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
                                         //System.Console.WriteLine(_currentVector.ToString());
-                                        System.Console.WriteLine("=========================");
-                                        System.Console.WriteLine(_currentVector.ToString());
                                     }
                                     if (Params.Type == Filtr_Type.HIGHPASS)
                                     {
@@ -349,8 +338,6 @@ namespace EKG_Project.Modules.ECG_Baseline
                                 if (Params.Type == Filtr_Type.LOWPASS)
                                 {
                                     _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                                    System.Console.WriteLine("=========================");
-                                    System.Console.WriteLine(_currentVector.ToString());
                                 }
                                 if (Params.Type == Filtr_Type.HIGHPASS)
                                 {
@@ -373,16 +360,199 @@ namespace EKG_Project.Modules.ECG_Baseline
                         _state = STATE.NEXT_CHANNEL;
                     }
                     break;
+
+                //int channel = _currentChannelIndex;
+                //int startIndex = _samplesProcessed;
+                //int step = 1000;
+
+                //if (channel < NumberOfChannels)
+                //{
+                //    if (startIndex + step >= _currentChannelLength)
+                //    {
+
+
+                //        _currentVector = InputData.Signals[_currentChannelIndex].Item2.SubVector(startIndex, _currentChannelLength - startIndex);
+
+                //        switch (Params.Method)
+                //        {
+                //            case Filtr_Method.MOVING_AVG:
+                //                if (Params.Type == Filtr_Type.LOWPASS)
+                //                {
+                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.HIGHPASS)
+                //                {
+                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.BANDPASS)
+                //                {
+                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                break;
+                //            case Filtr_Method.BUTTERWORTH:
+                //                if (Params.Type == Filtr_Type.LOWPASS)
+                //                {
+                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.HIGHPASS)
+                //                {
+                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.BANDPASS)
+                //                {
+                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                break;
+                //            case Filtr_Method.SAV_GOL:
+                //                if (Params.Type == Filtr_Type.LOWPASS)
+                //                {
+                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.HIGHPASS)
+                //                {
+                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.BANDPASS)
+                //                {
+                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                break;
+                //            case Filtr_Method.LMS:
+                //                if (Params.Type == Filtr_Type.LOWPASS)
+                //                {
+                //                    _temporaryVector = _currentVector;
+                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeLow);
+                //                }
+                //                if (Params.Type == Filtr_Type.HIGHPASS)
+                //                {
+                //                    _temporaryVector = _currentVector;
+                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
+                //                }
+                //                if (Params.Type == Filtr_Type.BANDPASS)
+                //                {
+                //                    _temporaryVector = _currentVector;
+                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                    _temporaryVector = _newFilter.savitzky_golay(_temporaryVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
+                //                }
+                //                break;
+                //        }
+
+                //        _currentVector.CopySubVectorTo(_temporaryVector2, 0, startIndex, _currentVector.Count);
+                //        //OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
+                //        OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _temporaryVector2));
+                //        _currentChannelIndex++;
+
+                //        if (_currentChannelIndex < NumberOfChannels)
+                //        {
+                //            _samplesProcessed = 0;
+                //            _currentChannelLength = InputData.Signals[_currentChannelIndex].Item2.Count;
+                //            _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
+                //            _temporaryVector2 = Vector<Double>.Build.Dense(_currentChannelLength);
+                //        }
+
+
+                //    }
+                //    else
+                //    {
+
+                //        _currentVector = InputData.Signals[_currentChannelIndex].Item2.SubVector(startIndex, step);
+
+                //        switch (Params.Method)
+                //        {
+                //            case Filtr_Method.MOVING_AVG:
+                //                if (Params.Type == Filtr_Type.LOWPASS)
+                //                {
+                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.HIGHPASS)
+                //                {
+                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.BANDPASS)
+                //                {
+                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                    _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                break;
+                //            case Filtr_Method.BUTTERWORTH:
+                //                if (Params.Type == Filtr_Type.LOWPASS)
+                //                {
+                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.HIGHPASS)
+                //                {
+                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.BANDPASS)
+                //                {
+                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                //                    _currentVector = _newFilter.butterworth(_currentVector, InputData.Frequency, Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                break;
+                //            case Filtr_Method.SAV_GOL:
+                //                if (Params.Type == Filtr_Type.LOWPASS)
+                //                {
+                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.HIGHPASS)
+                //                {
+                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                if (Params.Type == Filtr_Type.BANDPASS)
+                //                {
+                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                    _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                }
+                //                break;
+                //            case Filtr_Method.LMS:
+                //                if (Params.Type == Filtr_Type.LOWPASS)
+                //                {
+                //                    _temporaryVector = _currentVector;
+                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeLow);
+                //                }
+                //                if (Params.Type == Filtr_Type.HIGHPASS)
+                //                {
+                //                    _temporaryVector = _currentVector;
+                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
+                //                }
+                //                if (Params.Type == Filtr_Type.BANDPASS)
+                //                {
+                //                    _temporaryVector = _currentVector;
+                //                    _temporaryVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                //                    _temporaryVector = _newFilter.savitzky_golay(_temporaryVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                //                    _currentVector = _newFilter.lms(_currentVector, _temporaryVector, Params.WindowSizeHigh);
+                //                }
+                //                break;
+
+                //        }
+                //        _currentVector.CopySubVectorTo(_temporaryVector2, 0, startIndex, _currentVector.Count);
+                //        //OutputData.SignalsFiltered.Add(new Tuple<string, Vector<double>>(InputData.Signals[_currentChannelIndex].Item1, _currentVector));
+                //        _samplesProcessed = startIndex + step;
+                //    }
+                //}
+                //else
+                //{ 
+                //    OutputWorker.Save(OutputData);
+                //    _ended = true;
+                //}
                 case (STATE.NEXT_CHANNEL):
                     _state = STATE.BEGIN_CHANNEL;
                     break;
                 case (STATE.END):
-                    System.Console.WriteLine("Wylączyć");
                     _ended = true;
                     break;
                 default:
                     Abort();
                     break;
+
             }
         }
 
@@ -481,13 +651,8 @@ namespace EKG_Project.Modules.ECG_Baseline
         {
             IModule testModule = new EKG_Project.Modules.ECG_Baseline.ECG_Baseline();
             //ECG_Baseline_Params param = new ECG_Baseline_Params();
-            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 10, "abc123");
-            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.BANDPASS, 10, 50, "abc123");
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 10, "abc123");
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 50, "abc123", 0.07);
-            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 10, "abc123");
-            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.BANDPASS, 10, 100, "abc123");
-            ECG_Baseline_Params param = new ECG_Baseline_Params("abc123", Filtr_Method.BUTTERWORTH, Filtr_Type.LOWPASS, 5, 5);
-
 
             testModule.Init(param);
             while (!testModule.Ended())
@@ -495,7 +660,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 testModule.ProcessData();
                 Console.WriteLine(testModule.Progress());
             }
-            //Console.ReadKey();
+            Console.ReadKey();
         }
     }
 }
