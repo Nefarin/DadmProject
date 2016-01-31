@@ -113,6 +113,16 @@ namespace EKG_Project.Modules.HRT
             Console.WriteLine();
         }
 
+        public void PrintVector(List<Tuple<string, int[], List<double[]>>> Signal)
+        {
+            foreach ( Tuple <string, int[], List < double[] >> _licznik in Signal)
+            {
+                Console.WriteLine(_licznik.Item1);
+                PrintVector(_licznik.Item2);
+                PrintVector(_licznik.Item3);
+            }
+        }
+
         public void PrintVector(Tuple<int[], double[]> Signal)
         {
             foreach (int _licznik in Signal.Item1)
@@ -129,6 +139,26 @@ namespace EKG_Project.Modules.HRT
             Console.WriteLine();
         }
 
+        public void PrintVector(Tuple<string, int[], double[]> Signal)
+        {
+            Console.WriteLine(Signal.Item1);
+            Console.WriteLine();
+            foreach (int _licznik in Signal.Item2)
+            {
+                Console.Write(_licznik);
+                Console.Write(" ");
+            }
+            Console.WriteLine();
+            foreach (double _licznik in Signal.Item3)
+            {
+                Console.Write(_licznik);
+                Console.Write(" ");
+            }
+            Console.WriteLine();
+            
+
+        }
+
         public void PrintVector(List<Tuple<int[], List<double[]>>> Signal)
         {
             foreach (Tuple<int[], List<double[]>> _licznik in Signal)
@@ -139,9 +169,40 @@ namespace EKG_Project.Modules.HRT
             
         }
 
-        public void PrintVector(List<Tuple<int[], double[]>> Signal)
+        public void PrintVector(List<Tuple<string, int[], double[]>> Signal)
         {
-            foreach (Tuple<int[], double[]> _licznik in Signal)
+            
+            foreach (Tuple<string, int[], double[]> _licznik in Signal)
+            {
+                Console.WriteLine(_licznik.Item1);
+                PrintVector(_licznik.Item2);
+                PrintVector(_licznik.Item3);
+            }
+
+        }
+
+        public void PrintVector(List<Tuple<string, List<double>>> Signal)
+        {
+            foreach (Tuple<string, List<double>> _licznik in Signal)
+            {
+                Console.WriteLine(_licznik.Item1);
+                PrintVector(_licznik.Item2);
+            }
+        }
+
+        public void PrintVector(List<Tuple<string, double[], double[]>> Signal)
+        {
+            foreach (Tuple<string, double[], double[]> _licznik in Signal)
+            {
+                Console.WriteLine(_licznik.Item1);
+                PrintVector(_licznik.Item2);
+                PrintVector(_licznik.Item3);
+            }
+        }
+
+        public void PrintVector(List<Tuple<double[], double[]>> Signal)
+        {
+            foreach (Tuple<double[], double[]> _licznik in Signal)
             {
                 
                     PrintVector(_licznik);
@@ -150,6 +211,7 @@ namespace EKG_Project.Modules.HRT
             }
 
         }
+
         public Vector<double> ChangeVectorIntoTimeDomain(Vector<double> SignalInSampleDomain, int samplingFreq)
         {
             if (SignalInSampleDomain == null) throw new ArgumentNullException();
@@ -434,7 +496,7 @@ namespace EKG_Project.Modules.HRT
         /// <param name="VPC"> numbers of probes of peaks R classified as VPC
         /// <param name="rrIntervals"> ntevals between R peaks
         /// <returns> List of Turbulence Onset</returns>
-        public List<double> TurbulenceOnsetsForPDF(List<int> VPC, Vector<double> rrIntervals)  
+        public List<double> TurbulenceOnsetsPDF(List<int> VPC, Vector<double> rrIntervals)  
         {
            
             int sum = back + front;
@@ -462,7 +524,7 @@ namespace EKG_Project.Modules.HRT
         /// </summary>
         /// <param name="tacho"> tachograms
         /// <returns> x and y coordinates to plot</returns>
-        public Tuple<int[],double[]> PrepareMeanTurbulenceOnsetToPLOT(List<double[]>tacho)
+        public Tuple<int[],double[]> TurbulenceOnsetMeanGUI(List<double[]>tacho)
         {
             List<double> listBefore3 = new List<double>();
             List<double> listBefore4 = new List<double>();
@@ -491,7 +553,7 @@ namespace EKG_Project.Modules.HRT
             double sumAfter = (sumAfter7Suma + sumAfter8Suma)/2;
             
 
-            int[] x = { 3, 4 , 7, 8 };
+            int[] x = { -2, -1 , 2, 3 };
             double[] y = { sumBefore, sumBefore, sumAfter, sumAfter };
             return Tuple.Create(x, y);
 
@@ -504,7 +566,7 @@ namespace EKG_Project.Modules.HRT
         /// <param name="VPC"> numbers of probes of peaks R classified as VPC
         /// <param name="rrIntervals"> intevals between R peaks
         /// <returns>  Return values of turbulence slope (max linear regresion) from every channel and prepare coordinates to plot max TS</returns>
-        public Tuple<List<double>, double[], double[]> PrepareTurbulenceSlopeToGUIandPLOT(List<int> VPC, Vector<double> rrIntervals)
+        public Tuple<List<double>, double[], double[]> TurbulenceSlopeGUIandPDF(List<int> VPC, Vector<double> rrIntervals)
         {
 
             int sum = back + front;
@@ -543,14 +605,13 @@ namespace EKG_Project.Modules.HRT
                         TS[i] = p.Item1[0];
                         for (int n = 0; n < 5; n++)
                         {
-                            xx[n] = j + n + 5;
+                            xx[n] = j + n;
                             yy[n] = p.Item2.At(n);
                         }
                     }
                 }
                 i++;
             }
-            PrintVector(TS);
             List<double> TSnew = TS.ToList();
             return Tuple.Create(TSnew, xx, yy);
         }
