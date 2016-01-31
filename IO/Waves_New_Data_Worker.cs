@@ -8,6 +8,11 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Stores Waves_Signal
+    /// </summary>
+    #endregion
     public enum Waves_Signal { QRSOnsets, QRSEnds, POnsets, PEnds, TEnds };
 
     #region Documentation
@@ -127,12 +132,14 @@ namespace EKG_Project.IO
             return list;
         }
 
+        #region Documentation
         /// <summary>
         /// Gets number of Waves_Signal samples 
         /// </summary>
         /// <param name="atr">Waves_Signal</param>
         /// <param name="lead">lead</param>
-        /// <returns>number of samples</returns>
+        /// <returns>number of samples</returns> 
+        #endregion
         public uint getNumberOfSamples(Waves_Signal atr, string lead)
         {
             string moduleName = this.GetType().Name;
@@ -151,9 +158,11 @@ namespace EKG_Project.IO
             return count;
         }
 
+        #region Documentation
         /// <summary>
         /// Deletes all analysis files with Waves_Data
-        /// </summary>
+        /// </summary> 
+        #endregion
         public void DeleteFiles()
         {
             string moduleName = this.GetType().Name;

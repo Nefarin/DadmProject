@@ -3,7 +3,6 @@ using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
 
-
 namespace EKG_Project.Modules.TestModule3
 {
     public class TestModule3 : IModule

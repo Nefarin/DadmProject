@@ -60,18 +60,27 @@ namespace EKG_Project.IO
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_ClassificationResult" + ".txt";
-            string pathOut = Path.Combine(directory, fileName);
+            string fileName1 = analysisName + "_" + moduleName + "_" + lead + "_ClassificationResult" + "_Item1" + ".txt";
+            string pathOut1 = Path.Combine(directory, fileName1);
 
-            StreamWriter sw = new StreamWriter(pathOut, mode);
+            StreamWriter sw1 = new StreamWriter(pathOut1, mode);
             foreach (var result in results)
             {
-                sw.WriteLine(result.Item1);
-                sw.WriteLine(result.Item2);
-                sw.WriteLine("---");
+                sw1.WriteLine(result.Item1);
             }
-            
-            sw.Close();
+
+            sw1.Close();
+
+            string fileName2 = analysisName + "_" + moduleName + "_" + lead + "_ClassificationResult" + "_Item2" + ".txt";
+            string pathOut2 = Path.Combine(directory, fileName2);
+
+            StreamWriter sw2 = new StreamWriter(pathOut2, mode);
+            foreach (var result in results)
+            {
+                sw2.WriteLine(result.Item2);
+            }
+
+            sw2.Close();
         }
 
         #region Documentation
@@ -79,21 +88,29 @@ namespace EKG_Project.IO
         /// Loads ClassificationResult from txt file
         /// </summary>
         /// <param name="lead">lead</param>
+        /// <param name="startIndex">start index</param>
+        /// <param name="length">length</param>
         /// <returns>classification result list</returns>
         #endregion
         public List<Tuple<int, int>> LoadClassificationResult(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_ClassificationResult" + ".txt";
-            string pathIn = Path.Combine(directory, fileName);
+            string fileName1 = analysisName + "_" + moduleName + "_" + lead + "_ClassificationResult" + "_Item1" + ".txt";
+            string pathIn1 = Path.Combine(directory, fileName1);
 
-            StreamReader sr = new StreamReader(pathIn);
+            StreamReader sr1 = new StreamReader(pathIn1);
+
+            string fileName2 = analysisName + "_" + moduleName + "_" + lead + "_ClassificationResult" + "_Item2" + ".txt";
+            string pathIn2 = Path.Combine(directory, fileName2);
+
+            StreamReader sr2 = new StreamReader(pathIn2);
             //pomijane linie ...
             int iterator = 0;
-            while (iterator < startIndex && !sr.EndOfStream)
+            while (iterator < startIndex && !sr1.EndOfStream)
             {
-                string readLine = sr.ReadLine();
+                sr1.ReadLine();
+                sr2.ReadLine();
                 iterator++;
             }
 
@@ -101,38 +118,39 @@ namespace EKG_Project.IO
             List<Tuple<int, int>> list = new List<Tuple<int, int>>();
             while (iterator < length)
             {
-                if (sr.EndOfStream)
+                if (sr1.EndOfStream)
                 {
                     throw new IndexOutOfRangeException();
                 }
-                string item1 = sr.ReadLine();
+                string item1 = sr1.ReadLine();
                 int convertedItem1 = Convert.ToInt32(item1);
 
-                string item2 = sr.ReadLine();
+                string item2 = sr2.ReadLine();
                 int convertedItem2 = Convert.ToInt32(item2);
+
 
                 Tuple<int, int> tuple = Tuple.Create(convertedItem1, convertedItem2);
                 list.Add(tuple);
-
-                sr.ReadLine();
                 iterator++;
             }
-            sr.Close();
+            sr1.Close();
+            sr2.Close();
 
-            
             return list;
         }
 
+        #region Documentation
         /// <summary>
         /// Gets number of ClassificationResult samples
         /// </summary>
         /// <param name="lead">lead</param>
-        /// <returns>number of samples</returns>
+        /// <returns>number of samples</returns> 
+        #endregion
         public uint getNumberOfSamples(string lead)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_ClassificationResult" + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_ClassificationResult" + "_Item1" + ".txt";
             string path = Path.Combine(directory, fileName);
 
             uint count = 0;
@@ -143,20 +161,20 @@ namespace EKG_Project.IO
                     count++;
                 }
             }
-
-            count = count / 3;
             return count;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves ChannelMliiDetected in txt file
         /// </summary>
-        /// <param name="value">ChannelMliiDetected value</param>
+        /// <param name="value">ChannelMliiDetected value</param> 
+        #endregion
         public void SaveChannelMliiDetected(bool value)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_ChannelMliiDetected" + ".txt";
             string pathOut = System.IO.Path.Combine(directory, fileName);
 
             StreamWriter sw = new StreamWriter(pathOut);
@@ -164,15 +182,17 @@ namespace EKG_Project.IO
             sw.Close();
         }
 
+        #region Documentation
         /// <summary>
         /// Loads ChannelMliiDetected from txt file
         /// </summary>
-        /// <returns>ChannelMliiDetected bool</returns>
+        /// <returns>ChannelMliiDetected bool</returns> 
+        #endregion
         public bool LoadChannelMliiDetected()
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_ChannelMliiDetected" + ".txt";
             string pathIn = System.IO.Path.Combine(directory, fileName);
 
             StreamReader sr = new StreamReader(pathIn);
@@ -183,10 +203,12 @@ namespace EKG_Project.IO
             return readValue;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves CoefficientsForOneComplex in txt file
         /// </summary>
-        /// <param name="value">CoefficientsForOneComplex</param>
+        /// <param name="value">CoefficientsForOneComplex</param> 
+        #endregion
         public void SaveCoefficientsForOneComplex(string lead, Tuple<int, Vector<double>> value)
         {
             string moduleName = this.GetType().Name;
@@ -203,11 +225,13 @@ namespace EKG_Project.IO
             }
             sw.Close();
         }
-        
+
+        #region Documentation
         /// <summary>
         /// Loads CoefficientsForOneComplex from txt file
         /// </summary>
-        /// <returns>CoefficientsForOneComplex tuple</returns>
+        /// <returns>CoefficientsForOneComplex tuple</returns> 
+        #endregion
         public Tuple<int, Vector<double>> LoadCoefficientsForOneComplex(string lead)
         {
             string moduleName = this.GetType().Name;
@@ -237,9 +261,11 @@ namespace EKG_Project.IO
             return tuple;
         }
 
+        #region Documentation
         /// <summary>
         /// Deletes all analysis files with Heart_Class_Data
-        /// </summary>
+        /// </summary> 
+        #endregion
         public void DeleteFiles()
         {
             string moduleName = this.GetType().Name;

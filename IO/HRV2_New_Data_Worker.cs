@@ -10,28 +10,58 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Stores HRV2_Attributes
+    /// </summary>
+    #endregion
     public enum HRV2_Attributes { Tinn, TriangleIndex, SD1, SD2, ElipseCenter };
+    #region Documentation
+    /// <summary>
+    /// Stores HRV2_Signal
+    /// </summary>
+    #endregion
     public enum HRV2_Signal { PoincarePlotData_x, PoincarePlotData_y };
 
+    #region Documentation
+    /// <summary>
+    /// Class that saves and loads HRV2_Data in txt files
+    /// </summary> 
+    #endregion
     public class HRV2_New_Data_Worker
     {
         //FIELDS
+        #region Documentation
         /// <summary>
         /// Stores txt files directory
-        /// </summary>
+        /// </summary> 
+        #endregion
         private string directory;
 
+        #region Documentation
         /// <summary>
         /// Stores analysis name
-        /// </summary>
+        /// </summary> 
+        #endregion
         private string analysisName;
 
+        #region Documentation
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        #endregion
         public HRV2_New_Data_Worker() 
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
         }
 
+        #region Documentation
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="analysisName">analysis name</param>
+        #endregion
         public HRV2_New_Data_Worker(String analysisName)  : this()
         {
             this.analysisName = analysisName;
@@ -60,6 +90,7 @@ namespace EKG_Project.IO
             sw.Close();
         }
 
+        #region Documentation
         /// <summary>
         /// Loads parts of HRV2_Signal from txt file
         /// </summary>
@@ -67,7 +98,8 @@ namespace EKG_Project.IO
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
         /// <param name="length">length</param>
-        /// <returns>HRV2_Signal</returns>
+        /// <returns>HRV2_Signal</returns> 
+        #endregion
         public Vector<double> LoadSignal(HRV2_Signal atr, string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
@@ -106,12 +138,14 @@ namespace EKG_Project.IO
             return vector;
         }
 
+        #region Documentation
         /// <summary>
         /// Gets number of HRV2_Signal samples 
         /// </summary>
         /// <param name="atr">HRV2_Signal</param>
         /// <param name="lead">lead</param>
-        /// <returns>samples</returns>
+        /// <returns>samples</returns> 
+        #endregion
         public uint getNumberOfSamples(HRV2_Signal atr, string lead)
         {
             string moduleName = this.GetType().Name;
@@ -142,18 +176,27 @@ namespace EKG_Project.IO
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_Histogram" + ".txt";
-            string pathOut = Path.Combine(directory, fileName);
+            string fileName1 = analysisName + "_" + moduleName + "_" + lead + "_Histogram" + "_Item1" + ".txt";
+            string pathOut1 = Path.Combine(directory, fileName1);
 
-            StreamWriter sw = new StreamWriter(pathOut, mode);
+            StreamWriter sw1 = new StreamWriter(pathOut1, mode);
             foreach (var result in results)
             {
-                sw.WriteLine(result.Item1);
-                sw.WriteLine(result.Item2);
-                sw.WriteLine("---");
+                sw1.WriteLine(result.Item1);
             }
 
-            sw.Close();
+            sw1.Close();
+
+            string fileName2 = analysisName + "_" + moduleName + "_" + lead + "_Histogram" + "_Item2" + ".txt";
+            string pathOut2 = Path.Combine(directory, fileName2);
+
+            StreamWriter sw2 = new StreamWriter(pathOut2, mode);
+            foreach (var result in results)
+            {
+                sw2.WriteLine(result.Item2);
+            }
+
+            sw2.Close();
         }
 
         #region Documentation
@@ -167,15 +210,21 @@ namespace EKG_Project.IO
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_Histogram" + ".txt";
-            string pathIn = Path.Combine(directory, fileName);
+            string fileName1 = analysisName + "_" + moduleName + "_" + lead + "_Histogram" + "_Item1" + ".txt";
+            string pathIn1 = Path.Combine(directory, fileName1);
 
-            StreamReader sr = new StreamReader(pathIn);
+            StreamReader sr1 = new StreamReader(pathIn1);
+
+            string fileName2 = analysisName + "_" + moduleName + "_" + lead + "_Histogram" + "_Item2" + ".txt";
+            string pathIn2 = Path.Combine(directory, fileName2);
+
+            StreamReader sr2 = new StreamReader(pathIn2);
             //pomijane linie ...
             int iterator = 0;
-            while (iterator < startIndex && !sr.EndOfStream)
+            while (iterator < startIndex && !sr1.EndOfStream)
             {
-                string readLine = sr.ReadLine();
+                sr1.ReadLine();
+                sr2.ReadLine();
                 iterator++;
             }
 
@@ -183,38 +232,39 @@ namespace EKG_Project.IO
             List<Tuple<double, double>> list = new List<Tuple<double, double>>();
             while (iterator < length)
             {
-                if (sr.EndOfStream)
+                if (sr1.EndOfStream)
                 {
                     throw new IndexOutOfRangeException();
                 }
-                string item1 = sr.ReadLine();
+                string item1 = sr1.ReadLine();
                 double convertedItem1 = Convert.ToDouble(item1);
 
-                string item2 = sr.ReadLine();
+                string item2 = sr2.ReadLine();
                 double convertedItem2 = Convert.ToDouble(item2);
+
 
                 Tuple<double, double> tuple = Tuple.Create(convertedItem1, convertedItem2);
                 list.Add(tuple);
-
-                sr.ReadLine();
                 iterator++;
             }
-            sr.Close();
-
+            sr1.Close();
+            sr2.Close();
 
             return list;
         }
 
+        #region Documentation
         /// <summary>
         /// Loads Histogram number of samples
         /// </summary>
         /// <param name="lead"></param>
-        /// <returns></returns>
+        /// <returns></returns> 
+        #endregion
         public uint getHistogramNumberOfSamples(string lead)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_Histogram" + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_Histogram" + "_Item1" + ".txt";
             string path = Path.Combine(directory, fileName);
 
             uint count = 0;
@@ -225,16 +275,16 @@ namespace EKG_Project.IO
                     count++;
                 }
             }
-
-            count = count / 3;
             return count;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves HRV2_Attributes
         /// </summary>
         /// <param name="atr">attribute</param>
-        /// <param name="value">value</param>
+        /// <param name="value">value</param> 
+        #endregion
         public void SaveAttribute(HRV2_Attributes atr, string lead, double value)
         {
             string moduleName = this.GetType().Name;
@@ -247,11 +297,13 @@ namespace EKG_Project.IO
             sw.Close();
         }
 
+        #region Documentation
         /// <summary>
         /// Loads HRV2_Attributes
         /// </summary>
         /// <param name="atr">atribute</param>
-        /// <returns>value</returns>
+        /// <returns>value</returns> 
+        #endregion
         public double LoadAttribute(HRV2_Attributes atr, string lead)
         {
             string moduleName = this.GetType().Name;
@@ -267,9 +319,11 @@ namespace EKG_Project.IO
             return readValue;
         }
 
+        #region Documentation
         /// <summary>
         /// Deletes all analysis files with HRV2_Data
-        /// </summary>
+        /// </summary> 
+        #endregion
         public void DeleteFiles()
         {
             string moduleName = this.GetType().Name;
