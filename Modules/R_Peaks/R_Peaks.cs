@@ -129,6 +129,9 @@ namespace EKG_Project.Modules.R_Peaks
                         try
                         {
                             _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
+                            Console.WriteLine("_currentLeadName "+ _currentLeadName);
+                            Console.WriteLine("_currentIndex "+ _currentIndex);
+                            Console.WriteLine("_step "+ _step);
                             try         //zagniezdzone wyjatki?????????
                             {
                                 //choosing and performing algorithm
@@ -158,13 +161,14 @@ namespace EKG_Project.Modules.R_Peaks
                             catch(Exception ex)
                             {
                                 _currentIndex = _currentIndex + _step;
-                                //Console.WriteLine("No detected R peaks in this part of signal");
+                                Console.WriteLine("No detected R peaks in this part of signal");
                             }
                             _state = STATE.PROCESS_CHANNEL;
                         }
                         catch (Exception e)
                         {
                             _state = STATE.NEXT_CHANNEL;
+                            Console.WriteLine("PROCESS_FIRST_STEP - Exception e");
                         }
                     }
                     break;
@@ -205,13 +209,14 @@ namespace EKG_Project.Modules.R_Peaks
                             catch (Exception ex)
                             {
                                 _currentIndex = _currentIndex + _step;
-                                //Console.WriteLine("No detected R peaks in this part of signal");
+                                Console.WriteLine("No detected R peaks in this part of signal");
                             }
                             _state = STATE.PROCESS_CHANNEL;
                         }
                         catch (Exception e)
                         {
                             _state = STATE.NEXT_CHANNEL;
+                            Console.WriteLine("PROCESS_CHANNEL - Exception e");
                         }
                     }
                     break;
@@ -249,13 +254,14 @@ namespace EKG_Project.Modules.R_Peaks
                         catch (Exception ex)
                         {
                             _currentIndex = _currentIndex + _step;
-                            //Console.WriteLine("No detected R peaks in this part of signal");
+                            Console.WriteLine("No detected R peaks in this part of signal");
                         }
                         _state = STATE.NEXT_CHANNEL;
                     }
                     catch(Exception e)
                     {
                         _state = STATE.NEXT_CHANNEL;
+                        Console.WriteLine("END_CHANNEL - Exception e");
                     }
                         break;
                 case (STATE.NEXT_CHANNEL):
