@@ -651,8 +651,15 @@ namespace EKG_Project.Modules.ECG_Baseline
         {
             IModule testModule = new EKG_Project.Modules.ECG_Baseline.ECG_Baseline();
             //ECG_Baseline_Params param = new ECG_Baseline_Params();
-            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 10, "abc123");
+            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 10, "abc123");
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 50, "abc123", 0.07);
+            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 50, "abc123");
+            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.HIGHPASS, 50, "abc123");
+            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.BANDPASS, 10, 50, "abc123");
+            //ECG_Baseline_Params param = new ECG_Baseline_Params("abc123", Filtr_Method.BUTTERWORTH, Filtr_Type.LOWPASS, 5, 10 );
+            //ECG_Baseline_Params param = new ECG_Baseline_Params("abc123", Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS, 5, 10);
+            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.BANDPASS, 5, 10, 5, 50, "abc123");
+
 
             testModule.Init(param);
             while (!testModule.Ended())
@@ -660,7 +667,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 testModule.ProcessData();
                 Console.WriteLine(testModule.Progress());
             }
-            Console.ReadKey();
+            //Console.ReadKey();
         }
     }
 }
