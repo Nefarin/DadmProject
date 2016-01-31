@@ -134,6 +134,13 @@ namespace EKG_Project.Modules.Heart_Class
             return ClassificationResultOne = TestKnn(trainDataList, QrsCoeffOne, trainClass, numberOfNeighbors);
    
         }
+        #region Documentation
+        /// <summary>
+        /// This method calculates maximum distance between Q-R and R-S peaks depending on the frequency.
+        /// </summary>
+        /// <param name="fs"></param>
+        /// <returns></returns>
+        #endregion
 
         public Tuple<int, int> DistancesFromR(uint fs)
         {
@@ -160,20 +167,8 @@ namespace EKG_Project.Modules.Heart_Class
         #endregion
         private void OneQrsComplex(int singleQrsOnset, int signleQrsEnd, double singleQrsR, uint fs)
         {
-            /*
-            double maxQRTime = 0.063;
-            double maxRSTime = 0.094;
-            double samplingInterval = 1/fs;
-            double numberOfSamplesQR = (maxQRTime/samplingInterval);
-            double numberOfSamplesRS = (maxRSTime / samplingInterval);
-
-            int QRSamples = (int)numberOfSamplesQR;
-            int RSSamples = (int) numberOfSamplesRS;
-            */
+           
             Tuple<int, int> qrsDistances = DistancesFromR(fs);
-
-            //int qrsOnsetNew = singleQrsOnset;
-            //int qrsEndNew = signleQrsEnd;
 
             if ((singleQrsOnset != -1) && (signleQrsEnd != -1)) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
             {

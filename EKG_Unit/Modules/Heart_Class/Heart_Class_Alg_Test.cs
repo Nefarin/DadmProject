@@ -319,7 +319,7 @@ namespace EKG_Unit.Modules.Heart_Class
 
 
         [TestMethod]
-        [Description("Test if method calculates the distances Q-R and R-S properly - not equality test")]
+        [Description("Test if method calculates the distances Q-R and R-S properly - equality test")]
         public void DistancesFromR1()
         {
             
