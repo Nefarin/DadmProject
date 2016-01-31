@@ -101,8 +101,8 @@ namespace EKG_Project.Modules.Heart_Class
             /// <param name="qrsEnd"></param>
             /// <returns></returns>
             #endregion
-            Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R, uint fs)
-        {
+            public Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R, uint fs)
+            {
             Fs = fs;
             Signal = loadedSignal;
             OneQrsComplex(qrsOnset, qrsEnd, R, Fs);
