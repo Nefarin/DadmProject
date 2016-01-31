@@ -78,7 +78,8 @@ namespace EKG_Project.Modules.R_Peaks
                 InputData = new ECG_Baseline_Data();
                 OutputData = new R_Peaks_Data();
 
-                _step = 6000; //od fs?
+                //_step = 6000; //od fs?
+                _step = Convert.ToInt32(InputData_basic.Frequency*16);
                 _state = STATE.INIT;
             }
         }
@@ -116,7 +117,7 @@ namespace EKG_Project.Modules.R_Peaks
                     else
                     {
                         _currentLeadName = _leads[_currentChannelIndex];
-                        _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName);
+                        _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName); //Zmienić na worker ECG_BASELINE
                         _currentIndex = 0;
                         _state = STATE.PROCESS_FIRST_STEP;
                     }
