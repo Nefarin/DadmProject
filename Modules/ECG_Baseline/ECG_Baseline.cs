@@ -472,7 +472,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 testModule.ProcessData();
                 Console.WriteLine(testModule.Progress());
             }
-            Console.ReadKey();
+            //Console.ReadKey();
         }
     }
 }
