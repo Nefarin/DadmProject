@@ -932,7 +932,7 @@ namespace EKG_Project.Modules.R_Peaks
             double[] hf = new double[] { 0.0172, 0.0172, 1, -0.9657 };
             OnlineIirFilter filter = new OnlineIirFilter(hf);
             double[] signal_f = filter.ProcessSamples(signal);
-            Delay += 12;
+            Delay += 2;
             return signal_f;
         }
 
