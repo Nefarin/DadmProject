@@ -152,9 +152,9 @@ namespace EKG_Project.Modules.QT_Disp
                     _currentLength = (int)(R_Peaks.ElementAt(1) - R_Peaks.ElementAt(0)); //get length between the first and next one r peak
 
                     // init new data to do some algorithms
-                    QT_Disp_Algorithms.TODoInInit(InputWavesWorker.LoadSignal(Waves_Attributes.QRSOnsets, _currentLeadName, 0, _amountOfIndexesInInput),
-                        InputWavesWorker.LoadSignal(Waves_Attributes.TEnds, _currentLeadName, 0, _amountOfIndexesInInput),
-                        InputWavesWorker.LoadSignal(Waves_Attributes.QRSEnds, _currentLeadName, 0, _amountOfIndexesInInput),
+                    QT_Disp_Algorithms.TODoInInit(InputWavesWorker.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName, 0, _amountOfIndexesInInput),
+                        InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, 0, _amountOfIndexesInInput),
+                        InputWavesWorker.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName, 0, _amountOfIndexesInInput),
                         InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, _amountOfIndexesInInput),
                         _params.TEndMethod, _params.QTMethod, InputBasicWorker.LoadAttribute(Basic_Attributes.Frequency)
                         );
@@ -180,9 +180,9 @@ namespace EKG_Project.Modules.QT_Disp
                             _currentIndex = (int)R_Peaks.ElementAt(0);     // get first index in r peaks
                             _currentLength = (int)(R_Peaks.ElementAt(1) - R_Peaks.ElementAt(0)); //get length between the first and next one r peak
 
-                            QT_Disp_Algorithms.TODoInInit(InputWavesWorker.LoadSignal(Waves_Attributes.QRSOnsets, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
-                                InputWavesWorker.LoadSignal(Waves_Attributes.TEnds, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
-                                InputWavesWorker.LoadSignal(Waves_Attributes.QRSEnds, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
+                            QT_Disp_Algorithms.TODoInInit(InputWavesWorker.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
+                                InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
+                                InputWavesWorker.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
                                 InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
                                 _params.TEndMethod, _params.QTMethod, InputBasicWorker.LoadAttribute(Basic_Attributes.Frequency)
                             );
@@ -223,6 +223,9 @@ namespace EKG_Project.Modules.QT_Disp
                         OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_disp_local, QT_Disp_Algorithms.getLocal());
                         OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_mean, QT_Disp_Algorithms.getMean());
                         OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_std, QT_Disp_Algorithms.getStd());
+
+                        OutputWorker.SaveQTIntervals(_currentLeadName, false, QT_Disp_Algorithms.QT_INTERVALS);
+                        OutputWorker.SaveTEndLocal(_currentLeadName, false, QT_Disp_Algorithms.T_END_LOCAL);
 
                         QT_Disp_Algorithms.DeleteQT_Intervals();
 
