@@ -995,5 +995,31 @@ namespace EKG_Unit.Modules.HRT
             CollectionAssert.AreEqual(expectedTachogram, resultTachogram);
 
         }
+
+        //MissClassificationCorrection
+        [TestMethod]
+        [Description("Test function if properly removes null values from array - equality test")]
+        public void MissClassificationCorrection_EQTest_1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            bool[] testMiss = { false, false, false, false, false, false };
+            int[] testKlasa = { 1, 2, 3, 4, 5, 6 };
+
+            int[] expectedNewKlasa = { 1, 2, 3, 4, 5, 6 };
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            int[] resultNewKlasa = testAlg.missClassificationCorrection(testMiss, testKlasa);
+            HRT_Alg algorytm = new HRT_Alg();
+
+            // Assert results
+
+            CollectionAssert.AreEqual(expectedNewKlasa, resultNewKlasa);
+
+        }
     }
 }
