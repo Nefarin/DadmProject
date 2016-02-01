@@ -151,15 +151,23 @@ namespace EKG_Project.GUI
             loadFileButton.IsEnabled = true;
             pdfButton.IsEnabled = true;
             startAnalyseButton.IsEnabled = true;
-            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
+            //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
             panel.Visibility = Visibility.Hidden;
-            this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
+            //this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
         }
 
         public void updateProgress(AvailableOptions module, double progress)
         {
             analysisLabel.Content = "Analysis in progress..\nCurrent module: " + module.ToString();
-            progressBar.Value = progress;
+            try
+            {
+                progressBar.Value = progress;
+            }
+            catch (ArgumentException e)
+            {
+                progressBar.Value = 0;
+            }
+
         }
 
         public void moduleEnded(AvailableOptions module, bool aborted)

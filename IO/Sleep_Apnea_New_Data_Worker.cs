@@ -8,6 +8,11 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Class that saves and loads Sleep_Apnea_Data in txt files
+    /// </summary>
+    #endregion
     public class Sleep_Apnea_New_Data_Worker
     {
         //FIELDS
@@ -103,11 +108,9 @@ namespace EKG_Project.IO
             string pathIn2 = Path.Combine(directory, fileName2);
 
             StreamReader sr2 = new StreamReader(pathIn2);
-
-            uint sampleNumber = getNumberOfSamples(lead);
             //pomijane linie ...
             int iterator = 0;
-            while (iterator < startIndex && iterator < sampleNumber && !sr1.EndOfStream)
+            while (iterator < startIndex && !sr1.EndOfStream)
             {
                 sr1.ReadLine();
                 sr2.ReadLine();
@@ -116,7 +119,7 @@ namespace EKG_Project.IO
 
             iterator = 0;
             List<Tuple<int, int>> list = new List<Tuple<int, int>>();
-            while (iterator < length && iterator < sampleNumber)
+            while (iterator < length)
             {
                 if (sr1.EndOfStream)
                 {
@@ -192,13 +195,15 @@ namespace EKG_Project.IO
             }
         }
 
+        #region Documentation
         /// <summary>
         /// Loads part of h_amp from txt files
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
         /// <param name="length">length</param>
-        /// <returns>h_amp</returns>
+        /// <returns>h_amp</returns> 
+        #endregion
         public List<List<double>> LoadHAmp(string lead, int[] startIndex, int[] length)
         {
             string moduleName = this.GetType().Name;
@@ -207,14 +212,13 @@ namespace EKG_Project.IO
             string[] HAmpFiles = Directory.GetFiles(directory, fileNamePattern);
 
             int filesIndex = 0;
-            uint[] samplesNumber = getHAmpNumberOfSamples(lead);
             List<List<double>> exList = new List<List<double>>();
             foreach(var file in HAmpFiles)
             {
                 StreamReader sr = new StreamReader(file);
                 //pomijane linie ...
                 int iterator = 0;
-                while (iterator < startIndex[filesIndex] && iterator < samplesNumber[filesIndex] && !sr.EndOfStream)
+                while (iterator < startIndex[filesIndex] && !sr.EndOfStream)
                 {
                     string readLine = sr.ReadLine();
                     iterator++;
@@ -222,7 +226,7 @@ namespace EKG_Project.IO
 
                 iterator = 0;
                 List<double> inList = new List<double>();
-                while (iterator < length[filesIndex] && iterator < samplesNumber[filesIndex])
+                while (iterator < length[filesIndex])
                 {
                     if (sr.EndOfStream)
                     {
@@ -242,12 +246,14 @@ namespace EKG_Project.IO
             return exList;
         }
 
-        
+
+        #region Documentation
         /// <summary>
         /// Gets h_amp numebr of samples
         /// </summary>
         /// <param name="lead">lead</param>
-        /// <returns>array of number of samples</returns>
+        /// <returns>array of number of samples</returns> 
+        #endregion
         public uint[] getHAmpNumberOfSamples(string lead)
         {
             string moduleName = this.GetType().Name;
