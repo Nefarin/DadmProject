@@ -15,13 +15,6 @@ namespace EKG_Project.Modules.HRV_DFA
         private List<Tuple<string, Vector<double>,Vector<double>>> _paramAlpha;
         private List<Tuple<string, Vector<double>, Vector<double>>> _fluctuations;
 
-        public HRV_DFA_Data() {
-            _dfaNumberN = new List<Tuple<string, Vector<double>, Vector<double>>>();
-            _dfaValueFn = new List<Tuple<string, Vector<double>, Vector<double>>>();
-            _paramAlpha = new List<Tuple<string, Vector<double>, Vector<double>>>();
-            _fluctuations = new List<Tuple<string, Vector<double>, Vector<double>>>();
-        }
-
         public List<Tuple<string, Vector<double>, Vector<double>>> DfaNumberN
         {
             get
@@ -68,6 +61,18 @@ namespace EKG_Project.Modules.HRV_DFA
             {
                 _fluctuations = value;
             }
+        }
+
+        public HRV_DFA_Data()
+        {
+           
+        }
+        public HRV_DFA_Data(List<Tuple<string, Vector<double>, Vector<double>>> dfaNumberN, List<Tuple<string, Vector<double>, Vector<double>>> dfaValueFn, List<Tuple<string, Vector<double>, Vector<double>>> paramAlpha, List<Tuple<string, Vector<double>, Vector<double>>> fluctuations) : this()
+        {
+            DfaNumberN = dfaNumberN;
+            DfaValueFn = dfaValueFn;
+            ParamAlpha = paramAlpha;
+            Fluctuations = fluctuations;
         }
     }
 }
