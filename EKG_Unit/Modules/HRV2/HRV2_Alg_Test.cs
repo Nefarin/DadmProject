@@ -46,25 +46,6 @@ namespace EKG_Unit.Modules.HRV2
             Assert.AreEqual(testTinn, resultTinn);
         }
 
-
-        [TestMethod]
-        [Description("Test if Triangle Index is calculate properly")]
-        public void TriangleIndexTest()
-        {
-            double[] testArray = { 1,1,2,2,2,3,3,3,3,4,5,5,5,5,5,5,5,5,5,5,6,7};
-            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
-            HRV2_Alg testAlgs = new HRV2_Alg();
-
-            PrivateObject obj = new PrivateObject(testAlgs);
-            obj.SetField("_rrIntervals", testVector);
-
-            obj.Invoke("makeTriangleIndex");
-            
-            double testTriangleIndex = (double)obj.GetField("triangleIndex");
-            double resultTriangleIndex = 2;
-
-            Assert.AreEqual(testTriangleIndex, resultTriangleIndex);
-        }
         [TestMethod]
         [Description("Test if x counts are equal y counts")]
         public void PoincareTest()
@@ -86,30 +67,36 @@ namespace EKG_Unit.Modules.HRV2
 
         [TestMethod]
         [Description("Test if throws null if argument is not initialized")]
-        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
-        public void TriangleIndexNullExeptionTest()
+        public void TinnNullTest()
         {
-            Vector<double> testVector = null;
+            double[] testArray = { 1, 2, 3, 4, 5 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
             HRV2_Alg testAlgs = new HRV2_Alg();
-
             PrivateObject obj = new PrivateObject(testAlgs);
             obj.SetField("_rrIntervals", testVector);
-            obj.Invoke("makeTriangleIndex");
-            double testTinn = (double)obj.GetField("triangleIndex");
+            obj.Invoke("makeTinn");
+            double result = (double)obj.GetField("tinn");
+            Assert.IsNotNull(result);
+
         }
 
         [TestMethod]
         [Description("Test if throws null if argument is not initialized")]
-        public void TinnNullTest()
-        {
-            Vector<double> testVector = null;
-            HRV2_Alg testAlgs = new HRV2_Alg();
 
-            PrivateObject obj = new PrivateObject(testAlgs);
-            obj.SetField("_rrIntervals", testVector);
-            obj.Invoke("makeTriangleIndex");
-            double result = (double)obj.GetField("triangleIndex");
-            Assert.IsNotNull(result);
+        public void TinnNullExeptionTest()
+        {
+            try
+            {
+                Vector<double> testVector = null;
+                HRV2_Alg testAlgs = new HRV2_Alg();
+                PrivateObject obj = new PrivateObject(testAlgs);
+                obj.SetField("_rrIntervals", testVector);
+                obj.Invoke("makeTinn");
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Expected no exception, but got: " + ex.Message);
+            }
         }
 
         [TestMethod]
