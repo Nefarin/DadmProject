@@ -46,7 +46,7 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             this.DataContext = this.PendingParameters;
             InitializeComponent();
             this.Left = SystemParameters.PrimaryScreenWidth - this.Width - 400;
-            this.Top = SystemParameters.PrimaryScreenHeight - this.Height - 150;
+            this.Top = SystemParameters.PrimaryScreenHeight - this.Height - 250;
         }
 
         private void ApplyParameterChanges(object sender, RoutedEventArgs e)
