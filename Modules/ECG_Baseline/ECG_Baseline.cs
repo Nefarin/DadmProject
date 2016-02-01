@@ -467,8 +467,8 @@ namespace EKG_Project.Modules.ECG_Baseline
         {
             IModule testModule = new EKG_Project.Modules.ECG_Baseline.ECG_Baseline();
             //ECG_Baseline_Params param = new ECG_Baseline_Params();
-            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 300, "abc123");
-            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.HIGHPASS, 110, "abc123");
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, 250, "abc123");
+            //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.HIGHPASS, 110, "abc123");
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, 50, "abc123", 0.07);
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, 50, "abc123");
             //ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.HIGHPASS, 50, "abc123");
