@@ -931,7 +931,7 @@ namespace EKG_Unit.Modules.HRT
             // Init test here
 
             int[] testTachogram = { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714 };
-            
+
             int[] expectedTachogram = { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714 };
 
             // Process test here
@@ -939,7 +939,7 @@ namespace EKG_Unit.Modules.HRT
             HRT_Alg testAlg = new HRT_Alg();
             int[] resultTachogram = testAlg.checkVPCifnotNULL(testTachogram);
             HRT_Alg algorytm = new HRT_Alg();
-            
+
             // Assert results
 
             CollectionAssert.AreEqual(expectedTachogram, resultTachogram);
@@ -1045,5 +1045,152 @@ namespace EKG_Unit.Modules.HRT
 
         }
 
+        //TurbulenceOnsetsPDF
+        [TestMethod]
+        [Description("Test function if properly count turbulence onset")]
+        public void TurbulenceOnsetsPDF_EQTest_1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrIntervalsArray = { 728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 739, 703, 703,
+                                              428, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719 };
+            Vector<double> testrrIntervalsVector = Vector<double>.Build.DenseOfArray(testrrIntervalsArray);
+
+            List<int> testVPC = new List<int>();
+            testVPC.Add(22);
+
+            double expectedTO_1 = 29.62;
+            List<double> expectedTO = new List<double>();
+            expectedTO.Add(expectedTO_1);
+            
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<double> resultTO = testAlg.TurbulenceOnsetsPDF(testVPC, testrrIntervalsVector);
+
+            // Assert results
+
+            for (int iter = 0; iter < resultTO.Count; iter++)
+            {
+                Assert.AreEqual(expectedTO[iter], resultTO[iter] );
+            }
+
+        }
+
+        //TurbulenceOnsetsPDF
+        [TestMethod]
+        [Description("Test function if properly count turbulence onset")]
+        public void TurbulenceOnsetsPDF_EQTest_2()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrIntervalsArray = { 728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 739, 703, 703,
+                                              428, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719};
+            Vector<double> testrrIntervalsVector = Vector<double>.Build.DenseOfArray(testrrIntervalsArray);
+
+            List<int> testVPC = new List<int>();
+            testVPC.Add(22);
+            testVPC.Add(82);
+
+            double expectedTO_1 = 29.62;
+            double expectedTO_2 = 29.51;
+            List<double> expectedTO = new List<double>();
+            expectedTO.Add(expectedTO_1);
+            expectedTO.Add(expectedTO_2);
+            
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<double> resultTO = testAlg.TurbulenceOnsetsPDF(testVPC, testrrIntervalsVector);
+
+            // Assert results
+
+            for (int iter = 0; iter < resultTO.Count; iter++)
+            {
+                Assert.AreEqual(expectedTO[iter], resultTO[iter]);
+            }
+
+        }
+
+        //TurbulenceOnsetsPDF
+        [TestMethod]
+        [Description("Test function if properly count turbulence onset")]
+        public void TurbulenceOnsetsPDF_EQTest_3()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrIntervalsArray = { 728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 739, 703, 703,
+                                              428, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719 };
+            Vector<double> testrrIntervalsVector = Vector<double>.Build.DenseOfArray(testrrIntervalsArray);
+
+            List<int> testVPC = new List<int>();
+            testVPC.Add(22);
+            testVPC.Add(82);
+            testVPC.Add(202);
+
+            double expectedTO_1 = 29.62;
+            double expectedTO_2 = 29.51;
+            double expectedTO_3 = 29.51;
+            List<double> expectedTO = new List<double>();
+            expectedTO.Add(expectedTO_1);
+            expectedTO.Add(expectedTO_2);
+            expectedTO.Add(expectedTO_3);
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            List<double> resultTO = testAlg.TurbulenceOnsetsPDF(testVPC, testrrIntervalsVector);
+
+            HRT_Alg algorytm = new HRT_Alg();
+
+            // Assert results
+
+            for (int iter = 0; iter < resultTO.Count; iter++)
+            {
+                Assert.AreEqual(expectedTO[iter], resultTO[iter]);
+            }
+        }
     }
 }
