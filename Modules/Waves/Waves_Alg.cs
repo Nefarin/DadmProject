@@ -165,11 +165,11 @@ namespace EKG_Project.Modules.Waves
             for (int middleR = 0; middleR < maxRInd; middleR++)
             {
                 currentQRSonsetsPart.Add(FindQRSOnset(currentRpeaks[middleR], currentRpeaks[middleR + 1], dwt[decLev - 1], offset, currentECG, freq));
-                currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[middleR], currentRpeaks[middleR + 1], dwt[decLev - 1], _params.DecompositionLevel, currentECG, freq));
+                currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[middleR], currentRpeaks[middleR + 1], dwt[decLev - 1], offset, currentECG, freq));
 
             }
 
-            currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[maxRInd], currentECG.Count, dwt[decLev - 1], _params.DecompositionLevel, currentECG, freq));
+            currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[maxRInd], currentECG.Count, dwt[decLev - 1], offset, currentECG, freq));
         }
         #region
         /// <summary>

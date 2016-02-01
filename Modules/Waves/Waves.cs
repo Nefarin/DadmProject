@@ -11,7 +11,7 @@ namespace EKG_Project.Modules.Waves
 
     public partial class Waves : IModule
     {
-        private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
+        private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, END_CHANNEL };
         private bool _ended;
         private bool _aborted;
 
@@ -123,7 +123,7 @@ namespace EKG_Project.Modules.Waves
 
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_rPeaksProcessed / (double)_currentRpeaksLength));
+            return 100.0 * ( ((double)_rPeaksProcessed / (double)_currentRpeaksLength));
         }
 
         public bool Runnable()
@@ -208,23 +208,21 @@ namespace EKG_Project.Modules.Waves
                     _leads = InputWorker.LoadLeads().ToArray();
                     _numberOfChannels = _leads.Length;
                     _state = STATE.BEGIN_CHANNEL;
-                    Console.WriteLine("init");
                     //_inputWorker.DeleteFiles(); Do not use yet - will try to handle this during loading.
                     break;
                 case (STATE.BEGIN_CHANNEL):
                     _currentChannelIndex++;
-                    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END;
+                    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END_CHANNEL;
                     else
                     {
-                        _currentLeadName = _leads[_currentChannelIndex];
-                        //bullshit for a while
+                        setChannel();          
+
                         _currentRpeaksLength = (int)InputWorkerRpeaks.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName);
-                        //_currentRpeaksLength = (int)InputWorkerRpeaks.LoadSignal(R_Peaks_Attributes.RPeaks, )
 
                         _rPeaksProcessed = 0;
                         _state = STATE.PROCESS_FIRST_STEP;
                     }
-                    Console.WriteLine("begin");
+
                     break;
                 case (STATE.PROCESS_FIRST_STEP):
                     if (_rPeaksProcessed + Params.RpeaksStep > _currentRpeaksLength) _state = STATE.END_CHANNEL;
@@ -237,9 +235,9 @@ namespace EKG_Project.Modules.Waves
                         }
                         catch (Exception e)
                         {
-                            _state = STATE.NEXT_CHANNEL;
+                            _state = STATE.END_CHANNEL;
                         }
-                        Console.WriteLine("first step");
+
                     }
                     break;
                 case (STATE.PROCESS_CHANNEL): // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
@@ -248,35 +246,28 @@ namespace EKG_Project.Modules.Waves
                     {
                         try
                         {
-                            ProcesPart(false);
+                            ProcesPart(true);
                             _state = STATE.PROCESS_CHANNEL;
                         }
                         catch (Exception e)
                         {
-                            _state = STATE.NEXT_CHANNEL;
+                            _state = STATE.END_CHANNEL;
                         }
                     }
-                    Console.WriteLine("process");
+
 
                     break;
                 case (STATE.END_CHANNEL):
                     try
                     {
                         ProcesPart(true);
-                        _state = STATE.NEXT_CHANNEL;
+                        _ended = true;
                     }
-                    catch (Exception e)
+                            catch (Exception e)
                     {
-                        _state = STATE.NEXT_CHANNEL;
+                        _ended = true;
                     }
-                    Console.WriteLine("end ");
-                    break;
-                case (STATE.NEXT_CHANNEL):
-                    _state = STATE.BEGIN_CHANNEL;
-                    Console.WriteLine("next");
-                    break;
-                case (STATE.END):
-                    _ended = true;
+            Console.WriteLine("end ");
                     break;
                 default:
                     Abort();
@@ -285,23 +276,50 @@ namespace EKG_Project.Modules.Waves
 
         }
 
-        private void ProcesPart( bool isFinish)
+        void setChannel()
         {
+            for(int i=0; i< _numberOfChannels; i++)
+            {
+                if (_leads[i] == "MLII")
+                {
+                    _currentLeadName = "MLII";
+                    _currentChannelIndex = i;
+                    return;
+                }
+            }
+            _currentLeadName = _leads[0];
+            _currentChannelIndex = 0;
+        }
+
+        private void ProcesPart( bool isNotEmpty)
+        {
+
             cutSignals();
             _alg.analyzeSignalPart(_currentECG, _currentRpeaks,
                 _currentQRSonsetsPart, _currentQRSendsPart,
                 _currentPonsetsPart, _currentPendsPart, _currentTendsPart, _offset, InputWorker.LoadAttribute(Basic_Attributes.Frequency));
-            OutputWorker.SaveSignal(Waves_Signal.QRSOnsets, _currentLeadName, isFinish, _currentQRSonsetsPart);
-            OutputWorker.SaveSignal(Waves_Signal.QRSEnds, _currentLeadName, isFinish, _currentQRSendsPart);
 
-            OutputWorker.SaveSignal(Waves_Signal.POnsets, _currentLeadName, isFinish, _currentPonsetsPart);
-            OutputWorker.SaveSignal(Waves_Signal.PEnds, _currentLeadName, isFinish, _currentPendsPart);
+            SaveAll(isNotEmpty);
 
-            OutputWorker.SaveSignal(Waves_Signal.TEnds, _currentLeadName, isFinish, _currentTendsPart);
-            if( !isFinish)
-                _rPeaksProcessed += Params.RpeaksStep;
+            Console.WriteLine(Params.RpeaksStep);
 
-            Console.WriteLine("zapisuje");
+            _rPeaksProcessed += Params.RpeaksStep;
+
+        }
+
+        private void SaveAll( bool isNotEmpty)
+        {
+            for(int i=0; i< _numberOfChannels; i++)
+            {
+                string name = _leads[i];
+                OutputWorker.SaveSignal(Waves_Signal.QRSOnsets, name, isNotEmpty, _currentQRSonsetsPart);
+                OutputWorker.SaveSignal(Waves_Signal.QRSEnds, name, isNotEmpty, _currentQRSendsPart);
+
+                OutputWorker.SaveSignal(Waves_Signal.POnsets, name, isNotEmpty, _currentPonsetsPart);
+                OutputWorker.SaveSignal(Waves_Signal.PEnds, name, isNotEmpty, _currentPendsPart);
+
+                OutputWorker.SaveSignal(Waves_Signal.TEnds, name, isNotEmpty, _currentTendsPart);
+            }
         }
 
         private void cutSignals()
