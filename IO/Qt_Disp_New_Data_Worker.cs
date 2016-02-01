@@ -11,8 +11,8 @@ using System.Diagnostics;
 namespace EKG_Project.IO
 {
     public enum Qt_Disp_Attributes { QT_disp_local, QT_mean, QT_std };
-
-    class Qt_Disp_New_Data_Worker
+    public enum Qt_Disp_Signal { T_End_Local, QT_Intervals};
+    public class Qt_Disp_New_Data_Worker
     {
         //FIELDS
         /// <summary>
@@ -24,20 +24,6 @@ namespace EKG_Project.IO
         /// Stores analysis name
         /// </summary>
         private string analysisName;
-
-        /// <summary>
-        /// Stores Qt_Disp_Attributes
-        /// </summary>
-        private Qt_Disp_Attributes attributes;
-
-        /// <summary>
-        /// Gets or sets Qt_Disp_Attributes
-        /// </summary>
-        public Qt_Disp_Attributes Attributes
-        {
-            get { return attributes; }
-            set { attributes = value; }
-        }
 
         /// <summary>
         /// Default constructor
@@ -63,11 +49,11 @@ namespace EKG_Project.IO
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
         /// <param name="signal">signal</param>
-        public void SaveSignal(string lead, bool mode, List<int> signal)
+        public void SaveTEndLocal(string lead, bool mode, List<int> signal)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_T_End_Local" + ".txt";
             string pathOut = Path.Combine(directory, fileName);
 
             StreamWriter sw = new StreamWriter(pathOut, mode);
@@ -75,21 +61,22 @@ namespace EKG_Project.IO
             {
                 sw.WriteLine(sample.ToString());
             }
+                
             sw.Close();
         }
 
         /// <summary>
         /// Loads parts of T_End_Local signal from txt file
         /// </summary>
-        /// <param name="lead">leads</param>
+        /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns>
-        public List<int> LoadSignal(string lead, int startIndex, int length)
+        public List<int> LoadTEndLocal(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_T_End_Local" + ".txt";
             string pathIn = Path.Combine(directory, fileName);
 
             StreamReader sr = new StreamReader(pathIn);
@@ -121,6 +108,96 @@ namespace EKG_Project.IO
             sr.Close();
 
             return list;
+        }
+
+        /// <summary>
+        /// Saves parts of QT_Intervals signal in txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <param name="mode">true:append, false:overwrite file</param>
+        /// <param name="signal">signal</param>
+        public void SaveQTIntervals(string lead, bool mode, List<double> signal)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_QT_Intervals" + ".txt";
+            string pathOut = Path.Combine(directory, fileName);
+
+            StreamWriter sw = new StreamWriter(pathOut, mode);
+            foreach (var sample in signal)
+            {
+                sw.WriteLine(sample.ToString());
+            }
+            sw.Close();
+        }
+
+        /// <summary>
+        /// Loads parts of QT_Intervals signal from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <param name="startIndex">start index</param>
+        /// <param name="length">length</param>
+        /// <returns>QT_Intervals list</returns>
+        public List<double> LoadQTIntervals(string lead, int startIndex, int length)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_QT_Intervals" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+
+            List<double> list = new List<double>();
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                double readValue = Convert.ToDouble(readLine);
+                list.Add(readValue);
+                iterator++;
+            }
+
+            sr.Close();
+
+            return list;
+        }
+
+        /// <summary>
+        /// Gets number of Qt_Disp_Signal samples 
+        /// </summary>
+        /// <param name="atr">Qt_Disp_Signal</param>
+        /// <param name="lead">lead</param>
+        /// <returns>samples</returns>
+        public uint getNumberOfSamples(Qt_Disp_Signal atr, string lead)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
+            string path = Path.Combine(directory, fileName);
+
+            uint count = 0;
+            using (StreamReader r = new StreamReader(path))
+            {
+                while (r.ReadLine() != null)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
         /// <summary>
@@ -158,6 +235,23 @@ namespace EKG_Project.IO
 
             double readValue = Convert.ToDouble(readLine);
             return readValue;
+        }
+
+        /// <summary>
+        /// Deletes all analysis files with Qt_Disp_Data
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileNamePattern = analysisName + "_" + moduleName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+
         }
     }
 }

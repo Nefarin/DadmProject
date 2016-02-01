@@ -11,7 +11,7 @@ using System.Diagnostics;
 namespace EKG_Project.IO
 {
     public enum R_Peaks_Attributes { RPeaks, RRInterval };
-    class R_Peaks_New_Data_Worker
+    public class R_Peaks_New_Data_Worker
     {
         //FIELDS
         /// <summary>
@@ -117,6 +117,23 @@ namespace EKG_Project.IO
             Vector<double> vector = Vector<double>.Build.Dense(readSamples.Length);
             vector.SetValues(readSamples);
             return vector;
+        }
+
+        /// <summary>
+        /// Deletes all analysis files with Basic_Data
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileNamePattern = analysisName + "_" + moduleName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+
         }
     }
 }
