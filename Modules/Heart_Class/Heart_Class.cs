@@ -250,7 +250,7 @@ namespace EKG_Project.Modules.Heart_Class
 
                     int startIndex = 0;
                     _tempClassResult = new List<Tuple<int, int>>();
-                    _numberOfClassifiedComplexes = (int)OutputWorker.getNumberOfSamples(_leads[_channel2]);
+                    _numberOfClassifiedComplexes = (int)OutputWorker.getNumberOfSamples(_leadNameChannel2);
 
                     _tempClassResult = OutputWorker.LoadClassificationResult(_currentLeadName, startIndex,
                         _numberOfClassifiedComplexes);
@@ -258,7 +258,7 @@ namespace EKG_Project.Modules.Heart_Class
                     {
                         _currentLeadName = _leads[i];
 
-                        if (_currentLeadName != _leads[_channel2])
+                        if (_currentLeadName != _leadNameChannel2)
                         {
                             OutputWorker.SaveClassificationResult(_currentLeadName, true, _tempClassResult);
                         }
