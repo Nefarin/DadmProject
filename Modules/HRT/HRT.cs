@@ -30,12 +30,12 @@ namespace EKG_Project.Modules.HRT
 
         private Basic_New_Data_Worker _inputWorker_basic;
         private R_Peaks_New_Data_Worker _inputWorker_Rpeaks;
-        private Heart_Class_New_Data_Worker _inputWorker_HeartClass;
+        private Heart_Class_New_Data_Worker _inputWorker_Heart_Class;
         private HRT_New_Data_Worker _outputWorker;
 
         private Basic_Data _inputData_basic;
-        private R_Peaks_Data _inputData_Rpeaks;
-        private Heart_Class_Data _inputData_HeartClass;
+        private R_Peaks_Data _inputData_R_peaks;
+        private Heart_Class_Data _inputData_Heart_Class;
         private HRT_Data _outputData;
         private HRT_Params _params;
 
@@ -105,74 +105,21 @@ namespace EKG_Project.Modules.HRT
             else
             {
                 InputWorker_basic = new Basic_New_Data_Worker(Params.AnalysisName);
-                InputRpeaksWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName);
-                InputHeartClassWorker = new Heart_Class_New_Data_Worker(Params.AnalysisName);
+                InputWorker_R_Peaks = new R_Peaks_New_Data_Worker(Params.AnalysisName);
+                InputWorker_Heart_Class = new Heart_Class_New_Data_Worker(Params.AnalysisName);
                 OutputWorker = new HRT_New_Data_Worker(Params.AnalysisName);
                 InputData_basic = new Basic_Data();
-                InputData = new ECG_Baseline_Data();
-                OutputData = new R_Peaks_Data();
+                InputData_R_Peaks = new R_Peaks_Data();
+                InputData_Heart_Class = new Heart_Class_Data();
+                OutputData = new HRT_Data();
 
-
-
-                InputBasicDataWorker.Load();
-                InputBasicData = InputBasicDataWorker.BasicData;
-                Fs = (int)InputBasicData.Frequency;
-                Console.Write("Częstotliwość: ");
-                Console.WriteLine(Fs);
+                _frequency = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
+                _step = Convert.ToInt32(_frequency * 16);
+                _state = STATE.INIT;
             }
-
+        }
                                 
-                /**************************************************/
-                //proba pobrania parametrow z modulu r_peaks
-                /**************************************************/
-                try
-                {
-                    
-                    InputRpeaksWorker.Load();
-                    InputRpeaksData = InputRpeaksWorker.Data;
-                }
-                catch (Exception e)
-                {
-                    Abort();
-                }
-                                
-                /**************************************************/
-                //proba pobrania parametrow z modulu heart_class
-                /**************************************************/
-                try
-                {
-                    
-                    InputHeartClassWorker.Load();
-                    InputHeartClassData = InputHeartClassWorker.Data;
-                }
-                catch (Exception e)
-                {
-                    Abort();
-                }
 
-                /**************************************************/
-                //dane wyjściowe - inicjalizacja
-                /**************************************************/
-                try
-                {
-                    
-                    OutputData = new HRT_Data();
-                }
-                catch (Exception e)
-                {
-                    Abort();
-                }
-
-                /**************************************************/
-                //ustawienie liczby odprowadzen i bierzacego kanalu
-                /**************************************************/
-                _currentChannelIndex = 0;
-                NumberOfChannels = InputRpeaksData.RPeaks.Count;
-
-            }
-
-    
-    }
 
         public void ProcessData()
         {
@@ -181,23 +128,204 @@ namespace EKG_Project.Modules.HRT
         }
       
         public double Progress()
-        { 
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels);
+        {
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_currentIndex / (double)_currentChannelLength));
         }
 
-        public bool Runnable() {
+        public bool Runnable()
+        {
             return Params != null;
         }
 
-        public bool IsAborted() {
-            return Aborted;
-        }
-
-        /**************************************************/
-        //glowny proces wykonywania modulu
-        //*************************************************/
         private void processData()
         {
+            switch (_state)
+            {
+                case (STATE.INIT):
+                    _currentChannelIndex = -1;
+                    _leads = InputWorker_basic.LoadLeads().ToArray();
+                    _numberOfChannels = _leads.Length;
+                    _alg = new R_Peaks_Alg();
+                    _state = STATE.BEGIN_CHANNEL;
+                    break;
+                case (STATE.BEGIN_CHANNEL):
+                    _currentChannelIndex++;
+                    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END;
+                    else
+                    {
+                        _currentLeadName = _leads[_currentChannelIndex];
+                        _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName); //Zmienić na worker ECG_BASELINE
+                        _currentIndex = 0;
+                        _state = STATE.PROCESS_FIRST_STEP;
+                    }
+                    break;
+                case (STATE.PROCESS_FIRST_STEP):
+                    if (_currentIndex + _step > _currentChannelLength) _state = STATE.END_CHANNEL;
+                    else
+                    {
+                        try
+                        {
+                            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
+                            Console.WriteLine("_currentLeadName " + _currentLeadName);
+                            Console.WriteLine("_currentIndex " + _currentIndex);
+                            Console.WriteLine("_step " + _step);
+                            try         //zagniezdzone wyjatki?????????
+                            {
+                                //choosing and performing algorithm
+                                switch (Params.Method)
+                                {
+                                    case R_Peaks_Method.PANTOMPKINS:
+                                        _currentVector = _alg.PanTompkins(_currentVector, _frequency);
+                                        break;
+                                    case R_Peaks_Method.HILBERT:
+                                        _currentVector = _alg.Hilbert(_currentVector, _frequency);
+                                        break;
+                                    case R_Peaks_Method.EMD:
+                                        _currentVector = _alg.EMD(_currentVector, _frequency);
+                                        break;
+                                }
+                                OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, false, _currentVector);
+                                if (_currentVector.Count > 1)
+                                {
+                                    _currentVectorRRInterval = _alg.RRinMS(_currentVector, _frequency);
+                                    //save results
+                                    OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, false, _currentVectorRRInterval);
+                                }
+                                //updating current index
+                                _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(_frequency * 0.1);
+
+                            }
+                            catch (Exception ex)
+                            {
+                                _currentIndex = _currentIndex + _step;
+                                Console.WriteLine("No detected R peaks in this part of signal");
+                            }
+                            _state = STATE.PROCESS_CHANNEL;
+                        }
+                        catch (Exception e)
+                        {
+                            _state = STATE.NEXT_CHANNEL;
+                            Console.WriteLine("PROCESS_FIRST_STEP - Exception e");
+                        }
+                    }
+                    break;
+                case (STATE.PROCESS_CHANNEL):  // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
+                    if (_currentIndex + _step > _currentChannelLength) _state = STATE.END_CHANNEL;
+                    else
+                    {
+                        try
+                        {
+                            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
+                            try         //zagniezdzone wyjatki?????????
+                            {
+                                //choosing and performing algorithm
+                                switch (Params.Method)
+                                {
+                                    case R_Peaks_Method.PANTOMPKINS:
+                                        _currentVector = _alg.PanTompkins(_currentVector, _frequency);
+                                        break;
+                                    case R_Peaks_Method.HILBERT:
+                                        _currentVector = _alg.Hilbert(_currentVector, _frequency);
+                                        break;
+                                    case R_Peaks_Method.EMD:
+                                        _currentVector = _alg.EMD(_currentVector, _frequency);
+                                        break;
+                                }
+                                _currentVector.Add(_currentIndex, _currentVector);
+                                //save results
+                                OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, true, _currentVector);
+                                if (_currentVector.Count > 1)
+                                {
+                                    _currentVectorRRInterval = _alg.RRinMS(_currentVector, _frequency);
+                                    //save results
+                                    OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
+                                }
+                                //updating current index
+                                _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(_frequency * 0.1);
+                            }
+                            catch (Exception ex)
+                            {
+                                _currentIndex = _currentIndex + _step;
+                                Console.WriteLine("No detected R peaks in this part of signal");
+                            }
+                            _state = STATE.PROCESS_CHANNEL;
+                        }
+                        catch (Exception e)
+                        {
+                            _state = STATE.NEXT_CHANNEL;
+                            Console.WriteLine("PROCESS_CHANNEL - Exception e");
+                        }
+                    }
+                    break;
+                case (STATE.END_CHANNEL):
+                    try
+                    {
+                        _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
+                        try         //zagniezdzone wyjatki?????????
+                        {
+                            //choosing and performing algorithm
+                            switch (Params.Method)
+                            {
+                                case R_Peaks_Method.PANTOMPKINS:
+                                    _currentVector = _alg.PanTompkins(_currentVector, _frequency);
+                                    break;
+                                case R_Peaks_Method.HILBERT:
+                                    _currentVector = _alg.Hilbert(_currentVector, _frequency);
+                                    break;
+                                case R_Peaks_Method.EMD:
+                                    _currentVector = _alg.EMD(_currentVector, _frequency);
+                                    break;
+                            }
+                            _currentVector.Add(_currentIndex, _currentVector);
+                            //save results
+                            OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, true, _currentVector);
+                            if (_currentVector.Count > 1)
+                            {
+                                _currentVectorRRInterval = _alg.RRinMS(_currentVector, _frequency);
+                                //save results
+                                OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
+                            }
+                            //updating current index
+                            _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(_frequency * 0.1);
+                        }
+                        catch (Exception ex)
+                        {
+                            _currentIndex = _currentIndex + _step;
+                            Console.WriteLine("No detected R peaks in this part of signal");
+                        }
+                        _state = STATE.NEXT_CHANNEL;
+                    }
+                    catch (Exception e)
+                    {
+                        _state = STATE.NEXT_CHANNEL;
+                        Console.WriteLine("END_CHANNEL - Exception e");
+                    }
+                    break;
+                case (STATE.NEXT_CHANNEL):
+                    _state = STATE.BEGIN_CHANNEL;
+                    break;
+                case (STATE.END):
+                    _ended = true;
+                    break;
+                default:
+                    Abort();
+                    break;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if (_currentChannelIndex < NumberOfChannels)
             {
                 Console.Write(_currentChannelIndex);
