@@ -15,8 +15,10 @@ namespace EKG_Project.Modules.ECG_Baseline
         private Filtr_Type _type;                 //typ filtracji
         private double _fcLow;                    //częstotliwość odcięcia dolnoprzepustowy
         private double _fcHigh;                   //częstotliwość odcięcia górnoprzepustowy
+        private double _mi;                       //Współczynnik adaptacji LMS
         private int _windowSizeLow;               //szerokość okna filtracji dolnoprzepustowy
         private int _windowSizeHigh;              //szerokość okna filtracji górnoprzepustowy
+        private int _windowLMS;                   //szerokość okna w algorytmie LMS
         private int _orderLow;                    //rząd filtru dolnoprzepustowy
         private int _orderHigh;                   //rząd filtru górnoprzepustowy
 
@@ -27,12 +29,12 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.Method = Filtr_Method.BUTTERWORTH;
             this.Type = Filtr_Type.BANDPASS;
             this._fcLow = 50;
-            this._fcHigh = 0.5;
-            this.OrderLow = 3;
-            this.OrderHigh = 3;
+            this._fcHigh = 2;
+            this.OrderLow = 30;
+            this.OrderHigh = 30;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int order, double fc, string analysisName) //konstruktor BUTTERWORTH LOW, HIGH
+        public ECG_Baseline_Params(string analysisName, Filtr_Method method, Filtr_Type type, int order, double fc) //konstruktor BUTTERWORTH LOW, HIGH
         {
             this.Method = method;
             this.AnalysisName = analysisName;
@@ -58,7 +60,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.OrderHigh = orderHigh;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSize, string analysisName) // konstruktor MOVING_AVG, SAV_GOL, LMS LOW, HIGH
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSize, string analysisName) // konstruktor MOVING_AVG, SAV_GOL LOW, HIGH
         {
             this.Method = method;
             this.AnalysisName = analysisName;
@@ -69,7 +71,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 this.WindowSizeHigh = windowSize;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSizeLow, int windowSizeHigh, string analysisName) // konstruktor MOVING_AVG, SAV_GOL, LMS BAND
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSizeLow, int windowSizeHigh, string analysisName) // konstruktor MOVING_AVG, SAV_GOL BAND
         {
             this.Method = method;
             this.AnalysisName = analysisName;
@@ -77,6 +79,16 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.WindowSizeLow = windowSizeLow;
             this.WindowSizeHigh = windowSizeHigh;
         }
+
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowLMS, string analysisName, double mi) // konstruktor LMS LOW, HIGH, BAND
+        {
+            this.Method = method;
+            this.AnalysisName = analysisName;
+            this.Type = type;
+            this.Mi = mi;
+            this.WindowLMS = windowLMS;
+        }
+
 
         public Filtr_Method Method
         {
@@ -177,6 +189,36 @@ namespace EKG_Project.Modules.ECG_Baseline
                     _fcHigh = value;
                 else
                     _fcHigh = 0;
+            }
+        }
+
+        public double Mi
+        {
+            get
+            {
+                return _mi;
+            }
+            set
+            {
+                if (_mi >= 0 && _mi <= 1)
+                    _mi = value;
+                else
+                    _mi = 0.07;
+            }
+        }
+
+        public int WindowLMS
+        {
+            get
+            {
+                return _windowLMS;
+            }
+            set
+            {
+                if (_windowLMS >= 0)
+                    _windowLMS = value;
+                else
+                    _windowLMS = 0;
             }
         }
 

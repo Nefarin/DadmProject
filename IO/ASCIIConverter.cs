@@ -10,182 +10,294 @@ using EKG_Project.Modules;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
     /// <summary>
     /// Class that converts ASCII files
-    /// </summary>
+    /// </summary> 
+    #endregion
+
     class ASCIIConverter : IECGConverter
     {
         //FIELDS
+        #region Documentation
+        /// <summary>
+        /// Stores txt files directory
+        /// </summary> 
+        #endregion
+        private string directory;
+
+        #region Documentation
         /// <summary>
         /// Stores analysis name
-        /// </summary>
-        string analysisName;
+        /// </summary> 
+        #endregion
+        private string analysisName;
 
+        #region Documentation
         /// <summary>
-        /// Stores file lines in array
-        /// </summary>
-        string[] lines;
+        /// Stores file path
+        /// </summary> 
+        #endregion
+        private string path;
 
+        #region Documentation
         /// <summary>
-        /// Stores file columns in list 
-        /// </summary>
-        List<string>[] columns;
+        /// Stores sampling frequency
+        /// </summary> 
+        #endregion
+        uint frequency;
 
+        #region Documentation
         /// <summary>
-        /// Stores number of samples in signal
-        /// </summary>
-        uint sampleAmount;
-        Basic_Data _data;
+        /// Stores number of samples
+        /// </summary> 
+        #endregion
+        private uint numberOfSamples;
 
+        #region Documentation
         /// <summary>
-        /// Gets or sets Basic Data
+        /// Stores list of leads
+        /// </summary> 
+        #endregion
+        private List<string> leads;
+
+        #region Documentation
+        /// <summary>
+        /// Default constructor
         /// </summary>
-        public Basic_Data Data
+        #endregion
+        public ASCIIConverter()
         {
-            get
-            {
-                return _data;
-            }
-
-            set
-            {
-                _data = value;
-            }
+            IECGPath pathBuilder = new DebugECGPath();
+            directory = pathBuilder.getTempPath();
         }
 
-        public ASCIIConverter (string ASCIIAnalysisName) 
+        #region Documentation
+        /// <summary>
+        /// Parametrized constructor
+        /// </summary>
+        /// <param name="ASCIIAnalysisName">analysis name</param>
+        #endregion
+        public ASCIIConverter (string ASCIIAnalysisName) : this()
         {
             analysisName = ASCIIAnalysisName;
         }
 
         // METHODS
+        #region Documentation
         /// <summary>
-        /// Saves Basic Data in internal XML file
-        /// </summary>
+        /// Saves freauency and lead names in txt files
+        /// </summary> 
+        #endregion
         public void SaveResult()
         {
-            foreach (var property in Data.GetType().GetProperties())
-            {
-
-                if (property.GetValue(Data, null) == null)
-                {
-                    //throw new Exception();
-
-                }
-                else
-                {
-                    Basic_Data_Worker dataWorker = new Basic_Data_Worker(analysisName);
-                    dataWorker.Save(Data);
-                }
-            }
+            Basic_New_Data_Worker dataWorker = new Basic_New_Data_Worker(analysisName);
+            dataWorker.SaveAttribute(Basic_Attributes.Frequency, frequency);
+            dataWorker.SaveLeads(leads);
+            
         }
 
+        #region Documentation
         /// <summary>
-        /// Calls method loadASCIIFile and sets Basic Data
+        /// Sets input file path and Basic Data
         /// </summary>
-        /// <param name="path">input file path</param>
+        /// <param name="path">input file path</param> 
+        #endregion
         public void ConvertFile(string path)
         {
-            loadASCIIFile(path);
-            Data = new Basic_Data();
-            Data.Frequency = getFrequency();
-            Data.Signals = getSignals();
-            Data.SampleAmount = sampleAmount;
+            this.path = path;
+            leads = getLeads();
+            numberOfSamples = getNumberOfSamples(leads[0]);
+            frequency = getFrequency();
         }
 
-        /// <summary>
-        /// Loads ASCII input file and gets its lines and columns 
-        /// </summary>
-        /// <param name="path">input file path</param>
-        public void loadASCIIFile(string path)
-        {
-            lines = File.ReadAllLines(path);
-
-            char[] columnDelimiter = new char[] { '\t' };
-            string[] headerColumns = lines[0].Split(columnDelimiter, StringSplitOptions.RemoveEmptyEntries);
-
-            columns = new List<string>[headerColumns.Count()];
-            for (int i = 0; i < headerColumns.Count(); i++)
-            {
-                columns[i] = new List<string>();
-            }
-
-            for (int i = 0; i < lines.Count(); i++)
-            {
-                string[] lineColumns = lines[i].Split(columnDelimiter, StringSplitOptions.RemoveEmptyEntries);
-                for (int j = 0; j < lineColumns.Count(); j++)
-                {
-                    columns[j].Add(lineColumns[j]);
-                }
-            }
-
-        }
-
+        #region Documentation
         /// <summary>
         /// Gets sampling frequency from input file
         /// </summary>
-        /// <returns>sampling frequency</returns>
+        /// <returns>sampling frequency</returns> 
+        #endregion
        public uint getFrequency()
         {
             uint frequency = 0;
 
-            List<Tuple<string, Vector<double>>> signals = getSignals();
+            StreamReader sr = new StreamReader(path);
+            sr.ReadLine(); // header line 1
+            sr.ReadLine(); // header line 2
+            string readLine = sr.ReadLine();
+            sr.Close();
 
-            string readStartTime = columns[0][2];
+            char[] columnDelimiter = new char[] { '\t' };
+            string[] columns = readLine.Split(columnDelimiter, StringSplitOptions.RemoveEmptyEntries);
+
+            string readStartTime = columns[0];
             string cleanedStartTime = System.Text.RegularExpressions.Regex.Replace(readStartTime, @"\s+", "");
-            DateTime startTime = DateTime.ParseExact(cleanedStartTime, "m:ss.fff", CultureInfo.InvariantCulture);
+            string startPattern = getTimeFormat(cleanedStartTime);
+            DateTime startTime = DateTime.ParseExact(cleanedStartTime, startPattern, CultureInfo.InvariantCulture);
 
-            string readStopTime = columns[0][lines.Length - 1].ToString();
+            string lastReadLine = File.ReadLines(path).Last();
+            string[] lastColumns = lastReadLine.Split(columnDelimiter, StringSplitOptions.RemoveEmptyEntries);
+
+            string readStopTime = lastColumns[0];
             string cleanedStopTime = System.Text.RegularExpressions.Regex.Replace(readStopTime, @"\s+", "");
-            DateTime stopTime = DateTime.ParseExact(cleanedStopTime, "m:ss.fff", CultureInfo.InvariantCulture);
+            string stopPattern = getTimeFormat(cleanedStopTime);
+            DateTime stopTime = DateTime.ParseExact(cleanedStopTime, stopPattern, CultureInfo.InvariantCulture);
 
             TimeSpan totalTime = stopTime - startTime;
             uint totalTimeValue = Convert.ToUInt32(totalTime.TotalSeconds);
-            frequency = sampleAmount / totalTimeValue;
+            frequency = numberOfSamples / totalTimeValue;
 
             return frequency;
         }
 
-        /// <summary>
-        /// Gets signals from input file
-        /// </summary>
-        /// <returns>signals</returns>
-       public List<Tuple<string, Vector<double>>> getSignals()
+       #region Documentation
+       /// <summary>
+       /// Gets time format of time column
+       /// </summary>
+       /// <param name="input">input form time column</param>
+       /// <returns>time format</returns>
+       #endregion
+       public string getTimeFormat(string input)
        {
-           List<Tuple<string, Vector<double>>> Signals = new List<Tuple<string, Vector<double>>>();
-           for (int i = 1; i < columns.Count(); i++)
+           string timeFormat = null;
+           if (input.Count() == 8)
            {
-               string leadName = columns[i][0];
-               string cleanedLeadName = System.Text.RegularExpressions.Regex.Replace(leadName, @"\s+", "");
-
-               Vector<double> signal = Vector<double>.Build.Dense(lines.Length - 2);
-               for (int j = 2; j < lines.Count(); j++)
-               {
-                   double value = Convert.ToDouble(columns[i][j], new System.Globalization.NumberFormatInfo());
-                   int index = j - 2;
-                   signal.At(index, value);
-               }
-
-               getSampleAmount(signal);
-               Tuple<string, Vector<double>> readedSignal = Tuple.Create(cleanedLeadName, signal);
-               Signals.Add(readedSignal);
+               timeFormat = "m:ss.fff";
            }
-
-           return Signals;
+           else if (input.Count() == 9)
+           {
+               timeFormat = "mm:ss.fff";
+           }
+           else if (input.Count() == 11)
+           {
+               timeFormat = "h:mm:ss.fff";
+           }
+           else if (input.Count() == 12)
+           {
+               timeFormat = "hh:mm:ss.fff";
+           }
+           return timeFormat;
 
        }
+       #region Documentation
+       /// <summary>
+       /// Gets part of signal from input file
+       /// </summary>
+       /// <param name="lead">lead name</param>
+       /// <param name="startIndex">start index</param>
+       /// <param name="length">length</param>
+       /// <returns>vector of samples</returns>
+       #endregion
+        public Vector<double> getSignal(string lead, int startIndex, int length)
+        {
+            Vector<double> vector = null;
+            int signalColumn = leads.FindIndex(element => element == lead);
 
+            StreamReader sr = new StreamReader(path);
+            sr.ReadLine(); // header line 1
+            sr.ReadLine(); // header line 2
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+            double[] readSamples = new double[length];
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                char[] columnDelimiter = new char[] { '\t' };
+                string[] columns = readLine.Split(columnDelimiter, StringSplitOptions.RemoveEmptyEntries);
+                readSamples[iterator] = Convert.ToDouble(columns[signalColumn + 1], new System.Globalization.NumberFormatInfo());
+                iterator++;
+            }
+
+            sr.Close();
+
+            try
+            {
+                // obsługa length == 0
+                vector = Vector<double>.Build.Dense(readSamples.Length);
+                vector.SetValues(readSamples);
+            }
+            catch (System.ArgumentOutOfRangeException e)
+            {}
+            
+
+            return vector;
+        }
+
+        #region Documentation
         /// <summary>
-        /// Gets number of samples in signal
+        /// Gets lead names from input file
         /// </summary>
-        /// <param name="signal">signal</param>
-        /// <returns>number of samples</returns>
-       public uint getSampleAmount(Vector<double> signal)
-       {
-           if (signal != null)
-               sampleAmount = (uint)signal.Count;
-           return sampleAmount;
-       }
+        /// <returns>lead names</returns>
+        #endregion
+        public List<string> getLeads()
+        {
+            StreamReader sr = new StreamReader(path);
+            string headerLine = sr.ReadLine();
+            sr.Close();
 
+            char[] columnDelimiter = new char[] { '\t' };
+            string[] headerColumns = headerLine.Split(columnDelimiter, StringSplitOptions.RemoveEmptyEntries);
+            IEnumerable<string> cleanedHeaderColumns = headerColumns.Select(column => System.Text.RegularExpressions.Regex.Replace(column, @"\s+", ""));
+            cleanedHeaderColumns = cleanedHeaderColumns.Skip(1);
+
+            leads = new List<string>(cleanedHeaderColumns);
+            return leads;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Gets number of signal samples 
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>number of samples</returns>
+        #endregion
+        public uint getNumberOfSamples(string lead)
+        {
+            uint count = 0;
+            foreach (var l in leads)
+            {
+                if (l == lead)
+                {
+                    StreamReader sr = new StreamReader(path);
+                    sr.ReadLine(); // header line 1
+                    sr.ReadLine(); // header line 2
+                    while (!sr.EndOfStream)
+                    {
+                        sr.ReadLine();
+                        count++;
+                    }
+                }
+            }
+            numberOfSamples = count;
+            return count;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Deletes all analysis files
+        /// </summary> 
+        #endregion
+        public void DeleteFiles()
+        {
+            string fileNamePattern = analysisName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+        } 
     }
 }

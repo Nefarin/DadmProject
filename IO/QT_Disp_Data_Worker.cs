@@ -116,7 +116,8 @@ namespace EKG_Project.IO
                 }
 
                 XmlElement QT_disp_global = file.CreateElement(string.Empty, "QT_disp_global", string.Empty);
-                XmlText value = file.CreateTextNode(basicData.QT_disp_global.ToString());
+                //XmlText value = file.CreateTextNode(basicData.QT_disp_global.ToString());
+                XmlText value = null;
                 QT_disp_global.AppendChild(value);
                 module.AppendChild(QT_disp_global);
 
@@ -224,7 +225,7 @@ namespace EKG_Project.IO
                     basicData.QT_std = list2;
 
                     XmlNode qt_disp_global = module["QT_disp_global"];
-                    basicData.QT_disp_global = Convert.ToDouble(qt_disp_global.InnerText);
+                    //basicData.QT_disp_global = Convert.ToDouble(qt_disp_global.InnerText);
 
                     List<Tuple<String, List<int>>> list3 = new List<Tuple<String, List<int>>>();
                     XmlNodeList nodes3 = module.SelectNodes("T_End_Local");
