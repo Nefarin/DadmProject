@@ -920,5 +920,80 @@ namespace EKG_Unit.Modules.HRT
             CollectionAssert.AreEqual(expectedMeanTachogram, resultTachogram);
 
         }
+
+        //CheckVPCifnotNULL
+        [TestMethod]
+        [Description("Test function if properly removes null values from array - equality test")]
+        public void CheckVPCifnotNULL_EQTest_1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            int[] testTachogram = { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714 };
+            
+            int[] expectedTachogram = { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714 };
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            int[] resultTachogram = testAlg.checkVPCifnotNULL(testTachogram);
+            HRT_Alg algorytm = new HRT_Alg();
+            
+            // Assert results
+
+            CollectionAssert.AreEqual(expectedTachogram, resultTachogram);
+
+        }
+
+        //CheckVPCifnotNULL
+        [TestMethod]
+        [Description("Test function if properly removes null values from array - equality test")]
+        public void CheckVPCifnotNULL_EQTest_2()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            int[] testTachogram = { 725, 0, 722, 0, 589, 0, 717, 0, 767, 0, 711, 0, 700, 0, 722, 0, 747, 0, 744, 0 };
+
+            int[] expectedTachogram = { 725, 722, 589, 717, 767, 711, 700, 722, 747, 744 };
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            int[] resultTachogram = testAlg.checkVPCifnotNULL(testTachogram);
+            HRT_Alg algorytm = new HRT_Alg();
+
+            // Assert results
+
+            CollectionAssert.AreEqual(expectedTachogram, resultTachogram);
+
+        }
+
+        //CheckVPCifnotNULL
+        [TestMethod]
+        [Description("Test function if properly removes null values from array - equality test")]
+        public void CheckVPCifnotNULL_EQTest_3()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            int[] testTachogram = { 0, 0, 0, 0, 0 };
+
+            int[] expectedTachogram = { };
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            int[] resultTachogram = testAlg.checkVPCifnotNULL(testTachogram);
+            HRT_Alg algorytm = new HRT_Alg();
+
+            // Assert results
+
+            CollectionAssert.AreEqual(expectedTachogram, resultTachogram);
+
+        }
     }
 }
