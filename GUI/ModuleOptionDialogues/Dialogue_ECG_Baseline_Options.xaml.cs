@@ -26,6 +26,7 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
         public ModuleParams returnParameters { get; set; }
         public ModuleParams PendingParameters { get; set; }
         ModulePanel panel;
+        private readonly System.Windows.Forms.Form _parent;
 
         public static CultureInfo CurrentCulture
         {
@@ -44,6 +45,8 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             this.PendingParameters.CopyFrom(parameters);
             this.DataContext = this.PendingParameters;
             InitializeComponent();
+            this.Left = SystemParameters.PrimaryScreenWidth - this.Width - 400;
+            this.Top = SystemParameters.PrimaryScreenHeight - this.Height - 150;
         }
 
         private void ApplyParameterChanges(object sender, RoutedEventArgs e)
