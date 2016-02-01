@@ -26,6 +26,7 @@ namespace EKG_Project.Modules.HRT
         private int _numberOfChannels;
         private int _samplesProcessed;
         private uint _frequency;
+        private enum VPC { NOT_DETECTED, NO_VENTRICULAR, DETECTED_BUT_IMPOSSIBLE_TO_PLOT, DETECTED };
         //private int _step;
 
         private Basic_New_Data_Worker _inputWorker_basic;
@@ -34,7 +35,7 @@ namespace EKG_Project.Modules.HRT
         private HRT_New_Data_Worker _outputWorker;
 
         private Basic_Data _inputData_basic;
-        private R_Peaks_Data _inputData_R_Peaks; 
+        private R_Peaks_Data _inputData_R_Peaks;
         private Heart_Class_Data _inputData_Heart_Class;
         private HRT_Data _outputData;
         private HRT_Params _params;
@@ -53,6 +54,7 @@ namespace EKG_Project.Modules.HRT
         private Tuple<List<double>, int[], double[]> _turbulenceSlope;
         private double[] _meanTachogram;
         private int[] _xaxis;
+        private VPC _vpc;
 
         private List<Tuple<string, int[], List<double[]>>> _tachogramGUI = new List<Tuple<string, int[], List<double[]>>>();
         private List<Tuple<string, int[], double[]>> _tachogramMeanGUI = new List<Tuple<string, int[], double[]>>();
@@ -148,7 +150,7 @@ namespace EKG_Project.Modules.HRT
                     else
                     {
                         _currentLeadName = _leads[_currentChannelIndex];
-                        _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName); 
+                        _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName);
                         _state = STATE.PROCESS_FIRST_STEP;
                     }
                     break;
@@ -172,7 +174,7 @@ namespace EKG_Project.Modules.HRT
                         }
                     }
                     break;
-                case (STATE.PROCESS_CHANNEL): 
+                case (STATE.PROCESS_CHANNEL):
                     if (_currentChannelIndex > _currentChannelLength) _state = STATE.END_CHANNEL;
                     else
                     {
@@ -181,6 +183,7 @@ namespace EKG_Project.Modules.HRT
                             if (_rpeaks.Count < _classAll.Count)
                             {
                                 Console.WriteLine("Wykryto więcej klas niż załamków, błędnie skonstruowany plik wejściowy");
+                                _vpc = VPC.NOT_DETECTED;
                             }
                             else
                             {
@@ -190,6 +193,7 @@ namespace EKG_Project.Modules.HRT
                                 if (_classVentrical.Capacity == 0)
                                 {
                                     Console.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
+                                    _vpc = VPC.NO_VENTRICULAR;
                                 }
                                 else
                                 {
@@ -199,6 +203,7 @@ namespace EKG_Project.Modules.HRT
                                     if (_classPrematureVentrical.Capacity == 0)
                                     {
                                         Console.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
+                                        _vpc = VPC.NO_VENTRICULAR;
                                     }
                                     else
                                     {
@@ -230,7 +235,7 @@ namespace EKG_Project.Modules.HRT
                     }
 
                     //_currentChannelIndex++;
-                    
+
                     break;
                 case (STATE.END_CHANNEL):
                     //try
@@ -255,7 +260,7 @@ namespace EKG_Project.Modules.HRT
                     //        _currentIndex = _currentIndex + _step;
                     //        Console.WriteLine("No detected R peaks in this part of signal");
                     //    }
-                       _state = STATE.NEXT_CHANNEL;
+                    _state = STATE.NEXT_CHANNEL;
                     //}
                     //catch (Exception e)
                     //{
@@ -288,173 +293,173 @@ namespace EKG_Project.Modules.HRT
 
 
 
-//            if (_currentChannelIndex<NumberOfChannels)
-//            {
-//                Console.Write(_currentChannelIndex);
-//                Console.Write("/");
-//                Console.WriteLine(NumberOfChannels);
+        //            if (_currentChannelIndex<NumberOfChannels)
+        //            {
+        //                Console.Write(_currentChannelIndex);
+        //                Console.Write("/");
+        //                Console.WriteLine(NumberOfChannels);
 
-//                string _channelName = InputRpeaksData.RPeaks[_currentChannelIndex].Item1;
+        //                string _channelName = InputRpeaksData.RPeaks[_currentChannelIndex].Item1;
 
-//                _rpeaksSelected = InputRpeaksData.RPeaks[_currentChannelIndex].Item2;
-//                _rrintervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2;
-//                _classAll = InputHeartClassData.ClassificationResult;
-
-             
-//                //_rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
+        //                _rpeaksSelected = InputRpeaksData.RPeaks[_currentChannelIndex].Item2;
+        //                _rrintervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2;
+        //                _classAll = InputHeartClassData.ClassificationResult;
 
 
-//                // _classVentrical = HRT_Algorythms.checkVPCifnotNULL(_classVentrical);
-//               
+        //                //_rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
 
 
-           
+        //                // _classVentrical = HRT_Algorythms.checkVPCifnotNULL(_classVentrical);
+        //               
 
-//        }
 
 
-    public bool Aborted
-    {
-        get
+
+        //        }
+
+
+        public bool Aborted
         {
-            return _aborted;
+            get
+            {
+                return _aborted;
+            }
+
+            set
+            {
+                _aborted = value;
+            }
         }
 
-        set
+        public int NumberOfChannels
         {
-            _aborted = value;
-        }
-    }
+            get
+            {
+                return _numberOfChannels;
+            }
 
-    public int NumberOfChannels
-    {
-        get
-        {
-            return _numberOfChannels;
-        }
-
-        set
-        {
-            _numberOfChannels = value;
-        }
-    }
-
-    public Basic_New_Data_Worker InputWorker_basic
-    {
-        get
-        {
-            return _inputWorker_basic;
+            set
+            {
+                _numberOfChannels = value;
+            }
         }
 
-        set
+        public Basic_New_Data_Worker InputWorker_basic
         {
-            _inputWorker_basic = value;
-        }
-    }
+            get
+            {
+                return _inputWorker_basic;
+            }
 
-    public R_Peaks_New_Data_Worker InputWorker_R_Peaks
-    {
-        get
-        {
-            return _inputWorker_R_Peaks;
-        }
-
-        set
-        {
-            _inputWorker_R_Peaks = value;
-        }
-    }
-
-    public Heart_Class_New_Data_Worker InputWorker_Heart_Class
-    {
-        get
-        {
-            return _inputWorker_Heart_Class;
+            set
+            {
+                _inputWorker_basic = value;
+            }
         }
 
-        set
+        public R_Peaks_New_Data_Worker InputWorker_R_Peaks
         {
-            _inputWorker_Heart_Class = value;
-        }
-    }
+            get
+            {
+                return _inputWorker_R_Peaks;
+            }
 
-    private HRT_New_Data_Worker OutputWorker
-    {
-        get
-        {
-            return _outputWorker;
-        }
-
-        set
-        {
-            _outputWorker = value;
-        }
-    }
-
-    public Basic_Data InputData_basic
-    {
-        get
-        {
-            return _inputData_basic;
+            set
+            {
+                _inputWorker_R_Peaks = value;
+            }
         }
 
-        set
+        public Heart_Class_New_Data_Worker InputWorker_Heart_Class
         {
-            _inputData_basic = value;
-        }
-    }
+            get
+            {
+                return _inputWorker_Heart_Class;
+            }
 
-    public R_Peaks_Data InputData_R_Peaks
-    {
-        get
-        {
-            return _inputData_R_Peaks;
-        }
-
-        set
-        {
-            _inputData_R_Peaks = value;
-        }
-    }
-
-    public Heart_Class_Data InputData_Heart_Class
-    {
-        get
-        {
-            return _inputData_Heart_Class;
+            set
+            {
+                _inputWorker_Heart_Class = value;
+            }
         }
 
-        set
+        private HRT_New_Data_Worker OutputWorker
         {
-            _inputData_Heart_Class = value;
-        }
-    }
+            get
+            {
+                return _outputWorker;
+            }
 
-    public HRT_Data OutputData
-    {
-        get
-        {
-            return _outputData;
-        }
-
-        set
-        {
-            _outputData = value;
-        }
-    }
-
-    public HRT_Params Params
-    {
-        get
-        {
-            return _params;
+            set
+            {
+                _outputWorker = value;
+            }
         }
 
-        set
+        public Basic_Data InputData_basic
         {
-            _params = value;
+            get
+            {
+                return _inputData_basic;
+            }
+
+            set
+            {
+                _inputData_basic = value;
+            }
         }
-    }
+
+        public R_Peaks_Data InputData_R_Peaks
+        {
+            get
+            {
+                return _inputData_R_Peaks;
+            }
+
+            set
+            {
+                _inputData_R_Peaks = value;
+            }
+        }
+
+        public Heart_Class_Data InputData_Heart_Class
+        {
+            get
+            {
+                return _inputData_Heart_Class;
+            }
+
+            set
+            {
+                _inputData_Heart_Class = value;
+            }
+        }
+
+        public HRT_Data OutputData
+        {
+            get
+            {
+                return _outputData;
+            }
+
+            set
+            {
+                _outputData = value;
+            }
+        }
+
+        public HRT_Params Params
+        {
+            get
+            {
+                return _params;
+            }
+
+            set
+            {
+                _params = value;
+            }
+        }
 
 
 

@@ -511,7 +511,7 @@ namespace EKG_Project.Modules.HRT
 
                 after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
                 before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
-                TO.Add(100 * (after[i] - before[i]) / before[i]);
+                TO.Add(Math.Round((100 * (after[i] - before[i]) / before[i]), 2));
 
                 i++;
             }
@@ -549,8 +549,8 @@ namespace EKG_Project.Modules.HRT
             sumAfter8Suma = listAfter8.Sum() / tacho.Count;
 
 
-            double sumBefore = (sumBefore3Suma + sumBefore4Suma) / 2;
-            double sumAfter = (sumAfter7Suma + sumAfter8Suma) / 2;
+            double sumBefore = Math.Round(((sumBefore3Suma + sumBefore4Suma) / 2),2);
+            double sumAfter = Math.Round(((sumAfter7Suma + sumAfter8Suma) / 2),2);
 
 
             int[] x = { -2, -1, 2, 3 };
@@ -603,7 +603,7 @@ namespace EKG_Project.Modules.HRT
                         for (int n = 0; n < 5; n++)
                         {
                             xx[n] = j + n;
-                            yy[n] = p.Item2.At(n);
+                            yy[n] = Math.Round(p.Item2.At(n),2);
                         }
                     }
                 }
@@ -612,7 +612,6 @@ namespace EKG_Project.Modules.HRT
             List<double> TSnew = TS.ToList();
             return Tuple.Create(TSnew, xx, yy);
         }
-
 
 
         /// <summary>
@@ -646,7 +645,7 @@ namespace EKG_Project.Modules.HRT
                     sumTach = sumTach + tach[k];
                 }
 
-                meanTach[k] = sumTach / tacho.Count;
+                meanTach[k] = Math.Round((sumTach / tacho.Count),2);
                 k++;
                 sumTach = 0;
             }
