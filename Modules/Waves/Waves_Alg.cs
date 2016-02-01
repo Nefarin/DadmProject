@@ -380,7 +380,7 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 ponset = pmax_loc; // initialize Ponset location with maximum location
-                thr = (pmax_val - currentECG[onset_loc]) * 0.4; // set threshold equal to percentage of level from maximum value and QRSonset
+                thr = (pmax_val - currentECG[onset_loc]) * 0.5; // set threshold equal to percentage of level from maximum value and QRSonset
                 while (currentECG[ponset] > currentECG[ponset - 1] || Math.Abs(pmax_val - currentECG[ponset]) < thr) // find local minimum and check if threshold is exceeded
                 {
                     ponset--; // move backwards in samples
@@ -397,7 +397,7 @@ namespace EKG_Project.Modules.Waves
                     currentPonsetsPart.Add(ponset ); // add -1 to the list
 
                 pend = pmax_loc; // initialize Pend location with maximum location
-                thr = (pmax_val - currentECG[onset_loc]) * 0.4; // set threshold equal to percentage of level from maximum value and QRSonset
+                thr = (pmax_val - currentECG[onset_loc]) * 0.5; // set threshold equal to percentage of level from maximum value and QRSonset
                 while (currentECG[pend] > currentECG[pend + 1] || (pmax_val - currentECG[pend] < thr)) // find local minimum and check if threshold is exceeded
                 {
                     pend++; // move forward in samples
@@ -432,8 +432,8 @@ namespace EKG_Project.Modules.Waves
             int window, break_window, tmax_loc, tend; // initialization of T-wave maximum location, Tends location and window variables
             int maxTendVal = currentECG.Count-3;
 
-            window = Convert.ToInt32(frequency * 0.3); // window length
-            break_window = Convert.ToInt32(frequency * 0.35); // length of window to break searching for maximum
+            window = Convert.ToInt32(frequency * 0.35); // window length
+            break_window = Convert.ToInt32(frequency * 0.4); // length of window to break searching for maximum
 
             foreach (int ends_loc_abs in currentQRSendsPart)
             {
