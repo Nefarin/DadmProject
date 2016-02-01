@@ -58,7 +58,7 @@ namespace EKG_Project.Modules.HRV2
             {
                 sumOfDerivation += (value) * (value);
             }
-            double sumOfDerivationAverage = sumOfDerivation / (dataVector.Count - 1);
+            double sumOfDerivationAverage = sumOfDerivation / (dataVector.Count);
             return Math.Sqrt(sumOfDerivationAverage - (average * average));
         }
 

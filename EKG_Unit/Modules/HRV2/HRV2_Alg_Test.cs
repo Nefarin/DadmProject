@@ -112,5 +112,21 @@ namespace EKG_Unit.Modules.HRV2
             Assert.IsNotNull(result);
         }
 
+        [TestMethod]
+        [Description("Test if standard deviation is calculate properly")]
+        public void StandardDevTest()
+        {
+            double[] testArray = { 2, 2, 2, 2, 2 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            HRV2_Alg testAlgs = new HRV2_Alg();
+
+            PrivateObject obj = new PrivateObject(testAlgs);
+            obj.SetField("_rrIntervals", testVector);
+            double stdev = (double) obj.Invoke("getStandardDeviation", testVector); 
+            double testStandardDev = stdev;
+            double result = 0;
+            Assert.AreEqual(testStandardDev, result);
+        }
+
     }
 }
