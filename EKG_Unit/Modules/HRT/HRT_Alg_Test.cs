@@ -1021,5 +1021,29 @@ namespace EKG_Unit.Modules.HRT
             CollectionAssert.AreEqual(expectedNewKlasa, resultNewKlasa);
 
         }
+
+        //xPlot
+        [TestMethod]
+        [Description("Test function if properly return indexes - equality test")]
+        public void xPlot_EQTest_1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            int[] expectedXaxis = { -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            int[] resultXaxis = testAlg.xPlot();
+            HRT_Alg algorytm = new HRT_Alg();
+
+            // Assert results
+
+            CollectionAssert.AreEqual(expectedXaxis, resultXaxis);
+
+        }
+
     }
 }
