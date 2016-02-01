@@ -46,5 +46,85 @@ namespace EKG_Unit.Modules.Heart_Axis
             Assert.AreNotEqual(testAlgs, resultArray);
 
         }
+
+        [TestMethod]
+        [Description("LeastSquaresMethod")] //todo
+        public void leastSquaresMethodTest()
+        {
+            Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
+
+            double[] testArray = { 1, 2, 8, 1, 6 };
+            double[] resultArray = { 2 };
+
+
+            Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+            object[] args = { 0, testArray };
+            obj.Invoke("MaxOfPseudoModule", args);
+
+            Assert.AreNotEqual(testAlgs, resultArray);
+
+        }
+
+        [TestMethod]
+        [Description("MaxOfPolynomial")]
+        public void maxOfPolynomialTest()
+        {
+            Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
+
+            double[] testArray = { -4, 8, 12 };
+            double[] resultArray = { 1 };
+
+
+            Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+            object[] args = { 0, testArray };
+            obj.Invoke("MaxOfPolynomial", args);
+
+            Assert.AreNotEqual(testAlgs, resultArray);
+
+        }
+
+
+        [TestMethod]
+        [Description("ReadingAmplitudes")]
+        public void readingAmplitudesTest()
+        {
+            Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
+
+            double[] testArray1 = { 5, 4, 3, 2, 1 };
+            double[] testArray2 = { 1, 2, 3, 4, 5 };
+            double[] resultArray = { 4, 2 };
+
+
+            Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+            object[] args = { testArray1, testArray2, 1 };
+            obj.Invoke("ReadingAmplitudes", args);
+
+            Assert.AreNotEqual(testAlgs, resultArray);
+
+        }
+
+
+        [TestMethod]
+        [Description("IandII")] //todo
+        public void IandIITest()
+        {
+            Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
+
+            double[] testArray = { 2, 4};
+            double result = 1.357;
+
+
+            Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+            object[] args = { 0, testArray };
+            obj.Invoke("MaxOfPseudoModule", args);
+
+            Assert.AreEqual(testAlgs, result, "0.2"); //?
+
+        }
+
     }
 }
