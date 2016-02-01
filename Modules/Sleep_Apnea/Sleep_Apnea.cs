@@ -165,7 +165,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
         private void processData()
         {
-            
+
 
             //switch (_currentState)
             //{
