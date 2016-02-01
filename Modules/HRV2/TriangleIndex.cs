@@ -29,14 +29,14 @@ namespace EKG_Project.Modules.HRV2
         private void makeTriangleIndex()
         {
             //Vector<double> RRIntervaals = InputData.RRInterval[_outputIndex].Item2;
-            try
-            {
-                triangleIndex = (double)_rrIntervals.Count/(double)_currentHistogram.MaxCount;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            //try
+            //{
+            triangleIndex = (double)_rrIntervals.Count / (double)_currentHistogram.MaxCount;
+            //}
+            //catch (NullReferenceException e)
+            //{
+            //    Console.WriteLine(e.Message);
+            //}
         }
     }
 
