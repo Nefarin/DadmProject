@@ -159,6 +159,29 @@ namespace EKG_Project.Modules.HRT
 
         }
 
+        public void PrintVector(Tuple<List<double>, int[], double[]> Signal)
+        {
+            foreach (double _licznik2 in Signal.Item1)
+            {
+                Console.Write(_licznik2);
+                Console.Write(" ");
+            }
+            Console.WriteLine();
+            foreach (int _licznik in Signal.Item2)
+            {
+                Console.Write(_licznik);
+                Console.Write(" ");
+            }
+            Console.WriteLine();
+            foreach (double _licznik in Signal.Item3)
+            {
+                Console.Write(_licznik);
+                Console.Write(" ");
+            }
+            Console.WriteLine();
+            
+        }
+
         public void PrintVector(List<Tuple<int[], List<double[]>>> Signal)
         {
             foreach (Tuple<int[], List<double[]>> _licznik in Signal)

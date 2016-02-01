@@ -1068,7 +1068,7 @@ namespace EKG_Unit.Modules.HRT
             double expectedTO_1 = 29.62;
             List<double> expectedTO = new List<double>();
             expectedTO.Add(expectedTO_1);
-            
+
             // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
@@ -1078,7 +1078,7 @@ namespace EKG_Unit.Modules.HRT
 
             for (int iter = 0; iter < resultTO.Count; iter++)
             {
-                Assert.AreEqual(expectedTO[iter], resultTO[iter] );
+                Assert.AreEqual(expectedTO[iter], resultTO[iter]);
             }
 
         }
@@ -1115,7 +1115,7 @@ namespace EKG_Unit.Modules.HRT
             List<double> expectedTO = new List<double>();
             expectedTO.Add(expectedTO_1);
             expectedTO.Add(expectedTO_2);
-            
+
             // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
@@ -1191,6 +1191,183 @@ namespace EKG_Unit.Modules.HRT
             {
                 Assert.AreEqual(expectedTO[iter], resultTO[iter]);
             }
+        }
+
+        //TurbulenceSlopeGUIandPDF
+        [TestMethod]
+        [Description("Test function if properly count turbulence slope")]
+        public void TurbulenceSlopeGUIandPDF_EQTest_1()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrIntervalsArray = { 728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 739, 703, 703,
+                                              428, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719 };
+            Vector<double> testrrIntervalsVector = Vector<double>.Build.DenseOfArray(testrrIntervalsArray);
+
+            List<int> testVPC = new List<int>();
+            testVPC.Add(22);
+
+            double expectedTS_1 = 36.5;
+            List<double> expectedTS = new List<double>();
+            expectedTS.Add(expectedTS_1);
+
+            int[] expectedXX = { 4, 5, 6, 7, 8 };
+            double[] expectedYY = { 645.8, 682.3, 718.8, 755.3, 791.8 };
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Tuple<List<double>, int[], double[]> resultTS = testAlg.TurbulenceSlopeGUIandPDF(testVPC, testrrIntervalsVector);
+
+            HRT_Alg algorytm = new HRT_Alg();
+            algorytm.PrintVector(resultTS);
+
+            // Assert results
+
+            CollectionAssert.AreEqual(expectedTS, resultTS.Item1);
+            CollectionAssert.AreEqual(expectedXX, resultTS.Item2);
+            CollectionAssert.AreEqual(expectedYY, resultTS.Item3);
+
+        }
+
+        //TurbulenceSlopeGUIandPDF
+        [TestMethod]
+        [Description("Test function if properly count turbulence slope")]
+        public void TurbulenceSlopeGUIandPDF_EQTest_2()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrIntervalsArray = { 728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 739, 703, 703,
+                                              428, 1006,756, 852, 835, 862, 920, 1000, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719 };
+            Vector<double> testrrIntervalsVector = Vector<double>.Build.DenseOfArray(testrrIntervalsArray);
+
+            List<int> testVPC = new List<int>();
+            testVPC.Add(22);
+            testVPC.Add(82);
+            testVPC.Add(202);
+
+            double expectedTS_1 = 38.1;
+            double expectedTS_2 = 36.5;
+            double expectedTS_3 = 36.5;
+            List<double> expectedTS = new List<double>();
+            expectedTS.Add(expectedTS_1);
+            expectedTS.Add(expectedTS_2);
+            expectedTS.Add(expectedTS_3);
+
+            int[] expectedXX = { 4, 5, 6, 7, 8 };
+            double[] expectedYY = { 645.8, 682.3, 718.8, 755.3, 791.8 };
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Tuple<List<double>, int[], double[]> resultTS = testAlg.TurbulenceSlopeGUIandPDF(testVPC, testrrIntervalsVector);
+
+            HRT_Alg algorytm = new HRT_Alg();
+            algorytm.PrintVector(resultTS);
+
+            // Assert results
+
+            CollectionAssert.AreEqual(expectedTS, resultTS.Item1);
+            CollectionAssert.AreEqual(expectedXX, resultTS.Item2);
+            CollectionAssert.AreEqual(expectedYY, resultTS.Item3);
+
+        }
+
+        //TurbulenceSlopeGUIandPDF
+        [TestMethod]
+        [Description("Test function if properly count turbulence slope")]
+        public void TurbulenceSlopeGUIandPDF_EQTest_3()
+        {
+            HRT_Params testParams = new HRT_Params("Test");
+
+            // Init test here
+
+            double[] testrrIntervalsArray = { 728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 739, 703, 703,
+                                              428, 1006,756, 852, 835, 862, 920, 1000, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 900, 900, 900, 950, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719,
+                                              728, 692, 714, 714, 714, 728, 761, 756, 731, 703,
+                                              692, 697, 722, 756, 742, 747, 733, 740, 703, 703,
+                                              429, 1006,756, 758, 744, 722, 694, 722, 725, 431,
+                                              1022,761, 736, 733, 714, 694, 681, 722, 764, 736,
+                                              731, 722, 711, 700, 708, 711, 728, 489, 1006,736,
+                                              708, 689, 697, 686, 733, 747, 742, 717, 733, 719 };
+            Vector<double> testrrIntervalsVector = Vector<double>.Build.DenseOfArray(testrrIntervalsArray);
+
+            List<int> testVPC = new List<int>();
+            testVPC.Add(22);
+            testVPC.Add(82);
+            testVPC.Add(202);
+
+            double expectedTS_1 = 38.1;
+            double expectedTS_2 = 38.8;
+            double expectedTS_3 = 36.5;
+            List<double> expectedTS = new List<double>();
+            expectedTS.Add(expectedTS_1);
+            expectedTS.Add(expectedTS_2);
+            expectedTS.Add(expectedTS_3);
+
+            int[] expectedXX = { 4, 5, 6, 7, 8 };
+            double[] expectedYY = { 645.8, 682.3, 718.8, 755.3, 791.8 };
+
+            // Process test here
+
+            HRT_Alg testAlg = new HRT_Alg();
+            Tuple<List<double>, int[], double[]> resultTS = testAlg.TurbulenceSlopeGUIandPDF(testVPC, testrrIntervalsVector);
+
+            HRT_Alg algorytm = new HRT_Alg();
+            algorytm.PrintVector(resultTS);
+
+            // Assert results
+
+            CollectionAssert.AreEqual(expectedTS, resultTS.Item1);
+            CollectionAssert.AreEqual(expectedXX, resultTS.Item2);
+            CollectionAssert.AreEqual(expectedYY, resultTS.Item3);
+
         }
     }
 }
