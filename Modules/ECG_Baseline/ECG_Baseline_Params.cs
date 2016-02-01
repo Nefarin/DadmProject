@@ -188,6 +188,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 this.NotifyPropertyChanged("IsButterworthHighPass");
                 this.NotifyPropertyChanged("IsOtherLowPass");
                 this.NotifyPropertyChanged("IsOtherHighPass");
+                this.NotifyPropertyChanged("IsLMS");
             }
         }
 
@@ -223,15 +224,26 @@ namespace EKG_Project.Modules.ECG_Baseline
                 this.NotifyPropertyChanged("IsButterworthHighPass");
                 this.NotifyPropertyChanged("IsOtherLowPass");
                 this.NotifyPropertyChanged("IsOtherHighPass");
+                this.NotifyPropertyChanged("IsLMS");
             }
         }
+
+        public bool IsLMS
+        {
+            get
+            {
+                return (this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS || this.Type == Filtr_Type.HIGHPASS) &&
+                    this.Method == Filtr_Method.LMS;
+            }
+        }
+
 
         public bool IsOtherLowPass
         {
             get
             {
                 return (this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS) &&
-                    this.Method != Filtr_Method.BUTTERWORTH;
+                    this.Method != Filtr_Method.BUTTERWORTH && this.Method != Filtr_Method.LMS;
             }
         }
 
@@ -240,7 +252,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             get
             {
                 return (this.Type == Filtr_Type.HIGHPASS || this.Type == Filtr_Type.BANDPASS) &&
-                    this.Method != Filtr_Method.BUTTERWORTH;
+                    this.Method != Filtr_Method.BUTTERWORTH && this.Method != Filtr_Method.LMS;
             }
         }
 
