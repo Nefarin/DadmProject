@@ -85,24 +85,32 @@ namespace EKG_Unit.Modules.HRV2
         }
 
         [TestMethod]
-        [Description("Test if...)]
-        public void Test()
+        [Description("Test if throws null if argument is not initialized")]
+        [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
+        public void TriangleIndexNullExeptionTest()
         {
-            double[] testArray = { 1, 2, 3, 4, 5 };
-            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            Vector<double> testVector = null;
             HRV2_Alg testAlgs = new HRV2_Alg();
 
             PrivateObject obj = new PrivateObject(testAlgs);
             obj.SetField("_rrIntervals", testVector);
-
-            obj.Invoke("makeTinn");
-
-            double testTinn = (double)obj.GetField("tinn");
-            double resultTinn = 4;
-
-            Assert.AreEqual(testTinn, resultTinn);
+            obj.Invoke("makeTriangleIndex");
+            double testTinn = (double)obj.GetField("triangleIndex");
         }
 
+        [TestMethod]
+        [Description("Test if throws null if argument is not initialized")]
+        public void TinnNullTest()
+        {
+            Vector<double> testVector = null;
+            HRV2_Alg testAlgs = new HRV2_Alg();
+
+            PrivateObject obj = new PrivateObject(testAlgs);
+            obj.SetField("_rrIntervals", testVector);
+            obj.Invoke("makeTriangleIndex");
+            double result = (double)obj.GetField("triangleIndex");
+            Assert.IsNotNull(result);
+        }
 
     }
 }
