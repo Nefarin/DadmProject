@@ -23,7 +23,6 @@ namespace EKG_Project.Modules.R_Peaks
         private int _numberOfChannels;
 
         private ECG_Baseline_New_Data_Worker _inputWorker;
-        //private Basic_New_Data_Worker _inputWorker;
         private Basic_New_Data_Worker _inputWorker_basic;
         private R_Peaks_New_Data_Worker _outputWorker;
 
@@ -75,14 +74,13 @@ namespace EKG_Project.Modules.R_Peaks
             {
                 InputWorker_basic = new Basic_New_Data_Worker(Params.AnalysisName);
                 InputWorker = new ECG_Baseline_New_Data_Worker(Params.AnalysisName);
-                //InputWorker = new Basic_New_Data_Worker(Params.AnalysisName);
-                OutputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName); //+"temp" tez ma byc?
+                OutputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName); 
                 InputData_basic = new Basic_Data();
                 InputData = new ECG_Baseline_Data();
                 OutputData = new R_Peaks_Data();
 
                 _frequency = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
-                //_step = 6000; //od fs?
+                //_step = 6000; 
                 _step = Convert.ToInt32(_frequency*16);
                 _state = STATE.INIT;
             }
@@ -136,7 +134,7 @@ namespace EKG_Project.Modules.R_Peaks
                             Console.WriteLine("_currentLeadName "+ _currentLeadName);
                             Console.WriteLine("_currentIndex "+ _currentIndex);
                             Console.WriteLine("_step "+ _step);
-                            try         //zagniezdzone wyjatki?????????
+                            try     
                             {
                                 //choosing and performing algorithm
                                 switch (Params.Method)
@@ -176,14 +174,14 @@ namespace EKG_Project.Modules.R_Peaks
                         }
                     }
                     break;
-                case (STATE.PROCESS_CHANNEL):  // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
+                case (STATE.PROCESS_CHANNEL):  
                     if (_currentIndex + _step > _currentChannelLength) _state = STATE.END_CHANNEL;
                     else
                     {
                         try
                         {
                             _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
-                            try         //zagniezdzone wyjatki?????????
+                            try        
                             {
                                 //choosing and performing algorithm
                                 switch (Params.Method)
@@ -228,7 +226,7 @@ namespace EKG_Project.Modules.R_Peaks
                     try
                     {
                         _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
-                        try         //zagniezdzone wyjatki?????????
+                        try         
                         {
                             //choosing and performing algorithm
                             switch (Params.Method)
@@ -346,7 +344,6 @@ namespace EKG_Project.Modules.R_Peaks
         }
 
         public ECG_Baseline_New_Data_Worker InputWorker
-        //public Basic_New_Data_Worker InputWorker
         {
             get
             {
