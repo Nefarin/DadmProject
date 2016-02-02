@@ -13,6 +13,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
 {
     public class T_Wave_Alt_Alg
     {
+        // niepotrzebny komentarz
         // Class fields
         private T_Wave_Alt_Params _params;
         private uint _fs;
