@@ -67,7 +67,7 @@ namespace EKG_Unit.Modules.Heart_Axis
         }
 
         [TestMethod]
-        [Description("MaxOfPolynomial")]
+        [Description("Test if method MaxOfPolynomial calculates properly")]
         public void maxOfPolynomialTest()
         {
             Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
@@ -108,7 +108,7 @@ namespace EKG_Unit.Modules.Heart_Axis
 
 
         [TestMethod]
-        [Description("IandII")] //todo
+        [Description("IandII")]
         public void IandIITest()
         {
             Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
@@ -126,5 +126,12 @@ namespace EKG_Unit.Modules.Heart_Axis
 
         }
 
-    }
+        [TestMethod]
+        [Description("IandII")]
+        public void IandIITest2()
+        {
+            //dividing by 0?
+        }
+
+        }
 }
