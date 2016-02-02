@@ -38,6 +38,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private double _percentOfDetection;
         private string _detection;
         private string _description;
+        private bool _append;
         private STATE _state;
         private int _step = 480;
 
@@ -120,8 +121,38 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         _detectedAF = false;
                         _lengthOfDetection = 0;
                         _percentOfDetection = 0;
+                        _append = true;
                         _lengthOfData = (InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _currentChannelLength-1, 1).At(0)-InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName,0,1).At(0))/_fs;
-                        _state = STATE.PROCESS_CHANNEL;
+                        _state = STATE.PROCESS_FIRST_STEP;
+                    }
+                    break;
+                case (STATE.PROCESS_FIRST_STEP):
+                    if (_currentIndex + _step >= _currentChannelLength)
+                    {
+                        _state = STATE.END_CHANNEL;
+                        _append = false;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            _vectorOfRpeaks = InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _currentIndex, _step);
+                            _vectorOfIntervals = InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, _currentIndex, _step).Multiply((double)_fs / 1000);
+                            _object = new Atrial_Fibr_Alg();
+                            _result = _object.detectAF(_vectorOfIntervals, _vectorOfRpeaks, _fs, Params);
+                            if (_result.Item1)
+                            {
+                                OutputWorker.SaveAfDetection(_currentLeadName, false, false, new Tuple<bool, Vector<double>, string, string>(false, _result.Item2, "", ""));
+                                _detectedAF = true;
+                                _lengthOfDetection += _result.Item3;
+                            }
+                            _currentIndex += _step;
+                            _state = STATE.PROCESS_CHANNEL;
+                        }
+                        catch (Exception e)
+                        {
+                            _state = STATE.NEXT_CHANNEL;
+                        }
                     }
                     break;
                 case (STATE.PROCESS_CHANNEL):
@@ -136,7 +167,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                             _result = _object.detectAF(_vectorOfIntervals, _vectorOfRpeaks, _fs, Params);
                             if (_result.Item1)
                             {
-                                OutputWorker.SaveAfDetection(_currentLeadName, false, false, new Tuple<bool, Vector<double>, string, string>(false, _result.Item2, "", ""));
+                                OutputWorker.SaveAfDetection(_currentLeadName, true, false, new Tuple<bool, Vector<double>, string, string>(false, _result.Item2, "", ""));
                                 _detectedAF = true;
                                 _lengthOfDetection += _result.Item3;
                             }
@@ -166,12 +197,12 @@ namespace EKG_Project.Modules.Atrial_Fibr
                             _percentOfDetection =( _lengthOfDetection / _lengthOfData)*100;
                             _detection = "Wykryto migotanie przedsionków.";
                             _description="Wykryto migotanie trwające " + _lengthOfDetection.ToString("F1") + "s. Stanowi to " +_percentOfDetection.ToString("F1") + "% trwania sygnału.";
-                            OutputWorker.SaveAfDetection(_currentLeadName, false, true, new Tuple<bool, Vector<double>, string, string>(_detectedAF, _result.Item2, _detection, _description));
+                            OutputWorker.SaveAfDetection(_currentLeadName, _append, true, new Tuple<bool, Vector<double>, string, string>(_detectedAF, _result.Item2, _detection, _description));
                         }
                         else
                         { 
                             _detection = "Nie wykryto migotania przedsionków.";
-                            OutputWorker.SaveAfDetection(_currentLeadName, false, true, new Tuple<bool, Vector<double>, string, string>(_detectedAF, _result.Item2, _detection,""));
+                            OutputWorker.SaveAfDetection(_currentLeadName, _append, true, new Tuple<bool, Vector<double>, string, string>(_detectedAF, _result.Item2, _detection,""));
                         }
 
                         _state = STATE.NEXT_CHANNEL;

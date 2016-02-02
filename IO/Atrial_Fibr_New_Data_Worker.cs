@@ -69,7 +69,7 @@ namespace EKG_Project.IO
             {
                 string fileNameAtr = analysisName + "_" + moduleName + "_" + lead + "_Atr" + ".txt";
                 string pathOutAtr = Path.Combine(directory, fileNameAtr);
-                StreamWriter swAtr = new StreamWriter(pathOutAtr, mode);
+                StreamWriter swAtr = new StreamWriter(pathOutAtr, false);
 
                 swAtr.WriteLine(results.Item1.ToString());
                 swAtr.WriteLine(results.Item3);
