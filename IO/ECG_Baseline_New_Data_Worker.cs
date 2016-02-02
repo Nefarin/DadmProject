@@ -119,9 +119,36 @@ namespace EKG_Project.IO
             return vector;
         }
 
+        #region Documentation
+        /// <summary>
+        /// Gets number of filtered signal samples
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>number of samples</returns> 
+        #endregion
+        public uint getNumberOfSamples(string lead)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string path = Path.Combine(directory, fileName);
+
+            uint count = 0;
+            using (StreamReader r = new StreamReader(path))
+            {
+                while (r.ReadLine() != null)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        #region Documentation
         /// <summary>
         /// Deletes all analysis files with ECG_Baseline_Data
-        /// </summary>
+        /// </summary> 
+        #endregion
         public void DeleteFiles()
         {
             string moduleName = this.GetType().Name;

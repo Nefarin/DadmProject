@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using EKG_Project.Architecture.ProcessingStates;
 using EKG_Project.Modules;
 using EKG_Project.IO;
