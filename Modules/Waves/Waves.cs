@@ -11,23 +11,26 @@ namespace EKG_Project.Modules.Waves
 
     public partial class Waves : IModule
     {
+        private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, END_CHANNEL };
         private bool _ended;
         private bool _aborted;
 
         private int _currentChannelIndex;
         private int _currentRpeaksLength;
+        private string _currentLeadName;
+        private string[] _leads;
         private int _rPeaksProcessed;
         private int _numberOfChannels;
 
-        private Basic_Data_Worker _inputWorker;
-        private ECG_Baseline_Data_Worker _inputECGWorker;
-        private R_Peaks_Data_Worker _inputRpeaksWorker;
-        private Waves_Data_Worker _outputWorker;
+        private Basic_New_Data_Worker _inputWorker;
+        private ECG_Baseline_New_Data_Worker _inputECGWorker;
+        private R_Peaks_New_Data_Worker _inputRpeaksWorker;
+        private Waves_New_Data_Worker _outputWorker;
 
-        private Waves_Data _outputData;
-        private Basic_Data _inputData;
-        private ECG_Baseline_Data _inputECGData;
-        private R_Peaks_Data _inputRpeaksData;
+        //private Waves_Data _outputData;
+        //private Basic_Data _inputData;
+        //private ECG_Baseline_Data _inputECGData;
+        //private R_Peaks_Data _inputRpeaksData;
 
         private Waves_Params _params;
         private Waves_Alg _alg;
@@ -39,16 +42,12 @@ namespace EKG_Project.Modules.Waves
         private List<int> _currentPendsPart;
         private List<int> _currentTendsPart;
 
-        private List<int> _currentQRSonsets;
-        private List<int> _currentQRSends;
-        private List<int> _currentPonsets;
-        private List<int> _currentPends;
-        private List<int> _currentTends;
-
         private Vector<double> _currentECG;
         private Vector<double> _currentRpeaks;
 
         private int _offset;
+
+        private STATE _state;
         public void Abort()
         {
             Aborted = true;
@@ -67,108 +66,55 @@ namespace EKG_Project.Modules.Waves
 
         public void Init(ModuleParams parameters)
         {
-            Params = parameters as Waves_Params;
-            if (Params.DecompositionLevel > 0)
-                Aborted = false;
-            else
-                Aborted = true;
-            if (!Runnable()) _ended = true;
+            try
+            {
+                Params = parameters as Waves_Params;
+            }
+            catch (Exception e)
+            {
+                Abort();
+                return;
+            }
+
+            
+            if (!Runnable())
+                _ended = true;
             else
             {
                 _ended = false;
 
-                InputWorker = new Basic_Data_Worker(Params.AnalysisName);
-                InputECGworker = new ECG_Baseline_Data_Worker(Params.AnalysisName);
-                InputWorkerRpeaks = new R_Peaks_Data_Worker(Params.AnalysisName);
+                InputWorker = new Basic_New_Data_Worker(Params.AnalysisName);
+                InputECGworker = new ECG_Baseline_New_Data_Worker(Params.AnalysisName);
+                InputWorkerRpeaks = new R_Peaks_New_Data_Worker(Params.AnalysisName);
 
-                InputWorker.Load();
-                InputData = InputWorker.BasicData;
-
-                InputECGworker.Load();
-                InputECGData = InputECGworker.Data;
-
-                InputWorkerRpeaks.Load();
-                InputDataRpeaks = InputWorkerRpeaks.Data;
-                //Console.Write(InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count);
-                //Console.Write("ilosc kanalow ECG ");
-                //Console.WriteLine(InputECGData.SignalsFiltered.Count);
-                //Console.WriteLine("Ilosc kanalow Rpeaks");
-                //Console.WriteLine(InputDataRpeaks.RPeaks.Count);
+                //InputData = new Basic_Data();
+                //InputECGData = new ECG_Baseline_Data();
+                //InputDataRpeaks = new R_Peaks_Data();
+                
                 _currentStep = _params.RpeaksStep;
 
-                OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
-                OutputData = new Waves_Data();
+                OutputWorker = new Waves_New_Data_Worker(Params.AnalysisName);
+                //OutputData = new Waves_Data();
 
                 _alg = new Waves_Alg(_params);
 
                 _currentChannelIndex = 0;
                 _rPeaksProcessed = 0;
-                //NumberOfChannels = InputData.Signals.Count;
-                //najwyrazniej liczba tych kanalow nie byla rowna w trakcie pierwszych testow
-                NumberOfChannels = InputDataRpeaks.RPeaks.Count;
-                //_params.RpeaksStep = _inputRpeaksData.RPeaks[_currentChannelIndex].Item2.Count + 100;
-                _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
+
+              
                 _currentQRSonsetsPart = new List<int>();
                 _currentQRSendsPart = new List<int>();
                 _currentPonsetsPart = new List<int>();
                 _currentPendsPart = new List<int>();
                 _currentTendsPart = new List<int>();
-
-                _currentQRSonsets = new List<int>();
-                _currentQRSends = new List<int>();
-                _currentPonsets = new List<int>();
-                _currentPends = new List<int>();
-                _currentTends = new List<int>();
 
                 _offset = 0;
-
+                _state = STATE.INIT;
             }
 
         }
 
-        public void InitForTestsOnly(Vector<double> ecg, Vector<double> rPeaks, Waves_Params parameters)
-        {
-            Params = parameters as Waves_Params;
-            Aborted = false;
-            if (!Runnable()) _ended = true;
-            else
-            {
-                _ended = false;
-
-
-                InputData = new Basic_Data();
-                InputData.Frequency = 360;
-                InputData.Signals = new List<Tuple<string, Vector<double>>>();
-                InputData.Signals.Add(new Tuple<string, Vector<double>>("dupa", ecg));
-
-                InputDataRpeaks = new R_Peaks_Data();
-
-                InputDataRpeaks.RPeaks = new List<Tuple<string, Vector<double>>>();
-                InputDataRpeaks.RPeaks.Add(new Tuple<string, Vector<double>>("dupa", rPeaks));
-
-                OutputWorker = new Waves_Data_Worker(Params.AnalysisName);
-                OutputData = new Waves_Data();
-
-                _currentChannelIndex = 0;
-                _rPeaksProcessed = 0;
-                NumberOfChannels = InputData.Signals.Count;
-                _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
-                _currentQRSonsetsPart = new List<int>();
-                _currentQRSendsPart = new List<int>();
-                _currentPonsetsPart = new List<int>();
-                _currentPendsPart = new List<int>();
-                _currentTendsPart = new List<int>();
-
-                _currentQRSonsets = new List<int>();
-                _currentQRSends = new List<int>();
-                _currentPonsets = new List<int>();
-                _currentPends = new List<int>();
-                _currentTends = new List<int>();
-
-            }
-
-        }
-
+         
         public void ProcessData()
         {
             if (Runnable()) processData();
@@ -177,7 +123,7 @@ namespace EKG_Project.Modules.Waves
 
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_rPeaksProcessed / (double)_currentRpeaksLength));
+            return 100.0 * ( ((double)_rPeaksProcessed / (double)_currentRpeaksLength));
         }
 
         public bool Runnable()
@@ -185,142 +131,268 @@ namespace EKG_Project.Modules.Waves
             return Params != null && Params.DecompositionLevel > 0;
         }
 
+        //private void processDataOld()
+        //{
+        //    int channel = _currentChannelIndex;
+        //    int startIndex = _rPeaksProcessed;
+        //    int step = Params.RpeaksStep;
+
+        //    if (channel < NumberOfChannels)
+        //    {
+        //        if (startIndex + step >= _currentRpeaksLength)
+        //        {
+        //            cutSignals();
+        //            _alg.analyzeSignalPart(_currentECG, _currentRpeaks,
+        //                _currentQRSonsetsPart, _currentQRSendsPart,
+        //                _currentPonsetsPart, _currentPendsPart, _currentTendsPart, _offset, InputData.Frequency);
+
+        //            _currentQRSonsets.AddRange(_currentQRSonsetsPart);
+        //            _currentQRSends.AddRange(_currentQRSendsPart);
+        //            _currentPonsets.AddRange(_currentPonsetsPart);
+        //            _currentPends.AddRange(_currentPendsPart);
+        //            _currentTends.AddRange(_currentTendsPart);
+
+        //            OutputData.QRSOnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSonsets));
+        //            OutputData.QRSEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSends));
+
+        //            OutputData.POnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPonsets));
+        //            OutputData.PEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPends));
+
+        //            OutputData.TEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentTends));
+
+        //            _currentChannelIndex++;
+        //            if (_currentChannelIndex < NumberOfChannels)
+        //            {
+        //                _rPeaksProcessed = 0;
+
+        //                _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
+
+        //                _currentQRSonsets = new List<int>();
+        //                _currentQRSends = new List<int>();
+        //                _currentPonsets = new List<int>();
+        //                _currentPends = new List<int>();
+        //                _currentTends = new List<int>();
+        //            }
+
+
+        //        }
+        //        else
+        //        {
+        //            cutSignals();
+        //            _alg.analyzeSignalPart(_currentECG, _currentRpeaks,
+        //                _currentQRSonsetsPart, _currentQRSendsPart,
+        //                _currentPonsetsPart, _currentPendsPart, _currentTendsPart, _offset, InputData.Frequency);
+
+        //            _currentQRSonsets.AddRange(_currentQRSonsetsPart);
+        //            _currentQRSends.AddRange(_currentQRSendsPart);
+        //            _currentPonsets.AddRange(_currentPonsetsPart);
+        //            _currentPends.AddRange(_currentPendsPart);
+        //            _currentTends.AddRange(_currentTendsPart);
+
+        //            _rPeaksProcessed += step;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        //OutputWorker.Save(OutputData);
+        //        _ended = true;
+        //    }
+
+        //}
         private void processData()
         {
-            int channel = _currentChannelIndex;
-            int startIndex = _rPeaksProcessed;
-            int step = Params.RpeaksStep;
-
-            if (channel < NumberOfChannels)
+            switch (_state)
             {
-                if (startIndex + step >= _currentRpeaksLength)
-                {
-                    cutSignals();
-                    _alg.analyzeSignalPart(_currentECG, _currentRpeaks,
-                        _currentQRSonsetsPart, _currentQRSendsPart,
-                        _currentPonsetsPart, _currentPendsPart, _currentTendsPart, _offset, InputData.Frequency);
-
-                    _currentQRSonsets.AddRange(_currentQRSonsetsPart);
-                    _currentQRSends.AddRange(_currentQRSendsPart);
-                    _currentPonsets.AddRange(_currentPonsetsPart);
-                    _currentPends.AddRange(_currentPendsPart);
-                    _currentTends.AddRange(_currentTendsPart);
-
-                    OutputData.QRSOnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSonsets));
-                    OutputData.QRSEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentQRSends));
-
-                    OutputData.POnsets.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPonsets));
-                    OutputData.PEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentPends));
-
-                    OutputData.TEnds.Add(new Tuple<string, List<int>>(InputData.Signals[_currentChannelIndex].Item1, _currentTends));
-
+                case (STATE.INIT):
+                    _currentChannelIndex = -1;
+                    _leads = InputWorker.LoadLeads().ToArray();
+                    _numberOfChannels = _leads.Length;
+                    _state = STATE.BEGIN_CHANNEL;
+                    //_inputWorker.DeleteFiles(); Do not use yet - will try to handle this during loading.
+                    break;
+                case (STATE.BEGIN_CHANNEL):
                     _currentChannelIndex++;
-                    if (_currentChannelIndex < NumberOfChannels)
+                    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END_CHANNEL;
+                    else
                     {
+                        setChannel();          
+
+                        _currentRpeaksLength = (int)InputWorkerRpeaks.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName);
+
                         _rPeaksProcessed = 0;
+                        _state = STATE.PROCESS_FIRST_STEP;
+                    }
 
-                        _currentRpeaksLength = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.Count;
+                    break;
+                case (STATE.PROCESS_FIRST_STEP):
+                    if (_rPeaksProcessed + Params.RpeaksStep > _currentRpeaksLength) _state = STATE.END_CHANNEL;
+                    else
+                    {
+                        try
+                        {
+                            ProcesPart(false);
+                            _state = STATE.PROCESS_CHANNEL;
+                        }
+                        catch (Exception e)
+                        {
+                            _state = STATE.END_CHANNEL;
+                        }
 
-                        _currentQRSonsets = new List<int>();
-                        _currentQRSends = new List<int>();
-                        _currentPonsets = new List<int>();
-                        _currentPends = new List<int>();
-                        _currentTends = new List<int>();
+                    }
+                    break;
+                case (STATE.PROCESS_CHANNEL): // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
+                    if (_rPeaksProcessed + Params.RpeaksStep > _currentRpeaksLength) _state = STATE.END_CHANNEL;
+                    else
+                    {
+                        try
+                        {
+                            ProcesPart(true);
+                            _state = STATE.PROCESS_CHANNEL;
+                        }
+                        catch (Exception e)
+                        {
+                            _state = STATE.END_CHANNEL;
+                        }
                     }
 
 
-                }
-                else
-                {
-                    cutSignals();
-                    _alg.analyzeSignalPart(_currentECG, _currentRpeaks,
-                        _currentQRSonsetsPart, _currentQRSendsPart,
-                        _currentPonsetsPart, _currentPendsPart, _currentTendsPart, _offset, InputData.Frequency);
-
-                    _currentQRSonsets.AddRange(_currentQRSonsetsPart);
-                    _currentQRSends.AddRange(_currentQRSendsPart);
-                    _currentPonsets.AddRange(_currentPonsetsPart);
-                    _currentPends.AddRange(_currentPendsPart);
-                    _currentTends.AddRange(_currentTendsPart);
-
-                    _rPeaksProcessed += step;
-                }
+                    break;
+                case (STATE.END_CHANNEL):
+                    try
+                    {
+                        ProcesPart(true);
+                        _ended = true;
+                    }
+                            catch (Exception e)
+                    {
+                        _ended = true;
+                    }
+            Console.WriteLine("end ");
+                    break;
+                default:
+                    Abort();
+                    break;
             }
-            else
+
+        }
+
+        void setChannel()
+        {
+            for(int i=0; i< _numberOfChannels; i++)
             {
-                OutputWorker.Save(OutputData);
-                _ended = true;
+                if (_leads[i] == "MLII")
+                {
+                    _currentLeadName = "MLII";
+                    _currentChannelIndex = i;
+                    return;
+                }
             }
+            _currentLeadName = _leads[0];
+            _currentChannelIndex = 0;
+        }
 
+        private void ProcesPart( bool isNotEmpty)
+        {
 
+            cutSignals();
+            _alg.analyzeSignalPart(_currentECG, _currentRpeaks,
+                _currentQRSonsetsPart, _currentQRSendsPart,
+                _currentPonsetsPart, _currentPendsPart, _currentTendsPart, _offset, InputWorker.LoadAttribute(Basic_Attributes.Frequency));
 
+            SaveAll(isNotEmpty);
+
+            Console.WriteLine(Params.RpeaksStep);
+
+            _rPeaksProcessed += Params.RpeaksStep;
+
+        }
+
+        private void SaveAll( bool isNotEmpty)
+        {
+            for(int i=0; i< _numberOfChannels; i++)
+            {
+                string name = _leads[i];
+                OutputWorker.SaveSignal(Waves_Signal.QRSOnsets, name, isNotEmpty, _currentQRSonsetsPart);
+                OutputWorker.SaveSignal(Waves_Signal.QRSEnds, name, isNotEmpty, _currentQRSendsPart);
+
+                OutputWorker.SaveSignal(Waves_Signal.POnsets, name, isNotEmpty, _currentPonsetsPart);
+                OutputWorker.SaveSignal(Waves_Signal.PEnds, name, isNotEmpty, _currentPendsPart);
+
+                OutputWorker.SaveSignal(Waves_Signal.TEnds, name, isNotEmpty, _currentTendsPart);
+            }
         }
 
         private void cutSignals()
         {
             int signalStart = 0;
             if (_rPeaksProcessed > 1)
-                signalStart = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed - 1];
+            {
+                Vector<double> signalBegin = InputWorkerRpeaks.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _rPeaksProcessed - 1, 1);
+                signalStart = (int)signalBegin[0];
+            }
+                
 
             int signalEnd = 0;
             int rPeaks2cut = Params.RpeaksStep;
 
             if (_rPeaksProcessed + Params.RpeaksStep + 2 > _currentRpeaksLength)
-                signalEnd = InputECGData.SignalsFiltered[_currentChannelIndex].Item2.Count - 1;
+                signalEnd = (int) (InputWorker.getNumberOfSamples(_currentLeadName) - 1);
             else
             {
-                int lastRpeak = (int)InputDataRpeaks.RPeaks[_currentChannelIndex].Item2[_rPeaksProcessed + Params.RpeaksStep + 1];
+                Vector<double> RpeaksEnds = InputWorkerRpeaks.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _rPeaksProcessed + Params.RpeaksStep + 1, 1);
+                int lastRpeak = (int)RpeaksEnds[0];
+                    
                 signalEnd = lastRpeak;
             }
 
             if (_rPeaksProcessed + Params.RpeaksStep > _currentRpeaksLength)
                 rPeaks2cut = _currentRpeaksLength - _rPeaksProcessed;
 
-            _currentECG = InputECGData.SignalsFiltered[_currentChannelIndex].Item2.SubVector(signalStart, signalEnd - signalStart);
+            _currentECG = InputECGworker.LoadSignal(_currentLeadName, signalStart, signalEnd - signalStart);
 
-            _currentRpeaks = InputDataRpeaks.RPeaks[_currentChannelIndex].Item2.SubVector(_rPeaksProcessed, rPeaks2cut);
+            _currentRpeaks = InputWorkerRpeaks.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _rPeaksProcessed, rPeaks2cut);
             _currentRpeaks = _currentRpeaks.Subtract(signalStart);
 
             _offset = signalStart;
         }
-        public Basic_Data InputData
-        {
-            get
-            {
-                return _inputData;
-            }
+        //public Basic_Data InputData
+        //{
+        //    get
+        //    {
+        //        return _inputData;
+        //    }
 
-            set
-            {
-                _inputData = value;
-            }
-        }
+        //    set
+        //    {
+        //        _inputData = value;
+        //    }
+        //}
 
-        public ECG_Baseline_Data InputECGData
-        {
-            get
-            {
-                return _inputECGData;
-            }
+        //public ECG_Baseline_Data InputECGData
+        //{
+        //    get
+        //    {
+        //        return _inputECGData;
+        //    }
 
-            set
-            {
-                _inputECGData = value;
-            }
-        }
+        //    set
+        //    {
+        //        _inputECGData = value;
+        //    }
+        //}
 
-        public R_Peaks_Data InputDataRpeaks
-        {
-            get
-            {
-                return _inputRpeaksData;
-            }
+        //public R_Peaks_Data InputDataRpeaks
+        //{
+        //    get
+        //    {
+        //        return _inputRpeaksData;
+        //    }
 
-            set
-            {
-                _inputRpeaksData = value;
-            }
-        }
+        //    set
+        //    {
+        //        _inputRpeaksData = value;
+        //    }
+        //}
 
 
         public int NumberOfChannels
@@ -362,19 +434,19 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public Waves_Data OutputData
-        {
-            get
-            {
-                return _outputData;
-            }
-            set
-            {
-                _outputData = value;
-            }
-        }
+        //public Waves_Data OutputData
+        //{
+        //    get
+        //    {
+        //        return _outputData;
+        //    }
+        //    set
+        //    {
+        //        _outputData = value;
+        //    }
+        //}
 
-        public Basic_Data_Worker InputWorker
+        public Basic_New_Data_Worker InputWorker
         {
             get
             {
@@ -387,7 +459,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public ECG_Baseline_Data_Worker InputECGworker
+        public ECG_Baseline_New_Data_Worker InputECGworker
         {
             get
             {
@@ -399,7 +471,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public R_Peaks_Data_Worker InputWorkerRpeaks
+        public R_Peaks_New_Data_Worker InputWorkerRpeaks
         {
             get
             {
@@ -411,7 +483,7 @@ namespace EKG_Project.Modules.Waves
             }
         }
 
-        public Waves_Data_Worker OutputWorker
+        public Waves_New_Data_Worker OutputWorker
         {
             get
             {
@@ -426,30 +498,18 @@ namespace EKG_Project.Modules.Waves
 
         public static void Main()
         {
-            Waves_Params param = new Waves_Params(Wavelet_Type.db3, 2, "TestAnalysis100", 500);
-            
-            
-            //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG.txt");
-            //TempInput.setOutputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKGQRSonsets3.txt");
-            //Vector<double> ecg = TempInput.getSignal();
+            Waves_Params param = new Waves_Params(Wavelet_Type.haar, 2, "Analysis 1", 500);
+            IModule testModule = new Waves();
 
-            //TempInput.setInputFilePath(@"C:\Users\Michał\Documents\biomed\II stopien\dadm\lab2\EKG3Rpeaks.txt");
-            //Vector<double> rpeaks = TempInput.getSignal();
 
-            Waves testModule = new Waves();
-            //testModule.InitForTestsOnly(ecg, rpeaks, param);
             testModule.Init(param);
-            while (true)
+            while (!testModule.Ended())
             {
-                //Console.WriteLine("Press key to continue.");
-                //Console.Read();
-                if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
+                Console.WriteLine(testModule.Progress());
             }
             Console.WriteLine("fajrant");
             Console.Read();
-
         }
 
     }
