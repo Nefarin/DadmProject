@@ -140,6 +140,7 @@ namespace EKG_Project.Modules.HRT
             switch (_state)
             {
                 case (STATE.INIT):
+              
                     _currentChannelIndex = -1;
                     _leads = InputWorker_basic.LoadLeads().ToArray();
                     _numberOfChannels = _leads.Length;
@@ -233,7 +234,7 @@ namespace EKG_Project.Modules.HRT
                                             _turbulenceSlopeMaxGUI = _turbulenceSlope.Item3;
                                             _turbulenceOnsetPDF = _turbulenceOnset;
                                             _turbulenceSlopePDF= _turbulenceSlope.Item1;
-                                            //_alg.PrintVector(_turbulenceSlopeMaxGUI);
+                                            //_alg.PrintVector(_tachogramGUI);
                                         }
                                     }
                                 }
@@ -528,9 +529,9 @@ namespace EKG_Project.Modules.HRT
             while (true)
             {
                 if (testModule.Ended()) break;
-                System.Diagnostics.Debug.WriteLine("Progress: ");
-                System.Diagnostics.Debug.WriteLine(testModule.Progress());
-                System.Diagnostics.Debug.WriteLine(" %");
+                //System.Diagnostics.Debug.Write("Progress: ");
+                //System.Diagnostics.Debug.Write(testModule.Progress());
+                //System.Diagnostics.Debug.WriteLine(" %");
                 testModule.ProcessData();
             }
         }
