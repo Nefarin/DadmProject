@@ -199,17 +199,16 @@ namespace EKG_Unit.Modules.HRV1
 
             var hrv1Test = new HRV1_Alg();
 
-            var testf = new double[] { 0.03989, 0.07978, 0.1196, 0.1595, 0.19947, 0.2393, 0.27926, 0.3191, 0.3590, 0.3989, 0.4388, 0.4787, 0.518, 0.5585, 0.5984, 0.6383, 0.6782, 0.71809 };
-            var vectortestf = Vector<double>.Build.Dense(testf);
+            double df = 0.006;
+            var vectortestf = Vector<double>.Build.Dense(70, i=>i*df);
 
-            var testPSD = new double[] { 0.000061874, 0.000070346, 0.000087843, 0.000095541, 0.000063113, 0.000019524, 0.00035494, 0.00054502, 0.000011015, 0.00068549, 0.00011563, 0.00032236, 0.000017552, 0.000031627, 0.000044429, 0.000042345, 0.000027923, 0.000062274 };
-            var vectortestPSD = Vector<double>.Build.Dense(testPSD);
+            var vectortestPSD = Vector<double>.Build.Dense(70, i=>1);
 
-            var expectedTP = 236;
-            var expectedHF = 62;
-            var expectedLF = 68;
-            var expectedVLF = 26;
-            var expectedLFHF = 1.08;
+            var expectedTP = 0.42;
+            var expectedHF = 0.264;
+            var expectedLF = 0.114;
+            var expectedVLF = 0.036;
+            var expectedLFHF = 0.4318;
 
             // access private fields externally
 
@@ -228,7 +227,7 @@ namespace EKG_Unit.Modules.HRV1
 
             // Assert results
 
-            double passThreshold = 20;
+            double passThreshold = 1;
             double passThreshold2 = 0.1;
 
             Assert.IsTrue(Math.Abs(actualTP - expectedTP) < passThreshold);
