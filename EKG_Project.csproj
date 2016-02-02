@@ -48,7 +48,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.Modules.R_Peaks.R_Peaks</StartupObject>
+    <StartupObject>EKG_Project.Modules.R_Peaks.R_Peaks_Stats</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -308,15 +308,11 @@
     <Compile Include="IO\Heart_Axis_New_Data_Worker.cs" />
     <Compile Include="IO\Heart_Class_Data_Worker.cs" />
     <Compile Include="IO\Heart_Class_New_Data_Worker.cs" />
-    <Compile Include="IO\Heart_Cluster_Data_Worker.cs" />
     <Compile Include="IO\HRT_Data_Worker.cs" />
-    <Compile Include="IO\HRT_New_Data_Worker.cs" />
     <Compile Include="IO\HRV1_Data_Worker.cs" />
-    <Compile Include="IO\HRV1_New_Data_Worker.cs" />
     <Compile Include="IO\HRV2_Data_Worker.cs" />
     <Compile Include="IO\HRV2_New_Data_Worker.cs" />
     <Compile Include="IO\HRV_DFA_Data_Worker.cs" />
-    <Compile Include="IO\HRV_DFA_New_Data_Worker.cs" />
     <Compile Include="IO\IECGConverter.cs" />
     <Compile Include="IO\IECGPath.cs" />
     <Compile Include="IO\IECG_Worker.cs" />
@@ -349,11 +345,9 @@
     <Compile Include="IO\Sleep_Apnea_Data_Worker.cs" />
     <Compile Include="IO\Sleep_Apnea_New_Data_Worker.cs" />
     <Compile Include="IO\ST_Segment_Data_Worker.cs" />
-    <Compile Include="IO\ST_Segment_New_Data_Worker.cs" />
     <Compile Include="IO\TempInput.cs" />
     <Compile Include="IO\TestModule3_Data_Worker.cs" />
     <Compile Include="IO\T_Wave_Alt_Data_Worker.cs" />
-    <Compile Include="IO\T_Wave_Alt_New_Data_Worker.cs" />
     <Compile Include="IO\Waves_Data_Worker.cs" />
     <Compile Include="IO\Waves_New_Data_Worker.cs" />
     <Compile Include="IO\WFDBLoader.cs" />

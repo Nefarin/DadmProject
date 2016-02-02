@@ -165,11 +165,11 @@ namespace EKG_Project.Modules.Waves
             for (int middleR = 0; middleR < maxRInd; middleR++)
             {
                 currentQRSonsetsPart.Add(FindQRSOnset(currentRpeaks[middleR], currentRpeaks[middleR + 1], dwt[decLev - 1], offset, currentECG, freq));
-                currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[middleR], currentRpeaks[middleR + 1], dwt[decLev - 1], _params.DecompositionLevel, currentECG, freq));
+                currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[middleR], currentRpeaks[middleR + 1], dwt[decLev - 1], offset, currentECG, freq));
 
             }
 
-            currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[maxRInd], currentECG.Count, dwt[decLev - 1], _params.DecompositionLevel, currentECG, freq));
+            currentQRSendsPart.Add(FindQRSEnd(currentRpeaks[maxRInd], currentECG.Count, dwt[decLev - 1], offset, currentECG, freq));
         }
         #region
         /// <summary>
@@ -187,18 +187,20 @@ namespace EKG_Project.Modules.Waves
 
             int len = (middleR >> decompLevel) - (rightEnd >> decompLevel);
 
-            if (len < 1)
-                len = 1;
-
-
-            if (len < 1 || sectionStart < 0)
+            if (sectionStart < 0)
                 return -1;
 
             if (sectionStart + len >= dwt.Count)
                 len = dwt.Count - sectionStart;
 
+            if (len < 1)
+                return -1;
+
             int qrsOnsetInd = dwt.SubVector(sectionStart, len).MinimumIndex() + sectionStart;
             double treshold = Math.Abs(dwt[qrsOnsetInd]) * _qrsOnsTresh;
+
+            if (dmiddleR >= currentECG.Count)
+                dmiddleR = currentECG.Count - 1;
 
             while (Math.Abs(dwt[qrsOnsetInd]) > treshold && qrsOnsetInd > sectionStart)
                 qrsOnsetInd--;
@@ -378,7 +380,7 @@ namespace EKG_Project.Modules.Waves
                 }
 
                 ponset = pmax_loc; // initialize Ponset location with maximum location
-                thr = (pmax_val - currentECG[onset_loc]) * 0.4; // set threshold equal to percentage of level from maximum value and QRSonset
+                thr = (pmax_val - currentECG[onset_loc]) * 0.5; // set threshold equal to percentage of level from maximum value and QRSonset
                 while (currentECG[ponset] > currentECG[ponset - 1] || Math.Abs(pmax_val - currentECG[ponset]) < thr) // find local minimum and check if threshold is exceeded
                 {
                     ponset--; // move backwards in samples
@@ -395,7 +397,7 @@ namespace EKG_Project.Modules.Waves
                     currentPonsetsPart.Add(ponset ); // add -1 to the list
 
                 pend = pmax_loc; // initialize Pend location with maximum location
-                thr = (pmax_val - currentECG[onset_loc]) * 0.4; // set threshold equal to percentage of level from maximum value and QRSonset
+                thr = (pmax_val - currentECG[onset_loc]) * 0.5; // set threshold equal to percentage of level from maximum value and QRSonset
                 while (currentECG[pend] > currentECG[pend + 1] || (pmax_val - currentECG[pend] < thr)) // find local minimum and check if threshold is exceeded
                 {
                     pend++; // move forward in samples
@@ -430,8 +432,8 @@ namespace EKG_Project.Modules.Waves
             int window, break_window, tmax_loc, tend; // initialization of T-wave maximum location, Tends location and window variables
             int maxTendVal = currentECG.Count-3;
 
-            window = Convert.ToInt32(frequency * 0.3); // window length
-            break_window = Convert.ToInt32(frequency * 0.35); // length of window to break searching for maximum
+            window = Convert.ToInt32(frequency * 0.35); // window length
+            break_window = Convert.ToInt32(frequency * 0.4); // length of window to break searching for maximum
 
             foreach (int ends_loc_abs in currentQRSendsPart)
             {

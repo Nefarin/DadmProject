@@ -40,13 +40,13 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.AnalysisName = analysisName;
             this.Type = type;
             if (type == Filtr_Type.LOWPASS)
-                this.FcLow = fc;
+              this.FcLow = fc;
             else if (type == Filtr_Type.HIGHPASS)
-                this.FcHigh = fc;
+              this.FcHigh = fc;
             if (type == Filtr_Type.LOWPASS)
-                this.OrderLow = order;
+              this.OrderLow = order;
             else if (type == Filtr_Type.HIGHPASS)
-                this.OrderHigh = order;
+              this.OrderHigh = order;
         }
 
         public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int orderLow, int orderHigh, double fcLow, double fcHigh, string analysisName) //konstruktor BUTTERWORTH BAND
@@ -104,6 +104,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 this.NotifyPropertyChanged("IsButterworthHighPass");
                 this.NotifyPropertyChanged("IsOtherLowPass");
                 this.NotifyPropertyChanged("IsOtherHighPass");
+                this.NotifyPropertyChanged("IsLMS");
             }
         }
 
@@ -139,15 +140,26 @@ namespace EKG_Project.Modules.ECG_Baseline
                 this.NotifyPropertyChanged("IsButterworthHighPass");
                 this.NotifyPropertyChanged("IsOtherLowPass");
                 this.NotifyPropertyChanged("IsOtherHighPass");
+                this.NotifyPropertyChanged("IsLMS");
             }
         }
+
+        public bool IsLMS
+        {
+            get
+            {
+                return (this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS || this.Type == Filtr_Type.HIGHPASS) &&
+                    this.Method == Filtr_Method.LMS;
+            }
+        }
+
 
         public bool IsOtherLowPass
         {
             get
             {
                 return (this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS) &&
-                    this.Method != Filtr_Method.BUTTERWORTH;
+                    this.Method != Filtr_Method.BUTTERWORTH && this.Method != Filtr_Method.LMS;
             }
         }
 
@@ -156,7 +168,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             get
             {
                 return (this.Type == Filtr_Type.HIGHPASS || this.Type == Filtr_Type.BANDPASS) &&
-                    this.Method != Filtr_Method.BUTTERWORTH;
+                    this.Method != Filtr_Method.BUTTERWORTH && this.Method != Filtr_Method.LMS;
             }
         }
 
