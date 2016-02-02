@@ -58,7 +58,7 @@ namespace EKG_Unit.Modules.HRV1
 
             var hrv1Test = new HRV1_Alg();
 
-            var testinstantsarr = new double[]{ 2, 3, 5, 9, 11, 15, 20, 22, 28, 30};
+            var testinstantsarr = new double[] { 2, 3, 5, 9, 11, 15, 20, 22, 28, 30 };
             var testinstantsvec = Vector<double>.Build.Dense(testinstantsarr);
 
             var expectedarr = new double[] { 1, 2, 4, 2, 4, 5, 2, 6, 2 };
@@ -93,7 +93,7 @@ namespace EKG_Unit.Modules.HRV1
 
             var expectedAVNN = 59.05;
             var expectedSDNN = 83.75;
-            var expectedRMSSD = 124.44 ;
+            var expectedRMSSD = 124.44;
             var expectedNN50 = 4;
             var expectedpNN50 = 20; // wartość w %
 
@@ -114,7 +114,7 @@ namespace EKG_Unit.Modules.HRV1
 
             //Assert.AreEqual(expectedAVNN, actualAVNN);
             double passThreshold = 0.1;
-            Assert.IsTrue(Math.Abs(actualAVNN-expectedAVNN)< passThreshold);
+            Assert.IsTrue(Math.Abs(actualAVNN - expectedAVNN) < passThreshold);
 
             Assert.IsTrue(Math.Abs(actualSDNN - expectedSDNN) < passThreshold);
 
@@ -132,7 +132,7 @@ namespace EKG_Unit.Modules.HRV1
             // Init test here
 
             var hrv1Test = new HRV1_Alg();
-        
+
             var testintervals = Vector<double>.Build.Dense(10, i => i);
             var testinstants = Vector<double>.Build.Dense(10, i => i);
 
@@ -191,6 +191,54 @@ namespace EKG_Unit.Modules.HRV1
 
         }
 
+        [TestMethod]
+        [Description("Test of frequency based parameters")]
+        public void frequencyTest()
+        {
+            // Init test here
+
+            var hrv1Test = new HRV1_Alg();
+
+            var testf = new double[] { 0.03989, 0.07978, 0.1196, 0.1595, 0.19947, 0.2393, 0.27926, 0.3191, 0.3590, 0.3989, 0.4388, 0.4787, 0.518, 0.5585, 0.5984, 0.6383, 0.6782, 0.71809 };
+            var vectortestf = Vector<double>.Build.Dense(testf);
+
+            var testPSD = new double[] { 0.000061874, 0.000070346, 0.000087843, 0.000095541, 0.000063113, 0.000019524, 0.00035494, 0.00054502, 0.000011015, 0.00068549, 0.00011563, 0.00032236, 0.000017552, 0.000031627, 0.000044429, 0.000042345, 0.000027923, 0.000062274 };
+            var vectortestPSD = Vector<double>.Build.Dense(testPSD);
+
+            var expectedTP = 236;
+            var expectedHF = 62;
+            var expectedLF = 68;
+            var expectedVLF = 26;
+            var expectedLFHF = 1.08;
+
+            // access private fields externally
+
+            PrivateObject obj = new PrivateObject(hrv1Test);
+            obj.SetField("f", vectortestf);
+            obj.SetField("PSD", vectortestPSD);
+
+            // Process test here
+
+            obj.Invoke("calculateFreqBased");
+            var actualTP = (double)obj.GetField("TP");
+            var actualHF = (double)obj.GetField("HF");
+            var actualLF = (double)obj.GetField("LF");
+            var actualVLF = (double)obj.GetField("VLF");
+            var actualLFHF = (double)obj.GetField("LFHF");
+
+            // Assert results
+
+            double passThreshold = 20;
+            double passThreshold2 = 0.1;
+
+            Assert.IsTrue(Math.Abs(actualTP - expectedTP) < passThreshold);
+            Assert.IsTrue(Math.Abs(actualHF - expectedHF) < passThreshold);
+            Assert.IsTrue(Math.Abs(actualLF - expectedLF) < passThreshold);
+            Assert.IsTrue(Math.Abs(actualVLF - expectedVLF) < passThreshold);
+            
+            Assert.IsTrue(Math.Abs(actualLFHF - expectedLFHF) < passThreshold2);
+
+        }
     }
 }
 
