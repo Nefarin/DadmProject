@@ -47,15 +47,42 @@ namespace EKG_Project.Modules.HRV1
 
         // Declaration of required vectors
         private Vector<double> rSamples;    // holds numbers of samples in original ECG signal on which R waves have been detected
-        private Vector<double> rInstants;   // holds time instants in which which R waves have been detected
-        private Vector<double> rrIntervals; // holds time intervals between consecutive R waves
+        public Vector<double> rInstants;   // holds time instants in which which R waves have been detected
+        public Vector<double> rrIntervals; // holds time intervals between consecutive R waves
         private Vector<double> f;           // vector of frequiencies on which PSD estimate is calculated
         private Vector<double> PSD;         // power spectral density estimate values at points specified in f
         private Vector<double> psdFilter;   // samples of digital FIR filter used for smoothing PSD
 
+        public List<Tuple<string, double>> FreqParams;
+        public List<Tuple<string, double>> TimeParams;
+        public List<Tuple<string, Vector<double>>> PowerSpectrum;
+
         private double Fs;  // sampling frequency of original ECG signal
         private double dt;  // time interval between consecutive samples of original ECG signal
 
+        public void CalculateTimeBased() {
+            this.intervalsCorection();
+            this.calculateTimeBased();
+            TimeParams.Clear();
+            TimeParams.Add(new Tuple<string, double>("AVNN", this.AVNN));
+            TimeParams.Add(new Tuple<string, double>("SDNN", this.SDNN));
+            TimeParams.Add(new Tuple<string, double>("RMSSD", this.RMSSD));
+            TimeParams.Add(new Tuple<string, double>("pNN50", this.pNN50));
+        }
+
+        public void CalculateFreqBased() {
+            this.lombScargle2();
+            this.calculateFreqBased();
+            this.PowerSpectrum.Clear();
+            this.PowerSpectrum.Add(new Tuple<string, Vector<double>>("f", this.f));
+            this.PowerSpectrum.Add(new Tuple<string, Vector<double>>("PSD", this.PSD));
+            this.FreqParams.Clear();
+            this.FreqParams.Add(new Tuple<string, double>("TP", this.TP));
+            this.FreqParams.Add(new Tuple<string, double>("HF", this.HF));
+            this.FreqParams.Add(new Tuple<string, double>("LF", this.LF));
+            this.FreqParams.Add(new Tuple<string, double>("VLF", this.VLF));
+            this.FreqParams.Add(new Tuple<string, double>("LFHF", this.LFHF));
+        }
 
         /*
         #region
@@ -278,8 +305,8 @@ namespace EKG_Project.Modules.HRV1
         #endregion
         private void calculateFreqBased()
         {
-            generateFreqVector(0, 1, this.rrIntervals.Count);
-            lombScargle();
+            //generateFreqVector(0, 1, this.rrIntervals.Count);
+            //lombScargle();
 
             double df = (double)1000 / rrIntervals.Count;
             var temp_vec = Vector<double>.Build.Dense(PSD.Count, (i) => PSD[i]*df);
