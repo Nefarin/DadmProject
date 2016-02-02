@@ -4,45 +4,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.IO
 {
     #region Documentation
     /// <summary>
-    /// Stores Waves_Signal
+    /// Class that saves and loads T_Wave_Alt_Data in txt files
     /// </summary>
     #endregion
-    public enum Waves_Signal { QRSOnsets, QRSEnds, POnsets, PEnds, TEnds };
-
-    #region Documentation
-    /// <summary>
-    /// Class that saves and loads Waves_Data chunks from internal text file
-    /// </summary>
-    #endregion
-    public class Waves_New_Data_Worker
+    public class T_Wave_Alt_New_Data_Worker
     {
         //FIELDS
         #region Documentation
         /// <summary>
-        /// Stores internal XML file directory
+        /// Stores txt files directory
         /// </summary>
         #endregion
-        string directory;
+        private string directory;
 
         #region Documentation
         /// <summary>
         /// Stores analysis name
         /// </summary>
         #endregion
-        string analysisName;
+        private string analysisName;
 
         #region Documentation
         /// <summary>
         /// Default constructor
         /// </summary>
         #endregion
-        public Waves_New_Data_Worker()
+        public T_Wave_Alt_New_Data_Worker() 
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
@@ -52,99 +44,116 @@ namespace EKG_Project.IO
         /// <summary>
         /// Parameterized constructor
         /// </summary>
-        /// <param name="analysisName"></param>
+        /// <param name="analysisName">analysis name</param>
         #endregion
-        public Waves_New_Data_Worker(String analysisName) : this()
+        public T_Wave_Alt_New_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
 
-        //METHODS
         #region Documentation
         /// <summary>
-        /// Saves part of Waves_Signal in txt file
+        /// Saves AlternansDetectedList in txt file
         /// </summary>
-        /// <param name="atr">Waves_Signal</param>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="signal">signal</param>
+        /// <param name="result">AlternansDetectedList result</param>
         #endregion
-        public void SaveSignal(Waves_Signal atr, string lead, bool mode, List<int> signal)
+        public void SaveAlternansDetectedList(string lead, bool mode, List<Tuple<int, int>> results)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
-            string pathOut = Path.Combine(directory, fileName);
+            string fileName1 = analysisName + "_" + moduleName + "_" + lead + "_AlternansDetectedList" + "_Item1" + ".txt";
+            string pathOut1 = Path.Combine(directory, fileName1);
 
-            StreamWriter sw = new StreamWriter(pathOut, mode);
-            foreach (var sample in signal)
+            StreamWriter sw1 = new StreamWriter(pathOut1, mode);
+            foreach (var result in results)
             {
-                sw.WriteLine(sample.ToString());
+                sw1.WriteLine(result.Item1);
             }
-            sw.Close();
+
+            sw1.Close();
+
+            string fileName2 = analysisName + "_" + moduleName + "_" + lead + "_AlternansDetectedList" + "_Item2" + ".txt";
+            string pathOut2 = Path.Combine(directory, fileName2);
+
+            StreamWriter sw2 = new StreamWriter(pathOut2, mode);
+            foreach (var result in results)
+            {
+                sw2.WriteLine(result.Item2);
+            }
+
+            sw2.Close();
         }
 
         #region Documentation
         /// <summary>
-        /// Loads parts of Waves_Signal from txt file
+        /// Loads AlternansDetectedList from txt file
         /// </summary>
-        /// <param name="atr">Waves_Signal</param>
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
         /// <param name="length">length</param>
-        /// <returns>Waves signal list</returns>
+        /// <returns>AlternansDetectedList result list</returns>
         #endregion
-        public List<int> LoadSignal(Waves_Signal atr, string lead, int startIndex, int length)
+        public List<Tuple<int, int>> LoadAlternansDetectedList(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
-            string pathIn = Path.Combine(directory, fileName);
+            string fileName1 = analysisName + "_" + moduleName + "_" + lead + "_AlternansDetectedList" + "_Item1" + ".txt";
+            string pathIn1 = Path.Combine(directory, fileName1);
 
-            StreamReader sr = new StreamReader(pathIn);
+            StreamReader sr1 = new StreamReader(pathIn1);
 
+            string fileName2 = analysisName + "_" + moduleName + "_" + lead + "_AlternansDetectedList" + "_Item2" + ".txt";
+            string pathIn2 = Path.Combine(directory, fileName2);
+
+            StreamReader sr2 = new StreamReader(pathIn2);
             //pomijane linie ...
             int iterator = 0;
-            while (iterator < startIndex && !sr.EndOfStream)
+            while (iterator < startIndex && !sr1.EndOfStream)
             {
-                string readLine = sr.ReadLine();
+                sr1.ReadLine();
+                sr2.ReadLine();
                 iterator++;
             }
 
             iterator = 0;
-
-            List<int> list = new List<int>();
+            List<Tuple<int, int>> list = new List<Tuple<int, int>>();
             while (iterator < length)
             {
-                if (sr.EndOfStream)
+                if (sr1.EndOfStream)
                 {
                     throw new IndexOutOfRangeException();
                 }
+                string item1 = sr1.ReadLine();
+                int convertedItem1 = Convert.ToInt32(item1);
 
-                string readLine = sr.ReadLine();
-                int readValue = Convert.ToInt32(readLine);
-                list.Add(readValue);
+                string item2 = sr2.ReadLine();
+                int convertedItem2 = Convert.ToInt32(item2);
+
+
+                Tuple<int, int> tuple = Tuple.Create(convertedItem1, convertedItem2);
+                list.Add(tuple);
                 iterator++;
             }
-
-            sr.Close();
+            sr1.Close();
+            sr2.Close();
 
             return list;
         }
 
         #region Documentation
         /// <summary>
-        /// Gets number of Waves_Signal samples 
+        /// Gets number of AlternansDetectedList samples
         /// </summary>
-        /// <param name="atr">Waves_Signal</param>
         /// <param name="lead">lead</param>
-        /// <returns>number of samples</returns> 
+        /// <returns>number of samples</returns>
         #endregion
-        public uint getNumberOfSamples(Waves_Signal atr, string lead)
+        public uint getNumberOfSamples(string lead)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_AlternansDetectedList" + "_Item1" + ".txt";
             string path = Path.Combine(directory, fileName);
 
             uint count = 0;
@@ -160,7 +169,7 @@ namespace EKG_Project.IO
 
         #region Documentation
         /// <summary>
-        /// Deletes all analysis files with Waves_Data
+        /// Deletes all analysis files with T_Wave_Alt_Data
         /// </summary> 
         #endregion
         public void DeleteFiles()

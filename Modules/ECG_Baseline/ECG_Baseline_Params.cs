@@ -18,6 +18,7 @@ namespace EKG_Project.Modules.ECG_Baseline
         private double _mi;                       //Współczynnik adaptacji LMS
         private int _windowSizeLow;               //szerokość okna filtracji dolnoprzepustowy
         private int _windowSizeHigh;              //szerokość okna filtracji górnoprzepustowy
+        private int _windowLMS;                   //szerokość okna w algorytmie LMS
         private int _orderLow;                    //rząd filtru dolnoprzepustowy
         private int _orderHigh;                   //rząd filtru górnoprzepustowy
 
@@ -39,13 +40,13 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.AnalysisName = analysisName;
             this.Type = type;
             if (type == Filtr_Type.LOWPASS)
-                this.FcLow = fc;
+              this.FcLow = fc;
             else if (type == Filtr_Type.HIGHPASS)
-                this.FcHigh = fc;
+              this.FcHigh = fc;
             if (type == Filtr_Type.LOWPASS)
-                this.OrderLow = order;
+              this.OrderLow = order;
             else if (type == Filtr_Type.HIGHPASS)
-                this.OrderHigh = order;
+              this.OrderHigh = order;
         }
 
         public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int orderLow, int orderHigh, double fcLow, double fcHigh, string analysisName) //konstruktor BUTTERWORTH BAND
@@ -79,27 +80,15 @@ namespace EKG_Project.Modules.ECG_Baseline
             this.WindowSizeHigh = windowSizeHigh;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSize, string analysisName, double mi) // konstruktor LMS LOW, HIGH
+        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowLMS, string analysisName, double mi) // konstruktor LMS LOW, HIGH, BAND
         {
             this.Method = method;
             this.AnalysisName = analysisName;
             this.Type = type;
             this.Mi = mi;
-            if (type == Filtr_Type.LOWPASS)
-                this.WindowSizeLow = windowSize;
-            else if (type == Filtr_Type.HIGHPASS)
-                this.WindowSizeHigh = windowSize;
+            this.WindowLMS = windowLMS;
         }
 
-        public ECG_Baseline_Params(Filtr_Method method, Filtr_Type type, int windowSizeLow, int windowSizeHigh, string analysisName, double mi) // konstruktor LMS BAND
-        {
-            this.Method = method;
-            this.AnalysisName = analysisName;
-            this.Type = type;
-            this.Mi = mi;
-            this.WindowSizeLow = windowSizeLow;
-            this.WindowSizeHigh = windowSizeHigh;
-        }
 
         public Filtr_Method Method
         {
@@ -115,6 +104,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                 this.NotifyPropertyChanged("IsButterworthHighPass");
                 this.NotifyPropertyChanged("IsOtherLowPass");
                 this.NotifyPropertyChanged("IsOtherHighPass");
+                this.NotifyPropertyChanged("IsLMS");
             }
         }
 
@@ -150,15 +140,26 @@ namespace EKG_Project.Modules.ECG_Baseline
                 this.NotifyPropertyChanged("IsButterworthHighPass");
                 this.NotifyPropertyChanged("IsOtherLowPass");
                 this.NotifyPropertyChanged("IsOtherHighPass");
+                this.NotifyPropertyChanged("IsLMS");
             }
         }
+
+        public bool IsLMS
+        {
+            get
+            {
+                return (this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS || this.Type == Filtr_Type.HIGHPASS) &&
+                    this.Method == Filtr_Method.LMS;
+            }
+        }
+
 
         public bool IsOtherLowPass
         {
             get
             {
                 return (this.Type == Filtr_Type.LOWPASS || this.Type == Filtr_Type.BANDPASS) &&
-                    this.Method != Filtr_Method.BUTTERWORTH;
+                    this.Method != Filtr_Method.BUTTERWORTH && this.Method != Filtr_Method.LMS;
             }
         }
 
@@ -167,7 +168,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             get
             {
                 return (this.Type == Filtr_Type.HIGHPASS || this.Type == Filtr_Type.BANDPASS) &&
-                    this.Method != Filtr_Method.BUTTERWORTH;
+                    this.Method != Filtr_Method.BUTTERWORTH && this.Method != Filtr_Method.LMS;
             }
         }
 
@@ -215,6 +216,21 @@ namespace EKG_Project.Modules.ECG_Baseline
                     _mi = value;
                 else
                     _mi = 0.07;
+            }
+        }
+
+        public int WindowLMS
+        {
+            get
+            {
+                return _windowLMS;
+            }
+            set
+            {
+                if (_windowLMS >= 0)
+                    _windowLMS = value;
+                else
+                    _windowLMS = 0;
             }
         }
 
