@@ -153,7 +153,10 @@ namespace EKG_Project.Modules.HRT
                     else
                     {
                         _currentLeadName = _leads[_currentChannelIndex];
+                        System.Diagnostics.Debug.WriteLine(_currentLeadName);
                         _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName);
+                        
+                        //System.Diagnostics.Debug.WriteLine(_currentChannelLength);
                         _state = STATE.PROCESS_FIRST_STEP;
                     }
                     break;
@@ -163,17 +166,20 @@ namespace EKG_Project.Modules.HRT
                     {
                         try
                         {
-                            _rpeaks = InputData_R_Peaks.RPeaks[_currentChannelIndex].Item2;
-                            _rrintervals = InputData_R_Peaks.RRInterval[_currentChannelIndex].Item2;
+                            uint _rPeakCount = InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName);
+                            _rpeaks = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, (int)_rPeakCount);
+                            System.Diagnostics.Debug.WriteLine(_rpeaks);
+                            _rrintervals = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, (int)_rPeakCount);
+                            System.Diagnostics.Debug.WriteLine(_rrintervals);
                             //_classAll = InputData_Heart_Class.ClassificationResult[_currentChannelIndex].Item2;
-                            Console.WriteLine("_currentLeadName " + _currentLeadName);
+                            System.Diagnostics.Debug.WriteLine("_currentLeadName " + _currentLeadName);
                             //Console.WriteLine("_step " + _step);
                             _state = STATE.PROCESS_CHANNEL;
                         }
                         catch (Exception e)
                         {
                             _state = STATE.NEXT_CHANNEL;
-                            Console.WriteLine("PROCESS_FIRST_STEP - Exception e");
+                            System.Diagnostics.Debug.WriteLine("PROCESS_FIRST_STEP - Exception e");
                         }
                     }
                     break;
@@ -185,7 +191,7 @@ namespace EKG_Project.Modules.HRT
                         {
                             if (_rpeaks.Count < _classAll.Count)
                             {
-                                Console.WriteLine("Wykryto więcej klas niż załamków, błędnie skonstruowany plik wejściowy");
+                                System.Diagnostics.Debug.WriteLine("Wykryto więcej klas niż załamków, błędnie skonstruowany plik wejściowy");
                             }
                             else
                             {
@@ -194,7 +200,7 @@ namespace EKG_Project.Modules.HRT
 
                                 if (_classVentrical.Capacity == 0)
                                 {
-                                    Console.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
+                                    System.Diagnostics.Debug.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
                                     _vpc = VPC.NOT_DETECTED;
                                 }
                                 else
@@ -204,7 +210,7 @@ namespace EKG_Project.Modules.HRT
                                     _classPrematureVentrical = _alg.SearchPrematureTurbulences(_tachogram, _nrVPC);
                                     if (_classPrematureVentrical.Capacity == 0)
                                     {
-                                        Console.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
+                                        System.Diagnostics.Debug.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
                                         _vpc = VPC.NO_VENTRICULAR;
                                     }
                                     else
@@ -215,7 +221,7 @@ namespace EKG_Project.Modules.HRT
                                         _tachogram = _alg.MakeTachogram(_classPrematureVentrical, _rrintervals);
                                         if (_tachogram.Count == 0)
                                         {
-                                            Console.WriteLine("Są VPC, ale nie można wygenerować wokół nich tachogramu. Prawdopodobna przyczyna to niewystarczająca ilość wykrytych załamków QRS w pobliżu");
+                                            System.Diagnostics.Debug.WriteLine("Są VPC, ale nie można wygenerować wokół nich tachogramu. Prawdopodobna przyczyna to niewystarczająca ilość wykrytych załamków QRS w pobliżu");
                                             _vpc = VPC.DETECTED_BUT_IMPOSSIBLE_TO_PLOT;
                                         }
                                         else
@@ -243,7 +249,7 @@ namespace EKG_Project.Modules.HRT
                         catch (Exception e)
                         {
                             _state = STATE.NEXT_CHANNEL;
-                            Console.WriteLine("PROCESS_CHANNEL - Exception e");
+                            System.Diagnostics.Debug.WriteLine("PROCESS_CHANNEL - Exception e");
                         }
                     }
 
