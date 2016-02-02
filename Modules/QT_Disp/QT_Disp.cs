@@ -119,11 +119,10 @@ namespace EKG_Project.Modules.QT_Disp
                 case (STATE.INIT):
                     _currentChannelIndex = 0;
                     _currentIndex = 0;
-                    _currentChannelR_Peaks_indexes = 1000;   // it's going to be in new worker
-                    _currentLength = 2;
-                    //_numberOfChannels = 2 //Tutaj bedzie zmiana po poprawie workerów
-                    //_currentChannelLength = (int)InputBasicWorker.LoadAttribute(Basic_Attributes.NumberOfSamples); //Tutaj bedzie zmiana po poprawie workerow
                     _leads = InputBasicWorker.LoadLeads(); //Tutaj bedzie zmiana po poprawie workerów
+                    _currentChannelR_Peaks_indexes = (int)InputRPeaksWorker.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _leads[_currentChannelIndex]);   // it's going to be in new worker
+                    _currentLength = 2;
+                   
                     _state = STATE.BEGIN_CHANNEL;
                     _maxInputIndexes = 1000;
                     createNewObject = true;
@@ -135,9 +134,10 @@ namespace EKG_Project.Modules.QT_Disp
                     
                    
                     QT_Disp_Algorithms = new QT_Disp_Alg();      //create new object to calculate algorithms
-                        
+                    _currentChannelR_Peaks_indexes = (int) InputRPeaksWorker.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _leads[_currentChannelIndex]);   // it's going to be in new worker
+
                     //set number of indexes to get from waves and r_peaks
-                    if(_currentChannelR_Peaks_indexes < _maxInputIndexes)
+                    if (_currentChannelR_Peaks_indexes < _maxInputIndexes)
                     {
                         _amountOfIndexesInInput = _currentChannelR_Peaks_indexes;
                     }
@@ -460,7 +460,7 @@ namespace EKG_Project.Modules.QT_Disp
                 //Console.WriteLine("Press key to continue...");
                 //Console.ReadKey();
                 if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress());
+                Console.WriteLine(testModule.Progress().ToString("#.00"));
                 testModule.ProcessData();
             }
             Console.WriteLine("Finish");
