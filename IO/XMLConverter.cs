@@ -254,21 +254,19 @@ namespace EKG_Project.IO
                         double[] readDigits = stringToArray(digits);
                         readDigits = getPhysSignal(readDigits);
                         int samples = readDigits.Length;
-
-                        if((startIndex + length) <= samples)
+                        try
                         {
-                            vector =  Vector<double>.Build.Dense(length);
+                            vector = Vector<double>.Build.Dense(length);
                             int iterator = 0;
                             for (int i = startIndex; i < startIndex + length; i++)
                             {
                                 vector.At(iterator, readDigits[i]);
                                 iterator++;
                             }
-                        }
-                        else
-                        {
-                            throw new IndexOutOfRangeException();
-                        }
+                        }catch(System.ArgumentOutOfRangeException e)
+                        { }
+                        
+                            
                     }
                 }
                 
