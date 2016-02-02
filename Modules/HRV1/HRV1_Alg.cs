@@ -307,13 +307,13 @@ namespace EKG_Project.Modules.HRV1
         {
             //generateFreqVector(0, 1, this.rrIntervals.Count);
             //lombScargle();
+            //double df = (double)1000 / rrIntervals.Count;
 
-            double df = (double)1000 / rrIntervals.Count;
+            double df = (this.f.Max() - this.f.Min()) / (this.f.Count-1);
+
             var temp_vec = Vector<double>.Build.Dense(PSD.Count, (i) => PSD[i]*df);
             
             TP = VLF = LF = HF = 0;
-
-            //for (int i = 0; i < f.Count; i++){ TP = temp_vec[i] + TP; };
 
             //Obliczenie całkowitej mocy widma
             TP = temp_vec.Sum();
@@ -321,7 +321,7 @@ namespace EKG_Project.Modules.HRV1
             //Obliczenie mocy widma w zakresie wysokich częstotliwości (0,15-0,4Hz)
             for (int i = 0; i < f.Count; i++)
             {
-                if (f[i] >= 0.15 && f[i] < 0.4)
+                if (f[i] >= 0.15 && f[i] <= 0.4)
                 {
                     HF = temp_vec[i] + HF;
                 }
@@ -330,7 +330,7 @@ namespace EKG_Project.Modules.HRV1
             //Wyznaczenie mocy widma w zakresie niskich częstotliwości (0,04-0,15Hz)
             for (int i = 0; i < f.Count; i++)
             {
-                if (f[i] > 0.04 && f[i] < 0.15)
+                if (f[i] >= 0.04 && f[i] <= 0.15)
                 {
                     LF = temp_vec[i] + LF;
                 }
@@ -339,7 +339,7 @@ namespace EKG_Project.Modules.HRV1
             //Obliczenie mocy widma w zakresie bardzo niskich częstotliwości (0,003-0,04Hz)
                for (int i = 0; i < f.Count; i++)
             {
-                if (f[i] > 0.003 && f[i] < 0.04)
+                if (f[i] >= 0.003 && f[i] <= 0.04)
                 {
                     VLF = temp_vec[i] + VLF;
                 }
