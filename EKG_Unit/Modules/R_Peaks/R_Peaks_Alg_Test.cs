@@ -1263,6 +1263,22 @@ namespace EKG_Unit.Modules.R_Peaks
         }
 
         [TestMethod]
+        [Description("Test if Hilbert works properly - negative R peaks values")]
+        public void HilbertTest3()
+        {
+            uint fs = 10;
+            double[] testArray = { 1, 1, 1, 0, 0, 1, 1, 0, 0, 3, -12, 3, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 2, 1, 0, 2, -11, 3, -1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, -12, 4, -1, 0, 0, 0, 1, 1, 0, 0, 1 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            double[] resultArray = { 12, 28, 41 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+
+            R_Peaks_Alg test = new R_Peaks_Alg();
+            Vector<double> testResult = test.Hilbert(testVector, fs);
+            Assert.AreNotEqual(testResult, resultVector);
+        }
+
+
+        [TestMethod]
         [Description("Test if Hilbert throws exception if argument is not initialized")]
         [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
         public void HilbertNullTest()
