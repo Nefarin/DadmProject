@@ -167,6 +167,7 @@ namespace EKG_Project.Modules.Heart_Axis
         /* Trigonometrical formula - between I and II */
         private double IandII(double[]amplitudes)
         {
+            //todo: wyjątek dla 0?
             double angle = Math.Atan((2 * (amplitudes[1] - amplitudes[0])) / (Math.Sqrt(3) * amplitudes[0]));
             return angle;   // an angle in radians
         }
