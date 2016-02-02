@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using System.IO;
 using MathNet.Numerics;
+using EKG_Project.Modules.HRV_DFA;
 
 
 namespace EKG_Project.Modules.HRT
@@ -306,7 +307,7 @@ namespace EKG_Project.Modules.HRT
 
         public Tuple<double[], double[], double[,], double[,]> StatisticsToPDF(int[] VPC, List<double> rrIntervals)
         {
-
+            HRV_DFA_Alg externalAlg = new HRV_DFA_Alg();
             int back = 5;
             int forward = 15;
             int sum = back + forward;
@@ -341,7 +342,7 @@ namespace EKG_Project.Modules.HRT
                         }
                         Vector<double> x = Vector<double>.Build.DenseOfArray(xdata);
                         Vector<double> y = Vector<double>.Build.DenseOfArray(ydata);
-                        p = LinearSquare(x, y);
+                        p = externalAlg.LinearSquare(x, y);
 
                         if (p.Item1[0] > TS[i])
                         {
@@ -459,24 +460,22 @@ namespace EKG_Project.Modules.HRT
         /// <param name="VPC"> numbers of probes of peaks R classified as VPC
         /// <param name=" rrIntervals"> intevals between R peaks
         /// <returns> Tachograms</returns>
-        public List<double[]> MakeTachogram(List<int> VPC, Vector<double> rrIntervals)
+        public List<List<double>> MakeTachogram(List<int> VPC, Vector<double> rrIntervals)
         {
             int back = 5;
             int forward = 15;
             int sum = back + forward;
-            List<double[]> newTacho = new List<double[]>();
-            List<Tuple<double, double>> VPCTachogram = new List<Tuple<double, double>>();
+            List<List<double>> newTacho = new List<List<double>>();
             int i = 0;
             foreach (int nrpikuVPC in VPC)
             {
                 if ((nrpikuVPC - back) > 0 && ((nrpikuVPC + forward) < rrIntervals.Count))
                 {
-                    double[] temparray = new double[forward + back];
+                    //double[] temparray = new double[forward + back];
                     for (int k = (nrpikuVPC - back); k < (nrpikuVPC + forward); k++)
                     {
-                        temparray[i++] = rrIntervals[k];
+                        newTacho.ElementAt(i).Add(rrIntervals[k]);
                     }
-                    newTacho.Add(temparray);
                     i = 0;
                 }
             }
@@ -489,7 +488,7 @@ namespace EKG_Project.Modules.HRT
         /// <param name="Tachogram"> list of tachograms
         /// <param name="  numerPikuVC"> Which R peak was classified as VPC
         /// <returns> Which R peak was classified as VPC</returns>
-        public List<int> SearchPrematureTurbulences(List<double[]> Tachogram, List<int> numerPikuVC)
+        public List<int> SearchPrematureTurbulences(List<List<double>> Tachogram, List<int> numerPikuVC)
         {
             if (Tachogram.Count != numerPikuVC.Count) throw new ArgumentOutOfRangeException();
 
@@ -547,7 +546,7 @@ namespace EKG_Project.Modules.HRT
         /// </summary>
         /// <param name="tacho"> tachograms
         /// <returns> x and y coordinates to plot</returns>
-        public Tuple<int[], double[]> TurbulenceOnsetMeanGUI(List<double[]> tacho)
+        public Tuple<int[], double[]> TurbulenceOnsetMeanGUI(List<List<double>> tacho)
         {
             List<double> listBefore3 = new List<double>();
             List<double> listBefore4 = new List<double>();
@@ -559,7 +558,7 @@ namespace EKG_Project.Modules.HRT
             double sumAfter7Suma = 0;
             double sumAfter8Suma = 0;
 
-            foreach (double[] tach in tacho)
+            foreach (List<double> tach in tacho)
             {
                 listBefore3.Add(tach[2]);
                 listBefore4.Add(tach[3]);
@@ -591,6 +590,7 @@ namespace EKG_Project.Modules.HRT
         /// <returns>  Return values of turbulence slope (max linear regresion) from every channel and prepare coordinates to plot max TS</returns>
         public Tuple<List<double>, int[], double[]> TurbulenceSlopeGUIandPDF(List<int> VPC, Vector<double> rrIntervals)
         {
+            HRV_DFA_Alg externalAlg = new HRV_DFA_Alg();
             double[] TS = new double[VPC.Count];
             for (int j = 0; j < VPC.Count; j++)
             {
@@ -618,7 +618,7 @@ namespace EKG_Project.Modules.HRT
                     }
                     Vector<double> x = Vector<double>.Build.DenseOfArray(xdata);
                     Vector<double> y = Vector<double>.Build.DenseOfArray(ydata);
-                    p = LinearSquare(x, y);
+                    p = externalAlg.LinearSquare(x, y);
 
                     if (p.Item1[0] > TS[i])
                     {
@@ -656,14 +656,14 @@ namespace EKG_Project.Modules.HRT
         /// </summary>
         /// <param name="tacho">tachogram
         /// <returns>   Return average tachogram from all tachograms /returns>
-        public double[] MeanTachogram(List<double[]> tacho)
+        public double[] MeanTachogram(List<List<double>> tacho)
         {
             double sumTach = 0;
             double[] meanTach = new double[back + front];
             int k = 0;
             for (int i = 0; i < (back + front); i++)
             {
-                foreach (double[] tach in tacho)
+                foreach ( List < double > tach in tacho)
                 {
                     sumTach = sumTach + tach[k];
                 }
@@ -674,37 +674,6 @@ namespace EKG_Project.Modules.HRT
             }
 
             return meanTach;
-        }
-
-
-        //od pauliny, jak będzie na głównym repo to zrobić odwołania do jej implementacji
-        //nie pisać testów bo nie nasza funkcja :)
-        public Tuple<double[], Vector<double>> LinearSquare(Vector<double> x, Vector<double> y)
-        {
-            Vector<double> y_approx = Vector<double>.Build.Dense(y.Count());
-            double[] P = new double[2];
-            double n = y.Count();
-            // Subsidiary variables
-            double sumX = x.Sum();
-            double sumX2 = x.PointwiseMultiply(x).Sum();
-            double sumY = y.Sum();
-            Vector<double> xy = x.PointwiseMultiply(y);
-            double sumXY = (xy).Sum();
-            // Coeffitients for y = pa * x + pb
-            double pa = (n * sumXY - sumX * sumY) / (n * sumX2 - Math.Pow(sumX, 2));
-            double pb = (sumY * sumX2 - sumX * sumXY) / (n * sumX2 - Math.Pow(sumX, 2));
-            // Generate interpolated line 
-            for (int i = 0; i < y_approx.Count(); i++)
-            {
-                y_approx[i] = pa * x[i] + pb;
-            }
-
-            P[0] = pa;
-            P[1] = pb;
-
-            Tuple<double[], Vector<double>> output = new Tuple<double[], Vector<double>>(P, y_approx);
-
-            return output;
         }
 
     }

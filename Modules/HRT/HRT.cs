@@ -26,7 +26,7 @@ namespace EKG_Project.Modules.HRT
         private int _numberOfChannels;
         private int _samplesProcessed;
         private uint _frequency;
-        private enum VPC { NOT_DETECTED, NO_VENTRICULAR, DETECTED_BUT_IMPOSSIBLE_TO_PLOT, DETECTED };
+        private enum VPC { NOT_DETECTED, NO_VENTRICULAR, DETECTED_BUT_IMPOSSIBLE_TO_PLOT, LETS_PLOT };
         //private int _step;
 
         private Basic_New_Data_Worker _inputWorker_basic;
@@ -48,22 +48,25 @@ namespace EKG_Project.Modules.HRT
         private List<Tuple<int, int>> _classAll;
         private List<int> _classPrematureVentrical;
         private List<int> _nrVPC;
-        private List<double[]> _tachogram;
+        private List<List<double>> _tachogram;
         private List<int> _classVentrical;
         private List<double> _turbulenceOnset;
         private Tuple<List<double>, int[], double[]> _turbulenceSlope;
         private double[] _meanTachogram;
-        private int[] _xaxis;
         private VPC _vpc;
 
-        private List<Tuple<string, int[], List<double[]>>> _tachogramGUI = new List<Tuple<string, int[], List<double[]>>>();
-        private List<Tuple<string, int[], double[]>> _tachogramMeanGUI = new List<Tuple<string, int[], double[]>>();
-        private List<Tuple<string, int[], double[]>> _turbulenceOnsetmeanGUI = new List<Tuple<string, int[], double[]>>();
-        private List<Tuple<string, int[], double[]>> _turbulenceSlopeMaxGUI = new List<Tuple<string, int[], double[]>>();
-        private List<Tuple<string, List<double>>> _turbulenceOnsetPDF = new List<Tuple<string, List<double>>>();
-        private List<Tuple<string, List<double>>> _turbulenceSlopePDF = new List<Tuple<string, List<double>>>();
+        private int[] _xaxisTachogram;
+        private List<List<double>> _tachogramGUI;
+        private double[] _tachogramMeanGUI;
+        private int[] _xpointsOnset;
+        private double[] _turbulenceOnsetmeanGUI;
+        private int[] _xpointsSlope;
+        private double[] _turbulenceSlopeMaxGUI;
+        private List<double> _turbulenceOnsetPDF;
+        private List<double> _turbulenceSlopePDF;
 
-        private Vector<Double> _currentVector;
+
+        private Vector<double> _currentVector;
         private Vector<double> _currentVectorRRInterval;
 
         public void Abort()
@@ -110,7 +113,6 @@ namespace EKG_Project.Modules.HRT
                 OutputData = new HRT_Data();
 
                 _frequency = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
-                //_step = Convert.ToInt32(_frequency * 16);
                 _state = STATE.INIT;
             }
         }
@@ -183,7 +185,6 @@ namespace EKG_Project.Modules.HRT
                             if (_rpeaks.Count < _classAll.Count)
                             {
                                 Console.WriteLine("Wykryto więcej klas niż załamków, błędnie skonstruowany plik wejściowy");
-                                _vpc = VPC.NOT_DETECTED;
                             }
                             else
                             {
@@ -193,7 +194,7 @@ namespace EKG_Project.Modules.HRT
                                 if (_classVentrical.Capacity == 0)
                                 {
                                     Console.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
-                                    _vpc = VPC.NO_VENTRICULAR;
+                                    _vpc = VPC.NOT_DETECTED;
                                 }
                                 else
                                 {
@@ -211,18 +212,29 @@ namespace EKG_Project.Modules.HRT
 
 
                                         _tachogram = _alg.MakeTachogram(_classPrematureVentrical, _rrintervals);
-                                        _turbulenceOnset = _alg.TurbulenceOnsetsPDF(_classPrematureVentrical, _rrintervals);
-                                        _turbulenceSlope = _alg.TurbulenceSlopeGUIandPDF(_classPrematureVentrical, _rrintervals);
-                                        _meanTurbulenceOnset = _alg.TurbulenceOnsetMeanGUI(_tachogram);
-                                        _meanTachogram = _alg.MeanTachogram(_tachogram);
-                                        _xaxis = _alg.xPlot();
-                                        _tachogramGUI.Add(Tuple.Create(_currentLeadName, _xaxis, _tachogram));
-                                        _tachogramMeanGUI.Add(Tuple.Create(_currentLeadName, _xaxis, _meanTachogram));
-                                        _turbulenceOnsetmeanGUI.Add(Tuple.Create(_currentLeadName, _meanTurbulenceOnset.Item1, _meanTurbulenceOnset.Item2));
-                                        _turbulenceSlopeMaxGUI.Add(Tuple.Create(_currentLeadName, _turbulenceSlope.Item2, _turbulenceSlope.Item3));
-                                        _turbulenceOnsetPDF.Add(Tuple.Create(_currentLeadName, _turbulenceOnset));
-                                        _turbulenceSlopePDF.Add(Tuple.Create(_currentLeadName, _turbulenceSlope.Item1));
-                                        _alg.PrintVector(_turbulenceSlopeMaxGUI);
+                                        if (_tachogram.Count == 0)
+                                        {
+                                            Console.WriteLine("Są VPC, ale nie można wygenerować wokół nich tachogramu. Prawdopodobna przyczyna to niewystarczająca ilość wykrytych załamków QRS w pobliżu");
+                                            _vpc = VPC.DETECTED_BUT_IMPOSSIBLE_TO_PLOT;
+                                        }
+                                        else
+                                        {
+                                            _vpc = VPC.LETS_PLOT;
+                                            _turbulenceOnset = _alg.TurbulenceOnsetsPDF(_classPrematureVentrical, _rrintervals);
+                                            _turbulenceSlope = _alg.TurbulenceSlopeGUIandPDF(_classPrematureVentrical, _rrintervals);
+                                            _meanTurbulenceOnset = _alg.TurbulenceOnsetMeanGUI(_tachogram);
+                                            _meanTachogram = _alg.MeanTachogram(_tachogram);
+                                            _xaxisTachogram = _alg.xPlot();
+                                            _tachogramGUI = _tachogram;
+                                            _tachogramMeanGUI =_meanTachogram;
+                                            _xpointsOnset = _meanTurbulenceOnset.Item1;
+                                            _turbulenceOnsetmeanGUI = _meanTurbulenceOnset.Item2;
+                                            _xpointsSlope = _turbulenceSlope.Item2;
+                                            _turbulenceSlopeMaxGUI = _turbulenceSlope.Item3;
+                                            _turbulenceOnsetPDF = _turbulenceOnset;
+                                            _turbulenceSlopePDF= _turbulenceSlope.Item1;
+                                            //_alg.PrintVector(_turbulenceSlopeMaxGUI);
+                                        }
                                     }
                                 }
                             }
@@ -240,32 +252,74 @@ namespace EKG_Project.Modules.HRT
                 case (STATE.END_CHANNEL):
                     //try
                     //{
-                    //   // _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
-                    //    try
+                    //    _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
+
+                    //    //Selecting filtration method
+                    //    switch (Params.Method)
                     //    {
-                    //       // _currentVector.Add(_currentIndex, _currentVector);
-                    //        //save results
-                    //        OutputWorker.  //(HRT_Attributes.HRT, _currentLeadName, true, _currentVector);
-                    //        if (_currentVector.Count > 1)
-                    //        {
-                    //            _currentVectorRRInterval = _alg.RRinMS(_currentVector, _frequency);
-                    //            //save results
-                    //            OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
-                    //        }
-                    //        //updating current index
-                    //        _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(_frequency * 0.1);
+                    //        case Filtr_Method.MOVING_AVG:
+                    //            if (Params.Type == Filtr_Type.LOWPASS)
+                    //            {
+                    //                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                    //            }
+                    //            if (Params.Type == Filtr_Type.HIGHPASS)
+                    //            {
+                    //                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                    //            }
+                    //            if (Params.Type == Filtr_Type.BANDPASS)
+                    //            {
+                    //                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Params.WindowSizeHigh, Filtr_Type.BANDPASS);
+                    //            }
+                    //            break;
+                    //        case Filtr_Method.BUTTERWORTH:
+                    //            if (Params.Type == Filtr_Type.LOWPASS)
+                    //            {
+                    //                _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
+                    //            }
+                    //            if (Params.Type == Filtr_Type.HIGHPASS)
+                    //            {
+                    //                _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
+                    //            }
+                    //            if (Params.Type == Filtr_Type.BANDPASS)
+                    //            {
+                    //                _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcLow, Params.OrderLow, Params.FcHigh, Params.OrderHigh, Filtr_Type.BANDPASS);
+                    //            }
+                    //            break;
+                    //        case Filtr_Method.SAV_GOL:
+                    //            if (Params.Type == Filtr_Type.LOWPASS)
+                    //            {
+                    //                System.Console.WriteLine("END CHANNEL");
+                    //                //_currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                    //                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
+                    //            }
+                    //            if (Params.Type == Filtr_Type.HIGHPASS)
+                    //            {
+                    //                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
+                    //            }
+                    //            if (Params.Type == Filtr_Type.BANDPASS)
+                    //            {
+                    //                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Params.WindowSizeHigh, Filtr_Type.BANDPASS);
+                    //            }
+                    //            break;
+                    //        case Filtr_Method.LMS:
+                    ////            _currentVector = _newFilter.lms(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
+                    //            break;
                     //    }
-                    //    catch (Exception ex)
-                    //    {
-                    //        _currentIndex = _currentIndex + _step;
-                    //        Console.WriteLine("No detected R peaks in this part of signal");
-                    //    }
-                    _state = STATE.NEXT_CHANNEL;
+
+
+                    //    //Removing of the filtering edge effects. For this purpose we calculate difference between 
+                    //    //last element of previous vector and first element of current vector. 
+                    //    //The result of difference is added to all elements of current vector.
+                    //    _firstVectorElement = _currentVector.First();
+                    //    double diffbtwelements = _lastVectorElement - _firstVectorElement;
+                    //    _currentVector.Add(diffbtwelements);
+
+                    //    OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
+                    //    _state = STATE.NEXT_CHANNEL;
                     //}
                     //catch (Exception e)
                     //{
                     //    _state = STATE.NEXT_CHANNEL;
-                    //    Console.WriteLine("END_CHANNEL - Exception e");
                     //}
                     break;
                 case (STATE.NEXT_CHANNEL):
