@@ -48,6 +48,7 @@ namespace EKG_Project.Modules.Heart_Class
         private Vector<Double> _currentVector;
         private STATE _state;
         private List<Tuple<int, int>> _tempClassResult;
+        private Tuple<int, int> _tempTuple; 
 
 
 
@@ -166,7 +167,7 @@ namespace EKG_Project.Modules.Heart_Class
 
                     //step zawiera odległość pom początkiem sygnału a 2 r_peakiem w kolejności. 
                     _step = (int)InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, (_samplesProcessed+1), _numberProcessedComplexes)[0];
-                    Console.WriteLine("/// step : "+ _step);
+                    //Console.WriteLine("/// step : "+ _step);
                     _state = STATE.PROCESS_FIRST_STEP;
                     break;
                 case (STATE.PROCESS_FIRST_STEP):
@@ -184,11 +185,11 @@ namespace EKG_Project.Modules.Heart_Class
                         _currentVector = InputEcGbaselineWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
 
                         
-                        Console.WriteLine("/// number of steps : " + _numberOfSteps);
-                        Console.WriteLine("/// Onset : " + QRSOnSet);
-                        Console.WriteLine("/// R : " + R);
-                        Console.WriteLine("/// End : " + QRSEnds);
-                        Console.ReadLine();
+                     //   Console.WriteLine("/// number of steps : " + _numberOfSteps);
+                      //  Console.WriteLine("/// Onset : " + QRSOnSet);
+                       // Console.WriteLine("/// R : " + R);
+                       // Console.WriteLine("/// End : " + QRSEnds);
+                        //Console.ReadLine();
 
                         _alg = new Heart_Class_Alg();
                         _tempClassResult = new List<Tuple<int, int>>();
@@ -202,8 +203,8 @@ namespace EKG_Project.Modules.Heart_Class
                         //step: dwa interwały +- od analizowanego R-peaka w kolejnej iteracji
                         _step = (int)(InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _samplesProcessed+1, _numberProcessedComplexes)[0]) - _currentIndex;
 
-                        Console.WriteLine("/// current index : " + _currentIndex);
-                        Console.WriteLine("/// step : " + _step);
+                        //Console.WriteLine("/// current index : " + _currentIndex);
+                        //Console.WriteLine("/// step : " + _step);
                         _state = STATE.PROCESS_CHANNEL;
 
                         if (_samplesProcessed+2 >= _numberOfSteps)
@@ -221,31 +222,38 @@ namespace EKG_Project.Modules.Heart_Class
                 case (STATE.PROCESS_CHANNEL):
                     if (!_ml2Processed)
                     {
-                        double R = InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _samplesProcessed,
-                                 _numberProcessedComplexes)[0] - _currentIndex;
+                        double Ractual =
+                            InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _samplesProcessed,
+                                _numberProcessedComplexes)[0];
+                        double R = Ractual - _currentIndex;
                         int QRSOnSet = InputWavesWorker.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName, _samplesProcessed,
                                 _numberProcessedComplexes)[0] - _currentIndex; //-_currentIndex, aby uwzględnić cięcie sygnału i zmianę indeksu dla qrsOnset i qrsEnd
                         int QRSEnds = InputWavesWorker.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName, _samplesProcessed,
                                 _numberProcessedComplexes)[0] - _currentIndex;
 
-                        Console.WriteLine("/// Onset : " + QRSOnSet);
-                        Console.WriteLine("/// R : " + R);
-                        Console.WriteLine("/// End : " + QRSEnds);
+                        //Console.WriteLine("/// Onset : " + QRSOnSet);
+                        //Console.WriteLine("/// R : " + R);
+                        //Console.WriteLine("/// End : " + QRSEnds);
 
                         _currentVector = InputEcGbaselineWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
                         _alg = new Heart_Class_Alg();
                         _tempClassResult = new List<Tuple<int, int>>();
                         _tempClassResult.Add(_alg.Classification(_currentVector, QRSOnSet, QRSEnds, R, _fs));
-                        OutputWorker.SaveClassificationResult(_currentLeadName, true, _tempClassResult);
 
+                        //teraz trzeba powrócić do R rzeczywistego, a nie tego zmodyfikowanego na potrzeby cięcia sygnału... :/
+                        int classResult =  _tempClassResult[0].Item2;
+                        _tempTuple = new Tuple<int, int>((int)Ractual, classResult);
+                        _tempClassResult = new List<Tuple<int, int>>();
+                        _tempClassResult.Add(_tempTuple);
+                        OutputWorker.SaveClassificationResult(_currentLeadName, true, _tempClassResult);
                         
                         _currentIndex = (int)R;
                         _samplesProcessed++;
                         _step = (int)(InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _samplesProcessed+1, _numberProcessedComplexes)[0]) - _currentIndex;
 
-                        Console.WriteLine("/// samplesProcessed : " + _samplesProcessed);
-                        Console.WriteLine("/// current index : " + _currentIndex);
-                        Console.WriteLine("/// step : " + _step);
+                        //Console.WriteLine("/// samplesProcessed : " + _samplesProcessed);
+                        //Console.WriteLine("/// current index : " + _currentIndex);
+                        //Console.WriteLine("/// step : " + _step);
 
                         _state = STATE.PROCESS_CHANNEL;
 
