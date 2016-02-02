@@ -7,8 +7,8 @@ using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.Waves;
 using EKG_Project.Modules.R_Peaks;
 using EKG_Project.IO;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics;
+//using MathNet.Numerics.LinearAlgebra;
+//using MathNet.Numerics;
 using System.Windows;
 
 namespace EKG_Project.Modules.ST_Segment
@@ -171,7 +171,7 @@ namespace EKG_Project.Modules.ST_Segment
         private void processData()
         {
             ////OutputData = Method(argumenty);
-            ////Analasiys ST_Segment (Method);
+            ////Analasiys ST_Segment (Method);  <- tutaj powinna być inicjalizacja metody z Alg (METHOD(dane WE te co w method w alg)
             //int channel = _currentChannelIndex;
             //int startIndex = _rPeaksProcessed;
             //int step = Params.RpeaksStep;
@@ -180,6 +180,7 @@ namespace EKG_Project.Modules.ST_Segment
             //{
             //    if (startIndex + step > _currentRpeaksLength)
             //    {
+            //         method i outputy z poniżej 
             //        int QRSOnSet = InputWavesData.QRSOnsets[_channel2].Item2[_samplesProcessed];
             //        int QRSEnds = InputWavesData.QRSEnds[_channel2].Item2[_samplesProcessed];
             //        double rInterval = InputRpeaksData.RPeaks[_channel2].Item2[_samplesProcessed];
@@ -431,7 +432,7 @@ namespace EKG_Project.Modules.ST_Segment
                 //testModule.ProcessData(param);
 
 
-                Console.WriteLine(testModule.OutputData.ConcaveCurves);
+               // Console.WriteLine(testModule.OutputData.ConcaveCurves);
 
 
                 Console.WriteLine("Press key to continue.");

@@ -11,23 +11,38 @@ namespace EKG_Project.Modules.T_Wave_Alt
 {
     public class T_Wave_Alt_Data : ECG_Data
     {
-        private int[] _alternansIndexArray;
+        private List<Tuple<int,int>> _alternansDetectedList;
+        // private double _alternansPercent;
 
         public T_Wave_Alt_Data()
         {
-            _alternansIndexArray = new int[1000];
+            _alternansDetectedList = new List<Tuple<int, int>>();
+            // _alternansPercent = 0;
         }
 
-        public int[] AlternansIndexArray
+        public List<Tuple<int,int>> AlternansDetectedList
         {
             get
             {
-                return _alternansIndexArray;
+                return _alternansDetectedList;
             }
             set
             {
-                _alternansIndexArray = value;
+                _alternansDetectedList = value;
             }
         }
+        /*
+        public double AlternansPercent
+        {
+            get
+            {
+                return _alternansPercent;
+            }
+            set
+            {
+                _alternansPercent = value;
+            }
+        }
+        */
     }
 }
