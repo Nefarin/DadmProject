@@ -124,9 +124,9 @@ namespace EKG_Project.Modules.QT_Disp
                     }                   
                 }
                 //here we add a QT interval to a list
-                this.QT_INTERVALS.Add(result.Item2);
+                QT_INTERVALS.Add(result.Item2);
                 //here we add a T_End index to a list
-                this.T_End_local.Add(result.Item1);
+                T_End_local.Add(result.Item1);
             }
             // return a T_End index if bad recognition assign -1
             return result;
@@ -587,6 +587,7 @@ namespace EKG_Project.Modules.QT_Disp
         {
             List<double> Output = new List<double>(In.Count - 1);
             Vector<double> output = Vector<double>.Build.Dense(1);
+            double[] ze = { 0 };
             if (In.Count > 1)
             {
                 for (int i = 0; i < In.Count - 1; i++)
@@ -597,7 +598,8 @@ namespace EKG_Project.Modules.QT_Disp
             }
             else
             {
-                throw new InvalidOperationException("Wrong input vector");
+                //throw new InvalidOperationException("Wrong input vector");
+                output = Vector<double>.Build.DenseOfArray(ze); 
             }
             return output;
         }

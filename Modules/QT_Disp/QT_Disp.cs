@@ -24,7 +24,7 @@ namespace EKG_Project.Modules.QT_Disp
         private int _samplesProcessed;
         private int _numberOfChannels;
         private string _currentLeadName;
-        private string[] _leads;
+        private List<string> _leads;
         private int _currentIndex;
         private int _currentLength;
         private int _amountOfIndexesInInput;
@@ -117,17 +117,19 @@ namespace EKG_Project.Modules.QT_Disp
             switch (_state)
             {
                 case (STATE.INIT):
-                    _currentChannelIndex = -1;
+                    _currentChannelIndex = 0;
                     _currentIndex = 0;
                     _currentChannelR_Peaks_indexes = 1000;   // it's going to be in new worker
                     _currentLength = 2;
-                    _numberOfChannels = 2; //Tutaj bedzie zmiana po poprawie workerów
-                    _currentChannelLength = (int)InputBasicWorker.LoadAttribute(Basic_Attributes.NumberOfSamples); //Tutaj bedzie zmiana po poprawie workerow
-                    _leads = null; //Tutaj bedzie zmiana po poprawie workerów
+                    //_numberOfChannels = 2 //Tutaj bedzie zmiana po poprawie workerów
+                    //_currentChannelLength = (int)InputBasicWorker.LoadAttribute(Basic_Attributes.NumberOfSamples); //Tutaj bedzie zmiana po poprawie workerow
+                    _leads = InputBasicWorker.LoadLeads(); //Tutaj bedzie zmiana po poprawie workerów
                     _state = STATE.BEGIN_CHANNEL;
                     _maxInputIndexes = 1000;
                     createNewObject = true;
-                   
+                    OutputData = new QT_Disp_Data();
+                    NumberOfChannels = InputBasicWorker.LoadLeads().Count;
+                    _currentChannelLength = (int) InputBasicWorker.getNumberOfSamples(_leads[_currentChannelIndex]);
                     break;
                 case (STATE.BEGIN_CHANNEL):
                     
@@ -144,7 +146,7 @@ namespace EKG_Project.Modules.QT_Disp
                         _amountOfIndexesInInput = _maxInputIndexes;
                         
                     }
-                    _currentChannelIndex++;
+                    //_currentChannelIndex++;
                     _currentLeadName = _leads[_currentChannelIndex];
                    
                     R_Peaks = InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, _amountOfIndexesInInput);  //stores r peaks
@@ -202,7 +204,7 @@ namespace EKG_Project.Modules.QT_Disp
                     else
                     {
                         _currentVector = InputECGBaselineWorker.LoadSignal(_currentLeadName, _currentIndex, _currentLength);
-                        QT_Disp_Algorithms.ToDoInProccessData(_currentVector, _currentIndex);
+                        QT_Disp_Algorithms.ToDoInProccessData(_currentVector, step);
                         _samplesProcessed = _currentIndex + _currentLength;
                         step++;
                         _currentIndex = (int) R_Peaks.ElementAt(step);
@@ -211,9 +213,9 @@ namespace EKG_Project.Modules.QT_Disp
                     }
                     break;
                 case (STATE.NEXT_CHANNEL):
-                    if (_currentChannelIndex < NumberOfChannels)
+                    if (_currentChannelIndex < NumberOfChannels-1)
                     {
-                        //_currentChannelIndex++;
+                        _currentChannelIndex++;
                         OutputData.QT_Intervals.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.QT_INTERVALS));
                         OutputData.T_End_Local.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.T_END_LOCAL));
                         OutputData.QT_mean.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getMean()));
@@ -448,10 +450,11 @@ namespace EKG_Project.Modules.QT_Disp
         }
         public static void Main()
         {
-            QT_Disp_Params param = new QT_Disp_Params();
-            //param.AnalysisName = "TestAnalysis";
+            QT_Disp_Params param = new QT_Disp_Params("Analysis QT");
+            //param.AnalysisName = "Analysis 1";
             QT_Disp testModule = new QT_Disp();
             testModule.Init(param);
+            Console.WriteLine("Let's start");
             while (true)
             {
                 //Console.WriteLine("Press key to continue...");
@@ -467,7 +470,7 @@ namespace EKG_Project.Modules.QT_Disp
         public static void Main(String[] args)
         {
             QT_Disp_Stats stats = new QT_Disp_Stats();
-            stats.Init("TestAnalysis100");
+            stats.Init("Analysis 1");
 
 
             while (true)
