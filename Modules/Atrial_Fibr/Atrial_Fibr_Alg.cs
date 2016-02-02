@@ -22,9 +22,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
     #endregion
     public class Atrial_Fibr_Alg
     {
-        //private uint fs;
-        //private Vector<double> _rr_intervals;
-        //private Vector<double> _r_Peaks;
         private Vector<double> pointsDetected;
         bool migotanie;
         double tpr, se, rmssd;
@@ -32,8 +29,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
         List<DataPoint> _RawData;
         List<DataPoint> _NormalizedData;
         List<DataPoint> _ClusteredData;
-        //Tuple<bool, Vector<double>, double> _wynik;
-        //Atrial_Fibr_Params param;
 
         #region Documentation
         /// <summary>
@@ -42,15 +37,9 @@ namespace EKG_Project.Modules.Atrial_Fibr
         #endregion
         public Atrial_Fibr_Alg()
         {
-            //Param = new Atrial_Fibr_Params();
-            //Fs = new uint();
             pointsDetected = Vector<double>.Build.Dense(1);
-            //_rr_intervals = Vector<double>.Build.Dense(1);
-            //_r_Peaks= Vector<double>.Build.Dense(1);
             migotanie = new bool();
             tpr = new double();
-            //se = new double();
-            //rmssd = new double();
             amountOfCluster = new int();
             _RawData = new List<DataPoint>();
             _NormalizedData = new List<DataPoint>();
@@ -93,38 +82,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
         //}
 
         //Getery i setery////////////////////////////////////////////////////////////////////////////////////////
-        //public Atrial_Fibr_Params Param
-        //{
-        //    get { return param; }
-        //    set { param = value; }
-        //}
-        //public uint Fs
-        //{
-        //    get { return fs; }
-        //    set { fs = value; }
-        //}
-        //public Vector<double> RR_intervals
-        //{
-        //    get { return _rr_intervals; }
-        //    set { _rr_intervals = value; }
-        //}
-        //public Tuple<bool, Vector<double>, double> Wynik
-        //{
-        //    get { return _wynik; }
-        //    set { _wynik = value; }
-        //}
-        //public Vector<double> R_Peaks
-        //{
-        //    get { return _r_Peaks; }
-        //    set { _r_Peaks = value; }
-        //}
-
-        //public Vector<double> Points_Detected
-        //{
-        //    get { return pointsDetected; }
-        //    set { pointsDetected = value; }
-        //}
-
         public List<DataPoint> RawData
         {
             get { return _RawData; }
@@ -160,7 +117,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
             double tmp;
             bool[] detectedIntervals;
             int dividingFactor, nrOfParts;
-            //double lengthOfDetection = 0;
 
             if (_method.Method == Detect_Method.STATISTIC)
             {
@@ -813,48 +769,52 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private double SilhouetteCoefficient(List<DataPoint> _rawDataToCluster)
         {
             double SilhouetteCoeff = new double();
-            List<double> distanceIn = new List<double>();
-            List<double> distanceOut = new List<double>();
             List<double> Silh = new List<double>();
             double dist_In = new double();
             double dist_Out = new double();
+            double [] distance = new double[amountOfCluster];
+            double [] count= new double[amountOfCluster];
+            for (int i = 0; i < amountOfCluster; i++)
+            {
+                count[i] = 0;
+                distance[i] = 0;
+            }
 
             for (int i = 0; i < _rawDataToCluster.Count; i++)
             {
                 for (int j = 0; j < _rawDataToCluster.Count; j++)
                 {
-                    if (_rawDataToCluster[i].Cluster == _rawDataToCluster[j].Cluster)
+                    if (i != j)
                     {
-                        if (i != j)
-                        {
-                            distanceIn.Add(Math.Sqrt(Math.Pow(_rawDataToCluster[j].A - _rawDataToCluster[i].A,2)+ Math.Pow(_rawDataToCluster[j].B - _rawDataToCluster[i].B, 2)));
-                        }
-                    }
-                    else
-                    {
-                        distanceOut.Add(Math.Sqrt(Math.Pow(_rawDataToCluster[j].A - _rawDataToCluster[i].A, 2) + Math.Pow(_rawDataToCluster[j].B - _rawDataToCluster[i].B, 2)));
+                        distance[_rawDataToCluster[j].Cluster] += Math.Sqrt(Math.Pow(_rawDataToCluster[j].A - _rawDataToCluster[i].A, 2) + Math.Pow(_rawDataToCluster[j].B - _rawDataToCluster[i].B, 2));
+                        count[_rawDataToCluster[j].Cluster]++;
                     }
                 }
-
-                if (distanceIn.Count == 0)
+                for (int z = 0; z < amountOfCluster; z++)
                 {
-                    dist_In = 0.0;
-                    dist_Out = distanceOut.Average();
+                    if (count[z] != 0)
+                    {
+                        distance[z] = distance[z] / count[z];
+                    }
                 }
-
-                else if (distanceOut.Count == 0)
+                dist_In = distance[_rawDataToCluster[i].Cluster];
+                int k = 0;
+                if (_rawDataToCluster[i].Cluster == 0)
+                    k++;
+                dist_Out = distance[k];
+                for (; k<amountOfCluster; k++)
                 {
-                    dist_Out = 0.0;
-                    dist_In = distanceIn.Average();
+                    if (k != _rawDataToCluster[i].Cluster && distance[k]<dist_Out)
+                    {
+                        dist_Out = distance[k];
+                    }
                 }
-
-                else
+                Silh.Add((dist_Out - dist_In) / Math.Max(dist_Out, dist_In));
+                for (int g = 0; g < amountOfCluster; g++)
                 {
-                    dist_In = distanceIn.Average();
-                    dist_Out = distanceOut.Average();
+                    count[g] = 0;
+                    distance[g] = 0;
                 }
-
-                Silh.Add(Math.Abs(dist_Out - dist_In) / Math.Max(dist_Out, dist_In));
             }
             SilhouetteCoeff = Silh.Average();
 
