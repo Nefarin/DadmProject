@@ -124,6 +124,20 @@ namespace EKG_Project.Modules.HRT
             }
         }
 
+        public void PrintVector(List<List<double>> Signal)
+        {
+            System.Diagnostics.Debug.WriteLine("");
+            foreach ( List < double > _licznik in Signal)
+            {
+                System.Diagnostics.Debug.WriteLine("");
+                foreach (double _licznik2 in _licznik)
+                {
+                    System.Diagnostics.Debug.WriteLine(_licznik2);
+                }
+                    
+            }
+        }
+
         public void PrintVector(Tuple<int[], double[]> Signal)
         {
             foreach (int _licznik in Signal.Item1)
@@ -466,17 +480,17 @@ namespace EKG_Project.Modules.HRT
             int forward = 15;
             int sum = back + forward;
             List<List<double>> newTacho = new List<List<double>>();
-            int i = 0;
             foreach (int nrpikuVPC in VPC)
             {
                 if ((nrpikuVPC - back) > 0 && ((nrpikuVPC + forward) < rrIntervals.Count))
                 {
                     //double[] temparray = new double[forward + back];
+                    List<double> singleTacho = new List<double>();
                     for (int k = (nrpikuVPC - back); k < (nrpikuVPC + forward); k++)
                     {
-                        newTacho.ElementAt(i).Add(rrIntervals[k]);
+                        singleTacho.Add(rrIntervals[k]);
                     }
-                    i = 0;
+                    newTacho.Add(singleTacho);
                 }
             }
             return newTacho;
