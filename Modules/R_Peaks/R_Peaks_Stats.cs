@@ -136,7 +136,7 @@ namespace EKG_Project.Modules.R_Peaks
         public static void Main(String[] args)
         {
             R_Peaks_Stats stats = new R_Peaks_Stats();
-            stats.Init("x");
+            stats.Init("AA");
 
 
             while (true)
