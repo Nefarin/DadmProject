@@ -22,18 +22,18 @@ namespace EKG_Project.Modules.Atrial_Fibr
     #endregion
     public class Atrial_Fibr_Alg
     {
-        private uint fs;
-        private Vector<double> _rr_intervals;
-        private Vector<double> _r_Peaks;
-        private Vector <double> pointsDetected;
+        //private uint fs;
+        //private Vector<double> _rr_intervals;
+        //private Vector<double> _r_Peaks;
+        private Vector<double> pointsDetected;
         bool migotanie;
         double tpr, se, rmssd;
         int amountOfCluster;
         List<DataPoint> _RawData;
         List<DataPoint> _NormalizedData;
         List<DataPoint> _ClusteredData;
-        Tuple<bool, Vector<double>, double> _wynik;
-        Atrial_Fibr_Params param;
+        //Tuple<bool, Vector<double>, double> _wynik;
+        //Atrial_Fibr_Params param;
 
         #region Documentation
         /// <summary>
@@ -42,15 +42,15 @@ namespace EKG_Project.Modules.Atrial_Fibr
         #endregion
         public Atrial_Fibr_Alg()
         {
-            Param = new Atrial_Fibr_Params();
-            Fs = new uint();
-            pointsDetected= Vector<double>.Build.Dense(1);
-            _rr_intervals = Vector<double>.Build.Dense(1);
-            _r_Peaks= Vector<double>.Build.Dense(1);
+            //Param = new Atrial_Fibr_Params();
+            //Fs = new uint();
+            pointsDetected = Vector<double>.Build.Dense(1);
+            //_rr_intervals = Vector<double>.Build.Dense(1);
+            //_r_Peaks= Vector<double>.Build.Dense(1);
             migotanie = new bool();
             tpr = new double();
-            se = new double();
-            rmssd = new double();
+            //se = new double();
+            //rmssd = new double();
             amountOfCluster = new int();
             _RawData = new List<DataPoint>();
             _NormalizedData = new List<DataPoint>();
@@ -93,37 +93,37 @@ namespace EKG_Project.Modules.Atrial_Fibr
         //}
 
         //Getery i setery////////////////////////////////////////////////////////////////////////////////////////
-        public Atrial_Fibr_Params Param
-        {
-            get { return param; }
-            set { param = value; }
-        }
-        public uint Fs
-        {
-            get { return fs; }
-            set { fs = value; }
-        }
-        public Vector<double> RR_intervals
-        {
-            get { return _rr_intervals; }
-            set { _rr_intervals = value; }
-        }
-        public Tuple<bool, Vector<double>, double> Wynik
-        {
-            get { return _wynik; }
-            set { _wynik = value; }
-        }
-        public Vector<double> R_Peaks
-        {
-            get { return _r_Peaks; }
-            set { _r_Peaks = value; }
-        }
+        //public Atrial_Fibr_Params Param
+        //{
+        //    get { return param; }
+        //    set { param = value; }
+        //}
+        //public uint Fs
+        //{
+        //    get { return fs; }
+        //    set { fs = value; }
+        //}
+        //public Vector<double> RR_intervals
+        //{
+        //    get { return _rr_intervals; }
+        //    set { _rr_intervals = value; }
+        //}
+        //public Tuple<bool, Vector<double>, double> Wynik
+        //{
+        //    get { return _wynik; }
+        //    set { _wynik = value; }
+        //}
+        //public Vector<double> R_Peaks
+        //{
+        //    get { return _r_Peaks; }
+        //    set { _r_Peaks = value; }
+        //}
 
-        public Vector<double> Points_Detected
-        {
-            get { return pointsDetected; }
-            set { pointsDetected = value; }
-        }
+        //public Vector<double> Points_Detected
+        //{
+        //    get { return pointsDetected; }
+        //    set { pointsDetected = value; }
+        //}
 
         public List<DataPoint> RawData
         {
@@ -154,13 +154,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// <param name="_method"> Paramethers of detection </param>
         /// <returns>Boolean inforamtion if AF was detected, vector of points with AF detected, length of detected AF in s.</returns>
         #endregion
-        private Tuple<bool, Vector<double>, double> detectAF(Vector<double> _rrIntervals, Vector<double> _rPeaks, uint fs, Atrial_Fibr_Params _method)
+        public Tuple<bool, Vector<double>, double> detectAF(Vector<double> _rrIntervals, Vector<double> _rPeaks, uint fs, Atrial_Fibr_Params _method)
         {
             if (_rrIntervals.Exists(x => x <= 0)) throw new ArgumentOutOfRangeException("RR intervals are 0 or negative");
             double tmp;
             bool[] detectedIntervals;
             int dividingFactor, nrOfParts;
-            double lengthOfDetection = 0;
+            //double lengthOfDetection = 0;
 
             if (_method.Method == Detect_Method.STATISTIC)
             {

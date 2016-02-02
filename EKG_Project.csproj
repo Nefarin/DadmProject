@@ -48,7 +48,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.App</StartupObject>
+    <StartupObject>EKG_Project.Modules.Atrial_Fibr.Atrial_Fibr</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -294,6 +294,7 @@
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
     <Compile Include="IO\ASCIIConverter.cs" />
     <Compile Include="IO\Atrial_Fibr_Data_Worker.cs" />
+    <Compile Include="IO\Atrial_Fibr_New_Data_Worker.cs" />
     <Compile Include="IO\Basic_Data_Worker.cs" />
     <Compile Include="IO\Basic_New_Data_Worker.cs" />
     <Compile Include="IO\DebugECGPath.cs" />
