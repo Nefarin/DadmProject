@@ -20,7 +20,7 @@ namespace EKG_Project.Modules.QT_Disp
 
         private int _currentChannelIndex;
         private int _currentChannelLength;
-        private int _currentChannelR_Peaks_indexes;
+        private int _currentChannelWaves_indexes;
         private int _samplesProcessed;
         private int _numberOfChannels;
         private string _currentLeadName;
@@ -120,7 +120,7 @@ namespace EKG_Project.Modules.QT_Disp
                     _currentChannelIndex = 0;
                     _currentIndex = 0;
                     _leads = InputBasicWorker.LoadLeads(); //Tutaj bedzie zmiana po poprawie workerów
-                    _currentChannelR_Peaks_indexes = (int)InputRPeaksWorker.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _leads[_currentChannelIndex]);   // it's going to be in new worker
+                    _currentChannelWaves_indexes = (int)InputWavesWorker.getNumberOfSamples(Waves_Signal.QRSOnsets, _leads[_currentChannelIndex]);   // it's going to be in new worker
                     _currentLength = 2;
                    
                     _state = STATE.BEGIN_CHANNEL;
@@ -134,12 +134,12 @@ namespace EKG_Project.Modules.QT_Disp
                     
                    
                     QT_Disp_Algorithms = new QT_Disp_Alg();      //create new object to calculate algorithms
-                    _currentChannelR_Peaks_indexes = (int) InputRPeaksWorker.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _leads[_currentChannelIndex]);   // it's going to be in new worker
+                    _currentChannelWaves_indexes = (int) InputWavesWorker.getNumberOfSamples(Waves_Signal.QRSOnsets, _leads[_currentChannelIndex]);   // it's going to be in new worker
 
                     //set number of indexes to get from waves and r_peaks
-                    if (_currentChannelR_Peaks_indexes < _maxInputIndexes)
+                    if (_currentChannelWaves_indexes < _maxInputIndexes)
                     {
-                        _amountOfIndexesInInput = _currentChannelR_Peaks_indexes;
+                        _amountOfIndexesInInput = _currentChannelWaves_indexes;
                     }
                     else
                     {
@@ -168,15 +168,15 @@ namespace EKG_Project.Modules.QT_Disp
                   
                     if(step > _amountOfIndexesInInput-3)
                     {
-                        if (_indexesProcessed < _currentChannelR_Peaks_indexes)
+                        if (_indexesProcessed < _currentChannelWaves_indexes)
                         {
-                            if (_currentChannelR_Peaks_indexes - _indexesProcessed > _maxInputIndexes)
+                            if (_currentChannelWaves_indexes - _indexesProcessed > _maxInputIndexes)
                             {
                                 _amountOfIndexesInInput = _maxInputIndexes;
                             }
                             else
                             {
-                                _amountOfIndexesInInput = _currentChannelR_Peaks_indexes - _indexesProcessed;
+                                _amountOfIndexesInInput = _currentChannelWaves_indexes - _indexesProcessed;
                             }
                             R_Peaks = InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput);  //stores r peaks
                             _currentIndex = (int)R_Peaks.ElementAt(0);     // get first index in r peaks
@@ -460,7 +460,7 @@ namespace EKG_Project.Modules.QT_Disp
                 //Console.WriteLine("Press key to continue...");
                 //Console.ReadKey();
                 if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress().ToString("#.00"));
+                Console.WriteLine(testModule.Progress().ToString("#.0"));
                 testModule.ProcessData();
             }
             Console.WriteLine("Finish");
