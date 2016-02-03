@@ -17,6 +17,11 @@ namespace EKG_Project.IO
     {
         //FIELDS
         /// <summary>
+        /// Stores txt files directory
+        /// </summary>
+        private string directory;
+
+        /// <summary>
         /// Stores analysis name
         /// </summary>
         string analysisName;
@@ -53,7 +58,13 @@ namespace EKG_Project.IO
             }
         }
 
-        public ASCIIConverter (string ASCIIAnalysisName) 
+        public ASCIIConverter()
+        {
+            IECGPath pathBuilder = new DebugECGPath();
+            directory = pathBuilder.getTempPath();
+        }
+
+        public ASCIIConverter (string ASCIIAnalysisName) : this()
         {
             analysisName = ASCIIAnalysisName;
         }
@@ -187,5 +198,33 @@ namespace EKG_Project.IO
            return sampleAmount;
        }
 
+        public Vector<double> getSignal(string lead, int startIndex, int length)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<string> getLeads()
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint getNumberOfSamples(string lead)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes all analysis files
+        /// </summary>
+        public void DeleteFiles()
+        {
+            string fileNamePattern = analysisName + "*";
+            string[] analysisFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            foreach (string file in analysisFiles)
+            {
+                File.Delete(file);
+            }
+        }
     }
 }

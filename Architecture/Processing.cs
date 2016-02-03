@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using EKG_Project.Architecture.ProcessingStates;
 using EKG_Project.Modules;
+using EKG_Project.IO;
 
 namespace EKG_Project.Architecture
 {
@@ -18,7 +19,9 @@ namespace EKG_Project.Architecture
         private Modules _modules;
         private Stats _stats;
         private ProcessSync _communication;
+        private IECGConverter _converter;
         private IProcessingState _timeoutState;
+        private FileProcessor _fileProcessor;
         private bool _stop;
 
         #region Properties
@@ -101,6 +104,32 @@ namespace EKG_Project.Architecture
             set
             {
                 _stats = value;
+            }
+        }
+
+        public IECGConverter Converter
+        {
+            get
+            {
+                return _converter;
+            }
+
+            set
+            {
+                _converter = value;
+            }
+        }
+
+        public FileProcessor FileProcessor
+        {
+            get
+            {
+                return _fileProcessor;
+            }
+
+            set
+            {
+                _fileProcessor = value;
             }
         }
 
