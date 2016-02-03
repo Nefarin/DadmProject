@@ -11,6 +11,12 @@ namespace EKG_Project.Modules.HRV2
     public partial class HRV2_Alg
     {
 
+        public HRV2_Alg(Vector<double> signal)
+        {
+            RRIntervals = signal;
+            Interpolation();
+            HRV2_Anlalysis();
+        }
         private Vector<double> _rrIntervals;
         private double _histogramCount;
         #region Documentation
