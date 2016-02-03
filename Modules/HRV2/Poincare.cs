@@ -91,12 +91,15 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        public Vector<double> elipseCenter()
+        public double elipseCenter_x()
         {
-            double[] array = { RR_intervals_x.Average(), RR_intervals_x.Average() };
-            Vector<double> elipseCenter = Vector<double>.Build.DenseOfArray(array);
-
-            return elipseCenter;
+            double elipseCenter_x = RR_intervals_x.Average();
+            return elipseCenter_x;
+        }
+        public double elipseCenter_y()
+        {
+            double elipseCenter_y = RR_intervals_x.Average();
+            return elipseCenter_y;
         }
     }
 }
