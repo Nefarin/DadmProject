@@ -93,16 +93,18 @@ namespace EKG_Project.Modules.HRV1
                 var psd = algo.PowerSpectrum;
 
                 _ended = true;
+
+
                 //OutputData.TimeBasedParams = tparams;
 
-               // var tparams = Vector<double>.Build.Dense(new double[] { HF, LF, VLF, LFHF });
-              //  var fparams = Vector<double>.Build.Dense(new double[] { SDNN, RMSSD, SDSD, NN50, pNN50 });
+                //var tparams = Vector<double>.Build.Dense(new double[] { HF, LF, VLF, LFHF });
+                //var fparams = Vector<double>.Build.Dense(new double[] { SDNN, RMSSD, SDSD, NN50, pNN50 });
 
-             //   OutputData.TimeBasedParams.Add(new Tuple<string, Vector<double>>(" ", tparams));
-             //   OutputData.FreqBasedParams.Add(new Tuple<string, Vector<double>>(" ", fparams));
+                //OutputData.TimeBasedParams.Add(new Tuple<string, Vector<double>>(" ", tparams));
+                //OutputData.FreqBasedParams.Add(new Tuple<string, Vector<double>>(" ", fparams));
 
-            //    OutputData.RInstants.Add(new Tuple<string, Vector<double>>(" ", instants));
-            //    OutputData.RRIntervals.Add(new Tuple<string, Vector<double>>(" ", intervals));
+                //OutputData.RInstants.Add(new Tuple<string, Vector<double>>(" ", instants));
+                //OutputData.RRIntervals.Add(new Tuple<string, Vector<double>>(" ", intervals));
             }
             else _ended = true;
         }

@@ -71,7 +71,9 @@ namespace EKG_Project.Modules.HRV1
         }
 
         public void CalculateFreqBased() {
-            this.lombScargle2();
+            this.generateFreqVector(0.001, 0.151, this.rrIntervals.Count);
+            //this.lombScargle2();
+            this.lombScargle();
             this.calculateFreqBased();
             this.PowerSpectrum = new List<Tuple<string, Vector<double>>>();
             this.PowerSpectrum.Add(new Tuple<string, Vector<double>>("f", this.f));
