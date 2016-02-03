@@ -24,7 +24,6 @@ namespace EKG_Project.Modules.HRT
         private string[] _leads;
         //private int _currentIndex;
         private int _numberOfChannels;
-        private int _samplesProcessed;
         private uint _frequency;
         private enum VPC { NOT_DETECTED, NO_VENTRICULAR, DETECTED_BUT_IMPOSSIBLE_TO_PLOT, LETS_PLOT };
         //private int _step;
@@ -55,19 +54,15 @@ namespace EKG_Project.Modules.HRT
         private double[] _meanTachogram;
         private VPC _vpc;
 
-        private int[] _xaxisTachogram;
+        private int[] _xaxisTachogramGUI;
         private List<List<double>> _tachogramGUI;
         private double[] _tachogramMeanGUI;
-        private int[] _xpointsOnset;
+        private int[] _xpointsOnsetGUI;
         private double[] _turbulenceOnsetmeanGUI;
-        private int[] _xpointsSlope;
+        private int[] _xpointsSlopeGUI;
         private double[] _turbulenceSlopeMaxGUI;
         private List<double> _turbulenceOnsetPDF;
         private List<double> _turbulenceSlopePDF;
-
-
-        private Vector<double> _currentVector;
-        private Vector<double> _currentVectorRRInterval;
 
         public void Abort()
         {
@@ -146,6 +141,7 @@ namespace EKG_Project.Modules.HRT
                     _numberOfChannels = _leads.Length;
                     _alg = new HRT_Alg();
                     _state = STATE.BEGIN_CHANNEL;
+                    System.Diagnostics.Debug.WriteLine("_currentLeadName " + _currentLeadName);
                     break;
                 case (STATE.BEGIN_CHANNEL):
                     _currentChannelIndex++;
@@ -155,8 +151,6 @@ namespace EKG_Project.Modules.HRT
                         _currentLeadName = _leads[_currentChannelIndex];
                         System.Diagnostics.Debug.WriteLine(_currentLeadName);
                         _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName);
-                        
-                        //System.Diagnostics.Debug.WriteLine(_currentChannelLength);
                         _state = STATE.PROCESS_FIRST_STEP;
                     }
                     break;
@@ -169,10 +163,11 @@ namespace EKG_Project.Modules.HRT
                             uint _rPeakCount = InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName);
                             _rpeaks = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, (int)_rPeakCount);
                             System.Diagnostics.Debug.WriteLine(_rpeaks);
-                            _rrintervals = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, (int)_rPeakCount);
+                            uint _rrIntervalCount = InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _currentLeadName);
+                            _rrintervals = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, (int)_rrIntervalCount);
                             System.Diagnostics.Debug.WriteLine(_rrintervals);
                             //_classAll = InputData_Heart_Class.ClassificationResult[_currentChannelIndex].Item2;
-                            System.Diagnostics.Debug.WriteLine("_currentLeadName " + _currentLeadName);
+                            
                             //Console.WriteLine("_step " + _step);
                             _state = STATE.PROCESS_CHANNEL;
                         }
@@ -231,12 +226,13 @@ namespace EKG_Project.Modules.HRT
                                             _turbulenceSlope = _alg.TurbulenceSlopeGUIandPDF(_classPrematureVentrical, _rrintervals);
                                             _meanTurbulenceOnset = _alg.TurbulenceOnsetMeanGUI(_tachogram);
                                             _meanTachogram = _alg.MeanTachogram(_tachogram);
-                                            _xaxisTachogram = _alg.xPlot();
+
+                                            _xaxisTachogramGUI = _alg.xPlot();
                                             _tachogramGUI = _tachogram;
                                             _tachogramMeanGUI =_meanTachogram;
-                                            _xpointsOnset = _meanTurbulenceOnset.Item1;
+                                            _xpointsOnsetGUI = _meanTurbulenceOnset.Item1;
                                             _turbulenceOnsetmeanGUI = _meanTurbulenceOnset.Item2;
-                                            _xpointsSlope = _turbulenceSlope.Item2;
+                                            _xpointsSlopeGUI = _turbulenceSlope.Item2;
                                             _turbulenceSlopeMaxGUI = _turbulenceSlope.Item3;
                                             _turbulenceOnsetPDF = _turbulenceOnset;
                                             _turbulenceSlopePDF= _turbulenceSlope.Item1;
@@ -257,77 +253,26 @@ namespace EKG_Project.Modules.HRT
 
                     break;
                 case (STATE.END_CHANNEL):
-                    //try
-                    //{
-                    //    _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
+                    try
+                    {
+                        //OutputWorker.SaveVPC(_currentLeadName, _vpc);
+                        OutputWorker.SaveXAxisTachogramGUI(_currentLeadName, true, _xaxisTachogramGUI);
+                        OutputWorker.SaveTachogramGUI(_currentLeadName, true, _tachogramGUI);
+                        OutputWorker.SaveMeanTachogramGUI (_currentLeadName, true, _tachogramMeanGUI);
+                        OutputWorker.SaveXPointsMeanOnsetGUI(_currentLeadName, true, _xpointsOnsetGUI);
+                        OutputWorker.SaveTurbulenceOnsetMeanGUI(_currentLeadName, true, _turbulenceOnsetmeanGUI);
+                        OutputWorker.SaveXPointsMaxSlopeGUI(_currentLeadName, true, _xpointsSlopeGUI);
+                        OutputWorker.SaveTurbulenceSlopeMaxGUI(_currentLeadName, true, _turbulenceSlopeMaxGUI);
+                        OutputWorker.SaveTurbulenceOnsetPDF(_currentLeadName, true, _turbulenceOnsetPDF);
+                        OutputWorker.SaveTurbulenceSlopePDF(_currentLeadName, true, _turbulenceSlopePDF);
 
-                    //    //Selecting filtration method
-                    //    switch (Params.Method)
-                    //    {
-                    //        case Filtr_Method.MOVING_AVG:
-                    //            if (Params.Type == Filtr_Type.LOWPASS)
-                    //            {
-                    //                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                    //            }
-                    //            if (Params.Type == Filtr_Type.HIGHPASS)
-                    //            {
-                    //                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                    //            }
-                    //            if (Params.Type == Filtr_Type.BANDPASS)
-                    //            {
-                    //                _currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Params.WindowSizeHigh, Filtr_Type.BANDPASS);
-                    //            }
-                    //            break;
-                    //        case Filtr_Method.BUTTERWORTH:
-                    //            if (Params.Type == Filtr_Type.LOWPASS)
-                    //            {
-                    //                _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcLow, Params.OrderLow, Filtr_Type.LOWPASS);
-                    //            }
-                    //            if (Params.Type == Filtr_Type.HIGHPASS)
-                    //            {
-                    //                _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcHigh, Params.OrderHigh, Filtr_Type.HIGHPASS);
-                    //            }
-                    //            if (Params.Type == Filtr_Type.BANDPASS)
-                    //            {
-                    //                _currentVector = _newFilter.butterworth(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.FcLow, Params.OrderLow, Params.FcHigh, Params.OrderHigh, Filtr_Type.BANDPASS);
-                    //            }
-                    //            break;
-                    //        case Filtr_Method.SAV_GOL:
-                    //            if (Params.Type == Filtr_Type.LOWPASS)
-                    //            {
-                    //                System.Console.WriteLine("END CHANNEL");
-                    //                //_currentVector = _newFilter.moving_average(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                    //                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Filtr_Type.LOWPASS);
-                    //            }
-                    //            if (Params.Type == Filtr_Type.HIGHPASS)
-                    //            {
-                    //                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeHigh, Filtr_Type.HIGHPASS);
-                    //            }
-                    //            if (Params.Type == Filtr_Type.BANDPASS)
-                    //            {
-                    //                _currentVector = _newFilter.savitzky_golay(_currentVector, Params.WindowSizeLow, Params.WindowSizeHigh, Filtr_Type.BANDPASS);
-                    //            }
-                    //            break;
-                    //        case Filtr_Method.LMS:
-                    ////            _currentVector = _newFilter.lms(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
-                    //            break;
-                    //    }
-
-
-                    //    //Removing of the filtering edge effects. For this purpose we calculate difference between 
-                    //    //last element of previous vector and first element of current vector. 
-                    //    //The result of difference is added to all elements of current vector.
-                    //    _firstVectorElement = _currentVector.First();
-                    //    double diffbtwelements = _lastVectorElement - _firstVectorElement;
-                    //    _currentVector.Add(diffbtwelements);
-
-                    //    OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
-                    //    _state = STATE.NEXT_CHANNEL;
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    _state = STATE.NEXT_CHANNEL;
-                    //}
+                        _state = STATE.NEXT_CHANNEL;
+                    }
+                    catch (Exception e)
+                    {
+                        _state = STATE.NEXT_CHANNEL;
+                    }
+                    System.Diagnostics.Debug.WriteLine("koniec kanału");
                     break;
                 case (STATE.NEXT_CHANNEL):
                     _state = STATE.BEGIN_CHANNEL;
@@ -340,43 +285,6 @@ namespace EKG_Project.Modules.HRT
                     break;
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //            if (_currentChannelIndex<NumberOfChannels)
-        //            {
-        //                Console.Write(_currentChannelIndex);
-        //                Console.Write("/");
-        //                Console.WriteLine(NumberOfChannels);
-
-        //                string _channelName = InputRpeaksData.RPeaks[_currentChannelIndex].Item1;
-
-        //                _rpeaksSelected = InputRpeaksData.RPeaks[_currentChannelIndex].Item2;
-        //                _rrintervals = InputRpeaksData.RRInterval[_currentChannelIndex].Item2;
-        //                _classAll = InputHeartClassData.ClassificationResult;
-
-
-        //                //_rpeaksSelected = HRT_Algorythms.rrTimesShift(_rpeaksSelected);
-
-
-        //                // _classVentrical = HRT_Algorythms.checkVPCifnotNULL(_classVentrical);
-        //               
-
-
-
-
-        //        }
 
 
         public bool Aborted
