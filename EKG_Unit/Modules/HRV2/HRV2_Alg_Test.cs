@@ -115,5 +115,40 @@ namespace EKG_Unit.Modules.HRV2
             Assert.AreEqual(testStandardDev, result);
         }
 
+        [TestMethod]
+        [Description("Test if PoincarePlot_y works properly")]
+        public void PoincareYTest()
+        {
+            double[] testArray = { 1, 2, 3, 4, 5 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            HRV2_Alg testAlgs = new HRV2_Alg();
+
+            PrivateObject obj = new PrivateObject(testAlgs);
+            obj.SetField("_rrIntervals", testVector);
+
+            obj.Invoke("PoincarePlot_y");
+            Vector<double> testPoincrePloty = (Vector<double>)obj.GetField("RR_intervals_y");
+            double[] resultArray = { 1, 2, 3, 4};
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+            Assert.AreEqual(resultVector, testPoincrePloty);
+        }
+
+        [TestMethod]
+        [Description("Test if PoincarePlot_x works properly")]
+        public void PoincareXTest()
+        {
+            double[] testArray = { 1, 2, 3, 4, 5 };
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            HRV2_Alg testAlgs = new HRV2_Alg();
+
+            PrivateObject obj = new PrivateObject(testAlgs);
+            obj.SetField("_rrIntervals", testVector);
+
+            obj.Invoke("PoincarePlot_x");
+            Vector<double> testPoincrePloty = (Vector<double>)obj.GetField("RR_intervals_x");
+            double[] resultArray = { 2, 3, 4, 5 };
+            Vector<double> resultVector = Vector<double>.Build.DenseOfArray(resultArray);
+            Assert.AreEqual(resultVector, testPoincrePloty);
+        }
     }
 }
