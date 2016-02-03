@@ -181,7 +181,7 @@ namespace EKG_Project.IO
                 StreamWriter sw = new StreamWriter(pathOut, mode);
                 foreach (var sample in result)
                 {
-                    sw.WriteLine(result.ToString());
+                    sw.WriteLine(sample.ToString());
                 }
                 sw.Close();
                 iterator++;

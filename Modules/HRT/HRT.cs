@@ -33,13 +33,10 @@ namespace EKG_Project.Modules.HRT
         private Heart_Class_New_Data_Worker _inputWorker_Heart_Class;
         private HRT_New_Data_Worker _outputWorker;
 
-        //private Basic_Data _inputData_basic;
-        //private R_Peaks_Data _inputData_R_Peaks;
-        //private Heart_Class_Data _inputData_Heart_Class;
-        //private HRT_Data _outputData;
+        
         private HRT_Params _params;
 
-
+        private int _step;
         private STATE _state;
         private HRT_Alg _alg;
         private Vector<double> _rpeaks;
@@ -53,6 +50,10 @@ namespace EKG_Project.Modules.HRT
         private Tuple<List<double>, int[], double[]> _turbulenceSlope;
         private double[] _meanTachogram;
         private VPC _vpc;
+        int NoOfSamplesHeartClass;
+        int NoOfSamplesRPeaks;
+        int NoOfSamplesRRInterval;
+
 
         private int[] _xaxisTachogramGUI;
         private List<List<double>> _tachogramGUI;
@@ -79,7 +80,7 @@ namespace EKG_Project.Modules.HRT
         {
             return Aborted;
         }
-
+        
         public void Init(ModuleParams parameters)
         {
             try
@@ -102,11 +103,8 @@ namespace EKG_Project.Modules.HRT
                 InputWorker_R_Peaks = new R_Peaks_New_Data_Worker(Params.AnalysisName);
                 InputWorker_Heart_Class = new Heart_Class_New_Data_Worker(Params.AnalysisName);
                 OutputWorker = new HRT_New_Data_Worker(Params.AnalysisName);
-                //InputData_basic = new Basic_Data();
-                //InputData_R_Peaks = new R_Peaks_Data();
-                //InputData_Heart_Class = new Heart_Class_Data();
-                //OutputData = new HRT_Data();
 
+                _step = 10;
                 _frequency = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
                 _state = STATE.INIT;
             }
@@ -148,37 +146,44 @@ namespace EKG_Project.Modules.HRT
                     {
                         _currentLeadName = _leads[_currentChannelIndex];
                         System.Diagnostics.Debug.WriteLine(_currentLeadName);
-                        _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName);
-                        _state = STATE.PROCESS_FIRST_STEP;
+                        _currentChannelLength = (int)_inputWorker_Heart_Class.getNumberOfSamples(_currentLeadName);
+                        //_currentChannelLength = (int)_inputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName );
+                        _state = STATE.PROCESS_CHANNEL;
+                        _currentIndex = 0;
+
+                        int NoOfSamplesHeartClass = (int)InputWorker_Heart_Class.getNumberOfSamples(_currentLeadName);
+                        int NoOfSamplesRPeaks = (int)InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName);
+                        int NoOfSamplesRRInterval = (int)InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _currentLeadName);
+
+                        _rpeaks = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, NoOfSamplesRPeaks);
+                        _rrintervals = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, NoOfSamplesRRInterval);
+                        _classAll = InputWorker_Heart_Class.LoadClassificationResult(_currentLeadName, 0, NoOfSamplesHeartClass);
+
+                        System.Diagnostics.Debug.WriteLine(_rpeaks);
+                        System.Diagnostics.Debug.WriteLine(_rrintervals);
+                        System.Diagnostics.Debug.WriteLine(_classAll);
+                        Console.WriteLine("_step " + _step);
+                        _state = STATE.PROCESS_CHANNEL;
+
+
+
                     }
                     break;
-                case (STATE.PROCESS_FIRST_STEP):
-                    if (_currentChannelIndex > _currentChannelLength) _state = STATE.END_CHANNEL;
-                    else
-                    {
-                        try
-                        {
-                            int NoOfSamplesHeartClass = (int)InputWorker_Heart_Class.getNumberOfSamples(_currentLeadName);
-                            int NoOfSamplesRPeaks = (int)InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName);
-                            int NoOfSamplesRRInterval = (int)InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RRInterval , _currentLeadName);
-
-                            _rpeaks = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, NoOfSamplesRPeaks);
-                            _rrintervals = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, NoOfSamplesRRInterval);
-                            _classAll = InputWorker_Heart_Class.LoadClassificationResult(_currentLeadName, 0, NoOfSamplesHeartClass);
-
-                            System.Diagnostics.Debug.WriteLine(_rpeaks);
-                            System.Diagnostics.Debug.WriteLine(_rrintervals);
-                            System.Diagnostics.Debug.WriteLine(_classAll);
-                            //Console.WriteLine("_step " + _step);
-                            _state = STATE.PROCESS_CHANNEL;
-                        }
-                        catch (Exception e)
-                        {
-                            _state = STATE.NEXT_CHANNEL;
-                            System.Diagnostics.Debug.WriteLine("PROCESS_FIRST_STEP - Exception e");
-                        }
-                    }
-                    break;
+                //case (STATE.PROCESS_FIRST_STEP):
+                //    if (_currentIndex + _step > _currentChannelLength) _state = STATE.END_CHANNEL;
+                //    else
+                //    {
+                //        try
+                //        {
+                //            
+                //        }
+                //        catch (Exception e)
+                //        {
+                //            _state = STATE.NEXT_CHANNEL;
+                //            System.Diagnostics.Debug.WriteLine("PROCESS_FIRST_STEP - Exception e");
+                //        }
+                //    }
+                //    break;
                 case (STATE.PROCESS_CHANNEL):
                     if (_currentChannelIndex > _currentChannelLength) _state = STATE.END_CHANNEL;
                     else
@@ -237,7 +242,9 @@ namespace EKG_Project.Modules.HRT
                                             _turbulenceSlopeMaxGUI = _turbulenceSlope.Item3;
                                             _turbulenceOnsetPDF = _turbulenceOnset;
                                             _turbulenceSlopePDF= _turbulenceSlope.Item1;
-                                            //_alg.PrintVector(_tachogramGUI);
+                                            _state = STATE.END_CHANNEL;
+
+                                           _alg.PrintVector(_tachogramGUI);
                                         }
                                     }
                                 }
@@ -257,15 +264,15 @@ namespace EKG_Project.Modules.HRT
                     try
                     {
                         //OutputWorker.SaveVPC(_currentLeadName, _vpc);
-                        OutputWorker.SaveXAxisTachogramGUI(_currentLeadName, true, _xaxisTachogramGUI);
-                        OutputWorker.SaveTachogramGUI(_currentLeadName, true, _tachogramGUI);
-                        OutputWorker.SaveMeanTachogramGUI (_currentLeadName, true, _tachogramMeanGUI);
-                        OutputWorker.SaveXPointsMeanOnsetGUI(_currentLeadName, true, _xpointsOnsetGUI);
-                        OutputWorker.SaveTurbulenceOnsetMeanGUI(_currentLeadName, true, _turbulenceOnsetmeanGUI);
-                        OutputWorker.SaveXPointsMaxSlopeGUI(_currentLeadName, true, _xpointsSlopeGUI);
-                        OutputWorker.SaveTurbulenceSlopeMaxGUI(_currentLeadName, true, _turbulenceSlopeMaxGUI);
-                        OutputWorker.SaveTurbulenceOnsetPDF(_currentLeadName, true, _turbulenceOnsetPDF);
-                        OutputWorker.SaveTurbulenceSlopePDF(_currentLeadName, true, _turbulenceSlopePDF);
+                        OutputWorker.SaveXAxisTachogramGUI(_currentLeadName, false, _xaxisTachogramGUI);
+                        OutputWorker.SaveTachogramGUI(_currentLeadName, false, _tachogramGUI);
+                        OutputWorker.SaveMeanTachogramGUI(_currentLeadName, false, _tachogramMeanGUI);
+                        OutputWorker.SaveXPointsMeanOnsetGUI(_currentLeadName, false, _xpointsOnsetGUI);
+                        OutputWorker.SaveTurbulenceOnsetMeanGUI(_currentLeadName, false, _turbulenceOnsetmeanGUI);
+                        OutputWorker.SaveXPointsMaxSlopeGUI(_currentLeadName, false, _xpointsSlopeGUI);
+                        OutputWorker.SaveTurbulenceSlopeMaxGUI(_currentLeadName, false, _turbulenceSlopeMaxGUI);
+                        OutputWorker.SaveTurbulenceOnsetPDF(_currentLeadName, false, _turbulenceOnsetPDF);
+                        OutputWorker.SaveTurbulenceSlopePDF(_currentLeadName, false, _turbulenceSlopePDF);
 
                         _state = STATE.NEXT_CHANNEL;
                     }
@@ -273,7 +280,6 @@ namespace EKG_Project.Modules.HRT
                     {
                         _state = STATE.NEXT_CHANNEL;
                     }
-                    System.Diagnostics.Debug.WriteLine("koniec kanału");
                     break;
                 case (STATE.NEXT_CHANNEL):
                     _state = STATE.BEGIN_CHANNEL;
@@ -286,6 +292,34 @@ namespace EKG_Project.Modules.HRT
                     break;
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
+
+
+
+
+
+
 
 
         public bool Aborted
@@ -366,58 +400,6 @@ namespace EKG_Project.Modules.HRT
             }
         }
 
-        //public Basic_Data InputData_basic
-        //{
-        //    get
-        //    {
-        //        return _inputData_basic;
-        //    }
-
-        //    set
-        //    {
-        //        _inputData_basic = value;
-        //    }
-        //}
-
-        //public R_Peaks_Data InputData_R_Peaks
-        //{
-        //    get
-        //    {
-        //        return _inputData_R_Peaks;
-        //    }
-
-        //    set
-        //    {
-        //        _inputData_R_Peaks = value;
-        //    }
-        //}
-
-        //public Heart_Class_Data InputData_Heart_Class
-        //{
-        //    get
-        //    {
-        //        return _inputData_Heart_Class;
-        //    }
-
-        //    set
-        //    {
-        //        _inputData_Heart_Class = value;
-        //    }
-        //}
-
-        //public HRT_Data OutputData
-        //{
-        //    get
-        //    {
-        //        return _outputData;
-        //    }
-
-        //    set
-        //    {
-        //        _outputData = value;
-        //    }
-        //}
-
         public HRT_Params Params
         {
             get
@@ -444,9 +426,9 @@ namespace EKG_Project.Modules.HRT
             while (true)
             {
                 if (testModule.Ended()) break;
-                //System.Diagnostics.Debug.Write("Progress: ");
-                //System.Diagnostics.Debug.Write(testModule.Progress());
-                //System.Diagnostics.Debug.WriteLine(" %");
+                System.Diagnostics.Debug.Write("Progress: ");
+                System.Diagnostics.Debug.Write(testModule.Progress());
+                System.Diagnostics.Debug.WriteLine(" %");
                 testModule.ProcessData();
             }
         }

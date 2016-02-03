@@ -21,7 +21,7 @@ namespace EKG_Project.Modules.HRT
         {
             foreach (double _licznik in Signal)
             {
-                Console.WriteLine(_licznik);
+                System.Diagnostics.Debug.WriteLine(_licznik);
             }
         }
 
@@ -29,7 +29,7 @@ namespace EKG_Project.Modules.HRT
         {
             for (int i = 0; i < Signal.Length; i++)
             {
-                Console.WriteLine(Signal[i]);
+                System.Diagnostics.Debug.WriteLine(Signal[i]);
             }
         }
 
@@ -37,7 +37,7 @@ namespace EKG_Project.Modules.HRT
         {
             for (int i = 0; i < Signal.Length; i++)
             {
-                Console.WriteLine(Signal[i]);
+                System.Diagnostics.Debug.WriteLine(Signal[i]);
             }
         }
 
@@ -45,11 +45,11 @@ namespace EKG_Project.Modules.HRT
         {
             foreach (double x in Signal.Item1)
             {
-                Console.WriteLine(x);
+                System.Diagnostics.Debug.WriteLine(x);
             }
             foreach (double x in Signal.Item2)
             {
-                Console.WriteLine(x);
+                System.Diagnostics.Debug.WriteLine(x);
             }
         }
 
@@ -59,8 +59,8 @@ namespace EKG_Project.Modules.HRT
             {
                 for (int j = 0; j < Signal.GetLength(1); j++)
                 {
-                    Console.Write(Signal[i, j]);
-                    Console.Write(" ");
+                    System.Diagnostics.Debug.WriteLine(Signal[i, j]);
+                    System.Diagnostics.Debug.WriteLine(" ");
                 }
                 Console.WriteLine(";");
             }
@@ -70,7 +70,7 @@ namespace EKG_Project.Modules.HRT
         {
             foreach (int _licznik in Signal)
             {
-                Console.WriteLine(_licznik);
+                System.Diagnostics.Debug.WriteLine(_licznik);
             }
         }
 
@@ -80,8 +80,8 @@ namespace EKG_Project.Modules.HRT
             {
                 foreach (double _licznik2 in _licznik)
                 {
-                    Console.Write(_licznik2);
-                    Console.Write(" ");
+                    System.Diagnostics.Debug.WriteLine(_licznik2);
+                    System.Diagnostics.Debug.WriteLine(" ");
                 }
                 Console.WriteLine();
             }
@@ -92,8 +92,8 @@ namespace EKG_Project.Modules.HRT
 
             foreach (double _licznik2 in Signal)
             {
-                Console.Write(_licznik2);
-                Console.Write(" ");
+                System.Diagnostics.Debug.WriteLine(_licznik2);
+                System.Diagnostics.Debug.WriteLine(" ");
             }
             Console.WriteLine();
 
@@ -103,22 +103,22 @@ namespace EKG_Project.Modules.HRT
         {
             foreach (int _licznik in Signal.Item1)
             {
-                Console.Write(_licznik);
-                Console.Write(" ");
+                System.Diagnostics.Debug.WriteLine(_licznik);
+                System.Diagnostics.Debug.WriteLine(" ");
             }
-            Console.WriteLine();
+            System.Diagnostics.Debug.WriteLine("");
             foreach (double[] _licznik in Signal.Item2)
             {
                 PrintVector(_licznik);
             }
-            Console.WriteLine();
+            System.Diagnostics.Debug.WriteLine("");
         }
 
         public void PrintVector(List<Tuple<string, int[], List<double[]>>> Signal)
         {
             foreach (Tuple<string, int[], List<double[]>> _licznik in Signal)
             {
-                Console.WriteLine(_licznik.Item1);
+                System.Diagnostics.Debug.WriteLine(_licznik.Item1);
                 PrintVector(_licznik.Item2);
                 PrintVector(_licznik.Item3);
             }
@@ -142,34 +142,34 @@ namespace EKG_Project.Modules.HRT
         {
             foreach (int _licznik in Signal.Item1)
             {
-                Console.Write(_licznik);
-                Console.Write(" ");
+                System.Diagnostics.Debug.WriteLine(_licznik);
+                System.Diagnostics.Debug.WriteLine(" ");
             }
-            Console.WriteLine();
+            System.Diagnostics.Debug.WriteLine("");
             foreach (double _licznik in Signal.Item2)
             {
-                Console.Write(_licznik);
-                Console.Write(" ");
+                System.Diagnostics.Debug.WriteLine(_licznik);
+                System.Diagnostics.Debug.WriteLine(" ");
             }
-            Console.WriteLine();
+            System.Diagnostics.Debug.WriteLine("");
         }
 
         public void PrintVector(Tuple<string, int[], double[]> Signal)
         {
-            Console.WriteLine(Signal.Item1);
-            Console.WriteLine();
+            System.Diagnostics.Debug.WriteLine(Signal.Item1);
+            System.Diagnostics.Debug.WriteLine("");
             foreach (int _licznik in Signal.Item2)
             {
-                Console.Write(_licznik);
-                Console.Write(" ");
+                System.Diagnostics.Debug.WriteLine(_licznik);
+                System.Diagnostics.Debug.WriteLine(" ");
             }
-            Console.WriteLine();
+            System.Diagnostics.Debug.WriteLine("");
             foreach (double _licznik in Signal.Item3)
             {
-                Console.Write(_licznik);
-                Console.Write(" ");
+                System.Diagnostics.Debug.WriteLine(_licznik);
+                System.Diagnostics.Debug.WriteLine(" ");
             }
-            Console.WriteLine();
+            System.Diagnostics.Debug.WriteLine("");
 
 
         }
@@ -178,22 +178,22 @@ namespace EKG_Project.Modules.HRT
         {
             foreach (double _licznik2 in Signal.Item1)
             {
-                Console.Write(_licznik2);
-                Console.Write(" ");
+                System.Diagnostics.Debug.WriteLine(_licznik2);
+                System.Diagnostics.Debug.WriteLine(" ");
             }
-            Console.WriteLine();
+            System.Diagnostics.Debug.WriteLine("");
             foreach (int _licznik in Signal.Item2)
             {
-                Console.Write(_licznik);
-                Console.Write(" ");
+                System.Diagnostics.Debug.WriteLine(_licznik);
+                System.Diagnostics.Debug.WriteLine(" ");
             }
-            Console.WriteLine();
+            System.Diagnostics.Debug.WriteLine("");
             foreach (double _licznik in Signal.Item3)
             {
-                Console.Write(_licznik);
-                Console.Write(" ");
+                System.Diagnostics.Debug.WriteLine(_licznik);
+                System.Diagnostics.Debug.WriteLine(" ");
             }
-            Console.WriteLine();
+            System.Diagnostics.Debug.WriteLine("");
             
         }
 
@@ -202,7 +202,7 @@ namespace EKG_Project.Modules.HRT
             foreach (Tuple<int[], List<double[]>> _licznik in Signal)
             {
                 PrintVector(_licznik);
-                Console.WriteLine();
+                System.Diagnostics.Debug.WriteLine("");
             }
 
         }
@@ -212,7 +212,7 @@ namespace EKG_Project.Modules.HRT
 
             foreach (Tuple<string, int[], double[]> _licznik in Signal)
             {
-                Console.WriteLine(_licznik.Item1);
+                System.Diagnostics.Debug.WriteLine(_licznik.Item1);
                 PrintVector(_licznik.Item2);
                 PrintVector(_licznik.Item3);
             }
@@ -223,7 +223,7 @@ namespace EKG_Project.Modules.HRT
         {
             foreach (Tuple<string, List<double>> _licznik in Signal)
             {
-                Console.WriteLine(_licznik.Item1);
+                System.Diagnostics.Debug.WriteLine(_licznik.Item1);
                 PrintVector(_licznik.Item2);
             }
         }
@@ -232,7 +232,7 @@ namespace EKG_Project.Modules.HRT
         {
             foreach (Tuple<string, double[], double[]> _licznik in Signal)
             {
-                Console.WriteLine(_licznik.Item1);
+                System.Diagnostics.Debug.WriteLine(_licznik.Item1);
                 PrintVector(_licznik.Item2);
                 PrintVector(_licznik.Item3);
             }
@@ -244,7 +244,7 @@ namespace EKG_Project.Modules.HRT
             {
 
                 PrintVector(_licznik);
-                Console.WriteLine();
+                System.Diagnostics.Debug.WriteLine("");
 
             }
 
