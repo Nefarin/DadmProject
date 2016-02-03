@@ -180,7 +180,18 @@ namespace EKG_Project.Modules.ST_Segment
             //{
             //    if (startIndex + step > _currentRpeaksLength)
             //    {
-            //         method i outputy z poniżej 
+            //// Method (InputData.RRInterval[_currentChannelIndex].Item2);
+            //// Method(Vector<double>signal, Vector < uint > tQRS_onset, Vector < uint > tQRS_ends, Vector < double > rInterval, int freq);
+            //// OutputData.tJs.Add(_tJs); //
+            ////OutputData.tSTs.Add(new List<long>(InputData.Signals[_currentChannelIndex].Item1, _tSTs));
+
+            ////OutputData.ConcaveCurves.Add(new Tuple<string, int> (InputData.Signals[_currentChannelIndex].Item1, _ConcaveCurves));
+            ////OutputData.ConcaveCurves.Add(new Tuple<string, int>(InputData.Signals[_currentChannelIndex].Item1, _ConcaveCurves));
+            ////OutputData.ConvexCurves = _ConvexCurves;//
+            ////OutputData.IncreasingLines.Add(new < int > (InputData.Signals[_currentChannelIndex].Item1, _IncreasingLines));
+            ////OutputData.IncreasingLines = _IncreasingLines;
+            ////OutputData.HorizontalLines = _HorizontalLines;//
+            ////OutputData.DecreasingLines = _DecreasingLines; //
             //        int QRSOnSet = InputWavesData.QRSOnsets[_channel2].Item2[_samplesProcessed];
             //        int QRSEnds = InputWavesData.QRSEnds[_channel2].Item2[_samplesProcessed];
             //        double rInterval = InputRpeaksData.RPeaks[_channel2].Item2[_samplesProcessed];
@@ -210,7 +221,7 @@ namespace EKG_Project.Modules.ST_Segment
 
             ////d _currentChannelIndex++;
             ////d if (_currentChannelIndex < NumberOfChannels)
-            
+
 
             //        /*dobre
             //        _rPeaksProcessed = 0;
@@ -227,7 +238,7 @@ namespace EKG_Project.Modules.ST_Segment
             //        }}
             //        */
 
-             
+
 
             //else
             //{

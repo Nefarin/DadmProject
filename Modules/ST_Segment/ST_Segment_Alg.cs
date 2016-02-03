@@ -17,7 +17,7 @@ namespace EKG_Project.Modules.ST_Segment
         
         public static void Main(string[] args)
         {
-            //read data from file
+           /* //read data from file
             TempInput.setInputFilePath(@"C:\sciezka");
             uint fs = TempInput.getFrequency();
             Vector<double> sig = TempInput.getSignal();
@@ -28,8 +28,8 @@ namespace EKG_Project.Modules.ST_Segment
 
 
         //write result to dat file
-        TempInput.setOutputFilePath(@"C:\Users\Paulina\Desktop\inervals\result.txt");
-            TempInput.writeFile(fs, sig);
+        TempInput.setOutputFilePath(@"C:\");
+            TempInput.writeFile(fs, sig); */
     }
         
         public ST_Segment_Data Method (Vector<double> signal, Vector<uint> tQRS_onset, Vector<uint> tQRS_ends, Vector<double> rInterval, int freq)
