@@ -28,7 +28,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// Default construkctor of Atrial_Fibr_Data
+        /// Default constructor of Atrial_Fibr_Data
         /// </summary>
         #endregion
         public Atrial_Fibr_Data()
