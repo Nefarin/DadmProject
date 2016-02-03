@@ -9,7 +9,7 @@ using MathNet.Filtering.Median;
 using MathNet.Numerics.IntegralTransforms;
 using System.Linq;
 using System.Numerics;
-
+using EKG_Project.IO;
 
 namespace EKG_Unit.Modules.Sleep_Apnea
 {
@@ -21,12 +21,14 @@ namespace EKG_Unit.Modules.Sleep_Apnea
         public void Sleep_Apnea_findIntervals_Test1()
         {
             // Init test here
+            DebugECGPath debugECGPath = new DebugECGPath();
             Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
             Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
             // input
-            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\rpeaks.csv");
+            string rpeaksPath = Path.Combine(debugECGPath.getDataPath(), "rpeaks.csv");
+            List<string> lines = ReadFile(rpeaksPath);
             List<uint> R_detected = new List<uint>();
             foreach (string line in lines)
             {
@@ -35,13 +37,15 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             int fs = 100;
 
             // ouput
-            lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec.csv");
+            string timeInSecPath = Path.Combine(debugECGPath.getDataPath(), "time_in_sec.csv");
+            lines = ReadFile(timeInSecPath);
             List<double> timeInSecMatlab = new List<double>();
             foreach (string line in lines)
             {
                 timeInSecMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist.csv");
+            string rrDist = Path.Combine(debugECGPath.getDataPath(), "rr_dist.csv");
+            lines = ReadFile(rrDist);
             List<double> rrDistMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -66,18 +70,21 @@ namespace EKG_Unit.Modules.Sleep_Apnea
         public void Sleep_Apnea_average_filter_Test1()
         {
             // Init test here
+            DebugECGPath debugECGPath = new DebugECGPath();
             Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
             Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
             // input
-            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec.csv");
+            string timeInSec = Path.Combine(debugECGPath.getDataPath(), "time_in_sec.csv");
+            List<string> lines = ReadFile(timeInSec);
             List<double> timeInSecMatlab = new List<double>();
             foreach (string line in lines)
             {
                 timeInSecMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist.csv");
+            string rrDist = Path.Combine(debugECGPath.getDataPath(), "rr_dist.csv");
+            lines = ReadFile(rrDist);
             List<double> rrDistMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -88,13 +95,15 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             RR.Add(rrDistMatlab);
 
             // output
-            lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec_filtered.csv");
+            string timeInSecFiltered = Path.Combine(debugECGPath.getDataPath(), "time_in_sec_filtered.csv");
+            lines = ReadFile(timeInSecFiltered);
             List<double> timeInSecFilteredMatlab = new List<double>();
             foreach (string line in lines)
             {
                 timeInSecFilteredMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist_filtered.csv");
+            string rrDistFiltered = Path.Combine(debugECGPath.getDataPath(), "rr_dist_filtered.csv");
+            lines = ReadFile(rrDistFiltered);
             List<double> rrDistFilteredMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -119,18 +128,21 @@ namespace EKG_Unit.Modules.Sleep_Apnea
         public void Sleep_Apnea_resampling_Test1()
         {
             // Init test here
+            DebugECGPath debugECGPath = new DebugECGPath();
             Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
             Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
             // input
-            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec_filtered.csv");
+            string timeInSecFiltered = Path.Combine(debugECGPath.getDataPath(), "time_in_sec_filtered.csv");
+            List<string> lines = ReadFile(timeInSecFiltered);
             List<double> timeInSecFilteredMatlab = new List<double>();
             foreach (string line in lines)
             {
                 timeInSecFilteredMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist_filtered.csv");
+            string rrDistFiltered = Path.Combine(debugECGPath.getDataPath(), "rr_dist_filtered.csv");
+            lines = ReadFile(rrDistFiltered);
             List<double> rrDistFilteredMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -143,13 +155,15 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             RRFiltered.Add(rrDistFilteredMatlab);
 
             //output
-            lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec_resampled.csv");
+            string timeInSecResampled = Path.Combine(debugECGPath.getDataPath(), "time_in_sec_resampled.csv");
+            lines = ReadFile(timeInSecResampled);
             List<double> timeInSecResampledMatlab = new List<double>();
             foreach (string line in lines)
             {
                 timeInSecResampledMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist_resampled.csv");
+            string rrDistResampled = Path.Combine(debugECGPath.getDataPath(), "rr_dist_resampled.csv");
+            lines = ReadFile(rrDistResampled);
             List<double> rrDistResampledMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -174,18 +188,21 @@ namespace EKG_Unit.Modules.Sleep_Apnea
         public void Sleep_Apnea_HP_Test1()
         {
             // Init test here
+            DebugECGPath debugECGPath = new DebugECGPath();
             Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
             Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
             // input
-            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec_resampled.csv");
+            string timeInSecResampled = Path.Combine(debugECGPath.getDataPath(), "time_in_sec_resampled.csv");
+            List<string> lines = ReadFile(timeInSecResampled);
             List<double> timeInSecResampledMatlab = new List<double>();
             foreach (string line in lines)
             {
                 timeInSecResampledMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist_resampled.csv");
+            string rrDistResampled = Path.Combine(debugECGPath.getDataPath(), "rr_dist_resampled.csv");
+            lines = ReadFile(rrDistResampled);
             List<double> rrDistResampledMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -197,13 +214,15 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             RRResampled.Add(rrDistResampledMatlab);
 
             // ouput
-            lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec_HP.csv");
+            string timeInSecHP = Path.Combine(debugECGPath.getDataPath(), "time_in_sec_HP.csv");
+            lines = ReadFile(timeInSecHP);
             List<double> timeInSecHPMatlab = new List<double>();
             foreach (string line in lines)
             {
                 timeInSecHPMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist_HP.csv");
+            string rrDistHP = Path.Combine(debugECGPath.getDataPath(), "rr_dist_HP.csv");
+            lines = ReadFile(rrDistHP);
             List<double> rrDistHPMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -228,18 +247,21 @@ namespace EKG_Unit.Modules.Sleep_Apnea
         public void Sleep_Apnea_LP_Test1()
         {
             // Init test here
+            DebugECGPath debugECGPath = new DebugECGPath();
             Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
             Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
             // input
-            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec_HP.csv");
+            string timeInSecHP = Path.Combine(debugECGPath.getDataPath(), "time_in_sec_HP.csv");
+            List<string> lines = ReadFile(timeInSecHP);
             List<double> timeInSecHPMatlab = new List<double>();
             foreach (string line in lines)
             {
                 timeInSecHPMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist_HP.csv");
+            string rrDistHP = Path.Combine(debugECGPath.getDataPath(), "rr_dist_HP.csv");
+            lines = ReadFile(rrDistHP);
             List<double> rrDistHPMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -251,13 +273,15 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             RRHP.Add(rrDistHPMatlab);
 
             // ouput
-            lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec_LP.csv");
+            string timeInSecLP = Path.Combine(debugECGPath.getDataPath(), "time_in_sec_LP.csv");
+            lines = ReadFile(timeInSecLP);
             List<double> timeInSecLPMatlab = new List<double>();
             foreach (string line in lines)
             {
                 timeInSecLPMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist_LP.csv");
+            string rrDistLP = Path.Combine(debugECGPath.getDataPath(), "rr_dist_LP.csv");
+            lines = ReadFile(rrDistLP);
             List<double> rrDistLPMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -282,19 +306,22 @@ namespace EKG_Unit.Modules.Sleep_Apnea
         public void Sleep_Apnea_amp_normalization_Test1()
         {
             // Init test here
+            DebugECGPath debugECGPath = new DebugECGPath();
             Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
             Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
             // input
-            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\h_time_in_sec.csv");
+            string timeInSec = Path.Combine(debugECGPath.getDataPath(), "h_time_in_sec.csv");
+            List<string> lines = ReadFile(timeInSec);
             List<double> hTimeInSec = new List<double>();
             foreach (string line in lines)
             {
                 hTimeInSec.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\h_amp_filtered.csv");
-            List<double> hAmpFiltered = new List<double>();
+            string hAmpFilt = Path.Combine(debugECGPath.getDataPath(), "h_amp_filtered.csv");
+            lines = ReadFile(hAmpFilt);
+            List <double> hAmpFiltered = new List<double>();
             foreach (string line in lines)
             {
                 hAmpFiltered.Add((double)decimal.Parse(line, NumberStyles.Float));
@@ -305,7 +332,8 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             hAmp.Add(hAmpFiltered);
 
             // ouput
-            lines = ReadFile("..\\..\\..\\IO\\data\\h_amp_normalised.csv");
+            string hAmpNorm = Path.Combine(debugECGPath.getDataPath(), "h_amp_normalised.csv");
+            lines = ReadFile(hAmpNorm);
             List<double> hAmpNormalisedMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -330,24 +358,28 @@ namespace EKG_Unit.Modules.Sleep_Apnea
         public void Sleep_Apnea_detect_apnea_Test1()
         {
             // Init test here
+            DebugECGPath debugECGPath = new DebugECGPath();
             Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
             Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
             // input
-            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\h_time_in_sec.csv");
+            string timeInSec = Path.Combine(debugECGPath.getDataPath(), "h_time_in_sec.csv");
+            List<string> lines = ReadFile(timeInSec);
             List<double> hTimeInSec = new List<double>();
             foreach (string line in lines)
             {
                 hTimeInSec.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\h_amp_normalised.csv");
+            string hAmpNorm = Path.Combine(debugECGPath.getDataPath(), "h_amp_normalised.csv");
+            lines = ReadFile(hAmpNorm);
             List<double> hAmpNormalised = new List<double>();
             foreach (string line in lines)
             {
                 hAmpNormalised.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\h_freq_filtered.csv");
+            string hFreqFilt = Path.Combine(debugECGPath.getDataPath(), "h_freq_filtered.csv");
+            lines = ReadFile(hFreqFilt);
             List<double> hFreqFiltered = new List<double>();
             foreach (string line in lines)
             {
@@ -362,13 +394,15 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             hFreq.Add(hFreqFiltered);
 
             // ouput
-            lines = ReadFile("..\\..\\..\\IO\\data\\detected.csv");
+            string det = Path.Combine(debugECGPath.getDataPath(), "detected.csv");
+            lines = ReadFile(det);
             List<bool> detectedMatlab = new List<bool>();
             foreach (string line in lines)
             {
                 detectedMatlab.Add(int.Parse(line) == 0 ? false : true);
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\alg_ann.csv");
+            string algAnn = Path.Combine(debugECGPath.getDataPath(), "alg_ann.csv");
+            lines = ReadFile(algAnn);
             List<double> algAnnMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -395,18 +429,21 @@ namespace EKG_Unit.Modules.Sleep_Apnea
         public void Sleep_Apnea_hilbert_Test1()
         {
             // Init test here
+            DebugECGPath debugECGPath = new DebugECGPath();
             Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
             Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
             // input
-            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\time_in_sec_LP.csv");
+            string timeInSecLP = Path.Combine(debugECGPath.getDataPath(), "time_in_sec_LP.csv");
+            List<string> lines = ReadFile(timeInSecLP);
             List<double> timeInSecLPMatlab = new List<double>();
             foreach (string line in lines)
             {
                 timeInSecLPMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\rr_dist_LP.csv");
+            string rrDistLP = Path.Combine(debugECGPath.getDataPath(), "rr_dist_LP.csv");
+            lines = ReadFile(rrDistLP);
             List<double> rrDistLPMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -418,13 +455,15 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             RRLP.Add(rrDistLPMatlab);
 
             // ouput
-            lines = ReadFile("..\\..\\..\\IO\\data\\h_amp.csv");
+            string amp = Path.Combine(debugECGPath.getDataPath(), "h_amp.csv");
+            lines = ReadFile(amp);
             List<double> hAmpMatlab = new List<double>();
             foreach (string line in lines)
             {
                 hAmpMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\h_freq.csv");
+            string freq = Path.Combine(debugECGPath.getDataPath(), "h_freq.csv");
+            lines = ReadFile(freq);
             List<double> hFreqMatlab = new List<double>();
             foreach (string line in lines)
             {
@@ -456,12 +495,14 @@ namespace EKG_Unit.Modules.Sleep_Apnea
         public void Sleep_Apnea_hilbertMatlab_Test1()
         {
             // Init test here
+            DebugECGPath debugECGPath = new DebugECGPath();
             Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
             Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
 
             // input
-            List<string> lines = ReadFile("..\\..\\..\\IO\\data\\rr_before_hilbert.csv");
+            string rrBeforeHilbert = Path.Combine(debugECGPath.getDataPath(), "rr_before_hilbert.csv");
+            List<string> lines = ReadFile(rrBeforeHilbert);
             List<double> rrs = new List<double>();
             foreach (string line in lines)
             {
@@ -469,13 +510,15 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             }
 
             // ouput
-            lines = ReadFile("..\\..\\..\\IO\\data\\hilb_result_real.csv");
+            string hilbResReal = Path.Combine(debugECGPath.getDataPath(), "hilb_result_real.csv");
+            lines = ReadFile(hilbResReal);
             List<double> realMatlab = new List<double>();
             foreach (string line in lines)
             {
                 realMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
             }
-            lines = ReadFile("..\\..\\..\\IO\\data\\hilb_result_imag.csv");
+            string hilbResImag = Path.Combine(debugECGPath.getDataPath(), "hilb_result_imag.csv");
+            lines = ReadFile(hilbResImag);
             List<double> imagMatlab = new List<double>();
             foreach (string line in lines)
             {
