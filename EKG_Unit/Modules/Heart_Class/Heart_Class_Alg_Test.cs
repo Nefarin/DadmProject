@@ -733,6 +733,81 @@ namespace EKG_Unit.Modules.Heart_Class
         }
 
         [TestMethod]
+        [Description("Test if method counts classes properly  - random test")]
+        public void KnnTest3()
+        {
+            int R = 13;
+            int K = 3;
+
+            double[] train1 = {5, 18};
+            double[] train2 = { 6, 20 };
+            double[] train3 = { 3, 21 };
+            double[] train4 = { 7, 23 };
+            double[] train5 = { 8, 24 };
+            double[] s = { 6, 22 };
+            Vector<double> t1 = Vector<double>.Build.Dense(train1);
+            Vector<double> t2 = Vector<double>.Build.Dense(train2);
+            Vector<double> t3 = Vector<double>.Build.Dense(train3);
+            Vector<double> t4 = Vector<double>.Build.Dense(train4);
+            Vector<double> t5 = Vector<double>.Build.Dense(train5);
+            Vector<double> sample = Vector<double>.Build.Dense(s);
+
+            List <Vector<double>> trainDataList = new List<Vector<double>>();
+
+            trainDataList.Add(t1);
+            trainDataList.Add(t2);
+            trainDataList.Add(t3);
+            trainDataList.Add(t4);
+            trainDataList.Add(t5);
+
+            double[] class1 = { 1 };
+            double[] class2 = { 1 };
+            double[] class3 = { 1 };
+            double[] class4 = { 0 };
+            double[] class5 = { 0 };
+
+            Vector<double> c1 = Vector<double>.Build.Dense(class1);
+            Vector<double> c2 = Vector<double>.Build.Dense(class2);
+            Vector<double> c3 = Vector<double>.Build.Dense(class3);
+            Vector<double> c4 = Vector<double>.Build.Dense(class4);
+            Vector<double> c5 = Vector<double>.Build.Dense(class5);
+
+            List<Vector<double>> trainClassList = new List<Vector<double>>();
+
+            trainClassList.Add(c1);
+            trainClassList.Add(c2);
+            trainClassList.Add(c3);
+            trainClassList.Add(c4);
+            trainClassList.Add(c5);
+
+
+           
+            Tuple<int, Vector<double>> testDataTuple = new Tuple<int, Vector<double>>(R, sample);
+            int expectedClass = 0;
+            Tuple<int, int> expectedResult = new Tuple<int, int>(R, expectedClass);
+
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+
+            int oneClassElement;
+            List<int> trainClass;
+            trainClass = new List<int>();
+            foreach (var item in trainClassList)
+            {
+                foreach (var element in item)
+                {
+                    oneClassElement = (int)element;
+                    trainClass.Add(oneClassElement);
+                }
+
+            }
+
+            Tuple<int, int> testResult = testAlgs.TestKnn(trainDataList, testDataTuple, trainClass, K);
+
+            Assert.AreEqual(expectedResult, testResult);
+
+        }
+
+        [TestMethod]
         [Description("Test if method performs whole classification correctly  - equality test")]
         public void Classification1()
         {

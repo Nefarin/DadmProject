@@ -79,6 +79,7 @@ namespace EKG_Project.Modules.Heart_Class
             
             object[] args = { qrsOnset, qrsEnd, R, fs };
             //testAlgs.QrsComplexOne = OneQrsComplex(qrsOnset, qrsEnd, R, fs);
+
         }
 
 
@@ -105,7 +106,7 @@ namespace EKG_Project.Modules.Heart_Class
             Signal = loadedSignal;
             OneQrsComplex(qrsOnset, qrsEnd, R, Fs);
             CountCoeff(QrsComplexOne, Fs);
-            int numberOfNeighbors = 13;
+            int numberOfNeighbors = 3;
 
             //WCZYTANIE ZBIORU TRENINGOWEGO
             DebugECGPath loader = new DebugECGPath();
@@ -167,6 +168,13 @@ namespace EKG_Project.Modules.Heart_Class
         {
            
             Tuple<int, int> qrsDistances = DistancesFromR(fs);
+
+            //int qrsLength = (qrsDistances.Item2 - qrsDistances.Item1 + 1);
+            //SingleQrs = Vector<double>.Build.Dense(qrsLength);
+
+            //Signal.CopySubVectorTo(SingleQrs, sourceIndex: qrsDistances.Item1, targetIndex: 0,
+            //    count: qrsLength);
+            //QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
 
             if ((singleQrsOnset > -1) && (signleQrsEnd > -1)) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
             {
