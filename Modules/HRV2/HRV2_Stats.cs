@@ -19,7 +19,7 @@ namespace EKG_Project.Modules.HRV2
         private string _currentName;
         private Basic_New_Data_Worker _worker;
         private string[] _leads;
-
+        private Vector<double> _currentVector;
 
         public void Abort()
         {
@@ -75,14 +75,27 @@ namespace EKG_Project.Modules.HRV2
                     _currentState = State.CALCULATE;
                     break;
                 case (State.CALCULATE):
-                    // Podstawowe załozenie - ECG_Baseline nie generuje statystyk (generuje puste) i zakladamy, ze sygnal EKG bedzie krotszy niz okolo 150 dni
-                    // w takim przypadku statystyki dla pozostalych modulow bez problemu powinny sie zmiescic w pamieci przetwarzajac odprowadzenie po odprowadzeniu
-                    // jezeli z jakiegos powodu sygnal mialby byc dluzszy niz te prawie pol roku - trzeba dorobic dodatkowe IO do statsow, co z racji na brak czasu - pomijamy
-                    // Zalozenie jest o tyle sensowne, ze sygnal 150 dni przy obecnej predkosci dzialania modulow liczylby sie okolo 37.5 godziny..
-                    Vector<double> currentData = _worker.LoadSignal(_currentName, 0, (int)_worker.getNumberOfSamples(_currentName));
-                    double mean = currentData.Sum() / currentData.Count;
-                    _strToStr.Add(_currentName + " mean value: ", mean.ToString());
-                    _strToObj.Add(_currentName + " mean value: ", mean);
+                    // Our statisics include only Tinn, Tiangle Index, SD1 and SD2
+                    //Vector<double> currentData = _worker.LoadSignal(_currentName, 0, (int)_worker.getNumberOfSamples(_currentName));
+                    //_currentVector = InputWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, _currentChannelLength);
+                    //HRV2_Alg _alg = new HRV2_Alg(_currentVector);
+
+                    //double Tinn = _alg.Tinn;
+                    //double TriangleIndex = _alg.TriangleIndex;
+                    //double SD1 = _alg.SD1();
+                    //double SD2 = _alg.SD2();
+                    //_strToStr.Add(_currentName + "Tinn: " + Tinn.ToString());
+                    //_strToObj.Add(_currentName + "Tinn: " + Tinn);
+
+                    //_strToStr.Add(_currentName + "Triangle index: " + TriangleIndex.ToString());
+                    //_strToObj.Add(_currentName + "Triangle index: " + TriangleIndex);
+
+                    //_strToStr.Add(_currentName + "SD1: " + SD1.ToString());
+                    //_strToObj.Add(_currentName + "SD1: " + SD1);
+
+                    //_strToStr.Add(_currentName + "SD2: " + SD2.ToString());
+                    //_strToObj.Add(_currentName + "SD2: " + SD2);
+
                     _currentState = State.NEXT_CHANNEL;
                     break;
                 case (State.NEXT_CHANNEL):

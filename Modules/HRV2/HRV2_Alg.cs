@@ -11,6 +11,7 @@ namespace EKG_Project.Modules.HRV2
     public partial class HRV2_Alg
     {
 
+        public HRV2_Alg() { }
         public HRV2_Alg(Vector<double> signal)
         {
             RRIntervals = signal;
@@ -56,7 +57,7 @@ namespace EKG_Project.Modules.HRV2
         #endregion
         public void Interpolation()
         {
-            for (int i = 1; i <= _rrIntervals.Count; i++)
+            for (int i = 1; i < _rrIntervals.Count; i++)
             {
                 if (_rrIntervals[i] > 2*_rrIntervals.Average())
                 {
@@ -69,47 +70,5 @@ namespace EKG_Project.Modules.HRV2
                 }
             }
         }
-       
-        #region Documentation
-        /// <summary>
-        /// This function analise and write to all parameters needed to analyze.
-        /// To see algorithm navigate to the appropriate file: Poincare.cs, Histogram.cs, Tinn.cs, TriangleIndex.cs
-        /// </summary>
-        /// 
-        #endregion
-        public void HRV2_Anlalysis()
-        {
-            //Histogram.cs
-            HistogramToVisualisation();
-            //Poincare.cs
-            PoincarePlot_x();
-            PoincarePlot_y();
-            SD1();
-            SD2();
-            elipseCenter();
-            //Tinn.cs
-            makeTinn();
-            //TriangleIndex.cs
-            makeTriangleIndex();
-        }
-        //public static void Main()
-        //{
-        //    //read data from file
-        //    //TempInput.setInputFilePath(@"C:\Users\Ewa\Desktop\DADM_projekt\DadmProject\RR_100.txt");
-        //    TempInput.setInputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\RR_100.txt");
-        //    uint fs = TempInput.getFrequency();
-        //    Vector<double> sig = TempInput.getSignal();
-            
-        //    HRV2_Alg Analise = new HRV2_Alg();
-        //    Analise.RRIntervals = sig;
-        //    Analise.Interpolation();
-        //    Analise.HRV2_Anlalysis();
-            
-        //    //write result to dat file
-        //    //TempInput.setOutputFilePath("resultTriInx.txt");
-        //    TempInput.setOutputFilePath(@"E:\aaa9semestr\Dadm\DADM_project\resultHistogram1.txt");
-        //    TempInput.writeFile(Analise.HistogramToVisualisation());
-        //    //Console.ReadLine();
-        //}
     }
 }

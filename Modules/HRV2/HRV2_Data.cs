@@ -14,7 +14,8 @@ namespace EKG_Project.Modules.HRV2
         private List<Tuple<string, List<Tuple<double,double>>>> _histogramData;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_x;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_y;
-
+        //tego nie chcemy
+        private List<double> _elipseCenter;
         //tu chciałymysmy dodac
         private List<double> _elipseCenter_x;
         private List<double> _elipseCenter_y;
@@ -187,6 +188,25 @@ namespace EKG_Project.Modules.HRV2
             set
             {
                 _elipseCenter_y = value;
+            }
+        }
+
+        #region Documentation
+        /// <summary>
+        /// To usuniemy
+        /// </summary>
+        /// 
+        #endregion
+        public List<double> ElipseCenter
+        {
+            get
+            {
+                return _elipseCenter;
+            }
+
+            set
+            {
+                _elipseCenter = value;
             }
         }
 

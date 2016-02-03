@@ -116,7 +116,7 @@ namespace EKG_Project.Modules.HRV2
                     break;
                 case (STATE.INTERPOLATION):
 
-                    //_alg.Interpolation();
+                    _alg.Interpolation();
 
                     _state = STATE.POINCAREX;
                     break;
@@ -141,8 +141,9 @@ namespace EKG_Project.Modules.HRV2
                 case (STATE.ATRIBUTES):
                     OutputWorker.SaveAttribute(HRV2_Attributes.SD1, _currentLeadName, _alg.SD1());
                     OutputWorker.SaveAttribute(HRV2_Attributes.SD2, _currentLeadName, _alg.SD2());
-               
-                    //OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.elipseCenter());
+
+                    //OutputWorker.SaveAttribute(HRV2_Attributes.ElipseCenter_x, _currentLeadName, _alg.elipseCenter_x());
+                    //OutputWorker.SaveAttribute(HRV2_Attributes.ElipseCenter_y, _currentLeadName, _alg.elipseCenter_y());
                     _alg.makeTinn();
                     OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.tinn);
                     _alg.makeTriangleIndex();
