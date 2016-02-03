@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{EFE339A0-2E66-496C-8A74-F84B670D3DA9}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EKG_Project</RootNamespace>
     <AssemblyName>EKG_Project</AssemblyName>
@@ -201,6 +201,7 @@
     <Compile Include="Architecture\GUIMessages\FileLoadingError.cs" />
     <Compile Include="Architecture\GUIMessages\FileNotLoaded.cs" />
     <Compile Include="Architecture\GUIMessages\IGUIMessage.cs" />
+    <Compile Include="Architecture\GUIMessages\LoadingAborted.cs" />
     <Compile Include="Architecture\GUIMessages\ModuleProgress.cs" />
     <Compile Include="Architecture\GUIMessages\ProcessingEnded.cs" />
     <Compile Include="Architecture\GUIMessages\StatsCalculationBegun.cs" />
@@ -209,6 +210,7 @@
     <Compile Include="Architecture\Modules.cs" />
     <Compile Include="Architecture\ProcessingStates\Abort.cs" />
     <Compile Include="Architecture\ProcessingStates\AbortAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\AbortLoadingFile.cs" />
     <Compile Include="Architecture\ProcessingStates\AbortTest.cs" />
     <Compile Include="Architecture\ProcessingStates\BeginAnalysis.cs" />
     <Compile Include="Architecture\ProcessingStates\BeginStatsCalculation.cs" />
@@ -221,6 +223,7 @@
     <Compile Include="Architecture\ProcessingStates\NextModule.cs" />
     <Compile Include="Architecture\ProcessingStates\NextStats.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessAnalysis.cs" />
+    <Compile Include="Architecture\ProcessingStates\ProcessFile.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessingEnded.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessModule.cs" />
     <Compile Include="Architecture\ProcessingStates\ProcessStats.cs" />
@@ -292,16 +295,23 @@
     <Compile Include="IO\ASCIIConverter.cs" />
     <Compile Include="IO\Atrial_Fibr_Data_Worker.cs" />
     <Compile Include="IO\Basic_Data_Worker.cs" />
+    <Compile Include="IO\Basic_New_Data_Worker.cs" />
     <Compile Include="IO\DebugECGPath.cs" />
     <Compile Include="IO\ECG_Baseline_Data_Worker.cs" />
+    <Compile Include="IO\ECG_Baseline_New_Data_Worker.cs" />
     <Compile Include="IO\ECG_Worker.cs" />
     <Compile Include="IO\FileLoader.cs" />
+    <Compile Include="IO\FileProcessor.cs" />
     <Compile Include="IO\Flutter_Data_Worker.cs" />
+    <Compile Include="IO\Flutter_New_Data_Worker.cs" />
     <Compile Include="IO\Heart_Axis_Data_Worker.cs" />
+    <Compile Include="IO\Heart_Axis_New_Data_Worker.cs" />
     <Compile Include="IO\Heart_Class_Data_Worker.cs" />
+    <Compile Include="IO\Heart_Class_New_Data_Worker.cs" />
     <Compile Include="IO\HRT_Data_Worker.cs" />
     <Compile Include="IO\HRV1_Data_Worker.cs" />
     <Compile Include="IO\HRV2_Data_Worker.cs" />
+    <Compile Include="IO\HRV2_New_Data_Worker.cs" />
     <Compile Include="IO\HRV_DFA_Data_Worker.cs" />
     <Compile Include="IO\IECGConverter.cs" />
     <Compile Include="IO\IECGPath.cs" />
@@ -328,14 +338,18 @@
     <Compile Include="IO\PDF\TableOfContents.cs" />
     <Compile Include="IO\PDF\Tables.cs" />
     <Compile Include="IO\QT_Disp_Data_Worker.cs" />
+    <Compile Include="IO\Qt_Disp_New_Data_Worker.cs" />
     <Compile Include="IO\ReleaseECGPath.cs" />
     <Compile Include="IO\R_Peaks_Data_Worker.cs" />
+    <Compile Include="IO\R_Peaks_New_Data_Worker.cs" />
     <Compile Include="IO\Sleep_Apnea_Data_Worker.cs" />
+    <Compile Include="IO\Sleep_Apnea_New_Data_Worker.cs" />
     <Compile Include="IO\ST_Segment_Data_Worker.cs" />
     <Compile Include="IO\TempInput.cs" />
     <Compile Include="IO\TestModule3_Data_Worker.cs" />
     <Compile Include="IO\T_Wave_Alt_Data_Worker.cs" />
     <Compile Include="IO\Waves_Data_Worker.cs" />
+    <Compile Include="IO\Waves_New_Data_Worker.cs" />
     <Compile Include="IO\WFDBLoader.cs" />
     <Compile Include="IO\WFDBTest.cs" />
     <Compile Include="IO\XMLConverter.cs" />
@@ -345,6 +359,7 @@
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Params.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Stats.cs" />
     <Compile Include="Modules\Basic_Data.cs" />
+    <Compile Include="Modules\Basic_New_Data.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Alg.cs" />
     <Compile Include="Modules\ECG_Baseline\ECG_Baseline_Data.cs" />
@@ -366,6 +381,11 @@
     <Compile Include="Modules\Heart_Class\Heart_Class_Data.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Params.cs" />
     <Compile Include="Modules\Heart_Class\Heart_Class_Stats.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Alg.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Data.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Params.cs" />
+    <Compile Include="Modules\Heart_Cluster\Heart_Cluster_Stats.cs" />
     <Compile Include="Modules\HRT\HRT.cs" />
     <Compile Include="Modules\HRT\HRT_Alg.cs" />
     <Compile Include="Modules\HRT\HRT_Data.cs" />
@@ -426,6 +446,7 @@
     <Compile Include="Modules\TestModule3\TestModule3.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Alg.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Data.cs" />
+    <Compile Include="Modules\TestModule3\TestModule3_New_Data.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Params.cs" />
     <Compile Include="Modules\TestModule3\TestModule3_Stats.cs" />
     <Compile Include="Modules\TestModule\TestModule.cs" />
@@ -462,14 +483,24 @@
     <None Include="IO\data\100.atr" />
     <None Include="IO\data\100.dat" />
     <None Include="IO\data\100.hea" />
+    <None Include="IO\data\alg_ann.csv" />
+    <None Include="IO\data\detected.csv" />
+    <None Include="IO\data\h_amp.csv" />
+    <None Include="IO\data\h_amp_filtered.csv" />
+    <None Include="IO\data\h_amp_normalised.csv" />
+    <None Include="IO\data\h_freq.csv" />
+    <None Include="IO\data\h_freq_filtered.csv" />
+    <None Include="IO\data\h_time_in_sec.csv" />
     <None Include="IO\data\rpeaks.csv" />
     <None Include="IO\data\rr_dist.csv" />
     <None Include="IO\data\rr_dist_filtered.csv" />
     <None Include="IO\data\rr_dist_HP.csv" />
+    <None Include="IO\data\rr_dist_LP.csv" />
     <None Include="IO\data\rr_dist_resampled.csv" />
     <None Include="IO\data\time_in_sec.csv" />
     <None Include="IO\data\time_in_sec_filtered.csv" />
     <None Include="IO\data\time_in_sec_HP.csv" />
+    <None Include="IO\data\time_in_sec_LP.csv" />
     <None Include="IO\data\time_in_sec_resampled.csv" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -497,6 +528,21 @@
     <Content Include="DLL\resetvars.vbs" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="IO\data\res_QT_Disp\output_end.txt" />
+    <Resource Include="IO\data\res_QT_Disp\output_qt.txt" />
+    <Resource Include="IO\data\res_QT_Disp\QRS_End.txt" />
+    <Resource Include="IO\data\res_QT_Disp\QRS_Onset.txt" />
+    <Resource Include="IO\data\res_QT_Disp\R_Peak.txt" />
+    <Resource Include="IO\data\res_QT_Disp\sig.txt" />
+    <Resource Include="IO\data\res_QT_Disp\T_End.txt" />
+    <Resource Include="IO\data\res_QT_Disp\wyniki.txt" />
+    <Resource Include="IO\temp\abc123temp_Basic_New_MLII.txt" />
+    <Resource Include="IO\temp\abc123temp_Basic_New_NumberOfSamples.txt" />
+    <Resource Include="IO\temp\abc123temp_Basic_New_V1.txt" />
+    <Resource Include="IO\temp\abc123_Basic_New_Leads.txt" />
+    <Resource Include="IO\temp\abc123_Basic_New_MLII.txt" />
+    <Resource Include="IO\temp\abc123_Basic_New_NumberOfSamples.txt" />
+    <Resource Include="IO\temp\abc123_Basic_New_V1.txt" />
     <Resource Include="Resources\logo.png" />
     <Resource Include="IO\temp\train_d_label.txt" />
     <Resource Include="IO\temp\train_d.txt" />

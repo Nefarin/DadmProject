@@ -9,7 +9,7 @@ namespace EKG_Project.Modules.TestModule3
     {
         private uint _frequency;
         private uint _sampleAmount;
-        private List<Tuple<string, Vector<double>>> _output;
+        private Vector<double> _output;
 
         public uint Frequency
         {
@@ -35,7 +35,7 @@ namespace EKG_Project.Modules.TestModule3
             }
         }
 
-        public List<Tuple<string, Vector<double>>> Output
+        public Vector<double> Output
         {
             get
             {
@@ -50,7 +50,7 @@ namespace EKG_Project.Modules.TestModule3
 
         public TestModule3_Data()
         {
-            Output = new List<Tuple<string, Vector<double>>>();
+
         }
         public TestModule3_Data(uint frequency, uint sampleAmount) : this()
         {
