@@ -287,7 +287,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         {
            bool AF, tprD, seD, rmssdD;
 
-           //Turning Punct Ratio
+           //Checking Turning Punct Ratio
            tpr = TPR(_RR);
            if (tpr < 0.77 && tpr > 0.54)
            {
@@ -298,7 +298,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
               tprD = true;
            }
 
-           //RMSSD
+           //Checking RMSSD
            rmssd = RMSSD(_RR);
            if (rmssd > 0.1)
            {
@@ -309,7 +309,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                rmssdD = false;
            }
            
-           //Shannon Entrophy
+           //Checking Shannon Entrophy
            se = SE(_RR);
            if (se > 0.7)
            {
@@ -319,6 +319,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
            {
                seD = false;
            }
+           // Checking results of Turning Point Ratio, Shannon Entrophy and RMSSD
            if (tprD && seD && rmssdD)
            {
                AF = true;
@@ -432,7 +433,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// Data point in clustering. Contain information about coordinates and number of cluster.
+        /// Class dataPoint contain information about coordinates of point and number of cluster.
         /// </summary>
         #endregion
         public class DataPoint : System.Object
@@ -509,7 +510,6 @@ namespace EKG_Project.Modules.Atrial_Fibr
         /// <param name="Vector2">Second coordinate</param>
         /// <returns>List of data points for clusterization</returns>
         #endregion
-
         private List<DataPoint> InitilizeRawData(double[] Vector1, double[] Vector2)
         {
             List<DataPoint> _rawDataToCluster = new List<DataPoint>();
@@ -651,8 +651,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     result = true;
                     break;
                 }
-            }            
-            
+            }                  
             return result;
         }
 
@@ -821,6 +820,5 @@ namespace EKG_Project.Modules.Atrial_Fibr
             Silh.Clear();
             return SilhouetteCoeff;
         }
-
     }
 }
