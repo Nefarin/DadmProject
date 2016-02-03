@@ -382,6 +382,19 @@ namespace EKG_Project.GUI
 
         }
 
+        //methodes used to configurate Checboxes
+
+        private void CreateAllCheckBoxesInCurrentAnalyse(string currentAnalyseName)
+        {
+
+            //ECG_Baseline_New_Data_Worker ecgTest = new ECG_Baseline_New_Data_Worker(currentAnalyseName);
+            //1ecgTest.
+            //  SOMETHING WITH ECGPLOT
+
+        }
+
+
+
 
         //methodes to get data for plotting
         private void Get_ECG_BASELINE_Data(string currentAnalyseName)

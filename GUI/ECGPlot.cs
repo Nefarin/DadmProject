@@ -43,6 +43,17 @@ namespace EKG_Project.GUI
         private List<string> _displayedSeries;
 
 
+        //Program ver 2.0 
+
+        private string _currentAnalysisName;
+        private string _currentLeadName;
+
+        private uint _currentBaselineLeadStartIndex;
+        private uint _currentBaselineLeadEndIndex;
+        private uint _currentBaselineLeadNumberOfSamples; 
+
+
+
         private Dictionary<string, uint> modulesVisualisationNeeds = new Dictionary<string, uint>()
         {
             {"ecgBaseline",1 },
@@ -105,38 +116,11 @@ namespace EKG_Project.GUI
             CurrentPlot.LegendOrientation = LegendOrientation.Horizontal;
             CurrentPlot.LegendPlacement = LegendPlacement.Outside;
             CurrentPlot.LegendPosition = LegendPosition.RightMiddle;
-            //CurrentPlot.MouseDown += (sender, evArg) =>
-            //{
-            //    if (evArg.ChangedButton == OxyMouseButton.Right)
-            //    {
-            //        string filename;
-            //        Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            //        dlg.DefaultExt = ".svg";
-            //        dlg.Filter = "SVG documents (.svg)|*.svg";
-            //        if (dlg.ShowDialog() == true)
-            //        {
-            //            filename = dlg.FileName;
-
-            //            using (var stream = System.IO.File.Create(filename))
-            //            {
-            //                var exporter = new SvgExporter() { Width = 600, Height = 400 };
-            //                exporter.Export(CurrentPlot, stream);
-            //            }
-
-            //        }
-            //    }
-
-            //};
-
-            //CurrentPlot.le
-            //_windowSize = 3000;
             _beginingPoint = 0;
             first = true;
             _visible = true;
             _displayedSeries = new List<string>();
-            
-            //CurrentPlot.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
-            //CurrentPlot.LegendBorder = OxyColors.Black;
+
         }
 
         public void DisplayAnything()
@@ -727,9 +711,56 @@ namespace EKG_Project.GUI
 
 
 
-       
 
 
+
+
+        // Program ver2.0 
+
+        //Konstruktor z nazwą analizy i tytułem wykresu.
+        public ECGPlot(string currentAnalysysName, string plotTitle)
+        {
+            CurrentPlot = new PlotModel();
+            CurrentPlot.Title = plotTitle;
+            CurrentPlot.TitleFontSize = 16;
+            //CurrentPlot.LegendTitle = "Legend";
+            CurrentPlot.LegendOrientation = LegendOrientation.Horizontal;
+            CurrentPlot.LegendPlacement = LegendPlacement.Outside;
+            CurrentPlot.LegendPosition = LegendPosition.RightMiddle;
+            _beginingPoint = 0;
+            first = true;
+            _visible = true;
+            _displayedSeries = new List<string>();
+
+
+           _currentAnalysisName= currentAnalysysName;
+            _currentBaselineLeadStartIndex = 0; 
+
+        }
+
+
+        //METODA DO WYSWIETLANIA KONKRETNEGO LEAD Z BASELINE
+        public bool DisplayBaselineLeads(string leadName)
+        {
+            try
+            {
+                _currentLeadName = leadName;
+
+                ECG_Baseline_New_Data_Worker ecg_Baseline = new ECG_Baseline_New_Data_Worker(_currentAnalysisName);
+                _currentBaselineLeadNumberOfSamples =  ecg_Baseline.getNumberOfSamples(_currentLeadName);
+                // !!! TO DO !!! potrzebna logika do określania zakresy próbek 
+                _currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples; 
+                Vector<double> myTemp =  ecg_Baseline.LoadSignal(leadName, (int)_currentBaselineLeadStartIndex, (int)_currentBaselineLeadEndIndex);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        
 
 
 
