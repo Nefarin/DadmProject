@@ -7,7 +7,7 @@ namespace EKG_Project.Modules.HRV2
 
     public partial class HRV2_Alg
     {
-        private double triangleIndex;
+        public double triangleIndex;
         public double TriangleIndex
         {
             set
@@ -26,7 +26,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        private void makeTriangleIndex()
+        public void makeTriangleIndex()
         {
             //Vector<double> RRIntervaals = InputData.RRInterval[_outputIndex].Item2;
             //try

@@ -14,8 +14,6 @@ namespace EKG_Project.Modules.HRV2
         public HRV2_Alg(Vector<double> signal)
         {
             RRIntervals = signal;
-            Interpolation();
-            HRV2_Anlalysis();
         }
         private Vector<double> _rrIntervals;
         private double _histogramCount;
@@ -88,7 +86,7 @@ namespace EKG_Project.Modules.HRV2
             PoincarePlot_y();
             SD1();
             SD2();
-            eclipseCenter();
+            elipseCenter();
             //Tinn.cs
             makeTinn();
             //TriangleIndex.cs

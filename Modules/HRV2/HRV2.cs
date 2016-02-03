@@ -8,7 +8,7 @@ namespace EKG_Project.Modules.HRV2
 {
     public class HRV2 : IModule
     {
-        private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
+        private enum STATE { INIT, BEGIN_CHANNEL, INTERPOLATION, POINCAREX, POINCAREY, HISTOGRAM, ATRIBUTES, END_CHANNEL, END };
         private bool _ended;
         private bool _aborted;
 
@@ -19,11 +19,10 @@ namespace EKG_Project.Modules.HRV2
         private int _currentIndex;
         private int _numberOfChannels;
 
-        private Basic_New_Data_Worker _inputWorker;
-        private Basic_New_Data_Worker _outputWorker;
+        private Basic_New_Data_Worker _basicWorker;
+        private R_Peaks_New_Data_Worker _inputWorker;
+        private HRV2_New_Data_Worker _outputWorker;
 
-        private Basic_New_Data _outputData;
-        private Basic_New_Data _inputData;
         private HRV2_Params _params;
 
         private HRV2_Alg _alg;
@@ -64,10 +63,10 @@ namespace EKG_Project.Modules.HRV2
             }
             else
             {
-                InputWorker = new Basic_New_Data_Worker(Params.AnalysisName);
-                OutputWorker = new Basic_New_Data_Worker(Params.AnalysisName + "temp"); // tutaj generalnie uzywacie swojego workera jako wyjsciowy, dla uproszczenia uzywam gotowego o innej nazwie
-                InputData = new Basic_New_Data();
-                OutputData = new Basic_New_Data();
+                InputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName);
+                OutputWorker = new HRV2_New_Data_Worker(Params.AnalysisName); // tutaj generalnie uzywacie swojego workera jako wyjsciowy, dla uproszczenia uzywam gotowego o innej nazwie
+
+                BasicWorker = new Basic_New_Data_Worker(Params.AnalysisName);
                 _state = STATE.INIT;
 
             }
@@ -95,80 +94,66 @@ namespace EKG_Project.Modules.HRV2
             {
                 case (STATE.INIT):
                     _currentChannelIndex = -1;
-                    _leads = InputWorker.LoadLeads().ToArray();
+                    _leads = BasicWorker.LoadLeads().ToArray();
                     _numberOfChannels = _leads.Length;
                     _state = STATE.BEGIN_CHANNEL;
                     //_inputWorker.DeleteFiles(); Do not use yet - will try to handle this during loading.
                     break;
                 case (STATE.BEGIN_CHANNEL):
+
+
                     _currentChannelIndex++;
                     if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END;
                     else
                     {
                         _currentLeadName = _leads[_currentChannelIndex];
-                        _currentChannelLength = (int)InputWorker.getNumberOfSamples(_currentLeadName);
+                        _currentChannelLength = (int)InputWorker.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _currentLeadName);
                         _currentIndex = 0;
-                        _state = STATE.PROCESS_FIRST_STEP;
+                        _state = STATE.INTERPOLATION;
+                        _currentVector = InputWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, _currentChannelLength);                        
+                        _alg = new HRV2_Alg(_currentVector);
                     }
                     break;
-                case (STATE.PROCESS_FIRST_STEP):
-                    if (_currentIndex + Params.Step > _currentChannelLength) _state = STATE.END_CHANNEL;
-                    else
-                    {
-                        try
-                        {
-                            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, Params.Step);
-                            _alg = new HRV2_Alg(_currentVector);
-                            _alg.HRV2_Anlalysis();
-                            _currentVector = _alg.RRIntervals;
-                            OutputWorker.SaveSignal(_currentLeadName, false, _currentVector);
-                            //_currentIndex += Params.Step;
-                            _state = STATE.PROCESS_CHANNEL;
-                        }
-                        catch (Exception e)
-                        {
-                            _state = STATE.NEXT_CHANNEL;
-                        }
-                    }
-                    break;
-                case (STATE.PROCESS_CHANNEL): // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
-                    if (_currentIndex + Params.Step > _currentChannelLength) _state = STATE.END_CHANNEL;
-                    else
-                    {
-                        try
-                        {
-                            _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, Params.Step);
-                            _alg = new HRV2_Alg(_currentVector); // its possible to create just one instance somewhere in the Init - your choice
-                            _alg.HRV2_Anlalysis();
-                            _currentVector = _alg.RRIntervals; // not needed, because reference is the same, but shows the point
-                            OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
-                            //_currentIndex += Params.Step;
-                            _state = STATE.PROCESS_CHANNEL;
-                        }
-                        catch (Exception e)
-                        {
-                            _state = STATE.NEXT_CHANNEL;
-                        }
-                    }
+                case (STATE.INTERPOLATION):
 
+                    _alg.Interpolation();
+
+                    _state = STATE.POINCAREX;
                     break;
+
+                case (STATE.POINCAREX):
+                    _alg.PoincarePlot_x();
+                    _state = STATE.POINCAREY;
+                    break;
+                case (STATE.POINCAREY):
+                    _alg.PoincarePlot_y();
+                    _state = STATE.HISTOGRAM;
+                    break;
+
+                case (STATE.HISTOGRAM):
+                    _alg.HistogramToVisualisation();
+                    _state = STATE.ATRIBUTES;
+                    break;
+
+                case (STATE.ATRIBUTES):
+                    OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.SD1());
+                    OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.SD2());
+               
+                    //OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.elipseCenter());
+                    _alg.makeTinn();
+                    OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.tinn);
+                    _alg.makeTriangleIndex();
+                    OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.triangleIndex);
+                    _state = STATE.END_CHANNEL;
+                    break;
+
                 case (STATE.END_CHANNEL):
-                    try
-                    {
-                        _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
+                        _currentVector = InputWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
                         _alg = new HRV2_Alg(_currentVector);
                         _currentVector = _alg.RRIntervals; // not needed, because reference is the same, but shows the point
-                        _alg.HRV2_Anlalysis();
-                        OutputWorker.SaveSignal(_currentLeadName, true, _currentVector);
-                        _state = STATE.NEXT_CHANNEL;
-                    }
-                    catch (Exception e)
-                    {
-                        _state = STATE.NEXT_CHANNEL;
-                    }
-                    break;
-                case (STATE.NEXT_CHANNEL):
-                    _state = STATE.BEGIN_CHANNEL;
+
+
+                        _state = STATE.END;
                     break;
                 case (STATE.END):
                     _ended = true;
@@ -176,20 +161,6 @@ namespace EKG_Project.Modules.HRV2
                 default:
                     Abort();
                     break;
-            }
-
-        }
-
-        public Basic_New_Data OutputData
-        {
-            get
-            {
-                return _outputData;
-            }
-
-            set
-            {
-                _outputData = value;
             }
         }
 
@@ -232,20 +203,8 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
-        public Basic_New_Data InputData
-        {
-            get
-            {
-                return _inputData;
-            }
 
-            set
-            {
-                _inputData = value;
-            }
-        }
-
-        public Basic_New_Data_Worker InputWorker
+        public R_Peaks_New_Data_Worker InputWorker
         {
             get
             {
@@ -257,8 +216,9 @@ namespace EKG_Project.Modules.HRV2
                 _inputWorker = value;
             }
         }
+        
 
-        public Basic_New_Data_Worker OutputWorker
+        public HRV2_New_Data_Worker OutputWorker
         {
             get
             {
@@ -271,11 +231,24 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
+        public Basic_New_Data_Worker BasicWorker
+        {
+            get
+            {
+                return _basicWorker;
+            }
+
+            set
+            {
+                _basicWorker = value;
+            }
+        }
+
         public static void Main(String[] args)
         {
             IModule HRV2 = new EKG_Project.Modules.HRV2.HRV2();
             int scale = 5;
-            HRV2_Params param = new HRV2_Params(scale, 1000, "abc123");
+            HRV2_Params param = new HRV2_Params(scale, 1000, "cba123");
 
             HRV2.Init(param);
             while (!HRV2.Ended())

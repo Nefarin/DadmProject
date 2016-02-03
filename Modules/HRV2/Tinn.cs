@@ -7,7 +7,7 @@ namespace EKG_Project.Modules.HRV2
 {
     public partial class HRV2_Alg
     {
-        private double tinn;
+        public double tinn;
         public double Tinn
         {
             set
@@ -27,7 +27,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-            private void makeTinn()
+            public void makeTinn()
         {
             try
             {

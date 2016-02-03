@@ -20,12 +20,11 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        private void PoincarePlot_x()
+        public void PoincarePlot_x()
         {
             //Vector<double> RRIntervals = InputData.RRInterval[_currentChannelIndex].Item2.Clone();
             Vector<double> rr_intervals_x = Vector<double>.Build.Dense(_rrIntervals.Count - 1);
             rr_intervals_x = _rrIntervals.SubVector(1, _rrIntervals.Count - 1);
-            //Console.WriteLine(rr_intervals_x.Count);
             RR_intervals_x = rr_intervals_x;
         }
         #region Documentation
@@ -35,12 +34,11 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        private void PoincarePlot_y()
+        public void PoincarePlot_y()
         {
             //Vector<double> RRIntervals = InputData.RRInterval[_currentChannelIndex].Item2.Clone();
             Vector<double> rr_intervals_y = Vector<double>.Build.Dense(_rrIntervals.Count - 1);
             rr_intervals_y = _rrIntervals.SubVector(0, _rrIntervals.Count - 1);
-            //Console.WriteLine(rr_intervals_y.Count);
             RR_intervals_y = rr_intervals_y;
         }
 
@@ -68,7 +66,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        private double SD1()
+        public double SD1()
         {
             double SD1 = getStandardDeviation(RR_intervals_x.Subtract(RR_intervals_y)) / Math.Sqrt(2);
 
@@ -80,7 +78,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        private double SD2()
+        public double SD2()
         {
             double SD2 = getStandardDeviation(RR_intervals_x.Add(RR_intervals_y)) / Math.Sqrt(2);
 
@@ -93,12 +91,12 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-        private Vector<double> eclipseCenter()
+        public Vector<double> elipseCenter()
         {
             double[] array = { RR_intervals_x.Average(), RR_intervals_x.Average() };
-            Vector<double> eclipseCenter = Vector<double>.Build.DenseOfArray(array);
+            Vector<double> elipseCenter = Vector<double>.Build.DenseOfArray(array);
 
-            return eclipseCenter;
+            return elipseCenter;
         }
     }
 }
