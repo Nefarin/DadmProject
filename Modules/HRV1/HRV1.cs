@@ -74,8 +74,8 @@ namespace EKG_Project.Modules.HRV1
 
                 // pytanie co jezeli wektory peaks i intervals nie koresponduja?
                 //tu babol jest - IndexOutOfRange 
-                var instants = InputWorker.LoadSignal(IO.R_Peaks_Attributes.RRInterval, lead, startindex, (int)peaksLength-1);
-                var intervals = InputWorker.LoadSignal(IO.R_Peaks_Attributes.RPeaks, lead, startindex, (int)intervalsLength-1);
+                var instants = InputWorker.LoadSignal(IO.R_Peaks_Attributes.RPeaks, lead, startindex, (int)peaksLength-1);
+                var intervals = InputWorker.LoadSignal(IO.R_Peaks_Attributes.RRInterval, lead, startindex, (int)intervalsLength-1);
                 
 
                 //heja
@@ -92,6 +92,7 @@ namespace EKG_Project.Modules.HRV1
                 var fparams = algo.FreqParams;
                 var psd = algo.PowerSpectrum;
 
+                _ended = true;
                 //OutputData.TimeBasedParams = tparams;
 
                // var tparams = Vector<double>.Build.Dense(new double[] { HF, LF, VLF, LFHF });

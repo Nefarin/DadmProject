@@ -53,8 +53,8 @@ namespace EKG_Project.Modules.HRV1
         private Vector<double> PSD;         // power spectral density estimate values at points specified in f
         private Vector<double> psdFilter;   // samples of digital FIR filter used for smoothing PSD
 
-        public List<Tuple<string, double>> FreqParams;
-        public List<Tuple<string, double>> TimeParams;
+        public List<Tuple<string, double>> FreqParams = new List<Tuple<string, double>>();
+        public List<Tuple<string, double>> TimeParams = new List<Tuple<string, double>>();
         public List<Tuple<string, Vector<double>>> PowerSpectrum;
 
         private double Fs;  // sampling frequency of original ECG signal
@@ -73,7 +73,7 @@ namespace EKG_Project.Modules.HRV1
         public void CalculateFreqBased() {
             this.lombScargle2();
             this.calculateFreqBased();
-            this.PowerSpectrum.Clear();
+            this.PowerSpectrum = new List<Tuple<string, Vector<double>>>();
             this.PowerSpectrum.Add(new Tuple<string, Vector<double>>("f", this.f));
             this.PowerSpectrum.Add(new Tuple<string, Vector<double>>("PSD", this.PSD));
             this.FreqParams.Clear();
