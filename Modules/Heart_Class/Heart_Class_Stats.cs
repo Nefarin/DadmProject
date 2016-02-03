@@ -16,11 +16,14 @@ namespace EKG_Project.Modules.Heart_Class
         private Dictionary<string, Object> _strToObj;
         private Dictionary<string, string> _strToStr;
         private string _analysisName;
-        private Heart_Class_Data _data;
         private State _currentState;
         private int _currentChannelIndex;
+        private int _currentIndex;
         private string _currentName;
-        private List<Tuple<int, int>> _output;
+        private Heart_Class_New_Data_Worker _worker;
+        private string[] _leads;
+        private Basic_New_Data_Worker _workerBasic;
+        private List<Tuple<int, int>> _classificationList;
         private List<int> _classResults;
 
         public void Abort()
@@ -61,13 +64,15 @@ namespace EKG_Project.Modules.Heart_Class
             _strToObj = new Dictionary<string, object>();
             _strToStr = new Dictionary<string, string>();
 
-            Heart_Class_Data_Worker worker = new Heart_Class_Data_Worker(_analysisName);
-            worker.Load();
-            _data = worker.Data;
+            _worker = new Heart_Class_New_Data_Worker(_analysisName);
+            _workerBasic = new Basic_New_Data_Worker(_analysisName);
+            _leads = _workerBasic.LoadLeads().ToArray();
+            
             _currentState = State.START_CHANNEL;
             _currentChannelIndex = 0;
-            _output = _data.ClassificationResult;
+            //_output = _data.ClassificationResult;
             _classResults = new List<int>();
+            _classificationList = new List<Tuple<int, int>>();
 
         }
 
@@ -83,7 +88,7 @@ namespace EKG_Project.Modules.Heart_Class
                     numberOfV ++;
             }
 
-            result = (double) numberOfV/(double) listSize;
+            result = (double) numberOfV/(double) listSize*100;
             result = Math.Round(result, 2);
             return result;
 
@@ -94,21 +99,30 @@ namespace EKG_Project.Modules.Heart_Class
             switch (_currentState)
             {
                 case (State.START_CHANNEL):
-                    //_currentName = _data.Output[_currentChannelIndex].Item1;
-                    _currentName = "MLII/II:";
+                    _currentName = _leads[_currentChannelIndex];
+                    _currentIndex = 0;
                     _currentState = State.CALCULATE;
                     break;
                 case (State.CALCULATE):
-                    foreach (var item in _output)
+                    _classificationList = _worker.LoadClassificationResult(_currentName, 0,
+                        (int) _worker.getNumberOfSamples(_currentName));
+                    foreach (var item in _classificationList)
                     {
                         _classResults.Add(item.Item2);
                     }
 
                     _strToStr.Add(_currentName + " Percent of ventricular stimulation: ", CountPercentOfV(_classResults).ToString()); //generalnie to jakie statystyki wasz moduł powinien wyznacać zależy przede wszystkim od was
             
-                    _currentState = State.END;
+                    _currentState = State.NEXT_CHANNEL;
                     break;
-                       // BRAK NEXT CHANNEL STATE bo u mnie jest wynik tylko z jednego kanału
+                case (State.NEXT_CHANNEL):
+                    _currentChannelIndex++;
+                    if (_currentChannelIndex >= _leads.Length) _currentState = State.END;
+                    else
+                    {
+                        _currentState = State.START_CHANNEL;
+                    }
+                    break;
                 case (State.END):
                     _ended = true;
                     break;
@@ -121,7 +135,7 @@ namespace EKG_Project.Modules.Heart_Class
         public static void Main(String[] args)
         {
             Heart_Class_Stats stats = new Heart_Class_Stats();
-            stats.Init("Analysis6");
+            stats.Init("Analysis233");
 
 
             while (true)
