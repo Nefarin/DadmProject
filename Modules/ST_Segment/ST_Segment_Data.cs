@@ -4,24 +4,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.ST_Segment
 {
     public class ST_Segment_Data : ECG_Data
     {
+        private int[] _st_shapes;
+        private Vector<int> _tJ;
+        private Vector<int> _tST;
+
         public ST_Segment_Data()
         {
-            tJs = new List<long>();
-            tSTs = new List<long>();
+         
         }
 
-        public List<long> tJs { get; set; }
-        public List<long> tSTs { get; set; }
-        public int ConcaveCurves { get; set; }
-        public int ConvexCurves { get; set; }
-        public int IncreasingLines { get; set; }
-        public int HorizontalLines { get; set; }
-        public int DecreasingLines { get; set; }
+        public int[] St_shapes
+        {
+            get
+            {
+                return _st_shapes;
+            }
+
+            set
+            {
+                _st_shapes = value;
+            }
+        }
+
+        public Vector<int> TJ
+        {
+            get
+            {
+                return _tJ;
+            }
+
+            set
+            {
+                _tJ = value;
+            }
+        }
+
+        public Vector<int> TST
+        {
+            get
+            {
+                return _tST;
+            }
+
+            set
+            {
+                _tST = value;
+            }
+        }
     }
 }
 
