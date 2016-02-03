@@ -292,7 +292,7 @@ namespace EKG_Unit.Modules.HRT
 
             int[] testArray = null;
             int testLength = 3;
-
+            
             HRT_Alg testAlg = new HRT_Alg();
             int[] actualArray = testAlg.removeRedundant(testArray, testLength);
 
@@ -341,12 +341,12 @@ namespace EKG_Unit.Modules.HRT
 
             // Init test here
 
-            double[] testTachogram1 = { 733, 738, 702, 702, 427, 1005, 755, 758, 744, 722, 694, 722, 725, 721, 720, 725, 736, 733, 713, 694, 680 };
-            double[] testTachogram2 = { 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681, 722, 764, 736, 731, 722, 711, 700, 708, 711 };
-            double[] testTachogram3 = { 700, 708, 711, 728, 489, 1006, 736, 708, 689, 697, 686, 733, 747, 742, 717, 733, 719, 694, 697, 708, 733 };
-            double[] testTachogram4 = { 706, 703, 692, 742, 475, 1039, 728, 728, 697, 703, 711, 706, 728, 736, 764, 733, 692, 689, 458, 969, 753 };
-            double[] testTachogram5 = { 764, 733, 692, 689, 458, 969, 753, 750, 736, 714, 728, 708, 692, 703, 711, 739, 753, 747, 708, 681, 706 };
-            List<double[]> testTachogram = new List<double[]>();
+            List<double> testTachogram1 = new List<double> { 733, 738, 702, 702, 427, 1005, 755, 758, 744, 722, 694, 722, 725, 721, 720, 725, 736, 733, 713, 694, 680 };
+            List<double> testTachogram2 = new List<double> { 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681, 722, 764, 736, 731, 722, 711, 700, 708, 711 };
+            List<double> testTachogram3 = new List<double> { 700, 708, 711, 728, 489, 1006, 736, 708, 689, 697, 686, 733, 747, 742, 717, 733, 719, 694, 697, 708, 733 };
+            List<double> testTachogram4 = new List<double> { 706, 703, 692, 742, 475, 1039, 728, 728, 697, 703, 711, 706, 728, 736, 764, 733, 692, 689, 458, 969, 753 };
+            List<double> testTachogram5 = new List<double> { 764, 733, 692, 689, 458, 969, 753, 750, 736, 714, 728, 708, 692, 703, 711, 739, 753, 747, 708, 681, 706 };
+            List<List<double>> testTachogram = new List<List<double>>();
             testTachogram.Add(testTachogram1);
             testTachogram.Add(testTachogram2);
             testTachogram.Add(testTachogram3);
@@ -387,12 +387,12 @@ namespace EKG_Unit.Modules.HRT
 
             // Init test here
 
-            double[] testTachogram1 = { 708, 717, 714, 686, 431, 889, 694, 686, 700, 708, 717, 697, 694, 683, 664, 656, 669, 725, 708, 706, 686 };
-            double[] testTachogram2 = { 719, 697, 692, 656, 383, 975, 703, 700, 708, 714, 706, 686, 669, 669, 667, 711, 711, 697, 683, 667, 681 };
-            double[] testTachogram3 = { 636, 664, 672, 678, 461, 914, 697, 672, 653, 636, 647, 667, 683, 703, 681, 672, 642, 661, 656, 678, 694 };
-            double[] testTachogram4 = { 642, 647, 644, 653, 561, 831, 664, 639, 639, 617, 442, 911, 689, 700, 672, 653, 642, 661, 669, 706, 725 };
-            double[] testTachogram5 = { 664, 639, 639, 617, 442, 911, 689, 700, 672, 653, 642, 661, 669, 706, 725, 694, 681, 669, 681, 658, 669 };
-            List<double[]> testTachogram = new List<double[]>();
+            List<double> testTachogram1 = new List<double> { 708, 717, 714, 686, 431, 889, 694, 686, 700, 708, 717, 697, 694, 683, 664, 656, 669, 725, 708, 706, 686 };
+            List<double> testTachogram2 = new List<double> { 719, 697, 692, 656, 383, 975, 703, 700, 708, 714, 706, 686, 669, 669, 667, 711, 711, 697, 683, 667, 681 };
+            List<double> testTachogram3 = new List<double> { 636, 664, 672, 678, 461, 914, 697, 672, 653, 636, 647, 667, 683, 703, 681, 672, 642, 661, 656, 678, 694 };
+            List<double> testTachogram4 = new List<double> { 642, 647, 644, 653, 561, 831, 664, 639, 639, 617, 442, 911, 689, 700, 672, 653, 642, 661, 669, 706, 725 };
+            List<double> testTachogram5 = new List<double> { 664, 639, 639, 617, 442, 911, 689, 700, 672, 653, 642, 661, 669, 706, 725, 694, 681, 669, 681, 658, 669 };
+            List<List<double>> testTachogram = new List<List<double>>();
             testTachogram.Add(testTachogram1);
             testTachogram.Add(testTachogram2);
             testTachogram.Add(testTachogram3);
@@ -432,12 +432,12 @@ namespace EKG_Unit.Modules.HRT
 
             // Init test here
 
-            double[] testTachogram1 = { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714, 692 };
-            double[] testTachogram2 = { 753, 764, 722, 717, 433, 986, 703, 725, 742, 728, 728, 703, 694, 675, 711, 739, 739, 717, 733, 714, 689 };
-            double[] testTachogram3 = { 689, 706, 719, 758, 587, 1022, 700, 694, 678, 711, 736, 736, 725, 739, 728, 689, 675, 708, 736, 753, 725 };
-            double[] testTachogram4 = { 708, 708, 694, 711, 601, 820, 744, 711, 689, 697, 708, 736, 744, 717, 742, 719, 700, 678, 708, 714, 750 };
-            double[] testTachogram5 = { 753, 742, 739, 706, 394, 989, 742, 739, 750, 739, 728, 706, 714, 711, 708, 722, 753, 764, 736, 700, 692 };
-            List<double[]> testTachogram = new List<double[]>();
+            List<double> testTachogram1 = new List<double> { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714, 692 };
+            List<double> testTachogram2 = new List<double> { 753, 764, 722, 717, 433, 986, 703, 725, 742, 728, 728, 703, 694, 675, 711, 739, 739, 717, 733, 714, 689 };
+            List<double> testTachogram3 = new List<double> { 689, 706, 719, 758, 587, 1022, 700, 694, 678, 711, 736, 736, 725, 739, 728, 689, 675, 708, 736, 753, 725 };
+            List<double> testTachogram4 = new List<double> { 708, 708, 694, 711, 601, 820, 744, 711, 689, 697, 708, 736, 744, 717, 742, 719, 700, 678, 708, 714, 750 };
+            List<double> testTachogram5 = new List<double> { 753, 742, 739, 706, 394, 989, 742, 739, 750, 739, 728, 706, 714, 711, 708, 722, 753, 764, 736, 700, 692 };
+            List<List<double>> testTachogram = new List<List<double>>();
             testTachogram.Add(testTachogram1);
             testTachogram.Add(testTachogram2);
             testTachogram.Add(testTachogram3);
@@ -476,12 +476,12 @@ namespace EKG_Unit.Modules.HRT
 
             // Init test here
 
-            double[] testTachogram1 = { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714, 692 };
-            double[] testTachogram2 = { 753, 764, 722, 717, 433, 986, 703, 725, 742, 728, 728, 703, 694, 675, 711, 739, 739, 717, 733, 714, 689 };
-            double[] testTachogram3 = { 689, 706, 719, 758, 587, 1022, 700, 694, 678, 711, 736, 736, 725, 739, 728, 689, 675, 708, 736, 753, 725 };
-            double[] testTachogram4 = { 708, 708, 694, 711, 601, 820, 744, 711, 689, 697, 708, 736, 744, 717, 742, 719, 700, 678, 708, 714, 750 };
-            double[] testTachogram5 = { 753, 742, 739, 706, 394, 989, 742, 739, 750, 739, 728, 706, 714, 711, 708, 722, 753, 764, 736, 700, 692 };
-            List<double[]> testTachogram = new List<double[]>();
+            List<double> testTachogram1 = new List<double> { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714, 692 };
+            List<double> testTachogram2 = new List<double> { 753, 764, 722, 717, 433, 986, 703, 725, 742, 728, 728, 703, 694, 675, 711, 739, 739, 717, 733, 714, 689 };
+            List<double> testTachogram3 = new List<double> { 689, 706, 719, 758, 587, 1022, 700, 694, 678, 711, 736, 736, 725, 739, 728, 689, 675, 708, 736, 753, 725 };
+            List<double> testTachogram4 = new List<double> { 708, 708, 694, 711, 601, 820, 744, 711, 689, 697, 708, 736, 744, 717, 742, 719, 700, 678, 708, 714, 750 };
+            List<double> testTachogram5 = new List<double> { 753, 742, 739, 706, 394, 989, 742, 739, 750, 739, 728, 706, 714, 711, 708, 722, 753, 764, 736, 700, 692 };
+            List<List<double>> testTachogram = new List<List<double>>();
             testTachogram.Add(testTachogram1);
             testTachogram.Add(testTachogram2);
             testTachogram.Add(testTachogram3);
@@ -690,19 +690,20 @@ namespace EKG_Unit.Modules.HRT
             List<int> testVPC = new List<int>();
             testVPC.Add(22);
 
-            double[] expectedTachogramArray1 = { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
-            List<double[]> expectedTachogram = new List<double[]>();
+            List<double> expectedTachogramArray1 = new List<double> { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<List<double>> expectedTachogram = new List<List<double>>();
             expectedTachogram.Add(expectedTachogramArray1);
 
             // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
-            List<double[]> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
+            List<List<double>> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
 
             // Assert results
 
             for (int iter = 0; iter < resultTachogram.Count; iter++)
             {
+                
                 CollectionAssert.AreEqual(resultTachogram[iter], expectedTachogram[iter]);
             }
 
@@ -735,16 +736,16 @@ namespace EKG_Unit.Modules.HRT
             testVPC.Add(22);
             testVPC.Add(82);
 
-            double[] expectedTachogramArray1 = { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
-            double[] expectedTachogramArray2 = { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
-            List<double[]> expectedTachogram = new List<double[]>();
+            List<double> expectedTachogramArray1 = new List<double> { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<double> expectedTachogramArray2 = new List<double> { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<List<double>> expectedTachogram = new List<List<double>>();
             expectedTachogram.Add(expectedTachogramArray1);
             expectedTachogram.Add(expectedTachogramArray2);
 
             // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
-            List<double[]> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
+            List<List<double>> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
 
             // Assert results
 
@@ -795,10 +796,10 @@ namespace EKG_Unit.Modules.HRT
             testVPC.Add(82);
             testVPC.Add(202);
 
-            double[] expectedTachogramArray1 = { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
-            double[] expectedTachogramArray2 = { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
-            double[] expectedTachogramArray3 = { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
-            List<double[]> expectedTachogram = new List<double[]>();
+            List<double> expectedTachogramArray1 = new List<double> { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<double> expectedTachogramArray2 = new List<double> { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<double> expectedTachogramArray3 = new List<double> { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<List<double>> expectedTachogram = new List<List<double>>();
             expectedTachogram.Add(expectedTachogramArray1);
             expectedTachogram.Add(expectedTachogramArray2);
             expectedTachogram.Add(expectedTachogramArray3);
@@ -806,7 +807,7 @@ namespace EKG_Unit.Modules.HRT
             // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
-            List<double[]> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
+            List<List<double>> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
 
             //HRT_Alg algorytm = new HRT_Alg();
             //algorytm.PrintVector(resultTachogram);
@@ -862,10 +863,10 @@ namespace EKG_Unit.Modules.HRT
             testVPC.Add(202);
             testVPC.Add(232);
 
-            double[] expectedTachogramArray1 = { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
-            double[] expectedTachogramArray2 = { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
-            double[] expectedTachogramArray3 = { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
-            List<double[]> expectedTachogram = new List<double[]>();
+            List<double> expectedTachogramArray1 = new List<double> { 739, 703, 703, 428, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<double> expectedTachogramArray2 = new List<double> { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<double> expectedTachogramArray3 = new List<double> { 740, 703, 703, 429, 1006, 756, 758, 744, 722, 694, 722, 725, 431, 1022, 761, 736, 733, 714, 694, 681 };
+            List<List<double>> expectedTachogram = new List<List<double>>();
             expectedTachogram.Add(expectedTachogramArray1);
             expectedTachogram.Add(expectedTachogramArray2);
             expectedTachogram.Add(expectedTachogramArray3);
@@ -873,7 +874,7 @@ namespace EKG_Unit.Modules.HRT
             // Process test here
 
             HRT_Alg testAlg = new HRT_Alg();
-            List<double[]> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
+            List<List<double>> resultTachogram = testAlg.MakeTachogram(testVPC, testrrIntervalsVector);
 
             HRT_Alg algorytm = new HRT_Alg();
 
@@ -895,19 +896,19 @@ namespace EKG_Unit.Modules.HRT
 
             // Init test here
 
-            double[] testTachogram1 = { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714 };
-            double[] testTachogram2 = { 753, 764, 722, 717, 433, 986, 703, 725, 742, 728, 728, 703, 694, 675, 711, 739, 739, 717, 733, 714 };
-            double[] testTachogram3 = { 689, 706, 719, 758, 587, 1022, 700, 694, 678, 711, 736, 736, 725, 739, 728, 689, 675, 708, 736, 753 };
-            double[] testTachogram4 = { 708, 708, 694, 711, 601, 820, 744, 711, 689, 697, 708, 736, 744, 717, 742, 719, 700, 678, 708, 714 };
-            double[] testTachogram5 = { 753, 742, 739, 706, 394, 989, 742, 739, 750, 739, 728, 706, 714, 711, 708, 722, 753, 764, 736, 700 };
-            List<double[]> testTachogram = new List<double[]>();
+            List<double> testTachogram1 = new List<double> { 725, 736, 722, 711, 589, 1000, 717, 739, 767, 744, 711, 692, 700, 700, 722, 725, 747, 725, 744, 714 };
+            List<double> testTachogram2 = new List<double> { 753, 764, 722, 717, 433, 986, 703, 725, 742, 728, 728, 703, 694, 675, 711, 739, 739, 717, 733, 714 };
+            List<double> testTachogram3 = new List<double> { 689, 706, 719, 758, 587, 1022, 700, 694, 678, 711, 736, 736, 725, 739, 728, 689, 675, 708, 736, 753 };
+            List<double> testTachogram4 = new List<double> { 708, 708, 694, 711, 601, 820, 744, 711, 689, 697, 708, 736, 744, 717, 742, 719, 700, 678, 708, 714 };
+            List<double> testTachogram5 = new List<double> { 753, 742, 739, 706, 394, 989, 742, 739, 750, 739, 728, 706, 714, 711, 708, 722, 753, 764, 736, 700 };
+            List<List<double>> testTachogram = new List<List<double>>();
             testTachogram.Add(testTachogram1);
             testTachogram.Add(testTachogram2);
             testTachogram.Add(testTachogram3);
             testTachogram.Add(testTachogram4);
             testTachogram.Add(testTachogram5);
 
-            double[] expectedMeanTachogram = { 725.6, 731.2, 719.2, 720.6, 520.8, 963.4, 721.2, 721.6, 725.2, 723.8, 722.2, 714.6, 715.4, 708.4, 722.2, 718.8, 722.8, 718.4, 731.4, 719 };
+            List<double> expectedMeanTachogram = new List<double> { 725.6, 731.2, 719.2, 720.6, 520.8, 963.4, 721.2, 721.6, 725.2, 723.8, 722.2, 714.6, 715.4, 708.4, 722.2, 718.8, 722.8, 718.4, 731.4, 719 };
 
             // Process test here
 
