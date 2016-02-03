@@ -38,7 +38,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             testAlgs.Fs = 20;
 
-            List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList);
+            List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList, 0);
 
             // Assert results
 
@@ -75,7 +75,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             testAlgs.Fs = 20;
 
-            List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList);
+            List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList, 0);
 
             // Assert results
 
@@ -97,7 +97,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
             List<int> testTEndList = new List<int>();
-            testTEndList.Add(1); // aditional t-end - t-wave can't be built
+            testTEndList.Add(1); // additional t-end - t-wave can't be built
             testTEndList.Add(5);
             testTEndList.Add(9);
             Vector<double> resultVector1 = Vector<double>.Build.DenseOfArray(resultArray1);
@@ -112,7 +112,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             testAlgs.Fs = 20;
 
-            List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList);
+            List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList, 0);
 
             // Assert results
 
@@ -149,11 +149,48 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             testAlgs.Fs = 20;
 
-            List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList);
+            List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList, 0);
 
             // Assert results
 
             Assert.AreEqual(resultVector1, desiredList[0]);
+
+        }
+
+        [TestMethod]
+        [Description("Tests if T-wave array is built properly with currentIndex parameter")]
+        public void buildTWavesArrayIndexShiftTest()
+        {
+            // Init test here
+
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            double[] resultArray1 = { 2, 3, 4 };
+            double[] resultArray2 = { 7, 8, 9 };
+
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            List<int> testTEndList = new List<int>();
+            testTEndList.Add(24);
+            testTEndList.Add(29);
+            Vector<double> resultVector1 = Vector<double>.Build.DenseOfArray(resultArray1);
+            Vector<double> resultVector2 = Vector<double>.Build.DenseOfArray(resultArray2);
+            List<Vector<double>> resultList = new List<Vector<double>>();
+            resultList.Add(resultVector1);
+            resultList.Add(resultVector2);
+
+            T_Wave_Alt_Alg testAlgs = new T_Wave_Alt_Alg();
+
+            // Process test here
+
+            testAlgs.Fs = 20;
+
+            List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList, 20);
+
+            // Assert results
+
+            Assert.AreEqual(resultVector1, desiredList[0]);
+            Assert.AreEqual(resultVector2, desiredList[1]);
+
 
         }
 
@@ -511,6 +548,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             // Process test here
 
+            testAlgs.NewTEndsArray = testTEndsList1;
             List<Tuple<int, int>> receivedList = testAlgs.alternansDetection(testAlternansVector, testTEndsList1);
 
             // Assert results
@@ -570,7 +608,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
             // Process test here
 
             testAlgs.Fs = 20;
-            List<Vector<double>> T_WavesArray = testAlgs.buildTWavesArray(testVector, testTEndList);
+            List<Vector<double>> T_WavesArray = testAlgs.buildTWavesArray(testVector, testTEndList, 0);
             Vector<double> medianT_Wave = testAlgs.calculateMedianTWave(T_WavesArray);
             Vector<double> ACI = testAlgs.calculateACI(T_WavesArray, medianT_Wave);
             List<int> Flucts = testAlgs.findFluctuations(ACI);

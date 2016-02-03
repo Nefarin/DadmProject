@@ -17,6 +17,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
         private T_Wave_Alt_Params _params;
         private uint _fs;
         private int _tLength;
+        private List<int> _newTEndsList;
 
         // Get&set
         public T_Wave_Alt_Params Params
@@ -55,6 +56,11 @@ namespace EKG_Project.Modules.T_Wave_Alt
             {
                 _tLength = value;
             }
+        }
+        public List<int> NewTEndsArray
+        {
+            get { return _newTEndsList; }
+            set { _newTEndsList = value; }
         }
 
         // Class methods
@@ -100,18 +106,21 @@ namespace EKG_Project.Modules.T_Wave_Alt
         /// </summary>
         /// <param name="loadedSignal">Input signal</param>
         /// <param name="tEndsList">List of T-ends indices</param>
+        /// <param name="currentIndex">Last processed sample - needed for signal division</param>
         /// <returns>List of vectors containing T-waves</returns>
         #endregion
-        public List<Vector<double>> buildTWavesArray(Vector<double> loadedSignal, List<int> tEndsList)
+        public List<Vector<double>> buildTWavesArray(Vector<double> loadedSignal, List<int> tEndsList, int currentIndex)
         {
             calculateTLength();
             int tLength = this.TLength;
             List<Vector<double>> TWavesArray = new List<Vector<double>>();
+            _newTEndsList = new List<int>();
             foreach (int currentTEnd in tEndsList) {
-                if (currentTEnd + 1 >= tLength && currentTEnd >= 0 && currentTEnd < loadedSignal.Count)
+                if ((currentTEnd + 1) >= (tLength + currentIndex) && currentTEnd >= currentIndex && currentTEnd < (loadedSignal.Count + currentIndex))
                 {
-                    Vector<double> newTWave = loadedSignal.SubVector(currentTEnd - tLength + 1, tLength);
+                    Vector<double> newTWave = loadedSignal.SubVector(currentTEnd - currentIndex - tLength + 1, tLength);
                     TWavesArray.Add(newTWave);
+                    _newTEndsList.Add(currentTEnd);
                 }
             }
 
@@ -289,7 +298,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
             {
                 if (alternansVector[i]==1)
                 {
-                    Tuple<int, int> currentRecord = new Tuple<int, int>(tEndsList[i], 1);
+                    Tuple<int, int> currentRecord = new Tuple<int, int>(_newTEndsList[i], 1);
                     alternansDetectedList.Add(currentRecord);
                 }
             }
