@@ -22,7 +22,7 @@ namespace EKG_Project.Modules.HRT
         private int _currentChannelLength;
         private string _currentLeadName;
         private string[] _leads;
-        //private int _currentIndex;
+        private int _currentIndex;
         private int _numberOfChannels;
         private uint _frequency;
         private enum VPC { NOT_DETECTED, NO_VENTRICULAR, DETECTED_BUT_IMPOSSIBLE_TO_PLOT, LETS_PLOT };
@@ -33,10 +33,10 @@ namespace EKG_Project.Modules.HRT
         private Heart_Class_New_Data_Worker _inputWorker_Heart_Class;
         private HRT_New_Data_Worker _outputWorker;
 
-        private Basic_Data _inputData_basic;
-        private R_Peaks_Data _inputData_R_Peaks;
-        private Heart_Class_Data _inputData_Heart_Class;
-        private HRT_Data _outputData;
+        //private Basic_Data _inputData_basic;
+        //private R_Peaks_Data _inputData_R_Peaks;
+        //private Heart_Class_Data _inputData_Heart_Class;
+        //private HRT_Data _outputData;
         private HRT_Params _params;
 
 
@@ -102,10 +102,10 @@ namespace EKG_Project.Modules.HRT
                 InputWorker_R_Peaks = new R_Peaks_New_Data_Worker(Params.AnalysisName);
                 InputWorker_Heart_Class = new Heart_Class_New_Data_Worker(Params.AnalysisName);
                 OutputWorker = new HRT_New_Data_Worker(Params.AnalysisName);
-                InputData_basic = new Basic_Data();
-                InputData_R_Peaks = new R_Peaks_Data();
-                InputData_Heart_Class = new Heart_Class_Data();
-                OutputData = new HRT_Data();
+                //InputData_basic = new Basic_Data();
+                //InputData_R_Peaks = new R_Peaks_Data();
+                //InputData_Heart_Class = new Heart_Class_Data();
+                //OutputData = new HRT_Data();
 
                 _frequency = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
                 _state = STATE.INIT;
@@ -122,7 +122,7 @@ namespace EKG_Project.Modules.HRT
 
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels);
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_currentIndex / (double)_currentChannelLength));
         }
 
         public bool Runnable()
@@ -135,13 +135,11 @@ namespace EKG_Project.Modules.HRT
             switch (_state)
             {
                 case (STATE.INIT):
-              
                     _currentChannelIndex = -1;
                     _leads = InputWorker_basic.LoadLeads().ToArray();
                     _numberOfChannels = _leads.Length;
                     _alg = new HRT_Alg();
                     _state = STATE.BEGIN_CHANNEL;
-                    System.Diagnostics.Debug.WriteLine("_currentLeadName " + _currentLeadName);
                     break;
                 case (STATE.BEGIN_CHANNEL):
                     _currentChannelIndex++;
@@ -160,14 +158,17 @@ namespace EKG_Project.Modules.HRT
                     {
                         try
                         {
-                            uint _rPeakCount = InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName);
-                            _rpeaks = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, (int)_rPeakCount);
+                            int NoOfSamplesHeartClass = (int)InputWorker_Heart_Class.getNumberOfSamples(_currentLeadName);
+                            int NoOfSamplesRPeaks = (int)InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName);
+                            int NoOfSamplesRRInterval = (int)InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RRInterval , _currentLeadName);
+
+                            _rpeaks = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, NoOfSamplesRPeaks);
+                            _rrintervals = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, NoOfSamplesRRInterval);
+                            _classAll = InputWorker_Heart_Class.LoadClassificationResult(_currentLeadName, 0, NoOfSamplesHeartClass);
+
                             System.Diagnostics.Debug.WriteLine(_rpeaks);
-                            uint _rrIntervalCount = InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _currentLeadName);
-                            _rrintervals = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, (int)_rrIntervalCount);
                             System.Diagnostics.Debug.WriteLine(_rrintervals);
-                            //_classAll = InputData_Heart_Class.ClassificationResult[_currentChannelIndex].Item2;
-                            
+                            System.Diagnostics.Debug.WriteLine(_classAll);
                             //Console.WriteLine("_step " + _step);
                             _state = STATE.PROCESS_CHANNEL;
                         }
@@ -365,57 +366,57 @@ namespace EKG_Project.Modules.HRT
             }
         }
 
-        public Basic_Data InputData_basic
-        {
-            get
-            {
-                return _inputData_basic;
-            }
+        //public Basic_Data InputData_basic
+        //{
+        //    get
+        //    {
+        //        return _inputData_basic;
+        //    }
 
-            set
-            {
-                _inputData_basic = value;
-            }
-        }
+        //    set
+        //    {
+        //        _inputData_basic = value;
+        //    }
+        //}
 
-        public R_Peaks_Data InputData_R_Peaks
-        {
-            get
-            {
-                return _inputData_R_Peaks;
-            }
+        //public R_Peaks_Data InputData_R_Peaks
+        //{
+        //    get
+        //    {
+        //        return _inputData_R_Peaks;
+        //    }
 
-            set
-            {
-                _inputData_R_Peaks = value;
-            }
-        }
+        //    set
+        //    {
+        //        _inputData_R_Peaks = value;
+        //    }
+        //}
 
-        public Heart_Class_Data InputData_Heart_Class
-        {
-            get
-            {
-                return _inputData_Heart_Class;
-            }
+        //public Heart_Class_Data InputData_Heart_Class
+        //{
+        //    get
+        //    {
+        //        return _inputData_Heart_Class;
+        //    }
 
-            set
-            {
-                _inputData_Heart_Class = value;
-            }
-        }
+        //    set
+        //    {
+        //        _inputData_Heart_Class = value;
+        //    }
+        //}
 
-        public HRT_Data OutputData
-        {
-            get
-            {
-                return _outputData;
-            }
+        //public HRT_Data OutputData
+        //{
+        //    get
+        //    {
+        //        return _outputData;
+        //    }
 
-            set
-            {
-                _outputData = value;
-            }
-        }
+        //    set
+        //    {
+        //        _outputData = value;
+        //    }
+        //}
 
         public HRT_Params Params
         {
@@ -436,7 +437,7 @@ namespace EKG_Project.Modules.HRT
         public static void Main()
         {
 
-            HRT_Params param = new HRT_Params("Analysis 1");
+            HRT_Params param = new HRT_Params("Analysis HRT");
 
             HRT testModule = new HRT();
             testModule.Init(param);
