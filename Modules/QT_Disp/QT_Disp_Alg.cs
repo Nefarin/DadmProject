@@ -27,18 +27,18 @@ namespace EKG_Project.Modules.QT_Disp
         List<double> QT_intervals;                      //to do in processData
         List<int> T_End_local;                          //to do in processData
         //List<List<double>> AllQT_Intervals;             //to do after change a channel
-        public QT_Disp_Alg()
+        public QT_Disp_Alg(int size)
         {
-            QRS_onset = new List<int>();
-            T_End_Global = new List<int>();
-            QRS_End = new List<int>();
+            QRS_onset = new List<int>(size);
+            T_End_Global = new List<int>(size);
+            QRS_End = new List<int>(size);
             R_Peaks = Vector<double>.Build.Dense(1);
             T_End_method = new T_End_Method();
             QT_Calc_method = new QT_Calc_Method();
             Fs = new uint();
-            QT_intervals = new List<double>(1);
+            QT_intervals = new List<double>(size);
             //AllQT_Intervals = new List<List<double>>();
-            T_End_local = new List<int>(1);
+            T_End_local = new List<int>(size);
         }      
         
         /// <summary>
@@ -289,7 +289,7 @@ namespace EKG_Project.Modules.QT_Disp
 
             Tuple<int, double> result;
             //create object like we do in interface
-            QT_Disp_Alg data = new QT_Disp_Alg();
+            QT_Disp_Alg data = new QT_Disp_Alg(24);
             // read list from waves, r_peaks  and params 
             data.TODoInInit(onset, tend, end, R_Peaks, T_End_Method.TANGENT, QT_Calc_Method.FRAMIGHAMA, 360);
             List<Tuple<int, double>> output = new List<Tuple<int, double>>();
@@ -349,7 +349,19 @@ namespace EKG_Project.Modules.QT_Disp
             if(QRS_onset > QRS_End && (QRS_End !=- 1)) throw new ArgumentNullException("Waves not working good, QRS onset > QRS End - recognition impossible");
             if(QRS_End > T_End_Global && (T_End_Global !=-1) ) throw new ArgumentNullException("Waves not working good, QRS End > T_End- recognition impossible");
             if(Fs < 0) throw new ArgumentNullException("Wrong Frequency parameter");
-            
+            if ((QRS_End < R_Peak.ElementAt(0) || QRS_End > R_Peak.ElementAt(1)) && QRS_End != -1)
+            {
+                QRS_End = -1;// throw new InvalidDataException("Wrong QRS End detection");
+            }
+            if ((T_End_Global < R_Peak.ElementAt(0) || T_End_Global > R_Peak.ElementAt(1)) && T_End_Global != -1)
+            {
+                T_End_Global = -1; // throw new InvalidDataException("Wrong T End detection");
+            }
+            if (QRS_onset > R_Peak.ElementAt(0) && QRS_onset != -1)
+            {
+                QRS_onset = -1; //  throw new InvalidDataException("Wrong QRS Onset detection");
+            }
+
             this.QRS_onset = QRS_onset;
             this.QRS_End = QRS_End;
             this.T_End_Global = T_End_Global;
@@ -377,6 +389,10 @@ namespace EKG_Project.Modules.QT_Disp
         /// <returns>T End index</returns>
         public int FindT_End()
         {
+            /*if(QRS_End == 74627)
+            {
+                Console.WriteLine("Something go wrong");
+            }*/
             int T_End = -1;
             int T_Max = -1;
             int MaxSlope = -1;
@@ -391,7 +407,7 @@ namespace EKG_Project.Modules.QT_Disp
                     try
                     {
                         //if yes calculate T_Max index
-                        T_Max = samples.SubVector(QRS_End - (int)R_Peak.ElementAt(0), (T_End_Global - QRS_End)).MaximumIndex() + QRS_End;
+                        T_Max = samples.SubVector((QRS_End - (int)R_Peak.ElementAt(0)), (T_End_Global - QRS_End - (int)(0.035* Fs))).MaximumIndex() + QRS_End;
                     }
                     catch (Exception ex)
                     {
@@ -413,7 +429,7 @@ namespace EKG_Project.Modules.QT_Disp
                     try
                     {
                         // if yes invert a signal and get a T_Max index
-                        T_Max = samples.SubVector(QRS_End - (int)R_Peak.ElementAt(0), T_End_Global - QRS_End).Negate().MaximumIndex() + QRS_End;
+                        T_Max = samples.SubVector((QRS_End - (int)R_Peak.ElementAt(0))+(int)(Fs*0.2), T_End_Global - QRS_End - (int)(0.045* Fs)).Negate().MaximumIndex() + QRS_End;
                     }
                     catch (Exception ex)
                     {
@@ -598,8 +614,8 @@ namespace EKG_Project.Modules.QT_Disp
             }
             else
             {
-                //throw new InvalidOperationException("Wrong input vector");
-                output = Vector<double>.Build.DenseOfArray(ze); 
+                throw new InvalidOperationException("Wrong input vector");
+                //output = Vector<double>.Build.DenseOfArray(ze); 
             }
             return output;
         }

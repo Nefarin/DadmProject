@@ -29,12 +29,12 @@ namespace EKG_Project.Modules.QT_Disp
         }
         public QT_Disp_Data()
         {
-            this.QT_disp_local = new List<Tuple<string, double>>(1);
-            this.QT_mean = new List<Tuple<string, double>>(1);
-            this.QT_std = new List<Tuple<string, double>>(1);
+            this.QT_disp_local = new List<Tuple<string, double>>(12);
+            this.QT_mean = new List<Tuple<string, double>>(12);
+            this.QT_std = new List<Tuple<string, double>>(12);
             
-            this.T_End_Local = new List<Tuple<string, List<int>>>(1);
-            this.QT_Intervals = new List<Tuple<string, List<double>>>(1);         
+            this.T_End_Local = new List<Tuple<string, List<int>>>(12);
+            this.QT_Intervals = new List<Tuple<string, List<double>>>(12);         
 
         }
         public List<Tuple<String, double>> QT_disp_local

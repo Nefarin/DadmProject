@@ -35,6 +35,8 @@ namespace EKG_Project.Modules.QT_Disp
 
         int step = 0;                   //stores actual count of sample signal vector
         int R_Peak_step = 1;            //we execute a process data with every R_peak
+        int previousIndex = 0;
+      
         private Vector<double> _r_peaks;
         //input workers
         private ECG_Baseline_New_Data_Worker _inputECGBaselineWorker;
@@ -54,9 +56,10 @@ namespace EKG_Project.Modules.QT_Disp
         private QT_Disp_Params _params;
 
         private Vector<double> _currentVector;
-        private List<Tuple<string, List<int>>> _t_end_loacl;
+        //private List<Tuple<string, List<int>>> _t_end_loacl;
         private List<int> _t_end_index = new List<int>();
-        private List<Tuple<string, List<double>>> _qt_intervals;
+        //private List<Tuple<string, List<double>>> _qt_intervals;
+        List<double> qt_intervals = new List<double>();
         private STATE _state;
 
         public void Abort()
@@ -124,16 +127,16 @@ namespace EKG_Project.Modules.QT_Disp
                     _currentLength = 2;
                    
                     _state = STATE.BEGIN_CHANNEL;
-                    _maxInputIndexes = 1000;
+                    _maxInputIndexes = 2000;
                     createNewObject = true;
                     OutputData = new QT_Disp_Data();
-                    NumberOfChannels = InputBasicWorker.LoadLeads().Count;
+                    NumberOfChannels = _leads.Count;
                     _currentChannelLength = (int) InputBasicWorker.getNumberOfSamples(_leads[_currentChannelIndex]);
                     break;
                 case (STATE.BEGIN_CHANNEL):
                     
                    
-                    QT_Disp_Algorithms = new QT_Disp_Alg();      //create new object to calculate algorithms
+                    QT_Disp_Algorithms = new QT_Disp_Alg(_currentChannelWaves_indexes);      //create new object to calculate algorithms
                     _currentChannelWaves_indexes = (int) InputWavesWorker.getNumberOfSamples(Waves_Signal.QRSOnsets, _leads[_currentChannelIndex]);   // it's going to be in new worker
 
                     //set number of indexes to get from waves and r_peaks
@@ -161,6 +164,7 @@ namespace EKG_Project.Modules.QT_Disp
                         _params.TEndMethod, _params.QTMethod, InputBasicWorker.LoadAttribute(Basic_Attributes.Frequency)
                         );
                     _indexesProcessed = _amountOfIndexesInInput;
+                    step = 0;
                     _state = STATE.PROCESS_CHANNEL;
 
                     break;
@@ -168,6 +172,29 @@ namespace EKG_Project.Modules.QT_Disp
                   
                     if(step > _amountOfIndexesInInput-3)
                     {
+                        /*
+                        Console.WriteLine("Lead:\t " + _currentLeadName);
+                        Console.WriteLine("Index processed:\t" + _indexesProcessed);
+                        Console.WriteLine("Current step:\t" + step);
+                        Console.WriteLine("samples processed:\t" + _samplesProcessed);
+                        Console.ReadKey();*/
+                        // delete existing file if we writting firt time
+                        if(previousIndex == 0)
+                        {
+                           OutputWorker.SaveQTIntervals(_currentLeadName, false, QT_Disp_Algorithms.QT_INTERVALS.
+                            GetRange(previousIndex, step));
+                           OutputWorker.SaveTEndLocal(_currentLeadName, false, QT_Disp_Algorithms.T_END_LOCAL.
+                            GetRange(previousIndex, step));
+                        }
+                        else
+                        {
+                           OutputWorker.SaveQTIntervals(_currentLeadName, true, QT_Disp_Algorithms.QT_INTERVALS.
+                            GetRange(previousIndex, step));
+                           OutputWorker.SaveTEndLocal(_currentLeadName, true, QT_Disp_Algorithms.T_END_LOCAL.
+                            GetRange(previousIndex, step));
+                        }
+                     
+                        previousIndex += (step);
                         if (_indexesProcessed < _currentChannelWaves_indexes)
                         {
                             if (_currentChannelWaves_indexes - _indexesProcessed > _maxInputIndexes)
@@ -216,26 +243,49 @@ namespace EKG_Project.Modules.QT_Disp
                     if (_currentChannelIndex < NumberOfChannels-1)
                     {
                         _currentChannelIndex++;
-                        OutputData.QT_Intervals.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.QT_INTERVALS));
-                        OutputData.T_End_Local.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.T_END_LOCAL));
+
+                        double[] qt_temp = new double[QT_Disp_Algorithms.QT_INTERVALS.Count()];
+                        int[] t_end = new int[QT_Disp_Algorithms.T_END_LOCAL.Count()];
+
+                        QT_Disp_Algorithms.QT_INTERVALS.CopyTo(qt_temp);
+                        QT_Disp_Algorithms.T_END_LOCAL.CopyTo(t_end);
+
+                        OutputData.QT_Intervals.Add(Tuple.Create(_currentLeadName,qt_temp.ToList()));
+                        OutputData.T_End_Local.Add(Tuple.Create(_currentLeadName, t_end.ToList()));
+
                         OutputData.QT_mean.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getMean()));
                         OutputData.QT_std.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getStd()));
                         OutputData.QT_disp_local.Add(Tuple.Create(_currentLeadName,QT_Disp_Algorithms.getLocal()));
 
                         OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_disp_local, QT_Disp_Algorithms.getLocal());
                         OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_mean, QT_Disp_Algorithms.getMean());
-                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_std, QT_Disp_Algorithms.getStd());
-
-                        OutputWorker.SaveQTIntervals(_currentLeadName, false, QT_Disp_Algorithms.QT_INTERVALS);
-                        OutputWorker.SaveTEndLocal(_currentLeadName, false, QT_Disp_Algorithms.T_END_LOCAL);
+                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_std, QT_Disp_Algorithms.getStd());                      
 
                         QT_Disp_Algorithms.DeleteQT_Intervals();
 
                         _state = STATE.BEGIN_CHANNEL;
                         step = 0;
+                        previousIndex = 0;
                     }
                     else
                     {
+                        double[] qt_temp = new double[QT_Disp_Algorithms.QT_INTERVALS.Count()];
+                        int[] t_end = new int[QT_Disp_Algorithms.T_END_LOCAL.Count()];
+
+                        QT_Disp_Algorithms.QT_INTERVALS.CopyTo(qt_temp);
+                        QT_Disp_Algorithms.T_END_LOCAL.CopyTo(t_end);
+
+                        OutputData.QT_Intervals.Add(Tuple.Create(_currentLeadName, qt_temp.ToList()));
+                        OutputData.T_End_Local.Add(Tuple.Create(_currentLeadName, t_end.ToList()));
+
+                        OutputData.QT_mean.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getMean()));
+                        OutputData.QT_std.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getStd()));
+                        OutputData.QT_disp_local.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getLocal()));
+
+                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_disp_local, QT_Disp_Algorithms.getLocal());
+                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_mean, QT_Disp_Algorithms.getMean());
+                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_std, QT_Disp_Algorithms.getStd());
+
                         _state = STATE.END;
                     }
                     break;
@@ -272,26 +322,26 @@ namespace EKG_Project.Modules.QT_Disp
                 _numberOfChannels = value;
             }
         }
-        public List<Tuple<string, List<int>>> T_End_Local
+        public List<int> T_End_Local
         {
             get
             {
-                return _t_end_loacl;
+                return _t_end_index;
             }
             set
             {
-                _t_end_loacl = value;
+                _t_end_index = value;
             }
         }
-        public List<Tuple<string,List<double>>> QT_Intervals
+        public List<double> QT_Intervals
         {
             get
             {
-                return _qt_intervals;
+                return qt_intervals;
             }
             set
             {
-                _qt_intervals = value;
+                qt_intervals = value;
             }
         }
        
@@ -460,7 +510,7 @@ namespace EKG_Project.Modules.QT_Disp
                 //Console.WriteLine("Press key to continue...");
                 //Console.ReadKey();
                 if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress().ToString("#.0"));
+                Console.WriteLine(testModule.Progress().ToString("#.00"));
                 testModule.ProcessData();
             }
             Console.WriteLine("Finish");

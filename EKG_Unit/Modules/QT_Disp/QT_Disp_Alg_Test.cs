@@ -44,16 +44,16 @@ namespace EKG_Unit.Modules.QT_Disp
         [Description("Test if DataToCalculate constructs proper data")]
         public void test_DataToCalculate()
         {
-            double[] samp1 = { 2.09, 3.94, 4.66, 9.78, 10.62 };
-            double[] RR = { 12, 17 };
+            double[] samp1 = { 2.09, 3.94, 4.66, 9.78, 10.62 ,43.3,34.4};
+            double[] RR = { 23, 30 };
             Vector<double> samp = Vector<double>.Build.DenseOfArray(samp1);
 
-            DataToCalculate data = new DataToCalculate(22, 37, 42, samp, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, RR);
+            DataToCalculate data = new DataToCalculate(22, 25, 29, samp, QT_Calc_Method.FRAMIGHAMA, T_End_Method.PARABOLA, 360, RR);
 
             PrivateObject obj = new PrivateObject(data);
             Assert.AreEqual(22, obj.GetField("QRS_onset"));
-            Assert.AreEqual(37, obj.GetField("QRS_End"));
-            Assert.AreEqual(42, obj.GetField("T_End_Global"));
+            Assert.AreEqual(25, obj.GetField("QRS_End"));
+            Assert.AreEqual(29, obj.GetField("T_End_Global"));
             Assert.AreEqual(samp, obj.GetField("samples"));
             Assert.AreEqual(QT_Calc_Method.FRAMIGHAMA, obj.GetField("QT_Calc_method"));
             Assert.AreEqual(T_End_Method.PARABOLA, obj.GetField("T_End_method"));
@@ -84,7 +84,7 @@ namespace EKG_Unit.Modules.QT_Disp
         [Description("Test constructor QT_Disp_Alg if proper assertion")]
         public void testQT_Disp_Alg()
         {
-            QT_Disp_Alg test = new QT_Disp_Alg();
+            QT_Disp_Alg test = new QT_Disp_Alg(3);
             PrivateObject obj = new PrivateObject(test);
             List<int> onset = new List<int>();
             onset.Add(191);
@@ -114,7 +114,7 @@ namespace EKG_Unit.Modules.QT_Disp
         [ExpectedException(typeof(ArgumentNullException), "QRS_onset empty list")]
         public void testQT_Disp_Alg_Inittest()
         {
-            QT_Disp_Alg test = new QT_Disp_Alg();
+            QT_Disp_Alg test = new QT_Disp_Alg(3);
             PrivateObject obj = new PrivateObject(test);
             List<int> onset = new List<int>();
             List<int> end = new List<int>(); //test works the same if QRS_end list is empty
@@ -134,7 +134,7 @@ namespace EKG_Unit.Modules.QT_Disp
         [Description("Test if method returns -1, 0 when contructor parameters Tend_Global = -1")]
         public void testQT_Disp_Alg2()
         {//check if this is correct...
-            QT_Disp_Alg test = new QT_Disp_Alg();
+            QT_Disp_Alg test = new QT_Disp_Alg(30);
 
            PrivateObject obj = new PrivateObject(test);
             double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662,
@@ -212,7 +212,7 @@ namespace EKG_Unit.Modules.QT_Disp
         [ExpectedException(typeof(ArgumentNullException), "QRS_Onset null")]
         public void test_DataToCalculate_3()
         {
-            QT_Disp_Alg test = new QT_Disp_Alg();
+            QT_Disp_Alg test = new QT_Disp_Alg(30);
 
             PrivateObject obj = new PrivateObject(test);
             double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662,
@@ -237,7 +237,7 @@ namespace EKG_Unit.Modules.QT_Disp
         [ExpectedException(typeof(ArgumentNullException), "QRS_End null")]
         public void test_DataToCalculate_4()
         {
-            QT_Disp_Alg test = new QT_Disp_Alg();
+            QT_Disp_Alg test = new QT_Disp_Alg(30);
 
             PrivateObject obj = new PrivateObject(test);
             double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662,
@@ -261,7 +261,7 @@ namespace EKG_Unit.Modules.QT_Disp
         [ExpectedException(typeof(ArgumentNullException), "T_End_Global null")]
         public void test_DataToCalculate_5()
         {
-            QT_Disp_Alg test = new QT_Disp_Alg();
+            QT_Disp_Alg test = new QT_Disp_Alg(30);
 
             PrivateObject obj = new PrivateObject(test);
             double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662,
@@ -284,7 +284,7 @@ namespace EKG_Unit.Modules.QT_Disp
         [ExpectedException(typeof(ArgumentNullException), "Samples wrong length")]
         public void test_DataToCalculate_6()
         {
-            QT_Disp_Alg test = new QT_Disp_Alg();
+            QT_Disp_Alg test = new QT_Disp_Alg(2);
 
             PrivateObject obj = new PrivateObject(test);
             double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662, };
@@ -303,7 +303,7 @@ namespace EKG_Unit.Modules.QT_Disp
         [ExpectedException(typeof(ArgumentNullException), "Waves not working good, QRS onset > QRS End - recognition impossible")]
         public void test_DataToCalculate_input()
         {
-            QT_Disp_Alg test = new QT_Disp_Alg();
+            QT_Disp_Alg test = new QT_Disp_Alg(5);
 
             PrivateObject obj = new PrivateObject(test);
             double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662,
@@ -323,7 +323,7 @@ namespace EKG_Unit.Modules.QT_Disp
         [ExpectedException(typeof(ArgumentNullException), "Waves not working good, QRS End > T_End- recognition impossible")]
         public void test_DataToCalculate_inputs()
         {
-            QT_Disp_Alg test = new QT_Disp_Alg();
+            QT_Disp_Alg test = new QT_Disp_Alg(30);
 
             PrivateObject obj = new PrivateObject(test);
             double[] signalTab = { 0.3062351, 0.28985391, 0.25624014, 0.20787747, 0.14873037, 0.083813827, 0.018645662,
