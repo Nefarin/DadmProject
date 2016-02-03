@@ -116,34 +116,37 @@ namespace EKG_Project.Modules.HRV2
                     break;
                 case (STATE.INTERPOLATION):
 
-                    _alg.Interpolation();
+                    //_alg.Interpolation();
 
                     _state = STATE.POINCAREX;
                     break;
 
                 case (STATE.POINCAREX):
                     _alg.PoincarePlot_x();
+                    OutputWorker.SaveSignal(HRV2_Signal.PoincarePlotData_x, _currentLeadName, false, _alg.RRIntervals);
                     _state = STATE.POINCAREY;
                     break;
                 case (STATE.POINCAREY):
                     _alg.PoincarePlot_y();
+                    OutputWorker.SaveSignal(HRV2_Signal.PoincarePlotData_y, _currentLeadName, false, _alg.RRIntervals);
                     _state = STATE.HISTOGRAM;
                     break;
 
                 case (STATE.HISTOGRAM):
                     _alg.HistogramToVisualisation();
+                    OutputWorker.SaveHistogram(_currentLeadName, false, _alg.HistogramToVisualisation());
                     _state = STATE.ATRIBUTES;
                     break;
 
                 case (STATE.ATRIBUTES):
-                    OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.SD1());
-                    OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.SD2());
+                    OutputWorker.SaveAttribute(HRV2_Attributes.SD1, _currentLeadName, _alg.SD1());
+                    OutputWorker.SaveAttribute(HRV2_Attributes.SD2, _currentLeadName, _alg.SD2());
                
                     //OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.elipseCenter());
                     _alg.makeTinn();
                     OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.tinn);
                     _alg.makeTriangleIndex();
-                    OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.triangleIndex);
+                    OutputWorker.SaveAttribute(HRV2_Attributes.TriangleIndex, _currentLeadName, _alg.triangleIndex);
                     _state = STATE.END_CHANNEL;
                     break;
 
@@ -153,7 +156,8 @@ namespace EKG_Project.Modules.HRV2
                         _currentVector = _alg.RRIntervals; // not needed, because reference is the same, but shows the point
 
 
-                        _state = STATE.END;
+                        _state = STATE.BEGIN_CHANNEL;
+                    
                     break;
                 case (STATE.END):
                     _ended = true;
