@@ -627,9 +627,63 @@ namespace EKG_Unit.Modules.Heart_Class
         }
 
         [TestMethod]
+        [Description("Test if method counts the distance between two vectors properly - equality test")]
+        public void GetDistance2()
+        {
+
+            double[] train1 = { 5, 18 };
+            double[] train2 = { 6, 20 };
+            double[] train3 = { 3, 21 };
+            double[] train4 = { 7, 23 };
+            double[] train5 = { 8, 24 };
+            double[] s = { 6, 22 };
+            Vector<double> t1 = Vector<double>.Build.Dense(train1);
+            Vector<double> t2 = Vector<double>.Build.Dense(train2);
+            Vector<double> t3 = Vector<double>.Build.Dense(train3);
+            Vector<double> t4 = Vector<double>.Build.Dense(train4);
+            Vector<double> t5 = Vector<double>.Build.Dense(train5);
+            Vector<double> sample = Vector<double>.Build.Dense(s);
+            
+
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+            double testResult1 = testAlgs.GetDistance(t1, sample);
+            double testResult2 = testAlgs.GetDistance(t2, sample);
+            double testResult3 = testAlgs.GetDistance(t3, sample);
+            double testResult4 = testAlgs.GetDistance(t4, sample);
+            double testResult5 = testAlgs.GetDistance(t5, sample);
+
+            double expectedResult1= System.Math.Round(4.1231, 3);
+            double expectedResult2 = 2;
+            double expectedResult3 = System.Math.Round(3.1623,3);
+            double expectedResult4 = System.Math.Round(1.4142,3);
+            double expectedResult5 = System.Math.Round(2.8284, 3);
+
+
+            //expectedResult1 = System.Math.Round(expectedResult1, 3);
+            testResult1 = System.Math.Round(testResult1, 3);
+            testResult2 = System.Math.Round(testResult2, 3);
+            testResult3 = System.Math.Round(testResult3, 3);
+            testResult4 = System.Math.Round(testResult4, 3);
+            testResult5 = System.Math.Round(testResult5, 3);
+
+            double[] arrayResult = {testResult1, testResult2, testResult3, testResult4, testResult5};
+            double[] arrayExpected =
+            {
+                expectedResult1, expectedResult2, expectedResult3, expectedResult4,
+                expectedResult5
+            };
+            Vector<double> testResult = Vector<double>.Build.DenseOfArray(arrayResult);
+            Vector<double> expectedResult = Vector<double>.Build.DenseOfArray(arrayExpected);
+
+
+            Assert.AreEqual(expectedResult, testResult);
+
+        }
+
+        [TestMethod]
         [Description("Test if method throw exception (index out of range), when vectors are not the same length")]
         [ExpectedException(typeof(IndexOutOfRangeException), "Index goes beyond the array")]
-        public void GetDistance2()
+        public void GetDistance3()
         {
             double[] testArray1 = { 1, 2, -3, 4, -5, 6, 7, -1.5, 3.25 };
             double[] testArray2 = { 2, 8, 2.5, -2, 4, 12, 3, -5 };
