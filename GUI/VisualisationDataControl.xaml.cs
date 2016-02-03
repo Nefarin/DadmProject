@@ -124,7 +124,7 @@ namespace EKG_Project.GUI
 
         public void StartPlot(string anName,string modName, KeyValuePair<string, int> moduleDic)
         {
-            VisualisationPlotControl ecgVPControl = new VisualisationPlotControl(anName,modName, moduleDic);
+            VisualisationPlotControl ecgVPControl = new VisualisationPlotControl(anName,modName, moduleDic, true);
 
             TabItem ecgBaselineTab = new TabItem();
             ecgBaselineTab.Header = "Plot";

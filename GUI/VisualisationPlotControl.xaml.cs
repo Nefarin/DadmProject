@@ -382,16 +382,77 @@ namespace EKG_Project.GUI
 
         }
 
+
+        //Program ver 2.0 
+
+        public VisualisationPlotControl(string analyseName, string moduleName, KeyValuePair<string, int> moduleInfo, bool newVersion)
+        {
+            InitializeComponent();
+            _plotType = moduleName;
+            _seriesName = new List<string>();
+            _seriesChecbox = new List<CheckBox>();
+
+            first = true;
+
+
+            ecgPlot = new ECGPlot(analyseName, moduleName);
+            DataContext = ecgPlot;
+
+            CreateAllCheckBoxesInCurrentAnalyse(analyseName);
+
+            this.CheckBoxList.DataContext = _seriesChecbox;
+
+        }
+
+
         //methodes used to configurate Checboxes
 
         private void CreateAllCheckBoxesInCurrentAnalyse(string currentAnalyseName)
         {
+            try
+            {
+                Basic_New_Data_Worker basicDataForLeads = new Basic_New_Data_Worker(currentAnalyseName);
+                List<string> leadsNameList = basicDataForLeads.LoadLeads();
 
-            //ECG_Baseline_New_Data_Worker ecgTest = new ECG_Baseline_New_Data_Worker(currentAnalyseName);
-            //1ecgTest.
-            //  SOMETHING WITH ECGPLOT
+                foreach (string lead in leadsNameList)
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = lead;
+                    cB.Content = lead;
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
 
+
+            }
+            catch
+            {
+
+            }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
