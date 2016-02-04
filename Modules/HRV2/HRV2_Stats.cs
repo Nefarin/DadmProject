@@ -76,25 +76,25 @@ namespace EKG_Project.Modules.HRV2
                     break;
                 case (State.CALCULATE):
                     // Our statisics include only Tinn, Tiangle Index, SD1 and SD2
-                    //Vector<double> currentData = _worker.LoadSignal(_currentName, 0, (int)_worker.getNumberOfSamples(_currentName));
-                    //_currentVector = InputWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, _currentChannelLength);
-                    //HRV2_Alg _alg = new HRV2_Alg(_currentVector);
+                    Vector<double> currentData = _worker.LoadSignal(_currentName, 0, (int)_worker.getNumberOfSamples(_currentName));
+                    //_currentVector = _worker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, _currentChannelLength);
+                    HRV2_Alg _alg = new HRV2_Alg(_currentVector);
 
-                    //double Tinn = _alg.Tinn;
-                    //double TriangleIndex = _alg.TriangleIndex;
-                    //double SD1 = _alg.SD1();
-                    //double SD2 = _alg.SD2();
-                    //_strToStr.Add(_currentName + "Tinn: " + Tinn.ToString());
-                    //_strToObj.Add(_currentName + "Tinn: " + Tinn);
+                    double Tinn = _alg.Tinn;
+                    double TriangleIndex = _alg.TriangleIndex;
+                    double SD1 = _alg.SD1();
+                    double SD2 = _alg.SD2();
+                    _strToStr.Add(_currentName + "Tinn: ", Tinn.ToString());
+                    _strToObj.Add(_currentName + "Tinn: ", Tinn);
 
-                    //_strToStr.Add(_currentName + "Triangle index: " + TriangleIndex.ToString());
-                    //_strToObj.Add(_currentName + "Triangle index: " + TriangleIndex);
+                    _strToStr.Add(_currentName + "Triangle index: ", TriangleIndex.ToString());
+                    _strToObj.Add(_currentName + "Triangle index: ", TriangleIndex);
 
-                    //_strToStr.Add(_currentName + "SD1: " + SD1.ToString());
-                    //_strToObj.Add(_currentName + "SD1: " + SD1);
+                    _strToStr.Add(_currentName + "SD1: ", SD1.ToString());
+                    _strToObj.Add(_currentName + "SD1: ", SD1);
 
-                    //_strToStr.Add(_currentName + "SD2: " + SD2.ToString());
-                    //_strToObj.Add(_currentName + "SD2: " + SD2);
+                    _strToStr.Add(_currentName + "SD2: ", SD2.ToString());
+                    _strToObj.Add(_currentName + "SD2: ", SD2);
 
                     _currentState = State.NEXT_CHANNEL;
                     break;
