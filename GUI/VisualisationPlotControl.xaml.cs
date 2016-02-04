@@ -389,7 +389,7 @@ namespace EKG_Project.GUI
 
         //Program ver 2.0 
 
-        public VisualisationPlotControl(string analyseName, string moduleName, KeyValuePair<string, int> moduleInfo, bool newVersion)
+        public VisualisationPlotControl(string analyseName, string moduleName, KeyValuePair<string, int> moduleInfo, List<string> modulesList)
         {
             InitializeComponent();
             _plotType = moduleName;

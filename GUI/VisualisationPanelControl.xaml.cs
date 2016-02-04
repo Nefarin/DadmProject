@@ -174,7 +174,7 @@ namespace EKG_Project.GUI
                 visulisationDataTabsList = new List<TabItem>();
                 foreach (var dic in independentModules)
                 {
-                    VisualisationDataControl ecgVDataControl = new VisualisationDataControl(analysN, dic.Key, dic);
+                    VisualisationDataControl ecgVDataControl = new VisualisationDataControl(analysN, dic.Key, dic, tabNames);
                     TabItem tabItem = new TabItem();
                     tabItem.Header = dic.Key;
                     tabItem.Content = ecgVDataControl;
