@@ -37,8 +37,8 @@ namespace EKG_Project.Modules.Waves
             }
             else if (_params.WaveType == Wavelet_Type.db2)
             {
-                _qrsEndTresh = 0.12;
-                _qrsOnsTresh = 0.12;
+                _qrsEndTresh = 2;
+                _qrsOnsTresh = 2;
             }
             else
             {
@@ -49,7 +49,7 @@ namespace EKG_Project.Modules.Waves
             DetectQRS( currentQRSonsetsPart,  currentQRSendsPart, currentECG,  currentRpeaks,  offset, frequency);
             FindP(frequency,  offset,  currentQRSonsetsPart,
              currentECG,  currentPonsetsPart,  currentPendsPart);
-            _params.WaveType = Wavelet_Type.haar;
+            //_params.WaveType = Wavelet_Type.haar;
             FindT(frequency,  currentQRSendsPart,  offset,  currentECG, currentTendsPart);
 
         }
