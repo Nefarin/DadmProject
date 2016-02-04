@@ -22,6 +22,7 @@ namespace EKG_Project.GUI
     {
         public PlotModel CurrentPlot { get; set; }
         private double _windowSize;
+        private double _maxSeriesTime; 
         private int _beginingPoint;
         private int _scalingPlotValue; 
         private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
@@ -741,6 +742,33 @@ namespace EKG_Project.GUI
            _currentAnalysisName = currentAnalysysName;
            _currentBaselineLeadStartIndex = 0;
 
+           _windowSize = 5;
+            _maxSeriesTime = 300; 
+
+
+        }
+
+        private void CalculateAmoutOfProcessingSamples()
+        {
+            //frequency = const
+            //analyseSamples = const
+            //_currentBaselineLeadStartIndex = changed by almost constant
+            //_currentBaselineLeadEndIndex = changed by almost constant 
+
+            //windowsSize -> figurate
+            //
+
+            //double ecgTimeInSeconds = ((_analyseSamples / _analyseFrequency));
+            _currentBaselineLeadStartIndex = 0;
+            _currentBaselineLeadEndIndex = ((uint)(_analyseFrequency * _maxSeriesTime)-1);
+            if(_currentBaselineLeadEndIndex> _currentBaselineLeadNumberOfSamples)
+            {
+                _currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples;
+            }
+
+            _scalingPlotValue = 10;
+
+
 
         }
 
@@ -756,10 +784,12 @@ namespace EKG_Project.GUI
                 _currentBaselineLeadNumberOfSamples =  ecg_Baseline.getNumberOfSamples(_currentLeadName);
                 _analyseSamples = _currentBaselineLeadNumberOfSamples;
                 // !!! TO DO !!! potrzebna logika do określania zakresy próbek 
-                _currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples; 
+                //_currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples; 
+                CalculateAmoutOfProcessingSamples();
                 Vector<double> myTemp =  ecg_Baseline.LoadSignal(leadName, (int)_currentBaselineLeadStartIndex, (int)_currentBaselineLeadEndIndex);
-                _currentBaselineLeadVector = myTemp; 
-                _windowSize = ((_analyseSamples / _analyseFrequency));
+                _currentBaselineLeadVector = myTemp;
+                System.Windows.MessageBox.Show(myTemp.Count.ToString());
+                
 
 
                 //display plot
@@ -812,16 +842,18 @@ namespace EKG_Project.GUI
                     RefreshPlot();
 
                 }
-                catch
+                catch(Exception ex)
                 {
+                    System.Windows.MessageBox.Show(ex.Message);
                     return false; 
                 }
 
 
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                System.Windows.MessageBox.Show(ex.Message);
                 return false;
             }
         }
@@ -1028,13 +1060,10 @@ namespace EKG_Project.GUI
         }
 
 
+
+
+
         //ostatnio developowana wersja begining
-
-
-
-
-
-
 
         public void DisplayControler(Dictionary<string, List<Tuple<string, Vector<double>>>> dataToDisplay)
         {
@@ -1886,9 +1915,9 @@ namespace EKG_Project.GUI
             CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "Time [s]"));
             double min;
             double max;
-            //double windowsSize = (int)(_windowSize / 10);
-            //double windowsSize = _windowSize * 10;
-            double windowsSize = _windowSize * _scalingPlotValue;
+
+            //double windowsSize = _windowSize * _scalingPlotValue;
+            double windowsSize = _maxSeriesTime;
             if (slide == 0)
             {
                 min = 0;
@@ -1915,38 +1944,6 @@ namespace EKG_Project.GUI
 
             CurrentPlot.Axes.Add(lineraXAxis);
             RefreshPlot();
-
-            //may it resovle sync problem?
-            //CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "Time [s]"));
-            //double min;
-            //double max;
-            //double windowsSize = (int)(_windowSize / 10);
-            //if(slide == 0)
-            //{
-            //    min = 0;
-            //    max = windowsSize;
-            //}
-            //else if(slide > 0.9)
-            //{
-            //    max = _windowSize;
-            //    min = max - windowsSize;
-            //}
-            //else
-            //{
-            //    min = _windowSize*slide;
-            //    max = min + windowsSize;
-            //}
-
-            //var lineraXAxis = new LinearAxis();
-            //lineraXAxis.Position = AxisPosition.Bottom;
-            //lineraXAxis.Minimum = min;
-            //lineraXAxis.Maximum = max;
-            //lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
-            //lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
-            //lineraXAxis.Title = "Time [s]";
-
-            //CurrentPlot.Axes.Add(lineraXAxis);
-            //RefreshPlot();
         }
 
 
