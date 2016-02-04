@@ -458,12 +458,53 @@ namespace EKG_Project.GUI
                     cB.Unchecked += CheckBox_Unchecked;
                     _seriesChecbox.Add(cB);
                 }
+                if (currentModulesList.Contains("WAVES"))
+                {
+                    CheckBox qRSOnsets = new CheckBox();
+                    qRSOnsets.IsChecked = first;
+                    qRSOnsets.Name = "QRSOnsets";
+                    qRSOnsets.Content = "QRSOnsets";
+                    qRSOnsets.Checked += CheckBox_Checked;
+                    qRSOnsets.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(qRSOnsets);
+
+                    CheckBox qRSEnds = new CheckBox();
+                    qRSEnds.IsChecked = first;
+                    qRSEnds.Name = "QRSEnds";
+                    qRSEnds.Content = "QRSEnds";
+                    qRSEnds.Checked += CheckBox_Checked;
+                    qRSEnds.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(qRSEnds);
+
+                    CheckBox pOnsets = new CheckBox();
+                    pOnsets.IsChecked = first;
+                    pOnsets.Name = "POnsets";
+                    pOnsets.Content = "POnsets";
+                    pOnsets.Checked += CheckBox_Checked;
+                    pOnsets.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(pOnsets);
+
+                    CheckBox pEnds = new CheckBox();
+                    pEnds.IsChecked = first;
+                    pEnds.Name = "PEnds";
+                    pEnds.Content = "PEnds";
+                    pEnds.Checked += CheckBox_Checked;
+                    pEnds.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(pEnds);
+
+                    CheckBox tEnds = new CheckBox();
+                    tEnds.IsChecked = first;
+                    tEnds.Name = "TEnds";
+                    tEnds.Content = "TEnds";
+                    tEnds.Checked += CheckBox_Checked;
+                    tEnds.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(tEnds);
+                }
 
 
 
 
-                
-                
+
             }
             catch
             {

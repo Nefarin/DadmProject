@@ -899,7 +899,7 @@ namespace EKG_Project.GUI
         {
             try
             {
-                Waves_New_Data_Worker wW = new Waves_New_Data_Worker();
+                Waves_New_Data_Worker wW = new Waves_New_Data_Worker(_currentAnalysisName);
                 List<int> myTemp = new List<int>();                                
                 switch (waveParametr)
                 {
@@ -945,8 +945,9 @@ namespace EKG_Project.GUI
                 RefreshPlot();
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                System.Windows.MessageBox.Show(ex.Message);
                 return false;
             }
         }
@@ -986,6 +987,21 @@ namespace EKG_Project.GUI
                         break;
                     case "RPeaks":
                         DisplayR_PeaksLeadVersion();
+                        break;
+                    case "QRSOnsets":
+                        DisplayWavesLeadAndWaveParVersion(modName);
+                        break;
+                    case "QRSEnds":
+                        DisplayWavesLeadAndWaveParVersion(modName);
+                        break;
+                    case "POnsets":
+                        DisplayWavesLeadAndWaveParVersion(modName);
+                        break;
+                    case "PEnds":
+                        DisplayWavesLeadAndWaveParVersion(modName);
+                        break;
+                    case "TEnds":
+                        DisplayWavesLeadAndWaveParVersion(modName);
                         break;
                     default:
                         break;
