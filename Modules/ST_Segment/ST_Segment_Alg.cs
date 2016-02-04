@@ -73,8 +73,8 @@ namespace EKG_Project.Modules.ST_Segment
             for (int i = 0; i < tQRS_ends.Count; ++i)
             {
                 // if (tQRS_ends[i] < 0 || tQRS_onset[i] < 0) continue;
-                tJ[i] = tQRS_ends[i] * 1 / 1000 * frequency + 20;
-                tST[i] = tQRS_ends[i] * 1 / 1000 * frequency + 35;
+                tJ[i] = tQRS_ends[i]  + 20/(1/1000*frequency);
+                tST[i] = tQRS_ends[i]  + 35 / (1/1000*frequency);
                 //result.tJs.Add(tJ);
                 //result.tSTs.Add(tST);
                 int tADD;
@@ -83,22 +83,22 @@ namespace EKG_Project.Modules.ST_Segment
                 // Z literatury
                 if (HR < 100)
                 {
-                    tADD = 80;
+                    tADD = 80/(1/1000 *frequency);
                 }
                 else if (HR < 110)
                 {
-                    tADD = 72;
+                    tADD = 72/(1/1000*frequency);
                 }
                 else if (HR < 120)
                 {
-                    tADD = 64;
+                    tADD = 64/(1/1000*frequency);
                 }
                 else
                 {
-                    tADD = 60;
+                    tADD = 60/(1/1000 *frequency);
                 }
                 // nic
-                tJX[i] = tQRS_onset[i] * 1 / 1000 * frequency + tADD;
+                tJX[i] = tQRS_onset[i]  + tADD;
                 int offset = (int)(signalECGBaseline[tJX[i]] - signalECGBaseline[tQRS_onset[i]]); //
                 int tTE = tST[i];
                 // wyznaczanie epizody
