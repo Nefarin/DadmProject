@@ -851,6 +851,61 @@ namespace EKG_Project.GUI
         }
 
 
+        public bool ControlOtherModulesSeries(string moduleName, bool visible)
+        {
+            try
+            {
+                if(visible)
+                {
+                    DisplayOtherNewSeries(moduleName);
+                }
+                else
+                {
+                    RemoveOtherSeries(moduleName);
+                }
+                RefreshPlot();
+                return true;
+            }
+            catch
+            {
+                RefreshPlot();
+                return false;
+            }
+        }
+
+        private bool DisplayOtherNewSeries(string modName)
+        {
+            try
+            {
+                switch (modName)
+                {
+                    case "Basic":
+                        DisplayEcgBasicLeadVersion();
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool RemoveOtherSeries(string modName)
+        {
+            try
+            {
+                CurrentPlot.Series.Remove(CurrentPlot.Series.First(a => a.Title == modName));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
         //ostatnio developowana wersja begining
 

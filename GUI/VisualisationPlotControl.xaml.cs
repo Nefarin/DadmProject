@@ -821,7 +821,7 @@ namespace EKG_Project.GUI
             }
             else
             {
-                //wyświetlenie na plot danego modułu dla konkretnego leada.
+                ecgPlot.ControlOtherModulesSeries(c.Name, true);
             }
         }
 
@@ -845,7 +845,7 @@ namespace EKG_Project.GUI
             }
             else
             {
-                //wygaszenie z plotu danego modułu
+                ecgPlot.ControlOtherModulesSeries(c.Name, false);
             }
         }
 
