@@ -19,7 +19,7 @@ namespace EKG_Project.Modules.HRV2
                 return tinn;
             }
         }
-        
+
         #region Documentation
         /// <summary>
         /// Write to the <double> tinn coefficient, which is 
@@ -27,7 +27,7 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-            public void makeTinn()
+        public void makeTinn()
         {
             try
             {

@@ -19,9 +19,6 @@ namespace EKG_Unit.Modules.HRV2
 
             PrivateObject obj = new PrivateObject(testAlgs);
             obj.SetField("_rrIntervals", testVector);
-            //obj.Invoke("Histogram");
-
-            //double histoCounts = (double)obj.GetField("histogramCount"); 
             double RRIntervalVectorLength = ((Vector<double>)obj.GetField("_rrIntervals")).Count;
 
             Assert.AreEqual(5, RRIntervalVectorLength);

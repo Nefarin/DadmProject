@@ -24,9 +24,8 @@ namespace EKG_Project.Modules.HRV2
         private HRV2_New_Data_Worker _outputWorker;
 
         private HRV2_Params _params;
-
         private HRV2_Alg _alg;
-        private Vector<Double> _currentVector;
+        private Vector<double> _currentVector;
         private STATE _state;
 
         public void Abort()
@@ -64,7 +63,7 @@ namespace EKG_Project.Modules.HRV2
             else
             {
                 InputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName);
-                OutputWorker = new HRV2_New_Data_Worker(Params.AnalysisName); // tutaj generalnie uzywacie swojego workera jako wyjsciowy, dla uproszczenia uzywam gotowego o innej nazwie
+                OutputWorker = new HRV2_New_Data_Worker(Params.AnalysisName);
 
                 BasicWorker = new Basic_New_Data_Worker(Params.AnalysisName);
                 _state = STATE.INIT;
@@ -99,6 +98,7 @@ namespace EKG_Project.Modules.HRV2
                     _state = STATE.BEGIN_CHANNEL;
                     //_inputWorker.DeleteFiles(); Do not use yet - will try to handle this during loading.
                     break;
+
                 case (STATE.BEGIN_CHANNEL):
 
 
@@ -114,6 +114,7 @@ namespace EKG_Project.Modules.HRV2
                         _alg = new HRV2_Alg(_currentVector);
                     }
                     break;
+
                 case (STATE.INTERPOLATION):
 
                     _alg.Interpolation();
@@ -124,17 +125,21 @@ namespace EKG_Project.Modules.HRV2
                 case (STATE.POINCAREX):
                     _alg.PoincarePlot_x();
                     OutputWorker.SaveSignal(HRV2_Signal.PoincarePlotData_x, _currentLeadName, false, _alg.RRIntervals);
+
                     _state = STATE.POINCAREY;
                     break;
+
                 case (STATE.POINCAREY):
                     _alg.PoincarePlot_y();
                     OutputWorker.SaveSignal(HRV2_Signal.PoincarePlotData_y, _currentLeadName, false, _alg.RRIntervals);
+
                     _state = STATE.HISTOGRAM;
                     break;
 
                 case (STATE.HISTOGRAM):
                     _alg.HistogramToVisualisation();
                     OutputWorker.SaveHistogram(_currentLeadName, false, _alg.HistogramToVisualisation());
+
                     _state = STATE.ATRIBUTES;
                     break;
 
@@ -142,27 +147,31 @@ namespace EKG_Project.Modules.HRV2
                     OutputWorker.SaveAttribute(HRV2_Attributes.SD1, _currentLeadName, _alg.SD1());
                     OutputWorker.SaveAttribute(HRV2_Attributes.SD2, _currentLeadName, _alg.SD2());
 
-                    //OutputWorker.SaveAttribute(HRV2_Attributes.ElipseCenter_x, _currentLeadName, _alg.elipseCenter_x());
-                    //OutputWorker.SaveAttribute(HRV2_Attributes.ElipseCenter_y, _currentLeadName, _alg.elipseCenter_y());
+                    OutputWorker.SaveAttribute(HRV2_Attributes.ElipseCenter_x, _currentLeadName, _alg.elipseCenter_x());
+                    OutputWorker.SaveAttribute(HRV2_Attributes.ElipseCenter_y, _currentLeadName, _alg.elipseCenter_y());
+
                     _alg.makeTinn();
                     OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.tinn);
+
                     _alg.makeTriangleIndex();
                     OutputWorker.SaveAttribute(HRV2_Attributes.TriangleIndex, _currentLeadName, _alg.triangleIndex);
+
                     _state = STATE.END_CHANNEL;
                     break;
 
                 case (STATE.END_CHANNEL):
                         _currentVector = InputWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
                         _alg = new HRV2_Alg(_currentVector);
-                        _currentVector = _alg.RRIntervals; // not needed, because reference is the same, but shows the point
+                        _currentVector = _alg.RRIntervals;
 
 
                         _state = STATE.BEGIN_CHANNEL;
-                    
                     break;
+
                 case (STATE.END):
                     _ended = true;
                     break;
+
                 default:
                     Abort();
                     break;

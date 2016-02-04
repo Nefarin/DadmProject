@@ -9,7 +9,6 @@ namespace EKG_Project.Modules.HRV2
     public partial class HRV2_Alg
 
     {
-        
         private Vector<double> RR_intervals_x;
         private Vector<double> RR_intervals_y;
 
@@ -22,7 +21,6 @@ namespace EKG_Project.Modules.HRV2
         #endregion
         public void PoincarePlot_x()
         {
-            //Vector<double> RRIntervals = InputData.RRInterval[_currentChannelIndex].Item2.Clone();
             Vector<double> rr_intervals_x = Vector<double>.Build.Dense(_rrIntervals.Count - 1);
             rr_intervals_x = _rrIntervals.SubVector(1, _rrIntervals.Count - 1);
             RR_intervals_x = rr_intervals_x;
@@ -36,7 +34,6 @@ namespace EKG_Project.Modules.HRV2
         #endregion
         public void PoincarePlot_y()
         {
-            //Vector<double> RRIntervals = InputData.RRInterval[_currentChannelIndex].Item2.Clone();
             Vector<double> rr_intervals_y = Vector<double>.Build.Dense(_rrIntervals.Count - 1);
             rr_intervals_y = _rrIntervals.SubVector(0, _rrIntervals.Count - 1);
             RR_intervals_y = rr_intervals_y;

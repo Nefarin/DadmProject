@@ -62,6 +62,7 @@ namespace EKG_Project.Modules.HRV2
             _strToStr = new Dictionary<string, string>();
 
             _basicWorker = new Basic_New_Data_Worker(_analysisName);
+            _R_PeaksWorker = new R_Peaks_New_Data_Worker(_analysisName);
             _worker = new HRV2_New_Data_Worker(_analysisName);
             _leads = _basicWorker.LoadLeads().ToArray();
             _currentState = State.START_CHANNEL;
@@ -84,7 +85,7 @@ namespace EKG_Project.Modules.HRV2
                     _currentVector = _R_PeaksWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentName, 0, (int)_basicWorker.getNumberOfSamples(_currentName));
                     HRV2_Alg _alg = new HRV2_Alg(_currentVector);
 
-                    double Tinn = _alg.Tinn;
+                    double Tinn = _alg.tinn;
                     double TriangleIndex = _alg.TriangleIndex;
                     double SD1 = _alg.SD1();
                     double SD2 = _alg.SD2();
