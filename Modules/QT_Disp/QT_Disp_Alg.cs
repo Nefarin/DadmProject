@@ -106,7 +106,7 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 throw new InvalidOperationException("Null index");
             }
-            if (samples.Count != (this.R_Peaks[index + 1] - this.R_Peaks[index]))
+            if (samples.Count != (this.R_Peaks_Next_Enumerator.Current - this.R_Peaks_Enumerator.Current))
             {
                 throw new InvalidDataException("Wrong size of samples");
             }
