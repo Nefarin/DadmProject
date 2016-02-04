@@ -17,7 +17,9 @@ namespace EKG_Project.Modules.HRV2
         private int _currentChannelIndex;
         private int _currentIndex;
         private string _currentName;
-        private Basic_New_Data_Worker _worker;
+        private Basic_New_Data_Worker _basicWorker;
+        private R_Peaks_New_Data_Worker _R_PeaksWorker;
+        private HRV2_New_Data_Worker _worker;
         private string[] _leads;
         private Vector<double> _currentVector;
 
@@ -59,8 +61,9 @@ namespace EKG_Project.Modules.HRV2
             _strToObj = new Dictionary<string, object>();
             _strToStr = new Dictionary<string, string>();
 
-            _worker = new Basic_New_Data_Worker(_analysisName);
-            _leads = _worker.LoadLeads().ToArray();
+            _basicWorker = new Basic_New_Data_Worker(_analysisName);
+            _worker = new HRV2_New_Data_Worker(_analysisName);
+            _leads = _basicWorker.LoadLeads().ToArray();
             _currentState = State.START_CHANNEL;
             _currentChannelIndex = 0;
         }
@@ -75,9 +78,10 @@ namespace EKG_Project.Modules.HRV2
                     _currentState = State.CALCULATE;
                     break;
                 case (State.CALCULATE):
+
                     // Our statisics include only Tinn, Tiangle Index, SD1 and SD2
-                    Vector<double> currentData = _worker.LoadSignal(_currentName, 0, (int)_worker.getNumberOfSamples(_currentName));
-                    //_currentVector = _worker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, _currentChannelLength);
+                    Vector<double> currentData = _basicWorker.LoadSignal(_currentName, 0, (int)_basicWorker.getNumberOfSamples(_currentName));
+                    _currentVector = _R_PeaksWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentName, 0, (int)_basicWorker.getNumberOfSamples(_currentName));
                     HRV2_Alg _alg = new HRV2_Alg(_currentVector);
 
                     double Tinn = _alg.Tinn;
