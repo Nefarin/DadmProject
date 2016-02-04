@@ -80,6 +80,50 @@ namespace EKG_Project.Modules.Heart_Class
             object[] args = { qrsOnset, qrsEnd, R, fs };
             //testAlgs.QrsComplexOne = OneQrsComplex(qrsOnset, qrsEnd, R, fs);
 
+
+            //////////////////////////////////////////////////////////////////////////////////////
+            // współczynniki 233.dat z matlaba:
+            List<Vector<double>> testDataList = testAlgs.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADMproj\HEART_CLASS1\HEART_CLASS\CoefVec233.txt");
+
+
+            
+            int numberOfNeighbors = 3;
+
+            //WCZYTANIE ZBIORU TRENINGOWEGO
+            DebugECGPath loader = new DebugECGPath();
+            List<Vector<double>> trainDataList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
+
+
+            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-SV
+            List<Vector<double>> trainClassList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
+            //konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
+            int oneClassElement;
+            List<int> trainClass;
+            trainClass = new List<int>();
+            foreach (var item in trainClassList)
+            {
+                foreach (var element in item)
+                {
+                    oneClassElement = (int)element;
+                    trainClass.Add(oneClassElement);
+                }
+
+            }
+
+            Tuple<int, Vector<double>> testTuple;
+            int i = 1;
+            foreach (var singleTestData in testDataList)
+            {
+                testTuple = new Tuple<int, Vector<double>>(i, singleTestData);
+                testAlgs.ClassificationResultOne = testAlgs.TestKnn(trainDataList, testTuple, trainClass, numberOfNeighbors);
+                Console.WriteLine(testAlgs.ClassificationResultOne.Item1 + ":   " + testAlgs.ClassificationResultOne.Item2);
+                Console.ReadKey();
+                i++;
+            }
+            
+
+
+
         }
 
 
