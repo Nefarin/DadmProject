@@ -20,6 +20,7 @@ namespace EKG_Project.Modules.QT_Disp
         List<int> T_End_Global;                      //to do in init
         List<int> QRS_End;                           //to do in init
         Vector<double> R_Peaks;                         //to do in init
+        List<double> R_Peaks_List;
         T_End_Method T_End_method;                      //to do in init
         QT_Calc_Method QT_Calc_method;                  //to do in init
         uint Fs;                                        //to do in init
@@ -30,12 +31,15 @@ namespace EKG_Project.Modules.QT_Disp
         List<int>.Enumerator Onset_Enumerator;
         List<int>.Enumerator End_Enumerator;
         List<int>.Enumerator T_End_Enumerator;
+        List<double>.Enumerator R_Peaks_Enumerator;
+        List<double>.Enumerator R_Peaks_Next_Enumerator;
         public QT_Disp_Alg(int size)
         {
             QRS_onset = new List<int>(size);
             T_End_Global = new List<int>(size);
             QRS_End = new List<int>(size);
             R_Peaks = Vector<double>.Build.Dense(1);
+            R_Peaks_List = new List<double>(size);
             T_End_method = new T_End_Method();
             QT_Calc_method = new QT_Calc_Method();
             Fs = new uint();
@@ -73,6 +77,10 @@ namespace EKG_Project.Modules.QT_Disp
             this.End_Enumerator = this.QRS_End.GetEnumerator();
             this.Onset_Enumerator = this.QRS_onset.GetEnumerator();
             this.T_End_Enumerator = this.T_End_Global.GetEnumerator();
+            this.R_Peaks_List = this.R_Peaks.ToList();
+            this.R_Peaks_Enumerator = this.R_Peaks_List.GetEnumerator();
+            this.R_Peaks_Next_Enumerator = this.R_Peaks_List.GetEnumerator();
+            this.R_Peaks_Next_Enumerator.MoveNext();
         }
         /// <summary>
         /// This function is called to get a current sampled signal and processed it 
@@ -85,6 +93,8 @@ namespace EKG_Project.Modules.QT_Disp
             Onset_Enumerator.MoveNext();
             End_Enumerator.MoveNext();
             T_End_Enumerator.MoveNext();
+            R_Peaks_Enumerator.MoveNext();
+            R_Peaks_Next_Enumerator.MoveNext();
             
             
             //check if we have a good arguments
@@ -110,8 +120,8 @@ namespace EKG_Project.Modules.QT_Disp
                 // create a table with a R_peaks 
                 //between this indexes we lookig for T_End 
                 double[] R_peaks_loc = new double[2];
-                R_peaks_loc[0] = R_Peaks[index];
-                R_peaks_loc[1] = R_Peaks[index+1];                
+                R_peaks_loc[0] = R_Peaks_Enumerator.Current;
+                R_peaks_loc[1] = R_Peaks_Next_Enumerator.Current;              
                 // create new object that stores a indexes of points from a Waves module
                 // need this point to find T_end
                 if(index<T_End_Global.Count)

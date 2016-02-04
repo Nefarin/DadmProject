@@ -39,6 +39,7 @@ namespace EKG_Project.Modules.QT_Disp
         int previousIndex = 0;
       
         private Vector<double> _r_peaks;
+        private List<double> R_Peaks_List;
         //input workers
         private ECG_Baseline_New_Data_Worker _inputECGBaselineWorker;
         private R_Peaks_New_Data_Worker _inputRPeaksWorker;
@@ -155,6 +156,7 @@ namespace EKG_Project.Modules.QT_Disp
                     _currentLeadName = _leads[_currentChannelIndex];
                    
                     R_Peaks = InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _R_Peak_Lead, 0, _amountOfIndexesInInput);  //stores r peaks
+                    R_Peaks_List = R_Peaks.ToList();
                     _currentIndex = (int)R_Peaks.ElementAt(0);     // get first index in r peaks
                     _currentLength = (int)(R_Peaks.ElementAt(1) - R_Peaks.ElementAt(0)); //get length between the first and next one r peak
 
@@ -208,6 +210,7 @@ namespace EKG_Project.Modules.QT_Disp
                                 _amountOfIndexesInInput = _currentChannelWaves_indexes - _indexesProcessed;
                             }
                             R_Peaks = InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _R_Peak_Lead, _indexesProcessed, _amountOfIndexesInInput);  //stores r peaks
+                            R_Peaks_List = R_Peaks.ToList();
                             _currentIndex = (int)R_Peaks.ElementAt(0);     // get first index in r peaks
                             _currentLength = (int)(R_Peaks.ElementAt(1) - R_Peaks.ElementAt(0)); //get length between the first and next one r peak
 
@@ -236,8 +239,8 @@ namespace EKG_Project.Modules.QT_Disp
                         QT_Disp_Algorithms.ToDoInProccessData(_currentVector, step);
                         _samplesProcessed = _currentIndex + _currentLength;
                         step++;
-                        _currentIndex = (int) R_Peaks.ElementAt(step);
-                        _currentLength =(int)( R_Peaks.ElementAt(step+1) - R_Peaks.ElementAt(step));
+                        _currentIndex = (int) R_Peaks_List.ElementAt(step);
+                        _currentLength =(int)( R_Peaks_List.ElementAt(step+1) - R_Peaks_List.ElementAt(step));
                                     
 
                     }
@@ -260,9 +263,9 @@ namespace EKG_Project.Modules.QT_Disp
                         OutputData.QT_std.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getStd()));
                         OutputData.QT_disp_local.Add(Tuple.Create(_currentLeadName,QT_Disp_Algorithms.getLocal()));
 
-                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_disp_local, QT_Disp_Algorithms.getLocal());
-                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_mean, QT_Disp_Algorithms.getMean());
-                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_std, QT_Disp_Algorithms.getStd());                      
+                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_disp_local,_currentLeadName, QT_Disp_Algorithms.getLocal());
+                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_mean,_currentLeadName, QT_Disp_Algorithms.getMean());
+                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_std,_currentLeadName, QT_Disp_Algorithms.getStd());                      
 
                         QT_Disp_Algorithms.DeleteQT_Intervals();
 
@@ -285,9 +288,9 @@ namespace EKG_Project.Modules.QT_Disp
                         OutputData.QT_std.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getStd()));
                         OutputData.QT_disp_local.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getLocal()));
 
-                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_disp_local, QT_Disp_Algorithms.getLocal());
-                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_mean, QT_Disp_Algorithms.getMean());
-                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_std, QT_Disp_Algorithms.getStd());
+                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_disp_local, _currentLeadName, QT_Disp_Algorithms.getLocal());
+                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_mean,_currentLeadName, QT_Disp_Algorithms.getMean());
+                        OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_std, _currentLeadName, QT_Disp_Algorithms.getStd());
 
                         _state = STATE.END;
                     }
