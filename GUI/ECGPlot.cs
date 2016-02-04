@@ -48,6 +48,7 @@ namespace EKG_Project.GUI
 
         private string _currentAnalysisName;
         private string _currentLeadName;
+        private bool _readNewData = false;
 
         private uint _currentBaselineLeadStartIndex;
         private uint _currentBaselineLeadEndIndex;
@@ -767,8 +768,22 @@ namespace EKG_Project.GUI
             }
 
             _scalingPlotValue = 10;
+        }
 
+        private void CalculateAmoutOfProcessingSamplesWhenAskedToReadMore()
+        {
+            _readNewData = true;
+            uint difference = _currentBaselineLeadEndIndex - _currentBaselineLeadStartIndex;
+            _currentBaselineLeadStartIndex = _currentBaselineLeadEndIndex;
 
+            _currentBaselineLeadEndIndex += _currentBaselineLeadEndIndex;
+            if (_currentBaselineLeadEndIndex > _currentBaselineLeadNumberOfSamples)
+            {
+                _currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples;
+            }
+
+            RemoveAllPlotSeries();
+            DisplayBaselineLeads(_currentLeadName);
 
         }
 
@@ -1915,6 +1930,7 @@ namespace EKG_Project.GUI
             CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "Time [s]"));
             double min;
             double max;
+            bool noMore = true;
 
             //double windowsSize = _windowSize * _scalingPlotValue;
             double windowsSize = _maxSeriesTime;
@@ -1932,7 +1948,9 @@ namespace EKG_Project.GUI
                     System.Windows.MessageBoxResult msgR = System.Windows.MessageBox.Show("Do you want to visualise more data?", "", System.Windows.MessageBoxButton.YesNo);
                     if(msgR == System.Windows.MessageBoxResult.Yes)
                     {
-                        //fuck off
+                        //CalculateAmoutOfProcessingSamplesWhenAskedToReadMore();
+                        //noMore = false;
+
                     }
                 }
             }
@@ -1941,16 +1959,18 @@ namespace EKG_Project.GUI
                 min = windowsSize * slide;
                 max = min + _windowSize;
             }
+            if (noMore)
+            {
+                var lineraXAxis = new LinearAxis();
+                lineraXAxis.Position = AxisPosition.Bottom;
+                lineraXAxis.Minimum = min;
+                lineraXAxis.Maximum = max;
+                lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
+                lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
+                lineraXAxis.Title = "Time [s]";
 
-            var lineraXAxis = new LinearAxis();
-            lineraXAxis.Position = AxisPosition.Bottom;
-            lineraXAxis.Minimum = min;
-            lineraXAxis.Maximum = max;
-            lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
-            lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
-            lineraXAxis.Title = "Time [s]";
-
-            CurrentPlot.Axes.Add(lineraXAxis);
+                CurrentPlot.Axes.Add(lineraXAxis);
+            }
             RefreshPlot();
         }
 
