@@ -18,11 +18,14 @@ namespace EKG_Project.Modules.T_Wave_Alt
         private Dictionary<string, Object> _strToObj;
         private Dictionary<string, string> _strToStr;
         private string _analysisName;
-        private T_Wave_Alt_Data _data;
-        private Waves_Data _dataWaves;
         private State _currentState;
         private int _currentChannelIndex;
+        private int _currentIndex;
         private string _currentName;
+        private Basic_New_Data_Worker _basicWorker;
+        private Waves_New_Data_Worker _wavesWorker;
+        private T_Wave_Alt_New_Data_Worker _worker;
+        private string[] _leads;
 
         public void Abort()
         {
@@ -62,12 +65,10 @@ namespace EKG_Project.Modules.T_Wave_Alt
             _strToObj = new Dictionary<string, object>();
             _strToStr = new Dictionary<string, string>();
 
-            T_Wave_Alt_Data_Worker worker = new T_Wave_Alt_Data_Worker(_analysisName);
-            Waves_Data_Worker workerWaves = new Waves_Data_Worker(_analysisName);
-            worker.Load();
-            workerWaves.Load();
-            _data = worker.Data;
-            _dataWaves = workerWaves.Data;
+            _basicWorker = new Basic_New_Data_Worker(_analysisName);
+            _wavesWorker = new Waves_New_Data_Worker(_analysisName);
+            _worker = new T_Wave_Alt_New_Data_Worker(_analysisName);
+            _leads = _basicWorker.LoadLeads().ToArray();
             _currentState = State.START_CHANNEL;
             _currentChannelIndex = 0;
         }
@@ -86,25 +87,27 @@ namespace EKG_Project.Modules.T_Wave_Alt
             switch (_currentState)
             {
                 case (State.START_CHANNEL):
-                    // _currentName = _data.AlternansDetectedList[_currentChannelIndex].Item1;
+                    _currentName = _leads[_currentChannelIndex];
+                    _currentIndex = 0;
                     _currentState = State.CALCULATE;
                     break;
                 case (State.CALCULATE):
 
-                    List<int> waves = new List<int>();
+                    List<int> waves = _wavesWorker.LoadSignal(Waves_Signal.TEnds, _currentName, _currentIndex, (int)_wavesWorker.getNumberOfSamples(Waves_Signal.TEnds, _currentName));
                     List<int> t_alt = new List<int>();
-                    foreach (Tuple<int, int> alt in _data.AlternansDetectedList)
+                    foreach (Tuple<int, int> alt in _worker.LoadAlternansDetectedList(_currentName, _currentIndex, (int)_worker.getNumberOfSamples(_currentName)))
                     {
                         t_alt.Add(alt.Item1);
                     }
 
                     _strToStr.Add(_currentName + " t wave alternans recognize percentage: ", CountPercentOfRecognized(t_alt, waves).ToString());
+                    _strToObj.Add(_currentName + " t wave alternans recognize percentage: ", CountPercentOfRecognized(t_alt, waves));
 
                     _currentState = State.NEXT_CHANNEL;
                     break;
                 case (State.NEXT_CHANNEL):
                     _currentChannelIndex++;
-                    if (_currentChannelIndex >= _data.AlternansDetectedList.Count)
+                    if (_currentChannelIndex >= _leads.Length)
                     {
                         _currentState = State.END;
                     }
@@ -114,6 +117,28 @@ namespace EKG_Project.Modules.T_Wave_Alt
                     _ended = true;
                     break;
             }
+
+
+        }
+
+        public static void Main(String[] args)
+        {
+            T_Wave_Alt_Stats stats = new T_Wave_Alt_Stats();
+            stats.Init("Analysis 1");
+
+
+            while (true)
+            {
+                if (stats.Ended()) break;
+                stats.ProcessStats();
+            }
+
+            foreach (var key in stats.GetStatsAsString().Keys)
+            {
+                Console.WriteLine(key + stats.GetStatsAsString()[key]);
+            }
+            Console.Read();
+
         }
     }
 }
