@@ -15,6 +15,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
 
         private int _currentChannelIndex;
         private int _currentChannelLength;
+        private int _currentChannelTEndsLength;
         private string _currentLeadName;
         private string[] _leads;
         private int _currentIndex;
@@ -132,6 +133,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
                     {
                         _currentLeadName = _leads[_currentChannelIndex];
                         _currentChannelLength = (int)InputECGWorker.getNumberOfSamples(_currentLeadName);
+                        _currentChannelTEndsLength = (int)InputWavesWorker.getNumberOfSamples(Waves_Signal.TEnds, _currentLeadName);
                         _currentIndex = 0;
                         _lastTEndIndex = 0;
                         _state = STATE.PROCESS_FIRST_STEP;
@@ -196,7 +198,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
                     try
                     {
                         _currentVector = InputECGWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
-                        _currentTEndsList = InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _lastTEndIndex, _TEndStep);
+                        _currentTEndsList = InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _lastTEndIndex, _currentChannelTEndsLength - _lastTEndIndex);
 
                         T_WavesArray = _alg.buildTWavesArray(_currentVector, _currentTEndsList, _currentIndex);
                         medianT_Wave = _alg.calculateMedianTWave(T_WavesArray);
@@ -206,9 +208,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
                         finalDetection = _alg.alternansDetection(Alternans1, _currentTEndsList);
 
                         OutputWorker.SaveAlternansDetectedList(_currentLeadName, true, finalDetection);
-                        _lastTEndIndex += (T_WavesArray.Count - 1);
-                        _currentIndex += _step;
-                        _state = STATE.PROCESS_CHANNEL;
+                        _state = STATE.NEXT_CHANNEL;
                     }
                     catch (Exception e)
                     {
