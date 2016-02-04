@@ -53,6 +53,7 @@ namespace EKG_Project.GUI
 
         //ver 2.0 
         private List<string> leadsNameList;
+        private string firstLead; 
         //private 
 
 
@@ -401,8 +402,10 @@ namespace EKG_Project.GUI
 
             ecgPlot = new ECGPlot(analyseName, moduleName);
             DataContext = ecgPlot;
+            
 
             CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
+            ecgPlot.DisplayBaselineLeads(firstLead);
 
             this.CheckBoxList.DataContext = _seriesChecbox;
 
@@ -417,7 +420,8 @@ namespace EKG_Project.GUI
             {
                 Basic_New_Data_Worker basicDataForLeads = new Basic_New_Data_Worker(currentAnalyseName);
                 leadsNameList = basicDataForLeads.LoadLeads();
-               
+                firstLead = leadsNameList.First();
+
                 foreach (string lead in leadsNameList)
                 {
                     CheckBox cB = new CheckBox();
@@ -812,6 +816,7 @@ namespace EKG_Project.GUI
                 }
                 ecgPlot.RemoveAllPlotSeries();
                 //wyswietlenie żadnego leadu
+                ecgPlot.DisplayBaselineLeads(c.Name);
 
             }
             else

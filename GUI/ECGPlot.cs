@@ -738,7 +738,6 @@ namespace EKG_Project.GUI
            _currentAnalysisName = currentAnalysysName;
            _currentBaselineLeadStartIndex = 0;
 
-            DisplayBaselineLeads("V1");
 
         }
 
@@ -757,7 +756,6 @@ namespace EKG_Project.GUI
                 _currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples; 
                 Vector<double> myTemp =  ecg_Baseline.LoadSignal(leadName, (int)_currentBaselineLeadStartIndex, (int)_currentBaselineLeadEndIndex);
                 _windowSize = ((_analyseSamples / _analyseFrequency));
-                //System.Windows.MessageBox.Show(myTemp.Count.ToString());
 
 
                 //display plot
@@ -774,6 +772,17 @@ namespace EKG_Project.GUI
 
                         CurrentPlot.Axes.Add(lineraYAxis);
 
+
+                        var lineraXAxis = new LinearAxis();
+                        lineraXAxis.Position = AxisPosition.Bottom;
+                        lineraXAxis.Minimum = 0;
+                        lineraXAxis.Maximum = _windowSize;
+                        lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
+                        lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
+                        lineraXAxis.Title = "Time [s]";
+
+                        CurrentPlot.Axes.Add(lineraXAxis);
+
                     }
                     else
                     {
@@ -782,10 +791,10 @@ namespace EKG_Project.GUI
 
                     LineSeries ls = new LineSeries();
                     ls.Title = leadName;
-                    ls.IsVisible = _visible;
-                    if (_visible)
-                        _baselineDisplayedSeries[leadName] = true;
-                    _visible = false;
+                    //ls.IsVisible = _visible;
+                    //if (_visible)
+                    //    _baselineDisplayedSeries[leadName] = true;
+                    //_visible = false;
 
                     ls.MarkerStrokeThickness = 1;
 
@@ -795,16 +804,6 @@ namespace EKG_Project.GUI
                     }
 
                     CurrentPlot.Series.Add(ls);
-
-                    var lineraXAxis = new LinearAxis();
-                    lineraXAxis.Position = AxisPosition.Bottom;
-                    lineraXAxis.Minimum = 0;
-                    lineraXAxis.Maximum = _windowSize;
-                    lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
-                    lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
-                    lineraXAxis.Title = "Time [s]";
-                    CurrentPlot.Axes.Add(lineraXAxis);
-
 
                     RefreshPlot();
 
