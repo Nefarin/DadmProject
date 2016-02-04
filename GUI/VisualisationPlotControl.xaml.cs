@@ -452,8 +452,8 @@ namespace EKG_Project.GUI
                     CheckBox cB = new CheckBox();
                     cB.IsChecked = first;
                     first = false;
-                    cB.Name = "R_PEAKS";
-                    cB.Content = "R_PEAKS";
+                    cB.Name = "RPeaks";
+                    cB.Content = "RPeaks";
                     cB.Checked += CheckBox_Checked;
                     cB.Unchecked += CheckBox_Unchecked;
                     _seriesChecbox.Add(cB);

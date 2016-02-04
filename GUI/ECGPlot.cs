@@ -858,13 +858,13 @@ namespace EKG_Project.GUI
         {
             try
             {
+                
                 R_Peaks_New_Data_Worker rPW = new R_Peaks_New_Data_Worker(_currentAnalysisName);
-                Vector<double> myTemp = rPW.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)_currentBaselineLeadEndIndex);
+                Vector<double> myTemp = rPW.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)rPW.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName));
                 bool addR_Peak = false;
 
-
                 ScatterSeries rPeaksSeries = new ScatterSeries();
-                rPeaksSeries.Title = "R_Peaks";
+                rPeaksSeries.Title = "RPeaks";
 
                 for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
                 {
@@ -887,8 +887,9 @@ namespace EKG_Project.GUI
                 RefreshPlot();
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                System.Windows.MessageBox.Show(ex.Message);
                 return false;
             }
         }
@@ -924,6 +925,9 @@ namespace EKG_Project.GUI
                 {
                     case "Basic":
                         DisplayEcgBasicLeadVersion();
+                        break;
+                    case "RPeaks":
+                        DisplayR_PeaksLeadVersion();
                         break;
                     default:
                         break;
