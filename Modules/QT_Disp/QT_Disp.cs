@@ -284,9 +284,9 @@ namespace EKG_Project.Modules.QT_Disp
                         OutputData.QT_Intervals.Add(Tuple.Create(_currentLeadName, qt_temp.ToList()));
                         OutputData.T_End_Local.Add(Tuple.Create(_currentLeadName, t_end.ToList()));
 
+                        OutputData.QT_disp_local.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getLocal()));
                         OutputData.QT_mean.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getMean()));
                         OutputData.QT_std.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getStd()));
-                        OutputData.QT_disp_local.Add(Tuple.Create(_currentLeadName, QT_Disp_Algorithms.getLocal()));
 
                         OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_disp_local, _currentLeadName, QT_Disp_Algorithms.getLocal());
                         OutputWorker.SaveAttribute(Qt_Disp_Attributes.QT_mean,_currentLeadName, QT_Disp_Algorithms.getMean());
