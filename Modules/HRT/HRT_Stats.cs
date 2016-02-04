@@ -22,6 +22,7 @@ namespace EKG_Project.Modules.HRT
         private Heart_Class_New_Data_Worker _HeartClassWorker;
         private HRT_New_Data_Worker _worker;
         private string[] _leads;
+        private HRT_Alg _alg;
 
 
 
@@ -86,42 +87,17 @@ namespace EKG_Project.Modules.HRT
                     break;
 
                 case (State.CALCULATE):
-                    ////int noOfPeaks = (int)_rPeaksWorker.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentName);
-                   
-                    //List<double> currentTurbulenceOnset = _worker.LoadTurbulenceOnsetPDF(_currentName, 0);
-                    ////List<double> currentTurbulenceSlope = _worker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentName, 0, (int)_worker.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _currentName));
+                    
+                    List<double> currentTurbulenceOnset = _worker.LoadTurbulenceOnsetPDF(_currentName, 0);
+                    List<double> currentTurbulenceSlope = _worker.LoadTurbulenceSlopePDF(_currentName, 0);
+                    double meanTO =Mean(currentTurbulenceOnset);
+                    double meanTS = Mean(currentTurbulenceSlope);
 
-                    //double meanTO = Math.Round(currentTurbulenceOnset.Sum() / currentDataRR.Count, 3);
-                    ////mean RR interval in ms//double minRR = currentDataRR.AbsoluteMinimum(); //min distance between Rs
-                    ////double maxRR = currentDataRR.AbsoluteMaximum(); //max distance between Rs
-                    //int noOfOverdetectedPeaks = 0;  //number of peaks to close to eachother
-                    //int noOfUnderdetectedPeaks = 0; //number of peaks to far to each other
-                    //foreach (var rr in currentDataRR)
-                    //{
-                    //    if (rr < 0.8 * meanRR)
-                    //    {
-                    //        noOfOverdetectedPeaks++;
-                    //    }
-                    //    if (rr > 1.2 * meanRR)
-                    //    {
-                    //        noOfUnderdetectedPeaks++;
-                    //    }
-                    //}
-
-                    ////add to stats output
-                    //_strToStr.Add(_currentName + " Number of detected R-peaks: ", noOfPeaks.ToString());
-                    //_strToObj.Add(_currentName + " Number of detected R-peaks: ", noOfPeaks);
-                    //_strToStr.Add(_currentName + " Mean RR interval [ms]: ", meanRR.ToString());
-                    //_strToObj.Add(_currentName + " Mean RR interval [ms]: ", meanRR);
-                    //_strToStr.Add(_currentName + " Number of possible overdetected R-peaks: ", noOfOverdetectedPeaks.ToString());
-                    //_strToObj.Add(_currentName + " Number of possible overdetected R-peaks: ", noOfOverdetectedPeaks);
-                    //_strToStr.Add(_currentName + " Number of possible missed R-peaks: ", noOfUnderdetectedPeaks.ToString());
-                    //_strToObj.Add(_currentName + " Number of possible missed R-peaks: ", noOfUnderdetectedPeaks);
-                    ///* _strToStr.Add(_currentName + " Minimum distance between R peaks [ms]: ", minRR.ToString());
-                    // _strToObj.Add(_currentName + " Minimum distance between R peaks [ms]: ", minRR);
-                    // _strToStr.Add(_currentName + " Maximum distance between R peaks [ms]: ", maxRR.ToString());
-                    // _strToObj.Add(_currentName + " Maximum distance between R peaks [ms]:", maxRR);*/
-
+                    //add to stats output
+                    _strToStr.Add(_currentName + " Mean Turbulence Onset: ", meanTO.ToString());
+                    _strToObj.Add(_currentName + " Mean Turbulence Onset: ", meanTO);
+                    _strToStr.Add(_currentName + " Mean Turbulence Slope: ", meanTS.ToString());
+                    _strToObj.Add(_currentName + " Mean Turbulence Slope ", meanTS);
                     _currentState = State.NEXT_CHANNEL;
                     break;
 
@@ -157,6 +133,18 @@ namespace EKG_Project.Modules.HRT
             }
             Console.Read();
 
+        }
+
+        double Mean(List<double>wektor)
+        {
+            
+            double sumTO = 0;
+            foreach (double licznik in wektor)
+            {
+                sumTO += licznik;
+            }
+            double meanTO = 0;
+            return meanTO = Math.Round(sumTO / wektor.Count, 2);
         }
     }
 }

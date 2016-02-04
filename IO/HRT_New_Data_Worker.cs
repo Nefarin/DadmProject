@@ -64,7 +64,7 @@ namespace EKG_Project.IO
             string pathOut = Path.Combine(directory, fileName);
 
             StreamWriter sw = new StreamWriter(pathOut);
-            sw.WriteLine((int)value);
+            sw.WriteLine(value);
             sw.Close();
         }
 
@@ -272,7 +272,7 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public double[] LoadMeanTachogramGUI(string lead, int startIndex, int length)
+        public double[] LoadMeanTachogramGUI(string lead, int startIndex)//, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -292,7 +292,8 @@ namespace EKG_Project.IO
             iterator = 0;
 
             List<double> list = new List<double>();
-            while (iterator < length)
+            //while (iterator < length)
+            while (!sr.EndOfStream)
             {
                 if (sr.EndOfStream)
                 {
@@ -341,7 +342,7 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>x points mean onset</returns> 
         #endregion
-        public int[] LoadXPointsMeanOnsetGUI(string lead, int startIndex, int length)
+        public int[] LoadXPointsMeanOnsetGUI(string lead, int startIndex)//, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -361,7 +362,8 @@ namespace EKG_Project.IO
             iterator = 0;
 
             List<int> list = new List<int>();
-            while (iterator < length)
+            //while (iterator < length)
+            while (!sr.EndOfStream)
             {
                 if (sr.EndOfStream)
                 {
@@ -412,7 +414,7 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public double[] LoadTurbulenceOnsetMeanGUI(string lead, int startIndex, int length)
+        public double[] LoadTurbulenceOnsetMeanGUI(string lead, int startIndex)//, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -432,7 +434,8 @@ namespace EKG_Project.IO
             iterator = 0;
 
             List<double> list = new List<double>();
-            while (iterator < length)
+            //while (iterator < length)
+            while (!sr.EndOfStream)
             {
                 if (sr.EndOfStream)
                 {
@@ -621,7 +624,7 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public List<double> LoadTurbulenceOnsetPDF(string lead, int startIndex, int length)
+        public List<double> LoadTurbulenceOnsetPDF(string lead, int startIndex)//, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -641,7 +644,8 @@ namespace EKG_Project.IO
             iterator = 0;
 
             List<double> list = new List<double>();
-            while (iterator < length)
+            //while (iterator < length)
+            while (!sr.EndOfStream)
             {
                 if (sr.EndOfStream)
                 {
@@ -690,7 +694,7 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public List<double> LoadTurbulenceSlopePDF(string lead, int startIndex, int length)
+        public List<double> LoadTurbulenceSlopePDF(string lead, int startIndex)//, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -710,7 +714,8 @@ namespace EKG_Project.IO
             iterator = 0;
 
             List<double> list = new List<double>();
-            while (iterator < length)
+            //while (iterator < length)
+            while(!sr.EndOfStream)
             {
                 if (sr.EndOfStream)
                 {

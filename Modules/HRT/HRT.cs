@@ -25,7 +25,7 @@ namespace EKG_Project.Modules.HRT
         private int _currentIndex;
         private int _numberOfChannels;
         private uint _frequency;
-        private enum VPC { NOT_DETECTED, NO_VENTRICULAR, DETECTED_BUT_IMPOSSIBLE_TO_PLOT, LETS_PLOT };
+        //private bool _vpc = false;
         //private int _step;
 
         private Basic_New_Data_Worker _inputWorker_basic;
@@ -49,7 +49,6 @@ namespace EKG_Project.Modules.HRT
         private List<double> _turbulenceOnset;
         private Tuple<List<double>, int[], double[]> _turbulenceSlope;
         private double[] _meanTachogram;
-        private VPC _vpc;
         int NoOfSamplesHeartClass;
         int NoOfSamplesRPeaks;
         int NoOfSamplesRRInterval;
@@ -64,6 +63,8 @@ namespace EKG_Project.Modules.HRT
         private double[] _turbulenceSlopeMaxGUI;
         private List<double> _turbulenceOnsetPDF;
         private List<double> _turbulenceSlopePDF;
+        private int _classVentricalPDF;
+        private int _classPrematureVentricalPDF;
 
         public void Abort()
         {
@@ -120,7 +121,14 @@ namespace EKG_Project.Modules.HRT
 
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_currentIndex / (double)_currentChannelLength));
+            double a= Math.Round((double)_currentChannelIndex / (double)NumberOfChannels);
+            double b = (1.0 / NumberOfChannels)-1;
+            double c= (double)_state / 6;
+            //System.Diagnostics.Debug.WriteLine("a " + a);
+            //System.Diagnostics.Debug.WriteLine("b " + b);
+            //System.Diagnostics.Debug.WriteLine("c " + c);
+            //System.Diagnostics.Debug.WriteLine("state enum na double " + (double)_state);
+            return 100.0 *( a + (1.0 / NumberOfChannels) * ((double)_state / 6));
         }
 
         public bool Runnable()
@@ -159,9 +167,9 @@ namespace EKG_Project.Modules.HRT
                         _rrintervals = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, NoOfSamplesRRInterval);
                         _classAll = InputWorker_Heart_Class.LoadClassificationResult(_currentLeadName, 0, NoOfSamplesHeartClass);
 
-                        System.Diagnostics.Debug.WriteLine(_rpeaks);
-                        System.Diagnostics.Debug.WriteLine(_rrintervals);
-                        System.Diagnostics.Debug.WriteLine(_classAll);
+                        //System.Diagnostics.Debug.WriteLine(_rpeaks);
+                        //System.Diagnostics.Debug.WriteLine(_rrintervals);
+                        //System.Diagnostics.Debug.WriteLine(_classAll);
                         Console.WriteLine("_step " + _step);
                         _state = STATE.PROCESS_CHANNEL;
 
@@ -202,7 +210,7 @@ namespace EKG_Project.Modules.HRT
                                 if (_classVentrical.Capacity == 0)
                                 {
                                     System.Diagnostics.Debug.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
-                                    _vpc = VPC.NOT_DETECTED;
+                                    //_vpc = false;
                                 }
                                 else
                                 {
@@ -212,7 +220,7 @@ namespace EKG_Project.Modules.HRT
                                     if (_classPrematureVentrical.Capacity == 0)
                                     {
                                         System.Diagnostics.Debug.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
-                                        _vpc = VPC.NO_VENTRICULAR;
+                                        //_vpc = false;
                                     }
                                     else
                                     {
@@ -223,11 +231,11 @@ namespace EKG_Project.Modules.HRT
                                         if (_tachogram.Count == 0)
                                         {
                                             System.Diagnostics.Debug.WriteLine("Są VPC, ale nie można wygenerować wokół nich tachogramu. Prawdopodobna przyczyna to niewystarczająca ilość wykrytych załamków QRS w pobliżu");
-                                            _vpc = VPC.DETECTED_BUT_IMPOSSIBLE_TO_PLOT;
+                                            //_vpc = false;
                                         }
                                         else
                                         {
-                                            _vpc = VPC.LETS_PLOT;
+                                            //_vpc = true;
                                             _turbulenceOnset = _alg.TurbulenceOnsetsPDF(_classPrematureVentrical, _rrintervals);
                                             _turbulenceSlope = _alg.TurbulenceSlopeGUIandPDF(_classPrematureVentrical, _rrintervals);
                                             _meanTurbulenceOnset = _alg.TurbulenceOnsetMeanGUI(_tachogram);
@@ -241,10 +249,17 @@ namespace EKG_Project.Modules.HRT
                                             _xpointsSlopeGUI = _turbulenceSlope.Item2;
                                             _turbulenceSlopeMaxGUI = _turbulenceSlope.Item3;
                                             _turbulenceOnsetPDF = _turbulenceOnset;
-                                            _turbulenceSlopePDF= _turbulenceSlope.Item1;
+                                            _turbulenceSlopePDF = _turbulenceSlope.Item1;
+                                            int _classVentricalPDF = _classVentrical.Count;
+                                            int _classPrematureVentricalPDF = _classPrematureVentrical.Count;
+
                                             _state = STATE.END_CHANNEL;
 
-                                           _alg.PrintVector(_tachogramGUI);
+                                            // _alg.PrintVector();
+                                            System.Diagnostics.Debug.WriteLine(_nrVPC.Count);
+                                            System.Diagnostics.Debug.WriteLine(_classPrematureVentrical.Count);
+                                            _alg.PrintVector(_nrVPC);
+                                            _alg.PrintVector(_classPrematureVentrical);
                                         }
                                     }
                                 }
