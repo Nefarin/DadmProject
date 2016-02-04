@@ -77,7 +77,7 @@ namespace EKG_Project.Modules.Heart_Cluster
                 _leads = InputBasicWorker.LoadLeads().ToArray();
                 _numberProcessedComplexes = 1;
 
-                if (FindChannel()) //? - jak dostać sie do sygnalu?
+                if (FindChannel()) // dostawanie się do sygnału
                 {
                     InputRpeaksWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName);
                     InputWavesWorker = new Waves_New_Data_Worker(Params.AnalysisName);
@@ -86,8 +86,7 @@ namespace EKG_Project.Modules.Heart_Cluster
                     _currentChannelIndex = 0;
                     _leadNameChannel2 = _leads[Channel2];
 
-                    // If sth is wrong in earlier modules, this is an insurance :
-                    // to tak nei działa
+                    // If sth is wrong in earlier modules, this is an insurance ?
                     _numberOfStepsArray = new uint[3];
                     _numberOfStepsArray[0] = InputWavesWorker.getNumberOfSamples(Waves_Signal.QRSOnsets, _leadNameChannel2);
                     _numberOfStepsArray[1] = InputWavesWorker.getNumberOfSamples(Waves_Signal.QRSEnds, _leadNameChannel2);
@@ -141,11 +140,11 @@ namespace EKG_Project.Modules.Heart_Cluster
                 case (STATE.BEGIN_CHANNEL):
                     _currentChannelIndex++;
                     _currentLeadName = _leads[Channel2];
-                    _currentChannelLength = (int)InputBasicWorker.getNumberOfSamples(_currentLeadName); //to potrzebuje? Chyba nie
+                    _currentChannelLength = (int)InputBasicWorker.getNumberOfSamples(_currentLeadName); // ?
                     _currentIndex = 0;
                     _samplesProcessed = 0;
 
-                    //step zawiera odległość pom początkiem sygnału a 2 r_peakiem w kolejności. 
+                    //step zawiera odległość miedzy początkiem sygnału a 2 R_peakiem od początku (samplesProcessed+1). 
                     _step = (int)InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, (_samplesProcessed + 1), _numberProcessedComplexes)[0];
 
                     _state = STATE.PROCESS_FIRST_STEP;
@@ -153,8 +152,8 @@ namespace EKG_Project.Modules.Heart_Cluster
                 case (STATE.PROCESS_FIRST_STEP):
                     if (!_ml2Processed)
                     {
-                        // Ogólnie, jak procesuję sygnał:
-                        // Biorę pierwszą porcję od 0 (currentIndex) do drugiego wykrytego Rpeaka (samplesProcessed+1). Żeby mieć pewność ze taka porcja sygnału pokryje QRSOnset, R, QRSend dla pierwszego zespołu.
+                        // Przetwarzanie: pierwsza porcja sygnału od 0 (currentIndex) do drugiego wykrytego Rpeaka (samplesProcessed+1). 
+                        // Żeby mieć pewność ze taka porcja sygnału pokryje QRSOnset, R, QRSend dla pierwszego zespołu.
 
                         var QRSOnSet = InputWavesWorker.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName, _samplesProcessed, _numberProcessedComplexes)[0];
                         var QRSEnds = InputWavesWorker.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName, _samplesProcessed, _numberProcessedComplexes)[0];
@@ -162,14 +161,14 @@ namespace EKG_Project.Modules.Heart_Cluster
                         _currentVector = InputEcGbaselineWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
 
 
-                        var tempClassResult = new List<Tuple<int, int, int, int>>();
+                        var tempClusterResult = new List<Tuple<int, int, int, int>>();
                         var clusterizationResultTemp = Classification(_currentVector, QRSOnSet, QRSEnds, R, _fs);
 
-                        tempClassResult.Add(clusterizationResultTemp);
+                        tempClusterResult.Add(clusterizationResultTemp);
                         _finalResult.Add(clusterizationResultTemp);
 
                         //ODKOMENTOWAC!!!!!
-                        //OutputWorker.SaveClassificationResult(_currentLeadName, true, _tempClassResult);
+                        //OutputWorker.SaveClassificationResult(_currentLeadName, true, _tempClusterResult);
 
 
                         // następna porcja sygnału: od R przed chwilą analizowanego, do R+1 (tego, za zespołem który będzie oznaczany w następnej iteracji)
@@ -203,17 +202,19 @@ namespace EKG_Project.Modules.Heart_Cluster
 
                         _currentVector = InputEcGbaselineWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
 
-                        var tempClassResult = new List<Tuple<int, int, int, int>>();
+                        var tempClusterResult = new List<Tuple<int, int, int, int>>();
                         var clusterizationResultTemp = Classification(_currentVector, QRSOnSet, QRSEnds, R, _fs);
 
                         var clusterizationResult = new Tuple<int, int, int, int>(clusterizationResultTemp.Item1 + _currentIndex, clusterizationResultTemp.Item2 + _currentIndex, Ractual, clusterizationResultTemp.Item4);
+                       
+                        
                         //teraz trzeba powrócić do R rzeczywistego, a nie tego zmodyfikowanego na potrzeby cięcia sygnału... :/
-
-                        tempClassResult.Add(clusterizationResult);
+           
+                        tempClusterResult.Add(clusterizationResult);
                         _finalResult.Add(clusterizationResultTemp);
                         
                         //ODKOMENTOWAC!!!!!
-                        //OutputWorker.SaveClusterizationResult(_currentLeadName, true, _tempClassResult);
+                        //OutputWorker.SaveClusterizationResult(_currentLeadName, true, _tempClusterResult);
 
                         _currentIndex = R;
                         _samplesProcessed++;
@@ -254,7 +255,7 @@ namespace EKG_Project.Modules.Heart_Cluster
                         if (_currentLeadName != _leadNameChannel2)
                         {
                             //ODKOMENTOWAC!!!!!!!!!!!!!
-                            //OutputWorker.SaveClassificationResult(_currentLeadName, true, _finalResult);
+                            //OutputWorker.SaveClusterizationResult(_currentLeadName, true, _finalResult);
 
                             OutputWorker.SaveAttributeI(Heart_Cluster_Attributes_I.NumberofClass, _currentLeadName, (uint)classCounts.Count);
                             OutputWorker.SaveAttributeI(Heart_Cluster_Attributes_I.TotalQrsComplex, _currentLeadName, (uint)classCounts.Sum());
@@ -321,7 +322,7 @@ namespace EKG_Project.Modules.Heart_Cluster
         public static void Main(String[] args)
         {
             IModule testModule = new Heart_Cluster();
-            Heart_Cluster_Params param = new Heart_Cluster_Params("Analysis223");
+            Heart_Cluster_Params param = new Heart_Cluster_Params("Analysis333");
 
             testModule.Init(param);
             while (!testModule.Ended())

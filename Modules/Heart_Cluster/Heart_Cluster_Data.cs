@@ -10,27 +10,31 @@ namespace EKG_Project.Modules.Heart_Cluster
 {
     public class Heart_Cluster_Data : ECG_Data
     {
-        //private uint _totalNumberOfQrsComplex;
-        //private uint _numberOfClass;
-        //private double _percentOfNormalComplex;
-        private Qrs_Class _cluster; 
+        //output:
+        private List<Tuple<int, int, int, int>> _clusterizationResult;
+        private Qrs_Out _out; // do zmiany na atrybuty?
+        private Qrs_Class _cluster; // do zmiany na atrybuty?
 
-        public uint TotalNumberOfQrsComplex { get; set; }
-
-        public uint NumberOfClass { get; set; }
-
-        public double PercentOfNormalComplex { get; set; }
+        public List<Tuple<int, int, int, int>> clusterizationResult
+        {
+            get { return _clusterizationResult; }
+            set { _clusterizationResult = value; }
+        }
 
         public bool ChannelMliiDetected { get; set; }
 
 
+        public class Qrs_Out
+        {
+            public int TotalQRSComplex { get; }
+
+            public int NumberofClass { get; }
+        }
         public class Qrs_Class
         {
             public int IndexOfClass { get; }
 
-            public int NumberOfQrsComplex { get; }
-
-            public int IndexOfRepresentative { get; }
+            public int QRSComplexNo { get; }
         }
     }
 }

@@ -50,6 +50,7 @@ namespace EKG_Project.Modules.Heart_Cluster
 
 
         #region Documentation
+
         /// <summary>
         /// TODO 
         /// </summary>
@@ -59,6 +60,7 @@ namespace EKG_Project.Modules.Heart_Cluster
         /// <param name="qrsOnset"></param>
         /// <param name="qrsEnd"></param>
         /// <returns></returns>
+
         #endregion
         Tuple<int, int, int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, int qrsR, uint fs)
         {
@@ -70,14 +72,22 @@ namespace EKG_Project.Modules.Heart_Cluster
             var singleQrsComplex = loadedSignal.SubVector(qrsOnset, qrsEnd - qrsOnset + 1);
             var coefficientVector = CountCoefficients(singleQrsComplex, fs);
 
-            var classification = ClassificateComplex(coefficientVector, 17);
 
-            return new Tuple<int, int, int, int>(qrsOnset, qrsEnd, qrsR, classification);
+            {
+                var classification = ClassificateComplex(coefficientVector, 10);
+
+                return new Tuple<int, int, int, int>(qrsOnset, qrsEnd, qrsR, classification);
+            }
         }
+
 
         private int ClassificateComplex(Vector<double> coefficientVector, double threshold)
         {
-            var closestCentroid = centroids.Aggregate((a, b) => a.Subtract(coefficientVector).L2Norm() < b.Subtract(coefficientVector).L2Norm() ? a : b);
+            if (classCounts.Count > 5) //zmiana progu?
+            {
+                threshold = threshold*2;
+            }
+                var closestCentroid = centroids.Aggregate((a, b) => a.Subtract(coefficientVector).L2Norm() < b.Subtract(coefficientVector).L2Norm() ? a : b);
 
             if (closestCentroid.Subtract(coefficientVector).L2Norm() < threshold)
             {
