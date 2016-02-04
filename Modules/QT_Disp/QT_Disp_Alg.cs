@@ -263,7 +263,7 @@ namespace EKG_Project.Modules.QT_Disp
                 T_End_local = value;
             }
         }
-        public static void Main()
+        /*public static void Main()
         {
             Console.WriteLine("Hello world");
             // Test if algorithm is correct
@@ -346,7 +346,7 @@ namespace EKG_Project.Modules.QT_Disp
 
 
             Console.ReadKey();
-        }
+        }*/
         
     }
     //It was writen but not tested, also there is not any comments
