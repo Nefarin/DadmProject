@@ -424,11 +424,11 @@
     <Compile Include="Modules\R_Peaks\R_Peaks_Data.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Params.cs" />
     <Compile Include="Modules\R_Peaks\R_Peaks_Stats.cs" />
-    <Compile Include="Modules\SIG_EDR\SIG_EDR.cs" />
-    <Compile Include="Modules\SIG_EDR\SIG_EDR_Alg.cs" />
-    <Compile Include="Modules\SIG_EDR\SIG_EDR_Data.cs" />
-    <Compile Include="Modules\SIG_EDR\SIG_EDR_Params.cs" />
-    <Compile Include="Modules\SIG_EDR\SIG_EDR_Stats.cs" />
+    <Compile Include="Modules\Sleep_Apnea\SIG_EDR\SIG_EDR.cs" />
+    <Compile Include="Modules\Sleep_Apnea\SIG_EDR\SIG_EDR_Alg.cs" />
+    <Compile Include="Modules\Sleep_Apnea\SIG_EDR\SIG_EDR_Data.cs" />
+    <Compile Include="Modules\Sleep_Apnea\SIG_EDR\SIG_EDR_Params.cs" />
+    <Compile Include="Modules\Sleep_Apnea\SIG_EDR\SIG_EDR_Stats.cs" />
     <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea.cs" />
     <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Alg.cs" />
     <Compile Include="Modules\Sleep_Apnea\Sleep_Apnea_Data.cs" />

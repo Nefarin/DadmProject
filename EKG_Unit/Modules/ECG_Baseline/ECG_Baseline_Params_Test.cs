@@ -32,6 +32,17 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual("Analysis1", param.AnalysisName);
         }
         [TestMethod]
+        [Description("Test if Butterworth LP constructor works properly with negative fc and order")]
+        public void ButterworthLPConstructorTest2()
+        {
+            ECG_Baseline_Params param = new ECG_Baseline_Params("Analysis1", Filtr_Method.BUTTERWORTH, Filtr_Type.LOWPASS, -5, -50);
+            Assert.AreEqual(Filtr_Method.BUTTERWORTH, param.Method);
+            Assert.AreEqual(Filtr_Type.LOWPASS, param.Type);
+            Assert.AreEqual(0.001, param.FcLow);
+            Assert.AreEqual(1, param.OrderLow);
+            Assert.AreEqual("Analysis1", param.AnalysisName);
+        }
+        [TestMethod]
         [Description("Test if Butterworth HP constructor works properly")]
         public void ButterworthHPConstructorTest()
         {
@@ -40,6 +51,17 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(Filtr_Type.HIGHPASS, param.Type);
             Assert.AreEqual(5, param.FcHigh);
             Assert.AreEqual(5, param.OrderHigh);
+            Assert.AreEqual("Analysis1", param.AnalysisName);
+        }
+        [TestMethod]
+        [Description("Test if Butterworth HP constructor works properly with negative fc and order")]
+        public void ButterworthHPConstructorTest2()
+        {
+            ECG_Baseline_Params param = new ECG_Baseline_Params("Analysis1", Filtr_Method.BUTTERWORTH, Filtr_Type.HIGHPASS, -5, -5);
+            Assert.AreEqual(Filtr_Method.BUTTERWORTH, param.Method);
+            Assert.AreEqual(Filtr_Type.HIGHPASS, param.Type);
+            Assert.AreEqual(0.001, param.FcHigh);
+            Assert.AreEqual(1, param.OrderHigh);
             Assert.AreEqual("Analysis1", param.AnalysisName);
         }
         [TestMethod]
@@ -56,6 +78,19 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual("Analysis1", param.AnalysisName);
         }
         [TestMethod]
+        [Description("Test if Butterworth BP constructor works properly with negative fcs and orders")]
+        public void ButterworthBPConstructorTest2()
+        {
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.BUTTERWORTH, Filtr_Type.BANDPASS, -10, -10, -50, -5, "Analysis1");
+            Assert.AreEqual(Filtr_Method.BUTTERWORTH, param.Method);
+            Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
+            Assert.AreEqual(0.001, param.FcLow);
+            Assert.AreEqual(1, param.OrderLow);
+            Assert.AreEqual(0.001, param.FcHigh);
+            Assert.AreEqual(1, param.OrderHigh);
+            Assert.AreEqual("Analysis1", param.AnalysisName);
+        }
+        [TestMethod]
         [Description("Test if MovingAvg LowPass constructor works properly")]
         public void MovingAvgLPConstructorTest()
         {
@@ -63,6 +98,16 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(Filtr_Method.MOVING_AVG, param.Method);
             Assert.AreEqual(Filtr_Type.LOWPASS, param.Type);
             Assert.AreEqual(5, param.WindowSizeLow);
+            Assert.AreEqual("Analysis1", param.AnalysisName);
+        }
+        [TestMethod]
+        [Description("Test if MovingAvg LowPass constructor works properly with negative window size")]
+        public void MovingAvgLPConstructorTest2()
+        {
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.LOWPASS, -5, "Analysis1");
+            Assert.AreEqual(Filtr_Method.MOVING_AVG, param.Method);
+            Assert.AreEqual(Filtr_Type.LOWPASS, param.Type);
+            Assert.AreEqual(2, param.WindowSizeLow);
             Assert.AreEqual("Analysis1", param.AnalysisName);
         }
         [TestMethod]
@@ -76,6 +121,16 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual("Analysis1", param.AnalysisName);
         }
         [TestMethod]
+        [Description("Test if MovingAvg HighPass constructor works properly with negative window size")]
+        public void MovingAvgHPConstructorTest2()
+        {
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.HIGHPASS, -90, "Analysis1");
+            Assert.AreEqual(Filtr_Method.MOVING_AVG, param.Method);
+            Assert.AreEqual(Filtr_Type.HIGHPASS, param.Type);
+            Assert.AreEqual(2, param.WindowSizeHigh);
+            Assert.AreEqual("Analysis1", param.AnalysisName);
+        }
+        [TestMethod]
         [Description("Test if Savitzky-Golay LowPass constructor works properly")]
         public void SavGolLPConstructorTest()
         {
@@ -86,6 +141,16 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual("Analysis1", param.AnalysisName);
         }
         [TestMethod]
+        [Description("Test if Savitzky-Golay LowPass constructor works properly with negative window size")]
+        public void SavGolLPConstructorTest2()
+        {
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.LOWPASS, -5, "Analysis1");
+            Assert.AreEqual(Filtr_Method.SAV_GOL, param.Method);
+            Assert.AreEqual(Filtr_Type.LOWPASS, param.Type);
+            Assert.AreEqual(2, param.WindowSizeLow);
+            Assert.AreEqual("Analysis1", param.AnalysisName);
+        }
+        [TestMethod]
         [Description("Test if Savitzky-Golay HighPass constructor works properly")]
         public void SavGolHPConstructorTest()
         {
@@ -93,6 +158,16 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(Filtr_Method.SAV_GOL, param.Method);
             Assert.AreEqual(Filtr_Type.HIGHPASS, param.Type);
             Assert.AreEqual(90, param.WindowSizeHigh);
+            Assert.AreEqual("Analysis1", param.AnalysisName);
+        }
+        [TestMethod]
+        [Description("Test if Savitzky-Golay HighPass constructor works properly with negative window size")]
+        public void SavGolHPConstructorTest2()
+        {
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.HIGHPASS, -90, "Analysis1");
+            Assert.AreEqual(Filtr_Method.SAV_GOL, param.Method);
+            Assert.AreEqual(Filtr_Type.HIGHPASS, param.Type);
+            Assert.AreEqual(2, param.WindowSizeHigh);
             Assert.AreEqual("Analysis1", param.AnalysisName);
         }
         [TestMethod]
@@ -107,6 +182,17 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(0.5, param.Mi);
         }
         [TestMethod]
+        [Description("Test if LMS LowPass constructor works properly with negative window size and negative parameter mi")]
+        public void LmsLPConstructorTest2()
+        {
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.LOWPASS, -5, "Analysis1", -0.5);
+            Assert.AreEqual(Filtr_Method.LMS, param.Method);
+            Assert.AreEqual(Filtr_Type.LOWPASS, param.Type);
+            Assert.AreEqual(2, param.WindowLMS);
+            Assert.AreEqual("Analysis1", param.AnalysisName);
+            Assert.AreEqual(0.07, param.Mi);
+        }
+        [TestMethod]
         [Description("Test if LMS HighPass constructor works properly")]
         public void LmsHPConstructorTest()
         {
@@ -116,6 +202,17 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(90, param.WindowLMS);
             Assert.AreEqual("Analysis1", param.AnalysisName);
             Assert.AreEqual(0.5, param.Mi);
+        }
+        [TestMethod]
+        [Description("Test if LMS HighPass constructor works properly with negative window size and negative parameter mi")]
+        public void LmsHPConstructorTest2()
+        {
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.HIGHPASS, -90, "Analysis1", -0.5);
+            Assert.AreEqual(Filtr_Method.LMS, param.Method);
+            Assert.AreEqual(Filtr_Type.HIGHPASS, param.Type);
+            Assert.AreEqual(2, param.WindowLMS);
+            Assert.AreEqual("Analysis1", param.AnalysisName);
+            Assert.AreEqual(0.07, param.Mi);
         }
         [TestMethod]
         [Description("Test if Moving Average BandPass constructor works properly")]
@@ -130,6 +227,18 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(100, param.WindowSizeHigh);
         }
         [TestMethod]
+        [Description("Test if Moving Average BandPass constructor works properly with negative windows sizes")]
+        public void MovingAvgBPConstructorTest2()
+        {
+
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.MOVING_AVG, Filtr_Type.BANDPASS, -10, -100, "analysis");
+            Assert.AreEqual(Filtr_Method.MOVING_AVG, param.Method);
+            Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
+            Assert.AreEqual("analysis", param.AnalysisName);
+            Assert.AreEqual(2, param.WindowSizeLow);
+            Assert.AreEqual(2, param.WindowSizeHigh);
+        }
+        [TestMethod]
         [Description("Test if Savitzky Golay BandPass constructor works properly")]
         public void SavitzkyGolayBPConstructorTest()
         {
@@ -141,6 +250,18 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(10, param.WindowSizeLow);
             Assert.AreEqual(100, param.WindowSizeHigh);
         }
+        [TestMethod]
+        [Description("Test if Savitzky Golay BandPass constructor works properly with negative windows sizes")]
+        public void SavitzkyGolayBPConstructorTest2()
+        {
+
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.SAV_GOL, Filtr_Type.BANDPASS, -10, -100, "analysis");
+            Assert.AreEqual(Filtr_Method.SAV_GOL, param.Method);
+            Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
+            Assert.AreEqual("analysis", param.AnalysisName);
+            Assert.AreEqual(2, param.WindowSizeLow);
+            Assert.AreEqual(2, param.WindowSizeHigh);
+        }
 
         [TestMethod]
         [Description("Test if LMS BandPass constructor works properly")]
@@ -150,9 +271,19 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(Filtr_Method.LMS, param.Method);
             Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
             Assert.AreEqual(10, param.WindowLMS);
-            //Assert.AreEqual(90, param.WindowSizeHigh);
             Assert.AreEqual("Analysis1", param.AnalysisName);
             Assert.AreEqual(0.5, param.Mi);
+        }
+        [TestMethod]
+        [Description("Test if LMS BandPass constructor works properly with negative window size and negative parameter mi")]
+        public void LmsBPConstructorTest2()
+        {
+            ECG_Baseline_Params param = new ECG_Baseline_Params(Filtr_Method.LMS, Filtr_Type.BANDPASS, -10, "Analysis1", -0.5);
+            Assert.AreEqual(Filtr_Method.LMS, param.Method);
+            Assert.AreEqual(Filtr_Type.BANDPASS, param.Type);
+            Assert.AreEqual(2, param.WindowLMS);
+            Assert.AreEqual("Analysis1", param.AnalysisName);
+            Assert.AreEqual(0.07, param.Mi);
         }
     }
 }
