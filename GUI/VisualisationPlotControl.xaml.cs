@@ -51,6 +51,10 @@ namespace EKG_Project.GUI
         private Dictionary<string, List<Tuple<string, List<int>>>> _wholeDataToDisplayList;
         private bool first;
 
+        //ver 2.0 
+
+        //private 
+
 
         public VisualisationPlotControl()
         {
@@ -426,7 +430,8 @@ namespace EKG_Project.GUI
                     _seriesChecbox.Add(cB);
                 }
 
-
+                
+                
             }
             catch
             {
