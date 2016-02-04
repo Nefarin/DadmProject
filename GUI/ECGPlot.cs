@@ -788,7 +788,7 @@ namespace EKG_Project.GUI
                 CalculateAmoutOfProcessingSamples();
                 Vector<double> myTemp =  ecg_Baseline.LoadSignal(leadName, (int)_currentBaselineLeadStartIndex, (int)_currentBaselineLeadEndIndex);
                 _currentBaselineLeadVector = myTemp;
-                System.Windows.MessageBox.Show(myTemp.Count.ToString());
+                //System.Windows.MessageBox.Show(myTemp.Count.ToString());
                 
 
 
@@ -1927,6 +1927,14 @@ namespace EKG_Project.GUI
             {
                 max = windowsSize;
                 min = max - _windowSize;
+                if (slide == 1)
+                {
+                    System.Windows.MessageBoxResult msgR = System.Windows.MessageBox.Show("Do you want to visualise more data?", "", System.Windows.MessageBoxButton.YesNo);
+                    if(msgR == System.Windows.MessageBoxResult.Yes)
+                    {
+                        //fuck off
+                    }
+                }
             }
             else
             {
