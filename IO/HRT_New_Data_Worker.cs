@@ -122,7 +122,7 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public int[] LoadXAxisTachogramGUI(string lead, int startIndex, int length)
+        public int[] LoadXAxisTachogramGUI(string lead, int startIndex)//, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -142,7 +142,8 @@ namespace EKG_Project.IO
             iterator = 0;
 
             List<int> list = new List<int>();
-            while (iterator < length)
+            //while (iterator < length)
+            while(!sr.EndOfStream)
             {
                 if (sr.EndOfStream)
                 {
@@ -197,7 +198,7 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public List<List<double>> LoadTachogramGUI(string lead, int[] startIndex, int[] length)
+        public List<List<double>> LoadTachogramGUI(string lead, int[] startIndex)//, int[] length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -219,7 +220,8 @@ namespace EKG_Project.IO
 
                 iterator = 0;
                 List<double> inList = new List<double>();
-                while (iterator < length[filesIndex])
+                //while (iterator < length[filesIndex])
+                while (!sr.EndOfStream)
                 {
                     if (sr.EndOfStream)
                     {
@@ -484,7 +486,7 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public int[] LoadXPointsMaxSlopeGUI(string lead, int startIndex, int length)
+        public int[] LoadXPointsMaxSlopeGUI(string lead, int startIndex)//, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -504,7 +506,8 @@ namespace EKG_Project.IO
             iterator = 0;
 
             List<int> list = new List<int>();
-            while (iterator < length)
+            //while (iterator < length)
+            while(!sr.EndOfStream)
             {
                 if (sr.EndOfStream)
                 {
@@ -555,7 +558,7 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public double[] LoadTurbulenceSlopeMaxGUI(string lead, int startIndex, int length)
+        public double[] LoadTurbulenceSlopeMaxGUI(string lead, int startIndex)//, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -575,7 +578,8 @@ namespace EKG_Project.IO
             iterator = 0;
 
             List<double> list = new List<double>();
-            while (iterator < length)
+            //while (iterator < length)
+            while (!sr.EndOfStream)
             {
                 if (sr.EndOfStream)
                 {
@@ -730,6 +734,79 @@ namespace EKG_Project.IO
             sr.Close();
             return list;
         }
+
+        #region Documentation
+        /// <summary>
+        /// Saves numbers of complexes for statistical resume
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <param name="mode">true:append, false:overwrite file</param>
+        /// <param name="signal">signal</param> 
+        #endregion
+        public void SaveStatisticsClassNumbersPDF(string lead, bool mode, int[] signal)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_StatisticsClassNumbers" + ".txt";
+            string pathOut = Path.Combine(directory, fileName);
+
+            StreamWriter sw = new StreamWriter(pathOut, mode);
+            foreach (var sample in signal)
+            {
+                sw.WriteLine(sample.ToString());
+            }
+
+            sw.Close();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads numbers (quantity) of complexes for statistical resume
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <param name="startIndex">start index</param>
+        /// <param name="length">length</param>
+        /// <returns>x points mean onset</returns> 
+        #endregion
+        public int[] LoadStatisticsClassNumbersPDF(string lead, int startIndex)//, int length)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_StatisticsClassNumbers" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+
+            List<int> list = new List<int>();
+            //while (iterator < length)
+            while (!sr.EndOfStream)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                int readValue = Convert.ToInt32(readLine);
+                list.Add(readValue);
+                iterator++;
+            }
+
+            sr.Close();
+
+            return list.ToArray();
+        }
+
 
         #region Documentation
         /// <summary>

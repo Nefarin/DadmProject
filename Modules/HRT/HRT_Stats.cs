@@ -93,11 +93,24 @@ namespace EKG_Project.Modules.HRT
                     double meanTO =Mean(currentTurbulenceOnset);
                     double meanTS = Mean(currentTurbulenceSlope);
 
+                    int[] statistics = _worker.LoadStatisticsClassNumbersPDF(_currentName, 0);
+                    int VPCvsAllQRS =100 * (statistics[2] / statistics[0]);
+                    int VPCvsVentricular = 100 * (statistics[2] / statistics[1]);
+
+
                     //add to stats output
                     _strToStr.Add(_currentName + " Mean Turbulence Onset: ", meanTO.ToString());
                     _strToObj.Add(_currentName + " Mean Turbulence Onset: ", meanTO);
                     _strToStr.Add(_currentName + " Mean Turbulence Slope: ", meanTS.ToString());
                     _strToObj.Add(_currentName + " Mean Turbulence Slope ", meanTS);
+                    _strToStr.Add(_currentName + " Ratio between VPC and all QRS complexes detected [%]: ", VPCvsAllQRS.ToString());
+                    _strToObj.Add(_currentName + " Ratio between VPC and all QRS complexes detected [%]:  ", VPCvsAllQRS);
+                    _strToStr.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected [%]: ", VPCvsAllQRS.ToString());
+                    _strToObj.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected [%]:  ", VPCvsAllQRS);
+                    _strToStr.Add(_currentName + " Turbulence Onset ", currentTurbulenceOnset.ToString());
+                    _strToObj.Add(_currentName + " Turbulence Onset ", currentTurbulenceOnset);
+                    _strToStr.Add(_currentName + " Turbulence Slope ", currentTurbulenceSlope.ToString());
+                    _strToObj.Add(_currentName + " Turbulence Slope ", currentTurbulenceSlope);
                     _currentState = State.NEXT_CHANNEL;
                     break;
 

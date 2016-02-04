@@ -25,7 +25,14 @@ namespace EKG_Project.Modules.HRT
         private int _currentIndex;
         private int _numberOfChannels;
         private uint _frequency;
-        //private bool _vpc = false;
+        public enum VPC
+        {
+            NOT_DETECTED,
+            NO_VENTRICULAR,
+            DETECTED_BUT_IMPOSSIBLE_TO_PLOT,
+            LETS_PLOT
+        }
+        private VPC _vpc;
         //private int _step;
 
         private Basic_New_Data_Worker _inputWorker_basic;
@@ -49,9 +56,6 @@ namespace EKG_Project.Modules.HRT
         private List<double> _turbulenceOnset;
         private Tuple<List<double>, int[], double[]> _turbulenceSlope;
         private double[] _meanTachogram;
-        int NoOfSamplesHeartClass;
-        int NoOfSamplesRPeaks;
-        int NoOfSamplesRRInterval;
 
 
         private int[] _xaxisTachogramGUI;
@@ -63,8 +67,8 @@ namespace EKG_Project.Modules.HRT
         private double[] _turbulenceSlopeMaxGUI;
         private List<double> _turbulenceOnsetPDF;
         private List<double> _turbulenceSlopePDF;
-        private int _classVentricalPDF;
-        private int _classPrematureVentricalPDF;
+        int[] _statisticsClassNumbersPDF = { 0, 0, 0 };
+
 
         public void Abort()
         {
@@ -121,14 +125,7 @@ namespace EKG_Project.Modules.HRT
 
         public double Progress()
         {
-            double a= Math.Round((double)_currentChannelIndex / (double)NumberOfChannels);
-            double b = (1.0 / NumberOfChannels)-1;
-            double c= (double)_state / 6;
-            //System.Diagnostics.Debug.WriteLine("a " + a);
-            //System.Diagnostics.Debug.WriteLine("b " + b);
-            //System.Diagnostics.Debug.WriteLine("c " + c);
-            //System.Diagnostics.Debug.WriteLine("state enum na double " + (double)_state);
-            return 100.0 *( a + (1.0 / NumberOfChannels) * ((double)_state / 6));
+            return 100.0 *((double)_currentChannelIndex / (double)NumberOfChannels);
         }
 
         public bool Runnable()
@@ -250,8 +247,10 @@ namespace EKG_Project.Modules.HRT
                                             _turbulenceSlopeMaxGUI = _turbulenceSlope.Item3;
                                             _turbulenceOnsetPDF = _turbulenceOnset;
                                             _turbulenceSlopePDF = _turbulenceSlope.Item1;
-                                            int _classVentricalPDF = _classVentrical.Count;
-                                            int _classPrematureVentricalPDF = _classPrematureVentrical.Count;
+
+                                            _statisticsClassNumbersPDF[0] = _classAll.Count;
+                                            _statisticsClassNumbersPDF[1] = _classVentrical.Count;
+                                            _statisticsClassNumbersPDF[2] = _classPrematureVentrical.Count;
 
                                             _state = STATE.END_CHANNEL;
 
@@ -288,6 +287,7 @@ namespace EKG_Project.Modules.HRT
                         OutputWorker.SaveTurbulenceSlopeMaxGUI(_currentLeadName, false, _turbulenceSlopeMaxGUI);
                         OutputWorker.SaveTurbulenceOnsetPDF(_currentLeadName, false, _turbulenceOnsetPDF);
                         OutputWorker.SaveTurbulenceSlopePDF(_currentLeadName, false, _turbulenceSlopePDF);
+                        OutputWorker.SaveStatisticsClassNumbersPDF(_currentLeadName, false, _statisticsClassNumbersPDF);
 
                         _state = STATE.NEXT_CHANNEL;
                     }
