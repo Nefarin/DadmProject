@@ -895,6 +895,64 @@ namespace EKG_Project.GUI
         }
 
 
+        public bool DisplayWavesLeadAndWaveParVersion(string waveParametr)
+        {
+            try
+            {
+                Waves_New_Data_Worker wW = new Waves_New_Data_Worker();
+                List<int> myTemp = new List<int>();                                
+                switch (waveParametr)
+                {
+                    case "QRSOnsets":
+                        myTemp = wW.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)wW.getNumberOfSamples(Waves_Signal.QRSOnsets, _currentLeadName));
+                        break;
+                    case "QRSEnds":
+                        myTemp = wW.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)wW.getNumberOfSamples(Waves_Signal.QRSEnds, _currentLeadName));
+                        break;
+                    case "POnsets":
+                        myTemp = wW.LoadSignal(Waves_Signal.POnsets, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)wW.getNumberOfSamples(Waves_Signal.POnsets, _currentLeadName));
+                        break;
+                    case "PEnds":
+                        myTemp = wW.LoadSignal(Waves_Signal.PEnds, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)wW.getNumberOfSamples(Waves_Signal.PEnds, _currentLeadName));
+                        break;
+                    case "TEnds":
+                        myTemp = wW.LoadSignal(Waves_Signal.TEnds, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)wW.getNumberOfSamples(Waves_Signal.TEnds, _currentLeadName));
+                        break;
+                    default:
+                        break;
+                }
+
+                bool addWave = false;
+
+                ScatterSeries waveSeries = new ScatterSeries();
+                waveSeries.Title = waveParametr;
+
+                for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
+                {
+                    if (myTemp.Contains(i))
+                    {
+                        waveSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+
+                        addWave = true;
+                    }
+                }
+
+                if (addWave)
+                {
+                    CurrentPlot.Series.Add(waveSeries);
+                }
+
+                RefreshPlot();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
+
         public bool ControlOtherModulesSeries(string moduleName, bool visible)
         {
             try
