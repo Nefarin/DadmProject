@@ -263,32 +263,6 @@ namespace EKG_Unit.Modules.T_Wave_Alt
             Assert.AreEqual(testMedianVec, desiredMedian);
         }
 
-        /*
-        [TestMethod]
-        [Description("Test if zero-median T-Wave is detected")]
-        public void medianZeroCheck1()
-        {
-            // Init test here
-           
-            double[] testArray = { 0, 0, 0, 0, 0 };
-            bool desiredResult = true;
-            
-            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
-
-            T_Wave_Alt_Alg testAlgs = new T_Wave_Alt_Alg();
-
-            // Process test here
-
-            bool actualResult = testAlgs.medianZeroCheck(testVector);
-
-            // Assert results
-
-            Assert.AreEqual(desiredResult, actualResult);
-
-
-        }
-        */
-
         [TestMethod]
         [Description("Tests if ACI are calculated properly - general logic test, all ACI values should equal 1")]
         public void calculateACITest1()
@@ -494,13 +468,13 @@ namespace EKG_Unit.Modules.T_Wave_Alt
             testFlucList1.Add(0);
             testFlucList1.Add(0);
             testFlucList1.Add(0);
-            testFlucList1.Add(0);
+            testFlucList1.Add(1);
             testFlucList1.Add(1);
             testFlucList1.Add(1);
             testFlucList1.Add(1);
             testFlucList1.Add(0);
 
-            double[] testAlternansArray = { 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1 };
+            double[] testAlternansArray = { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0 };
             Vector<double> testAlternansVector = Vector<double>.Build.DenseOfArray(testAlternansArray);
 
             T_Wave_Alt_Alg testAlgs = new T_Wave_Alt_Alg();
@@ -564,7 +538,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
             // Inputs
             double[] testArray = { 0, 0.5, 3.2, 0.1, 0.41, 0.6, 0,
                                    0, 0.5, 3, 0.12, 0.4, 0.61, 0,
-                                   0, 0.5, 3.1, 0.14, 0.42, 0.61, 0,
+                                   0, 0.5, 3.1, 0.09, 0.36, 0.58, 0,
                                    0, 0.5, 3.3, 0.11, 0.68, 0.62, 0,
                                    0, 0.5, 3.6, 0.09, 0.36, 0.58, 0,
                                    0, 0.5, 3.1, 0.22, 0.74, 0.6, 0,
@@ -578,7 +552,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
             List<int> testTEndList = new List<int>();
             testTEndList.Add(5);
             testTEndList.Add(12);
-            testTEndList.Add(18);
+            testTEndList.Add(19);
             testTEndList.Add(26);
             testTEndList.Add(33);
             testTEndList.Add(39);
@@ -588,12 +562,11 @@ namespace EKG_Unit.Modules.T_Wave_Alt
             testTEndList.Add(67);
 
             // Desired outputs:
-            Tuple<int, int> record1 = new Tuple<int, int>(33, 1);
-            Tuple<int, int> record2 = new Tuple<int, int>(39, 1);
-            Tuple<int, int> record3 = new Tuple<int, int>(47, 1);
-            Tuple<int, int> record4 = new Tuple<int, int>(55, 1);
-            Tuple<int, int> record5 = new Tuple<int, int>(61, 1);
-            Tuple<int, int> record6 = new Tuple<int, int>(67, 1);
+            Tuple<int, int> record1 = new Tuple<int, int>(19, 1);
+            Tuple<int, int> record2 = new Tuple<int, int>(26, 1);
+            Tuple<int, int> record3 = new Tuple<int, int>(33, 1);
+            Tuple<int, int> record4 = new Tuple<int, int>(39, 1);
+            Tuple<int, int> record5 = new Tuple<int, int>(47, 1);
 
             List<Tuple<int, int>> testFinalList1 = new List<Tuple<int, int>>();
             testFinalList1.Add(record1);
@@ -601,7 +574,6 @@ namespace EKG_Unit.Modules.T_Wave_Alt
             testFinalList1.Add(record3);
             testFinalList1.Add(record4);
             testFinalList1.Add(record5);
-            testFinalList1.Add(record6);
 
             T_Wave_Alt_Alg testAlgs = new T_Wave_Alt_Alg();
 
@@ -614,6 +586,11 @@ namespace EKG_Unit.Modules.T_Wave_Alt
             List<int> Flucts = testAlgs.findFluctuations(ACI);
             Vector<double> Alternans1 = testAlgs.findAlternans(Flucts);
             List<Tuple<int, int>> finalDetection = testAlgs.alternansDetection(Alternans1, testTEndList);
+
+            foreach(Tuple<int,int> el in finalDetection)
+            {
+                Console.WriteLine(el.Item1);
+            }
 
             // Assert results
 

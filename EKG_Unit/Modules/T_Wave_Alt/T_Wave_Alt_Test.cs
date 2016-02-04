@@ -17,7 +17,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
         public void InterfaceT_Wave_AltTest()
         {
             IModule testModule = new EKG_Project.Modules.T_Wave_Alt.T_Wave_Alt();
-            T_Wave_Alt_Params test_params = new T_Wave_Alt_Params();
+            T_Wave_Alt_Params test_params = new T_Wave_Alt_Params("Analysis 1");
 
             testModule.Init(test_params);
             int counter = 0;
@@ -32,7 +32,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
         }
 
         [TestMethod]
-        [Description("Test if interface does not throws any expections during execution")]
+        [Description("Test if interface does not throw any expections during execution")]
         public void InterfaceT_Wave_AltTest2()
         {
             IModule testModule = new EKG_Project.Modules.T_Wave_Alt.T_Wave_Alt();
@@ -52,8 +52,11 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             string[] leads = _basicWorker.LoadLeads().ToArray();
             T_Wave_Alt_Alg test = new T_Wave_Alt_Alg();
-            Vector<Double> testVector = _baselineWorker.LoadSignal(leads[0], 0, 4000);
-            List<int> testWaves = _wavesWorker.LoadSignal(Waves_Signal.TEnds, leads[0], 0, 4000);
+            uint _sampFreq = _basicWorker.LoadAttribute(Basic_Attributes.Frequency);
+            test.Fs = _sampFreq;
+
+            Vector<double> testVector = _baselineWorker.LoadSignal(leads[0], 0, 4000);
+            List<int> testWaves = _wavesWorker.LoadSignal(Waves_Signal.TEnds, leads[0], 0, 2000);
             List<Vector<double>> T_WavesArray = test.buildTWavesArray(testVector, testWaves, 0);
             Vector<double> medianT_Wave = test.calculateMedianTWave(T_WavesArray);
             Vector<double> ACI = test.calculateACI(T_WavesArray, medianT_Wave);

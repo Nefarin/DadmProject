@@ -22,9 +22,9 @@ namespace EKG_Project.Modules.T_Wave_Alt
         private int _numberOfChannels;
 
         private uint _sampFreq;
-        private int _step = 6000;
+        private int _step = 8000;
         private int _lastTEndIndex;
-        private int _TEndStep = 40;
+        private int _TEndStep = 80;
 
         private List<Vector<double>> T_WavesArray;
         private Vector<double> medianT_Wave;
@@ -43,9 +43,8 @@ namespace EKG_Project.Modules.T_Wave_Alt
         private T_Wave_Alt_Params _params;
 
         private T_Wave_Alt_Alg _alg;
-        private Vector<Double> _currentVector;
+        private Vector<double> _currentVector;
         private List<int> _currentTEndsList;
-        private List<Tuple<int, int>> _currentResult;
 
         private STATE _state;
 
@@ -147,7 +146,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
                         {
                             _currentVector = InputECGWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
                             _currentTEndsList = InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _lastTEndIndex, _TEndStep);
-
+                            
                             T_WavesArray = _alg.buildTWavesArray(_currentVector, _currentTEndsList, _currentIndex);
                             medianT_Wave = _alg.calculateMedianTWave(T_WavesArray);
                             ACI = _alg.calculateACI(T_WavesArray, medianT_Wave);
@@ -156,7 +155,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
                             finalDetection = _alg.alternansDetection(Alternans1, _currentTEndsList);
 
                             OutputWorker.SaveAlternansDetectedList(_currentLeadName, false, finalDetection);
-                            _lastTEndIndex += (T_WavesArray.Count - 1);
+                            _lastTEndIndex += (T_WavesArray.Count + _alg.NoDetectionCount - 1);
                             _currentIndex += _step;
                             _state = STATE.PROCESS_CHANNEL;
                         }
@@ -173,7 +172,9 @@ namespace EKG_Project.Modules.T_Wave_Alt
                         try
                         {
                             _currentVector = InputECGWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
-                            _currentTEndsList = InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _lastTEndIndex, _TEndStep);
+
+                            if (_lastTEndIndex + _TEndStep < _currentChannelTEndsLength) _currentTEndsList = InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _lastTEndIndex, _TEndStep);
+                            else _currentTEndsList = InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _lastTEndIndex, _currentChannelTEndsLength - _lastTEndIndex);
 
                             T_WavesArray = _alg.buildTWavesArray(_currentVector, _currentTEndsList, _currentIndex);
                             medianT_Wave = _alg.calculateMedianTWave(T_WavesArray);
@@ -181,9 +182,9 @@ namespace EKG_Project.Modules.T_Wave_Alt
                             Flucts = _alg.findFluctuations(ACI);
                             Alternans1 = _alg.findAlternans(Flucts);
                             finalDetection = _alg.alternansDetection(Alternans1, _currentTEndsList);
-
+                            
                             OutputWorker.SaveAlternansDetectedList(_currentLeadName, true, finalDetection);
-                            _lastTEndIndex += (T_WavesArray.Count - 1);
+                            _lastTEndIndex += (T_WavesArray.Count + _alg.NoDetectionCount - 1);
                             _currentIndex += _step;
                             _state = STATE.PROCESS_CHANNEL;
                         }

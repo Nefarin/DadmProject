@@ -18,6 +18,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
         private uint _fs;
         private int _tLength;
         private List<int> _newTEndsList;
+        private int _noDetectionCount;
 
         // Get&set
         public T_Wave_Alt_Params Params
@@ -61,6 +62,11 @@ namespace EKG_Project.Modules.T_Wave_Alt
         {
             get { return _newTEndsList; }
             set { _newTEndsList = value; }
+        }
+        public int NoDetectionCount
+        {
+            get { return _noDetectionCount; }
+            set { _noDetectionCount = value; }
         }
 
         // Class methods
@@ -115,12 +121,18 @@ namespace EKG_Project.Modules.T_Wave_Alt
             int tLength = this.TLength;
             List<Vector<double>> TWavesArray = new List<Vector<double>>();
             _newTEndsList = new List<int>();
+            _noDetectionCount = 0;
             foreach (int currentTEnd in tEndsList) {
-                if ((currentTEnd + 1) >= (tLength + currentIndex) && currentTEnd >= currentIndex && currentTEnd < (loadedSignal.Count + currentIndex))
+                if (currentTEnd >= (loadedSignal.Count + currentIndex)) { break; } 
+                if ((currentTEnd + 1) >= (tLength + currentIndex) && currentTEnd >= currentIndex)
                 {
                     Vector<double> newTWave = loadedSignal.SubVector(currentTEnd - currentIndex - tLength + 1, tLength);
                     TWavesArray.Add(newTWave);
                     _newTEndsList.Add(currentTEnd);
+                }
+                else if(currentTEnd==-1)
+                {
+                    _noDetectionCount++;
                 }
             }
 
@@ -227,8 +239,8 @@ namespace EKG_Project.Modules.T_Wave_Alt
         public Vector<double> findAlternans(List<int> fluctuationsList)
         {
             Vector<double> alternansVector = Vector<double>.Build.Dense(fluctuationsList.Count);
-            alternansVector = alternansVector + 1;
-            int alterThreshold = 3;
+            //alternansVector = alternansVector + 1;
+            int alterThreshold = 4;
             int firstElement = 0;
             int counter = 0;
             int forEachIndex = 0;
@@ -237,7 +249,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
             {
                 if (counter == 0)
                 {
-                    if (element == 0)
+                    if (element == 1)
                     {
                         firstElement = forEachIndex;
                         counter++;
@@ -246,20 +258,20 @@ namespace EKG_Project.Modules.T_Wave_Alt
 
                 else if ((counter > 0) && (counter < alterThreshold))
                 {
-                    if (element == 0) counter++;
+                    if (element == 1) counter++;
                     else counter = 0;
                 }
 
                 else if (counter >= alterThreshold)
                 {
-                    if (element == 0)
+                    if (element == 1)
                     {
                         if (forEachIndex + 1 != fluctuationsList.Count) counter++;
                         else
                         {
                             for (int p = firstElement; p <= firstElement+counter; p++)
                             {
-                                alternansVector[p] = 0;
+                                alternansVector[p] = 1;
                             }
                             counter = 0;
                             firstElement = 0;
@@ -270,7 +282,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
                     {
                         for (int p = firstElement; p < firstElement+counter; p++)
                         {
-                            alternansVector[p] = 0;
+                            alternansVector[p] = 1;
                         }
                         counter = 0;
                         firstElement = 0;
