@@ -416,8 +416,8 @@ namespace EKG_Project.GUI
             try
             {
                 Basic_New_Data_Worker basicDataForLeads = new Basic_New_Data_Worker(currentAnalyseName);
-                List<string> leadsNameList = basicDataForLeads.LoadLeads();              
-
+                List<string> leadsNameList = basicDataForLeads.LoadLeads();
+               
                 foreach (string lead in leadsNameList)
                 {
                     CheckBox cB = new CheckBox();
@@ -430,17 +430,31 @@ namespace EKG_Project.GUI
                     _seriesChecbox.Add(cB);
                 }
 
-                foreach(string mod in currentModulesList)
+                //for ecgBasic
+                if(true)
                 {
                     CheckBox cB = new CheckBox();
                     cB.IsChecked = first;
                     first = false;
-                    cB.Name = mod;
-                    cB.Content = mod;
+                    cB.Name = "Basic";
+                    cB.Content = "Basic";
                     cB.Checked += CheckBox_Checked;
                     cB.Unchecked += CheckBox_Unchecked;
                     _seriesChecbox.Add(cB);
                 }
+
+                if(currentModulesList.Contains("R_PEAKS"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "R_PEAKS";
+                    cB.Content = "R_PEAKS";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
 
 
 

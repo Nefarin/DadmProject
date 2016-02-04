@@ -723,18 +723,22 @@ namespace EKG_Project.GUI
             CurrentPlot = new PlotModel();
             CurrentPlot.Title = plotTitle;
             CurrentPlot.TitleFontSize = 16;
-            //CurrentPlot.LegendTitle = "Legend";
             CurrentPlot.LegendOrientation = LegendOrientation.Horizontal;
             CurrentPlot.LegendPlacement = LegendPlacement.Outside;
             CurrentPlot.LegendPosition = LegendPosition.RightMiddle;
+
             _beginingPoint = 0;
             first = true;
             _visible = true;
             _displayedSeries = new List<string>();
 
+            Basic_New_Data_Worker bNW = new Basic_New_Data_Worker(currentAnalysysName);
+            _analyseFrequency = bNW.LoadAttribute(Basic_Attributes.Frequency); 
 
-           _currentAnalysisName= currentAnalysysName;
-            _currentBaselineLeadStartIndex = 0; 
+           _currentAnalysisName = currentAnalysysName;
+           _currentBaselineLeadStartIndex = 0;
+
+            DisplayBaselineLeads("V1");
 
         }
 
@@ -748,9 +752,68 @@ namespace EKG_Project.GUI
 
                 ECG_Baseline_New_Data_Worker ecg_Baseline = new ECG_Baseline_New_Data_Worker(_currentAnalysisName);
                 _currentBaselineLeadNumberOfSamples =  ecg_Baseline.getNumberOfSamples(_currentLeadName);
+                _analyseSamples = _currentBaselineLeadNumberOfSamples;
                 // !!! TO DO !!! potrzebna logika do określania zakresy próbek 
                 _currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples; 
                 Vector<double> myTemp =  ecg_Baseline.LoadSignal(leadName, (int)_currentBaselineLeadStartIndex, (int)_currentBaselineLeadEndIndex);
+                _windowSize = ((_analyseSamples / _analyseFrequency));
+                //System.Windows.MessageBox.Show(myTemp.Count.ToString());
+
+
+                //display plot
+                try
+                {
+                    if (first)
+                    {
+                        first = false;
+                        var lineraYAxis = new LinearAxis();
+                        lineraYAxis.Position = AxisPosition.Left;
+                        lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+                        lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+                        lineraYAxis.Title = "Amplitude [mV]";
+
+                        CurrentPlot.Axes.Add(lineraYAxis);
+
+                    }
+                    else
+                    {
+                        ClearPlot();
+                    }
+
+                    LineSeries ls = new LineSeries();
+                    ls.Title = leadName;
+                    ls.IsVisible = _visible;
+                    if (_visible)
+                        _baselineDisplayedSeries[leadName] = true;
+                    _visible = false;
+
+                    ls.MarkerStrokeThickness = 1;
+
+                    for (int i = _beginingPoint; (i <= _analyseSamples && i < myTemp.Count()); i++)
+                    {
+                        ls.Points.Add(new DataPoint(i / _analyseFrequency, myTemp[i]));
+                    }
+
+                    CurrentPlot.Series.Add(ls);
+
+                    var lineraXAxis = new LinearAxis();
+                    lineraXAxis.Position = AxisPosition.Bottom;
+                    lineraXAxis.Minimum = 0;
+                    lineraXAxis.Maximum = _windowSize;
+                    lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
+                    lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
+                    lineraXAxis.Title = "Time [s]";
+                    CurrentPlot.Axes.Add(lineraXAxis);
+
+
+                    RefreshPlot();
+
+                }
+                catch
+                {
+                    return false; 
+                }
+
 
                 return true;
             }
