@@ -200,7 +200,10 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 //if yes,  we calculate a local QT disperssion
                 int std_base = QT_INTERVALS.RemoveAll(x => x.Equals(0));
-                local = QT_intervals.Max() - QT_intervals.Min();
+                std_base = QT_INTERVALS.RemoveAll(x => x > 1000);
+                local = QT_INTERVALS.Max() - QT_INTERVALS.Min();
+                Console.WriteLine("Max QT_Interval:\t" + QT_INTERVALS.Max());
+                Console.WriteLine("Min QT_Interval:\t" + QT_INTERVALS.Min());
             }
             catch(System.InvalidOperationException ex)
             {
@@ -407,7 +410,7 @@ namespace EKG_Project.Modules.QT_Disp
                     try
                     {
                         //if yes calculate T_Max index
-                        T_Max = samples.SubVector((QRS_End - (int)R_Peak.ElementAt(0)), (T_End_Global - QRS_End - (int)(0.035* Fs))).MaximumIndex() + QRS_End;
+                        T_Max = samples.SubVector((QRS_End - (int)R_Peak.ElementAt(0)), (T_End_Global - QRS_End - (int)(0.015* Fs))).MaximumIndex() + QRS_End;
                     }
                     catch (Exception ex)
                     {
@@ -429,7 +432,7 @@ namespace EKG_Project.Modules.QT_Disp
                     try
                     {
                         // if yes invert a signal and get a T_Max index
-                        T_Max = samples.SubVector((QRS_End - (int)R_Peak.ElementAt(0))+(int)(Fs*0.2), T_End_Global - QRS_End - (int)(0.045* Fs)).Negate().MaximumIndex() + QRS_End;
+                        T_Max = samples.SubVector((QRS_End - (int)R_Peak.ElementAt(0))+(int)(Fs*0.2), T_End_Global - QRS_End - (int)(0.035* Fs)).Negate().MaximumIndex() + QRS_End;
                     }
                     catch (Exception ex)
                     {

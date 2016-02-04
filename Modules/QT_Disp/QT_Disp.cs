@@ -24,6 +24,7 @@ namespace EKG_Project.Modules.QT_Disp
         private int _samplesProcessed;
         private int _numberOfChannels;
         private string _currentLeadName;
+        private string _R_Peak_Lead;
         private List<string> _leads;
         private int _currentIndex;
         private int _currentLength;
@@ -125,7 +126,8 @@ namespace EKG_Project.Modules.QT_Disp
                     _leads = InputBasicWorker.LoadLeads(); //Tutaj bedzie zmiana po poprawie workerów
                     _currentChannelWaves_indexes = (int)InputWavesWorker.getNumberOfSamples(Waves_Signal.QRSOnsets, _leads[_currentChannelIndex]);   // it's going to be in new worker
                     _currentLength = 2;
-                   
+                    _R_Peak_Lead = _leads[0];
+
                     _state = STATE.BEGIN_CHANNEL;
                     _maxInputIndexes = 2000;
                     createNewObject = true;
@@ -152,7 +154,7 @@ namespace EKG_Project.Modules.QT_Disp
                     //_currentChannelIndex++;
                     _currentLeadName = _leads[_currentChannelIndex];
                    
-                    R_Peaks = InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, _amountOfIndexesInInput);  //stores r peaks
+                    R_Peaks = InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _R_Peak_Lead, 0, _amountOfIndexesInInput);  //stores r peaks
                     _currentIndex = (int)R_Peaks.ElementAt(0);     // get first index in r peaks
                     _currentLength = (int)(R_Peaks.ElementAt(1) - R_Peaks.ElementAt(0)); //get length between the first and next one r peak
 
@@ -160,7 +162,7 @@ namespace EKG_Project.Modules.QT_Disp
                     QT_Disp_Algorithms.TODoInInit(InputWavesWorker.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName, 0, _amountOfIndexesInInput),
                         InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, 0, _amountOfIndexesInInput),
                         InputWavesWorker.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName, 0, _amountOfIndexesInInput),
-                        InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, _amountOfIndexesInInput),
+                        InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _R_Peak_Lead, 0, _amountOfIndexesInInput),
                         _params.TEndMethod, _params.QTMethod, InputBasicWorker.LoadAttribute(Basic_Attributes.Frequency)
                         );
                     _indexesProcessed = _amountOfIndexesInInput;
@@ -205,14 +207,14 @@ namespace EKG_Project.Modules.QT_Disp
                             {
                                 _amountOfIndexesInInput = _currentChannelWaves_indexes - _indexesProcessed;
                             }
-                            R_Peaks = InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput);  //stores r peaks
+                            R_Peaks = InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _R_Peak_Lead, _indexesProcessed, _amountOfIndexesInInput);  //stores r peaks
                             _currentIndex = (int)R_Peaks.ElementAt(0);     // get first index in r peaks
                             _currentLength = (int)(R_Peaks.ElementAt(1) - R_Peaks.ElementAt(0)); //get length between the first and next one r peak
 
                             QT_Disp_Algorithms.TODoInInit(InputWavesWorker.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
                                 InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
                                 InputWavesWorker.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
-                                InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _indexesProcessed, _amountOfIndexesInInput),
+                                InputRPeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _R_Peak_Lead, _indexesProcessed, _amountOfIndexesInInput),
                                 _params.TEndMethod, _params.QTMethod, InputBasicWorker.LoadAttribute(Basic_Attributes.Frequency)
                             );
                             _indexesProcessed += _amountOfIndexesInInput;
@@ -235,7 +237,8 @@ namespace EKG_Project.Modules.QT_Disp
                         _samplesProcessed = _currentIndex + _currentLength;
                         step++;
                         _currentIndex = (int) R_Peaks.ElementAt(step);
-                        _currentLength =(int)( R_Peaks.ElementAt(step+1) - R_Peaks.ElementAt(step));                   
+                        _currentLength =(int)( R_Peaks.ElementAt(step+1) - R_Peaks.ElementAt(step));
+                                    
 
                     }
                     break;
