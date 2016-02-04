@@ -50,7 +50,9 @@ namespace EKG_Project.GUI
 
         private uint _currentBaselineLeadStartIndex;
         private uint _currentBaselineLeadEndIndex;
-        private uint _currentBaselineLeadNumberOfSamples; 
+        private uint _currentBaselineLeadNumberOfSamples;
+
+        private Vector<double> _currentBaselineLeadVector;
 
 
 
@@ -718,6 +720,7 @@ namespace EKG_Project.GUI
         // Program ver2.0 
 
         //Konstruktor z nazwą analizy i tytułem wykresu.
+
         public ECGPlot(string currentAnalysysName, string plotTitle)
         {
             CurrentPlot = new PlotModel();
@@ -755,6 +758,7 @@ namespace EKG_Project.GUI
                 // !!! TO DO !!! potrzebna logika do określania zakresy próbek 
                 _currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples; 
                 Vector<double> myTemp =  ecg_Baseline.LoadSignal(leadName, (int)_currentBaselineLeadStartIndex, (int)_currentBaselineLeadEndIndex);
+                _currentBaselineLeadVector = myTemp; 
                 _windowSize = ((_analyseSamples / _analyseFrequency));
 
 
@@ -842,6 +846,45 @@ namespace EKG_Project.GUI
 
                 RefreshPlot();
 
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool DisplayR_PeaksLeadVersion()
+        {
+            try
+            {
+                R_Peaks_New_Data_Worker rPW = new R_Peaks_New_Data_Worker(_currentAnalysisName);
+                Vector<double> myTemp = rPW.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)_currentBaselineLeadEndIndex);
+                bool addR_Peak = false;
+
+
+                ScatterSeries rPeaksSeries = new ScatterSeries();
+                rPeaksSeries.Title = "R_Peaks";
+
+                for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
+                {
+                    if (myTemp.Contains(i))
+                    {
+                        rPeaksSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+
+                        addR_Peak = true;
+                    }
+                }
+
+
+                if (addR_Peak)
+                {
+                    CurrentPlot.Series.Add(rPeaksSeries);
+                }
+
+
+
+                RefreshPlot();
                 return true;
             }
             catch
