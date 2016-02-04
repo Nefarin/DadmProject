@@ -409,7 +409,7 @@ namespace EKG_Project.Modules.HRT
             List<int> Klasy = new List<int>();
             foreach (Tuple<int, int> _licznik in _class)
             {
-                if (_licznik.Item2 == 1)
+                if (_licznik.Item2 == 0)
                 {
                     Klasy.Add(_licznik.Item1);
                 }

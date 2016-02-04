@@ -17,12 +17,10 @@ namespace EKG_Project.Modules.HRT
         private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
         private bool _ended;
         private bool _aborted;
-
         private int _currentChannelIndex;
         private int _currentChannelLength;
         private string _currentLeadName;
         private string[] _leads;
-        private int _currentIndex;
         private int _numberOfChannels;
         private uint _frequency;
         public enum VPC
@@ -33,17 +31,11 @@ namespace EKG_Project.Modules.HRT
             LETS_PLOT
         }
         private VPC _vpc;
-        //private int _step;
-
         private Basic_New_Data_Worker _inputWorker_basic;
         private R_Peaks_New_Data_Worker _inputWorker_R_Peaks;
         private Heart_Class_New_Data_Worker _inputWorker_Heart_Class;
         private HRT_New_Data_Worker _outputWorker;
-
-        
         private HRT_Params _params;
-
-        private int _step;
         private STATE _state;
         private HRT_Alg _alg;
         private Vector<double> _rpeaks;
@@ -53,11 +45,7 @@ namespace EKG_Project.Modules.HRT
         private List<int> _nrVPC;
         private List<List<double>> _tachogram;
         private List<int> _classVentrical;
-        private List<double> _turbulenceOnset;
         private Tuple<List<double>, int[], double[]> _turbulenceSlope;
-        private double[] _meanTachogram;
-
-
         private int[] _xaxisTachogramGUI;
         private List<List<double>> _tachogramGUI;
         private double[] _tachogramMeanGUI;
@@ -108,14 +96,10 @@ namespace EKG_Project.Modules.HRT
                 InputWorker_R_Peaks = new R_Peaks_New_Data_Worker(Params.AnalysisName);
                 InputWorker_Heart_Class = new Heart_Class_New_Data_Worker(Params.AnalysisName);
                 OutputWorker = new HRT_New_Data_Worker(Params.AnalysisName);
-
-                _step = 10;
                 _frequency = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
                 _state = STATE.INIT;
             }
         }
-
-
 
         public void ProcessData()
         {
@@ -150,115 +134,75 @@ namespace EKG_Project.Modules.HRT
                     else
                     {
                         _currentLeadName = _leads[_currentChannelIndex];
-                        System.Diagnostics.Debug.WriteLine(_currentLeadName);
                         _currentChannelLength = (int)_inputWorker_Heart_Class.getNumberOfSamples(_currentLeadName);
-                        //_currentChannelLength = (int)_inputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName );
                         _state = STATE.PROCESS_CHANNEL;
-                        _currentIndex = 0;
-
                         int NoOfSamplesHeartClass = (int)InputWorker_Heart_Class.getNumberOfSamples(_currentLeadName);
                         int NoOfSamplesRPeaks = (int)InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName);
                         int NoOfSamplesRRInterval = (int)InputWorker_R_Peaks.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _currentLeadName);
-
                         _rpeaks = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, NoOfSamplesRPeaks);
                         _rrintervals = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, NoOfSamplesRRInterval);
                         _classAll = InputWorker_Heart_Class.LoadClassificationResult(_currentLeadName, 0, NoOfSamplesHeartClass);
-
-                        //System.Diagnostics.Debug.WriteLine(_rpeaks);
-                        //System.Diagnostics.Debug.WriteLine(_rrintervals);
-                        //System.Diagnostics.Debug.WriteLine(_classAll);
-                        Console.WriteLine("_step " + _step);
                         _state = STATE.PROCESS_CHANNEL;
-
-
-
                     }
                     break;
-                //case (STATE.PROCESS_FIRST_STEP):
-                //    if (_currentIndex + _step > _currentChannelLength) _state = STATE.END_CHANNEL;
-                //    else
-                //    {
-                //        try
-                //        {
-                //            
-                //        }
-                //        catch (Exception e)
-                //        {
-                //            _state = STATE.NEXT_CHANNEL;
-                //            System.Diagnostics.Debug.WriteLine("PROCESS_FIRST_STEP - Exception e");
-                //        }
-                //    }
-                //    break;
                 case (STATE.PROCESS_CHANNEL):
-                    if (_currentChannelIndex > _currentChannelLength) _state = STATE.END_CHANNEL;
+                    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END_CHANNEL;
                     else
                     {
                         try
                         {
                             if (_rpeaks.Count < _classAll.Count)
                             {
+                                _vpc = VPC.NOT_DETECTED;
                                 System.Diagnostics.Debug.WriteLine("Wykryto więcej klas niż załamków, błędnie skonstruowany plik wejściowy");
                             }
                             else
                             {
                                 _classVentrical = _alg.TakeNonAtrialComplexes(_classAll);
-
-
-                                if (_classVentrical.Capacity == 0)
+                                if (_classVentrical.Count == 0)
                                 {
                                     System.Diagnostics.Debug.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
-                                    //_vpc = false;
+                                    _vpc = VPC.NOT_DETECTED;
                                 }
                                 else
                                 {
                                     _nrVPC = _alg.GetNrVPC(_rpeaks.ToArray(), _classVentrical.ToArray());
                                     _tachogram = _alg.MakeTachogram(_nrVPC, _rrintervals);
                                     _classPrematureVentrical = _alg.SearchPrematureTurbulences(_tachogram, _nrVPC);
-                                    if (_classPrematureVentrical.Capacity == 0)
+                                    if (_classPrematureVentrical.Count == 0)
                                     {
                                         System.Diagnostics.Debug.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
-                                        //_vpc = false;
+                                        _vpc = VPC.NO_VENTRICULAR;
                                     }
                                     else
                                     {
                                         Tuple<int[], double[]> _meanTurbulenceOnset;
 
-
                                         _tachogram = _alg.MakeTachogram(_classPrematureVentrical, _rrintervals);
                                         if (_tachogram.Count == 0)
                                         {
                                             System.Diagnostics.Debug.WriteLine("Są VPC, ale nie można wygenerować wokół nich tachogramu. Prawdopodobna przyczyna to niewystarczająca ilość wykrytych załamków QRS w pobliżu");
-                                            //_vpc = false;
+                                            _vpc = VPC.DETECTED_BUT_IMPOSSIBLE_TO_PLOT;
                                         }
                                         else
                                         {
-                                            //_vpc = true;
-                                            _turbulenceOnset = _alg.TurbulenceOnsetsPDF(_classPrematureVentrical, _rrintervals);
+                                            _vpc = VPC.LETS_PLOT;
                                             _turbulenceSlope = _alg.TurbulenceSlopeGUIandPDF(_classPrematureVentrical, _rrintervals);
                                             _meanTurbulenceOnset = _alg.TurbulenceOnsetMeanGUI(_tachogram);
-                                            _meanTachogram = _alg.MeanTachogram(_tachogram);
-
                                             _xaxisTachogramGUI = _alg.xPlot();
                                             _tachogramGUI = _tachogram;
-                                            _tachogramMeanGUI =_meanTachogram;
+                                            _tachogramMeanGUI = _alg.MeanTachogram(_tachogram);
                                             _xpointsOnsetGUI = _meanTurbulenceOnset.Item1;
                                             _turbulenceOnsetmeanGUI = _meanTurbulenceOnset.Item2;
                                             _xpointsSlopeGUI = _turbulenceSlope.Item2;
                                             _turbulenceSlopeMaxGUI = _turbulenceSlope.Item3;
-                                            _turbulenceOnsetPDF = _turbulenceOnset;
+                                            _turbulenceOnsetPDF = _alg.TurbulenceOnsetsPDF(_classPrematureVentrical, _rrintervals);
                                             _turbulenceSlopePDF = _turbulenceSlope.Item1;
-
                                             _statisticsClassNumbersPDF[0] = _classAll.Count;
                                             _statisticsClassNumbersPDF[1] = _classVentrical.Count;
                                             _statisticsClassNumbersPDF[2] = _classPrematureVentrical.Count;
-
                                             _state = STATE.END_CHANNEL;
-
-                                            // _alg.PrintVector();
-                                            System.Diagnostics.Debug.WriteLine(_nrVPC.Count);
-                                            System.Diagnostics.Debug.WriteLine(_classPrematureVentrical.Count);
-                                            _alg.PrintVector(_nrVPC);
-                                            _alg.PrintVector(_classPrematureVentrical);
+                                            _alg.PrintVector(_tachogram);
                                         }
                                     }
                                 }
@@ -270,13 +214,11 @@ namespace EKG_Project.Modules.HRT
                             System.Diagnostics.Debug.WriteLine("PROCESS_CHANNEL - Exception e");
                         }
                     }
-
-                    //_currentChannelIndex++;
-
                     break;
                 case (STATE.END_CHANNEL):
                     try
                     {
+                        //enum VPC jest zadeklarowany w tym pliku i w workerze osobno, dlatego nie kompiluje sie linijka poniżej
                         //OutputWorker.SaveVPC(_currentLeadName, _vpc);
                         OutputWorker.SaveXAxisTachogramGUI(_currentLeadName, false, _xaxisTachogramGUI);
                         OutputWorker.SaveTachogramGUI(_currentLeadName, false, _tachogramGUI);
@@ -307,34 +249,6 @@ namespace EKG_Project.Modules.HRT
                     break;
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       
-
-
-
-
-
-
 
 
         public bool Aborted
