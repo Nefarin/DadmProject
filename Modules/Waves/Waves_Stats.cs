@@ -4,21 +4,26 @@ using System.Linq;
 using EKG_Project.IO;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Waves
 {
     public class Waves_Stats : IModuleStats
     {
+        // declarations of variables
         private enum State { START_CHANNEL, CALCULATE, NEXT_CHANNEL, END };
         private bool _aborted;
         private bool _ended;
         private Dictionary<string, Object> _strToObj;
         private Dictionary<string, string> _strToStr;
         private string _analysisName;
-        private Waves_Data _data;
         private State _currentState;
         private int _currentChannelIndex;
+        private int _currentIndex;
         private string _currentName;
+        private Basic_New_Data_Worker _basicWorker;
+        private Waves_New_Data_Worker _worker;
+        private string[] _leads;
 
 
         public void Abort()
@@ -59,60 +64,87 @@ namespace EKG_Project.Modules.Waves
             _strToObj = new Dictionary<string, object>();
             _strToStr = new Dictionary<string, string>();
 
-            Waves_Data_Worker worker = new Waves_Data_Worker(_analysisName);
-            worker.Load();
-            _data = worker.Data;
+            // make workers from data
+            _basicWorker = new Basic_New_Data_Worker(_analysisName);
+            _worker = new Waves_New_Data_Worker(_analysisName);
+            _leads = _basicWorker.LoadLeads().ToArray();
             _currentState = State.START_CHANNEL;
             _currentChannelIndex = 0;
         }
+
+        #region
+        /// <summary>
+        /// This method counts amount of unrecognized characteristic points
+        /// </summary>
+        /// <param name="listInp"> List of all elements from current characteristic points</param>
+        /// <returns> Amount of unrecognized points</returns>
+        #endregion
         int CountUnrecognized( List<int> listInp)
         {
             int unrecognized = 0;
             foreach( int element in listInp)
             {
                 if (element == -1)
-                    unrecognized++;
+                    unrecognized++; // if element is not recognized increment variable
             }
             return unrecognized;
         }
+
+        #region
+        /// <summary>
+        /// This method counts percentage of recognized characteristic points
+        /// </summary>
+        /// <param name="listInp"> List of all elements from current characteristic points</param>
+        /// <returns> Percentage of recognized points</returns>
+        #endregion
         double CountPercentOfRecognized( List<int> listInp)
         {
             int listSize = listInp.Count;
             int unrecognized = CountUnrecognized(listInp);
-            double result = (double)(listSize - unrecognized) / (double)listSize;
+            double result = (double)(listSize - unrecognized) / (double)listSize; // calculate recognized to all elements ratio
             result = Math.Round(result, 2);
-            return result*100;
+            return result*100; // multiplicate in order to get percnetage
         }
+
+        #region
+        /// <summary>
+        /// This method calculates stats and add them to stats output
+        /// </summary>
+        #endregion
         public void ProcessStats()
         {
             switch (_currentState)
             {
                 case (State.START_CHANNEL):
-                    _currentName = _data.QRSEnds[_currentChannelIndex].Item1;
+                    _currentName = _leads[_currentChannelIndex];
+                    _currentIndex = 0;
                     _currentState = State.CALCULATE;
                     break;
                 case (State.CALCULATE):
-                    List<int> qrsOns = _data.QRSOnsets[_currentChannelIndex].Item2;
-                    List<int> qrsEnds = _data.QRSEnds[_currentChannelIndex].Item2;
+                    // load calculated samples of characteristic ECG points
+                    List<int> qrsOns = _worker.LoadSignal(Waves_Signal.QRSOnsets,_currentName,_currentIndex,(int)_worker.getNumberOfSamples(Waves_Signal.QRSOnsets,_currentName));
+                    List<int> qrsEnds = _worker.LoadSignal(Waves_Signal.QRSEnds, _currentName, _currentIndex, (int)_worker.getNumberOfSamples(Waves_Signal.QRSEnds, _currentName));
+                    List<int> pOns = _worker.LoadSignal(Waves_Signal.POnsets, _currentName, _currentIndex, (int)_worker.getNumberOfSamples(Waves_Signal.POnsets, _currentName));
+                    List<int> pEnds = _worker.LoadSignal(Waves_Signal.PEnds, _currentName, _currentIndex, (int)_worker.getNumberOfSamples(Waves_Signal.PEnds, _currentName));
+                    List<int> tEnds = _worker.LoadSignal(Waves_Signal.TEnds, _currentName, _currentIndex, (int)_worker.getNumberOfSamples(Waves_Signal.TEnds, _currentName));
 
-                    List<int> pOns = _data.POnsets[_currentChannelIndex].Item2;
-                    List<int> pEnds = _data.PEnds[_currentChannelIndex].Item2;
+                    // add recognize precentage of characteristic ECG points to stats output
+                    _strToStr.Add(_currentName + " qrs onsets recognize percentage: ", CountPercentOfRecognized(qrsOns).ToString());
+                    _strToObj.Add(_currentName + " qrs onsets recognize percentage: ", CountPercentOfRecognized(qrsOns));
+                    _strToStr.Add(_currentName + " qrs ends recognize percentage: ", CountPercentOfRecognized(qrsEnds).ToString());
+                    _strToObj.Add(_currentName + " qrs ends recognize percentage: ", CountPercentOfRecognized(qrsEnds));
+                    _strToStr.Add(_currentName + " p onsets recognize percentage: ", CountPercentOfRecognized(pOns).ToString());
+                    _strToObj.Add(_currentName + " p onsets recognize percentage: ", CountPercentOfRecognized(pOns));
+                    _strToStr.Add(_currentName + " p ends recognize percentage: ", CountPercentOfRecognized(pEnds).ToString());
+                    _strToObj.Add(_currentName + " p ends recognize percentage: ", CountPercentOfRecognized(pEnds));
+                    _strToStr.Add(_currentName + " t ends recognize percentage: ", CountPercentOfRecognized(tEnds).ToString());
+                    _strToObj.Add(_currentName + " t ends recognize percentage: ", CountPercentOfRecognized(tEnds));
 
-                    List<int> tEnds = _data.TEnds[_currentChannelIndex].Item2;
-
-
-                    _strToStr.Add(_currentName + " qrs onsets recognize pertent: ", CountPercentOfRecognized(qrsOns).ToString());
-                    _strToStr.Add(_currentName + " qrs ends recognize pertent: ", CountPercentOfRecognized(qrsEnds).ToString());
-
-                    _strToStr.Add(_currentName + " p onsets recognize pertent: ", CountPercentOfRecognized(pOns).ToString());
-                    _strToStr.Add(_currentName + " p ends recognize pertent: ", CountPercentOfRecognized(pEnds).ToString());
-
-                    _strToStr.Add(_currentName + " t ends recognize pertent: ", CountPercentOfRecognized(tEnds).ToString());
                     _currentState = State.NEXT_CHANNEL;
                     break;
                 case (State.NEXT_CHANNEL):
                     _currentChannelIndex++;
-                    if (_currentChannelIndex >= _data.QRSEnds.Count)
+                    if (_currentChannelIndex >= _leads.Length)
                     {
                         _currentState = State.END;
                     }
@@ -132,7 +164,7 @@ namespace EKG_Project.Modules.Waves
 
             while (true)
             {
-                if (stats.Ended()) break;
+                if (stats.Ended()) break; // if stats ended then exit 
                 stats.ProcessStats();
             }
 
