@@ -159,7 +159,7 @@ namespace EKG_Project.Modules.Waves
         public static void Main(String[] args)
         {
             Waves_Stats stats = new Waves_Stats();
-            stats.Init("TestAnalysis100");
+            stats.Init("Analysis 1");
 
 
             while (true)
