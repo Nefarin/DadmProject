@@ -52,7 +52,7 @@ namespace EKG_Project.GUI
         private bool first;
 
         //ver 2.0 
-
+        private List<string> leadsNameList;
         //private 
 
 
@@ -416,7 +416,7 @@ namespace EKG_Project.GUI
             try
             {
                 Basic_New_Data_Worker basicDataForLeads = new Basic_New_Data_Worker(currentAnalyseName);
-                List<string> leadsNameList = basicDataForLeads.LoadLeads();
+                leadsNameList = basicDataForLeads.LoadLeads();
                
                 foreach (string lead in leadsNameList)
                 {
@@ -424,7 +424,7 @@ namespace EKG_Project.GUI
                     cB.IsChecked = first;
                     first = false;
                     cB.Name = lead;
-                    cB.Content = lead;
+                    cB.Content = lead;                   
                     cB.Checked += CheckBox_Checked;
                     cB.Unchecked += CheckBox_Unchecked;
                     _seriesChecbox.Add(cB);
@@ -787,19 +787,63 @@ namespace EKG_Project.GUI
 
         }
 
+
+
+
+
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var c = sender as CheckBox;
-            ecgPlot.SeriesControler(c.Name, true);
+            MessageBox.Show("Checked=" + c.Name);
+            if (leadsNameList.Contains(c.Name))
+            {
+                foreach (var cB in this.CheckBoxList.Items)
+                {
+                    var cc = cB as CheckBox;
+                    if (cc.Name != c.Name)
+                    {
+                        cc.Checked -= CheckBox_Checked;
+                        cc.Unchecked -= CheckBox_Unchecked;
+                        cc.IsChecked = false;
+                        cc.Checked += CheckBox_Checked;
+                        cc.Unchecked += CheckBox_Unchecked;
+                    }
+
+                }
+                //wygaszenie serii danych -> chyba można usunąć wszystko.   
+                //wyswietlenie żadnego leadu
+
+            }
+            else
+            {
+                //wyświetlenie na plot danego modułu dla konkretnego leada.
+            }
         }
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             var c = sender as CheckBox;
-            ecgPlot.SeriesControler(c.Name, false);
-            
+            MessageBox.Show("Unchecked=" + c.Name);
+            if (leadsNameList.Contains(c.Name))
+            {
+                foreach (var cB in this.CheckBoxList.Items)
+                {
+                    var cc = cB as CheckBox;
+                    cc.Checked -= CheckBox_Checked;
+                    cc.Unchecked -= CheckBox_Unchecked;
+                    cc.IsChecked = false;
+                    cc.Checked += CheckBox_Checked;
+                    cc.Unchecked += CheckBox_Unchecked;
 
+                    //wygaszenie serii danych -> chyba można usunąć wszystko.                
+                }
+            }
+            else
+            {
+                //wygaszenie z plotu danego modułu
+            }
         }
+
 
         private void SavePlotButton_Click(object sender, RoutedEventArgs e)
         {
