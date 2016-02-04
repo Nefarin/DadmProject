@@ -213,10 +213,12 @@ namespace EKG_Project.Modules.Heart_Class
            
             Tuple<int, int> qrsDistances = DistancesFromR(fs);
 
-            //int qrsLength = (qrsDistances.Item2 - qrsDistances.Item1 + 1);
+            //singleQrsOnset = (int)singleQrsR - qrsDistances.Item1;
+            //signleQrsEnd = (int)singleQrsR + qrsDistances.Item2;
+            //int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
             //SingleQrs = Vector<double>.Build.Dense(qrsLength);
 
-            //Signal.CopySubVectorTo(SingleQrs, sourceIndex: qrsDistances.Item1, targetIndex: 0,
+            //Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
             //    count: qrsLength);
             //QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
 
