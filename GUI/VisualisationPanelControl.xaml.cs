@@ -55,7 +55,9 @@ namespace EKG_Project.GUI
         public VisualisationPanelControl(string analyseName, List<string> tabNames)
         {
             InitializeComponent();
-            ChooseTabDisplay(analyseName,tabNames);
+            //ChooseTabDisplay(analyseName,tabNames);
+            NewChooseTabDisplay(analyseName, tabNames);
+
         }
 
         private void ChooseTabDisplay(string analysN, List<string> tabNames)

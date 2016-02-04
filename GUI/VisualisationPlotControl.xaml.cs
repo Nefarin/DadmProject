@@ -402,7 +402,7 @@ namespace EKG_Project.GUI
             ecgPlot = new ECGPlot(analyseName, moduleName);
             DataContext = ecgPlot;
 
-            CreateAllCheckBoxesInCurrentAnalyse(analyseName);
+            CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
 
             this.CheckBoxList.DataContext = _seriesChecbox;
 
@@ -411,12 +411,12 @@ namespace EKG_Project.GUI
 
         //methodes used to configurate Checboxes
 
-        private void CreateAllCheckBoxesInCurrentAnalyse(string currentAnalyseName)
+        private void CreateAllCheckBoxesInCurrentAnalyse(string currentAnalyseName, List<string> currentModulesList)
         {
             try
             {
                 Basic_New_Data_Worker basicDataForLeads = new Basic_New_Data_Worker(currentAnalyseName);
-                List<string> leadsNameList = basicDataForLeads.LoadLeads();
+                List<string> leadsNameList = basicDataForLeads.LoadLeads();              
 
                 foreach (string lead in leadsNameList)
                 {
@@ -429,6 +429,20 @@ namespace EKG_Project.GUI
                     cB.Unchecked += CheckBox_Unchecked;
                     _seriesChecbox.Add(cB);
                 }
+
+                foreach(string mod in currentModulesList)
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = mod;
+                    cB.Content = mod;
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
+
 
                 
                 

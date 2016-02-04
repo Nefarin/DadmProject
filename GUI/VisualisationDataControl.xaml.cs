@@ -89,19 +89,19 @@ namespace EKG_Project.GUI
             switch (modulesVisualisationNeeds[moduleName])
             {
                 case 0:                  
-                    StartPlot(analyseName, moduleName, moduleDict);
+                    //StartPlot(analyseName, moduleName, moduleDict);
                     break;
                     
                 case 1:
-                    StartPlot(analyseName, moduleName, moduleDict);
+                    //StartPlot(analyseName, moduleName, moduleDict);
                     StartTable(analyseName, moduleName, moduleDict);
                     break;                   
                 case 2:
-                    StartPlot(analyseName, moduleName, moduleDict);
+                    //StartPlot(analyseName, moduleName, moduleDict);
                     StartHistogram(analyseName, moduleName, moduleDict);
                     break;                   
                 case 3:
-                    StartPlot(analyseName, moduleName, moduleDict);
+                    //StartPlot(analyseName, moduleName, moduleDict);
                     StartTable(analyseName, moduleName, moduleDict);
                     StartHistogram(analyseName, moduleName, moduleDict);
                     break;
@@ -169,7 +169,7 @@ namespace EKG_Project.GUI
                 //start konkretnego 
             }
 
-            
+            this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
 
         }
 
