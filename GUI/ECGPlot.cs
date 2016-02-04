@@ -1506,6 +1506,20 @@ namespace EKG_Project.GUI
         //}
 
         
+        public bool RemoveAllPlotSeries()
+        {
+            try
+            {
+                CurrentPlot.Series.Clear();
+                RefreshPlot();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         public void SeriesControler(string seriesName, bool visible)
         {

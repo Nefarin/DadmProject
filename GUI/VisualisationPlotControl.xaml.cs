@@ -794,7 +794,7 @@ namespace EKG_Project.GUI
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var c = sender as CheckBox;
-            MessageBox.Show("Checked=" + c.Name);
+            //MessageBox.Show("Checked=" + c.Name);
             if (leadsNameList.Contains(c.Name))
             {
                 foreach (var cB in this.CheckBoxList.Items)
@@ -810,7 +810,7 @@ namespace EKG_Project.GUI
                     }
 
                 }
-                //wygaszenie serii danych -> chyba można usunąć wszystko.   
+                ecgPlot.RemoveAllPlotSeries();
                 //wyswietlenie żadnego leadu
 
             }
@@ -823,7 +823,7 @@ namespace EKG_Project.GUI
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             var c = sender as CheckBox;
-            MessageBox.Show("Unchecked=" + c.Name);
+            //MessageBox.Show("Unchecked=" + c.Name);
             if (leadsNameList.Contains(c.Name))
             {
                 foreach (var cB in this.CheckBoxList.Items)
@@ -835,7 +835,7 @@ namespace EKG_Project.GUI
                     cc.Checked += CheckBox_Checked;
                     cc.Unchecked += CheckBox_Unchecked;
 
-                    //wygaszenie serii danych -> chyba można usunąć wszystko.                
+                    ecgPlot.RemoveAllPlotSeries();           
                 }
             }
             else
