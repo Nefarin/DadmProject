@@ -822,7 +822,33 @@ namespace EKG_Project.GUI
             }
         }
 
-        
+        public bool DisplayEcgBasicLeadVersion()
+        {
+            try
+            {
+                Basic_New_Data_Worker bNW = new Basic_New_Data_Worker(_currentAnalysisName);
+                Vector<double> myTemp = bNW.LoadSignal(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)_currentBaselineLeadEndIndex);
+
+                LineSeries ls = new LineSeries();
+                ls.Title = "Basic";
+                ls.MarkerStrokeThickness = 1;
+
+                for (int i = _beginingPoint; (i <= _analyseSamples && i < myTemp.Count()); i++)
+                {
+                    ls.Points.Add(new DataPoint(i / _analyseFrequency, myTemp[i]));
+                }
+
+                CurrentPlot.Series.Add(ls);
+
+                RefreshPlot();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
 
 
