@@ -654,7 +654,7 @@ namespace EKG_Project.Modules.HRT
         /// <summary>
         /// Create 
         /// </summary>
-        /// <returns>  array of indexes for xaxis to plot  (-4 -4 ...14 16)
+        /// <returns>  array of indexes for xaxis to plot  
         public int[] xPlot()
         {
             int[] xaxis = new int[back + front];

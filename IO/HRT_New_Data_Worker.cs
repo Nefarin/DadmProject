@@ -56,7 +56,7 @@ namespace EKG_Project.IO
         /// <param name="lead">lead</param>
         /// <param name="value">value</param>
         #endregion
-        public void SaveVPC(string lead, VPC value)
+        public void SaveVPC(string lead, HRT.VPC value)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -75,7 +75,7 @@ namespace EKG_Project.IO
         /// <param name="lead">lead</param>
         /// <returns>VPCenum value</returns>
         #endregion
-        public VPC LoadVPC(string lead)
+        public HRT.VPC LoadVPC(string lead)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -83,7 +83,7 @@ namespace EKG_Project.IO
             string pathIn = System.IO.Path.Combine(directory, fileName);
 
             StreamReader sr = new StreamReader(pathIn);
-            VPC readValue = (VPC)Enum.Parse(typeof(VPC), sr.ReadLine());
+            HRT.VPC readValue = (HRT.VPC)Enum.Parse(typeof(HRT.VPC), sr.ReadLine());
             sr.Close();
 
             return readValue;
@@ -827,19 +827,19 @@ namespace EKG_Project.IO
         }
     }
 
-    //<-- Ten enum jest do usunięcia po zmergowaniu z modułem HRT
-    #region Documentation
-    /// <summary>
-    /// HRT plot status enum 
-    /// </summary>
-    #endregion
-    public enum VPC
-    {
-        NOT_DETECTED,
-        NO_VENTRICULAR,
-        DETECTED_BUT_IMPOSSIBLE_TO_PLOT,
-        LETS_PLOT
-    }
-    //-->
+    ////<-- Ten enum jest do usunięcia po zmergowaniu z modułem HRT
+    //#region Documentation
+    ///// <summary>
+    ///// HRT plot status enum 
+    ///// </summary>
+    //#endregion
+    //public enum VPC
+    //{
+    //    NOT_DETECTED,
+    //    NO_VENTRICULAR,
+    //    DETECTED_BUT_IMPOSSIBLE_TO_PLOT,
+    //    LETS_PLOT
+    //}
+    ////-->
 
 }

@@ -202,7 +202,7 @@ namespace EKG_Project.Modules.HRT
                                             _statisticsClassNumbersPDF[1] = _classVentrical.Count;
                                             _statisticsClassNumbersPDF[2] = _classPrematureVentrical.Count;
                                             _state = STATE.END_CHANNEL;
-                                            System.Diagnostics.Debug.WriteLine(_statisticsClassNumbersPDF[0]);
+                                            
                                         }
                                     }
                                 }
@@ -218,8 +218,7 @@ namespace EKG_Project.Modules.HRT
                 case (STATE.END_CHANNEL):
                     try
                     {
-                        //enum VPC jest zadeklarowany w tym pliku i w workerze osobno, dlatego nie kompiluje sie linijka poniżej
-                        //OutputWorker.SaveVPC(_currentLeadName, _vpc);
+                        OutputWorker.SaveVPC(_currentLeadName, _vpc);
                         OutputWorker.SaveXAxisTachogramGUI(_currentLeadName, false, _xaxisTachogramGUI);
                         OutputWorker.SaveTachogramGUI(_currentLeadName, false, _tachogramGUI);
                         OutputWorker.SaveMeanTachogramGUI(_currentLeadName, false, _tachogramMeanGUI);
@@ -342,13 +341,10 @@ namespace EKG_Project.Modules.HRT
             }
         }
 
-
-
-
         public static void Main()
         {
 
-            HRT_Params param = new HRT_Params("Analysis HRT");
+            HRT_Params param = new HRT_Params("Analysis HRT2");
 
             HRT testModule = new HRT();
             testModule.Init(param);
