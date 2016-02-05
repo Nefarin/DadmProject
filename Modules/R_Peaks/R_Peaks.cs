@@ -11,10 +11,12 @@ namespace EKG_Project.Modules.R_Peaks
 {
     public class R_Peaks : IModule
     {
+        //states of processing
         private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
         private bool _ended;
         private bool _aborted;
 
+        //parameters connected with raw input signal
         private int _currentChannelIndex;
         private int _currentChannelLength;
         private string _currentLeadName;
@@ -22,6 +24,7 @@ namespace EKG_Project.Modules.R_Peaks
         private int _currentIndex;
         private int _numberOfChannels;
 
+        //workers for load and save
         private ECG_Baseline_New_Data_Worker _inputWorker;
         private Basic_New_Data_Worker _inputWorker_basic;
         private R_Peaks_New_Data_Worker _outputWorker;
@@ -32,11 +35,12 @@ namespace EKG_Project.Modules.R_Peaks
         private R_Peaks_Params _params;
 
         private STATE _state;
+        //parameteres connected with processing R_peak_module
         private R_Peaks_Alg _alg;
         private uint _frequency;
         private int _step;
         private Vector<Double> _currentVector;
-                private Vector<double> _currentVectorRRInterval;
+        private Vector<double> _currentVectorRRInterval;
   
         public void Abort()
         {
@@ -54,6 +58,10 @@ namespace EKG_Project.Modules.R_Peaks
             return Aborted;
         }
 
+        /// <summary>
+        /// Function that initialize all parameters and states
+        /// </summary>
+        /// <param name="parameters"></param>
         public void Init(ModuleParams parameters)
         {
             try
@@ -80,7 +88,6 @@ namespace EKG_Project.Modules.R_Peaks
                 OutputData = new R_Peaks_Data();
 
                 _frequency = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
-                //_step = 6000; 
                 _step = Convert.ToInt32(_frequency*16);
                 _state = STATE.INIT;
             }
@@ -92,6 +99,10 @@ namespace EKG_Project.Modules.R_Peaks
             else _ended = true;
         }
 
+        /// <summary>
+        /// Function that calculates progress of analysis of current module
+        /// </summary>
+        /// <returns>Percentage of current progress </returns>
         public double Progress()
         {
             return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_currentIndex / (double)_currentChannelLength));
@@ -102,6 +113,9 @@ namespace EKG_Project.Modules.R_Peaks
             return Params != null;
         }
 
+        /// <summary>
+        /// Function in which data are processed (made as machine of states)
+        /// </summary>
         private void processData()
         {
             switch (_state)
@@ -398,7 +412,7 @@ namespace EKG_Project.Modules.R_Peaks
         public static void Main(String[] args)
         {
             IModule testModule = new EKG_Project.Modules.R_Peaks.R_Peaks();
-            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "x");
+            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.EMD, "113");
 
             testModule.Init(param);
             while (!testModule.Ended())
