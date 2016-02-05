@@ -65,8 +65,8 @@ namespace EKG_Unit.Modules.Heart_Axis
         }
 
         [TestMethod]
-        [Description("LeastSquaresMethod")] 
-        public void leastSquaresMethodTest()
+        [Description("LeastSquaresMethodA")] 
+        public void leastSquaresMethodTestA()
         {
             Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
 
@@ -78,9 +78,52 @@ namespace EKG_Unit.Modules.Heart_Axis
             Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
             double[] realresultArray = testAlgs.LeastSquaresMethod(testArray, 0, testArray2, 100);
 
-            CollectionAssert.AreNotEqual(realresultArray, resultArray);
+            Assert.AreEqual(realresultArray[2], resultArray[2],0.1);
 
         }
+
+        [TestMethod]
+        [Description("LeastSquaresMethodB")]
+        public void leastSquaresMethodTestB()
+        {
+            Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
+
+            double[] testArray = { 4, 7, 8, 7, 4 };
+            double[] testArray2 = { 1, 1, 8, 1, 1 };
+            double[] resultArray = { 4, 4, -1 };
+
+
+            Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
+            double[] realresultArray = testAlgs.LeastSquaresMethod(testArray, 0, testArray2, 100);
+
+            //CollectionAssert.AreNotEqual(realresultArray, resultArray);
+            Assert.AreEqual(realresultArray[1], resultArray[1]);
+
+
+
+        }
+
+
+        [TestMethod]
+        [Description("LeastSquaresMethod")]
+        public void leastSquaresMethodTestC()
+        {
+            Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
+
+            double[] testArray = { 4, 7, 8, 7, 4 };
+            double[] testArray2 = { 1, 1, 8, 1, 1 };
+            double[] resultArray = { 4, 4, -1 };
+
+
+            Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
+            double[] realresultArray = testAlgs.LeastSquaresMethod(testArray, 0, testArray2, 100);
+
+            Assert.AreEqual(realresultArray[0], resultArray[0]);
+
+
+
+        }
+
 
         [TestMethod]
         [Description("LeastSquaresMethod - when signal is too short")]
