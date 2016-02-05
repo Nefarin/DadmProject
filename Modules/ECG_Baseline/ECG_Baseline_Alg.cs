@@ -94,18 +94,25 @@ namespace EKG_Project.Modules.ECG_Baseline
             #endregion
             public Vector<double> butterworth(Vector<double> signal, double fs, double fc_low, int order_low, double fc_high, int order_high, Filtr_Type type = Filtr_Type.BANDPASS)
             {
-                if (type == Filtr_Type.BANDPASS)
+                try
                 {
-                    int signal_size = signal.Count;
-                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    lp_filtered_signal = butterworth(signal, fs, fc_low, order_low, Filtr_Type.LOWPASS);
-                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    hp_filtered_signal = butterworth(lp_filtered_signal, fs, fc_high, order_high, Filtr_Type.HIGHPASS);
+                    if (type == Filtr_Type.BANDPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        lp_filtered_signal = butterworth(signal, fs, fc_low, order_low, Filtr_Type.LOWPASS);
+                        Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        hp_filtered_signal = butterworth(lp_filtered_signal, fs, fc_high, order_high, Filtr_Type.HIGHPASS);
 
-                    return hp_filtered_signal;
+                        return hp_filtered_signal;
+                    }
+
+                    return signal;
                 }
-
-                return signal;
+                catch
+                {
+                    return signal;
+                }
             }
 
             //========================================================================================================
@@ -173,32 +180,39 @@ namespace EKG_Project.Modules.ECG_Baseline
             #endregion
             public Vector<double> lms(Vector<double> signal, double fs, int window_size, Filtr_Type type, double mi = 0.07)
             {
-                if (type == Filtr_Type.LOWPASS)
+                try
                 {
-                    int signal_size = signal.Count;
-                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    lp_filtered_signal = butterworth(signal, fs, 50, 30, Filtr_Type.LOWPASS);
-                    return lms(signal, lp_filtered_signal, window_size, mi);
-                }
-                if (type == Filtr_Type.HIGHPASS)
-                {
-                    int signal_size = signal.Count;
-                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    hp_filtered_signal = butterworth(signal, fs, 2, 30, Filtr_Type.HIGHPASS);
-                    return lms(signal, hp_filtered_signal, window_size, mi);
-                }
-                if (type == Filtr_Type.BANDPASS)
-                {
-                    int signal_size = signal.Count;
-                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    lp_filtered_signal = butterworth(signal, fs, 50, 30, Filtr_Type.LOWPASS);
-                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    hp_filtered_signal = butterworth(lp_filtered_signal, fs, 2, 30, Filtr_Type.HIGHPASS);
+                    if (type == Filtr_Type.LOWPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        lp_filtered_signal = butterworth(signal, fs, 50, 30, Filtr_Type.LOWPASS);
+                        return lms(signal, lp_filtered_signal, window_size, mi);
+                    }
+                    if (type == Filtr_Type.HIGHPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        hp_filtered_signal = butterworth(signal, fs, 2, 30, Filtr_Type.HIGHPASS);
+                        return lms(signal, hp_filtered_signal, window_size, mi);
+                    }
+                    if (type == Filtr_Type.BANDPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        lp_filtered_signal = butterworth(signal, fs, 50, 30, Filtr_Type.LOWPASS);
+                        Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        hp_filtered_signal = butterworth(lp_filtered_signal, fs, 2, 30, Filtr_Type.HIGHPASS);
 
-                    return lms(signal, hp_filtered_signal, window_size, mi);
-                }
+                        return lms(signal, hp_filtered_signal, window_size, mi);
+                    }
 
-                return signal;
+                    return signal;
+                }
+                catch
+                {
+                    return signal;
+                }
             }
 
             //========================================================================================================
@@ -288,18 +302,25 @@ namespace EKG_Project.Modules.ECG_Baseline
             /// <returns>The result of this method of filtration is the filtered signal by bandpass Savitzky-Golay's filter</returns>
             public Vector<double> savitzky_golay(Vector<double> signal, int window_size_low, int window_size_high, Filtr_Type type = Filtr_Type.BANDPASS)
             {
-                if (type == Filtr_Type.BANDPASS)
+                try
                 {
-                    int signal_size = signal.Count;
-                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    lp_filtered_signal = savitzky_golay(signal, window_size_low, Filtr_Type.LOWPASS);
-                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    hp_filtered_signal = savitzky_golay(lp_filtered_signal, window_size_high, Filtr_Type.HIGHPASS);
+                    if (type == Filtr_Type.BANDPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        lp_filtered_signal = savitzky_golay(signal, window_size_low, Filtr_Type.LOWPASS);
+                        Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        hp_filtered_signal = savitzky_golay(lp_filtered_signal, window_size_high, Filtr_Type.HIGHPASS);
 
-                    return hp_filtered_signal;
+                        return hp_filtered_signal;
+                    }
+
+                    return signal;
                 }
-
-                return signal;
+                catch
+                {
+                    return signal;
+                }
             }
 
             //========================================================================================================
@@ -364,19 +385,26 @@ namespace EKG_Project.Modules.ECG_Baseline
             /// <returns>The result of this method of filtration is the filtered signal by bandpass moving average filter</returns>
             public Vector<double> moving_average(Vector<double> signal, int window_size_low, int window_size_high, Filtr_Type type = Filtr_Type.BANDPASS)
             {
-                if (type == Filtr_Type.BANDPASS)
+                try
                 {
-                    int signal_size = signal.Count;
-                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    lp_filtered_signal = moving_average(signal, window_size_low, Filtr_Type.LOWPASS);
-                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    hp_filtered_signal = moving_average(lp_filtered_signal, window_size_high, Filtr_Type.HIGHPASS);
+                    if (type == Filtr_Type.BANDPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        lp_filtered_signal = moving_average(signal, window_size_low, Filtr_Type.LOWPASS);
+                        Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        hp_filtered_signal = moving_average(lp_filtered_signal, window_size_high, Filtr_Type.HIGHPASS);
 
-                    return hp_filtered_signal;
+                        return hp_filtered_signal;
+                    }
+
+                    return signal;
                 }
-
-                return signal;
-            }
+                catch
+                {
+                    return signal;
+                }
+                }
 
         }
 
