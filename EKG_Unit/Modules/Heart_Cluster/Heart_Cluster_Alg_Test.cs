@@ -1,4 +1,5 @@
 ﻿using System;
+using MathNet.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -159,6 +160,75 @@ namespace EKG_Unit.Modules.Heart_Cluster
 
         }
 
+
+        [TestMethod]
+        [Description("Test if integral is counted properly - equality")]
+        public void IntegrateTest1()
+        {
+            double[] testArray = { 1, 2, -3, 4, -5, 6, 7, -1.5, 3.25 };
+            double expectedResult = 32.75;
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+
+            var testResult = EKG_Project.Modules.Heart_Cluster.Heart_Cluster.Coefficients.Integrate(testVector);
+
+            Assert.AreEqual(testResult, expectedResult);
+
+        }
+
+        [TestMethod]
+        [Description("Test if integral is counted properly - not equality")]
+        public void IntegrateTest2()
+        {
+            double[] testArray = { 1, 2, -3, 4, -5, 6, 7, -1.5, 3.25 };
+            double expectedResult = 31.75;
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+
+            var testResult = EKG_Project.Modules.Heart_Cluster.Heart_Cluster.Coefficients.Integrate(testVector);
+
+            Assert.AreNotEqual(testResult, expectedResult);
+
+        }
+
+        [TestMethod]
+        [Description("Test if perimeted is counted properly - equality")]
+        public void PerimeterTest1()
+        {
+            double[] testArray = { 1, 2, -3, 4, -5, 6, 7, -1.5, 3.25 };
+            uint fs = 360;
+            double expectedResult = 47.25;
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+
+            var testResult = EKG_Project.Modules.Heart_Cluster.Heart_Cluster.Coefficients.Perimeter(testVector, fs);
+
+            expectedResult = System.Math.Round(expectedResult, 2);
+            testResult = System.Math.Round(testResult, 2);
+
+
+            Assert.AreEqual(testResult, expectedResult);
+
+        }
+
+        [TestMethod]
+        [Description("Test if method counts a perimeter in vector properly - - not equality test")]
+        public void PerimeterTest2()
+        {
+            double[] testArray = { 1, 2, -3, 4, -5, 6, 7, -1.5, 3.25 };
+            uint fs = 360;
+            double expectedResult = 47.00;
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+
+            var testResult = EKG_Project.Modules.Heart_Cluster.Heart_Cluster.Coefficients.Perimeter(testVector, fs);
+
+            Assert.AreNotEqual(testResult, expectedResult);
+
+        }
+
+        //testowanie QRS komplexów.
+        //testowanie metody klusteryzacji.
 
     }
 }

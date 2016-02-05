@@ -229,7 +229,7 @@ namespace EKG_Project.Modules.Heart_Cluster
             /// <returns></returns>
 
             #endregion
-            private static double Integrate(Vector<double> qrsSignal)
+            public static double Integrate(Vector<double> qrsSignal)
             {
                 return qrsSignal.Sum(value => Math.Abs(value));
             }
@@ -244,7 +244,7 @@ namespace EKG_Project.Modules.Heart_Cluster
             /// <returns></returns>
 
             #endregion
-            private static double Perimeter(Vector<double> qrsSignal, uint fs)
+            public static double Perimeter(Vector<double> qrsSignal, uint fs)
             {
                 double timeBtw2Points = (double)1 / fs;
                 double result = 0;
