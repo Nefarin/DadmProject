@@ -49,6 +49,16 @@ namespace EKG_Project.Modules.Flutter
             return aflAnnotations;
         }
 
+        #region
+        /// <summary>
+        /// Function that detects AFL based on regularity index RI which is defined as the bandwidth about max frequency, in which 50% of the total power is contained
+        /// </summary>
+        /// <param name="spectralDensityList"> List of trimmed spectral density </param>
+        /// <param name="frequenciesList"> List of frequencies </param>
+        /// <param name="powerList"> List of spectrum power </param>
+        /// <returns name="aflAnnotations"> List of tuple containing the beginnings and ends of the segments (as the sample number), which represent atrial flutter </returns>
+        #endregion
+
         private List<Tuple<int, int>> Detect(List<double[]> spectralDensityList, List<double[]> frequenciesList, List<double> powerList)
         {
             bool[] aflDetected = new bool[spectralDensityList.Count];
