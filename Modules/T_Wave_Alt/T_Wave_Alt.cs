@@ -155,7 +155,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
                             finalDetection = _alg.alternansDetection(Alternans1, _currentTEndsList);
 
                             OutputWorker.SaveAlternansDetectedList(_currentLeadName, false, finalDetection);
-                            _lastTEndIndex += (T_WavesArray.Count + _alg.NoDetectionCount - 1);
+                            _lastTEndIndex += (T_WavesArray.Count + _alg.NoDetectionCount);
                             _currentIndex += _step;
                             _state = STATE.PROCESS_CHANNEL;
                         }
@@ -184,14 +184,13 @@ namespace EKG_Project.Modules.T_Wave_Alt
                             finalDetection = _alg.alternansDetection(Alternans1, _currentTEndsList);
                             
                             OutputWorker.SaveAlternansDetectedList(_currentLeadName, true, finalDetection);
-                            _lastTEndIndex += (T_WavesArray.Count + _alg.NoDetectionCount - 1);
+                            _lastTEndIndex += (T_WavesArray.Count + _alg.NoDetectionCount);
                             _currentIndex += _step;
                             _state = STATE.PROCESS_CHANNEL;
                         }
                         catch (Exception e)
                         {
                             _state = STATE.NEXT_CHANNEL;
-                            Console.WriteLine(e.Message);
                         }
                     }
 
