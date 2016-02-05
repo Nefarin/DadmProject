@@ -535,6 +535,83 @@ namespace EKG_Unit.Modules.Sleep_Apnea
             }
         }
 
+        [TestMethod]
+        [Description("only for checking sensitivity and pp")]
+        public void Alg_Test()
+        {
+            // Init test here
+            DebugECGPath debugECGPath = new DebugECGPath();
+            Sleep_Apnea_Params testParams = new Sleep_Apnea_Params("Test");
+            Sleep_Apnea_Alg testAlgs = new Sleep_Apnea_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+
+            // input
+            string rpeaksa03 = Path.Combine(debugECGPath.getDataPath(), "rpeaks_a03.csv");
+            List<string> lines = ReadFile(rpeaksa03);
+            List<uint> rpeaks = new List<uint>();
+            foreach (string line in lines)
+            {
+                rpeaks.Add((uint)decimal.Parse(line, NumberStyles.Float));
+            }
+            int fs = 100;
+            int resampFreq = 1;
+            List<List<double>> hAmp = new List<List<double>>();
+            List<List<double>> hFreq = new List<List<double>>();
+            List<bool> detected = new List<bool>();
+            List<double> time = new List<double>();
+
+            // ouput
+            string algAnn = Path.Combine(debugECGPath.getDataPath(), "alg_ann_a03.csv");
+            lines = ReadFile(algAnn);
+            List<double> timeMatlab = new List<double>();
+            foreach (string line in lines)
+            {
+                timeMatlab.Add((double)decimal.Parse(line, NumberStyles.Float));
+            }
+            string det = Path.Combine(debugECGPath.getDataPath(), "detected_a03.csv");
+            lines = ReadFile(det);
+            List<bool> detectedMatlab = new List<bool>();
+            foreach (string line in lines)
+            {
+                detectedMatlab.Add(int.Parse(line) == 0 ? false : true);
+            }
+
+            // Process test here
+            List<List<double>> RR = (List<List<double>>)obj.Invoke("findIntervals", rpeaks, fs);
+            List<List<double>> RRFiltered = (List<List<double>>)obj.Invoke("averageFilter", RR);
+            List<List<double>> RRResampled = (List<List<double>>)obj.Invoke("resampling", RRFiltered, resampFreq);
+            List<List<double>> RRHP = (List<List<double>>)obj.Invoke("HP", RRResampled);
+            List<List<double>> RRLP = (List<List<double>>)obj.Invoke("LP", RRHP);
+            obj.Invoke("hilbert", RRLP, hAmp, hFreq);
+            obj.Invoke("medianFilter", hFreq, hAmp);
+            obj.Invoke("ampNormalization", hAmp);
+            obj.Invoke("detectApnea", hAmp, hFreq, detected, time);
+
+            int TP = 0;
+            int FN = 0;
+            int FP = 0;
+
+            for (int i = 0; i < detected.Count && i < detectedMatlab.Count; i++)
+            {
+                if (detected[i] && detectedMatlab[i])
+                {
+                    TP++;
+                }
+                else if (detected[i] && !detectedMatlab[i])
+                {
+                    FP++;
+                }
+                else if (!detected[i] && detectedMatlab[i])
+                {
+                    FN++;
+                }
+            }
+
+            double Se = ((double)TP) / (TP + FN);
+            double PP = ((double)TP) / (TP + FP);
+
+            Assert.IsTrue(true);
+        }
 
         List<string> ReadFile(string name)
         {

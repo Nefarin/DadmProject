@@ -12,7 +12,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
 {
     public class Sleep_Apnea : IModule
     {
-        private const int DEFAULT_STEP = 7;
+        private const int DEFAULT_STEP = 600;
         private const int NUMBER_OF_STATES = 2;
 
         private enum State
