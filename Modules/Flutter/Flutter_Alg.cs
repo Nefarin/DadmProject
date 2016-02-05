@@ -59,7 +59,7 @@ namespace EKG_Project.Modules.Flutter
         /// <returns name="aflAnnotations"> List of tuple containing the beginnings and ends of the segments (as the sample number), which represent atrial flutter </returns>
         #endregion
 
-        private List<Tuple<int, int>> Detect(List<double[]> spectralDensityList, List<double[]> frequenciesList, List<double> powerList)
+        public List<Tuple<int, int>> Detect(List<double[]> spectralDensityList, List<double[]> frequenciesList, List<double> powerList)
         {
             bool[] aflDetected = new bool[spectralDensityList.Count];
 
@@ -165,7 +165,7 @@ namespace EKG_Project.Modules.Flutter
         /// <returns> List of power for each spectrum </returns>
         #endregion
 
-        private List<double> CalculateIntegralForEachSpectrum(List<double[]> frequenciesList, List<double[]> spectralDensityList)
+        public List<double> CalculateIntegralForEachSpectrum(List<double[]> frequenciesList, List<double[]> spectralDensityList)
         {
             List<double> powerList = new List<double>(frequenciesList.Count);
             for (int i = 0; i < frequenciesList.Count; i++)
@@ -193,7 +193,7 @@ namespace EKG_Project.Modules.Flutter
         /// <returns> Interpolated lists of spectral density and frequencies </returns>
         #endregion
 
-        private void InterpolateSpectralDensity(List<double[]> spectralDensityList, List<double[]> frequenciesList, double step)
+        public void InterpolateSpectralDensity(List<double[]> spectralDensityList, List<double[]> frequenciesList, double step)
         {
             for (int i = 0; i < spectralDensityList.Count; i++)
             {
@@ -230,7 +230,7 @@ namespace EKG_Project.Modules.Flutter
         /// <returns> List of frequencies </returns>
         #endregion
 
-        private List<double[]> CalculateFrequenciesAxis(List<double[]> spectralDensityList)
+        public List<double[]> CalculateFrequenciesAxis(List<double[]> spectralDensityList)
         {
             List<double[]> freqs = new List<double[]>();
             foreach (var spectralDensity in spectralDensityList)
@@ -255,7 +255,7 @@ namespace EKG_Project.Modules.Flutter
         /// <returns> Trimmed spectral density and frequencies to further analysis </returns>
         #endregion
 
-        private void TrimToGivenFreq(List<double[]> spectralDensityList, List<double[]> frequenciesList, double trimFreq)
+        public void TrimToGivenFreq(List<double[]> spectralDensityList, List<double[]> frequenciesList, double trimFreq)
         {
             for (int i = 0; i < spectralDensityList.Count; i++)
             {
@@ -273,7 +273,7 @@ namespace EKG_Project.Modules.Flutter
             }
         }
 
-        private List<double[]> TrimSpectralDensity(List<double[]> spectralDensityList, List<double[]> frequenciesList, double trimFreq)
+        public List<double[]> TrimSpectralDensity(List<double[]> spectralDensityList, List<double[]> frequenciesList, double trimFreq)
         {
             List<double[]> trimmedSpectralDensityList = new List<double[]>(spectralDensityList.Count);
             foreach (var spectralDensity in spectralDensityList)
@@ -298,7 +298,7 @@ namespace EKG_Project.Modules.Flutter
         /// <returns> Spectral density of the analyzed parts of the ECG signal </returns>
         #endregion
 
-        private List<double[]> CalculateSpectralDensity(List<double[]> t2qrsEcgParts)
+        public List<double[]> CalculateSpectralDensity(List<double[]> t2qrsEcgParts)
         {
             List<double[]> spectralDensity = new List<double[]>(t2qrsEcgParts.Count);
             foreach (var ecgPart in t2qrsEcgParts)
@@ -320,7 +320,7 @@ namespace EKG_Project.Modules.Flutter
         /// <returns> Segments to frequency analisis </returns>
         #endregion
 
-        private List<double[]> GetEcgPart()
+        public List<double[]> GetEcgPart()
         {
             List<double[]> t2qrsEkgParts = new List<double[]>();
             _Tends = _Tends.Where(x => x > 0).ToList();
@@ -377,7 +377,7 @@ namespace EKG_Project.Modules.Flutter
             return t2qrsEkgParts;
         }
 
-        private static double[] ReadFromCSV(string path)
+        public static double[] ReadFromCSV(string path)
         {
             double[] samples = null;
             StreamReader reader = new StreamReader(File.OpenRead(path));
