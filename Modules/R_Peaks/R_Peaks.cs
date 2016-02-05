@@ -11,10 +11,12 @@ namespace EKG_Project.Modules.R_Peaks
 {
     public class R_Peaks : IModule
     {
+        //states of processing
         private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
         private bool _ended;
         private bool _aborted;
 
+        //parameters connected with raw input signal
         private int _currentChannelIndex;
         private int _currentChannelLength;
         private string _currentLeadName;
@@ -22,8 +24,8 @@ namespace EKG_Project.Modules.R_Peaks
         private int _currentIndex;
         private int _numberOfChannels;
 
+        //workers for load and save
         private ECG_Baseline_New_Data_Worker _inputWorker;
-        //private Basic_New_Data_Worker _inputWorker;
         private Basic_New_Data_Worker _inputWorker_basic;
         private R_Peaks_New_Data_Worker _outputWorker;
 
@@ -33,11 +35,14 @@ namespace EKG_Project.Modules.R_Peaks
         private R_Peaks_Params _params;
 
         private STATE _state;
+        //parameteres connected with processing R_peak_module
         private R_Peaks_Alg _alg;
         private uint _frequency;
         private int _step;
+        private double _lastRPeak;
         private Vector<Double> _currentVector;
-                private Vector<double> _currentVectorRRInterval;
+        private Vector<double> _currentVectorRRInterval;
+        private Vector<double> _tempVectorR;
   
         public void Abort()
         {
@@ -55,6 +60,10 @@ namespace EKG_Project.Modules.R_Peaks
             return Aborted;
         }
 
+        /// <summary>
+        /// Function that initialize all parameters and states
+        /// </summary>
+        /// <param name="parameters"></param>
         public void Init(ModuleParams parameters)
         {
             try
@@ -75,14 +84,12 @@ namespace EKG_Project.Modules.R_Peaks
             {
                 InputWorker_basic = new Basic_New_Data_Worker(Params.AnalysisName);
                 InputWorker = new ECG_Baseline_New_Data_Worker(Params.AnalysisName);
-                //InputWorker = new Basic_New_Data_Worker(Params.AnalysisName);
-                OutputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName); //+"temp" tez ma byc?
+                OutputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName); 
                 InputData_basic = new Basic_Data();
                 InputData = new ECG_Baseline_Data();
                 OutputData = new R_Peaks_Data();
 
                 _frequency = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
-                //_step = 6000; //od fs?
                 _step = Convert.ToInt32(_frequency*16);
                 _state = STATE.INIT;
             }
@@ -94,6 +101,10 @@ namespace EKG_Project.Modules.R_Peaks
             else _ended = true;
         }
 
+        /// <summary>
+        /// Function that calculates progress of analysis of current module
+        /// </summary>
+        /// <returns>Percentage of current progress </returns>
         public double Progress()
         {
             return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_currentIndex / (double)_currentChannelLength));
@@ -104,6 +115,9 @@ namespace EKG_Project.Modules.R_Peaks
             return Params != null;
         }
 
+        /// <summary>
+        /// Function in which data are processed (made as machine of states)
+        /// </summary>
         private void processData()
         {
             switch (_state)
@@ -123,6 +137,7 @@ namespace EKG_Project.Modules.R_Peaks
                         _currentLeadName = _leads[_currentChannelIndex];
                         _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName); //Zmienić na worker ECG_BASELINE
                         _currentIndex = 0;
+                        _lastRPeak = 0;
                         _state = STATE.PROCESS_FIRST_STEP;
                     }
                     break;
@@ -136,7 +151,7 @@ namespace EKG_Project.Modules.R_Peaks
                             Console.WriteLine("_currentLeadName "+ _currentLeadName);
                             Console.WriteLine("_currentIndex "+ _currentIndex);
                             Console.WriteLine("_step "+ _step);
-                            try         //zagniezdzone wyjatki?????????
+                            try     
                             {
                                 //choosing and performing algorithm
                                 switch (Params.Method)
@@ -152,6 +167,7 @@ namespace EKG_Project.Modules.R_Peaks
                                     break;
                                 }
                                 OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, false, _currentVector);
+                                _lastRPeak = _currentVector.Last();
                                 if (_currentVector.Count > 1)
                                 {
                                     _currentVectorRRInterval = _alg.RRinMS(_currentVector, _frequency);
@@ -176,14 +192,14 @@ namespace EKG_Project.Modules.R_Peaks
                         }
                     }
                     break;
-                case (STATE.PROCESS_CHANNEL):  // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
+                case (STATE.PROCESS_CHANNEL):  
                     if (_currentIndex + _step > _currentChannelLength) _state = STATE.END_CHANNEL;
                     else
                     {
                         try
                         {
                             _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
-                            try         //zagniezdzone wyjatki?????????
+                            try        
                             {
                                 //choosing and performing algorithm
                                 switch (Params.Method)
@@ -201,13 +217,18 @@ namespace EKG_Project.Modules.R_Peaks
                                 _currentVector.Add(_currentIndex, _currentVector);
                                 //save results
                                 OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, true, _currentVector);
-                                if (_currentVector.Count > 1)
+
+                                //save RR Intervals
+                                _tempVectorR = Vector<double>.Build.Dense(_currentVector.Count + 1);
+                                _tempVectorR[0] = _lastRPeak;
+                                _tempVectorR.SetSubVector(1, _currentVector.Count, _currentVector);
+                                if (_tempVectorR.Count > 1)
                                 {
-                                    _currentVectorRRInterval = _alg.RRinMS(_currentVector, _frequency);
-                                    //save results
+                                    _currentVectorRRInterval = _alg.RRinMS(_tempVectorR, _frequency);
                                     OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
                                 }
-                                //updating current index
+                                //updating current index and last R Peak
+                                _lastRPeak = _currentVector.Last();
                                 _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(_frequency * 0.1);
                             }
                             catch (Exception ex)
@@ -228,7 +249,7 @@ namespace EKG_Project.Modules.R_Peaks
                     try
                     {
                         _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
-                        try         //zagniezdzone wyjatki?????????
+                        try         
                         {
                             //choosing and performing algorithm
                             switch (Params.Method)
@@ -246,12 +267,18 @@ namespace EKG_Project.Modules.R_Peaks
                             _currentVector.Add(_currentIndex, _currentVector);
                             //save results
                             OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, true, _currentVector);
-                            if (_currentVector.Count > 1)
+                            
+                            //save RRIntervals
+                            _tempVectorR = Vector<double>.Build.Dense(_currentVector.Count + 1);
+                            _tempVectorR[0] = _lastRPeak;
+                            _tempVectorR.SetSubVector(1, _currentVector.Count, _currentVector);
+                            if (_tempVectorR.Count > 1)
                             {
-                                _currentVectorRRInterval = _alg.RRinMS(_currentVector, _frequency);
+                                _currentVectorRRInterval = _alg.RRinMS(_tempVectorR, _frequency);
                                 //save results
                                 OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, true, _currentVectorRRInterval);
                             }
+
                             //updating current index
                             _currentIndex = Convert.ToInt32(_currentVector.Last()) + Convert.ToInt32(_frequency * 0.1);
                         }
@@ -346,7 +373,6 @@ namespace EKG_Project.Modules.R_Peaks
         }
 
         public ECG_Baseline_New_Data_Worker InputWorker
-        //public Basic_New_Data_Worker InputWorker
         {
             get
             {
@@ -401,7 +427,7 @@ namespace EKG_Project.Modules.R_Peaks
         public static void Main(String[] args)
         {
             IModule testModule = new EKG_Project.Modules.R_Peaks.R_Peaks();
-            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "Analysis");
+            R_Peaks_Params param = new R_Peaks_Params(R_Peaks_Method.PANTOMPKINS, "114");
 
             testModule.Init(param);
             while (!testModule.Ended())
@@ -409,6 +435,10 @@ namespace EKG_Project.Modules.R_Peaks
                 testModule.ProcessData();
                 Console.WriteLine(testModule.Progress());
             }
+            
+            R_Peaks_New_Data_Worker rp = new R_Peaks_New_Data_Worker("114");
+            Console.WriteLine(rp.getNumberOfSamples(R_Peaks_Attributes.RPeaks, "MLII")+"   "+ rp.getNumberOfSamples(R_Peaks_Attributes.RRInterval,"MLII"));
+            Console.WriteLine(rp.getNumberOfSamples(R_Peaks_Attributes.RPeaks, "V5" )+ "   " + rp.getNumberOfSamples(R_Peaks_Attributes.RRInterval, "V5"));
             Console.ReadKey();
         }
     }
