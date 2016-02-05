@@ -90,6 +90,8 @@ namespace EKG_Project.Modules.HRV1
                 OutputData.FreqBasedParams = fparams;
                 OutputData.PowerSpectrum = psd;
 
+                OutputWorker.SaveSignal(HRV1_Signal.FreqVector, "", false, psd[0].Item2);
+                OutputWorker.SaveSignal(HRV1_Signal.PSD, "", false, psd[1].Item2);
                 _ended = true;
             }
             else _ended = true;
