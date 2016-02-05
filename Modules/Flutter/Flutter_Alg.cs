@@ -20,8 +20,8 @@ namespace EKG_Project.Modules.Flutter
         List<int> _ecgPartStarts = new List<int>();
         List<int> _ecgPartEnds = new List<int>();
 
-        private const double RI_LOWER_LIMIT_FOR_AFL = 1.6;
-        private const double RI_UPPER_LIMIT_FOR_AFL = 2.4;
+        private const double RI_LOWER_LIMIT_FOR_AFL = 0.3;
+        private const double RI_UPPER_LIMIT_FOR_AFL = 1.1;
 
         public Flutter_Alg(List<int> tEnds, List<int> qrsOnsets,
             Vector<double> samples, double fs)
@@ -146,6 +146,15 @@ namespace EKG_Project.Modules.Flutter
             return aflAnnotations;
         }
 
+        #region
+        /// <summary>
+        /// Function that calculates integral (power) for each spectrum using trapezoidal rule to approximating the definite integral
+        /// </summary>
+        /// <param name="spectralDensityList"> List of trimmed spectral density </param>
+        /// <param name="frequenciesList"> List of frequencies </param>
+        /// <returns> List of power for each spectrum </returns>
+        #endregion
+
         private List<double> CalculateIntegralForEachSpectrum(List<double[]> frequenciesList, List<double[]> spectralDensityList)
         {
             List<double> powerList = new List<double>(frequenciesList.Count);
@@ -163,6 +172,16 @@ namespace EKG_Project.Modules.Flutter
             }
             return powerList;
         }
+
+        #region
+        /// <summary>
+        /// Function that interpolates spectral density and frequencies (calculates the value between the two known values) using linear function
+        /// </summary>
+        /// <param name="spectralDensityList"> List of trimmed spectral density </param>
+        /// <param name="frequenciesList"> List of frequencies </param>
+        /// <param name="step"> Value of interpolation step </param>
+        /// <returns> Interpolated lists of spectral density and frequencies </returns>
+        #endregion
 
         private void InterpolateSpectralDensity(List<double[]> spectralDensityList, List<double[]> frequenciesList, double step)
         {
@@ -193,6 +212,14 @@ namespace EKG_Project.Modules.Flutter
             }
         }
 
+        #region
+        /// <summary>
+        /// Function that creates frequencies axis
+        /// </summary>
+        /// <param name="spectralDensityList"> List of trimmed spectral density </param>
+        /// <returns> List of frequencies </returns>
+        #endregion
+
         private List<double[]> CalculateFrequenciesAxis(List<double[]> spectralDensityList)
         {
             List<double[]> freqs = new List<double[]>();
@@ -207,6 +234,16 @@ namespace EKG_Project.Modules.Flutter
             }
             return freqs;
         }
+
+        #region
+        /// <summary>
+        /// Function that cuts spectral density and frequencies to the appropriate range
+        /// </summary>
+        /// <param name="spectralDensityList"> List of spectral density </param>
+        /// <param name="frequenciesList"> List of frequencies </param>
+        /// <param name="trimFreq"> Cut-off frequency (frequencies above the cut-off value ​​are insignificant for further analysis) </param>
+        /// <returns> Trimmed spectral density and frequencies to further analysis </returns>
+        #endregion
 
         private void TrimToGivenFreq(List<double[]> spectralDensityList, List<double[]> frequenciesList, double trimFreq)
         {
@@ -242,6 +279,14 @@ namespace EKG_Project.Modules.Flutter
             }
             return trimmedSpectralDensityList;
         }
+
+        #region
+        /// <summary>
+        /// Function that calculates spectral density using forward Fast Fourier Transform (FFT)
+        /// </summary>
+        /// <param name="t2qrsEcgParts"> List of segments between QRSOnsets and Tends </param>
+        /// <returns> Spectral density of the analyzed parts of the ECG signal </returns>
+        #endregion
 
         private List<double[]> CalculateSpectralDensity(List<double[]> t2qrsEcgParts)
         {
