@@ -1,9 +1,10 @@
 ﻿/*
     TODO:
         1 Poprawic plomba
+        2 Refaktoryzacja 
         5 Testy, testy, testy...
         6 ???
-        7 nie ma numer 2,3 i 4
+        7 nie ma numeru 3 i 4
         7 PROFIT
         8 ps. numer 7 jest dwa razy
 */

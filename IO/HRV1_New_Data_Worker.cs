@@ -14,6 +14,8 @@ namespace EKG_Project.IO
     /// </summary>
     #endregion
     public enum HRV1_Signal { TimeBasedParams, FreqBasedParams, FreqVector, PSD };
+
+
     #region Documentation
     /// <summary>
     /// Class that saves and loads HRV1_Data in txt files

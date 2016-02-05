@@ -11,8 +11,6 @@ namespace EKG_Project.Modules.HRV1
 {
     public class HRV1 : IModule
     {
-        private HRV1_Data _outputData;
-        private R_Peaks_Data _inputData;
         public HRV1_Data OutputData;
         public R_Peaks_Data InputData;
 
@@ -23,7 +21,7 @@ namespace EKG_Project.Modules.HRV1
         public bool Aborted;
 
         public IO.R_Peaks_New_Data_Worker InputWorker;
-        public IO.HRV1_Data_Worker OutputWorker;
+        public IO.HRV1_New_Data_Worker OutputWorker;
 
         public void Abort()
         {
@@ -52,7 +50,7 @@ namespace EKG_Project.Modules.HRV1
                 _ended = false;
                 InputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName);
 
-                OutputWorker = new HRV1_Data_Worker(Params.AnalysisName);
+                OutputWorker = new HRV1_New_Data_Worker(Params.AnalysisName);
                 OutputData = new HRV1_Data();
             }
         }
@@ -73,13 +71,9 @@ namespace EKG_Project.Modules.HRV1
                 uint intervalsLength = InputWorker.getNumberOfSamples(IO.R_Peaks_Attributes.RRInterval, lead);
 
                 // pytanie co jezeli wektory peaks i intervals nie koresponduja?
-                //tu babol jest - IndexOutOfRange 
                 var instants = InputWorker.LoadSignal(IO.R_Peaks_Attributes.RPeaks, lead, startindex, (int)peaksLength-1);
                 var intervals = InputWorker.LoadSignal(IO.R_Peaks_Attributes.RRInterval, lead, startindex, (int)intervalsLength-1);
                 
-
-                //heja
-
                 var algo = new HRV1_Alg();
 
                 algo.rInstants = instants;
@@ -88,23 +82,15 @@ namespace EKG_Project.Modules.HRV1
                 algo.CalculateTimeBased();
                 algo.CalculateFreqBased();
 
-                var tparams = algo.TimeParams;
-                var fparams = algo.FreqParams;
-                var psd = algo.PowerSpectrum;
+                List<Tuple<string, double>> tparams = algo.TimeParams;
+                List<Tuple<string, double>> fparams = algo.FreqParams;
+                List<Tuple<string, Vector<double>>> psd = algo.PowerSpectrum;
+
+                OutputData.TimeBasedParams = tparams;
+                OutputData.FreqBasedParams = fparams;
+                OutputData.PowerSpectrum = psd;
 
                 _ended = true;
-
-
-                //OutputData.TimeBasedParams = tparams;
-
-                //var tparams = Vector<double>.Build.Dense(new double[] { HF, LF, VLF, LFHF });
-                //var fparams = Vector<double>.Build.Dense(new double[] { SDNN, RMSSD, SDSD, NN50, pNN50 });
-
-                //OutputData.TimeBasedParams.Add(new Tuple<string, Vector<double>>(" ", tparams));
-                //OutputData.FreqBasedParams.Add(new Tuple<string, Vector<double>>(" ", fparams));
-
-                //OutputData.RInstants.Add(new Tuple<string, Vector<double>>(" ", instants));
-                //OutputData.RRIntervals.Add(new Tuple<string, Vector<double>>(" ", intervals));
             }
             else _ended = true;
         }
