@@ -1,7 +1,10 @@
 ﻿using EKG_Project.IO;
+using EKG_Project.Modules.Sleep_Apnea;
 using EKG_Project.Modules.Waves;
+using MathNet.Numerics.LinearAlgebra;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,6 +45,8 @@ namespace EKG_Project.Modules.Flutter
         List<double[]> _frequenciesList;
         List<double> _powerList;
         List<Tuple<int, int>> _aflAnnotations;
+
+        Flutter_Alg _flutter;
 
         public void Abort()
         {
@@ -128,55 +133,55 @@ namespace EKG_Project.Modules.Flutter
 
         private void processData()
         {
-            //switch(_currentState)
-            //{
-            //    case FlutterAlgStates.ExtractEcgFragments:
-            //        _t2qrsEkgParts = GetEcgPart();
-            //        _currentState = FlutterAlgStates.CalculateSpectralDensity;
-            //        _actualProgress = 100.0 / 6;
-            //        break;
+            switch (_currentState)
+            {
+                case FlutterAlgStates.ExtractEcgFragments:
+                    _t2qrsEkgParts = _flutter.GetEcgPart();
+                    _currentState = FlutterAlgStates.CalculateSpectralDensity;
+                    _actualProgress = 100.0 / 6;
+                    break;
 
-            //    case FlutterAlgStates.CalculateSpectralDensity:
-            //        _spectralDensityList = CalculateSpectralDensity(_t2qrsEkgParts);
-            //        _frequenciesList = CalculateFrequenciesAxis(_spectralDensityList);
-            //        _currentState = FlutterAlgStates.TrimSpectrum;
-            //        _actualProgress = 2* 100.0 / 6;
-            //        break;
+                case FlutterAlgStates.CalculateSpectralDensity:
+                    _spectralDensityList = _flutter.CalculateSpectralDensity(_t2qrsEkgParts);
+                    _frequenciesList = _flutter.CalculateFrequenciesAxis(_spectralDensityList);
+                    _currentState = FlutterAlgStates.TrimSpectrum;
+                    _actualProgress = 2 * 100.0 / 6;
+                    break;
 
-            //    case FlutterAlgStates.TrimSpectrum:
-            //        TrimToGivenFreq(_spectralDensityList, _frequenciesList, 70.0);
-            //        _currentState = FlutterAlgStates.InterpolateSpectrum;
-            //        _actualProgress = 3 * 100.0 / 6;
-            //        break;
+                case FlutterAlgStates.TrimSpectrum:
+                    _flutter.TrimToGivenFreq(_spectralDensityList, _frequenciesList, 70.0);
+                    _currentState = FlutterAlgStates.InterpolateSpectrum;
+                    _actualProgress = 3 * 100.0 / 6;
+                    break;
 
-            //    case FlutterAlgStates.InterpolateSpectrum:
-            //        InterpolateSpectralDensity(_spectralDensityList, _frequenciesList, 0.01);
-            //        _currentState = FlutterAlgStates.CalculatePower;
-            //        _actualProgress = 4 * 100.0 / 6;
-            //        break;
+                case FlutterAlgStates.InterpolateSpectrum:
+                    _flutter.InterpolateSpectralDensity(_spectralDensityList, _frequenciesList, 0.01);
+                    _currentState = FlutterAlgStates.CalculatePower;
+                    _actualProgress = 4 * 100.0 / 6;
+                    break;
 
-            //    case FlutterAlgStates.CalculatePower:
-            //        _powerList = CalculateIntegralForEachSpectrum(_frequenciesList, _spectralDensityList);
-            //        _currentState = FlutterAlgStates.DetectAFL;
-            //        _actualProgress = 5 * 100.0 / 6;
-            //        break;
+                case FlutterAlgStates.CalculatePower:
+                    _powerList = _flutter.CalculateIntegralForEachSpectrum(_frequenciesList, _spectralDensityList);
+                    _currentState = FlutterAlgStates.DetectAFL;
+                    _actualProgress = 5 * 100.0 / 6;
+                    break;
 
-            //    case FlutterAlgStates.DetectAFL:
-            //        _aflAnnotations = Detect(_spectralDensityList, _frequenciesList, _powerList);
-            //        OutputData.FlutterAnnotations = _aflAnnotations;
-            //        _currentState = FlutterAlgStates.Finished;
-            //        _actualProgress = 99.0;
-            //        break;
+                case FlutterAlgStates.DetectAFL:
+                    _aflAnnotations = _flutter.Detect(_spectralDensityList, _frequenciesList, _powerList);
+                    //OutputData.FlutterAnnotations = _aflAnnotations;
+                    _currentState = FlutterAlgStates.Finished;
+                    _actualProgress = 99.0;
+                    break;
 
-            //    case FlutterAlgStates.Finished:
-            //        _actualProgress = 100.0;
-            //        OutputWorker.Save(OutputData);
-            //        _ended = true;
-            //        break;
+                case FlutterAlgStates.Finished:
+                    _actualProgress = 100.0;
+                    //OutputWorker.Save(OutputData);
+                    _ended = true;
+                    break;
 
-            //    default:
-            //        throw new InvalidOperationException("Undefined state");
-            //}
+                default:
+                    throw new InvalidOperationException("Undefined state");
+            }
         }
 
         public double Progress()
@@ -191,18 +196,55 @@ namespace EKG_Project.Modules.Flutter
 
         public static void Main()
         {
-            Flutter_Params param = new Flutter_Params("TestAnalysis3");
-            Flutter flutter = new Flutter();
-            flutter.Init(param);
-            while(true)
+            string signal = "../../Sygnaly_Oznaczacz/iaf7_afw.txt";
+            string qrs = "../../Sygnaly_Oznaczacz/iaf7_afw1-59999_qrsonsets.txt";
+            string t = "../../Sygnaly_Oznaczacz/iaf7_afw1-59999_tends.txt";
+
+            List<double> sammples = ReadSignal(signal);
+            List<double> qrsonsets = ReadFromCSV(qrs);
+            List<double> tends = ReadFromCSV(t);
+
+            Flutter fl = new Flutter();
+            fl._flutter = new Flutter_Alg(tends.Select(x => (int)x).ToList(), tends.Select(x => (int)x).ToList(), Vector<double>.Build.Dense(sammples.ToArray()), 100.0);
+
+            while (fl.Progress() < 100.0)
             {
-                if(flutter.Ended())
-                {
-                    break;
-                }
-                Console.WriteLine(flutter.Progress());
-                flutter.ProcessData();
+                fl.processData();
             }
+        }
+
+        private static List<double> ReadSignal(string path)
+        {
+            List<double> samples = new List<double>();
+            StreamReader reader = new StreamReader(File.OpenRead(path));
+            int n = 0;
+            while (!reader.EndOfStream)
+            {
+                string line = reader.ReadLine();
+                n++;
+                if (n <= 2) continue;
+                              
+                string[] values = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                samples.Add(double.Parse(values[1].Replace('.', ','), System.Globalization.NumberStyles.Float));
+
+            }
+            return samples;
+        }
+
+        private static List<double> ReadFromCSV(string path)
+        {
+            List<double> samples = new List<double>();
+            StreamReader reader = new StreamReader(File.OpenRead(path));
+            while (!reader.EndOfStream)
+            {
+                string line = reader.ReadLine();
+                string[] values = line.Split(' ');
+
+                samples.Add(double.Parse(values[0].Replace('.', ','), System.Globalization.NumberStyles.Float));
+
+            }
+            return samples;
         }
     }
 }
