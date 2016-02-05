@@ -16,6 +16,16 @@ namespace EKG_Project.Modules.Heart_Axis
 
         private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
         private STATE _state;
+        private int _step;
+        Heart_Axis_Alg _alg;
+
+        //todo: sprawdzić, czy nie pokrywają się nazwy
+        private int _currentChannelIndex;
+        private int _currentChannelLength;
+        private string _currentLeadName;
+        private string[] _leads;
+        private int _currentIndex;
+        private int _numberOfChannels;
 
         /* Zmienne do komunikacji z GUI - czy liczenie osi serca się skończyło/zostało przerwane */
 
@@ -29,28 +39,30 @@ namespace EKG_Project.Modules.Heart_Axis
 
         /* Dane wejściowe */
 
-        /* Sygnał - moduł ECG_BASELINE */
-        /* z klasy IO/ECG_Baseline_Data_Worker */
 
-        private ECG_Baseline_Data_Worker _inputECGBaselineWorker;  // obiekt do wczytania sygnału EKG
+        //todo: upewnić się, że zmiany na New_Data_Worker nie wprowadzają dodatkowych zmian
+
+
+        private ECG_Baseline_New_Data_Worker _inputECGBaselineWorker; // obiekt do wczytania sygnału EKG
         private ECG_Baseline_Data _inputECGBaselineData; // obiekt z sygnałem
 
         /* Wyznaczone próbki z załamkami Q i S - moduł WAVES */
         /* z klasy IO/Waves_Data_Worker.cs */
 
-        private Waves_Data_Worker _inputWavesWorker; // obiekt do wczytywania załamków
+        private Waves_New_Data_Worker _inputWavesWorker; // obiekt do wczytywania załamków
         private Waves_Data _inputWavesData; // obiekt z załamkami
+
 
         // Dane z częstotliwością próbkowania
 
-        private Basic_Data_Worker _inputBasicDataWorker;
-        private Basic_Data _inputBasicData;
+        private Basic_New_Data_Worker _inputBasicDataWorker;
+        private Basic_New_Data _inputBasicData;
 
         /* Dane wyjściowe - Kąt osi serca  */
 
-        private Heart_Axis_Data_Worker _outputWorker;
+        private Heart_Axis_New_Data_Worker _outputWorker;
         private Heart_Axis_Data _outputData;
-        private Heart_Axis_Params _params; // tak ma być?
+        private Heart_Axis_Params _params;
 
         /* Dane tymczasowe potrzebne do obliczeń */
 
@@ -111,6 +123,18 @@ namespace EKG_Project.Modules.Heart_Axis
             }
             else
             {
+                string _analysisName = Params.AnalysisName;
+                InputECGBaselineWorker = new ECG_Baseline_New_Data_Worker(_analysisName);
+
+                InputWavesWorker = new Waves_New_Data_Worker(_analysisName);
+                InputWavesData = new Waves_Data();
+
+                InputBasicDataWorker = new Basic_New_Data_Worker(_analysisName);
+               InputBasicData = new Basic_New_Data();
+
+
+                OutputWorker = new Heart_Axis_New_Data_Worker(Params.AnalysisName);
+                OutputData = new Heart_Axis_Data();
                 _state = STATE.INIT;
             }
                
@@ -332,19 +356,138 @@ namespace EKG_Project.Modules.Heart_Axis
             switch (_state)
             {
                 case (STATE.INIT):
+                    Lead_I = null;
+                    Lead_II = null;
+
+
+                    try
+                    {
+
+                        int Lead_I_Length = (int) InputECGBaselineWorker.getNumberOfSamples(LeadISymbol);
+                        Lead_I = InputECGBaselineWorker.LoadSignal(LeadISymbol, 0, Lead_I_Length).ToArray(); // todo:  czy nazwy są spójne,
+
+                        int Lead_II_Length = (int) InputECGBaselineWorker.getNumberOfSamples(LeadIISymbol);
+                        Lead_II = InputECGBaselineWorker.LoadSignal(LeadIISymbol, 0, Lead_II_Length).ToArray(); // todo:  czy nazwy są spójne,
+
+
+                    }
+                    catch (Exception e)
+                    {
+                        Abort();
+                    }
+
+
+                    if ((Lead_I != null) && (Lead_II != null))
+                    {
+                        FirstSignalName = LeadISymbol;
+                        FirstSignal = Lead_I;
+                    }
+                    else
+                    {
+                        Abort();
+                    }
+
+
+                    // Waves_Signal { QRSOnsets, QRSEnds, POnsets, PEnds, TEnds };
+
+                    Waves_Signal QSymbol = Waves_Signal.QRSOnsets;
+                    Waves_Signal SSymbol = Waves_Signal.QRSEnds;
+
+
+                    QArray = null;
+                    SArray = null;
+
+                    try
+                    {
+                       int Lead_I_Length = (int) InputWavesWorker.getNumberOfSamples(QSymbol, LeadISymbol);
+                       QArray = InputWavesWorker.LoadSignal(QSymbol, FirstSignalName, 0, Lead_I_Length).ToArray();
+                       SArray = InputWavesWorker.LoadSignal(SSymbol, FirstSignalName, 0, Lead_I_Length).ToArray();
+
+                    }
+                    catch (Exception e)
+                    {
+                        Abort();
+                    }
+
+
+                    if ((QArray == null) || (SArray == null))
+                    {
+                        Abort();
+                    }
+
+                    Q = 0;
+                    S = 0;
+
+
+                    // sprawdzanie, czy Q i S jest poprawne
+
+                    try
+                    {
+                        for (int QIndex = 0; QIndex < QArray.Length; QIndex++)
+                        {
+                            Q = QArray[QIndex];
+                            S = SArray[QIndex];
+                            if ((Q < S) && (Q != -1) && (S != -1))
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Abort();
+                    }
+
+                    if ((Q == -1) || (S == -1) || (Q >= S))
+                    {
+                        Abort();
+                    }
+
+                    Basic_Attributes FsSymbol = Basic_Attributes.Frequency;
+                    Fs = (int)InputBasicDataWorker.LoadAttribute(FsSymbol);
+
+                    //zmienne maszyny
+                    _currentChannelIndex = -1;
+                    _numberOfChannels = 1;
+                    _alg = new Heart_Axis_Alg();
+                    _state = STATE.BEGIN_CHANNEL;
                     break;
+
                 case (STATE.BEGIN_CHANNEL):
+                    _currentChannelIndex++;
+                    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END; //????
+                    else
+                    {
+                        _currentLeadName = LeadISymbol;
+                        //U ciebie zamiast tego można przyjąć, że po wykonanie każdej funkcji z algs to jakby jeden channel do przodu _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName); //Zmienić na worker ECG_BASELINE
+                        _state = STATE.PROCESS_FIRST_STEP;
+                    }
                     break;
+
                 case (STATE.PROCESS_FIRST_STEP):
+                    _state = STATE.PROCESS_CHANNEL;
                     break;
+
                 case (STATE.PROCESS_CHANNEL):
+                    double[] pseudo_tab = _alg.PseudoModule(Q, S, FirstSignal);
+                    double[] fitting_parameters = _alg.LeastSquaresMethod(FirstSignal, Q, pseudo_tab, Fs);
+                    int MaxOfPoly = _alg.MaxOfPolynomial(Q, fitting_parameters);
+                    double[] amplitudes = _alg.ReadingAmplitudes(Lead_I, Lead_II, MaxOfPoly);
+                    OutputData.HeartAxis = _alg.IandII(amplitudes);  
                     break;
+
                 case (STATE.END_CHANNEL):
+                    _state = STATE.END;
                     break;
+
                 case (STATE.NEXT_CHANNEL):
+                    _state = STATE.END;
                     break;
+
                 case (STATE.END):
+                    _ended = true;
                     break;
+
                 default:
                     Abort();
                     break;
@@ -420,7 +563,7 @@ namespace EKG_Project.Modules.Heart_Axis
             }
         }
 
-        public Basic_Data InputBasicData
+        public Basic_New_Data InputBasicData
         {
             get
             {
@@ -561,11 +704,11 @@ namespace EKG_Project.Modules.Heart_Axis
 
         // Workers
 
-        public ECG_Baseline_Data_Worker InputECGBaselineWorker
+        public ECG_Baseline_New_Data_Worker InputECGBaselineWorker
         {
             get
             {
-                return _inputECGBaselineWorker;
+                return  _inputECGBaselineWorker;
             }
 
             set
@@ -574,7 +717,7 @@ namespace EKG_Project.Modules.Heart_Axis
             }
         }
 
-        public Waves_Data_Worker InputWavesWorker
+        public Waves_New_Data_Worker InputWavesWorker
         {
             get
             {
@@ -587,7 +730,7 @@ namespace EKG_Project.Modules.Heart_Axis
             }
         }
 
-        public Basic_Data_Worker InputBasicDataWorker
+        public Basic_New_Data_Worker InputBasicDataWorker
         {
             get
             {
@@ -602,7 +745,7 @@ namespace EKG_Project.Modules.Heart_Axis
 
 
 
-        public Heart_Axis_Data_Worker OutputWorker
+        public Heart_Axis_New_Data_Worker OutputWorker
         {
             get
             {
@@ -643,28 +786,41 @@ namespace EKG_Project.Modules.Heart_Axis
 
         /* Test */
 
-        public static void Main()
+        public static void Main(String[] args)
         {
+            IModule testModule = new EKG_Project.Modules.Heart_Axis.Heart_Axis();
+            Heart_Axis_Params param = new Heart_Axis_Params("abc123");
 
-
-            Heart_Axis_Params param = new Heart_Axis_Params("TestAnalysis");
-            Heart_Axis testModule = new Heart_Axis();
             testModule.Init(param);
-            while (true)
+            while (!testModule.Ended())
             {
-                Console.WriteLine("Press key to continue.");
-                Console.Read();
-                if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress());
                 testModule.ProcessData();
-                Console.WriteLine(testModule.OutputData.HeartAxis);
-                Console.WriteLine("Press key to continue.");
-                Console.Read();
+                Console.WriteLine(testModule.Progress());
             }
-
-
-
         }
+
+        /* public static void Main()
+         {
+
+
+             Heart_Axis_Params param = new Heart_Axis_Params("TestAnalysis");
+             Heart_Axis testModule = new Heart_Axis();
+             testModule.Init(param);
+             while (true)
+             {
+                 Console.WriteLine("Press key to continue.");
+                 Console.Read();
+                 if (testModule.Ended()) break;
+                 Console.WriteLine(testModule.Progress());
+                 testModule.ProcessData();
+                 Console.WriteLine(testModule.OutputData.HeartAxis);
+                 Console.WriteLine("Press key to continue.");
+                 Console.Read();
+             }
+
+
+
+         }*/
 
     }
 
