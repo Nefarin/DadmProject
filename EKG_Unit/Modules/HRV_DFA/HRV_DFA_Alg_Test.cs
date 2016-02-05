@@ -42,8 +42,7 @@ namespace EKG_Unit.Modules.HRV_DFA
             Tuple<Vector<double>, Vector<double>> result = test.ObtainFluctuations(step, start, stop, v1);
             Assert.IsNotNull(result.Item2);
         }
-        //HRV_DFA_Analysis
-
+        
         //ComputeDfaFluctuation
         [TestMethod]
         [Description("Test if not null is returned")]
