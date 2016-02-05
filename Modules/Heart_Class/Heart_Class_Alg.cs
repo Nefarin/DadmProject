@@ -57,94 +57,27 @@ namespace EKG_Project.Modules.Heart_Class
             List<Vector<double>> coefficients = new List<Vector<double>>();
         }
 
-        public static void Main()
-        {
-            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
-           
 
-            int qrsOnset = 5;
-            int qrsEnd = 29;
-            double R = 13;
-            uint fs = 360;
-            double[] testArray =
-            {
-                -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335, -0.38369, -0.39605,
-                -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486, 0.86883, 0.84255, 0.72056, 0.52455,
-                0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399, -0.28368, -0.21097, -0.1402, -0.090148,
-                -0.070429, -0.080307, -0.11024, -0.1458
-            };
-            Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
-            testAlgs.Signal = exampleSignal;
-
-            
-            object[] args = { qrsOnset, qrsEnd, R, fs };
-            //testAlgs.QrsComplexOne = OneQrsComplex(qrsOnset, qrsEnd, R, fs);
-
-
-            //////////////////////////////////////////////////////////////////////////////////////
-            // współczynniki 233.dat z matlaba:
-            List<Vector<double>> testDataList = testAlgs.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADMproj\HEART_CLASS1\HEART_CLASS\CoefVec233.txt");
-
-
-            
-            int numberOfNeighbors = 3;
-
-            //WCZYTANIE ZBIORU TRENINGOWEGO
-            DebugECGPath loader = new DebugECGPath();
-            List<Vector<double>> trainDataList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
-
-
-            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-SV
-            List<Vector<double>> trainClassList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
-            //konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
-            int oneClassElement;
-            List<int> trainClass;
-            trainClass = new List<int>();
-            foreach (var item in trainClassList)
-            {
-                foreach (var element in item)
-                {
-                    oneClassElement = (int)element;
-                    trainClass.Add(oneClassElement);
-                }
-
-            }
-
-            Tuple<int, Vector<double>> testTuple;
-            int i = 1;
-            foreach (var singleTestData in testDataList)
-            {
-                testTuple = new Tuple<int, Vector<double>>(i, singleTestData);
-                testAlgs.ClassificationResultOne = testAlgs.TestKnn(trainDataList, testTuple, trainClass, numberOfNeighbors);
-                Console.WriteLine(testAlgs.ClassificationResultOne.Item1 + ":   " + testAlgs.ClassificationResultOne.Item2);
-                Console.ReadKey();
-                i++;
-            }
-            
-
-
-
-        }
 
 
         #region Documentation
-            /// <summary>
-            /// Test method of Heart_Class module
-            /// </summary>
-            #endregion
+        /// <summary>
+        /// Test method of Heart_Class module
+        /// </summary>
+        #endregion
 
-            #region Documentation
-            /// <summary>
-            /// TODO 
-            /// </summary>
-            /// <param name="loadedSignal"></param>
-            /// <param name="fs"></param>
-            /// <param name="R"></param>
-            /// <param name="qrsOnset"></param>
-            /// <param name="qrsEnd"></param>
-            /// <returns></returns>
-            #endregion
-            public Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R, uint fs)
+        #region Documentation
+        /// <summary>
+        /// This is a global method which perform whole classification procedure. From setting QRS complexes, counting coefficients up to classification single complex. It uses sub methods like OneQrsComplex(...), CountCoeff(...), TestKnn(...).
+        /// </summary>
+        /// <param name="loadedSignal"></param>
+        /// <param name="fs"></param>
+        /// <param name="R"></param>
+        /// <param name="qrsOnset"></param>
+        /// <param name="qrsEnd"></param>
+        /// <returns></returns>
+        #endregion
+        public Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R, uint fs)
             {
             Fs = fs;
             Signal = loadedSignal;
@@ -156,10 +89,9 @@ namespace EKG_Project.Modules.Heart_Class
             DebugECGPath loader = new DebugECGPath();
             List<Vector<double>> trainDataList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
 
-
             //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-SV
             List<Vector<double>> trainClassList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
-            //konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
+            
             int oneClassElement;
             List<int> trainClass;
             trainClass = new List<int>();
@@ -172,11 +104,10 @@ namespace EKG_Project.Modules.Heart_Class
                 }
 
             }
-
-
             return ClassificationResultOne = TestKnn(trainDataList, QrsCoeffOne, trainClass, numberOfNeighbors);
    
         }
+        
         #region Documentation
         /// <summary>
         /// This method calculates maximum distance between Q-R and R-S peaks depending on the frequency.
@@ -184,7 +115,6 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="fs"></param>
         /// <returns></returns>
         #endregion
-
         public Tuple<int, int> DistancesFromR(uint fs)
         {
             double maxQRTime = 0.063;
@@ -425,7 +355,6 @@ namespace EKG_Project.Modules.Heart_Class
             return (double)qrsLength * samplingInterval;
         }
 
-
         #region Documentation
         /// <summary>
         /// This method counts all coefficients like Malinowska factor, PN ratio, speed/amplitude ratio, sample's speed ratio for one QRS complex 
@@ -518,11 +447,6 @@ namespace EKG_Project.Modules.Heart_Class
                 return resultTuple;
         }
 
-
-
-
-
-
         #region Documentation
         /// <summary>
         /// Calculates and returns square of Euclidean distance between two vectors
@@ -589,37 +513,20 @@ namespace EKG_Project.Modules.Heart_Class
             return vector;
 
         }
-
-
         
 
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
         public Vector<double> Signal
         {
             get { return _signal; }
             set { _signal = value; }
         }
  
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
         public Vector<double> QrsR
         {
             get { return _qrsR; }
             set { _qrsR = value; }
         }
 
-        #region Documentation
-        /// <summary>
-        /// TODO
-        /// </summary>
-        #endregion
         public Vector<double> SingleQrs
         {
             get { return _singleQrs; }
@@ -661,6 +568,70 @@ namespace EKG_Project.Modules.Heart_Class
             get { return _fs; }
             set { _fs = value; }
         }
+
+
+        public static void Main()
+        {
+            Heart_Class_Alg testAlgs = new Heart_Class_Alg();
+
+
+            int qrsOnset = 5;
+            int qrsEnd = 29;
+            double R = 13;
+            uint fs = 360;
+            double[] testArray =
+            {
+                -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335, -0.38369, -0.39605,
+                -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486, 0.86883, 0.84255, 0.72056, 0.52455,
+                0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399, -0.28368, -0.21097, -0.1402, -0.090148,
+                -0.070429, -0.080307, -0.11024, -0.1458
+            };
+            Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
+            testAlgs.Signal = exampleSignal;
+
+
+            object[] args = { qrsOnset, qrsEnd, R, fs };
+            //testAlgs.QrsComplexOne = OneQrsComplex(qrsOnset, qrsEnd, R, fs);
+
+
+            //////////////////////////////////////////////////////////////////////////////////////
+            // współczynniki 233.dat z matlaba:
+            List<Vector<double>> testDataList = testAlgs.loadFile(@"C:\Users\Kamillo\Desktop\Kasia\DADMproj\HEART_CLASS1\HEART_CLASS\CoefVec233.txt");
+
+            int numberOfNeighbors = 3;
+
+            //WCZYTANIE ZBIORU TRENINGOWEGO
+            DebugECGPath loader = new DebugECGPath();
+            List<Vector<double>> trainDataList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
+
+            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-SV
+            List<Vector<double>> trainClassList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
+            //konwersja na listę intów, bo tak napisałam metodę do klasyfikacji:
+            int oneClassElement;
+            List<int> trainClass;
+            trainClass = new List<int>();
+            foreach (var item in trainClassList)
+            {
+                foreach (var element in item)
+                {
+                    oneClassElement = (int)element;
+                    trainClass.Add(oneClassElement);
+                }
+
+            }
+
+            Tuple<int, Vector<double>> testTuple;
+            int i = 1;
+            foreach (var singleTestData in testDataList)
+            {
+                testTuple = new Tuple<int, Vector<double>>(i, singleTestData);
+                testAlgs.ClassificationResultOne = testAlgs.TestKnn(trainDataList, testTuple, trainClass, numberOfNeighbors);
+                Console.WriteLine(testAlgs.ClassificationResultOne.Item1 + ":   " + testAlgs.ClassificationResultOne.Item2);
+                Console.ReadKey();
+                i++;
+            }
+        }
+
     }
 
 }
