@@ -417,7 +417,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     }
                 }
             }
-            ilApnea = ((double)posCount) / (posCount + negCount);
+            ilApnea = 100.0 * ((double)posCount) / (posCount + negCount);
 
             return detectedApnea;
         }
