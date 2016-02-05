@@ -81,31 +81,40 @@ namespace EKG_Project.Modules.Heart_Class
             {
             Fs = fs;
             Signal = loadedSignal;
-            OneQrsComplex(qrsOnset, qrsEnd, R, Fs);
-            CountCoeff(QrsComplexOne, Fs);
-            int numberOfNeighbors = 3;
-
-            //WCZYTANIE ZBIORU TRENINGOWEGO
-            DebugECGPath loader = new DebugECGPath();
-            List<Vector<double>> trainDataList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
-
-            //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-SV
-            List<Vector<double>> trainClassList = loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
-            
-            int oneClassElement;
-            List<int> trainClass;
-            trainClass = new List<int>();
-            foreach (var item in trainClassList)
+            try
             {
-                foreach (var element in item)
-                {
-                    oneClassElement = (int)element;
-                    trainClass.Add(oneClassElement);
-                }
+                OneQrsComplex(qrsOnset, qrsEnd, R, Fs);
+                CountCoeff(QrsComplexOne, Fs);
+                int numberOfNeighbors = 3;
 
+                //WCZYTANIE ZBIORU TRENINGOWEGO
+                DebugECGPath loader = new DebugECGPath();
+                List<Vector<double>> trainDataList =
+                    loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
+
+                //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-SV
+                List<Vector<double>> trainClassList =
+                    loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
+
+                int oneClassElement;
+                List<int> trainClass;
+                trainClass = new List<int>();
+                foreach (var item in trainClassList)
+                {
+                    foreach (var element in item)
+                    {
+                        oneClassElement = (int) element;
+                        trainClass.Add(oneClassElement);
+                    }
+
+                }
+                return ClassificationResultOne = TestKnn(trainDataList, QrsCoeffOne, trainClass, numberOfNeighbors);
             }
-            return ClassificationResultOne = TestKnn(trainDataList, QrsCoeffOne, trainClass, numberOfNeighbors);
-   
+            catch (Exception e)
+            {
+                return ClassificationResultOne = new Tuple<int, int>((int)R, 0);
+            }
+
         }
         
         #region Documentation
@@ -176,15 +185,24 @@ namespace EKG_Project.Modules.Heart_Class
             }
             else
             {
-                singleQrsOnset = (int)singleQrsR - qrsDistances.Item1;
-                signleQrsEnd = (int)singleQrsR + qrsDistances.Item2;
 
-                int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
-                SingleQrs = Vector<double>.Build.Dense(qrsLength);
+                try
+                {
+                    singleQrsOnset = (int)singleQrsR - qrsDistances.Item1;
+                    signleQrsEnd = (int)singleQrsR + qrsDistances.Item2;
 
-                Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
-                    count: qrsLength);
-                QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
+                    int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
+                    SingleQrs = Vector<double>.Build.Dense(qrsLength);
+
+                    Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
+                        count: qrsLength);
+                    QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
+                }
+                catch (Exception e)
+                {
+                   
+                }
+
 
             }
         }
