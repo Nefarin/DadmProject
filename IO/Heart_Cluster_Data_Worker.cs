@@ -118,14 +118,14 @@ namespace EKG_Project.IO
         /// <param name="lead">lead</param>
         /// <param name="value">value</param> 
         #endregion
-        public void SaveAttributeII(Heart_Cluster_Attributes_II atr, string lead, int value)
+        public void SaveAttributeII(Heart_Cluster_Attributes_II atr, bool mode, string lead, int value)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
             string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string pathOut = System.IO.Path.Combine(directory, fileName);
 
-            StreamWriter sw = new StreamWriter(pathOut);
+            StreamWriter sw = new StreamWriter(pathOut, mode);
             sw.WriteLine(value);
             sw.Close();
         }
