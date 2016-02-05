@@ -199,23 +199,24 @@ namespace EKG_Project.Modules.Heart_Cluster
                         int QRSOnSet = InputWavesWorker.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName, _samplesProcessed, _numberProcessedComplexes)[0] - _currentIndex; //-_currentIndex, aby uwzględnić cięcie sygnału i zmianę indeksu dla qrsOnset i qrsEnd
                         int QRSEnds = InputWavesWorker.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName, _samplesProcessed, _numberProcessedComplexes)[0] - _currentIndex;
 
+                        if (!(R < -1 || QRSOnSet < -1 || QRSEnds < -1))
+                        {
+                            _currentVector = InputEcGbaselineWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
 
-                        _currentVector = InputEcGbaselineWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
+                            var tempClusterResult = new List<Tuple<int, int, int, int>>();
+                            var clusterizationResultTemp = Classification(_currentVector, QRSOnSet, QRSEnds, R, _fs);
 
-                        var tempClusterResult = new List<Tuple<int, int, int, int>>();
-                        var clusterizationResultTemp = Classification(_currentVector, QRSOnSet, QRSEnds, R, _fs);
+                            var clusterizationResult = new Tuple<int, int, int, int>(clusterizationResultTemp.Item1 + _currentIndex, clusterizationResultTemp.Item2 + _currentIndex, Ractual, clusterizationResultTemp.Item4);
 
-                        var clusterizationResult = new Tuple<int, int, int, int>(clusterizationResultTemp.Item1 + _currentIndex, clusterizationResultTemp.Item2 + _currentIndex, Ractual, clusterizationResultTemp.Item4);
-                       
-                        
-                        //teraz trzeba powrócić do R rzeczywistego, a nie tego zmodyfikowanego na potrzeby cięcia sygnału... :/
-           
-                        tempClusterResult.Add(clusterizationResult);
-                        _finalResult.Add(clusterizationResultTemp);
-                        
-                        //ODKOMENTOWAC!!!!!
-                        OutputWorker.SaveClusterizationResult(_currentLeadName, true, tempClusterResult);
 
+                            //teraz trzeba powrócić do R rzeczywistego, a nie tego zmodyfikowanego na potrzeby cięcia sygnału... :/
+
+                            tempClusterResult.Add(clusterizationResult);
+                            _finalResult.Add(clusterizationResultTemp);
+
+                            //ODKOMENTOWAC!!!!!
+                            OutputWorker.SaveClusterizationResult(_currentLeadName, true, tempClusterResult);
+                        }
                         _currentIndex = R;
                         _samplesProcessed++;
                         _step = (int)(InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, _samplesProcessed + 1, _numberProcessedComplexes)[0]) - _currentIndex;
@@ -322,7 +323,7 @@ namespace EKG_Project.Modules.Heart_Cluster
         public static void Main(String[] args)
         {
             IModule testModule = new Heart_Cluster();
-            Heart_Cluster_Params param = new Heart_Cluster_Params("abc123");
+            Heart_Cluster_Params param = new Heart_Cluster_Params("Analysis 888");
 
             testModule.Init(param);
             while (!testModule.Ended())
