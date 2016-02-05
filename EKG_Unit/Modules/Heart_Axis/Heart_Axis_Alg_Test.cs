@@ -65,21 +65,38 @@ namespace EKG_Unit.Modules.Heart_Axis
         }
 
         [TestMethod]
-        [Description("LeastSquaresMethod")] //todo
+        [Description("LeastSquaresMethod")] 
         public void leastSquaresMethodTest()
         {
             Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
 
-            double[] testArray = { 1, 2, 8, 1, 6 };
-            double[] resultArray = { 2 };
+            double[] testArray = { 4, 7, 8, 7, 4 };
+            double[] testArray2 = { 1, 1, 8, 1, 1 };
+            double[] resultArray = { 4, 4, -1 };
 
 
             Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
-            PrivateObject obj = new PrivateObject(testAlgs);
-            object[] args = { 0, testArray };
-            obj.Invoke("MaxOfPseudoModule", args);
+            double[] realresultArray = testAlgs.LeastSquaresMethod(testArray, 0, testArray2, 100);
 
-            Assert.AreNotEqual(testAlgs, resultArray);
+            CollectionAssert.AreNotEqual(realresultArray, resultArray);
+
+        }
+
+        [TestMethod]
+        [Description("LeastSquaresMethod - when signal is too short")]
+        public void leastSquaresMethodTest2()
+        {
+            Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
+
+            double[] testArray = { 4, 7, 8, 7, 4 };
+            double[] testArray2 = { 5, 1, 2, 1, 1 };
+            double[] resultArray = { 0, 0, 0};
+
+
+            Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
+            double[] realresultArray = testAlgs.LeastSquaresMethod(testArray, 0, testArray2, 100);
+
+            CollectionAssert.AreEquivalent(realresultArray, resultArray);
 
         }
 
@@ -89,8 +106,25 @@ namespace EKG_Unit.Modules.Heart_Axis
         {
             Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
 
-            double[] testArray = { -4, 8, 12 };
+            double[] testArray = { 12, 8, -4 };
             int result = 1;
+
+
+            Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+            int realresult = testAlgs.MaxOfPolynomial(0, testArray);
+            Assert.AreEqual(realresult, result);
+
+        }
+
+        [TestMethod]
+        [Description("MaxOfPolynomial - dividing by 0")]
+        public void maxOfPolynomialTest2()
+        {
+            Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
+
+            double[] testArray = { 1, 8, 0 };
+            int result = 0;
 
 
             Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
@@ -115,6 +149,26 @@ namespace EKG_Unit.Modules.Heart_Axis
             Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
             PrivateObject obj = new PrivateObject(testAlgs);
             double[] realresultArray = testAlgs.ReadingAmplitudes(testArray1, testArray2, 1);
+
+
+            CollectionAssert.AreEquivalent(realresultArray, resultArray);
+
+        }
+
+        [TestMethod]
+        [Description("ReadingAmplitudes - while index equals 0")]
+        public void readingAmplitudesTest2()
+        {
+            Heart_Axis_Params testParams = new Heart_Axis_Params("Test");
+
+            double[] testArray1 = { 5, 4, 3, 2, 1 };
+            double[] testArray2 = { 1, 2, 3, 4, 5 };
+            double[] resultArray = { 0, 0 };
+
+
+            Heart_Axis_Alg testAlgs = new Heart_Axis_Alg();
+            PrivateObject obj = new PrivateObject(testAlgs);
+            double[] realresultArray = testAlgs.ReadingAmplitudes(testArray1, testArray2, 0);
 
 
             CollectionAssert.AreEquivalent(realresultArray, resultArray);
