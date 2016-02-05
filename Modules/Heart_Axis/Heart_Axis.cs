@@ -19,7 +19,7 @@ namespace EKG_Project.Modules.Heart_Axis
         private int _step;
         Heart_Axis_Alg _alg;
 
-        //todo: sprawdzić, czy nie pokrywają się nazwy
+        
         private int _currentChannelIndex;
         private int _currentChannelLength;
         private string _currentLeadName;
@@ -38,9 +38,7 @@ namespace EKG_Project.Modules.Heart_Axis
         private const string LeadIISymbol = "II";
 
         /* Dane wejściowe */
-
-
-        //todo: upewnić się, że zmiany na New_Data_Worker nie wprowadzają dodatkowych zmian
+        
 
 
         private ECG_Baseline_New_Data_Worker _inputECGBaselineWorker; // obiekt do wczytania sygnału EKG
@@ -74,7 +72,7 @@ namespace EKG_Project.Modules.Heart_Axis
         /* Zmienne do ustalenia, na którym sygnale są główne obliczenia, a na który jest tylko używany na koniec */
         private double[] _firstSignal;
         private double[] _secondSignal;
-        private string _firstSignalName; // nazwa odprowadzenia, które wybraliśmy jako główne przy obliczeniach
+        private string _firstSignalName; // nazwa głównego odprowadzenia
 
         /* Częstotliwość próbkowania sygnału */
         private int _fs;
@@ -103,6 +101,11 @@ namespace EKG_Project.Modules.Heart_Axis
         {
             return _ended;
         }
+
+        /// <summary>
+        /// Function that initialize all parameters and states
+        /// </summary>
+        /// <param name="parameters"></param>
 
         public void Init(ModuleParams parameters)
         {
@@ -138,196 +141,7 @@ namespace EKG_Project.Modules.Heart_Axis
                 _state = STATE.INIT;
             }
                
-                //    _ended = false;
-
-                //    // wczytywanie danych
-
-                //    // inicjalizacja zmiennych
-
-
-                //    /* wczytanie sygnałów z odprowadzeń */
-                //    string _analysisName = Params.AnalysisName;
-                //    try
-                //    {
-
-                //        InputECGBaselineWorker = new ECG_Baseline_Data_Worker(_analysisName);
-
-                //        InputECGBaselineWorker.Load();
-                //        InputECGBaselineData = InputECGBaselineWorker.Data;
-
-
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        Abort();
-                //    }
-
-                //    List<Tuple<string, Vector<double>>> allSignalsFiltered = InputECGBaselineData.SignalsFiltered;
-
-                //    /*
-                //    Ustawiam wszystkie zmienne przechowujące sygnał z odprowadzeń na null,
-                //    żeby potem móc sprawdzić które zostały wykryte i wybrać na których
-                //    będą przeprowadzane obliczenia
-                //    */
-
-                //    Lead_I = null;
-                //    Lead_II = null;
-
-
-                //    try
-                //    {
-                //        foreach (Tuple<string, Vector<double>> lead in allSignalsFiltered)
-                //        {
-                //            String _leadName = lead.Item1;
-                //            if (_leadName.Equals(LeadISymbol)) // todo: sprawdzić czy o to chodziło przy wyborze odprowadzenia do obliczeń
-                //            {
-                //                Lead_I = lead.Item2.ToArray();
-                //            }
-                //            else if (_leadName.Equals(LeadIISymbol))
-                //            {
-                //                Lead_II = lead.Item2.ToArray();
-                //            }
-
-                //        }
-
-                //    }
-                //    catch (NullReferenceException e)
-                //    {
-                //        Abort();
-                //    }
-
-
-                //    // przypadki - trzeba ustalić z którego odprowadzenia korzystamy jako głównego
-                //    if ((Lead_I != null) && (Lead_II != null))
-                //    {
-                //        FirstSignalName = LeadISymbol;
-                //        FirstSignal = Lead_I;
-                //    }
-                //    else
-                //    {
-                //        // pozostały przypadek to taki, gdzie wszystkie są nullami - nie udało się wykryć żadnej pary odprowadzeń, wyrzucamy wyjątek
-                //        _ended = true;
-                //        Aborted = true;
-                //    }
-
-
-
-
-                //    // wczytywanie danych QRS
-
-
-                //    InputWavesWorker = new Waves_Data_Worker(_analysisName); // todo: nie mam bladego pojęcia czy to jest poprawne - oni dostają nazwę analizy z GUI, a nie widzę nigdzie w kodzie tego
-                //    InputWavesWorker.Load();
-                //    InputWavesData = InputWavesWorker.Data; // todo: czy tu nie powinno być Waves_Data?;
-
-
-
-                //    List<Tuple<string, List<int>>> allQRSOnSets = InputWavesData.QRSOnsets;
-                //    List<Tuple<string, List<int>>> allQRSEnds = InputWavesData.QRSEnds;
-
-
-
-                //    /*wczytywnie list załamków */
-
-                //    QArray = null;
-                //    SArray = null;
-
-                //    // QRSOnsets
-                //    try
-                //    {
-                //        foreach (Tuple<String, List<int>> lead in allQRSOnSets) // pętla po sygnałach z odprowadzeń
-                //        {
-                //            String _leadName = lead.Item1;
-                //            if (_leadName.Equals(FirstSignalName))
-                //            {
-                //                QArray = lead.Item2.ToArray(); ;
-                //                break;
-                //            }
-
-                //        }
-                //    }
-                //    catch (NullReferenceException e)
-                //    {
-                //        Abort();
-                //    }
-
-                //    // QRSEnds
-
-                //    try
-                //    {
-                //        foreach (Tuple<String, List<int>> lead in allQRSEnds) // pętla po sygnałach z odprowadzeń
-                //        {
-
-                //            String _leadName = lead.Item1;
-                //            if (_leadName.Equals(FirstSignalName))
-                //            {
-                //                SArray = lead.Item2.ToArray();
-                //                break;
-                //            }
-
-                //        }
-                //    }
-                //    catch (NullReferenceException e)
-                //    {
-                //        Abort();
-                //    }
-
-                //    if ((QArray == null) || (SArray == null))
-                //    {
-                //        Abort();
-                //    }
-
-                //    Q = 0;
-                //    S = 0;
-
-                //    // sprawdzanie, czy Q i S jest poprawne
-
-                //    try
-                //    {
-                //        for (int QIndex = 0; QIndex < QArray.Length; QIndex++)
-                //        {
-                //            Q = QArray[QIndex];
-                //            S = SArray[QIndex];
-                //            if ((Q < S) && (Q != -1) && (S != -1))
-                //            {
-                //                break;
-                //            }
-                //        }
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        Abort();
-                //    }
-
-                //    if ((Q == -1) || (S == -1) || (Q >= S))
-                //    {
-                //        _ended = true;
-                //        Aborted = true;
-                //    }
-
-                //    // wczytywanie częstotliwości próbkowania
-
-                //    try
-                //    {
-
-                //        InputBasicDataWorker = new Basic_Data_Worker(_analysisName);
-                //        InputBasicDataWorker.Load();
-                //        InputBasicData = InputBasicDataWorker.BasicData;
-
-
-                //        Fs = (int)InputBasicData.Frequency;
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        Abort();
-                //    }
-
-                //    // dane wyjściowe - inicjalizacja
-
-                //    OutputWorker = new Heart_Axis_Data_Worker(Params.AnalysisName);
-                //    OutputData = new Heart_Axis_Data();
-                //}
-
+               
             }
 
         public void ProcessData()
@@ -336,6 +150,10 @@ namespace EKG_Project.Modules.Heart_Axis
             else _ended = true;
         }
 
+        /// <summary>
+        /// Function that calculates progress of analysis of current module
+        /// </summary>
+        /// <returns>Percentage of current progress </returns>
 
         public double Progress()
         {
@@ -349,6 +167,10 @@ namespace EKG_Project.Modules.Heart_Axis
         }
 
         /* Obliczenie osi serca */
+
+        /// <summary>
+        /// Function in which data are processed (made as machine of states)
+        /// </summary>
 
         private void processData()
         {
@@ -364,10 +186,10 @@ namespace EKG_Project.Modules.Heart_Axis
                     {
 
                         int Lead_I_Length = (int) InputECGBaselineWorker.getNumberOfSamples(LeadISymbol);
-                        Lead_I = InputECGBaselineWorker.LoadSignal(LeadISymbol, 0, Lead_I_Length).ToArray(); // todo:  czy nazwy są spójne,
+                        Lead_I = InputECGBaselineWorker.LoadSignal(LeadISymbol, 0, Lead_I_Length).ToArray();
 
                         int Lead_II_Length = (int) InputECGBaselineWorker.getNumberOfSamples(LeadIISymbol);
-                        Lead_II = InputECGBaselineWorker.LoadSignal(LeadIISymbol, 0, Lead_II_Length).ToArray(); // todo:  czy nazwy są spójne,
+                        Lead_II = InputECGBaselineWorker.LoadSignal(LeadIISymbol, 0, Lead_II_Length).ToArray();
 
 
                     }
@@ -459,7 +281,6 @@ namespace EKG_Project.Modules.Heart_Axis
                     else
                     {
                         _currentLeadName = LeadISymbol;
-                        //U ciebie zamiast tego można przyjąć, że po wykonanie każdej funkcji z algs to jakby jeden channel do przodu _currentChannelLength = (int)InputWorker_basic.getNumberOfSamples(_currentLeadName); //Zmienić na worker ECG_BASELINE
                         _state = STATE.PROCESS_FIRST_STEP;
                     }
                     break;
@@ -492,17 +313,6 @@ namespace EKG_Project.Modules.Heart_Axis
                     Abort();
                     break;
             }
-
-
-                    //double[] pseudo_tab = PseudoModule(Q, S, FirstSignal);
-                    //double[] fitting_parameters = LeastSquaresMethod(FirstSignal, Q, pseudo_tab, Fs);
-                    //int MaxOfPoly = MaxOfPolynomial(Q, fitting_parameters);
-                    //double[] amplitudes = ReadingAmplitudes(Lead_I, Lead_II, MaxOfPoly);
-                    //OutputData.HeartAxis = IandII(amplitudes);
-
-                    //OutputWorker.Save(OutputData);
-                    //_ended = true;
-
 
             }
 
@@ -789,7 +599,7 @@ namespace EKG_Project.Modules.Heart_Axis
         public static void Main(String[] args)
         {
             IModule testModule = new EKG_Project.Modules.Heart_Axis.Heart_Axis();
-            Heart_Axis_Params param = new Heart_Axis_Params("abc123");
+            Heart_Axis_Params param = new Heart_Axis_Params("TestAnalysis2");
 
             testModule.Init(param);
             while (!testModule.Ended())
