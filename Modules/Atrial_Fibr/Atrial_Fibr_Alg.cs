@@ -154,7 +154,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
             {
                 if (detectedIntervals[i])
                 {
-                    lengthOfDetectedIntervals += _rrIntervals.At(i);
+                    lengthOfDetectedIntervals += Math.Round(_rrIntervals.At(i));
                     afDetected = true;
                 }
             }
@@ -167,7 +167,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     if (detectedIntervals[i])
                     {
                         int j;
-                        for (j = 0; j < _rrIntervals.At(i); j++)
+                        for (j = 0; j < Math.Round(_rrIntervals.At(i)); j++)
                         {
                             pointsDetected.At(j + lastIndex, _rPeaks.At(i) + j);
                         }

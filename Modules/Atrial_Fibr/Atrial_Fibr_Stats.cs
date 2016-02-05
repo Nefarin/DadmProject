@@ -114,7 +114,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     _currentState = State.CALCULATE;
                     break;
                 case (State.CALCULATE):
-                    Tuple<bool, Vector<double>, string, string> _data = _worker.LoadAfDetection(_currentName, 0, (int)_worker.getNumberOfSamples(_currentName));
+                    Tuple<bool, Vector<double>, string, string> _data = _worker.LoadAfDetection(_currentName, 0, 1);
                     string currentDetected= _data.Item3;
                     string currentDescription= _data.Item4;
                     _strToStr.Add(_currentName, " " + currentDetected + " " +currentDescription);
@@ -134,24 +134,24 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     break;
             }
         }
-        //public static void Main(String[] args)
-        //{
-        //    Atrial_Fibr_Stats stats = new Atrial_Fibr_Stats();
-        //    stats.Init("analiza1");
+        public static void Main(String[] args)
+        {
+            Atrial_Fibr_Stats stats = new Atrial_Fibr_Stats();
+            stats.Init("analiza2");
 
 
-        //    while (true)
-        //    {
-        //        if (stats.Ended()) break;
-        //        stats.ProcessStats();
-        //    }
+            while (true)
+            {
+                if (stats.Ended()) break;
+                stats.ProcessStats();
+            }
 
-        //    foreach (var key in stats.GetStatsAsString().Keys)
-        //    {
-        //        Console.WriteLine(key + stats.GetStatsAsString()[key]);
-        //    }
-        //    Console.Read();
+            foreach (var key in stats.GetStatsAsString().Keys)
+            {
+                Console.WriteLine(key + stats.GetStatsAsString()[key]);
+            }
+            Console.Read();
 
-        //}
+        }
     }
 }
