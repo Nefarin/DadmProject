@@ -198,11 +198,11 @@ namespace EKG_Project.Modules.HRT
                                             _turbulenceSlopeMaxGUI = _turbulenceSlope.Item3;
                                             _turbulenceOnsetPDF = _alg.TurbulenceOnsetsPDF(_classPrematureVentrical, _rrintervals);
                                             _turbulenceSlopePDF = _turbulenceSlope.Item1;
-                                            _statisticsClassNumbersPDF[0] = _classAll.Count;
+                                            _statisticsClassNumbersPDF[0] = _rpeaks.Count;
                                             _statisticsClassNumbersPDF[1] = _classVentrical.Count;
                                             _statisticsClassNumbersPDF[2] = _classPrematureVentrical.Count;
                                             _state = STATE.END_CHANNEL;
-                                            _alg.PrintVector(_tachogram);
+                                            System.Diagnostics.Debug.WriteLine(_statisticsClassNumbersPDF[0]);
                                         }
                                     }
                                 }
@@ -316,7 +316,7 @@ namespace EKG_Project.Modules.HRT
             }
         }
 
-        private HRT_New_Data_Worker OutputWorker
+        public HRT_New_Data_Worker OutputWorker
         {
             get
             {

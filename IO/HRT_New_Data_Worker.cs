@@ -11,7 +11,7 @@ namespace EKG_Project.IO
     /// Class that saves and loads HRT_Data chunks from internal text file
     /// </summary>
     #endregion
-    class HRT_New_Data_Worker
+    public class HRT_New_Data_Worker
     {
         //FIELDS
         #region Documentation
