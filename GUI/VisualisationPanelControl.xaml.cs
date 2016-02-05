@@ -55,7 +55,9 @@ namespace EKG_Project.GUI
         public VisualisationPanelControl(string analyseName, List<string> tabNames)
         {
             InitializeComponent();
-            ChooseTabDisplay(analyseName,tabNames);
+            //ChooseTabDisplay(analyseName,tabNames);
+            NewChooseTabDisplay(analyseName, tabNames);
+
         }
 
         private void ChooseTabDisplay(string analysN, List<string> tabNames)
@@ -151,6 +153,45 @@ namespace EKG_Project.GUI
 
             this.EcgDynamicTab.DataContext = visulisationDataTabsList;
         }
+
+        private void NewChooseTabDisplay(string analysN, List<string> tabNames)
+        {
+            try
+            {
+                Dictionary<string, int> independentModules = new Dictionary<string, int>();
+
+                //Split Independent Modules 
+                if (tabNames.Contains("ECG_BASELINE"))
+                {
+                    independentModules["ECG_BASELINE"] = 1;
+                }
+                if (tabNames.Contains("HEART_AXIS"))
+                {
+                    independentModules["HEART_AXIS"] = 1;
+                }
+                //add other independent modules
+
+
+
+                visulisationDataTabsList = new List<TabItem>();
+                foreach (var dic in independentModules)
+                {
+                    VisualisationDataControl ecgVDataControl = new VisualisationDataControl(analysN, dic.Key, dic, tabNames);
+                    TabItem tabItem = new TabItem();
+                    tabItem.Header = dic.Key;
+                    tabItem.Content = ecgVDataControl;
+                    visulisationDataTabsList.Add(tabItem);
+                }
+
+                this.EcgDynamicTab.DataContext = visulisationDataTabsList;
+            }
+            catch
+            {
+
+            }
+        }
+
+
 
         public DataTable CreateHeaderInfoTable()
         {
