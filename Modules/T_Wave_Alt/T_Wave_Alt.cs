@@ -1,39 +1,52 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.Modules.ECG_Baseline;
-using EKG_Project.Modules.Waves;
+using System.Collections.Generic;
+using System.Linq;
 using MathNet.Numerics;
 
 namespace EKG_Project.Modules.T_Wave_Alt
 {
     public class T_Wave_Alt : IModule
     {
+        private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
         private bool _ended;
         private bool _aborted;
 
         private int _currentChannelIndex;
         private int _currentChannelLength;
-        private int _samplesProcessed;
+        private int _currentChannelTEndsLength;
+        private string _currentLeadName;
+        private string[] _leads;
+        private int _currentIndex;
         private int _numberOfChannels;
 
-        private ECG_Baseline_Data_Worker _inputWorkerECG;
-        private Waves_Data_Worker _inputWorkerWaves;
-        private T_Wave_Alt_Data_Worker _outputWorker;
+        private uint _sampFreq;
+        private int _step = 12000;
+        private int _lastTEndIndex;
+        private int _TEndStep = 80;
 
-        private ECG_Baseline_Data _inputDataECG;
-        private Waves_Data _inputDataWaves;
-        private T_Wave_Alt_Data _outputData;
+        private List<Vector<double>> T_WavesArray;
+        private Vector<double> medianT_Wave;
+        private Vector<double> ACI;
+        private List<int> Flucts;
+        private Vector<double> Alternans1;
+        private List<Tuple<int, int>> finalDetection;
 
+        private Basic_New_Data_Worker _inputBasicWorker;
+        private ECG_Baseline_New_Data_Worker _inputECGWorker;
+        private Waves_New_Data_Worker _inputWavesWorker;
+        private T_Wave_Alt_New_Data_Worker _outputWorker;
+
+        // private Basic_New_Data _outputData;
+        // private Basic_New_Data _inputData;
         private T_Wave_Alt_Params _params;
 
-        private Vector<Double> _currentVector;
-        private List<int> _currentTEnds;
-        private int[] _alternansIndexArray;
+        private T_Wave_Alt_Alg _alg;
+        private Vector<double> _currentVector;
+        private List<int> _currentTEndsList;
+
+        private STATE _state;
 
         public void Abort()
         {
@@ -53,30 +66,33 @@ namespace EKG_Project.Modules.T_Wave_Alt
 
         public void Init(ModuleParams parameters)
         {
-            //Params = parameters as T_Wave_Alt_Params;
-            //Aborted = false;
-            //if (!Runnable()) _ended = true;
-            //else
-            //{
-            //    _ended = false;
+            try
+            {
+                _params = parameters as T_Wave_Alt_Params;
+            }
+            catch (Exception e)
+            {
+                Abort();
+                return;
+            }
 
-            //    //InputWorkerECG = new ECG_Baseline_Data_Worker(Params.AnalysisName);
-            //    //InputWorkerECG.Load();
-            //    //InputDataECG = InputWorkerECG.OutputData;
+            if (!Runnable())
+            {
+                _ended = true;
+            }
+            else
+            {
+                InputBasicWorker = new Basic_New_Data_Worker(Params.AnalysisName);
+                InputECGWorker = new ECG_Baseline_New_Data_Worker(Params.AnalysisName);
+                InputWavesWorker = new Waves_New_Data_Worker(Params.AnalysisName);
+                OutputWorker = new T_Wave_Alt_New_Data_Worker(Params.AnalysisName);
+                /*
+                InputData = new Basic_New_Data();
+                OutputData = new Basic_New_Data();
+                */
+                _state = STATE.INIT;
 
-            //    //InputWorkerWaves = new Waves_Data_Worker(Params.AnalysisName);
-            //    //InputWorkerWaves.Load();
-            //    //InputDataWaves = InputWorkerWaves.OutputData;
-
-            //    //OutputWorker = new T_Wave_Alt_Data_Worker(Params.AnalysisName);
-            //    //OutputData = new T_Wave_Alt_Data();
-
-            //    //_currentChannelIndex = 0;
-            //    //_samplesProcessed = 0;
-            //    //NumberOfChannels = InputDataECG.Signals.Count;
-            //    //_currentChannelLength = InputDataECG.Signals[_currentChannelIndex].Item2.Count;
-            //    //_currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-            //}
+            }
         }
 
         public void ProcessData()
@@ -87,7 +103,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
 
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentChannelLength));
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_currentIndex / (double)_currentChannelLength));
         }
 
         public bool Runnable()
@@ -97,37 +113,123 @@ namespace EKG_Project.Modules.T_Wave_Alt
 
         private void processData()
         {
-            //int channel = _currentChannelIndex;
-            //int startIndex = _samplesProcessed;
+            switch (_state)
+            {
+                case (STATE.INIT):
+                    _currentChannelIndex = -1;
+                    _alg = new T_Wave_Alt_Alg();
+                    _sampFreq = InputBasicWorker.LoadAttribute(Basic_Attributes.Frequency);
+                    _alg.Fs = _sampFreq;
+                    _leads = InputBasicWorker.LoadLeads().ToArray();
+                    _numberOfChannels = _leads.Length;
+                    _state = STATE.BEGIN_CHANNEL;
+                    //_inputWorker.DeleteFiles(); Do not use yet - will try to handle this during loading.
+                    break;
+                case (STATE.BEGIN_CHANNEL):
+                    _currentChannelIndex++;
+                    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END;
+                    else
+                    {
+                        _currentLeadName = _leads[_currentChannelIndex];
+                        _currentChannelLength = (int)InputECGWorker.getNumberOfSamples(_currentLeadName);
+                        _currentChannelTEndsLength = (int)InputWavesWorker.getNumberOfSamples(Waves_Signal.TEnds, _currentLeadName);
+                        _currentIndex = 0;
+                        _lastTEndIndex = 0;
+                        _state = STATE.PROCESS_FIRST_STEP;
+                    }
+                    break;
+                case (STATE.PROCESS_FIRST_STEP):
+                    if (_currentIndex + _step > _currentChannelLength) _state = STATE.END_CHANNEL;
+                    else
+                    {
+                        try
+                        {
+                            _currentVector = InputECGWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
+                            _currentTEndsList = InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _lastTEndIndex, _TEndStep);
+                            
+                            T_WavesArray = _alg.buildTWavesArray(_currentVector, _currentTEndsList, _currentIndex);
+                            medianT_Wave = _alg.calculateMedianTWave(T_WavesArray);
+                            ACI = _alg.calculateACI(T_WavesArray, medianT_Wave);
+                            Flucts = _alg.findFluctuations(ACI);
+                            Alternans1 = _alg.findAlternans(Flucts);
+                            finalDetection = _alg.alternansDetection(Alternans1, _currentTEndsList);
 
-            //if (channel < NumberOfChannels)
-            //{
-            //    //_currentVector = InputDataECG.Signals[_currentChannelIndex].Item2.SubVector(0, _currentChannelLength);
-            //    //_currentTEnds = InputDataWaves.TEndss[_currentChannelIndex].Item2;
+                            OutputWorker.SaveAlternansDetectedList(_currentLeadName, false, finalDetection);
+                            _lastTEndIndex += (T_WavesArray.Count + _alg.NoDetectionCount);
+                            _currentIndex += _step;
+                            _state = STATE.PROCESS_CHANNEL;
+                        }
+                        catch (Exception e)
+                        {
+                            _state = STATE.NEXT_CHANNEL;
+                        }
+                    }
+                    break;
+                case (STATE.PROCESS_CHANNEL):
+                    if (_currentIndex + _step > _currentChannelLength) _state = STATE.END_CHANNEL;
+                    else
+                    {
+                        try
+                        {
+                            _currentVector = InputECGWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
 
-            //    //_alternansIndexArray = findAlternans(_currentTEnds, _currentVector, 360);
+                            if (_lastTEndIndex + _TEndStep < _currentChannelTEndsLength) _currentTEndsList = InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _lastTEndIndex, _TEndStep);
+                            else _currentTEndsList = InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _lastTEndIndex, _currentChannelTEndsLength - _lastTEndIndex);
 
-            //    //OutputData.Output.Add(new Tuple<string, Vector<double>>(InputDataECG.Signals[_currentChannelIndex].Item1, _alternansIndexArray));
-            //    //_currentChannelIndex++;
-            //    //if (_currentChannelIndex < NumberOfChannels)
-            //    //    {
-            //    //        _samplesProcessed = 0;
-            //    //        _currentChannelLength = InputDataECG.Signals[_currentChannelIndex].Item2.Count;
-            //    //        _currentVector = Vector<Double>.Build.Dense(_currentChannelLength);
-            //    //    }
+                            T_WavesArray = _alg.buildTWavesArray(_currentVector, _currentTEndsList, _currentIndex);
+                            medianT_Wave = _alg.calculateMedianTWave(T_WavesArray);
+                            ACI = _alg.calculateACI(T_WavesArray, medianT_Wave);
+                            Flucts = _alg.findFluctuations(ACI);
+                            Alternans1 = _alg.findAlternans(Flucts);
+                            finalDetection = _alg.alternansDetection(Alternans1, _currentTEndsList);
+                            
+                            OutputWorker.SaveAlternansDetectedList(_currentLeadName, true, finalDetection);
+                            _lastTEndIndex += (T_WavesArray.Count + _alg.NoDetectionCount);
+                            _currentIndex += _step;
+                            _state = STATE.PROCESS_CHANNEL;
+                        }
+                        catch (Exception e)
+                        {
+                            _state = STATE.NEXT_CHANNEL;
+                        }
+                    }
 
-            //}
-            //else
-            //{
-            //    OutputWorker.Save(OutputData);
-            //    _ended = true;
-            //}
+                    break;
+                case (STATE.END_CHANNEL):
+                    try
+                    {
+                        _currentVector = InputECGWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
+                        _currentTEndsList = InputWavesWorker.LoadSignal(Waves_Signal.TEnds, _currentLeadName, _lastTEndIndex, _currentChannelTEndsLength - _lastTEndIndex);
 
+                        T_WavesArray = _alg.buildTWavesArray(_currentVector, _currentTEndsList, _currentIndex);
+                        medianT_Wave = _alg.calculateMedianTWave(T_WavesArray);
+                        ACI = _alg.calculateACI(T_WavesArray, medianT_Wave);
+                        Flucts = _alg.findFluctuations(ACI);
+                        Alternans1 = _alg.findAlternans(Flucts);
+                        finalDetection = _alg.alternansDetection(Alternans1, _currentTEndsList);
 
+                        OutputWorker.SaveAlternansDetectedList(_currentLeadName, true, finalDetection);
+                        _state = STATE.NEXT_CHANNEL;
+                    }
+                    catch (Exception e)
+                    {
+                        _state = STATE.NEXT_CHANNEL;
+                    }
+                    break;
+                case (STATE.NEXT_CHANNEL):
+                    _state = STATE.BEGIN_CHANNEL;
+                    break;
+                case (STATE.END):
+                    _ended = true;
+                    break;
+                default:
+                    Abort();
+                    break;
+            }
 
         }
-
-        public T_Wave_Alt_Data OutputData
+        /*
+        public Basic_New_Data OutputData
         {
             get
             {
@@ -139,7 +241,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
                 _outputData = value;
             }
         }
-
+        */
         public T_Wave_Alt_Params Params
         {
             get
@@ -178,60 +280,60 @@ namespace EKG_Project.Modules.T_Wave_Alt
                 _aborted = value;
             }
         }
-
-        public ECG_Baseline_Data InputDataECG
+        /*
+        public Basic_New_Data InputData
         {
             get
             {
-                return _inputDataECG;
+                return _inputData;
             }
 
             set
             {
-                _inputDataECG = value;
+                _inputData = value;
             }
         }
-
-        public ECG_Baseline_Data_Worker InputWorkerECG
+        */
+        public Basic_New_Data_Worker InputBasicWorker
         {
             get
             {
-                return _inputWorkerECG;
+                return _inputBasicWorker;
             }
 
             set
             {
-                _inputWorkerECG = value;
+                _inputBasicWorker = value;
             }
         }
 
-        public Waves_Data InputDataWaves
+        public ECG_Baseline_New_Data_Worker InputECGWorker
         {
             get
             {
-                return _inputDataWaves;
+                return _inputECGWorker;
             }
 
             set
             {
-                _inputDataWaves = value;
+                _inputECGWorker = value;
             }
         }
 
-        public Waves_Data_Worker InputWorkerWaves
+        public Waves_New_Data_Worker InputWavesWorker
         {
             get
             {
-                return _inputWorkerWaves;
+                return _inputWavesWorker;
             }
 
             set
             {
-                _inputWorkerWaves = value;
+                _inputWavesWorker = value;
             }
         }
 
-        public T_Wave_Alt_Data_Worker OutputWorker
+        public T_Wave_Alt_New_Data_Worker OutputWorker
         {
             get
             {
@@ -242,6 +344,22 @@ namespace EKG_Project.Modules.T_Wave_Alt
             {
                 _outputWorker = value;
             }
+        }
+
+        public static void Main(String[] args)
+        {
+            /*
+            IModule testModule = new EKG_Project.Modules.TestModule3.TestModule3();
+            int scale = 5;
+            TestModule3_Params param = new TestModule3_Params(scale, 1000, "abc123");
+
+            testModule.Init(param);
+            while (!testModule.Ended())
+            {
+                testModule.ProcessData();
+                Console.WriteLine(testModule.Progress());
+            }
+            */
         }
     }
 }
