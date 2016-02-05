@@ -217,7 +217,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     break;
 
                 case State.MedianFiltering:
-                    _sleepApneaAlg.medianFilter(_h_freq, _h_amp);
+                     _sleepApneaAlg.medianFilter(_h_freq, _h_amp);
                     _currentState = State.AmplitudeNormalization;
                     _actualProgress = 6 * 100.0 / 9;
                     break;
@@ -249,7 +249,13 @@ namespace EKG_Project.Modules.Sleep_Apnea
                         il_Apnea.Add(new Tuple<string, double>(_leads[i], ilApnea));
                         h_amp.Add(new Tuple<string, List<List<double>>>(_leads[i], _h_amp));
                         detected_Apnea.Add(new Tuple<string, List<Tuple<int, int>>>(_leads[i], annotations));
+
+                        _outputWorker.SaveIlApnea(_leads[i], ilApnea);
+                        _outputWorker.SaveHAmp(_leads[i], true, _h_amp);
+                        _outputWorker.SaveDetectedApnea(_leads[i], true, annotations);
                     }
+
+                    
 
                     _actualProgress = 100.0;
                     _ended = true;
