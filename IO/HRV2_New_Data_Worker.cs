@@ -15,7 +15,7 @@ namespace EKG_Project.IO
     /// Stores HRV2_Attributes
     /// </summary>
     #endregion
-    public enum HRV2_Attributes { Tinn, TriangleIndex, SD1, SD2, ElipseCenter };
+    public enum HRV2_Attributes { Tinn, TriangleIndex, SD1, SD2, ElipseCenter_x, ElipseCenter_y };
     #region Documentation
     /// <summary>
     /// Stores HRV2_Signal
