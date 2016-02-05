@@ -236,8 +236,8 @@ namespace EKG_Project.Modules.Heart_Cluster
 
                         for (int i = 0; i < classCounts.Count; i++)
                         {
-                            OutputWorker.SaveAttributeII(Heart_Cluster_Attributes_II.indexOfClass, _currentLeadName, i);
-                            OutputWorker.SaveAttributeII(Heart_Cluster_Attributes_II.QrsComplexNo, _currentLeadName, classCounts[i]);
+                            OutputWorker.SaveAttributeII(Heart_Cluster_Attributes_II.indexOfClass, true, _currentLeadName, i);
+                            OutputWorker.SaveAttributeII(Heart_Cluster_Attributes_II.QrsComplexNo, true, _currentLeadName, classCounts[i]);
                         }
 
                         _state = STATE.END_CHANNEL;
@@ -263,8 +263,8 @@ namespace EKG_Project.Modules.Heart_Cluster
 
                             for (int j = 0; j < classCounts.Count; j++)
                             {
-                                OutputWorker.SaveAttributeII(Heart_Cluster_Attributes_II.indexOfClass, _currentLeadName, j);
-                                OutputWorker.SaveAttributeII(Heart_Cluster_Attributes_II.QrsComplexNo, _currentLeadName, classCounts[j]);
+                                OutputWorker.SaveAttributeII(Heart_Cluster_Attributes_II.indexOfClass, true, _currentLeadName, j);
+                                OutputWorker.SaveAttributeII(Heart_Cluster_Attributes_II.QrsComplexNo, true, _currentLeadName, classCounts[j]);
                             }
                         }
                     }
@@ -323,7 +323,7 @@ namespace EKG_Project.Modules.Heart_Cluster
         public static void Main(String[] args)
         {
             IModule testModule = new Heart_Cluster();
-            Heart_Cluster_Params param = new Heart_Cluster_Params("Analysis 888");
+            Heart_Cluster_Params param = new Heart_Cluster_Params("Analysis 223");
 
             testModule.Init(param);
             while (!testModule.Ended())

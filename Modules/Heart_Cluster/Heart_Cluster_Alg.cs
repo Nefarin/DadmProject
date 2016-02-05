@@ -72,7 +72,7 @@ namespace EKG_Project.Modules.Heart_Cluster
             var singleQrsComplex = loadedSignal.SubVector(qrsOnset, qrsEnd - qrsOnset + 1);
             var coefficientVector = CountCoefficients(singleQrsComplex, fs);
 
-            var classification = ClassificateComplex(coefficientVector, 10);
+            var classification = ClassificateComplex(coefficientVector, 14);
             return new Tuple<int, int, int, int>(qrsOnset, qrsEnd, qrsR, classification);
         }
 
