@@ -195,6 +195,81 @@ namespace EKG_Unit.Modules.T_Wave_Alt
         }
 
         [TestMethod]
+        [Description("Tests if buildTWavesArray properly counts not detected T-waves")]
+        public void buildTWavesArrayNoDetectionTest()
+        {
+            // Init test here
+
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4, 5, 6 };
+            double[] resultArray1 = { 0, 1, 2 };
+            double[] resultArray2 = { 6, 7, 8 };
+
+
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            List<int> testTEndList = new List<int>();
+            testTEndList.Add(2);
+            testTEndList.Add(-1);
+            testTEndList.Add(8);
+            testTEndList.Add(-1);
+            Vector<double> resultVector1 = Vector<double>.Build.DenseOfArray(resultArray1);
+            Vector<double> resultVector2 = Vector<double>.Build.DenseOfArray(resultArray2);
+            List<Vector<double>> resultList = new List<Vector<double>>();
+            resultList.Add(resultVector1);
+            resultList.Add(resultVector2);
+
+            T_Wave_Alt_Alg testAlgs = new T_Wave_Alt_Alg();
+
+            // Process test here
+
+            testAlgs.Fs = 20;
+
+            List<Vector<double>> desiredList = testAlgs.buildTWavesArray(testVector, testTEndList, 0);
+
+            // Assert results
+
+            Assert.AreEqual(resultVector1, desiredList[0]);
+            Assert.AreEqual(resultVector2, desiredList[1]);
+            Assert.AreEqual(2, testAlgs.NoDetectionCount);
+
+
+        }
+
+        [TestMethod]
+        [Description("Tests if buildTWavesArray properly builds _newTEndsList")]
+        public void buildTWavesArrayNewTEndsListTest()
+        {
+            // Init test here
+
+            double[] testArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 4, 5, 6 };
+            
+            Vector<double> testVector = Vector<double>.Build.DenseOfArray(testArray);
+            List<int> testTEndList = new List<int>();
+            testTEndList.Add(1);
+            testTEndList.Add(2);
+            testTEndList.Add(-1);
+            testTEndList.Add(8);
+            testTEndList.Add(-1);
+            testTEndList.Add(14);
+            
+            List<int> expectedNewTEndsList = new List<int>();
+            expectedNewTEndsList.Add(2);
+            expectedNewTEndsList.Add(8);
+
+            T_Wave_Alt_Alg testAlgs = new T_Wave_Alt_Alg();
+
+            // Process test here
+
+            testAlgs.Fs = 20;
+
+            List<Vector<double>> auxTWavesArray = testAlgs.buildTWavesArray(testVector, testTEndList, 0);
+            List<int> resultNewTEndsList = testAlgs.NewTEndsList;
+
+            // Assert results
+
+            CollectionAssert.AreEqual(expectedNewTEndsList, resultNewTEndsList);
+        }
+
+        [TestMethod]
         [Description("Tests if median is calculated properly (for even T-waves amount)")]
         public void calculateMedianTWaveEvenTest()
         {
@@ -522,7 +597,7 @@ namespace EKG_Unit.Modules.T_Wave_Alt
 
             // Process test here
 
-            testAlgs.NewTEndsArray = testTEndsList1;
+            testAlgs.NewTEndsList = testTEndsList1;
             List<Tuple<int, int>> receivedList = testAlgs.alternansDetection(testAlternansVector, testTEndsList1);
 
             // Assert results

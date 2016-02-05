@@ -58,7 +58,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
                 _tLength = value;
             }
         }
-        public List<int> NewTEndsArray
+        public List<int> NewTEndsList
         {
             get { return _newTEndsList; }
             set { _newTEndsList = value; }

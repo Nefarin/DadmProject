@@ -22,7 +22,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
         private int _numberOfChannels;
 
         private uint _sampFreq;
-        private int _step = 8000;
+        private int _step = 12000;
         private int _lastTEndIndex;
         private int _TEndStep = 80;
 
@@ -191,6 +191,7 @@ namespace EKG_Project.Modules.T_Wave_Alt
                         catch (Exception e)
                         {
                             _state = STATE.NEXT_CHANNEL;
+                            Console.WriteLine(e.Message);
                         }
                     }
 
