@@ -9,7 +9,41 @@ namespace EKG_Unit.Modules.HRV_DFA
     [TestClass]
     public class HRV_DFA_Alg_Test
     {
-        
+        //ObtainFluctuations
+        [TestMethod]
+        public void ObtainFluctuations_Test()
+        {
+            int step = 10;
+            int start = 10;
+            int stop = 100;
+            double[] a = {600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,
+            600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,
+            600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,
+            600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650, 600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,
+            600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650, 600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650};
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a);
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Tuple<Vector<double>, Vector<double>> result = test.ObtainFluctuations(step, start, stop,v1);
+            Assert.IsNotNull(result.Item2);
+        }
+        [TestMethod]
+        public void ObtainFluctuations_Test2()
+        {
+            int step = 10;
+            int start = 50;
+            int stop = 500;
+            double[] a = {600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,
+            600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,
+            600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,
+            600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650, 600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650,
+            600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650, 600, 700, 650, 700, 750, 700, 600, 650, 800, 700, 650};
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a);
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Tuple<Vector<double>, Vector<double>> result = test.ObtainFluctuations(step, start, stop, v1);
+            Assert.IsNotNull(result.Item2);
+        }
+        //HRV_DFA_Analysis
+
         //ComputeDfaFluctuation
         [TestMethod]
         [Description("Test if not null is returned")]
