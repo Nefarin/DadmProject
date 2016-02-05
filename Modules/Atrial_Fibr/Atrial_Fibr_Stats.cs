@@ -22,21 +22,41 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private int _currentChannelIndex;
         private string _currentName;
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public void Abort()
         {
             _aborted = true;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public bool Aborted()
         {
             return _aborted;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public bool Ended()
         {
             return _ended;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public Dictionary<string, object> GetStats()
         {
             if (_strToObj == null) throw new NullReferenceException();
@@ -44,6 +64,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return _strToObj;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public Dictionary<string, string> GetStatsAsString()
         {
             if (_strToStr == null) throw new NullReferenceException();
@@ -51,6 +76,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
             return _strToStr;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public void Init(string analysisName)
         {
             _analysisName = analysisName;
@@ -71,6 +101,11 @@ namespace EKG_Project.Modules.Atrial_Fibr
             _currentChannelIndex = 0;
         }
 
+        #region Documentation
+        /// <summary>
+        /// TO DO
+        /// </summary>
+        #endregion
         public void ProcessStats()
         {
             switch (_currentState)
