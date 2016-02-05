@@ -39,13 +39,13 @@ namespace EKG_Project.Modules.Waves
             }
             else if (_params.WaveType == Wavelet_Type.db2)
             {
-                _qrsEndTresh = 0.12;
-                _qrsOnsTresh = 0.12;
+                _qrsEndTresh = 1.5;
+                _qrsOnsTresh = 3;
             }
             else
             {
-                _qrsEndTresh = 0.3;
-                _qrsOnsTresh = 0.3;
+                _qrsEndTresh = 3;
+                _qrsOnsTresh = 1.5;
             }
 
             DetectQRS();
@@ -171,9 +171,9 @@ namespace EKG_Project.Modules.Waves
             _currentQRSonsetsPart.Clear();
             _currentQRSendsPart.Clear();
             List<Vector<double>> dwt = new List<Vector<double>>();
-            
-            dwt = ListDWT(_currentECG , _params.DecompositionLevel, Wavelet_Type.haar);
 
+            //dwt = ListDWT(_currentECG , _params.DecompositionLevel, Wavelet_Type.haar);
+            dwt = ListDWT(_currentECG, _params.DecompositionLevel, Params.WaveType);
             int d2size = dwt[_params.DecompositionLevel - 1].Count();
             int rSize = _params.RpeaksStep;
             int decLev = _params.DecompositionLevel;
@@ -204,6 +204,7 @@ namespace EKG_Project.Modules.Waves
             int sectionStart = (rightEnd >> decompLevel);
 
             int len = (middleR>>decompLevel) -(rightEnd >> decompLevel);
+            len = (len >> 1);
 
 
 
@@ -216,10 +217,9 @@ namespace EKG_Project.Modules.Waves
             if (len < 1)
                 return -1;
 
-            int qrsOnsetInd = dwt.SubVector(sectionStart, len).MinimumIndex() + sectionStart;
+            int qrsOnsetInd = dwt.SubVector(sectionStart+len, len).MinimumIndex() + sectionStart+len;
             double treshold = Math.Abs(dwt[qrsOnsetInd]) * _qrsOnsTresh;
-            Console.WriteLine("kurwa " + middleR);
-            Console.WriteLine("mac " + _currentECG.Count);
+
             if (dmiddleR >= _currentECG.Count)
                 dmiddleR = _currentECG.Count - 1;
             double Rval = _currentECG[(int)dmiddleR];
@@ -236,7 +236,7 @@ namespace EKG_Project.Modules.Waves
                 {
                     qrsOnsetInd--;
                 }
-                    
+
                 return  qrsOnsetInd + _offset;
             }
                 
