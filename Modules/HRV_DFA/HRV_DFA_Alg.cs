@@ -19,93 +19,95 @@ namespace EKG_Project.Modules.HRV_DFA
     {
         #region
         /// <summary>
-        /// Store input vector of RR Intervals
+        /// Method that initialize DFA analysis by setting box sizes and obtaining vector of fluctuations
         /// </summary>
+        /// <param name="dfaStep"> Interval of box size increase </param>
+        /// <param name="start"> The smallest box size</param>
+        /// <param name="stop"> The largest box size</param>
+        /// <param name="intervals"> Vector of RR intervals</param>
+        /// <returns> Tuple of vectors with log(n) and log(F(n))</returns>
         #endregion
-        private Vector<Double> _currentVector;
-        #region
-        /// <summary>
-        /// Store result values of log(n), where n is alternate box size
-        /// Item1 is for short range correlations and Item2 is for long range correlations
-        /// </summary>
-        #endregion
-        private Tuple<Vector<double>, Vector<double>> _resultN;
-        #region
-        /// <summary>
-        /// Store result values of log(F(n)), where F(n) is value of fluctuations in alternate box size
-        /// Item1 is for short range correlations and Item2 is for long range correlations
-        /// </summary>
-        #endregion
-        private Tuple<Vector<double>, Vector<double>> _resultFn;
-        #region
-        /// <summary>
-        /// Store result values of parameters alpha - alpha is coefficient of fluctuation
-        /// Item1 is for short range correlations and Item2 is for long range correlations
-        /// </summary>
-        #endregion
-        private Tuple<Vector<double>, Vector<double>> _resultAlpha;
-        #region
-        /// <summary>
-        /// Store result values of obtained fluctuations in whole range
-        /// Item1 is for log(n) and Item2 is for log(F(n))
-        /// </summary>
-        #endregion
-        private Tuple<Vector<double>, Vector<double>> _resultFluctuations;
-
-        public Vector<double> CurrentVector
+        public Tuple<Vector<double>, Vector<double>> ObtainFluctuations(int dfaStep, int start, int stop, Vector<double> intervals)
         {
-            get
-            {return _currentVector;}
-            set
-            {if (value == null) throw new ArgumentNullException();
-                _currentVector = value;}
+            double[] BoxRanged = Generate.LinearRange(start, dfaStep, stop);        // set of box sizes
+            Vector<double> boxSizeSet = Vector<double>.Build.DenseOfArray(BoxRanged);
+            Vector<double> vectorLogN = ConvertToLog(boxSizeSet);
+
+            Vector<double> vectorFn0 = ComputeDfaFluctuation(intervals, BoxRanged);
+            Vector<double> vFn = RemoveZeros(vectorFn0);
+            Vector<double> vectorLogFn = ConvertToLog(vFn);
+            Vector<double> vectorLogn = vectorLogN.SubVector(0, vFn.Count());
+
+            Tuple<Vector<double>, Vector<double>> resultFluctuations = new Tuple<Vector<double>, Vector<double>>(vectorLogn, vectorLogFn);
+            return resultFluctuations;
+        }
+      
+        #region
+        /// <summary>
+        /// Method that performs Detrended Fluctuation Analysis with given intervals and array of box sizes
+        /// </summary>
+        /// <param name="intervals">Vector of input RR Intervals</param>
+        /// <param name="BoxValues">Array of increasing box length</param>
+        /// <returns>Vector of computed fluctuations F(n)</returns>
+        #endregion
+        public Vector<double> ComputeDfaFluctuation(Vector<double> intervals, double[] BoxValues )
+        {
+            Vector<double> fluctuations = Vector<double>.Build.Dense(BoxValues.Count());
+
+            int box_length = BoxValues.Count();    // number of all boxes
+            int sig_length = intervals.Count();    // signal length
+            
+            for (int i = 0; i < box_length - 1; i++)
+            {
+                double boxVal = BoxValues[i];
+                int boxValint = Convert.ToInt32(boxVal);
+                int nWin = sig_length / boxValint;
+                int winCount = nWin * Convert.ToInt32(boxVal);
+
+                if (boxValint > sig_length)
+                {
+                    fluctuations[i] = 0;
+                }
+                else
+                {
+                    Vector<double> yk = IntegrateDfa(intervals.SubVector(0, winCount));
+                    Vector<double> yn = Vector<double>.Build.Dense(winCount, 1);
+
+                    for (int j = 0; j < nWin - 1; j++)
+                    {
+                        // Least-Square Fitting
+                        int ykIndex = (j+1) * boxValint;
+            
+                        double[] xx = Generate.LinearRange(1, 1, boxValint);
+                        Vector<double> x = Vector<double>.Build.DenseOfArray(xx);
+                        Vector<double> y = yk.SubVector(ykIndex, boxValint);
+
+                        // Line function                                    
+                        Tuple<double[], Vector<double>> localTrend = LinearSquare(x, y);
+                        yn = localTrend.Item2;
+
+                        // dfa fluctuation function F(n)
+                        fluctuations[i] = ComputeInBox(y, yn, sig_length);
+                    }
+                }
+            }
+            return fluctuations;
         }
 
         #region
         /// <summary>
-        /// Main method of HRV_DFA_Alg that performs main computations and sets DFA parameters
+        /// Method that performs linear-least-square fitting with fiven fluctuations
         /// </summary>
-        /// <param name="sig"> Input vector of RR Intervals </param>
+        /// <param name="fluctuations">Tuple of result vectors from fluctuations obtaining</param>
+        /// <param name="longCorrelations"> Boolean value that is connected with intervals length </param>
+        /// <returns>Parameters of Analysis </returns>
         #endregion
-        public HRV_DFA_Alg(Vector<double> sig)
-         {
-            CurrentVector = sig;
+        public List<Tuple<Vector<double>, Vector<double>>> HRV_DFA_Analysis(Tuple<Vector<double>, Vector<double>> fluctuations, bool longCorrelations)
+        {
 
-            bool longCorrelations;
-            int dfastep;
-            int start;
-            int stop;
-            if (sig.Count() > 60000)
-            {
-                longCorrelations = true;
-                dfastep = 100;
-                start = 500;
-                stop = 50000; 
-            }
-            else if (sig.Count() > 2750 && sig.Count() < 60000)
-            {
-                longCorrelations = true;
-                dfastep = 50;
-                start = 500;
-                stop = 5000;
-            }
-            else
-            {
-                longCorrelations = false;
-                dfastep = 50;
-                start = 500;
-                stop = 5000;
-            }
+            Vector<double> vectorLogn = fluctuations.Item1;
+            Vector<double> vectorLogFn = fluctuations.Item2;
 
-             double[] BoxRanged = Generate.LinearRange(start, dfastep, stop);        // set of box sizes
-             Vector<double> boxSizeSet = Vector<double>.Build.DenseOfArray(BoxRanged);
-             Vector<double> vectorLogN = ConvertToLog(boxSizeSet);
-
-             Vector<double> vectorFn0 = ComputeDfaFluctuation(sig, BoxRanged);
-             Vector<double> vFn = RemoveZeros(vectorFn0);
-             Vector<double> vectorLogFn = ConvertToLog(vFn);
-             Vector<double> vectorLogn = vectorLogN.SubVector(0, vFn.Count());
-             
             // vectors init
             Vector<double> ln1 = Vector<double>.Build.Dense(vectorLogn.Count);
             Vector<double> lFn1 = Vector<double>.Build.Dense(vectorLogFn.Count);
@@ -153,59 +155,12 @@ namespace EKG_Project.Modules.HRV_DFA
             Tuple<Vector<double>, Vector<double>> resultN = new Tuple<Vector<double>, Vector<double>>(ln1, ln2);
             Tuple<Vector<double>, Vector<double>> resultFn = new Tuple<Vector<double>, Vector<double>>(lineShortRange, lineLongRange);
             Tuple<Vector<double>, Vector<double>> resultAlpha = new Tuple<Vector<double>, Vector<double>>(p1, p2);
-            Tuple<Vector<double>, Vector<double>> resultFluctuations = new Tuple<Vector<double>, Vector<double>>(vectorLogn, vectorLogFn);
 
-        }
-        #region
-        /// <summary>
-        /// Method that performs Detrended Fluctuation Analysis with given intervals and array of box sizes
-        /// </summary>
-        /// <param name="intervals">Vector of input RR Intervals</param>
-        /// <param name="BoxValues">Array of increasing box length</param>
-        /// <returns>Vector of computed fluctuations</returns>
-        #endregion
-        public Vector<double> ComputeDfaFluctuation(Vector<double> intervals, double[] BoxValues )
-        {
-            Vector<double> fluctuations = Vector<double>.Build.Dense(BoxValues.Count());
-
-            int box_length = BoxValues.Count();    // number of all boxes
-            int sig_length = intervals.Count();    // signal length
-            
-            for (int i = 0; i < box_length - 1; i++)
-            {
-                double boxVal = BoxValues[i];
-                int boxValint = Convert.ToInt32(boxVal);
-                int nWin = sig_length / boxValint;
-                int winCount = nWin * Convert.ToInt32(boxVal);
-
-                if (boxValint > sig_length)
-                {
-                    fluctuations[i] = 0;
-                }
-                else
-                {
-                    Vector<double> yk = IntegrateDfa(intervals.SubVector(0, winCount));
-                    Vector<double> yn = Vector<double>.Build.Dense(winCount, 1);
-
-                    for (int j = 0; j < nWin - 1; j++)
-                    {
-                        // Least-Square Fitting
-                        int ykIndex = (j+1) * boxValint;
-            
-                        double[] xx = Generate.LinearRange(1, 1, boxValint);
-                        Vector<double> x = Vector<double>.Build.DenseOfArray(xx);
-                        Vector<double> y = yk.SubVector(ykIndex, boxValint);
-
-                        // Line function                                    
-                        Tuple<double[], Vector<double>> localTrend = LinearSquare(x, y);
-                        yn = localTrend.Item2;
-
-                        // dfa fluctuation function F(n)
-                        fluctuations[i] = ComputeInBox(y, yn, sig_length);
-                    }
-                }
-            }
-            return fluctuations;
+            List<Tuple<Vector<double>, Vector<double>>> output = new List<Tuple<Vector<double>, Vector<double>>>();
+            output.Add(resultN);
+            output.Add(resultFn);
+            output.Add(resultAlpha);
+            return output;
         }
 
         #region
@@ -319,6 +274,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
             return output;
         }
+
         #region
         /// <summary>
         /// Method that removes zeros from Vector with zeros at the end 
@@ -345,39 +301,86 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> vectorOut = input.SubVector(0, counter);
             return vectorOut;
         }
-
-        public Tuple<Vector<double>, Vector<double>> ResultN
+        #region
+        /// <summary>
+        /// V.1
+        /// Method that merges two vectos into one where vector 2 is putted behind vector1
+        /// </summary>
+        /// <param name="vector1"> First vector</param>
+        /// <param name="vector2"> Secound vector</param>
+        /// <returns> Merged vector consisted of values of vector1 and vector2 </returns>
+        #endregion
+        public Vector<double> CombineVectors(Vector<double> vector1, Vector<double> vector2)
         {
-            get
-            { return _resultN; }
-            set
-            { _resultN = value; }
+            Vector<double> output = Vector<double>.Build.Dense(vector1.Count + vector2.Count);
+            for (int i = 0; i < vector1.Count; i++)
+            {
+                output[i] = vector1[i];
+            }
+            for (int i = vector1.Count; i < output.Count; i++)
+            {
+                output[i] = vector2[i - vector1.Count];
+            }
+
+            return output;
         }
 
-        public Tuple<Vector<double>, Vector<double>> ResultFn
+        #region
+        /// <summary>
+        /// V.2
+        /// Method that adds double value between two vectors and merge into one vector
+        /// </summary>
+        /// <param name="vector1"> First vector</param>
+        /// <param name="a"> Double value</param>
+        /// <param name="vector2"> Secound vector</param>
+        /// <returns> Merged vector consisted of values from vector1, double and vector2</returns>
+        #endregion
+        public Vector<double> CombineVectors(Vector<double> vector1, double a, Vector<double> vector2)
         {
-            get
-            { return _resultFn; }
+            Vector<double> output = Vector<double>.Build.Dense(vector1.Count + vector2.Count + 1);
+            for (int i = 0; i < vector1.Count; i++)
+            {
+                output[i] = vector1[i];
+            }
+            output[vector1.Count] = a;
+            for (int i = vector1.Count + 1; i < output.Count; i++)
+            {
+                output[i] = vector2[i - vector1.Count - 1];
+            }
 
-            set
-            { _resultFn = value; }
+            return output;
         }
 
-        public Tuple<Vector<double>, Vector<double>> ResultAlpha
+        #region
+        /// <summary>
+        /// Method that interpolates RR intervals value in case of failure R peaks detection
+        /// </summary>
+        /// <param name="input"> RR Intervals</param>
+        /// <returns>Interpolated intervals</returns>
+        #endregion
+        public Vector<double> Interpolate(Vector<double> input)
         {
-            get
-            { return _resultAlpha; }
-            set
-            { _resultAlpha = value; }
+            Vector<double> output = Vector<double>.Build.Dense(input.Count);
+            double avg = input.Average();
+            for (int i = 0; i < input.Count; i++)
+            {
+                if (input[i] > 2 * avg)
+                {
+                    double newValue = (input[i - 1] + input[i + 1]) / 2;
+                    Vector<double> v1 = input.SubVector(0, i - 1);
+                    Vector<double> v2 = input.SubVector(i + 1, input.Count - i - 1);
+                    output = CombineVectors(v1, newValue, v2);
+                }
+                else if (input[i] < 0.5 * avg)
+                {
+                    Vector<double> v1 = input.SubVector(0, i - 1);
+                    Vector<double> v2 = input.SubVector(i, input.Count - i);
+                    output = CombineVectors(v1, v2);
+                }
+            }
+            return output;
         }
 
-        public Tuple<Vector<double>, Vector<double>> ResultFluctuations
-        {
-            get
-            { return _resultFluctuations; }
-            set
-            { _resultFluctuations = value; }
-        }
         /*
        static void Main(string[] args)
        {

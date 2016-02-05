@@ -9,6 +9,48 @@ namespace EKG_Unit.Modules.HRV_DFA
     [TestClass]
     public class HRV_DFA_Alg_Test
     {
+
+        [TestMethod]
+        public void CombineVectors_VectorsSizeTest()
+        {
+            double[] a1 = { 1, 2, 3, 4, 5 };
+            double[] a2 = { 6, 7, 8 };
+            double[] a3 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            Vector<double> v2 = Vector<double>.Build.DenseOfArray(a2);
+            Vector<double> testv = Vector<double>.Build.DenseOfArray(a3);
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.CombineVectors(v1, v2);
+            Assert.AreEqual(testv, result);
+        }
+        [TestMethod]
+        public void CombineVectors_VectorsSizeTest2()
+        {
+            double[] a1 = { 1, 2, 3, 4, 5 };
+            double[] a2 = { 6, 7, 8 };
+            double a = 9;
+            double[] a3 = { 1, 2, 3, 4, 5, 9, 6, 7, 8 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            Vector<double> v2 = Vector<double>.Build.DenseOfArray(a2);
+            Vector<double> testv = Vector<double>.Build.DenseOfArray(a3);
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.CombineVectors(v1,a, v2);
+            Assert.AreEqual(testv, result);
+        }
+        [TestMethod]
+        public void CombineVectors_VectorsSizeTest3()
+        {
+            double[] a1 = { 1, 2, 3, 4, 5 };
+            double[] a2 = { 6, 7, 8 };
+            double[] a3 = { 1, 2, 3, 4, 6, 7, 8 };
+            Vector<double> v01 = Vector<double>.Build.DenseOfArray(a1);
+            Vector<double> v2 = Vector<double>.Build.DenseOfArray(a2);
+            Vector<double> v1 = v01.SubVector(0, 4);
+            Vector<double> testv = Vector<double>.Build.DenseOfArray(a3);
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.CombineVectors(v1, v2);
+            Assert.AreEqual(testv, result);
+        }
         //Testing main methods
         //ComputeDfaFluctuation
         [TestMethod]

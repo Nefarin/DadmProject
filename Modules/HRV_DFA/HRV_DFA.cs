@@ -14,25 +14,24 @@ namespace EKG_Project.Modules.HRV_DFA
     
     public class HRV_DFA : IModule
     {
-        private enum STATE { INIT, BEGIN_CHANNEL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
+        private enum STATE { INIT, BEST_LEAD, INTERPOLATE, FAST_PROCESS, CALCULATE_FLUCTUATIONS, LINSQ_APPROX, END };
         private bool _ended;
         private bool _aborted;
 
         private int _currentChannelIndex;
         private int _currentRpeaksLength;
         private int _rPeaksProcessed;
+        private int _numberOfLead;
         private int _numberOfChannels;
         private string _currentLeadName;
+        private string _bestLeadName;
         private string[] _leads;
+
         private int _currentIndex;
         private int _currentChannelLength;
-        
+        private int _currentVectorLength;
 
-        private Basic_New_Data_Worker _inputBasicWorker;
-        private Basic_New_Data_Worker _outputBasicWorker;
-
-        private Basic_New_Data _outputBasicData;
-        private Basic_New_Data _inputBasicData;
+        private Basic_New_Data_Worker _basicWorker;
 
         private R_Peaks_New_Data_Worker _inputWorker;
         private R_Peaks_Data _inputData;
@@ -43,12 +42,21 @@ namespace EKG_Project.Modules.HRV_DFA
         private HRV_DFA_Params _params;
         private HRV_DFA_Alg _alg;
         private Vector<Double> _currentVector;
+        private Vector<Double> _currentRRVector;
+        private Vector<Double> _currentResults;
+        private Vector<Double> _fluctuations;
+        private Vector<Double> _logn;
         private STATE _state;
-
+        
+       // private List<Vector<double>> _cFlucts;
         private Tuple< Vector<double>, Vector<double>> _currentnumberN;
         private Tuple< Vector<double>, Vector<double>> _currentfnValue;
         private Tuple< Vector<double>, Vector<double>> _currentparamsAlpha;
         private Tuple< Vector<double>, Vector<double>> _currentflucts;
+
+        private int dfaStep;
+        private int start;
+        private int stop;
 
         public void Abort()
         {
@@ -85,8 +93,9 @@ namespace EKG_Project.Modules.HRV_DFA
             }
             else
             {
-                InputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName);
-                OutputWorker = new HRV_DFA_New_Data_Worker(Params.AnalysisName + "temp"); // tutaj generalnie uzywacie swojego workera jako wyjsciowy, dla uproszczenia uzywam gotowego o innej nazwie
+                BasicWorker = new Basic_New_Data_Worker(Params.AnalysisName + "temp");
+                InputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName + "temp");
+                OutputWorker = new HRV_DFA_New_Data_Worker(Params.AnalysisName + "temp"); 
                 InputData = new R_Peaks_Data();
                 OutputData = new HRV_DFA_Data();
                 _state = STATE.INIT;
@@ -101,7 +110,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_rPeaksProcessed / (double)_currentRpeaksLength));
+            return 100.0 * (1.0 + 1.0  * ((double)_rPeaksProcessed / (double)_currentRpeaksLength));
         }
 
         public bool Runnable()
@@ -111,176 +120,122 @@ namespace EKG_Project.Modules.HRV_DFA
 
         private void processData()
         {
-            int step = 10000;
+
             switch (_state)
             {
                 case (STATE.INIT):
-                    _currentChannelIndex = -1;
-                    _leads = InputBasicWorker.LoadLeads().ToArray();
-                    _numberOfChannels = _leads.Length;
-                    _state = STATE.BEGIN_CHANNEL;
+                    _alg = new HRV_DFA_Alg();
+                    _leads = BasicWorker.LoadLeads().ToArray();
+                    _numberOfLead = _leads.Count();
+                    
+                    _state = STATE.BEST_LEAD;
                     //_inputWorker.DeleteFiles(); Do not use yet - will try to handle this during loading.
                     break;
-                case (STATE.BEGIN_CHANNEL):
-                    _currentChannelIndex++;
-                    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END;
+                case (STATE.BEST_LEAD):
+                    Vector<int> lengths = Vector<int>.Build.Dense(_numberOfLead);
+
+                    for (int i = 0; i < _numberOfLead; i++)
+                    {
+                        _currentLeadName = _leads[i];
+                        _currentRpeaksLength = (int)InputWorker.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _currentLeadName);
+                        lengths[i] = _currentRpeaksLength;
+                    }
+                    int longestLeadIndex = lengths.AbsoluteMaximumIndex();
+                    _bestLeadName = _leads[longestLeadIndex];
+                    _currentRpeaksLength = (int)InputWorker.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _bestLeadName);
+                    
+                    _currentRRVector = InputWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _bestLeadName, 0, _currentRpeaksLength);
+                    _state = STATE.INTERPOLATE;
+                    break; //done
+
+                case (STATE.INTERPOLATE):
+
+                    _currentVector = _alg.Interpolate(_currentRRVector);
+                    _currentVectorLength = _currentVector.Count;
+
+                    if (_currentVectorLength < 20)
+                    {
+                        _aborted = true;
+                    }
+                    else if(_currentVectorLength > 20 && _currentVectorLength < 2750)
+                    {
+                        _state = STATE.FAST_PROCESS;
+                    }
                     else
                     {
-                        _currentLeadName = _leads[_currentChannelIndex];
-                        CurrentChannelLength = (int)InputWorker.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _currentLeadName);
                         _currentIndex = 0;
-                        _state = STATE.PROCESS_FIRST_STEP;
+                        _state = STATE.CALCULATE_FLUCTUATIONS;
                     }
-                    break;
-                case (STATE.PROCESS_FIRST_STEP):
-                    if (_currentIndex + step > CurrentChannelLength) _state = STATE.END_CHANNEL;
+                    break; //done
+                case (STATE.CALCULATE_FLUCTUATIONS):
+                    int step = 2750;
+
+                    dfaStep = 100;
+                    start = 500;
+                    stop = 50000;
+
+                    if (_currentIndex + step < _currentVectorLength)
+                    {
+                        _currentVector = _currentVector.SubVector(_currentIndex, step);
+                       
+                        Tuple<Vector<double>, Vector<double>> _currentFlucts = _alg.ObtainFluctuations(dfaStep, start, stop, _currentVector);
+                        _currentResults = _currentFlucts.Item2;
+                        _fluctuations = _alg.CombineVectors(_fluctuations, _currentResults);
+                        _logn = _alg.CombineVectors(_logn, _currentFlucts.Item1);
+
+                        _rPeaksProcessed = _currentIndex + step;
+                        _currentIndex += step;
+                        _state = STATE.CALCULATE_FLUCTUATIONS;
+                    }
                     else
                     {
-                        try
-                        {
-                            _currentVector = InputWorker.LoadSignal(R_Peaks_Attributes.RRInterval , _currentLeadName, _currentIndex, _currentChannelLength);
-                            _alg = new HRV_DFA_Alg(_currentVector);
-                            _currentnumberN = _alg.ResultN;
-                            _currentfnValue = _alg.ResultFn;
-                            _currentparamsAlpha = _alg.ResultAlpha;
-                            _currentflucts = _alg.ResultFluctuations;
-                            OutputWorker.SaveSignal(HRV_DFA_Signals.DfaNumberN,_currentLeadName, false, _currentnumberN);
-                            OutputWorker.SaveSignal(HRV_DFA_Signals.DfaNumberN, _currentLeadName, false, _currentfnValue);
-                            OutputWorker.SaveSignal(HRV_DFA_Signals.Fluctuations, _currentLeadName, false, _currentflucts);
-                            OutputWorker.SaveSignal(HRV_DFA_Signals.ParamAlpha, _currentLeadName, false, _currentparamsAlpha);
-                            _currentIndex += step;
-                            _state = STATE.PROCESS_CHANNEL;
-                        }
-                        catch (Exception e)
-                        {
-                            _state = STATE.NEXT_CHANNEL;
-                        }
-                    }
-                    break;
-                case (STATE.PROCESS_CHANNEL): // this state can be divided to load state, process state and save state, good decision especially for ECG_Baseline, R_Peaks, Waves and Heart_Class
-                    if (_currentIndex + step > CurrentChannelLength) _state = STATE.END_CHANNEL;
-                    else
-                    {
-                        try
-                        {
-                            _currentVector = InputWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, _currentIndex, step);
-                            _alg = new HRV_DFA_Alg(_currentVector); // its possible to create just one instance somewhere in the Init - your choice
-                            _currentnumberN = _alg.ResultN;
-                            _currentfnValue = _alg.ResultFn;
-                            _currentparamsAlpha = _alg.ResultAlpha;
-                            _currentflucts = _alg.ResultFluctuations;
-                            OutputWorker.SaveSignal(HRV_DFA_Signals.DfaNumberN, _currentLeadName, true, _currentnumberN);
-                            OutputWorker.SaveSignal(HRV_DFA_Signals.DfaNumberN, _currentLeadName, true, _currentfnValue);
-                            OutputWorker.SaveSignal(HRV_DFA_Signals.Fluctuations, _currentLeadName, true, _currentflucts);
-                            OutputWorker.SaveSignal(HRV_DFA_Signals.ParamAlpha, _currentLeadName, true, _currentparamsAlpha);
-                            _currentIndex += step;
-                            _state = STATE.PROCESS_CHANNEL;
-                        }
-                        catch (Exception e)
-                        {
-                            _state = STATE.NEXT_CHANNEL;
-                        }
+                        _currentVector = _currentVector.SubVector(_currentIndex, _currentVectorLength - _currentIndex);
+                        Tuple<Vector<double>, Vector<double>> _currentres = _alg.ObtainFluctuations(dfaStep, start, stop, _currentVector);
+                        _currentResults = _currentres.Item2;
+                        _fluctuations = _alg.CombineVectors(_fluctuations, _currentResults);
+                        _logn = _alg.CombineVectors(_logn, _currentres.Item1);
+                        _rPeaksProcessed = _currentVectorLength;
                     }
 
-                    break;
-                case (STATE.END_CHANNEL):
-                    try
-                    {
-                        _currentVector = InputWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, _currentIndex, CurrentChannelLength - _currentIndex);
-                        _alg = new HRV_DFA_Alg(_currentVector); // its possible to create just one instance somewhere in the Init - your choice
-                        _currentnumberN = _alg.ResultN;
-                        _currentfnValue = _alg.ResultFn;
-                        _currentparamsAlpha = _alg.ResultAlpha;
-                        _currentflucts = _alg.ResultFluctuations;
-                        OutputWorker.SaveSignal(HRV_DFA_Signals.DfaNumberN, _currentLeadName, true, _currentnumberN);
-                        OutputWorker.SaveSignal(HRV_DFA_Signals.DfaNumberN, _currentLeadName, true, _currentfnValue);
-                        OutputWorker.SaveSignal(HRV_DFA_Signals.Fluctuations, _currentLeadName, true, _currentflucts);
-                        OutputWorker.SaveSignal(HRV_DFA_Signals.ParamAlpha, _currentLeadName, true, _currentparamsAlpha);
-                        _state = STATE.NEXT_CHANNEL;
-                    }
-                    catch (Exception e)
-                    {
-                        _state = STATE.NEXT_CHANNEL;
-                    }
-                    break;
-                case (STATE.NEXT_CHANNEL):
-                    _state = STATE.BEGIN_CHANNEL;
-                    break;
+                    _currentflucts = new Tuple<Vector<double>, Vector<double>>(_logn,_fluctuations);
+                    OutputWorker.SaveSignal(HRV_DFA_Signals.Fluctuations, _bestLeadName, true, _currentflucts);
+
+                    _state = STATE.LINSQ_APPROX;
+                    break; //done
+
+                case (STATE.LINSQ_APPROX):
+                    List<Tuple<Vector<double>, Vector<double>>> results = _alg.HRV_DFA_Analysis(_currentflucts, true);
+                    OutputWorker.SaveSignal(HRV_DFA_Signals.DfaNumberN, _bestLeadName, true, results[0]);
+                    OutputWorker.SaveSignal(HRV_DFA_Signals.DfaValueFn, _bestLeadName, true, results[1]);
+                    OutputWorker.SaveSignal(HRV_DFA_Signals.ParamAlpha, _bestLeadName, true, results[2]);
+
+                    _state = STATE.END;
+                    break; //done
+
+                case (STATE.FAST_PROCESS):
+
+                    dfaStep = 50;
+                    start = 500;
+                    stop = 5000;
+                    Tuple<Vector<double>, Vector<double>> _currentFlucts1 = _alg.ObtainFluctuations(dfaStep, start, stop, _currentVector);
+                    List<Tuple<Vector<double>, Vector<double>>> results1 = _alg.HRV_DFA_Analysis(_currentFlucts1, false);
+                    OutputWorker.SaveSignal(HRV_DFA_Signals.DfaNumberN, _bestLeadName, true, results1[0]);
+                    OutputWorker.SaveSignal(HRV_DFA_Signals.DfaValueFn, _bestLeadName, true, results1[1]);
+                    OutputWorker.SaveSignal(HRV_DFA_Signals.ParamAlpha, _bestLeadName, true, results1[2]);
+                    OutputWorker.SaveSignal(HRV_DFA_Signals.Fluctuations, _bestLeadName, true, _currentFlucts1);
+
+                    _state = STATE.END;
+                    break; //done 
+
                 case (STATE.END):
+
                     _ended = true;
                     break;
+
                 default:
                     Abort();
                     break;
             }
-            //int channel = _currentChannelIndex;
-            //int startIndex = _rPeaksProcessed;
-            //int step = 10000;
-
-            //if (channel < NumberOfChannels)
-            //{
-            //    Console.WriteLine("Len: " +_currentRpeaksLength);
-            //    if (_currentRpeaksLength > 20 && _currentRpeaksLength < 1000)
-            //    {
-            //        this.boxVal = 100;
-            //        this.startValue = 10;
-            //        this.stepVal = 10;
-            //        this.longCorrelations = false;
-            //    }
-            //    if (_currentRpeaksLength > 1000)
-            //    {
-            //        this.boxVal = 1000;
-            //        this.startValue = 50;
-            //        this.stepVal = 100;
-            //        this.longCorrelations = true;
-            //    }
-            //    if (_currentRpeaksLength < 20)
-            //    {
-            //        Console.WriteLine("Number of R - Peaks is too short");
-            //        _aborted = true;
-            //    }
-
-            //    if (startIndex + step > _currentRpeaksLength && _aborted != true)
-            //    {
-
-            //            HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
-            //            Tuple<string, Vector<double>, Vector<double>> numberN = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogn1, veclogn2);
-            //            Tuple<string, Vector<double>, Vector<double>> fnValue = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, veclogFn1, veclogFn2);
-            //            Tuple<string, Vector<double>, Vector<double>> pAlpha = new Tuple<string, Vector<double>, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, vecparam1, vecparam2);
-            //            OutputData.DfaNumberN.Add(numberN);
-            //            OutputData.DfaValueFn.Add(fnValue);
-            //            OutputData.ParamAlpha.Add(pAlpha);
-
-
-            //        _currentChannelIndex++;
-
-            //        if (_currentChannelIndex < NumberOfChannels)
-            //        {
-            //            _rPeaksProcessed = 0;
-
-            //            _currentRpeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
-            //            _currentVector = Vector<double>.Build.Dense(_currentRpeaksLength);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (_aborted != true)
-            //        {
-            //            HRV_DFA_Analysis(InputData.RRInterval[_currentChannelIndex].Item2, stepVal, boxVal);
-            //            _currentVector = InputData.RRInterval[_currentChannelIndex].Item2.SubVector(0, stepVal);
-            //            _rPeaksProcessed = startIndex + stepVal;
-            //        }
-            //        else _ended = true;
-
-            //    }
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Here");
-            //    OutputWorker.Save(OutputData);
-            //    _ended = true;
-            //}
-
         }
 
         public bool Aborted
@@ -312,71 +267,6 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public R_Peaks_Data InputData
         { get { return _inputData; } set{ _inputData = value;} }
-
-        public Basic_New_Data_Worker InputBasicWorker
-        {
-            get
-            {
-                return _inputBasicWorker;
-            }
-
-            set
-            {
-                _inputBasicWorker = value;
-            }
-        }
-
-        public Basic_New_Data_Worker OutputBasicWorker
-        {
-            get
-            {
-                return _outputBasicWorker;
-            }
-
-            set
-            {
-                _outputBasicWorker = value;
-            }
-        }
-
-        public Basic_New_Data OutputBasicData
-        {
-            get
-            {
-                return _outputBasicData;
-            }
-
-            set
-            {
-                _outputBasicData = value;
-            }
-        }
-
-        public Basic_New_Data InputBasicData
-        {
-            get
-            {
-                return _inputBasicData;
-            }
-
-            set
-            {
-                _inputBasicData = value;
-            }
-        }
-
-        public int CurrentChannelLength
-        {
-            get
-            {
-                return _currentChannelLength;
-            }
-
-            set
-            {
-                _currentChannelLength = value;
-            }
-        }
 
         public Tuple<Vector<double>, Vector<double>> CurrentnumberN
         {
@@ -430,9 +320,24 @@ namespace EKG_Project.Modules.HRV_DFA
             }
         }
 
+        public Basic_New_Data_Worker BasicWorker
+        {
+            get
+            {
+                return _basicWorker;
+            }
+
+            set
+            {
+                _basicWorker = value;
+            }
+        }
+
+    
+
         public static void Main()
         {
-            HRV_DFA_Params param = new HRV_DFA_Params("Analysisnsr");
+            HRV_DFA_Params param = new HRV_DFA_Params("Analysis1ps_R_Peaks_New_V1_RRInterval");
             HRV_DFA testModule = new HRV_DFA();
 
             testModule.Init(param);
