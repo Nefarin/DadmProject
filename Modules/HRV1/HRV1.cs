@@ -11,8 +11,6 @@ namespace EKG_Project.Modules.HRV1
 {
     public class HRV1 : IModule
     {
-        private HRV1_Data _outputData;
-        private R_Peaks_Data _inputData;
         public HRV1_Data OutputData;
         public R_Peaks_Data InputData;
 
@@ -22,9 +20,8 @@ namespace EKG_Project.Modules.HRV1
         private bool _aborted;
         public bool Aborted;
 
-        public R_Peaks_Data_Worker InputWorker;
-        public HRV1_Data_Worker OutputWorker;
-
+        public IO.R_Peaks_New_Data_Worker InputWorker;
+        public IO.HRV1_New_Data_Worker OutputWorker;
 
         public void Abort()
         {
@@ -44,40 +41,72 @@ namespace EKG_Project.Modules.HRV1
 
         public void Init(ModuleParams parameters)
         {
-            //Params = parameters as HRV1_Params;
-            //OutputData = new HRV1_Data();
-            //Aborted = false;
-            //if (!Runnable()) _ended = true;
-            //else
-            //{
-            //    _ended = false;
-            //    InputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-            //    InputWorker.Load();
-            //    InputData = InputWorker.Data;
+            Params = parameters as HRV1_Params;
+            OutputData = new HRV1_Data();
+            Aborted = false;
+            if (!Runnable()) _ended = true;
+            else
+            {
+                _ended = false;
+                InputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName);
 
-            //    OutputWorker = new HRV1_Data_Worker(Params.AnalysisName);
-            //    OutputData = new HRV1_Data();
-            //}
+                OutputWorker = new HRV1_New_Data_Worker(Params.AnalysisName);
+                OutputData = new HRV1_Data();
+            }
         }
 
-        public void ProcessData()
+        public void ProcessData() { this.processData(); }
+
+        private void processData()
         {
-            //if (Runnable())
-            //{
-            //    var instants = InputData.RPeaks[1].Item2;
-            //    var intervals = InputData.RRInterval[1].Item2;
-            //    calculateTimeBased();
-            //    calculateFreqBased();
-            //    var tparams = Vector<double>.Build.Dense(new double[] {HF, LF, VLF, LFHF });
-            //    var fparams = Vector<double>.Build.Dense(new double[] { SDNN, RMSSD, SDSD, NN50, pNN50 });
+            if (Runnable())
+            {
+                // Init
+                var basicWorker = new IO.Basic_New_Data_Worker(Params.AnalysisName);
+                var leads = basicWorker.LoadLeads().ToArray();
 
-            //    OutputData.TimeBasedParams.Add(new Tuple<string, Vector<double>>(" ", tparams));
-            //    OutputData.FreqBasedParams.Add(new Tuple<string, Vector<double>>(" ", fparams));
+                string lead = leads[0];
+                int startindex = 0;
+                uint peaksLength = InputWorker.getNumberOfSamples(IO.R_Peaks_Attributes.RPeaks, lead);
+                uint intervalsLength = InputWorker.getNumberOfSamples(IO.R_Peaks_Attributes.RRInterval, lead);
 
-            //    OutputData.RInstants.Add(new Tuple<string, Vector<double>>(" ", instants));
-            //    OutputData.RRIntervals.Add(new Tuple<string, Vector<double>>(" ", intervals));
-            //}
-            //else _ended = true;
+                // pytanie co jezeli wektory peaks i intervals nie koresponduja?
+                var instants = InputWorker.LoadSignal(IO.R_Peaks_Attributes.RPeaks, lead, startindex, (int)peaksLength-1);
+                var intervals = InputWorker.LoadSignal(IO.R_Peaks_Attributes.RRInterval, lead, startindex, (int)intervalsLength-1);
+                
+                var algo = new HRV1_Alg();
+
+                algo.rInstants = instants;
+                algo.rrIntervals = intervals;
+
+                algo.CalculateTimeBased();
+                algo.CalculateFreqBased();
+
+                List<Tuple<string, double>> tparams = algo.TimeParams;
+                List<Tuple<string, double>> fparams = algo.FreqParams;
+                List<Tuple<string, Vector<double>>> psd = algo.PowerSpectrum;
+
+                OutputData.TimeBasedParams = tparams;
+                OutputData.FreqBasedParams = fparams;
+                OutputData.PowerSpectrum = psd;
+
+                OutputWorker.SaveSignal(HRV1_Signal.FreqVector, lead, false, psd[0].Item2);
+                OutputWorker.SaveSignal(HRV1_Signal.PSD, lead, false, psd[1].Item2);
+
+                OutputWorker.SaveAttribute(HRV1_Attributes.AVNN, lead, tparams[0].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.SDNN, lead, tparams[1].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.RMSSD, lead, tparams[2].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.pNN50, lead, tparams[3].Item2);
+
+                OutputWorker.SaveAttribute(HRV1_Attributes.TP, lead, fparams[0].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.HF, lead, fparams[1].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.LF, lead, fparams[2].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.VLF, lead, fparams[3].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.LFHF, lead, fparams[4].Item2);
+
+                _ended = true;
+            }
+            else _ended = true;
         }
 
         public double Progress()
