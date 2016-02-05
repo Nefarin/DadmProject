@@ -37,13 +37,13 @@ namespace EKG_Project.Modules.Waves
             }
             else if (_params.WaveType == Wavelet_Type.db2)
             {
-                _qrsEndTresh = 2;
-                _qrsOnsTresh = 2;
+                _qrsEndTresh = 1.5;
+                _qrsOnsTresh = 3;
             }
             else
             {
-                _qrsEndTresh = 0.3;
-                _qrsOnsTresh = 0.3;
+                _qrsEndTresh = 3;
+                _qrsOnsTresh = 1.5;
             }
 
             DetectQRS( currentQRSonsetsPart,  currentQRSendsPart, currentECG,  currentRpeaks,  offset, frequency);
@@ -186,7 +186,7 @@ namespace EKG_Project.Modules.Waves
             int sectionStart = (rightEnd >> decompLevel);
 
             int len = (middleR >> decompLevel) - (rightEnd >> decompLevel);
-
+            len = (len >> 1);
             if (sectionStart < 0)
                 return -1;
 
@@ -196,7 +196,7 @@ namespace EKG_Project.Modules.Waves
             if (len < 1)
                 return -1;
 
-            int qrsOnsetInd = dwt.SubVector(sectionStart, len).MinimumIndex() + sectionStart;
+            int qrsOnsetInd = dwt.SubVector(sectionStart+len, len).MinimumIndex() + sectionStart+len;
             double treshold = Math.Abs(dwt[qrsOnsetInd]) * _qrsOnsTresh;
 
             if (dmiddleR >= currentECG.Count)
