@@ -360,22 +360,50 @@ namespace EKG_Project.Modules.HRV_DFA
         #endregion
         public Vector<double> Interpolate(Vector<double> input)
         {
-            Vector<double> output = Vector<double>.Build.Dense(input.Count);
-            double avg = input.Average();
-            for (int i = 0; i < input.Count; i++)
+            Vector<double> output = input;
+            double avg = 700;
+            
+            for (int i = 0; i < input.Count; i++ )
             {
                 if (input[i] > 2 * avg)
                 {
-                    double newValue = (input[i - 1] + input[i + 1]) / 2;
-                    Vector<double> v1 = input.SubVector(0, i - 1);
-                    Vector<double> v2 = input.SubVector(i + 1, input.Count - i - 1);
-                    output = CombineVectors(v1, newValue, v2);
+                    if(i == input.Count-1)
+                    {
+                        output[i] = input[i - 1];
+                    }
+                    else if(i == 0)
+                    {
+                        output[i] = input[i + 1];
+                    }
+                    else
+                    {
+                        double[] array = output.ToArray();
+                        int index = Array.IndexOf(array, input[i]);
+                        double newValue = (input[i - 1] + input[i + 1]) / 2;
+                        Vector<double> v1 = output.SubVector(0, index);
+                        Vector<double> v2 = output.SubVector(index + 1, output.Count - index - 1);
+                        output = CombineVectors(v1, newValue, v2);
+
+                    }
                 }
                 else if (input[i] < 0.5 * avg)
                 {
-                    Vector<double> v1 = input.SubVector(0, i - 1);
-                    Vector<double> v2 = input.SubVector(i, input.Count - i);
-                    output = CombineVectors(v1, v2);
+                    if (i == input.Count-1)
+                    {
+                        output[i] = input[i - 1];
+                    }
+                    else if (i == 0)
+                    {
+                        output = input.SubVector(1, input.Count - 1);
+                    }
+                    else
+                    {
+                        double[] array = output.ToArray();
+                        int index = Array.IndexOf(array, input[i]);
+                        Vector<double> v1 = output.SubVector(0, index);
+                        Vector<double> v2 = output.SubVector(index + 1, output.Count - index - 1);
+                        output = CombineVectors(v1, v2);
+                    }
                 }
             }
             return output;

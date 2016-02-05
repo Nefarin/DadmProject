@@ -18,17 +18,14 @@ namespace EKG_Project.Modules.HRV_DFA
         private bool _ended;
         private bool _aborted;
 
-        private int _currentChannelIndex;
         private int _currentRpeaksLength;
         private int _rPeaksProcessed;
         private int _numberOfLead;
-        private int _numberOfChannels;
         private string _currentLeadName;
-        private string _bestLeadName;
         private string[] _leads;
+        private string _bestLeadName;
 
         private int _currentIndex;
-        private int _currentChannelLength;
         private int _currentVectorLength;
 
         private Basic_New_Data_Worker _basicWorker;
@@ -41,19 +38,14 @@ namespace EKG_Project.Modules.HRV_DFA
 
         private HRV_DFA_Params _params;
         private HRV_DFA_Alg _alg;
+
+        private Tuple<Vector<double>, Vector<double>> _currentflucts;
         private Vector<Double> _currentVector;
         private Vector<Double> _currentRRVector;
         private Vector<Double> _currentResults;
         private Vector<Double> _fluctuations;
         private Vector<Double> _logn;
         private STATE _state;
-        
-       // private List<Vector<double>> _cFlucts;
-        private Tuple< Vector<double>, Vector<double>> _currentnumberN;
-        private Tuple< Vector<double>, Vector<double>> _currentfnValue;
-        private Tuple< Vector<double>, Vector<double>> _currentparamsAlpha;
-        private Tuple< Vector<double>, Vector<double>> _currentflucts;
-
         private int dfaStep;
         private int start;
         private int stop;
@@ -241,17 +233,11 @@ namespace EKG_Project.Modules.HRV_DFA
         public bool Aborted
         { get{ return _aborted; }set {_aborted = value;} }
 
-        public int CurrentChannelIndex
-        { get {return _currentChannelIndex;} set{ _currentChannelIndex = value;}}
-
         public int CurrentRpeaksLength
         { get{return _currentRpeaksLength;} set{ _currentRpeaksLength = value;}}
 
         public int RPeaksProcessed
         { get{return _rPeaksProcessed; } set { _rPeaksProcessed = value; }}
-
-        public int NumberOfChannels
-        {get{ return _numberOfChannels;}set {_numberOfChannels = value;} }
 
         public HRV_DFA_New_Data_Worker OutputWorker
         { get {return _outputWorker;}set { _outputWorker = value;}}
@@ -267,46 +253,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
         public R_Peaks_Data InputData
         { get { return _inputData; } set{ _inputData = value;} }
-
-        public Tuple<Vector<double>, Vector<double>> CurrentnumberN
-        {
-            get
-            {
-                return _currentnumberN;
-            }
-
-            set
-            {
-                _currentnumberN = value;
-            }
-        }
-
-        public Tuple<Vector<double>, Vector<double>> CurrentfnValue
-        {
-            get
-            {
-                return _currentfnValue;
-            }
-
-            set
-            {
-                _currentfnValue = value;
-            }
-        }
-
-        public Tuple<Vector<double>, Vector<double>> CurrentparamsAlpha
-        {
-            get
-            {
-                return _currentparamsAlpha;
-            }
-
-            set
-            {
-                _currentparamsAlpha = value;
-            }
-        }
-
+        
         public Tuple<Vector<double>, Vector<double>> Currentflucts
         {
             get

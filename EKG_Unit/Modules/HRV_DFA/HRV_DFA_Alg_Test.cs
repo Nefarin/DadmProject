@@ -9,49 +9,7 @@ namespace EKG_Unit.Modules.HRV_DFA
     [TestClass]
     public class HRV_DFA_Alg_Test
     {
-
-        [TestMethod]
-        public void CombineVectors_VectorsSizeTest()
-        {
-            double[] a1 = { 1, 2, 3, 4, 5 };
-            double[] a2 = { 6, 7, 8 };
-            double[] a3 = { 1, 2, 3, 4, 5, 6, 7, 8 };
-            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
-            Vector<double> v2 = Vector<double>.Build.DenseOfArray(a2);
-            Vector<double> testv = Vector<double>.Build.DenseOfArray(a3);
-            HRV_DFA_Alg test = new HRV_DFA_Alg();
-            Vector<double> result = test.CombineVectors(v1, v2);
-            Assert.AreEqual(testv, result);
-        }
-        [TestMethod]
-        public void CombineVectors_VectorsSizeTest2()
-        {
-            double[] a1 = { 1, 2, 3, 4, 5 };
-            double[] a2 = { 6, 7, 8 };
-            double a = 9;
-            double[] a3 = { 1, 2, 3, 4, 5, 9, 6, 7, 8 };
-            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
-            Vector<double> v2 = Vector<double>.Build.DenseOfArray(a2);
-            Vector<double> testv = Vector<double>.Build.DenseOfArray(a3);
-            HRV_DFA_Alg test = new HRV_DFA_Alg();
-            Vector<double> result = test.CombineVectors(v1,a, v2);
-            Assert.AreEqual(testv, result);
-        }
-        [TestMethod]
-        public void CombineVectors_VectorsSizeTest3()
-        {
-            double[] a1 = { 1, 2, 3, 4, 5 };
-            double[] a2 = { 6, 7, 8 };
-            double[] a3 = { 1, 2, 3, 4, 6, 7, 8 };
-            Vector<double> v01 = Vector<double>.Build.DenseOfArray(a1);
-            Vector<double> v2 = Vector<double>.Build.DenseOfArray(a2);
-            Vector<double> v1 = v01.SubVector(0, 4);
-            Vector<double> testv = Vector<double>.Build.DenseOfArray(a3);
-            HRV_DFA_Alg test = new HRV_DFA_Alg();
-            Vector<double> result = test.CombineVectors(v1, v2);
-            Assert.AreEqual(testv, result);
-        }
-        //Testing main methods
+        
         //ComputeDfaFluctuation
         [TestMethod]
         [Description("Test if not null is returned")]
@@ -254,7 +212,6 @@ namespace EKG_Unit.Modules.HRV_DFA
             Vector<double> testResult = test.RemoveZeros(testVector1);
             Assert.AreEqual(resultVc1, testResult);
         }
-
         [TestMethod]
         [Description("Test if empty input for RemoveZeros - NullExpection")]
         [ExpectedException(typeof(ArgumentNullException), "Null given as parameter")]
@@ -264,7 +221,6 @@ namespace EKG_Unit.Modules.HRV_DFA
             HRV_DFA_Alg test = new HRV_DFA_Alg();
             Vector<double> testResult = test.RemoveZeros(testVector2);
         }
-
         [TestMethod]
         [Description("Test if Remove zeros returns null when only zeros in Vector")]
         [ExpectedException(typeof(ArgumentOutOfRangeException), "Null given as parameter")]
@@ -274,6 +230,194 @@ namespace EKG_Unit.Modules.HRV_DFA
             Vector<double> testVector3 = Vector<double>.Build.DenseOfArray(testArray);
             HRV_DFA_Alg test = new HRV_DFA_Alg();
             Vector<double> testResult = test.RemoveZeros(testVector3);
+        }
+
+        //CombineVectors
+        [TestMethod]
+        [Description("Test if CombineVectors works properly part 1")]
+        public void CombineVectors_VectorsSizeTest()
+        {
+            double[] a1 = { 1, 2, 3, 4, 5 };
+            double[] a2 = { 6, 7, 8 };
+            double[] a3 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            Vector<double> v2 = Vector<double>.Build.DenseOfArray(a2);
+            Vector<double> testv = Vector<double>.Build.DenseOfArray(a3);
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.CombineVectors(v1, v2);
+            Assert.AreEqual(testv, result);
+        }
+        [TestMethod]
+        [Description("Test if CombineVectors works properly part 2")]
+        public void CombineVectors_VectorsSizeTest2()
+        {
+            double[] a1 = { 1, 2, 3, 4, 5 };
+            double[] a2 = { 6, 7, 8 };
+            double a = 9;
+            double[] a3 = { 1, 2, 3, 4, 5, 9, 6, 7, 8 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            Vector<double> v2 = Vector<double>.Build.DenseOfArray(a2);
+            Vector<double> testv = Vector<double>.Build.DenseOfArray(a3);
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.CombineVectors(v1, a, v2);
+            Assert.AreEqual(testv, result);
+        }
+        [TestMethod]
+        [Description("Test if CombineVectors works properly part 3")]
+        public void CombineVectors_VectorsSizeTest3()
+        {
+            double[] a1 = { 1, 2, 3, 4, 5 };
+            double[] a2 = { 6, 7, 8 };
+            double[] a3 = { 1, 2, 3, 4, 6, 7, 8 };
+            Vector<double> v01 = Vector<double>.Build.DenseOfArray(a1);
+            Vector<double> v2 = Vector<double>.Build.DenseOfArray(a2);
+            Vector<double> v1 = v01.SubVector(0, 4);
+            Vector<double> testv = Vector<double>.Build.DenseOfArray(a3);
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.CombineVectors(v1, v2);
+            Assert.AreEqual(testv, result);
+        }
+
+        //Interpolate
+        [TestMethod]
+        [Description("Test if Interpolate does not cut correct values")]
+        public void Interpolate_AccuracyTest()
+        {
+            double[] a1 = {650, 700, 600, 450, 800, 1300 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.Interpolate(v1);
+            Assert.AreEqual(v1, result);
+        }
+        [TestMethod]
+        [Description("Test if Interpolate interpolates too high values")]
+        public void Interpolate_TooHighTest()
+        {
+            double[] a1 = { 650, 700, 1450, 450, 800, 1300 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            double[] a2 = { 650, 700, 575, 450, 800, 1300 };
+            Vector<double> expected = Vector<double>.Build.DenseOfArray(a2);
+
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.Interpolate(v1);
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        [Description("Test if Interpolate interpolates too high value when it is at the end")]
+        public void Interpolate_TooHighEndTest()
+        {
+            double[] a1 = { 650, 700, 575, 450, 800, 1300 , 1450};
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            double[] a2 = { 650, 700, 575, 450, 800, 1300, 1300 };
+            Vector<double> expected = Vector<double>.Build.DenseOfArray(a2);
+
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.Interpolate(v1);
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        [Description("Test if Interpolate interpolates too high value when it is at the beginning")]
+        public void Interpolate_TooHighBeginTest()
+        {
+            double[] a1 = { 1450, 650, 700, 575, 450, 800, 1300 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            double[] a2 = { 650, 650, 700, 575, 450, 800, 1300 };
+            Vector<double> expected = Vector<double>.Build.DenseOfArray(a2);
+
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.Interpolate(v1);
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        [Description("Test if Interpolate cuts too low values")]
+        public void Interpolate_TooLowTest()
+        {
+            double[] a1 = { 650, 700, 575, 300, 800, 1300 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            double[] a2 = { 650, 700, 575, 800, 1300 };
+            Vector<double> expected = Vector<double>.Build.DenseOfArray(a2);
+
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.Interpolate(v1);
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        [Description("Test if Interpolate cuts too low value when it is at the end")]
+        public void Interpolate_TooLowEndTest()
+        {
+            double[] a1 = { 650, 700, 575, 1300, 800, 300 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            double[] a2 = { 650, 700, 575, 1300, 800, 800 };
+            Vector<double> expected = Vector<double>.Build.DenseOfArray(a2);
+
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.Interpolate(v1);
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        [Description("Test if Interpolate cuts too low value when it is at the beginning")]
+        public void Interpolate_TooLowBeginTest()
+        {
+            double[] a1 = { 300, 650, 700, 575, 1300, 800 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            double[] a2 = { 650, 700, 575, 1300, 800};
+            Vector<double> expected = Vector<double>.Build.DenseOfArray(a2);
+
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.Interpolate(v1);
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        [Description("Test if Interpolate properly when 2 high values appear")]
+        public void Interpolate_TooHigh2Test()
+        {
+            double[] a1 = { 710, 650, 700, 1500, 550, 1300, 1450, 800 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            double[] a2 = { 710, 650, 700, 625, 550, 1300, 1050, 800 };
+            Vector<double> expected = Vector<double>.Build.DenseOfArray(a2);
+
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.Interpolate(v1);
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        [Description("Test if Interpolate properly when 2 low values appear")]
+        public void Interpolate_TooLow2Test()
+        {
+            double[] a1 = { 656, 300, 650, 700, 575, 200, 1300, 800 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            double[] a2 = { 656, 650, 700, 575, 1300, 800 };
+            Vector<double> expected = Vector<double>.Build.DenseOfArray(a2);
+
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.Interpolate(v1);
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        [Description("Test if Interpolate properly when low and high values appear")]
+        public void Interpolate_LowHighTest()
+        {
+            double[] a1 = { 656, 300, 650, 700, 550, 1500 , 1300, 800 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            double[] a2 = { 656, 650, 700, 550, 925, 1300, 800 };
+            Vector<double> expected = Vector<double>.Build.DenseOfArray(a2);
+
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.Interpolate(v1);
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        [Description("Test if Interpolate properly when high and low values appear")]
+        public void Interpolate_HighLowTest()
+        {
+            double[] a1 = { 650, 1500, 650, 700, 550, 300, 1300, 800 };
+            Vector<double> v1 = Vector<double>.Build.DenseOfArray(a1);
+            double[] a2 = { 650, 650, 650, 700, 550, 1300, 800 };
+            Vector<double> expected = Vector<double>.Build.DenseOfArray(a2);
+
+            HRV_DFA_Alg test = new HRV_DFA_Alg();
+            Vector<double> result = test.Interpolate(v1);
+            Assert.AreEqual(expected, result);
         }
     }
 }
