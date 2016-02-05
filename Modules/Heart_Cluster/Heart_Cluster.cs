@@ -168,7 +168,7 @@ namespace EKG_Project.Modules.Heart_Cluster
                         _finalResult.Add(clusterizationResultTemp);
 
                         //ODKOMENTOWAC!!!!!
-                        //OutputWorker.SaveClassificationResult(_currentLeadName, true, _tempClusterResult);
+                        OutputWorker.SaveClusterizationResult(_currentLeadName, true, tempClusterResult);
 
 
                         // następna porcja sygnału: od R przed chwilą analizowanego, do R+1 (tego, za zespołem który będzie oznaczany w następnej iteracji)
@@ -214,7 +214,7 @@ namespace EKG_Project.Modules.Heart_Cluster
                         _finalResult.Add(clusterizationResultTemp);
                         
                         //ODKOMENTOWAC!!!!!
-                        //OutputWorker.SaveClusterizationResult(_currentLeadName, true, _tempClusterResult);
+                        OutputWorker.SaveClusterizationResult(_currentLeadName, true, tempClusterResult);
 
                         _currentIndex = R;
                         _samplesProcessed++;
@@ -255,7 +255,7 @@ namespace EKG_Project.Modules.Heart_Cluster
                         if (_currentLeadName != _leadNameChannel2)
                         {
                             //ODKOMENTOWAC!!!!!!!!!!!!!
-                            //OutputWorker.SaveClusterizationResult(_currentLeadName, true, _finalResult);
+                            OutputWorker.SaveClusterizationResult(_currentLeadName, true, _finalResult);
 
                             OutputWorker.SaveAttributeI(Heart_Cluster_Attributes_I.NumberofClass, _currentLeadName, (uint)classCounts.Count);
                             OutputWorker.SaveAttributeI(Heart_Cluster_Attributes_I.TotalQrsComplex, _currentLeadName, (uint)classCounts.Sum());
@@ -322,7 +322,7 @@ namespace EKG_Project.Modules.Heart_Cluster
         public static void Main(String[] args)
         {
             IModule testModule = new Heart_Cluster();
-            Heart_Cluster_Params param = new Heart_Cluster_Params("Analysis333");
+            Heart_Cluster_Params param = new Heart_Cluster_Params("abc123");
 
             testModule.Init(param);
             while (!testModule.Ended())

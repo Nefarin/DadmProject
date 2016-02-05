@@ -15,8 +15,8 @@ namespace EKG_Project.Modules.Heart_Cluster
 {
     public partial class Heart_Cluster : IModule
     {
-        private List<Vector<double>> centroids;
-        private List<int> classCounts;
+        private List<Vector<double>> centroids = new List<Vector<double>>();
+        private List<int> classCounts = new List<int>();
 
         public void Klasteryzacja(List<Vector<double>> coeffs, double threshold)
         {
@@ -72,36 +72,31 @@ namespace EKG_Project.Modules.Heart_Cluster
             var singleQrsComplex = loadedSignal.SubVector(qrsOnset, qrsEnd - qrsOnset + 1);
             var coefficientVector = CountCoefficients(singleQrsComplex, fs);
 
-
-            {
-                var classification = ClassificateComplex(coefficientVector, 10);
-
-                return new Tuple<int, int, int, int>(qrsOnset, qrsEnd, qrsR, classification);
-            }
+            var classification = ClassificateComplex(coefficientVector, 10);
+            return new Tuple<int, int, int, int>(qrsOnset, qrsEnd, qrsR, classification);
         }
 
 
         private int ClassificateComplex(Vector<double> coefficientVector, double threshold)
         {
-            if (classCounts.Count > 5) //zmiana progu?
+
+            if (centroids.Count != 0)
             {
-                threshold = threshold*2;
-            }
                 var closestCentroid = centroids.Aggregate((a, b) => a.Subtract(coefficientVector).L2Norm() < b.Subtract(coefficientVector).L2Norm() ? a : b);
 
-            if (closestCentroid.Subtract(coefficientVector).L2Norm() < threshold)
-            {
-                var i = centroids.FindIndex(v => v.Equals(closestCentroid));
-                centroids[i] = (centroids[i] * classCounts[i] + coefficientVector) / (classCounts[i] + 1);
-                classCounts[i]++;
-                return i;
+                if (closestCentroid.Subtract(coefficientVector).L2Norm() < threshold)
+                {
+                    var i = centroids.FindIndex(v => v.Equals(closestCentroid));
+                    centroids[i] = (centroids[i] * classCounts[i] + coefficientVector) / (classCounts[i] + 1);
+                    classCounts[i]++;
+                    return i;
+                }
             }
-            else
-            {
-                centroids.Add(coefficientVector);
-                classCounts.Add(1);
-                return classCounts.Count - 1;
-            }
+
+            centroids.Add(coefficientVector);
+            classCounts.Add(1);
+            return classCounts.Count - 1;
+
         }
 
         #region Documentation
@@ -116,17 +111,17 @@ namespace EKG_Project.Modules.Heart_Cluster
         {
             var maxQRTime = 0.063;
             var maxRSTime = 0.094;
-            var samplingInterval = 1 / fs;
+            var samplingInterval = 1.0 / fs;
             var numberOfSamplesQR = maxQRTime / samplingInterval;
             var numberOfSamplesRS = maxRSTime / samplingInterval;
             var QRSamples = (int)numberOfSamplesQR;
             var RSSamples = (int)numberOfSamplesRS;
 
             // naprawa onset i endset
-            if (qrsR - qrsOnset > QRSamples || (qrsOnset != -1))
+            if (qrsR - qrsOnset > QRSamples || (qrsOnset == -1))
                 qrsOnset = qrsR - QRSamples;
 
-            if (qrsEnd - qrsR > RSSamples || (qrsEnd != -1))
+            if (qrsEnd - qrsR > RSSamples || (qrsEnd == -1))
                 qrsEnd = qrsR + RSSamples;
 
             return new Tuple<int, int>(qrsOnset, qrsEnd);
