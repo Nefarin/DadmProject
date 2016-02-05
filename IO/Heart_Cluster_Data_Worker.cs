@@ -21,7 +21,7 @@ namespace EKG_Project.IO
     /// </summary>
     #endregion
 
-    public enum Heart_Cluster_Attributes_II { indexOfClass, QrsComplexNo, indexOfRepresent };
+    public enum Heart_Cluster_Attributes_II { indexOfClass, QrsComplexNo }; //
 
     #region Documentation
     /// <summary>
@@ -151,6 +151,143 @@ namespace EKG_Project.IO
 
             int readValue = Convert.ToInt32(readLine);
             return readValue;
+        }
+
+        #region Documentation
+
+        /// <summary>
+        /// Saves Clusterization Result in txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <param name="mode">true:append, false:overwrite file</param>
+        /// <param name="result">clusterization result</param>
+
+        #endregion
+        public void SaveClusterizationResult(string lead, bool mode, List<Tuple<int, int, int, int>> results)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName1 = analysisName + "_" + moduleName + "_" + lead + "_ClusterizationResult" + "_Item1" + ".txt";
+            string pathOut1 = Path.Combine(directory, fileName1);
+
+            StreamWriter sw1 = new StreamWriter(pathOut1, mode);
+            foreach (var result in results)
+            {
+                sw1.WriteLine(result.Item1);
+            }
+
+            sw1.Close();
+
+            string fileName2 = analysisName + "_" + moduleName + "_" + lead + "_ClusterizationResult" + "_Item2" + ".txt";
+            string pathOut2 = Path.Combine(directory, fileName2);
+
+            StreamWriter sw2 = new StreamWriter(pathOut2, mode);
+            foreach (var result in results)
+            {
+                sw2.WriteLine(result.Item2);
+            }
+
+            sw2.Close();
+
+            string fileName3 = analysisName + "_" + moduleName + "_" + lead + "_ClusterizationResult" + "_Item3" + ".txt";
+            string pathOut3 = Path.Combine(directory, fileName3);
+
+            StreamWriter sw3 = new StreamWriter(pathOut3, mode);
+            foreach (var result in results)
+            {
+                sw3.WriteLine(result.Item1);
+            }
+
+            sw3.Close();
+
+
+            string fileName4 = analysisName + "_" + moduleName + "_" + lead + "_ClusterizationResult" + "_Item4" + ".txt";
+            string pathOut4 = Path.Combine(directory, fileName4);
+
+            StreamWriter sw4 = new StreamWriter(pathOut4, mode);
+            foreach (var result in results)
+            {
+                sw4.WriteLine(result.Item4);
+            }
+
+            sw4.Close();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads ClassificationResult from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <param name="startIndex">start index</param>
+        /// <param name="length">length</param>
+        /// <returns>classification result list</returns>
+        #endregion
+        public List<Tuple<int, int, int, int>> LoadClusterizationResult(string lead, int startIndex, int length)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName1 = analysisName + "_" + moduleName + "_" + lead + "_ClusterizationResult" + "_Item1" + ".txt";
+            string pathIn1 = Path.Combine(directory, fileName1);
+
+            StreamReader sr1 = new StreamReader(pathIn1);
+
+            string fileName2 = analysisName + "_" + moduleName + "_" + lead + "_ClusterizationResult" + "_Item2" + ".txt";
+            string pathIn2 = Path.Combine(directory, fileName2);
+
+            StreamReader sr2 = new StreamReader(pathIn2);
+
+            string fileName3 = analysisName + "_" + moduleName + "_" + lead + "_ClusterizationResult" + "_Item3" + ".txt";
+            string pathIn3 = Path.Combine(directory, fileName3);
+
+            StreamReader sr3 = new StreamReader(pathIn3);
+
+            string fileName4 = analysisName + "_" + moduleName + "_" + lead + "_ClusterizationResult" + "_Item4" + ".txt";
+            string pathIn4 = Path.Combine(directory, fileName4);
+
+            StreamReader sr4 = new StreamReader(pathIn4);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr1.EndOfStream)
+            {
+                sr1.ReadLine();
+                sr2.ReadLine();
+                sr3.ReadLine();
+                sr4.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+            List<Tuple<int, int, int, int>> list = new List<Tuple<int, int, int, int>>();
+            while (iterator < length)
+            {
+                if (sr1.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+                string item1 = sr1.ReadLine();
+                int convertedItem1 = Convert.ToInt32(item1);
+
+                string item2 = sr2.ReadLine();
+                int convertedItem2 = Convert.ToInt32(item2);
+
+                string item3 = sr3.ReadLine();
+                int convertedItem3 = Convert.ToInt32(item3);
+
+                string item4 = sr4.ReadLine();
+                int convertedItem4 = Convert.ToInt32(item4);
+
+
+                Tuple<int, int, int, int> tuple = Tuple.Create(convertedItem1, convertedItem2, convertedItem3, convertedItem4);
+                list.Add(tuple);
+                iterator++;
+            }
+            sr1.Close();
+            sr2.Close();
+            sr3.Close();
+            sr4.Close();
+
+            return list;
         }
 
         #region Documentation
