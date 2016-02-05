@@ -30,15 +30,15 @@ namespace EKG_Project.Modules.Heart_Axis
 
         /*Pseudo Module*/
 
-        private double[] PseudoModule(int Q, int S, double[] signal)
+        public double[] PseudoModule(int Q, int S, double[] signal)
         {
 
             int j = 0;
             double[] pseudo_tab;
             pseudo_tab = new double[S - Q];
-            for (int i = Q; i < S; i++,j++)
+            for (int i = Q; i < S; i++, j++)
             {
-                pseudo_tab[j] = Math.Sqrt(Math.Pow(signal[i], 2) + Math.Pow(signal[i+1], 2));
+                pseudo_tab[j] = Math.Sqrt(Math.Pow(signal[i], 2) + Math.Pow(signal[i + 1], 2));
             }
             return pseudo_tab;
         }
@@ -55,7 +55,7 @@ namespace EKG_Project.Modules.Heart_Axis
 
         /* Finding Max */
 
-        private int MaxOfPseudoModule(int Q, double[] pseudo_tab)
+        public int MaxOfPseudoModule(int Q, double[] pseudo_tab)
         {
 
             double maxValue = pseudo_tab.Max();
@@ -77,29 +77,28 @@ namespace EKG_Project.Modules.Heart_Axis
 
         /*Least-Squares method*/
 
-        private double[] LeastSquaresMethod(double []signal, int Q, double[] pseudo_tab, int frequency) // todo: skąd wziąć tablicę samples
+        public double[] LeastSquaresMethod(double[] signal, int Q, double[] pseudo_tab, int frequency)
         {
             int MaxIndex = MaxOfPseudoModule(Q, pseudo_tab);
-            int timePeriod = 20; // czy 20?
+            int timePeriod = 20;
             int milisecondsDivider = 1000;
             double T = (timePeriod * frequency) / milisecondsDivider; // ilość próbek na 1 ms
-            int roundedT = (int)Math.Round(T, MidpointRounding.AwayFromZero); // zaokrąglenie - zmienić na floor?
+            int roundedT = (int)Math.Round(T, MidpointRounding.AwayFromZero);
 
             int signalSize = signal.Length;
             double[] indexes = null;
             int partArrayLength = 0;
-            if ((MaxIndex - roundedT >= 0) && (MaxIndex + roundedT < signalSize)) //zabezpieczenie przed wyjściem poza zakres tabilcy
+            if ((MaxIndex - roundedT >= 0) && (MaxIndex + roundedT <= signalSize))
             {
                 partArrayLength = 2 * roundedT + 1;
                 indexes = new double[partArrayLength];
             }
             else
             {
-                //wyjątek
-                //Aborted = true;
-                //_ended = true;
+                double[] zeros = { 0, 0, 0 };
+                return zeros;
             }
-            
+
 
             for (int i = 0; i < indexes.Length; i++) // inicjalizacja indexes numerami próbek
             {
@@ -130,9 +129,10 @@ namespace EKG_Project.Modules.Heart_Axis
 
 
         /*Max of Polynomial*/
-        private int MaxOfPolynomial(int Q, double [] fitting_parameters)
+        public int MaxOfPolynomial(int Q, double[] fitting_parameters)
         {
-            double dMaxOfPoly =(-fitting_parameters[1])/(2*fitting_parameters[0]);       // x = -b/2a
+            if (fitting_parameters[2] == 0) return 0;
+            double dMaxOfPoly = (-fitting_parameters[1]) / (2 * fitting_parameters[2]);       // x = -b/2a
             int maxOfPoly = (int)Math.Round(dMaxOfPoly, MidpointRounding.AwayFromZero);
             return maxOfPoly;
         }
@@ -148,13 +148,18 @@ namespace EKG_Project.Modules.Heart_Axis
         #endregion
 
         /*Reading Amplitudes*/
-        private double[] ReadingAmplitudes(double[] FirstLead, double[] SecondLead, int MaxOfPoly)
+        public double[] ReadingAmplitudes(double[] FirstLead, double[] SecondLead, int MaxOfPoly)
+        {
+            if (MaxOfPoly == 0)
             {
+                double[] zeros = { 0, 0 };
+                return zeros;
+            }
             double[] amplitudes = new double[2];
             amplitudes[0] = FirstLead[MaxOfPoly];
             amplitudes[1] = SecondLead[MaxOfPoly];
             return amplitudes;
-            }
+        }
 
         #region Documentation
         /// <summary>
@@ -165,12 +170,16 @@ namespace EKG_Project.Modules.Heart_Axis
         #endregion
 
         /* Trigonometrical formula - between I and II */
-        private double IandII(double[]amplitudes)
+        public double IandII(double[] amplitudes)
         {
-            //todo: wyjątek dla 0?
+            if (amplitudes[0] == 0)
+            {
+                return 0;
+            }
             double angle = Math.Atan((2 * (amplitudes[1] - amplitudes[0])) / (Math.Sqrt(3) * amplitudes[0]));
             return angle;   // an angle in radians
         }
+
 
     }
 }
