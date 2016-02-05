@@ -221,7 +221,7 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 //if yes,  we calculate a local QT disperssion
                 int std_base = QT_INTERVALS.RemoveAll(x => x.Equals(0));
-                std_base = QT_INTERVALS.RemoveAll(x => x > 650);
+                int std_base2 = QT_INTERVALS.RemoveAll(x => x > 650);
                 local = QT_INTERVALS.Max() - QT_INTERVALS.Min();
                
             }
