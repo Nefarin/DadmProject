@@ -90,8 +90,20 @@ namespace EKG_Project.Modules.HRV1
                 OutputData.FreqBasedParams = fparams;
                 OutputData.PowerSpectrum = psd;
 
-                OutputWorker.SaveSignal(HRV1_Signal.FreqVector, "", false, psd[0].Item2);
-                OutputWorker.SaveSignal(HRV1_Signal.PSD, "", false, psd[1].Item2);
+                OutputWorker.SaveSignal(HRV1_Signal.FreqVector, lead, false, psd[0].Item2);
+                OutputWorker.SaveSignal(HRV1_Signal.PSD, lead, false, psd[1].Item2);
+
+                OutputWorker.SaveAttribute(HRV1_Attributes.AVNN, lead, tparams[0].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.SDNN, lead, tparams[1].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.RMSSD, lead, tparams[2].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.pNN50, lead, tparams[3].Item2);
+
+                OutputWorker.SaveAttribute(HRV1_Attributes.TP, lead, fparams[0].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.HF, lead, fparams[1].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.LF, lead, fparams[2].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.VLF, lead, fparams[3].Item2);
+                OutputWorker.SaveAttribute(HRV1_Attributes.LFHF, lead, fparams[4].Item2);
+
                 _ended = true;
             }
             else _ended = true;

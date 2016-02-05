@@ -14,7 +14,7 @@ namespace EKG_Project.IO
     /// </summary>
     #endregion
     public enum HRV1_Signal { TimeBasedParams, FreqBasedParams, FreqVector, PSD };
-
+    public enum HRV1_Attributes { AVNN, SDNN, RMSSD, SDSD, NN50, pNN50, TP, HF, LF, VLF, LFHF };
 
     #region Documentation
     /// <summary>
@@ -82,6 +82,20 @@ namespace EKG_Project.IO
             }
             sw.Close();
         }
+
+
+        public void SaveAttribute(HRV1_Attributes atr, string lead, double value)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
+            string pathOut = System.IO.Path.Combine(directory, fileName);
+
+            StreamWriter sw = new StreamWriter(pathOut);
+            sw.WriteLine(value);
+            sw.Close();
+        }
+
 
         #region Documentation
         /// <summary>
