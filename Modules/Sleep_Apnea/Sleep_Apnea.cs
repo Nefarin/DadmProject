@@ -58,6 +58,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         int _currentLeadLength;
         private State _currentState;
         private int _numberOfChannels;
+        private int _resampFreq = 1;
 
         private Sleep_Apnea_Alg _sleepApneaAlg;
 
@@ -196,7 +197,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     break;
 
                 case State.Resampling:
-                    _RR_res = _sleepApneaAlg.resampling(_RR_average, (int)_fs);
+                    _RR_res = _sleepApneaAlg.resampling(_RR_average, (int)_resampFreq);
                     _currentState = State.BandPassFiltering;
                     _actualProgress = 3 * 100.0 / 9;
                     break;
