@@ -999,7 +999,20 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplayHeartClassLeadVersion()
+        {
+            try
+            {
 
+                RefreshPlot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
 
         public bool ControlOtherModulesSeries(string moduleName, bool visible)
         {
@@ -1050,6 +1063,10 @@ namespace EKG_Project.GUI
                     case "TEnds":
                         DisplayWavesLeadAndWaveParVersion(modName);
                         break;
+                    case "HeartClass":
+                        DisplayWavesLeadAndWaveParVersion(modName);
+                        break;
+
                     default:
                         break;
                 }

@@ -501,6 +501,18 @@ namespace EKG_Project.GUI
                     _seriesChecbox.Add(tEnds);
                 }
 
+                if (currentModulesList.Contains("HEART_CLASS"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "HeartClass";
+                    cB.Content = "HeartClass";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
 
 
 
