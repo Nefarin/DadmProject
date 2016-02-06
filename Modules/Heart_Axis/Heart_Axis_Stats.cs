@@ -19,7 +19,11 @@ namespace EKG_Project.Modules.Heart_Axis
         private string _analysisName;
         private Heart_Axis_Data _data;
         private State _currentState;
-        //private string _currentName;
+        private string[] _leads;
+        private Basic_New_Data_Worker _worker;
+        private int _currentChannelIndex;
+        private int _currentIndex;
+        private string _currentName;
 
 
         public void Abort()
@@ -65,6 +69,7 @@ namespace EKG_Project.Modules.Heart_Axis
             _data = worker.Data;
             _currentState = State.START_CHANNEL;
 
+
         }
 
         public void ProcessStats()
@@ -73,16 +78,16 @@ namespace EKG_Project.Modules.Heart_Axis
             switch (_currentState)
             {
                 case (State.START_CHANNEL):
-                    //_currentName = _data.HeartAxis.Item1; //moduł nie zwraca żadnej nazwy
+                    
                     _currentState = State.CALCULATE;
                     break;
                 case (State.CALCULATE):
-                    double currentData = _data.HeartAxis; // czy może być double zamiast double<Vector>?
+                    double currentData = _data.HeartAxis; 
 
                     _currentState = State.NEXT_CHANNEL;
                     break;
                 case (State.NEXT_CHANNEL):
-                        _currentState = State.END; //moduł wykonuje obliczenia na jednym odprowadzeniu
+                        _currentState = State.END;
                     break;
                 case (State.END):
                     _ended = true;
