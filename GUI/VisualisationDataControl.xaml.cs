@@ -22,6 +22,7 @@ namespace EKG_Project.GUI
     public partial class VisualisationDataControl : UserControl
     {
         private List<TabItem> visulisationDataTabsList;
+        
 
         //private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
         //private Basic_Data_Worker _ecg_Basic_Data_Worker;
@@ -94,16 +95,16 @@ namespace EKG_Project.GUI
                     
                 case 1:
                     //StartPlot(analyseName, moduleName, moduleDict);
-                    StartTable(analyseName, moduleName, moduleDict);
+                    //StartTable(analyseName, moduleName, moduleDict);
                     break;                   
                 case 2:
                     //StartPlot(analyseName, moduleName, moduleDict);
-                    StartHistogram(analyseName, moduleName, moduleDict);
+                    //StartHistogram(analyseName, moduleName, moduleDict);
                     break;                   
                 case 3:
                     //StartPlot(analyseName, moduleName, moduleDict);
-                    StartTable(analyseName, moduleName, moduleDict);
-                    StartHistogram(analyseName, moduleName, moduleDict);
+                    //StartTable(analyseName, moduleName, moduleDict);
+                    //StartHistogram(analyseName, moduleName, moduleDict);
                     break;
                     
                 default:
@@ -138,6 +139,7 @@ namespace EKG_Project.GUI
 
                 if (analysedModules.Contains("QT_DISP"))
                 {
+                    //System.Windows.MessageBox.Show("qt disp + 1");
                     tableAmount += 1;
                 }
 
@@ -152,7 +154,7 @@ namespace EKG_Project.GUI
                 for (int i = 0; i < tableAmount; i++)
                 {
                     //need logic to not duble some tables
-                    StartTable(analyseName, moduleName, moduleDict);
+                    StartTable(analyseName, moduleName, moduleDict, analysedModules);
                 }
 
                 for (int i = 0; i < histAmount; i++)
@@ -188,9 +190,9 @@ namespace EKG_Project.GUI
             visulisationDataTabsList.Add(ecgBaselineTab);
         }
 
-        public void StartTable(string anName, string modName, KeyValuePair<string, int> moduleDict)
+        public void StartTable(string anName, string modName, KeyValuePair<string, int> moduleDict, List<string> modL)
         {
-            VisualisationTableControl ecgVTControl = new VisualisationTableControl(anName, modName, moduleDict);
+            VisualisationTableControl ecgVTControl = new VisualisationTableControl(anName, modName, moduleDict, modL);
 
             TabItem tableControl = new TabItem();
             tableControl.Header = "Table";
