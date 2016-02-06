@@ -33,6 +33,7 @@ namespace EKG_Project.Modules.Flutter
         private double _actualProgress;
         uint _fs;
         int _indexOfLead;
+        int _n;
         List<string> _channels;
 
         public Flutter_Params Params { get; set; }
@@ -163,10 +164,30 @@ namespace EKG_Project.Modules.Flutter
                     break;
 
                 case FlutterAlgStates.CalculateSpectralDensity:
-                    _spectralDensityList = _flutter.CalculateSpectralDensity(_t2qrsEkgParts);
-                    _frequenciesList = _flutter.CalculateFrequenciesAxis(_spectralDensityList);
-                    _currentState = FlutterAlgStates.TrimSpectrum;
-                    _actualProgress = 2 * 100.0 / 6;
+                    if(_spectralDensityList == null)
+                    {
+                        _spectralDensityList = new List<double[]>(_t2qrsEkgParts.Count);
+                        _frequenciesList = new List<double[]>(_t2qrsEkgParts.Count);
+                        _n = 0;
+                    }
+                    else
+                    {
+                        if (_n < _t2qrsEkgParts.Count)
+                        {
+                            _spectralDensityList.AddRange(_flutter.CalculateSpectralDensity(_t2qrsEkgParts.GetRange(_n, 1)));
+                            _frequenciesList.AddRange(_flutter.CalculateFrequenciesAxis(_spectralDensityList.GetRange(_n, 1)));
+                            _n++;
+                            _actualProgress = 1 * 100.0 / 6 + (100.0 * _n / _t2qrsEkgParts.Count / 6.0);
+                        }
+                        else
+                        {
+                            _actualProgress = 2 * 100.0 / 6;
+                            _currentState = FlutterAlgStates.TrimSpectrum;
+                            _n = 0;
+                        }
+
+                    }                    
+                    
                     break;
 
                 case FlutterAlgStates.TrimSpectrum:
