@@ -284,6 +284,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                         {
                             _outputWorker.SaveHAmp(_leads[_currentLeadIndexToSave], true, _h_amp.Select(x => x.GetRange(_currentSampleToSave, _step)).ToList());
                             _currentSampleToSave += _step;
+                            _actualProgress = 8 * 100.0 / NUMBER_OF_STATES + (100.0 * (((double)_currentLeadIndexToSave + 1) * (_currentSampleToSave + 1)) / (_leads.Count * _h_amp[0].Count) / NUMBER_OF_STATES);
                         }
                         else
                         {
@@ -292,7 +293,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                             _currentLeadIndexToSave++;
 
                         }
-                        _actualProgress = 8 * 100.0 / NUMBER_OF_STATES + 100.0 * _currentLeadIndexToSave*_currentSampleToSave / _leads.Count*_h_amp[0].Count / NUMBER_OF_STATES;
+                        
                     }
               
                     break;
