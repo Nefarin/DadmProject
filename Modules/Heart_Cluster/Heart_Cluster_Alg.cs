@@ -77,13 +77,13 @@ namespace EKG_Project.Modules.Heart_Cluster
         }
 
 
-        private int ClassificateComplex(Vector<double> coefficientVector, double threshold)
+        public int ClassificateComplex(Vector<double> coefficientVector, double threshold)
         {
 
             if (centroids.Count != 0)
             {
                 var closestCentroid = centroids.Aggregate((a, b) => a.Subtract(coefficientVector).L2Norm() < b.Subtract(coefficientVector).L2Norm() ? a : b);
-
+                // sprawdź czy a jest lepszy od centroidu b, jesli lepszy to go zamień.
                 if (closestCentroid.Subtract(coefficientVector).L2Norm() < threshold)
                 {
                     var i = centroids.FindIndex(v => v.Equals(closestCentroid));
