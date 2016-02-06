@@ -478,7 +478,8 @@ namespace EKG_Project.Modules.HRT
         {
             int back = 5;
             int forward = 15;
-            int sum = back + forward;
+
+            List<int> correction = new List<int>();
             List<List<double>> newTacho = new List<List<double>>();
             foreach (int nrpikuVPC in VPC)
             {
@@ -492,8 +493,19 @@ namespace EKG_Project.Modules.HRT
                     }
                     newTacho.Add(singleTacho);
                 }
+                else correction.Add(nrpikuVPC);
             }
+            nrVPCcorrection(VPC, correction);
             return newTacho;
+        }
+
+        List <int>nrVPCcorrection (List<int> nrVPC, List<int> correction)
+        {
+            foreach(int i in correction)
+            {
+                nrVPC.Remove(i);
+            }
+            return nrVPC;
         }
 
         /// <summary>
@@ -504,7 +516,7 @@ namespace EKG_Project.Modules.HRT
         /// <returns> Which R peak was classified as VPC</returns>
         public List<int> SearchPrematureTurbulences(List<List<double>> Tachogram, List<int> numerPikuVC)
         {
-            //if (Tachogram.Count != numerPikuVC.Count) throw new ArgumentOutOfRangeException();
+            if (Tachogram.Count != numerPikuVC.Count) throw new ArgumentOutOfRangeException();
 
             double sumbefore = 0;
             double Mean = 0;

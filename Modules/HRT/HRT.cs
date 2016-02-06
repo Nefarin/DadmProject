@@ -200,7 +200,7 @@ namespace EKG_Project.Modules.HRT
                                         _statisticsClassNumbersPDF[1] = _classVentrical.Count;
                                         _statisticsClassNumbersPDF[2] = _classPrematureVentrical.Count;
                                         _state = STATE.END_CHANNEL;
-
+                                        _alg.PrintVector(_tachogram);
                                     }
                                 }
                             }
