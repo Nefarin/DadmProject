@@ -1153,28 +1153,21 @@ namespace EKG_Project.GUI
         {
             try
             {
-                Atrial_Fibr_New_Data_Worker aFW = new Atrial_Fibr_New_Data_Worker(_currentAnalysisName);
-                Tuple<bool, Vector<double>, string, string> myTemp = aFW.LoadAfDetection(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)aFW.getNumberOfSamples(_currentLeadName));
+                
+                Flutter_New_Data_Worker fW = new Flutter_New_Data_Worker(_currentAnalysisName);
+                List<Tuple<int, int>> myTemp = fW.LoadFlutterAnnotations(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)fW.getNumberOfSamples(_currentLeadName));
 
-
-                System.Windows.MessageBox.Show(myTemp.Item3 + System.Environment.NewLine + myTemp.Item4);
-
-                if (myTemp.Item1)
+             
+                if (myTemp.Count>0)
                 {
+                    //jakas logika jak bedzie sygnał 
 
-                    ScatterSeries atrialFSeries = new ScatterSeries();
-                    atrialFSeries.Title = "AtrialFiber";
-
-                    foreach (int i in myTemp.Item2.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
-                    {
-                        atrialFSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 1.5 });
-                    }
-
-
-                    CurrentPlot.Series.Add(atrialFSeries);
-
-
-                    RefreshPlot();
+                    System.Windows.MessageBox.Show("Nie wykryto trzepotania przedsionków");
+                   //RefreshPlot();
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("Nie wykryto trzepotania przedsionków");
                 }
 
                 return true;
@@ -1330,7 +1323,7 @@ namespace EKG_Project.GUI
             }
             catch(Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.Message);
+                //System.Windows.MessageBox.Show(ex.Message);
                 return false;
             }
         }
