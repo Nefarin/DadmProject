@@ -38,12 +38,12 @@ namespace EKG_Project.Modules.Waves
             else if (_params.WaveType == Wavelet_Type.db2)
             {
                 _qrsEndTresh = 1.5;
-                _qrsOnsTresh = 3;
+                _qrsOnsTresh = 0.5;
             }
             else
             {
                 _qrsEndTresh = 3;
-                _qrsOnsTresh = 1.5;
+                _qrsOnsTresh = 0.6;
             }
 
             DetectQRS( currentQRSonsetsPart,  currentQRSendsPart, currentECG,  currentRpeaks,  offset, frequency);

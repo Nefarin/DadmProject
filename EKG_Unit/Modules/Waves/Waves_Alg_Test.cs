@@ -335,7 +335,7 @@ namespace EKG_Unit.Modules.Waves
         [Description("Test if QRSonset is found for wavelet type: db3, decomposition level: 2")]
         public void FindQRSTestQRSonsetDb3_2()
         {
-            Waves_Params testParams = new Waves_Params(Wavelet_Type.db3, 2, "Analysis1", 500);
+            Waves_Params testParams = new Waves_Params(Wavelet_Type.db3, 3, "Analysis1", 500);
 
             double[] testArray = { 0.030343,0.032414,0.031457,0.032414,0.029371,0.027314,0.023343,0.025343,0.0263,0.025214,0.021129,0.018971,0.015814,0.011671,0.011443,
                 0.0082143,0.0030571,-0.004,-0.007,-0.011914,-0.014814,-0.0177,-0.018614,-0.019529,-0.017443,-0.0134,-0.010429,-0.0094571,-0.013357,-0.015143,-0.017786,
@@ -380,7 +380,7 @@ namespace EKG_Unit.Modules.Waves
             obj.Invoke("analyzeSignalPart", args);
 
             List<int> qrsOnsOut = (List<int>)args[2];
-            Assert.AreEqual(qrsOnsOut[0], 126, 10);
+            Assert.AreEqual( 119, qrsOnsOut[0], 10);
 
         }
 
