@@ -155,6 +155,7 @@ namespace EKG_Project.Modules.HRT
                             {
                                 _vpc = VPC.NOT_DETECTED;
                                 System.Diagnostics.Debug.WriteLine("Wykryto więcej klas niż załamków, błędnie skonstruowany plik wejściowy");
+                                OutputWorker.SaveVPC(_currentLeadName, _vpc);
                             }
                             else
                             {
@@ -163,6 +164,7 @@ namespace EKG_Project.Modules.HRT
                                 {
                                     System.Diagnostics.Debug.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
                                     _vpc = VPC.NOT_DETECTED;
+                                    OutputWorker.SaveVPC(_currentLeadName, _vpc);
                                 }
                                 else
                                 {
@@ -173,6 +175,7 @@ namespace EKG_Project.Modules.HRT
                                     {
                                         System.Diagnostics.Debug.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
                                         _vpc = VPC.NO_VENTRICULAR;
+                                        OutputWorker.SaveVPC(_currentLeadName, _vpc);
                                     }
                                     else
                                     {
@@ -183,6 +186,7 @@ namespace EKG_Project.Modules.HRT
                                         {
                                             System.Diagnostics.Debug.WriteLine("Są VPC, ale nie można wygenerować wokół nich tachogramu. Prawdopodobna przyczyna to niewystarczająca ilość wykrytych załamków QRS w pobliżu");
                                             _vpc = VPC.DETECTED_BUT_IMPOSSIBLE_TO_PLOT;
+                                            OutputWorker.SaveVPC(_currentLeadName, _vpc);
                                         }
                                         else
                                         {
@@ -212,6 +216,8 @@ namespace EKG_Project.Modules.HRT
                         {
                             _state = STATE.NEXT_CHANNEL;
                             System.Diagnostics.Debug.WriteLine("PROCESS_CHANNEL - Exception e");
+                            _vpc = VPC.NOT_DETECTED;
+                            OutputWorker.SaveVPC(_currentLeadName, _vpc);
                         }
                     }
                     break;
@@ -343,18 +349,22 @@ namespace EKG_Project.Modules.HRT
 
         public static void Main()
         {
-
-            HRT_Params param = new HRT_Params("Analysis HRT2");
-
-            HRT testModule = new HRT();
-            testModule.Init(param);
-            while (true)
+            string[] lista = { "105", "106", "107", "108", "109", "114", "116", "118", "119", "124", "200", "201", "202", "203", "207" };
+            foreach (string liczba in lista)
             {
-                if (testModule.Ended()) break;
-                System.Diagnostics.Debug.Write("Progress: ");
-                System.Diagnostics.Debug.Write(testModule.Progress());
-                System.Diagnostics.Debug.WriteLine(" %");
-                testModule.ProcessData();
+                //System.Diagnostics.Debug.WriteLine("Analysis" + liczba);
+                HRT_Params param = new HRT_Params("Analysis" + liczba);
+
+                HRT testModule = new HRT();
+                testModule.Init(param);
+                while (true)
+                {
+                    if (testModule.Ended()) break;
+                    //System.Diagnostics.Debug.Write("Progress: ");
+                    // System.Diagnostics.Debug.Write(testModule.Progress());
+                    // System.Diagnostics.Debug.WriteLine(" %");
+                    testModule.ProcessData();
+                }
             }
         }
     }
