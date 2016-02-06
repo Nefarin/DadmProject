@@ -913,14 +913,22 @@ namespace EKG_Project.GUI
                 ScatterSeries rPeaksSeries = new ScatterSeries();
                 rPeaksSeries.Title = "RPeaks";
 
-                for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
-                {
-                    if (myTemp.Contains(i))
-                    {
-                        rPeaksSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+                //for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
+                //{
+                //    if (myTemp.Contains(i))
+                //    {
+                //        rPeaksSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
 
-                        addR_Peak = true;
-                    }
+                //        addR_Peak = true;
+                //    }
+                //}
+
+                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
+                {
+
+                    rPeaksSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+
+                    addR_Peak = true;
                 }
 
 
@@ -974,14 +982,22 @@ namespace EKG_Project.GUI
                 ScatterSeries waveSeries = new ScatterSeries();
                 waveSeries.Title = waveParametr;
 
-                for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
-                {
-                    if (myTemp.Contains(i))
-                    {
-                        waveSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+                //for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
+                //{
+                //    if (myTemp.Contains(i))
+                //    {
+                //        waveSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
 
-                        addWave = true;
-                    }
+                //        addWave = true;
+                //    }
+                //}
+
+                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
+                {
+
+                    waveSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+
+                    addWave = true;
                 }
 
                 if (addWave)
