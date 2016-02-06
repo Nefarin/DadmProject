@@ -526,7 +526,17 @@ namespace EKG_Project.GUI
                 }
 
 
-
+                if (currentModulesList.Contains("ATRIAL_FIBER"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "AtrialFiber";
+                    cB.Content = "AtrialFiber";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
 
 
             }
