@@ -52,7 +52,7 @@ namespace EKG_Project.IO
         /// <param name="mode">true:append, false:overwrite file</param>
         /// <param name="signal">AfDetection</param>
         #endregion
-        public void SaveAfDetection(string lead, bool mode, Tuple<bool, Vector<double>, string, string> results)
+        public void SaveAfDetection(string lead, bool mode, bool saveWholeTuple, Tuple<bool, Vector<double>, string, string> results)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -65,15 +65,17 @@ namespace EKG_Project.IO
                 sw.WriteLine(sample.ToString());
             }
             sw.Close();
+            if (saveWholeTuple)
+            {
+                string fileNameAtr = analysisName + "_" + moduleName + "_" + lead + "_Atr" + ".txt";
+                string pathOutAtr = Path.Combine(directory, fileNameAtr);
+                StreamWriter swAtr = new StreamWriter(pathOutAtr, false);
 
-            string fileNameAtr = analysisName + "_" + moduleName + "_" + lead + "_Atr" + ".txt";
-            string pathOutAtr = Path.Combine(directory, fileNameAtr);
-            StreamWriter swAtr = new StreamWriter(pathOutAtr, mode);
-
-            swAtr.WriteLine(results.Item1.ToString());
-            swAtr.WriteLine(results.Item3);
-            swAtr.WriteLine(results.Item4);
-            swAtr.Close();
+                swAtr.WriteLine(results.Item1.ToString());
+                swAtr.WriteLine(results.Item3);
+                swAtr.WriteLine(results.Item4);
+                swAtr.Close();
+            }
         }
 
         #region Documentation
