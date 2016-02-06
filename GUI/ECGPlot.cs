@@ -108,7 +108,10 @@ namespace EKG_Project.GUI
             { "HeartClass", false }
         };
 
-
+        private class AnnotationDescriber
+        {
+            public string idName { get; set; }
+        }
 
         //test
         public ECGPlot(string plotTitle)
@@ -913,14 +916,22 @@ namespace EKG_Project.GUI
                 ScatterSeries rPeaksSeries = new ScatterSeries();
                 rPeaksSeries.Title = "RPeaks";
 
-                for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
-                {
-                    if (myTemp.Contains(i))
-                    {
-                        rPeaksSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+                //for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
+                //{
+                //    if (myTemp.Contains(i))
+                //    {
+                //        rPeaksSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
 
-                        addR_Peak = true;
-                    }
+                //        addR_Peak = true;
+                //    }
+                //}
+
+                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
+                {
+
+                    rPeaksSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+
+                    addR_Peak = true;
                 }
 
 
@@ -974,14 +985,22 @@ namespace EKG_Project.GUI
                 ScatterSeries waveSeries = new ScatterSeries();
                 waveSeries.Title = waveParametr;
 
-                for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
-                {
-                    if (myTemp.Contains(i))
-                    {
-                        waveSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+                //for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
+                //{
+                //    if (myTemp.Contains(i))
+                //    {
+                //        waveSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
 
-                        addWave = true;
-                    }
+                //        addWave = true;
+                //    }
+                //}
+
+                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
+                {
+
+                    waveSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+
+                    addWave = true;
                 }
 
                 if (addWave)
@@ -998,6 +1017,202 @@ namespace EKG_Project.GUI
                 return false;
             }
         }
+
+        public bool DisplayHeartClassLeadVersion()
+        {
+            try
+            {
+                Heart_Class_New_Data_Worker hCW = new Heart_Class_New_Data_Worker(_currentAnalysisName);
+                List<Tuple<int, int>> myTemp = hCW.LoadClassificationResult(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)hCW.getNumberOfSamples(_currentLeadName));
+
+                foreach(var tp in myTemp)
+                {
+
+                    // _analyseSamples
+                    if (tp.Item1 <= _currentBaselineLeadEndIndex)
+                    {
+                        Double yvalue = _currentBaselineLeadVector[tp.Item1];
+                        //if (yvalue > 0)
+                        //{
+                        //    yvalue += 0.3;
+                        //}
+                        //else
+                        //{
+                        //    yvalue -= 0.6;
+                        //}
+                        if (tp.Item2 == 0)
+                        {                           
+                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "V",
+                                                                             Tag = new AnnotationDescriber {idName= "HeartClass"},
+                                                                             TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+                        }
+                        else
+                        {
+                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "SV",
+                                                                             Tag = new AnnotationDescriber { idName = "HeartClass" },
+                                                                             TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+
+                        }
+                        
+                    }
+                }
+
+                RefreshPlot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        public bool DisplayQTDispLeadVersion()
+        {
+            try
+            {
+                Qt_Disp_New_Data_Worker qDW = new Qt_Disp_New_Data_Worker(_currentAnalysisName);
+                List<int> myTemp = qDW.LoadTEndLocal(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)qDW.getNumberOfSamples(Qt_Disp_Signal.T_End_Local, _currentLeadName));
+
+                bool addQt = false;
+
+                ScatterSeries qtSeries = new ScatterSeries();
+                qtSeries.Title = "QTDisp";
+
+                //for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
+                //{
+                //    if (myTemp.Contains(i))
+                //    {
+                //        qtSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+
+                //        addQt = true;
+                //    }
+                //}
+
+                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadEndIndex && a>0)))
+                {
+                    
+                    qtSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+
+                    addQt = true;
+                }
+
+                if (addQt)
+                {
+                    CurrentPlot.Series.Add(qtSeries);
+                }
+
+                RefreshPlot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        public bool DisplayAtrialFiberLeadVersion()
+        {
+            try
+            {
+                Atrial_Fibr_New_Data_Worker aFW = new Atrial_Fibr_New_Data_Worker(_currentAnalysisName);
+                Tuple<bool,Vector<double>, string, string> myTemp = aFW.LoadAfDetection(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)aFW.getNumberOfSamples(_currentLeadName));
+                       
+                       
+                System.Windows.MessageBox.Show(myTemp.Item3 + System.Environment.NewLine + myTemp.Item4);
+
+                if (myTemp.Item1)
+                {
+
+                    ScatterSeries atrialFSeries = new ScatterSeries();
+                    atrialFSeries.Title = "AtrialFiber";
+
+                    foreach (int i in myTemp.Item2.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
+                    {
+                        atrialFSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 1.5 });
+                    }
+
+
+                    CurrentPlot.Series.Add(atrialFSeries);
+                    
+
+                    RefreshPlot();
+                }
+              
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        public bool DisplayFlutterLeadVersion()
+        {
+            try
+            {
+                
+                Flutter_New_Data_Worker fW = new Flutter_New_Data_Worker(_currentAnalysisName);
+                List<Tuple<int, int>> myTemp = fW.LoadFlutterAnnotations(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)fW.getNumberOfSamples(_currentLeadName));
+
+             
+                if (myTemp.Count>0)
+                {
+                    //jakas logika jak bedzie sygnał 
+
+                    System.Windows.MessageBox.Show("Nie wykryto trzepotania przedsionków");
+                   //RefreshPlot();
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("Nie wykryto trzepotania przedsionków");
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        public bool DisplayTWaveAltLeadVersion()
+        {
+            try
+            {
+                T_Wave_Alt_New_Data_Worker tWA = new T_Wave_Alt_New_Data_Worker(_currentAnalysisName);
+                List<Tuple<int,int>> myTemp = tWA.LoadAlternansDetectedList(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)tWA.getNumberOfSamples(_currentLeadName));
+
+                foreach (var tp in myTemp)
+                {
+
+                    // _analyseSamples
+                    if (tp.Item1 <= _currentBaselineLeadEndIndex)
+                    {
+                        Double yvalue = _currentBaselineLeadVector[tp.Item1];
+
+                        if (tp.Item2 == 1)
+                        {
+                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "Alt",
+                                                                             Tag = new AnnotationDescriber { idName = "TWaveAlt" },
+                                                                             TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+                        }
+                    }
+                }
+
+                RefreshPlot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
 
 
 
@@ -1050,6 +1265,22 @@ namespace EKG_Project.GUI
                     case "TEnds":
                         DisplayWavesLeadAndWaveParVersion(modName);
                         break;
+                    case "HeartClass":
+                        DisplayHeartClassLeadVersion();
+                        break;
+                    case "QTDisp":
+                        DisplayQTDispLeadVersion();
+                        break;
+                    case "AtrialFiber":
+                        DisplayAtrialFiberLeadVersion();
+                        break;
+                    case "TWaveAlt":
+                        DisplayTWaveAltLeadVersion();
+                        break;
+                    case "Flutter":
+                        DisplayFlutterLeadVersion();
+                        break;
+
                     default:
                         break;
                 }
@@ -1065,11 +1296,34 @@ namespace EKG_Project.GUI
         {
             try
             {
-                CurrentPlot.Series.Remove(CurrentPlot.Series.First(a => a.Title == modName));
+                if(modName == "HeartClass" || modName == "TWaveAlt")
+                {
+                    AnnotationDescriber aD = new AnnotationDescriber { idName = modName };
+                    bool goOn = true;
+                    while (goOn)
+                    {
+                        try
+                        {
+                            Annotation temp = CurrentPlot.Annotations.First(a => (a.Tag as AnnotationDescriber).idName  ==  aD.idName);
+                            CurrentPlot.Annotations.Remove(temp); 
+                        }
+                        catch(Exception ex)
+                        {
+                            goOn = false;
+                        }
+
+                    }
+                }
+                else
+                {
+                    CurrentPlot.Series.Remove(CurrentPlot.Series.First(a => a.Title == modName));
+                }
+                
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                //System.Windows.MessageBox.Show(ex.Message);
                 return false;
             }
         }
@@ -1078,6 +1332,13 @@ namespace EKG_Project.GUI
 
 
 
+
+
+
+
+
+
+        //ver 1.0
         //ostatnio developowana wersja begining
 
         public void DisplayControler(Dictionary<string, List<Tuple<string, Vector<double>>>> dataToDisplay)
@@ -1756,6 +2017,7 @@ namespace EKG_Project.GUI
             try
             {
                 CurrentPlot.Series.Clear();
+                CurrentPlot.Annotations.Clear();
                 RefreshPlot();
 
                 return true;
