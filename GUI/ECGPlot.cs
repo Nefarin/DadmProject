@@ -1149,6 +1149,43 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplayFlutterLeadVersion()
+        {
+            try
+            {
+                Atrial_Fibr_New_Data_Worker aFW = new Atrial_Fibr_New_Data_Worker(_currentAnalysisName);
+                Tuple<bool, Vector<double>, string, string> myTemp = aFW.LoadAfDetection(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)aFW.getNumberOfSamples(_currentLeadName));
+
+
+                System.Windows.MessageBox.Show(myTemp.Item3 + System.Environment.NewLine + myTemp.Item4);
+
+                if (myTemp.Item1)
+                {
+
+                    ScatterSeries atrialFSeries = new ScatterSeries();
+                    atrialFSeries.Title = "AtrialFiber";
+
+                    foreach (int i in myTemp.Item2.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
+                    {
+                        atrialFSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 1.5 });
+                    }
+
+
+                    CurrentPlot.Series.Add(atrialFSeries);
+
+
+                    RefreshPlot();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
         public bool DisplayTWaveAltLeadVersion()
         {
             try
@@ -1182,6 +1219,8 @@ namespace EKG_Project.GUI
                 return false;
             }
         }
+
+
 
 
         public bool ControlOtherModulesSeries(string moduleName, bool visible)
@@ -1244,6 +1283,9 @@ namespace EKG_Project.GUI
                         break;
                     case "TWaveAlt":
                         DisplayTWaveAltLeadVersion();
+                        break;
+                    case "Flutter":
+                        DisplayFlutterLeadVersion();
                         break;
 
                     default:

@@ -550,6 +550,18 @@ namespace EKG_Project.GUI
                     _seriesChecbox.Add(cB);
                 }
 
+                if (currentModulesList.Contains("FLUTTER"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "Flutter";
+                    cB.Content = "Flutter";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
 
             }
             catch
