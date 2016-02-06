@@ -108,7 +108,10 @@ namespace EKG_Project.GUI
             { "HeartClass", false }
         };
 
-
+        private class AnnotationDescriber
+        {
+            public string idName { get; set; }
+        }
 
         //test
         public ECGPlot(string plotTitle)
@@ -1039,11 +1042,16 @@ namespace EKG_Project.GUI
                         //}
                         if (tp.Item2 == 0)
                         {                           
-                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "V", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "V",
+                                                                             Tag = new AnnotationDescriber {idName= "HeartClass"},
+                                                                             TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
                         }
                         else
                         {
-                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "SV", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "SV",
+                                                                             Tag = new AnnotationDescriber { idName = "HeartClass" },
+                                                                             TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+
                         }
                         
                     }
@@ -1158,7 +1166,9 @@ namespace EKG_Project.GUI
 
                         if (tp.Item2 == 1)
                         {
-                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "Alt", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "Alt",
+                                                                             Tag = new AnnotationDescriber { idName = "TWaveAlt" },
+                                                                             TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
                         }
                     }
                 }
@@ -1251,9 +1261,23 @@ namespace EKG_Project.GUI
         {
             try
             {
-                if(modName == "HeartClass")
+                if(modName == "HeartClass" || modName == "TWaveAlt")
                 {
-                    CurrentPlot.Annotations.Clear();
+                    AnnotationDescriber aD = new AnnotationDescriber { idName = modName };
+                    bool goOn = true;
+                    while (goOn)
+                    {
+                        try
+                        {
+                            Annotation temp = CurrentPlot.Annotations.First(a => (a.Tag as AnnotationDescriber).idName  ==  aD.idName);
+                            CurrentPlot.Annotations.Remove(temp); 
+                        }
+                        catch(Exception ex)
+                        {
+                            goOn = false;
+                        }
+
+                    }
                 }
                 else
                 {
@@ -1262,8 +1286,9 @@ namespace EKG_Project.GUI
                 
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                System.Windows.MessageBox.Show(ex.Message);
                 return false;
             }
         }
