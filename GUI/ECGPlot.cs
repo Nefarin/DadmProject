@@ -1108,38 +1108,30 @@ namespace EKG_Project.GUI
         {
             try
             {
-                Qt_Disp_New_Data_Worker qDW = new Qt_Disp_New_Data_Worker(_currentAnalysisName);
-                List<int> myTemp = qDW.LoadTEndLocal(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)qDW.getNumberOfSamples(Qt_Disp_Signal.T_End_Local, _currentLeadName));
+                Atrial_Fibr_New_Data_Worker aFW = new Atrial_Fibr_New_Data_Worker(_currentAnalysisName);
+                Tuple<bool,Vector<double>, string, string> myTemp = aFW.LoadAfDetection(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)aFW.getNumberOfSamples(_currentLeadName));
+                       
+                       
+                System.Windows.MessageBox.Show(myTemp.Item3 + System.Environment.NewLine + myTemp.Item4);
 
-                bool addQt = false;
-
-                ScatterSeries qtSeries = new ScatterSeries();
-                qtSeries.Title = "QTDisp";
-
-                //for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
-                //{
-                //    if (myTemp.Contains(i))
-                //    {
-                //        qtSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
-
-                //        addQt = true;
-                //    }
-                //}
-
-                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
+                if (myTemp.Item1)
                 {
 
-                    qtSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+                    ScatterSeries atrialFSeries = new ScatterSeries();
+                    atrialFSeries.Title = "AtrialFiber";
 
-                    addQt = true;
+                    foreach (int i in myTemp.Item2.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
+                    {
+                        atrialFSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 1.5 });
+                    }
+
+
+                    CurrentPlot.Series.Add(atrialFSeries);
+                    
+
+                    RefreshPlot();
                 }
-
-                if (addQt)
-                {
-                    CurrentPlot.Series.Add(qtSeries);
-                }
-
-                RefreshPlot();
+              
                 return true;
             }
             catch (Exception ex)
