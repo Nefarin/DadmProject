@@ -1054,16 +1054,23 @@ namespace EKG_Project.GUI
                 ScatterSeries qtSeries = new ScatterSeries();
                 qtSeries.Title = "QTDisp";
 
-                for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
+                //for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
+                //{
+                //    if (myTemp.Contains(i))
+                //    {
+                //        qtSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+
+                //        addQt = true;
+                //    }
+                //}
+
+                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadEndIndex && a>0)))
                 {
-                    if (myTemp.Contains(i))
-                    {
-                        qtSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+                    
+                    qtSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
 
-                        addQt = true;
-                    }
+                    addQt = true;
                 }
-
 
                 if (addQt)
                 {
