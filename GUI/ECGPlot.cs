@@ -1008,8 +1008,9 @@ namespace EKG_Project.GUI
 
                 foreach(var tp in myTemp)
                 {
-                    
-                    if (tp.Item1 <= _analyseSamples)
+
+                    // _analyseSamples
+                    if (tp.Item1 <= _currentBaselineLeadEndIndex)
                     {
                         Double yvalue = _currentBaselineLeadVector[tp.Item1];
                         //if (yvalue > 0)
