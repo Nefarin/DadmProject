@@ -160,7 +160,7 @@ namespace EKG_Project.Modules.Flutter
                 case FlutterAlgStates.ExtractEcgFragments:
                     _t2qrsEkgParts = _flutter.GetEcgPart();
                     _currentState = FlutterAlgStates.CalculateSpectralDensity;
-                    _actualProgress = 100.0 / 6;
+                    _actualProgress = 0.01;
                     break;
 
                 case FlutterAlgStates.CalculateSpectralDensity:
@@ -177,11 +177,10 @@ namespace EKG_Project.Modules.Flutter
                             _spectralDensityList.AddRange(_flutter.CalculateSpectralDensity(_t2qrsEkgParts.GetRange(_n, 1)));
                             _frequenciesList.AddRange(_flutter.CalculateFrequenciesAxis(_spectralDensityList.GetRange(_n, 1)));
                             _n++;
-                            _actualProgress = 1 * 100.0 / 6 + (100.0 * _n / _t2qrsEkgParts.Count / 6.0);
+                            _actualProgress = 95.0 * _n / _t2qrsEkgParts.Count + 0.01;
                         }
                         else
                         {
-                            _actualProgress = 2 * 100.0 / 6;
                             _currentState = FlutterAlgStates.TrimSpectrum;
                             _n = 0;
                         }
@@ -193,19 +192,19 @@ namespace EKG_Project.Modules.Flutter
                 case FlutterAlgStates.TrimSpectrum:
                     _flutter.TrimToGivenFreq(_spectralDensityList, _frequenciesList, 70.0);
                     _currentState = FlutterAlgStates.InterpolateSpectrum;
-                    _actualProgress = 3 * 100.0 / 6;
+                    _actualProgress = 96.0;
                     break;
 
                 case FlutterAlgStates.InterpolateSpectrum:
                     _flutter.InterpolateSpectralDensity(_spectralDensityList, _frequenciesList, 0.01);
                     _currentState = FlutterAlgStates.CalculatePower;
-                    _actualProgress = 4 * 100.0 / 6;
+                    _actualProgress = 97.0;
                     break;
 
                 case FlutterAlgStates.CalculatePower:
                     _powerList = _flutter.CalculateIntegralForEachSpectrum(_frequenciesList, _spectralDensityList);
                     _currentState = FlutterAlgStates.DetectAFL;
-                    _actualProgress = 5 * 100.0 / 6;
+                    _actualProgress = 98.0;
                     break;
 
                 case FlutterAlgStates.DetectAFL:
