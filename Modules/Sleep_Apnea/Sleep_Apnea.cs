@@ -13,7 +13,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
     public class Sleep_Apnea : IModule
     {
         private const int DEFAULT_STEP = 600;
-        private const int NUMBER_OF_STATES = 2;
+        private const int NUMBER_OF_STATES = 9;
 
         private enum State
         {
@@ -51,6 +51,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         private bool _ended;
 
         double _actualProgress;
+        double _lastProgress;
         uint _fs;
         string _lead;
         int _currentRPeak = -1;
@@ -199,14 +200,14 @@ namespace EKG_Project.Modules.Sleep_Apnea
                 case State.Resampling:
                     _RR_res = _sleepApneaAlg.resampling(_RR_average, (int)_resampFreq);
                     _currentState = State.BandPassFiltering;
-                    _actualProgress = 3 * 100.0 / 9;
+                    _actualProgress = 3 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.BandPassFiltering:
                     _RR_HP = _sleepApneaAlg.HP(_RR_res);
                     _RR_LP = _sleepApneaAlg.LP(_RR_HP);
                     _currentState = State.CaclulatingHilbert;
-                    _actualProgress = 4 * 100.0 / 9;
+                    _actualProgress = 4 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.CaclulatingHilbert:
@@ -214,19 +215,19 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     _h_freq = new List<List<double>>(2);
                     _sleepApneaAlg.hilbert(_RR_LP, ref _h_amp, ref _h_freq);
                     _currentState = State.MedianFiltering;
-                    _actualProgress = 5 * 100.0 / 9;
+                    _actualProgress = 5 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.MedianFiltering:
                      _sleepApneaAlg.medianFilter(_h_freq, _h_amp);
                     _currentState = State.AmplitudeNormalization;
-                    _actualProgress = 6 * 100.0 / 9;
+                    _actualProgress = 6 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.AmplitudeNormalization:
                     _sleepApneaAlg.ampNormalization(_h_amp);
                     _currentState = State.DetecingApnea;
-                    _actualProgress = 7 * 100.0 / 9;
+                    _actualProgress = 7 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.DetecingApnea:
@@ -234,7 +235,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     _time = new List<double>();
                     _sleepApneaAlg.detectApnea(_h_amp, _h_freq, _detected, _time);
                     _currentState = State.Finished;
-                    _actualProgress = 8 * 100.0 / 9;
+                    _actualProgress = 8 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.Finished:
@@ -256,8 +257,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                         _outputWorker.SaveDetectedApnea(_leads[i], true, annotations);
                     }
 
-                    
-
+                   
                     _actualProgress = 100.0;
                     _ended = true;
                     break;
