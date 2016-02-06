@@ -173,7 +173,7 @@ namespace EKG_Project.GUI
 
             if (moduleName == "HRV2")
             {
-                //StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+                StartPlot(analyseName, moduleName, moduleDict, analysedModules);
                 StartTable(analyseName, moduleName, moduleDict, tableModuleList);
                 //StartHistogram(analyseName, moduleName, moduleDict);
             }

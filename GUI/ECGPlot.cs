@@ -876,6 +876,24 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplayHRV2Leads(string leadName)
+        {
+            try
+            {
+                _currentLeadName = leadName;
+
+                System.Windows.MessageBox.Show(CurrentPlot.Title + " " + _currentLeadName);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+
         public bool DisplayEcgBasicLeadVersion()
         {
             try
