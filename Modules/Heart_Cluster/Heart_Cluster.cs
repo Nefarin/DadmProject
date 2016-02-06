@@ -323,7 +323,7 @@ namespace EKG_Project.Modules.Heart_Cluster
         public static void Main(String[] args)
         {
             IModule testModule = new Heart_Cluster();
-            Heart_Cluster_Params param = new Heart_Cluster_Params("test321");
+            Heart_Cluster_Params param = new Heart_Cluster_Params("Analysis 1");
 
             testModule.Init(param);
             while (!testModule.Ended())
