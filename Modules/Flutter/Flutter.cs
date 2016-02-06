@@ -36,7 +36,8 @@ namespace EKG_Project.Modules.Flutter
         List<string> _channels;
 
         public Flutter_Params Params { get; set; }
-        public Waves_New_Data_Worker InputWorker { get; set; }
+        public Waves_New_Data_Worker InputWorkerWaves { get; set; }
+        public ECG_Baseline_New_Data_Worker InputWorkerBaseline { get; set; }
         public Flutter_New_Data_Worker OutputWorker { get; set; }
         public Basic_New_Data_Worker InputWorker_basic { get; set; }
 
@@ -88,7 +89,8 @@ namespace EKG_Project.Modules.Flutter
                 _ended = false;
 
                 InputWorker_basic = new Basic_New_Data_Worker(Params.AnalysisName);
-                InputWorker = new Waves_New_Data_Worker(Params.AnalysisName);
+                InputWorkerBaseline = new ECG_Baseline_New_Data_Worker(Params.AnalysisName);
+                InputWorkerWaves = new Waves_New_Data_Worker(Params.AnalysisName);
                 OutputWorker = new Flutter_New_Data_Worker(Params.AnalysisName);
 
                 _actualProgress = 0;
@@ -96,7 +98,7 @@ namespace EKG_Project.Modules.Flutter
                 _fs = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
 
                 _channels = InputWorker_basic.LoadLeads();
-                string[] expectedChannels = new string[] { "II", "III", "I" };
+                string[] expectedChannels = new string[] { "II", "MLII", "III", "MLIII", "I", "MLI" };
                 _indexOfLead = -1;
                 int i = 0;
                 while (_indexOfLead < 0 && i < expectedChannels.Length)
@@ -108,14 +110,17 @@ namespace EKG_Project.Modules.Flutter
                     _indexOfLead = 0;
                 }
 
-                uint length = InputWorker.getNumberOfSamples(Waves_Signal.QRSOnsets, _channels[_indexOfLead]);
-                _QRSonsets = InputWorker.LoadSignal(Waves_Signal.QRSOnsets, _channels[_indexOfLead], 0, (int)length);
+                uint length = InputWorkerWaves.getNumberOfSamples(Waves_Signal.QRSOnsets, _channels[_indexOfLead]);
+                _QRSonsets = InputWorkerWaves.LoadSignal(Waves_Signal.QRSOnsets, _channels[_indexOfLead], 0, (int)length);
 
-                length = InputWorker.getNumberOfSamples(Waves_Signal.TEnds, _channels[_indexOfLead]);
-                _Tends = InputWorker.LoadSignal(Waves_Signal.TEnds, _channels[_indexOfLead], 0, (int)length);
+                length = InputWorkerWaves.getNumberOfSamples(Waves_Signal.TEnds, _channels[_indexOfLead]);
+                _Tends = InputWorkerWaves.LoadSignal(Waves_Signal.TEnds, _channels[_indexOfLead], 0, (int)length);
 
-                length = InputWorker_basic.getNumberOfSamples(_channels[_indexOfLead]);
-                _samples = InputWorker_basic.LoadSignal(_channels[_indexOfLead], 0, (int)length);
+                length = InputWorkerBaseline.getNumberOfSamples(_channels[_indexOfLead]);
+                _samples = InputWorkerBaseline.LoadSignal(_channels[_indexOfLead], 0, (int)length);
+
+                //length = InputWorker_basic.getNumberOfSamples(_channels[_indexOfLead]);
+                //_samples = InputWorker_basic.LoadSignal(_channels[_indexOfLead], 0, (int)length);
 
                 _currentState = FlutterAlgStates.ExtractEcgFragments;
 

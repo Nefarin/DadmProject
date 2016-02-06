@@ -20,8 +20,8 @@ namespace EKG_Project.Modules.Flutter
         List<int> _ecgPartStarts = new List<int>();
         List<int> _ecgPartEnds = new List<int>();
 
-        private const double RI_LOWER_LIMIT_FOR_AFL = 0.3;
-        private const double RI_UPPER_LIMIT_FOR_AFL = 1.1;
+        private const double RI_LOWER_LIMIT_FOR_AFL = 1.6;
+        private const double RI_UPPER_LIMIT_FOR_AFL = 2.4;
 
         public Flutter_Alg(List<int> tEnds, List<int> qrsOnsets,
             Vector<double> samples, double fs)
@@ -326,38 +326,15 @@ namespace EKG_Project.Modules.Flutter
             _Tends = _Tends.Where(x => x > 0).ToList();
             _QRSonsets = _QRSonsets.Where(x => x > 0).ToList();
 
-            for (int i = 0, j = 0; i < _QRSonsets.Count && j < _Tends.Count; j++)
+            for (int i = 1, j = 0; i < _QRSonsets.Count && j < _Tends.Count; j++, i++)
             {
                 List<double> tmpEkgPart = new List<double>(1000);
                 int start = (int)_Tends[j];
                 int end = (int)_QRSonsets[i];
-                while (start >= end)
+                
+                if(start == -1 || end == -1)
                 {
-                    i++;
-                    if (i >= _QRSonsets.Count)
-                    {
-                        break;
-                    }
-                    end = (int)_QRSonsets[i];
-                }
-                while (true)
-                {
-                    if (j + 1 >= _Tends.Count)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        if (end - start > end - _Tends[j + 1] && end - _Tends[j + 1] > 0)
-                        {
-                            j++;
-                            start = (int)_Tends[j];
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
+                    continue;
                 }
 
                 _ecgPartStarts.Add(start);
