@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<OrderedTest name="hrv1" storage="c:\users\mik\documents\githubvisualstudio\dadmproject\ekg_unit\modules\hrv1\hrv1.orderedtest" id="5ea3229f-3ee3-4009-a3ba-5e8eacd8e17d" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+<OrderedTest name="hrv1" storage="c:\users\groszek\desktop\dadm working copy\dadmproject_merge\dadmproject\ekg_unit\modules\hrv1\hrv1.orderedtest" id="5ea3229f-3ee3-4009-a3ba-5e8eacd8e17d" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
   <TestLinks>
-    <TestLink id="14c96559-6018-4e1a-a085-6c86c4851197" name="lombscargleTest" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="ab83c4ea-d123-4578-bfcd-f62787540700" name="hrt" storage="..\hrt\hrt.orderedtest" type="Microsoft.VisualStudio.TestTools.TestTypes.Ordered.AutoSuite, Microsoft.VisualStudio.QualityTools.Tips.OrderedTest.ObjectModel,   PublicKeyToken=b03f5f7f11d50a3a" />
   </TestLinks>
 </OrderedTest>
