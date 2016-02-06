@@ -33,10 +33,12 @@ namespace EKG_Project.Modules.Flutter
         private double _actualProgress;
         uint _fs;
         int _indexOfLead;
+        int _n;
         List<string> _channels;
 
         public Flutter_Params Params { get; set; }
-        public Waves_New_Data_Worker InputWorker { get; set; }
+        public Waves_New_Data_Worker InputWorkerWaves { get; set; }
+        public ECG_Baseline_New_Data_Worker InputWorkerBaseline { get; set; }
         public Flutter_New_Data_Worker OutputWorker { get; set; }
         public Basic_New_Data_Worker InputWorker_basic { get; set; }
 
@@ -88,7 +90,8 @@ namespace EKG_Project.Modules.Flutter
                 _ended = false;
 
                 InputWorker_basic = new Basic_New_Data_Worker(Params.AnalysisName);
-                InputWorker = new Waves_New_Data_Worker(Params.AnalysisName);
+                InputWorkerBaseline = new ECG_Baseline_New_Data_Worker(Params.AnalysisName);
+                InputWorkerWaves = new Waves_New_Data_Worker(Params.AnalysisName);
                 OutputWorker = new Flutter_New_Data_Worker(Params.AnalysisName);
 
                 _actualProgress = 0;
@@ -96,7 +99,7 @@ namespace EKG_Project.Modules.Flutter
                 _fs = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
 
                 _channels = InputWorker_basic.LoadLeads();
-                string[] expectedChannels = new string[] { "II", "III", "I" };
+                string[] expectedChannels = new string[] { "II", "MLII", "III", "MLIII", "I", "MLI" };
                 _indexOfLead = -1;
                 int i = 0;
                 while (_indexOfLead < 0 && i < expectedChannels.Length)
@@ -108,14 +111,14 @@ namespace EKG_Project.Modules.Flutter
                     _indexOfLead = 0;
                 }
 
-                uint length = InputWorker.getNumberOfSamples(Waves_Signal.QRSOnsets, _channels[_indexOfLead]);
-                _QRSonsets = InputWorker.LoadSignal(Waves_Signal.QRSOnsets, _channels[_indexOfLead], 0, (int)length);
+                uint length = InputWorkerWaves.getNumberOfSamples(Waves_Signal.QRSOnsets, _channels[_indexOfLead]);
+                _QRSonsets = InputWorkerWaves.LoadSignal(Waves_Signal.QRSOnsets, _channels[_indexOfLead], 0, (int)length);
 
-                length = InputWorker.getNumberOfSamples(Waves_Signal.TEnds, _channels[_indexOfLead]);
-                _Tends = InputWorker.LoadSignal(Waves_Signal.TEnds, _channels[_indexOfLead], 0, (int)length);
+                length = InputWorkerWaves.getNumberOfSamples(Waves_Signal.TEnds, _channels[_indexOfLead]);
+                _Tends = InputWorkerWaves.LoadSignal(Waves_Signal.TEnds, _channels[_indexOfLead], 0, (int)length);
 
-                length = InputWorker_basic.getNumberOfSamples(_channels[_indexOfLead]);
-                _samples = InputWorker_basic.LoadSignal(_channels[_indexOfLead], 0, (int)length);
+                length = InputWorkerBaseline.getNumberOfSamples(_channels[_indexOfLead]);
+                _samples = InputWorkerBaseline.LoadSignal(_channels[_indexOfLead], 0, (int)length);
 
                 _currentState = FlutterAlgStates.ExtractEcgFragments;
 
@@ -128,18 +131,14 @@ namespace EKG_Project.Modules.Flutter
         {
             if(Runnable())
             {
-                try
-                {
+                //try
+                //{
                     processData();
-                }
-                catch(Exception)
-                {
-                    foreach(var channel in _channels)
-                    {
-                        OutputWorker.SaveFlutterAnnotations(channel, true, new List<Tuple<int, int>>());
-                    }                  
-                    _currentState = FlutterAlgStates.Finished;
-                }
+                //}
+                //catch(Exception)
+                //{                 
+                    //_currentState = FlutterAlgStates.Finished;
+                //}
             }
             else
             {
@@ -154,32 +153,51 @@ namespace EKG_Project.Modules.Flutter
                 case FlutterAlgStates.ExtractEcgFragments:
                     _t2qrsEkgParts = _flutter.GetEcgPart();
                     _currentState = FlutterAlgStates.CalculateSpectralDensity;
-                    _actualProgress = 100.0 / 6;
+                    _actualProgress = 0.01;
                     break;
 
                 case FlutterAlgStates.CalculateSpectralDensity:
-                    _spectralDensityList = _flutter.CalculateSpectralDensity(_t2qrsEkgParts);
-                    _frequenciesList = _flutter.CalculateFrequenciesAxis(_spectralDensityList);
-                    _currentState = FlutterAlgStates.TrimSpectrum;
-                    _actualProgress = 2 * 100.0 / 6;
+                    if(_spectralDensityList == null)
+                    {
+                        _spectralDensityList = new List<double[]>(_t2qrsEkgParts.Count);
+                        _frequenciesList = new List<double[]>(_t2qrsEkgParts.Count);
+                        _n = 0;
+                    }
+                    else
+                    {
+                        if (_n < _t2qrsEkgParts.Count)
+                        {
+                            _spectralDensityList.AddRange(_flutter.CalculateSpectralDensity(_t2qrsEkgParts.GetRange(_n, 1)));
+                            _frequenciesList.AddRange(_flutter.CalculateFrequenciesAxis(_spectralDensityList.GetRange(_n, 1)));
+                            _n++;
+                            _actualProgress = 95.0 * _n / _t2qrsEkgParts.Count + 0.01;
+                        }
+                        else
+                        {
+                            _currentState = FlutterAlgStates.TrimSpectrum;
+                            _n = 0;
+                        }
+
+                    }                    
+                    
                     break;
 
                 case FlutterAlgStates.TrimSpectrum:
                     _flutter.TrimToGivenFreq(_spectralDensityList, _frequenciesList, 70.0);
                     _currentState = FlutterAlgStates.InterpolateSpectrum;
-                    _actualProgress = 3 * 100.0 / 6;
+                    _actualProgress = 96.0;
                     break;
 
                 case FlutterAlgStates.InterpolateSpectrum:
                     _flutter.InterpolateSpectralDensity(_spectralDensityList, _frequenciesList, 0.01);
                     _currentState = FlutterAlgStates.CalculatePower;
-                    _actualProgress = 4 * 100.0 / 6;
+                    _actualProgress = 97.0;
                     break;
 
                 case FlutterAlgStates.CalculatePower:
                     _powerList = _flutter.CalculateIntegralForEachSpectrum(_frequenciesList, _spectralDensityList);
                     _currentState = FlutterAlgStates.DetectAFL;
-                    _actualProgress = 5 * 100.0 / 6;
+                    _actualProgress = 98.0;
                     break;
 
                 case FlutterAlgStates.DetectAFL:

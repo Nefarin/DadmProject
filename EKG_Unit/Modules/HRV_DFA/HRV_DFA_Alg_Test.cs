@@ -11,6 +11,7 @@ namespace EKG_Unit.Modules.HRV_DFA
     {
         //ObtainFluctuations
         [TestMethod]
+        [Description("Test if method performs properly V1")]
         public void ObtainFluctuations_Test()
         {
             int step = 10;
@@ -27,6 +28,7 @@ namespace EKG_Unit.Modules.HRV_DFA
             Assert.IsNotNull(result.Item2);
         }
         [TestMethod]
+        [Description("Test if method performs properly V2")]
         public void ObtainFluctuations_Test2()
         {
             int step = 10;

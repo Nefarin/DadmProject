@@ -501,8 +501,66 @@ namespace EKG_Project.GUI
                     _seriesChecbox.Add(tEnds);
                 }
 
+                if (currentModulesList.Contains("HEART_CLASS"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "HeartClass";
+                    cB.Content = "HeartClass";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
+                if (currentModulesList.Contains("QT_DISP"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "QTDisp";
+                    cB.Content = "QTDisp";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
 
 
+                if (currentModulesList.Contains("ATRIAL_FIBER"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "AtrialFiber";
+                    cB.Content = "AtrialFiber";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
+                if (currentModulesList.Contains("T_WAVE_ALT"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "TWaveAlt";
+                    cB.Content = "TWaveAlt";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
+                if (currentModulesList.Contains("FLUTTER"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "Flutter";
+                    cB.Content = "Flutter";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
 
 
             }

@@ -42,7 +42,10 @@ namespace EKG_Project.GUI
         private QT_Disp_Data_Worker _qt_Disp_Data_Worker;
         private string _moduleInTable;
         private string _analyseName;
-        
+
+        private string _currentAnalysisName;
+        private List<string> leadsNameList;
+
 
 
         public VisualisationTableControl(string analyseName, string moduleName, KeyValuePair<string, int> moduleInfo)
@@ -67,6 +70,68 @@ namespace EKG_Project.GUI
 
                     this.VisualisationDataTable.DataContext = _tableData;
         }
+
+
+        //Program ver 2.0
+
+        public VisualisationTableControl(string analyseName, string moduleName, KeyValuePair<string, int> moduleInfo, List<string> moduleList)
+        {
+            InitializeComponent();
+            _moduleInTable = moduleName;
+            _analyseName = analyseName;
+            _currentAnalysisName = analyseName;
+            
+            _tableData = new List<DataToTable>();
+
+            try
+            {
+                Basic_New_Data_Worker basicDataForLeads = new Basic_New_Data_Worker(analyseName);
+                leadsNameList = basicDataForLeads.LoadLeads();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+
+            switch (moduleName)
+            {
+                case "QT_DISP":
+                    DisplayQTDisplayTable();
+                    break;
+                default:
+                    break;
+            }
+
+
+            this.VisualisationDataTable.DataContext = _tableData;
+        }
+
+        private bool DisplayQTDisplayTable()
+        {
+            try
+            {
+                
+                Qt_Disp_New_Data_Worker qDW = new Qt_Disp_New_Data_Worker(_currentAnalysisName);
+                foreach (string lead in leadsNameList)
+                {
+                    DataToTable dTT = new DataToTable();
+                    dTT.Lead = lead;
+                    dTT.QT_Disp_Lcal = qDW.LoadAttribute(Qt_Disp_Attributes.QT_disp_local, lead).ToString("0.00");
+                    dTT.QT_Mean = qDW.LoadAttribute(Qt_Disp_Attributes.QT_mean, lead).ToString("0.00");
+                    dTT.QT_Std = qDW.LoadAttribute(Qt_Disp_Attributes.QT_std, lead).ToString("0.00");
+                    _tableData.Add(dTT);
+                }
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+
 
         public VisualisationTableControl()
         {

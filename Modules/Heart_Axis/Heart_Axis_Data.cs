@@ -8,7 +8,10 @@ namespace EKG_Project.Modules.Heart_Axis
 {
     public class Heart_Axis_Data : ECG_Data
     {
-        //Heart_Axis Module output parameters
+        /// <summary>
+        /// Class that includes output results of class Heart_Axis
+        /// </summary>
+
         private double _heartAxis;
 
         public double HeartAxis
