@@ -323,8 +323,6 @@ namespace EKG_Project.Modules.Flutter
         public List<double[]> GetEcgPart()
         {
             List<double[]> t2qrsEkgParts = new List<double[]>();
-            _Tends = _Tends.Where(x => x > 0).ToList();
-            _QRSonsets = _QRSonsets.Where(x => x > 0).ToList();
 
             for (int i = 1, j = 0; i < _QRSonsets.Count && j < _Tends.Count; j++, i++)
             {

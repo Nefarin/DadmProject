@@ -120,9 +120,6 @@ namespace EKG_Project.Modules.Flutter
                 length = InputWorkerBaseline.getNumberOfSamples(_channels[_indexOfLead]);
                 _samples = InputWorkerBaseline.LoadSignal(_channels[_indexOfLead], 0, (int)length);
 
-                //length = InputWorker_basic.getNumberOfSamples(_channels[_indexOfLead]);
-                //_samples = InputWorker_basic.LoadSignal(_channels[_indexOfLead], 0, (int)length);
-
                 _currentState = FlutterAlgStates.ExtractEcgFragments;
 
                 _flutter = new Flutter_Alg(_Tends, _QRSonsets, _samples, _fs);
@@ -134,18 +131,14 @@ namespace EKG_Project.Modules.Flutter
         {
             if(Runnable())
             {
-                try
-                {
+                //try
+                //{
                     processData();
-                }
-                catch(Exception)
-                {
-                    foreach(var channel in _channels)
-                    {
-                        OutputWorker.SaveFlutterAnnotations(channel, true, new List<Tuple<int, int>>());
-                    }                  
-                    _currentState = FlutterAlgStates.Finished;
-                }
+                //}
+                //catch(Exception)
+                //{                 
+                    //_currentState = FlutterAlgStates.Finished;
+                //}
             }
             else
             {
