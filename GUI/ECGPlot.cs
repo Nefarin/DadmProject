@@ -1141,6 +1141,51 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplayTWaveAltLeadVersion()
+        {
+            try
+            {
+                Heart_Class_New_Data_Worker hCW = new Heart_Class_New_Data_Worker(_currentAnalysisName);
+                List<Tuple<int, int>> myTemp = hCW.LoadClassificationResult(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)hCW.getNumberOfSamples(_currentLeadName));
+
+                foreach (var tp in myTemp)
+                {
+
+                    // _analyseSamples
+                    if (tp.Item1 <= _currentBaselineLeadEndIndex)
+                    {
+                        Double yvalue = _currentBaselineLeadVector[tp.Item1];
+                        //if (yvalue > 0)
+                        //{
+                        //    yvalue += 0.3;
+                        //}
+                        //else
+                        //{
+                        //    yvalue -= 0.6;
+                        //}
+                        if (tp.Item2 == 0)
+                        {
+                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "V", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+                        }
+                        else
+                        {
+                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "SV", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+                        }
+
+                    }
+                }
+
+                RefreshPlot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+
         public bool ControlOtherModulesSeries(string moduleName, bool visible)
         {
             try
@@ -1197,6 +1242,9 @@ namespace EKG_Project.GUI
                         DisplayQTDispLeadVersion();
                         break;
                     case "AtrialFiber":
+                        DisplayAtrialFiberLeadVersion();
+                        break;
+                    case "TWaveAlt":
                         DisplayAtrialFiberLeadVersion();
                         break;
 

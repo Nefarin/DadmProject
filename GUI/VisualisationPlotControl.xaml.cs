@@ -538,6 +538,18 @@ namespace EKG_Project.GUI
                     _seriesChecbox.Add(cB);
                 }
 
+                if (currentModulesList.Contains("T_WAVE_ALT"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "TWaveAlt";
+                    cB.Content = "TWaveAlt";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
 
             }
             catch
