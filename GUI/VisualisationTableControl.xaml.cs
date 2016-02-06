@@ -36,6 +36,16 @@ namespace EKG_Project.GUI
             public string QT_Std { get; set; }
         }
 
+        public class DataToTableHRV2
+        {
+
+            public string Lead { get; set; }
+            public string TINN { get; set; }
+            public string TriangleIndex { get; set; }
+            public string SD1 { get; set; }
+            public string SD2{ get; set; }
+        }
+
         //public int ID { get; set; }
 
         List<DataToTable> _tableData; 
@@ -82,6 +92,7 @@ namespace EKG_Project.GUI
             _currentAnalysisName = analyseName;
             
             _tableData = new List<DataToTable>();
+            
 
             try
             {
@@ -98,19 +109,22 @@ namespace EKG_Project.GUI
                 case "QT_DISP":
                     DisplayQTDisplayTable();
                     break;
+                case "HRV2":
+                    DisplayHRV2Table();
+                    break;
                 default:
                     break;
             }
 
 
-            this.VisualisationDataTable.DataContext = _tableData;
+           
         }
 
         private bool DisplayQTDisplayTable()
         {
             try
             {
-                
+                _tableData = new List<DataToTable>();
                 Qt_Disp_New_Data_Worker qDW = new Qt_Disp_New_Data_Worker(_currentAnalysisName);
                 foreach (string lead in leadsNameList)
                 {
@@ -122,6 +136,7 @@ namespace EKG_Project.GUI
                     _tableData.Add(dTT);
                 }
 
+                this.VisualisationDataTable.DataContext = _tableData;
                 return true;
             }
             catch(Exception ex)
@@ -130,6 +145,33 @@ namespace EKG_Project.GUI
                 return false;
             }
         }
+
+        private bool DisplayHRV2Table()
+        {
+            try
+            {
+                List<DataToTableHRV2> _dataToPrint = new List<DataToTableHRV2>();
+                HRV2_New_Data_Worker hW = new HRV2_New_Data_Worker(_currentAnalysisName);
+                foreach (string lead in leadsNameList)
+                {
+                    DataToTableHRV2 dTT = new DataToTableHRV2();
+                    dTT.Lead = lead;
+                    dTT.TINN = hW.LoadAttribute(HRV2_Attributes.Tinn, lead).ToString(); 
+                    dTT.TriangleIndex = hW.LoadAttribute(HRV2_Attributes.TriangleIndex, lead).ToString();
+                    dTT.SD1 = hW.LoadAttribute(HRV2_Attributes.SD1, lead).ToString("0.00");
+                    dTT.SD2 = hW.LoadAttribute(HRV2_Attributes.SD2, lead).ToString("0.00");
+                    _dataToPrint.Add(dTT);
+                }
+                this.VisualisationDataTable.DataContext = _dataToPrint;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
 
 
 
