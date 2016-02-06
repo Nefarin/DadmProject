@@ -19,6 +19,10 @@ namespace EKG_Project.Modules.QT_Disp
         private State _currentState;
         private int _currentChannelIndex;
         private string _currentName;
+        private string[] _leads;
+        Qt_Disp_New_Data_Worker worker;
+        int _length;
+        int _numberOfChannels;
 
         public void Abort()
         {
@@ -58,9 +62,11 @@ namespace EKG_Project.Modules.QT_Disp
             _strToObj = new Dictionary<string, object>();
             _strToStr = new Dictionary<string, string>();
 
-            QT_Disp_Data_Worker worker = new QT_Disp_Data_Worker(_analysisName);
-            worker.Load();
-            _data = worker.Data;
+            Basic_New_Data_Worker basicworker = new Basic_New_Data_Worker(_analysisName);
+            worker = new Qt_Disp_New_Data_Worker(_analysisName);
+            _leads = basicworker.LoadLeads().ToArray();
+            _numberOfChannels = _leads.Count();          
+            
             _currentState = State.START_CHANNEL;
             _currentChannelIndex = 0;
         }
@@ -70,17 +76,18 @@ namespace EKG_Project.Modules.QT_Disp
             switch (_currentState)
             {
                 case (State.START_CHANNEL):
-                    _currentName = _data.QT_mean[_currentChannelIndex].Item1;                    
+                    _currentName = _leads[_currentChannelIndex];                  
                     _currentState = State.CALCULATE;
+                    _length = (int)worker.getNumberOfSamples(Qt_Disp_Signal.T_End_Local, _currentName);
                     break;
                 case (State.CALCULATE):
-                    List<int> currentData = _data.T_End_Local[_currentChannelIndex].Item2;
+                    List<int> currentData = worker.LoadTEndLocal(_currentName, 0, _length);
                     double allT_Ends = currentData.Count;
                     double badT_Ends = 0;
                     double effectiveness = 0;
-                    double mean = _data.QT_mean[_currentChannelIndex].Item2;
-                    double std = _data.QT_std[_currentChannelIndex].Item2;
-                    Console.WriteLine(mean);
+                    double mean = worker.LoadAttribute(Qt_Disp_Attributes.QT_mean, _currentName);
+                    double std = worker.LoadAttribute(Qt_Disp_Attributes.QT_std, _currentName);
+                    
                     foreach (int T_End in currentData)
                     {
                         if(T_End == -1)
@@ -101,7 +108,7 @@ namespace EKG_Project.Modules.QT_Disp
                     break;
                 case (State.NEXT_CHANNEL):
                     _currentChannelIndex++;
-                    if (_currentChannelIndex >= _data.QT_disp_local.Count)
+                    if (_currentChannelIndex >= _numberOfChannels)
                     {
                         _currentState = State.END;
                     }
@@ -115,7 +122,7 @@ namespace EKG_Project.Modules.QT_Disp
         public static void Main(String[] args)
         {
             QT_Disp_Stats stats = new QT_Disp_Stats();
-            stats.Init("TestAnalysis100");
+            stats.Init("Analysis QT");
 
 
             while (true)
