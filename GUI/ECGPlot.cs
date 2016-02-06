@@ -1145,8 +1145,8 @@ namespace EKG_Project.GUI
         {
             try
             {
-                Heart_Class_New_Data_Worker hCW = new Heart_Class_New_Data_Worker(_currentAnalysisName);
-                List<Tuple<int, int>> myTemp = hCW.LoadClassificationResult(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)hCW.getNumberOfSamples(_currentLeadName));
+                T_Wave_Alt_New_Data_Worker tWA = new T_Wave_Alt_New_Data_Worker(_currentAnalysisName);
+                List<Tuple<int,int>> myTemp = tWA.LoadAlternansDetectedList(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)tWA.getNumberOfSamples(_currentLeadName));
 
                 foreach (var tp in myTemp)
                 {
@@ -1155,23 +1155,11 @@ namespace EKG_Project.GUI
                     if (tp.Item1 <= _currentBaselineLeadEndIndex)
                     {
                         Double yvalue = _currentBaselineLeadVector[tp.Item1];
-                        //if (yvalue > 0)
-                        //{
-                        //    yvalue += 0.3;
-                        //}
-                        //else
-                        //{
-                        //    yvalue -= 0.6;
-                        //}
-                        if (tp.Item2 == 0)
-                        {
-                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "V", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
-                        }
-                        else
-                        {
-                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "SV", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
-                        }
 
+                        if (tp.Item2 == 1)
+                        {
+                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "Alt", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+                        }
                     }
                 }
 
@@ -1245,7 +1233,7 @@ namespace EKG_Project.GUI
                         DisplayAtrialFiberLeadVersion();
                         break;
                     case "TWaveAlt":
-                        DisplayAtrialFiberLeadVersion();
+                        DisplayTWaveAltLeadVersion();
                         break;
 
                     default:
