@@ -87,6 +87,33 @@ namespace EKG_Unit.Modules.Flutter
         }
 
         [TestMethod]
+        [Description("Should return correct ecg parts when qrsonset starts before tend")]
+        public void GetEcgPart_test4()
+        {
+            // Init 
+            double[] samplestmp = new double[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4 };
+            Vector<double> samples = Vector<double>.Build.DenseOfArray(samplestmp);
+            List<int> tends = new List<int>() { 2, -1, 19, 21 };
+            List<int> qrsonsets = new List<int>() { 1, 4, 13, -1, 30 };
+
+            List<double[]> result = new List<double[]>()
+            {
+                new double[] {2, 3, 4},
+                new double[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0}
+            };
+
+            Flutter_Alg flutter = new Flutter_Alg(tends, qrsonsets, samples, 360);
+            PrivateObject obj = new PrivateObject(flutter);
+
+            // Act
+            List<double[]> t2qrsEkgParts = (List<double[]>)obj.Invoke("GetEcgPart");
+
+            // Assert results
+            CollectionAssert.AreEqual(result[0], t2qrsEkgParts[0]);
+            CollectionAssert.AreEqual(result[1], t2qrsEkgParts[1]);
+        }
+
+        [TestMethod]
         [Description("Should calculate spectral density")]
         public void CalculateSpectralDensity_test1()
         {
@@ -297,6 +324,47 @@ namespace EKG_Unit.Modules.Flutter
 
             // Assert results
             Assert.AreEqual(power[0], result[0]);
+        }
+
+        [TestMethod]
+        [Description("Should detect flutter")]
+        public void Detect_test1()
+        {
+            // Init 
+            int fs = 100;
+            List<double[]> spectralDensity = new List<double[]>()
+            {
+                new double[] {0, 2, 10, 1, 0, 0, 0, 0, 0, 0},
+                new double[] {1, 2, 3, 2, 1, 0, 0, 0, 0, 0},
+                new double[] {0, 1, 2, 3, 4, 3, 2, 1, 1, 0},
+            };
+            List<double[]> frequencies = new List<double[]>()
+            {
+                new double[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+                new double[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+                new double[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+            };
+            List<double> power = new List<double>() { 13.0, 8.5, 17.0};
+
+            List<int> _ecgPartStarts = new List<int>() { 1, 5, 9 };
+            List<int> _ecgPartEnds = new List<int>() {3, 7, 11 };
+
+            List<Tuple<int, int>> detected = new List<Tuple<int, int>>()
+            {
+                new Tuple<int, int>(_ecgPartStarts[0], _ecgPartEnds[1]),
+            };
+
+            Flutter_Alg flutter = new Flutter_Alg(null, null, null, fs);
+            PrivateObject obj = new PrivateObject(flutter);
+            obj.SetField("_ecgPartStarts", _ecgPartStarts);
+            obj.SetField("_ecgPartEnds", _ecgPartEnds);
+
+            // Act
+            List<Tuple<int, int>> result = (List<Tuple<int, int>>)obj.Invoke("Detect", spectralDensity, frequencies, power);
+
+            // Assert results
+            Assert.AreEqual(detected[0].Item1, result[0].Item1);
+            Assert.AreEqual(detected[0].Item2, result[0].Item2);
         }
 
 

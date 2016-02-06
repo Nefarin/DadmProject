@@ -4,7 +4,6 @@ using EKG_Project.IO;
 using EKG_Project.Architecture.GUIMessages;
 using System;
 
-
 namespace EKG_Project.Architecture.ProcessingStates
 {
     public class ProcessFile : IProcessingState

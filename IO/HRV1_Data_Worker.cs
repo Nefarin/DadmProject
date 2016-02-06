@@ -89,7 +89,7 @@ namespace EKG_Project.IO
                 module.SetAttribute("name", moduleName);
                 root.AppendChild(module);
 
-                object[] Properties = {basicData.FreqBasedParams, basicData.TimeBasedParams, basicData.RInstants, basicData.RRIntervals};
+                object[] Properties = {basicData.FreqBasedParams, basicData.TimeBasedParams};
                 string[] Names = { "FreqBasedParams", "TimeBasedParams", "RInstants", "RRIntervals" };
                 int licznik = 0;
 
@@ -165,7 +165,7 @@ namespace EKG_Project.IO
                         Tuple<string, Vector<double>> read = Tuple.Create(readLead, readDigits);
                         list.Add(read);
                     }
-                    basicData.TimeBasedParams = list;
+                   // basicData.TimeBasedParams = list;
 
                     List<Tuple<string, Vector<double>>> FreqBasedParams = new List<Tuple<string, Vector<double>>>();
                     XmlNodeList freqBasedParams = module.SelectNodes("FreqBasedParams");
@@ -181,7 +181,7 @@ namespace EKG_Project.IO
                         Tuple<string, Vector<double>> read = Tuple.Create(readLead, readDigits);
                         FreqBasedParams.Add(read);
                     }
-                    basicData.FreqBasedParams = FreqBasedParams;
+                   // basicData.FreqBasedParams = FreqBasedParams;
 
                     List<Tuple<string, Vector<double>>> RInstants = new List<Tuple<string, Vector<double>>>();
                     XmlNodeList rInstants = module.SelectNodes("RInstants");
@@ -197,7 +197,7 @@ namespace EKG_Project.IO
                         Tuple<string, Vector<double>> read = Tuple.Create(readLead, readDigits);
                         RInstants.Add(read);
                     }
-                    basicData.RInstants = RInstants;
+                   // basicData.RInstants = RInstants;
 
                     List<Tuple<string, Vector<double>>> RRIntervals = new List<Tuple<string, Vector<double>>>();
                     XmlNodeList rrIntervals = module.SelectNodes("RRIntervals");
@@ -213,7 +213,7 @@ namespace EKG_Project.IO
                         Tuple<string, Vector<double>> read = Tuple.Create(readLead, readDigits);
                         RRIntervals.Add(read);
                     }
-                    basicData.RRIntervals = RRIntervals;
+                   // basicData.RRIntervals = RRIntervals;
                 }
             }
             this.Data = basicData;

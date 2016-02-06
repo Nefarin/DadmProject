@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Statistics;
 
 
 namespace EKG_Project.Modules.HRV_DFA
@@ -77,10 +78,13 @@ namespace EKG_Project.Modules.HRV_DFA
                     break;
 
                 case (State.CALCULATE):
-                    Vector<double> currentFn = _data.DfaValueFn[_currentChannelIndex].Item2;
+                    Vector<double> currentFn = _data.Fluctuations[_currentChannelIndex].Item2;
                     double meanF = currentFn.Sum() / currentFn.Count;
                     _strToStr.Add(_currentName + " mean value: ", meanF.ToString());
                     _strToObj.Add(_currentName + " mean value: ", meanF);
+                    double std = currentFn.StandardDeviation();
+                    _strToStr.Add(_currentName + " std value: ", std.ToString());
+                    _strToObj.Add(_currentName + " std value: ", std);
 
                     double currentAlpha = _data.ParamAlpha[_currentChannelIndex].Item2[1];
                     _strToStr.Add(_currentName + " alpha value: ", currentAlpha.ToString());
@@ -108,7 +112,7 @@ namespace EKG_Project.Modules.HRV_DFA
         public static void Main(String[] args)
         {
             HRV_DFA_Stats stats = new HRV_DFA_Stats();
-            stats.Init("Analysisnsr");
+            stats.Init("234");
 
 
             while (true)

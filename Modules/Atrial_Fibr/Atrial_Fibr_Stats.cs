@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EKG_Project.IO;
 using EKG_Project.Modules.R_Peaks;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.Atrial_Fibr
 {
@@ -16,11 +17,13 @@ namespace EKG_Project.Modules.Atrial_Fibr
         private Dictionary<string, Object> _strToObj;
         private Dictionary<string, string> _strToStr;
         private string _analysisName;
-        private Atrial_Fibr_Data _data;
-        private R_Peaks_Data _datarr;
+        private Atrial_Fibr_New_Data_Worker _worker;
+        private Basic_New_Data_Worker _basicWorker;
         private State _currentState;
         private int _currentChannelIndex;
         private string _currentName;
+        private string[] _leads;
+        
 
         #region Documentation
         /// <summary>
@@ -90,13 +93,9 @@ namespace EKG_Project.Modules.Atrial_Fibr
             _strToObj = new Dictionary<string, object>();
             _strToStr = new Dictionary<string, string>();
 
-            R_Peaks_Data_Worker workerrr = new R_Peaks_Data_Worker(_analysisName);
-            workerrr.Load();
-            _datarr = workerrr.Data;
-            Atrial_Fibr_Data_Worker worker = new Atrial_Fibr_Data_Worker(_analysisName);
-            worker.Load();
-            _data = worker.Data;
-            
+            _worker = new Atrial_Fibr_New_Data_Worker(_analysisName);
+            _basicWorker = new Basic_New_Data_Worker(_analysisName);
+            _leads = _basicWorker.LoadLeads().ToArray();
             _currentState = State.START_CHANNEL;
             _currentChannelIndex = 0;
         }
@@ -111,23 +110,24 @@ namespace EKG_Project.Modules.Atrial_Fibr
             switch (_currentState)
             {
                 case (State.START_CHANNEL):
-                    _currentName = _datarr.RPeaks[_currentChannelIndex].Item1;
+                    _currentName = _leads[_currentChannelIndex];
                     _currentState = State.CALCULATE;
                     break;
                 case (State.CALCULATE):
-                    string currentDetected= _data.AfDetection[_currentChannelIndex].Item3;
-                    string currentDescription= _data.AfDetection[_currentChannelIndex].Item4;
+                    Tuple<bool, Vector<double>, string, string> _data = _worker.LoadAfDetection(_currentName, 0, 1);
+                    string currentDetected= _data.Item3;
+                    string currentDescription= _data.Item4;
                     _strToStr.Add(_currentName, " " + currentDetected + " " +currentDescription);
                     _strToObj.Add(_currentName, " " + currentDetected + " " + currentDescription);                                                         
                     _currentState = State.NEXT_CHANNEL;
                     break;
                 case (State.NEXT_CHANNEL):
                     _currentChannelIndex++;
-                    if (_currentChannelIndex >= _data.AfDetection.Count)
+                    if (_currentChannelIndex >= _leads.Length) _currentState = State.END;
+                    else
                     {
-                        _currentState = State.END;
+                        _currentState = State.START_CHANNEL;
                     }
-                    else _currentState = State.START_CHANNEL;
                     break;
                 case (State.END):
                     _ended = true;
@@ -137,7 +137,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
         public static void Main(String[] args)
         {
             Atrial_Fibr_Stats stats = new Atrial_Fibr_Stats();
-            stats.Init("test123");
+            stats.Init("analiza2");
 
 
             while (true)
