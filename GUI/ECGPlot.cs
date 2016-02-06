@@ -1110,7 +1110,15 @@ namespace EKG_Project.GUI
         {
             try
             {
-                CurrentPlot.Series.Remove(CurrentPlot.Series.First(a => a.Title == modName));
+                if(modName == "HeartClass")
+                {
+                    CurrentPlot.Annotations.Clear();
+                }
+                else
+                {
+                    CurrentPlot.Series.Remove(CurrentPlot.Series.First(a => a.Title == modName));
+                }
+                
                 return true;
             }
             catch
@@ -1801,6 +1809,7 @@ namespace EKG_Project.GUI
             try
             {
                 CurrentPlot.Series.Clear();
+                CurrentPlot.Annotations.Clear();
                 RefreshPlot();
 
                 return true;
