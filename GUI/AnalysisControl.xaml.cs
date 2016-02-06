@@ -172,6 +172,7 @@ namespace EKG_Project.GUI
 
         public void moduleEnded(AvailableOptions module, bool aborted)
         {
+            Console.WriteLine(module + " Ended");
             if (aborted)
             {
 
