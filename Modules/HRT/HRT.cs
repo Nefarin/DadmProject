@@ -151,63 +151,54 @@ namespace EKG_Project.Modules.HRT
                     {
                         try
                         {
-                            if (_rpeaks.Count < _classAll.Count)
+                            _classVentrical = _alg.TakeNonAtrialComplexes(_classAll);
+                            if (_classVentrical.Count == 0)
                             {
+                                System.Diagnostics.Debug.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
                                 _vpc = VPC.NOT_DETECTED;
-                                System.Diagnostics.Debug.WriteLine("Wykryto więcej klas niż załamków, błędnie skonstruowany plik wejściowy");
                                 OutputWorker.SaveVPC(_currentLeadName, _vpc);
                             }
                             else
                             {
-                                _classVentrical = _alg.TakeNonAtrialComplexes(_classAll);
-                                if (_classVentrical.Count == 0)
+                                _nrVPC = _alg.GetNrVPC(_rpeaks.ToArray(), _classVentrical.ToArray());
+                                _tachogram = _alg.MakeTachogram(_nrVPC, _rrintervals);
+                                _classPrematureVentrical = _alg.SearchPrematureTurbulences(_tachogram, _nrVPC);
+                                if (_classPrematureVentrical.Count == 0)
                                 {
-                                    System.Diagnostics.Debug.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
-                                    _vpc = VPC.NOT_DETECTED;
+                                    System.Diagnostics.Debug.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
+                                    _vpc = VPC.NO_VENTRICULAR;
                                     OutputWorker.SaveVPC(_currentLeadName, _vpc);
                                 }
                                 else
                                 {
-                                    _nrVPC = _alg.GetNrVPC(_rpeaks.ToArray(), _classVentrical.ToArray());
-                                    _tachogram = _alg.MakeTachogram(_nrVPC, _rrintervals);
-                                    _classPrematureVentrical = _alg.SearchPrematureTurbulences(_tachogram, _nrVPC);
-                                    if (_classPrematureVentrical.Count == 0)
+                                    Tuple<int[], double[]> _meanTurbulenceOnset;
+
+                                    _tachogram = _alg.MakeTachogram(_classPrematureVentrical, _rrintervals);
+                                    if (_tachogram.Count == 0)
                                     {
-                                        System.Diagnostics.Debug.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
-                                        _vpc = VPC.NO_VENTRICULAR;
+                                        System.Diagnostics.Debug.WriteLine("Są VPC, ale nie można wygenerować wokół nich tachogramu. Prawdopodobna przyczyna to niewystarczająca ilość wykrytych załamków QRS w pobliżu");
+                                        _vpc = VPC.DETECTED_BUT_IMPOSSIBLE_TO_PLOT;
                                         OutputWorker.SaveVPC(_currentLeadName, _vpc);
                                     }
                                     else
                                     {
-                                        Tuple<int[], double[]> _meanTurbulenceOnset;
+                                        _vpc = VPC.LETS_PLOT;
+                                        _turbulenceSlope = _alg.TurbulenceSlopeGUIandPDF(_classPrematureVentrical, _rrintervals);
+                                        _meanTurbulenceOnset = _alg.TurbulenceOnsetMeanGUI(_tachogram);
+                                        _xaxisTachogramGUI = _alg.xPlot();
+                                        _tachogramGUI = _tachogram;
+                                        _tachogramMeanGUI = _alg.MeanTachogram(_tachogram);
+                                        _xpointsOnsetGUI = _meanTurbulenceOnset.Item1;
+                                        _turbulenceOnsetmeanGUI = _meanTurbulenceOnset.Item2;
+                                        _xpointsSlopeGUI = _turbulenceSlope.Item2;
+                                        _turbulenceSlopeMaxGUI = _turbulenceSlope.Item3;
+                                        _turbulenceOnsetPDF = _alg.TurbulenceOnsetsPDF(_classPrematureVentrical, _rrintervals);
+                                        _turbulenceSlopePDF = _turbulenceSlope.Item1;
+                                        _statisticsClassNumbersPDF[0] = _rpeaks.Count;
+                                        _statisticsClassNumbersPDF[1] = _classVentrical.Count;
+                                        _statisticsClassNumbersPDF[2] = _classPrematureVentrical.Count;
+                                        _state = STATE.END_CHANNEL;
 
-                                        _tachogram = _alg.MakeTachogram(_classPrematureVentrical, _rrintervals);
-                                        if (_tachogram.Count == 0)
-                                        {
-                                            System.Diagnostics.Debug.WriteLine("Są VPC, ale nie można wygenerować wokół nich tachogramu. Prawdopodobna przyczyna to niewystarczająca ilość wykrytych załamków QRS w pobliżu");
-                                            _vpc = VPC.DETECTED_BUT_IMPOSSIBLE_TO_PLOT;
-                                            OutputWorker.SaveVPC(_currentLeadName, _vpc);
-                                        }
-                                        else
-                                        {
-                                            _vpc = VPC.LETS_PLOT;
-                                            _turbulenceSlope = _alg.TurbulenceSlopeGUIandPDF(_classPrematureVentrical, _rrintervals);
-                                            _meanTurbulenceOnset = _alg.TurbulenceOnsetMeanGUI(_tachogram);
-                                            _xaxisTachogramGUI = _alg.xPlot();
-                                            _tachogramGUI = _tachogram;
-                                            _tachogramMeanGUI = _alg.MeanTachogram(_tachogram);
-                                            _xpointsOnsetGUI = _meanTurbulenceOnset.Item1;
-                                            _turbulenceOnsetmeanGUI = _meanTurbulenceOnset.Item2;
-                                            _xpointsSlopeGUI = _turbulenceSlope.Item2;
-                                            _turbulenceSlopeMaxGUI = _turbulenceSlope.Item3;
-                                            _turbulenceOnsetPDF = _alg.TurbulenceOnsetsPDF(_classPrematureVentrical, _rrintervals);
-                                            _turbulenceSlopePDF = _turbulenceSlope.Item1;
-                                            _statisticsClassNumbersPDF[0] = _rpeaks.Count;
-                                            _statisticsClassNumbersPDF[1] = _classVentrical.Count;
-                                            _statisticsClassNumbersPDF[2] = _classPrematureVentrical.Count;
-                                            _state = STATE.END_CHANNEL;
-
-                                        }
                                     }
                                 }
                             }
@@ -352,7 +343,7 @@ namespace EKG_Project.Modules.HRT
             string[] lista = { "105", "106", "107", "108", "109", "114", "116", "118", "119", "124", "200", "201", "202", "203", "207" };
             foreach (string liczba in lista)
             {
-                //System.Diagnostics.Debug.WriteLine("Analysis" + liczba);
+                System.Diagnostics.Debug.WriteLine("Analysis" + liczba);
                 HRT_Params param = new HRT_Params("Analysis" + liczba);
 
                 HRT testModule = new HRT();

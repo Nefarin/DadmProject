@@ -89,6 +89,9 @@ namespace EKG_Project.IO
             return readValue;
         }
 
+
+
+
         #region Documentation
         /// <summary>
         /// Saves X Axis tachogram in txt file
@@ -119,11 +122,11 @@ namespace EKG_Project.IO
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
-        /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public int[] LoadXAxisTachogramGUI(string lead, int startIndex)//, int length)
+        public int[] LoadXAxisTachogramGUI(string lead)
         {
+            int startIndex = 0;
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
             string fileName = analysisName + "_" + moduleName + "_" + lead + "_XAxis" + ".txt";
@@ -144,6 +147,54 @@ namespace EKG_Project.IO
             List<int> list = new List<int>();
             //while (iterator < length)
             while (!sr.EndOfStream)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                int readValue = Convert.ToInt32(readLine);
+                list.Add(readValue);
+                iterator++;
+            }
+
+            sr.Close();
+
+            return list.ToArray();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads X Axis tachogram from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <param name="startIndex">start index</param>
+        /// <param name="length">length</param>
+        /// <returns>T_End_Local list</returns> 
+        #endregion
+        public int[] LoadXAxisTachogramGUI(string lead, int startIndex, int length)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_XAxis" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+
+            List<int> list = new List<int>();
+            while (iterator < length)
+           
             {
                 if (sr.EndOfStream)
                 {
@@ -198,8 +249,58 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public List<List<double>> LoadTachogramGUI(string lead, int[] startIndex)//, int[] length)
+        public List<List<double>> LoadTachogramGUI(string lead, int[] startIndex, int[] length)
         {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileNamePattern = analysisName + "_" + moduleName + "_" + lead + "_" + "_Tachogram_" + "*";
+            string[] TachogramFiles = Directory.GetFiles(directory, fileNamePattern);
+
+            int filesIndex = 0;
+            List<List<double>> exList = new List<List<double>>();
+            foreach (var file in TachogramFiles)
+            {
+                StreamReader sr = new StreamReader(file);
+                //pomijane linie ...
+                int iterator = 0;
+                while (iterator < startIndex[filesIndex] && !sr.EndOfStream)
+                {
+                    string readLine = sr.ReadLine();
+                    iterator++;
+                }
+
+                iterator = 0;
+                List<double> inList = new List<double>();
+                while (iterator < length[filesIndex])
+                {
+                    if (sr.EndOfStream)
+                    {
+                        throw new IndexOutOfRangeException();
+                    }
+                    string readLine = sr.ReadLine();
+                    double value = Convert.ToDouble(readLine);
+
+                    inList.Add(value);
+                    iterator++;
+                }
+                sr.Close();
+                exList.Add(inList);
+                filesIndex++;
+            }
+
+            return exList;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads List with tachograms for each VPC detected from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>T_End_Local list</returns> 
+        #endregion
+        public List<List<double>> LoadTachogramGUI(string lead)
+        {
+            int[] startIndex = { 0 };
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
             string fileNamePattern = analysisName + "_" + moduleName + "_" + lead + "_" + "_Tachogram_" + "*";
@@ -274,8 +375,52 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public double[] LoadMeanTachogramGUI(string lead, int startIndex)//, int length)
+        public double[] LoadMeanTachogramGUI(string lead, int startIndex, int length)
         {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_Mean" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+
+            List<double> list = new List<double>();
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                double readValue = Convert.ToDouble(readLine);
+                list.Add(readValue);
+                iterator++;
+            }
+            sr.Close();
+            return list.ToArray();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads List with average tachogram for each VPC detected from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>T_End_Local list</returns> 
+        #endregion
+        public double[] LoadMeanTachogramGUI(string lead)
+        {
+            int startIndex = 0;
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
             string fileName = analysisName + "_" + moduleName + "_" + lead + "_Mean" + ".txt";
@@ -344,8 +489,54 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>x points mean onset</returns> 
         #endregion
-        public int[] LoadXPointsMeanOnsetGUI(string lead, int startIndex)//, int length)
+        public int[] LoadXPointsMeanOnsetGUI(string lead, int startIndex, int length)
         {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_XPointsMeanOnset" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+
+            List<int> list = new List<int>();
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                int readValue = Convert.ToInt32(readLine);
+                list.Add(readValue);
+                iterator++;
+            }
+
+            sr.Close();
+
+            return list.ToArray();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads Point of x axis to plot max turbulence slope from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>x points mean onset</returns> 
+        #endregion
+        public int[] LoadXPointsMeanOnsetGUI(string lead)
+        {
+            int startIndex = 0;
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
             string fileName = analysisName + "_" + moduleName + "_" + lead + "_XPointsMeanOnset" + ".txt";
@@ -416,8 +607,52 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public double[] LoadTurbulenceOnsetMeanGUI(string lead, int startIndex)//, int length)
+        public double[] LoadTurbulenceOnsetMeanGUI(string lead, int startIndex, int length)
         {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_TurbulenceOnset" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+
+            List<double> list = new List<double>();
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                double readValue = Convert.ToDouble(readLine);
+                list.Add(readValue);
+                iterator++;
+            }
+            sr.Close();
+            return list.ToArray();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads List with values of average value of Turbulence Onset for each VPC detected from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>T_End_Local list</returns> 
+        #endregion
+        public double[] LoadTurbulenceOnsetMeanGUI(string lead)
+        {
+            int startIndex = 0;
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
             string fileName = analysisName + "_" + moduleName + "_" + lead + "_TurbulenceOnset" + ".txt";
@@ -486,8 +721,54 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public int[] LoadXPointsMaxSlopeGUI(string lead, int startIndex)//, int length)
+        public int[] LoadXPointsMaxSlopeGUI(string lead, int startIndex, int length)
         {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_XPointsMaxSlope" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+
+            List<int> list = new List<int>();
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                int readValue = Convert.ToInt32(readLine);
+                list.Add(readValue);
+                iterator++;
+            }
+
+            sr.Close();
+
+            return list.ToArray();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads Point of x axis to plot max turbulence slope from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>T_End_Local list</returns> 
+        #endregion
+        public int[] LoadXPointsMaxSlopeGUI(string lead)
+        {
+            int startIndex = 0;
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
             string fileName = analysisName + "_" + moduleName + "_" + lead + "_XPointsMaxSlope" + ".txt";
@@ -525,6 +806,7 @@ namespace EKG_Project.IO
             return list.ToArray();
         }
 
+
         #region Documentation
         /// <summary>
         /// Saves Listwith coordinates of largest slope (regression lines) for each VPC detected in txt file
@@ -558,8 +840,52 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public double[] LoadTurbulenceSlopeMaxGUI(string lead, int startIndex)//, int length)
+        public double[] LoadTurbulenceSlopeMaxGUI(string lead, int startIndex, int length)
         {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_TurbulenceSlopeMax" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+
+            List<double> list = new List<double>();
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                double readValue = Convert.ToDouble(readLine);
+                list.Add(readValue);
+                iterator++;
+            }
+            sr.Close();
+            return list.ToArray();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads Listwith coordinates of largest slope (regression lines) for each VPC detected from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>T_End_Local list</returns> 
+        #endregion
+        public double[] LoadTurbulenceSlopeMaxGUI(string lead)
+        {
+            int startIndex = 0;
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
             string fileName = analysisName + "_" + moduleName + "_" + lead + "_TurbulenceSlopeMax" + ".txt";
@@ -628,8 +954,53 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public List<double> LoadTurbulenceOnsetPDF(string lead, int startIndex)//, int length)
+        public List<double> LoadTurbulenceOnsetPDF(string lead, int startIndex, int length)
         {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_TurbulenceOnsetPDF" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+
+            List<double> list = new List<double>();
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                double readValue = Convert.ToDouble(readLine);
+                list.Add(readValue);
+                iterator++;
+            }
+            sr.Close();
+            return list;
+        }
+
+
+        #region Documentation
+        /// <summary>
+        /// Loads List with values of Turbulence Onset for each VPC detected from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>T_End_Local list</returns> 
+        #endregion
+        public List<double> LoadTurbulenceOnsetPDF(string lead)
+        {
+            int startIndex = 0;
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
             string fileName = analysisName + "_" + moduleName + "_" + lead + "_TurbulenceOnsetPDF" + ".txt";
@@ -698,7 +1069,7 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public List<double> LoadTurbulenceSlopePDF(string lead, int startIndex)//, int length)
+        public List<double> LoadTurbulenceSlopePDF(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -718,7 +1089,51 @@ namespace EKG_Project.IO
             iterator = 0;
 
             List<double> list = new List<double>();
-            //while (iterator < length)
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                double readValue = Convert.ToDouble(readLine);
+                list.Add(readValue);
+                iterator++;
+            }
+            sr.Close();
+            return list;
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads List with values of Turbulence Slope for each VPC detected from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>T_End_Local list</returns> 
+        #endregion
+        public List<double> LoadTurbulenceSlopePDF(string lead)
+        {
+            int startIndex = 0;
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_TurbulenceSlopePDF" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+
+            List<double> list = new List<double>();
+        
             while (!sr.EndOfStream)
             {
                 if (sr.EndOfStream)
@@ -768,7 +1183,7 @@ namespace EKG_Project.IO
         /// <param name="length">length</param>
         /// <returns>x points mean onset</returns> 
         #endregion
-        public int[] LoadStatisticsClassNumbersPDF(string lead, int startIndex)//, int length)
+        public int[] LoadStatisticsClassNumbersPDF(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
@@ -788,7 +1203,53 @@ namespace EKG_Project.IO
             iterator = 0;
 
             List<int> list = new List<int>();
-            //while (iterator < length)
+            while (iterator < length)
+            {
+                if (sr.EndOfStream)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                string readLine = sr.ReadLine();
+                int readValue = Convert.ToInt32(readLine);
+                list.Add(readValue);
+                iterator++;
+            }
+
+            sr.Close();
+
+            return list.ToArray();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads numbers (quantity) of complexes for statistical resume
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>x points mean onset</returns> 
+        #endregion
+        public int[] LoadStatisticsClassNumbersPDF(string lead)
+        {
+            int startIndex = 0;
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_StatisticsClassNumbers" + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+
+            //pomijane linie ...
+            int iterator = 0;
+            while (iterator < startIndex && !sr.EndOfStream)
+            {
+                string readLine = sr.ReadLine();
+                iterator++;
+            }
+
+            iterator = 0;
+
+            List<int> list = new List<int>();
+         
             while (!sr.EndOfStream)
             {
                 if (sr.EndOfStream)
@@ -826,20 +1287,5 @@ namespace EKG_Project.IO
             }
         }
     }
-
-    ////<-- Ten enum jest do usunięcia po zmergowaniu z modułem HRT
-    //#region Documentation
-    ///// <summary>
-    ///// HRT plot status enum 
-    ///// </summary>
-    //#endregion
-    //public enum VPC
-    //{
-    //    NOT_DETECTED,
-    //    NO_VENTRICULAR,
-    //    DETECTED_BUT_IMPOSSIBLE_TO_PLOT,
-    //    LETS_PLOT
-    //}
-    ////-->
 
 }

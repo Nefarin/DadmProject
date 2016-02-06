@@ -88,12 +88,12 @@ namespace EKG_Project.Modules.HRT
 
                 case (State.CALCULATE):
 
-                    List<double> currentTurbulenceOnset = _worker.LoadTurbulenceOnsetPDF(_currentName, 0);
-                    List<double> currentTurbulenceSlope = _worker.LoadTurbulenceSlopePDF(_currentName, 0);
+                    List<double> currentTurbulenceOnset = _worker.LoadTurbulenceOnsetPDF(_currentName);
+                    List<double> currentTurbulenceSlope = _worker.LoadTurbulenceSlopePDF(_currentName);
                     double meanTO = Mean(currentTurbulenceOnset);
                     double meanTS = Mean(currentTurbulenceSlope);
 
-                    int[] statistics = _worker.LoadStatisticsClassNumbersPDF(_currentName, 0);
+                    int[] statistics = _worker.LoadStatisticsClassNumbersPDF(_currentName);
                     int VPCvsAllQRS = 100 * (statistics[2] / statistics[0]);
                     int VPCvsVentricular = 100 * (statistics[2] / statistics[1]);
 
