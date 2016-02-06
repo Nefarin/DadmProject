@@ -22,8 +22,8 @@ namespace EKG_Project.GUI
     public partial class VisualisationDataControl : UserControl
     {
         private List<TabItem> visulisationDataTabsList;
-        
-
+        private List<string> tableModuleList; 
+  
         //private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
         //private Basic_Data_Worker _ecg_Basic_Data_Worker;
         //private R_Peaks_Data_Worker _r_Peaks_Data_Worker;
@@ -128,6 +128,7 @@ namespace EKG_Project.GUI
         {
             InitializeComponent();
             visulisationDataTabsList = new List<TabItem>();
+            tableModuleList = new List<string>();
             uint plotAmount = 0;
             uint tableAmount = 0;
             uint histAmount = 0;
@@ -139,8 +140,8 @@ namespace EKG_Project.GUI
 
                 if (analysedModules.Contains("QT_DISP"))
                 {
-                    //System.Windows.MessageBox.Show("qt disp + 1");
-                    tableAmount += 1;
+                    tableModuleList.Add("QT_DISP");
+                    //tableAmount += 1;
                 }
 
 
@@ -151,10 +152,9 @@ namespace EKG_Project.GUI
                     StartPlot(analyseName, moduleName, moduleDict, analysedModules);
                 }
 
-                for (int i = 0; i < tableAmount; i++)
-                {
-                    //need logic to not duble some tables
-                    StartTable(analyseName, moduleName, moduleDict, analysedModules);
+                foreach(string modName in tableModuleList)
+                { 
+                    StartTable(analyseName, modName, moduleDict, tableModuleList);
                 }
 
                 for (int i = 0; i < histAmount; i++)

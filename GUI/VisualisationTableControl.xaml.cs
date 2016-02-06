@@ -110,7 +110,7 @@ namespace EKG_Project.GUI
         {
             try
             {
-                System.Windows.MessageBox.Show("TABE11LE");
+                
                 Qt_Disp_New_Data_Worker qDW = new Qt_Disp_New_Data_Worker(_currentAnalysisName);
                 foreach (string lead in leadsNameList)
                 {
