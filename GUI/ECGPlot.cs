@@ -1046,33 +1046,28 @@ namespace EKG_Project.GUI
         {
             try
             {
-                Heart_Class_New_Data_Worker hCW = new Heart_Class_New_Data_Worker(_currentAnalysisName);
-                List<Tuple<int, int>> myTemp = hCW.LoadClassificationResult(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)hCW.getNumberOfSamples(_currentLeadName));
+                Qt_Disp_New_Data_Worker qDW = new Qt_Disp_New_Data_Worker(_currentAnalysisName);
+                List<int> myTemp = qDW.LoadTEndLocal(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)qDW.getNumberOfSamples(Qt_Disp_Signal.T_End_Local, _currentLeadName));
 
-                foreach (var tp in myTemp)
+                bool addQt = false;
+
+                ScatterSeries qtSeries = new ScatterSeries();
+                qtSeries.Title = "QTDisp";
+
+                for (int i = _beginingPoint; (i <= _analyseSamples && i < _currentBaselineLeadVector.Count()); i++)
                 {
-
-                    if (tp.Item1 <= _analyseSamples)
+                    if (myTemp.Contains(i))
                     {
-                        Double yvalue = _currentBaselineLeadVector[tp.Item1];
-                        //if (yvalue > 0)
-                        //{
-                        //    yvalue += 0.3;
-                        //}
-                        //else
-                        //{
-                        //    yvalue -= 0.6;
-                        //}
-                        if (tp.Item2 == 0)
-                        {
-                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "V", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
-                        }
-                        else
-                        {
-                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "SV", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
-                        }
+                        qtSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
 
+                        addQt = true;
                     }
+                }
+
+
+                if (addQt)
+                {
+                    CurrentPlot.Series.Add(qtSeries);
                 }
 
                 RefreshPlot();
