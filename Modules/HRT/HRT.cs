@@ -163,6 +163,8 @@ namespace EKG_Project.Modules.HRT
                                 _nrVPC = _alg.GetNrVPC(_rpeaks.ToArray(), _classVentrical.ToArray());
                                 _tachogram = _alg.MakeTachogram(_nrVPC, _rrintervals);
                                 _classPrematureVentrical = _alg.SearchPrematureTurbulences(_tachogram, _nrVPC);
+                                _alg.PrintVector(_classPrematureVentrical);
+
                                 if (_classPrematureVentrical.Count == 0)
                                 {
                                     System.Diagnostics.Debug.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
@@ -340,11 +342,12 @@ namespace EKG_Project.Modules.HRT
 
         public static void Main()
         {
-            string[] lista = { "105", "106", "107", "108", "109", "114", "116", "118", "119", "124", "200", "201", "202", "203", "207" };
-            foreach (string liczba in lista)
-            {
-                System.Diagnostics.Debug.WriteLine("Analysis" + liczba);
-                HRT_Params param = new HRT_Params("Analysis" + liczba);
+            //string[] lista = { "105", "106", "107", "108", "109", "114", "116", "118", "119", "124", "200", "201", "202", "203", "207" };
+            //foreach (string liczba in lista)
+            //{
+            
+                System.Diagnostics.Debug.WriteLine("Analysis 1");
+                HRT_Params param = new HRT_Params("Analysis 1");
 
                 HRT testModule = new HRT();
                 testModule.Init(param);
@@ -356,7 +359,7 @@ namespace EKG_Project.Modules.HRT
                     // System.Diagnostics.Debug.WriteLine(" %");
                     testModule.ProcessData();
                 }
-            }
+            //}
         }
     }
 }

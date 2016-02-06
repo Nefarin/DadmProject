@@ -409,7 +409,7 @@ namespace EKG_Project.Modules.HRT
             List<int> Klasy = new List<int>();
             foreach (Tuple<int, int> _licznik in _class)
             {
-                if (_licznik.Item2 == 0)
+                if (_licznik.Item2 == 1)
                 {
                     Klasy.Add(_licznik.Item1);
                 }
@@ -504,7 +504,7 @@ namespace EKG_Project.Modules.HRT
         /// <returns> Which R peak was classified as VPC</returns>
         public List<int> SearchPrematureTurbulences(List<List<double>> Tachogram, List<int> numerPikuVC)
         {
-            if (Tachogram.Count != numerPikuVC.Count) throw new ArgumentOutOfRangeException();
+            //if (Tachogram.Count != numerPikuVC.Count) throw new ArgumentOutOfRangeException();
 
             double sumbefore = 0;
             double Mean = 0;
