@@ -6,16 +6,21 @@ using System.Threading.Tasks;
 
 namespace EKG_Project.Modules.Atrial_Fibr
 {
+    #region Documentation
+    /// <summary>
+    /// /// Enum includes names for available methods of detection Atrial Fibrillation
+    /// </summary>
+    #endregion
     public enum Detect_Method { STATISTIC, POINCARE };
     public class Atrial_Fibr_Params : ModuleParams
     {
-        private Detect_Method _method;
-
         #region Documentation
         /// <summary>
-        /// TO DO
+        /// Method of detection Atrial Fibrillation chosen by user
         /// </summary>
-        #endregion
+         #endregion
+        private Detect_Method _method;
+
         public Detect_Method Method
         {
             get { return _method; }
@@ -24,7 +29,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// TO DO
+        /// Constructor for Atrial_Fibr_Params with parameters method and analysis name
         /// </summary>
         #endregion
         public Atrial_Fibr_Params(Detect_Method method, string analysisName)
@@ -35,7 +40,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// TO DO
+        /// Construkctor for Atrial_Fibr_params with analysis name as parameter
         /// </summary>
         #endregion
         public Atrial_Fibr_Params(string analysisName) : this()
@@ -45,7 +50,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
 
         #region Documentation
         /// <summary>
-        /// TO DO
+        /// Default constructor for Atrial_Fibr_Params
         /// </summary>
         #endregion
         public Atrial_Fibr_Params() : base()

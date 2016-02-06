@@ -238,13 +238,14 @@ namespace EKG_Project.IO
         /// Saves Qt_Disp_Attributes in txt file
         /// </summary>
         /// <param name="atr">Qt_Disp_Attributes</param>
+        /// <param name="lead">lead</param>
         /// <param name="value">value</param> 
         #endregion
-        public void SaveAttribute(Qt_Disp_Attributes atr, double value)
+        public void SaveAttribute(Qt_Disp_Attributes atr, string lead, double value)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + atr + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string pathOut = System.IO.Path.Combine(directory, fileName);
 
             StreamWriter sw = new StreamWriter(pathOut);
@@ -257,13 +258,14 @@ namespace EKG_Project.IO
         /// Loads Qt_Disp_Attributes from txt file
         /// </summary>
         /// <param name="atr">Qt_Disp_Attributes</param>
+        /// <param name="lead">lead</param>
         /// <returns>value</returns> 
         #endregion
-        public double LoadAttribute(Qt_Disp_Attributes atr)
+        public double LoadAttribute(Qt_Disp_Attributes atr, string lead)
         {
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + atr + ".txt";
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string pathIn = System.IO.Path.Combine(directory, fileName);
 
             StreamReader sr = new StreamReader(pathIn);
@@ -273,6 +275,7 @@ namespace EKG_Project.IO
             double readValue = Convert.ToDouble(readLine);
             return readValue;
         }
+
 
         #region Documentation
         /// <summary>

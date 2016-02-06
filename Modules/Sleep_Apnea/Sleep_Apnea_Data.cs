@@ -11,10 +11,36 @@ using EKG_Project.Modules.R_Peaks;
 
 namespace EKG_Project.Modules.Sleep_Apnea
 {
+
+    #region Sleep_Apnea_Data Class doc
+    /// <summary>
+    /// Class that includes output results of class Sleep_Apnea
+    /// </summary>
+    #endregion
     public class Sleep_Apnea_Data : ECG_Data
     {
+        #region
+        /// <summary>
+        /// List of tuples with list of tuples with indexes of beginning and ending of detected sleep apnea
+        /// </summary>
+        #endregion
+
         private List<Tuple<string, List<Tuple<int, int>>>> _Detected_Apnea;
+
+        #region
+        /// <summary>
+        /// List of tuples with list of lists with indexes of R peaks and calculated Hibert's amplitude
+        /// </summary>
+        #endregion
+
         private List<Tuple<string, List<List<double>>>> _h_amp;
+
+        #region
+        /// <summary>
+        /// List of tuples with percentage value of detected sleep apnea
+        /// </summary>
+        #endregion
+
         private List<Tuple<string, double>> _il_Apnea;
 
         public Sleep_Apnea_Data()
@@ -62,4 +88,5 @@ namespace EKG_Project.Modules.Sleep_Apnea
         }
     }
 }
+
 

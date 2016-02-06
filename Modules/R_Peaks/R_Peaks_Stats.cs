@@ -14,10 +14,13 @@ namespace EKG_Project.Modules.R_Peaks
         private Dictionary<string, Object> _strToObj;
         private Dictionary<string, string> _strToStr;
         private string _analysisName;
-        private R_Peaks_Data _data;
         private State _currentState;
         private int _currentChannelIndex;
+        private int _currentIndex;
         private string _currentName;
+        private Basic_New_Data_Worker _basicWorker;
+        private R_Peaks_New_Data_Worker _worker;
+        private string[] _leads;
 
 
         public void Abort()
@@ -59,9 +62,9 @@ namespace EKG_Project.Modules.R_Peaks
             _strToStr = new Dictionary<string, string>();
 
             //reading output data from module
-            R_Peaks_Data_Worker worker = new R_Peaks_Data_Worker(_analysisName);
-            worker.Load();
-            _data = worker.Data;
+            _basicWorker = new Basic_New_Data_Worker(_analysisName);
+            _worker = new R_Peaks_New_Data_Worker(_analysisName);
+            _leads = _basicWorker.LoadLeads().ToArray();
             _currentState = State.START_CHANNEL;
             _currentChannelIndex = 0;
 
@@ -72,14 +75,15 @@ namespace EKG_Project.Modules.R_Peaks
             switch (_currentState)
             {
                 case (State.START_CHANNEL):
-                    _currentName = _data.RPeaks[_currentChannelIndex].Item1;
+                    _currentName = _leads[_currentChannelIndex];
+                    _currentIndex = 0;
                     _currentState = State.CALCULATE;
                     break;
 
                 case (State.CALCULATE):
-                    Vector<double> currentDataR = _data.RPeaks[_currentChannelIndex].Item2;
-                    Vector<double> currentDataRR = _data.RRInterval[_currentChannelIndex].Item2;
-                 
+                    Vector<double> currentDataR = _worker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentName, 0, (int)_worker.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentName));
+                    Vector<double> currentDataRR = _worker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentName, 0, (int)_worker.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _currentName));
+
                     int noOfPeaks = currentDataR.Count;     //number of detected r_peaks
                     double meanRR = Math.Round(currentDataRR.Sum() / currentDataRR.Count, 3);   
                     //mean RR interval in ms//double minRR = currentDataRR.AbsoluteMinimum(); //min distance between Rs
@@ -117,11 +121,11 @@ namespace EKG_Project.Modules.R_Peaks
 
                 case (State.NEXT_CHANNEL):
                     _currentChannelIndex++;
-                    if (_currentChannelIndex >= _data.RPeaks.Count)
+                    if (_currentChannelIndex >= _leads.Length) _currentState = State.END;
+                    else
                     {
-                        _currentState = State.END;
+                        _currentState = State.START_CHANNEL;
                     }
-                    else _currentState = State.START_CHANNEL;
                     break;
                 case (State.END):
                     _ended = true;
@@ -132,7 +136,7 @@ namespace EKG_Project.Modules.R_Peaks
         public static void Main(String[] args)
         {
             R_Peaks_Stats stats = new R_Peaks_Stats();
-            stats.Init("TestAnalysis100");
+            stats.Init("AA");
 
 
             while (true)

@@ -1,4 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<OrderedTest xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="d789bdfd-8f1f-4259-aa94-bc93c46360f7" name="HRV2">
-	
+<OrderedTest name="hrv2" storage="c:\users\ewa\desktop\dadm_projekt\dadmproject\ekg_unit\modules\hrv2\hrv2.orderedtest" id="d789bdfd-8f1f-4259-aa94-bc93c46360f7" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestLinks>
+    <TestLink id="71e1d44f-2704-45b3-9919-4f9ac19c51ce" name="HistogramCountsTest" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="8be8bf3d-0660-7243-a17a-e9ab54fd0720" name="TinnTest" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="c34360d5-119c-3d2b-1819-3b38b10003d2" name="PoincareTest" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="4b91ad21-539a-f8c8-c327-71079020cbcf" name="TinnNullTest" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="c819682f-f96f-5066-44a5-a318b6e60cc5" name="StandardDevTest" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="604b133a-5e1b-0e5a-b56a-ea51e03d0646" name="TinnNullExeptionTest" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="9b984ce4-47a2-9c55-a7bf-f0e7419119d4" name="PoincareXTest" storage="..\..\bin\debug\ekg_unit.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  </TestLinks>
 </OrderedTest>
