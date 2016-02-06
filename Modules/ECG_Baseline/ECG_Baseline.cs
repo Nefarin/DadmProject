@@ -192,7 +192,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                                     }
                                     break;
                                 case Filtr_Method.LMS:
-                                    _currentVector = _newFilter.lms(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
+                                    _currentVector = _newFilter.lms(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.WindowLMS, Params.Type, Params.Mi);
                                     break;
                             }
 
@@ -262,7 +262,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                                     }
                                     break;
                                 case Filtr_Method.LMS:
-                                    _currentVector = _newFilter.lms(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
+                                    _currentVector = _newFilter.lms(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.WindowLMS, Params.Type, Params.Mi);
                                     break;
                             }
 
@@ -339,7 +339,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                                 }
                                 break;
                             case Filtr_Method.LMS:
-                                _currentVector = _newFilter.lms(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.WindowLMS, Filtr_Type.LOWPASS, Params.Mi);
+                                _currentVector = _newFilter.lms(_currentVector, InputWorker.LoadAttribute(Basic_Attributes.Frequency), Params.WindowLMS, Params.Type, Params.Mi);
                                 break;
                         }
 
