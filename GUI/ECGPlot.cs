@@ -1042,6 +1042,50 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplayQTDispLeadVersion()
+        {
+            try
+            {
+                Heart_Class_New_Data_Worker hCW = new Heart_Class_New_Data_Worker(_currentAnalysisName);
+                List<Tuple<int, int>> myTemp = hCW.LoadClassificationResult(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)hCW.getNumberOfSamples(_currentLeadName));
+
+                foreach (var tp in myTemp)
+                {
+
+                    if (tp.Item1 <= _analyseSamples)
+                    {
+                        Double yvalue = _currentBaselineLeadVector[tp.Item1];
+                        //if (yvalue > 0)
+                        //{
+                        //    yvalue += 0.3;
+                        //}
+                        //else
+                        //{
+                        //    yvalue -= 0.6;
+                        //}
+                        if (tp.Item2 == 0)
+                        {
+                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "V", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+                        }
+                        else
+                        {
+                            CurrentPlot.Annotations.Add(new TextAnnotation { Text = "SV", TextPosition = new DataPoint(tp.Item1 / _analyseFrequency, yvalue) });
+                        }
+
+                    }
+                }
+
+                RefreshPlot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+
         public bool ControlOtherModulesSeries(string moduleName, bool visible)
         {
             try
@@ -1094,6 +1138,9 @@ namespace EKG_Project.GUI
                     case "HeartClass":
                         DisplayHeartClassLeadVersion();
                         break;
+                    case "QTDisp":
+                        DisplayQTDispLeadVersion();
+                        break;
 
                     default:
                         break;
@@ -1131,6 +1178,13 @@ namespace EKG_Project.GUI
 
 
 
+
+
+
+
+
+
+        //ver 1.0
         //ostatnio developowana wersja begining
 
         public void DisplayControler(Dictionary<string, List<Tuple<string, Vector<double>>>> dataToDisplay)

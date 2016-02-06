@@ -513,6 +513,18 @@ namespace EKG_Project.GUI
                     _seriesChecbox.Add(cB);
                 }
 
+                if (currentModulesList.Contains("QT_DISP"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "QTDisp";
+                    cB.Content = "QTDisp";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
 
 
 
