@@ -20,6 +20,7 @@ namespace EKG_Project.Modules.QT_Disp
         List<int> T_End_Global;                      //to do in init
         List<int> QRS_End;                           //to do in init
         Vector<double> R_Peaks;                         //to do in init
+        List<double> R_Peaks_List;
         T_End_Method T_End_method;                      //to do in init
         QT_Calc_Method QT_Calc_method;                  //to do in init
         uint Fs;                                        //to do in init
@@ -27,18 +28,24 @@ namespace EKG_Project.Modules.QT_Disp
         List<double> QT_intervals;                      //to do in processData
         List<int> T_End_local;                          //to do in processData
         //List<List<double>> AllQT_Intervals;             //to do after change a channel
-        public QT_Disp_Alg()
+        List<int>.Enumerator Onset_Enumerator;
+        List<int>.Enumerator End_Enumerator;
+        List<int>.Enumerator T_End_Enumerator;
+        List<double>.Enumerator R_Peaks_Enumerator;
+        List<double>.Enumerator R_Peaks_Next_Enumerator;
+        public QT_Disp_Alg(int size)
         {
-            QRS_onset = new List<int>();
-            T_End_Global = new List<int>();
-            QRS_End = new List<int>();
+            QRS_onset = new List<int>(size);
+            T_End_Global = new List<int>(size);
+            QRS_End = new List<int>(size);
             R_Peaks = Vector<double>.Build.Dense(1);
+            R_Peaks_List = new List<double>(size);
             T_End_method = new T_End_Method();
             QT_Calc_method = new QT_Calc_Method();
             Fs = new uint();
-            QT_intervals = new List<double>(1);
+            QT_intervals = new List<double>(size);
             //AllQT_Intervals = new List<List<double>>();
-            T_End_local = new List<int>(1);
+            T_End_local = new List<int>(size);
         }      
         
         /// <summary>
@@ -67,6 +74,13 @@ namespace EKG_Project.Modules.QT_Disp
             this.T_End_method = T_End_method;
             this.QT_Calc_method = QT_Calc_method;
             this.Fs = Fs;
+            this.End_Enumerator = this.QRS_End.GetEnumerator();
+            this.Onset_Enumerator = this.QRS_onset.GetEnumerator();
+            this.T_End_Enumerator = this.T_End_Global.GetEnumerator();
+            this.R_Peaks_List = this.R_Peaks.ToList();
+            this.R_Peaks_Enumerator = this.R_Peaks_List.GetEnumerator();
+            this.R_Peaks_Next_Enumerator = this.R_Peaks_List.GetEnumerator();
+            this.R_Peaks_Next_Enumerator.MoveNext();
         }
         /// <summary>
         /// This function is called to get a current sampled signal and processed it 
@@ -76,6 +90,12 @@ namespace EKG_Project.Modules.QT_Disp
         /// <returns>T End local index</returns>
         public Tuple<int,double> ToDoInProccessData(Vector<double> samples, int index)
         {
+            Onset_Enumerator.MoveNext();
+            End_Enumerator.MoveNext();
+            T_End_Enumerator.MoveNext();
+            R_Peaks_Enumerator.MoveNext();
+            R_Peaks_Next_Enumerator.MoveNext();
+            
             
             //check if we have a good arguments
             if (samples.Count == 0)
@@ -86,7 +106,7 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 throw new InvalidOperationException("Null index");
             }
-            if (samples.Count != (this.R_Peaks[index + 1] - this.R_Peaks[index]))
+            if (samples.Count != (this.R_Peaks_Next_Enumerator.Current - this.R_Peaks_Enumerator.Current))
             {
                 throw new InvalidDataException("Wrong size of samples");
             }
@@ -100,33 +120,34 @@ namespace EKG_Project.Modules.QT_Disp
                 // create a table with a R_peaks 
                 //between this indexes we lookig for T_End 
                 double[] R_peaks_loc = new double[2];
-                R_peaks_loc[0] = R_Peaks[index];
-                R_peaks_loc[1] = R_Peaks[index+1];                
+                R_peaks_loc[0] = R_Peaks_Enumerator.Current;
+                R_peaks_loc[1] = R_Peaks_Next_Enumerator.Current;              
                 // create new object that stores a indexes of points from a Waves module
                 // need this point to find T_end
                 if(index<T_End_Global.Count)
                 {                   
-                    int onset = QRS_onset.ElementAt(1);
-                    int end = QRS_End.ElementAt(0);                   
-                    if (onset > end )
-                    {
-                        DataToCalculate data = new DataToCalculate(QRS_onset.ElementAt(index), QRS_End.ElementAt(index), T_End_Global.ElementAt(index), samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);
+                    //int onset = QRS_onset.ElementAt(1);
+                    //int end = QRS_End.ElementAt(0);                   
+                    ///if (onset > end )
+                    //{
+                        //DataToCalculate data = new DataToCalculate(QRS_onset.ElementAt(index), QRS_End.ElementAt(index), T_End_Global.ElementAt(index), samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);
+                        DataToCalculate data = new DataToCalculate(Onset_Enumerator.Current, End_Enumerator.Current, T_End_Enumerator.Current, samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);
                         result = data.Calc_QT_Interval();                    
-                    }                   
-                    else
-                    {
-                        if (index > 1)
-                        {                           
-                            DataToCalculate data = new DataToCalculate(QRS_onset.ElementAt(index), QRS_End.ElementAt(index-1),T_End_Global.ElementAt(index-1), samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);
-                            result = data.Calc_QT_Interval();                         
-                        }
+                    ///}                   
+                    //else
+                    //{
+                     //   if (index > 1)
+                       // {                           
+                         //   DataToCalculate data = new DataToCalculate(QRS_onset.ElementAt(index), QRS_End.ElementAt(index-1),T_End_Global.ElementAt(index-1), samples, QT_Calc_method, T_End_method, Fs, R_peaks_loc);
+                         //   result = data.Calc_QT_Interval();                         
+                      //  }
                         
-                    }                   
+                  //  }                   
                 }
                 //here we add a QT interval to a list
-                this.QT_INTERVALS.Add(result.Item2);
+                QT_INTERVALS.Add(result.Item2);
                 //here we add a T_End index to a list
-                this.T_End_local.Add(result.Item1);
+                T_End_local.Add(result.Item1);
             }
             // return a T_End index if bad recognition assign -1
             return result;
@@ -200,7 +221,10 @@ namespace EKG_Project.Modules.QT_Disp
             {
                 //if yes,  we calculate a local QT disperssion
                 int std_base = QT_INTERVALS.RemoveAll(x => x.Equals(0));
-                local = QT_intervals.Max() - QT_intervals.Min();
+                int std_base2 = QT_INTERVALS.RemoveAll(x => x > 650);
+                int std_base3 = QT_INTERVALS.RemoveAll(x => x < 250);
+                local = QT_INTERVALS.Max() - QT_INTERVALS.Min();
+               
             }
             catch(System.InvalidOperationException ex)
             {
@@ -214,6 +238,7 @@ namespace EKG_Project.Modules.QT_Disp
         public void DeleteQT_Intervals()
         {           
             QT_INTERVALS.Clear();
+            T_END_LOCAL.Clear();
         }
         //getters and setters
         public List<double> QT_INTERVALS
@@ -228,7 +253,18 @@ namespace EKG_Project.Modules.QT_Disp
             }
 
         }
-        public static void Main()
+        public List<int> T_END_LOCAL
+        {
+            get
+            {
+                return T_End_local;
+            }
+            set
+            {
+                T_End_local = value;
+            }
+        }
+        /*public static void Main()
         {
             Console.WriteLine("Hello world");
             // Test if algorithm is correct
@@ -245,6 +281,7 @@ namespace EKG_Project.Modules.QT_Disp
             string path_output_rpeak = Path.Combine(path_data, "res_QT_Disp", "R_Peak.txt");
             string path_output_my_t_end = Path.Combine(path_data, "res_QT_Disp", "output_end.txt");
             string path_output_qt_intervals = Path.Combine(path_data, "res_QT_Disp", "output_qt.txt");
+
 
             List<int> onset = new List<int>();
             List<int> end = new List<int>();
@@ -269,15 +306,18 @@ namespace EKG_Project.Modules.QT_Disp
             foreach (double element in TempInput.getSignal().ToList())
             {
                 tend.Add((int)element);
-            }           
-         
+            }
+
+       
 
             TempInput.setInputFilePath(path_output);            
             signal = TempInput.getSignal();
 
+           
+
             Tuple<int, double> result;
             //create object like we do in interface
-            QT_Disp_Alg data = new QT_Disp_Alg();
+            QT_Disp_Alg data = new QT_Disp_Alg(24);
             // read list from waves, r_peaks  and params 
             data.TODoInInit(onset, tend, end, R_Peaks, T_End_Method.TANGENT, QT_Calc_Method.FRAMIGHAMA, 360);
             List<Tuple<int, double>> output = new List<Tuple<int, double>>();
@@ -307,7 +347,7 @@ namespace EKG_Project.Modules.QT_Disp
 
 
             Console.ReadKey();
-        }
+        }*/
         
     }
     //It was writen but not tested, also there is not any comments
@@ -334,10 +374,22 @@ namespace EKG_Project.Modules.QT_Disp
             if(T_End_Global == null) throw new ArgumentNullException("T_End_Global null");
             if (R_Peak.Count() != 2) throw new InvalidDataException("Wrong parameters for R_Peak");
             if(samples.Count != (R_Peak[1]- R_Peak[0])) throw new ArgumentNullException("Samples wrong length");
-            if(QRS_onset > QRS_End && (QRS_onset !=-1 || QRS_End !=- 1)) throw new ArgumentNullException("Waves not working good, QRS onset > QRS End - recognition impossible");
+            if(QRS_onset > QRS_End && (QRS_End !=- 1)) throw new ArgumentNullException("Waves not working good, QRS onset > QRS End - recognition impossible");
             if(QRS_End > T_End_Global && (T_End_Global !=-1) ) throw new ArgumentNullException("Waves not working good, QRS End > T_End- recognition impossible");
             if(Fs < 0) throw new ArgumentNullException("Wrong Frequency parameter");
-            
+            if ((QRS_End < R_Peak.ElementAt(0) || QRS_End > R_Peak.ElementAt(1)) && QRS_End != -1)
+            {
+                QRS_End = -1;// throw new InvalidDataException("Wrong QRS End detection");
+            }
+            if ((T_End_Global < R_Peak.ElementAt(0) || T_End_Global > R_Peak.ElementAt(1)) && T_End_Global != -1)
+            {
+                T_End_Global = -1; // throw new InvalidDataException("Wrong T End detection");
+            }
+            if (QRS_onset > R_Peak.ElementAt(0) && QRS_onset != -1)
+            {
+                QRS_onset = -1; //  throw new InvalidDataException("Wrong QRS Onset detection");
+            }
+
             this.QRS_onset = QRS_onset;
             this.QRS_End = QRS_End;
             this.T_End_Global = T_End_Global;
@@ -365,6 +417,10 @@ namespace EKG_Project.Modules.QT_Disp
         /// <returns>T End index</returns>
         public int FindT_End()
         {
+            /*if(QRS_End == 74627)
+            {
+                Console.WriteLine("Something go wrong");
+            }*/
             int T_End = -1;
             int T_Max = -1;
             int MaxSlope = -1;
@@ -379,7 +435,7 @@ namespace EKG_Project.Modules.QT_Disp
                     try
                     {
                         //if yes calculate T_Max index
-                        T_Max = samples.SubVector(QRS_End - (int)R_Peak.ElementAt(0), (T_End_Global - QRS_End)).MaximumIndex() + QRS_End;
+                        T_Max = samples.SubVector((QRS_End - (int)R_Peak.ElementAt(0)), (T_End_Global - QRS_End - (int)(0.015* Fs))).MaximumIndex() + QRS_End;
                     }
                     catch (Exception ex)
                     {
@@ -401,7 +457,7 @@ namespace EKG_Project.Modules.QT_Disp
                     try
                     {
                         // if yes invert a signal and get a T_Max index
-                        T_Max = samples.SubVector(QRS_End - (int)R_Peak.ElementAt(0), T_End_Global - QRS_End).Negate().MaximumIndex() + QRS_End;
+                        T_Max = samples.SubVector((QRS_End - (int)R_Peak.ElementAt(0))+(int)(Fs*0.2), T_End_Global - QRS_End - (int)(0.035* Fs)).Negate().MaximumIndex() + QRS_End;
                     }
                     catch (Exception ex)
                     {
@@ -575,6 +631,7 @@ namespace EKG_Project.Modules.QT_Disp
         {
             List<double> Output = new List<double>(In.Count - 1);
             Vector<double> output = Vector<double>.Build.Dense(1);
+            double[] ze = { 0 };
             if (In.Count > 1)
             {
                 for (int i = 0; i < In.Count - 1; i++)
@@ -586,6 +643,7 @@ namespace EKG_Project.Modules.QT_Disp
             else
             {
                 throw new InvalidOperationException("Wrong input vector");
+                //output = Vector<double>.Build.DenseOfArray(ze); 
             }
             return output;
         }

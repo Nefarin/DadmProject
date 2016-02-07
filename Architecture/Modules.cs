@@ -45,8 +45,8 @@ namespace EKG_Project.Architecture
             AvailableOptions.QT_DISP,
             AvailableOptions.FLUTTER,
             AvailableOptions.T_WAVE_ALT,
-            AvailableOptions.HRT,
             AvailableOptions.HEART_CLASS,
+            AvailableOptions.HRT,
             AvailableOptions.HEART_AXIS,
             //AvailableOptions.TEST_MODULE
         };

@@ -33,6 +33,7 @@
                 <Label Padding="0">Save Plot</Label>
             </StackPanel>
         </Button>
+        
         <!--<Button Name="ClearPlotButton" Grid.Column="0" Grid.Row="1" Click="ClearPlotButton_Click">
             <StackPanel Orientation="Horizontal">
                 <Image Source="images/save.png"/>

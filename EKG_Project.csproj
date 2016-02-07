@@ -48,7 +48,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.Modules.Heart_Class.Heart_Class</StartupObject>
+    <StartupObject>EKG_Project.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -294,6 +294,7 @@
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
     <Compile Include="IO\ASCIIConverter.cs" />
     <Compile Include="IO\Atrial_Fibr_Data_Worker.cs" />
+    <Compile Include="IO\Atrial_Fibr_New_Data_Worker.cs" />
     <Compile Include="IO\Basic_Data_Worker.cs" />
     <Compile Include="IO\Basic_New_Data_Worker.cs" />
     <Compile Include="IO\DebugECGPath.cs" />
@@ -308,11 +309,15 @@
     <Compile Include="IO\Heart_Axis_New_Data_Worker.cs" />
     <Compile Include="IO\Heart_Class_Data_Worker.cs" />
     <Compile Include="IO\Heart_Class_New_Data_Worker.cs" />
+    <Compile Include="IO\Heart_Cluster_Data_Worker.cs" />
     <Compile Include="IO\HRT_Data_Worker.cs" />
+    <Compile Include="IO\HRT_New_Data_Worker.cs" />
     <Compile Include="IO\HRV1_Data_Worker.cs" />
+    <Compile Include="IO\HRV1_New_Data_Worker.cs" />
     <Compile Include="IO\HRV2_Data_Worker.cs" />
     <Compile Include="IO\HRV2_New_Data_Worker.cs" />
     <Compile Include="IO\HRV_DFA_Data_Worker.cs" />
+    <Compile Include="IO\HRV_DFA_New_Data_Worker.cs" />
     <Compile Include="IO\IECGConverter.cs" />
     <Compile Include="IO\IECGPath.cs" />
     <Compile Include="IO\IECG_Worker.cs" />
@@ -342,12 +347,15 @@
     <Compile Include="IO\ReleaseECGPath.cs" />
     <Compile Include="IO\R_Peaks_Data_Worker.cs" />
     <Compile Include="IO\R_Peaks_New_Data_Worker.cs" />
+    <Compile Include="IO\SIG_EDR_Data_Worker.cs" />
     <Compile Include="IO\Sleep_Apnea_Data_Worker.cs" />
     <Compile Include="IO\Sleep_Apnea_New_Data_Worker.cs" />
     <Compile Include="IO\ST_Segment_Data_Worker.cs" />
+    <Compile Include="IO\ST_Segment_New_Data_Worker.cs" />
     <Compile Include="IO\TempInput.cs" />
     <Compile Include="IO\TestModule3_Data_Worker.cs" />
     <Compile Include="IO\T_Wave_Alt_Data_Worker.cs" />
+    <Compile Include="IO\T_Wave_Alt_New_Data_Worker.cs" />
     <Compile Include="IO\Waves_Data_Worker.cs" />
     <Compile Include="IO\Waves_New_Data_Worker.cs" />
     <Compile Include="IO\WFDBLoader.cs" />
@@ -536,13 +544,6 @@
     <Resource Include="IO\data\res_QT_Disp\sig.txt" />
     <Resource Include="IO\data\res_QT_Disp\T_End.txt" />
     <Resource Include="IO\data\res_QT_Disp\wyniki.txt" />
-    <Resource Include="IO\temp\abc123temp_Basic_New_MLII.txt" />
-    <Resource Include="IO\temp\abc123temp_Basic_New_NumberOfSamples.txt" />
-    <Resource Include="IO\temp\abc123temp_Basic_New_V1.txt" />
-    <Resource Include="IO\temp\abc123_Basic_New_Leads.txt" />
-    <Resource Include="IO\temp\abc123_Basic_New_MLII.txt" />
-    <Resource Include="IO\temp\abc123_Basic_New_NumberOfSamples.txt" />
-    <Resource Include="IO\temp\abc123_Basic_New_V1.txt" />
     <Resource Include="Resources\logo.png" />
     <Resource Include="IO\temp\train_d_label.txt" />
     <Resource Include="IO\temp\train_d.txt" />

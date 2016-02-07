@@ -25,52 +25,57 @@ namespace EKG_Project.Modules.ECG_Baseline
             #endregion
             public Vector<double> butterworth(Vector<double> signal, double fs, double fc, int order, Filtr_Type type)
             {
-
-                //TODO: Comments kkkkkk ccccc
-
-                int signal_length = signal.Count;
-                int DCGain = 1;
-
-                double[] DoubleArray = new double[signal_length];
-                DoubleArray = signal.ToArray();
-
-                Complex[] ComplexArray = new Complex[signal_length];
-
-                for (int i = 0; i < signal_length; i++)
+                try
                 {
-                    ComplexArray[i] = new Complex(DoubleArray[i], 0);
-                }
 
-                Fourier.Forward(ComplexArray, FourierOptions.Matlab);
+                    int signal_length = signal.Count;
+                    int DCGain = 1;
 
-                double signallength_double = signal_length, binWidth, binFreq, gain;
+                    double[] DoubleArray = new double[signal_length];
+                    DoubleArray = signal.ToArray();
 
-                if (fc > 0)
-                {
-                    binWidth = fs / signal_length;
+                    Complex[] ComplexArray = new Complex[signal_length];
 
-                    for(int i = 0; i < (signallength_double / 2); i++)
+                    for (int i = 0; i < signal_length; i++)
                     {
-                        binFreq = binWidth * (i + 1);
-                        gain = DCGain / Math.Sqrt(1 + Math.Pow(binFreq / fc, 2.0 * order));
-                        if (type == Filtr_Type.HIGHPASS)
-                        {
-                            gain = 1 - gain;
-                        }
-                        ComplexArray[i] *= gain;
-                        ComplexArray[signal_length - 1 - i] *= gain;
+                        ComplexArray[i] = new Complex(DoubleArray[i], 0);
                     }
+
+                    Fourier.Forward(ComplexArray, FourierOptions.Matlab);
+
+                    double signallength_double = signal_length, binWidth, binFreq, gain;
+
+                    if (fc > 0)
+                    {
+                        binWidth = fs / signal_length;
+
+                        for (int i = 0; i < (signallength_double / 2); i++)
+                        {
+                            binFreq = binWidth * (i + 1);
+                            gain = DCGain / Math.Sqrt(1 + Math.Pow(binFreq / fc, 2.0 * order));
+                            if (type == Filtr_Type.HIGHPASS)
+                            {
+                                gain = 1 - gain;
+                            }
+                            ComplexArray[i] *= gain;
+                            ComplexArray[signal_length - 1 - i] *= gain;
+                        }
+                    }
+
+                    Fourier.Inverse(ComplexArray, FourierOptions.Matlab);
+
+                    for (int i = 0; i < signal_length; i++)
+                    {
+                        DoubleArray[i] = ComplexArray[i].Real;
+                    }
+
+                    Vector<double> output_signal = Vector<double>.Build.DenseOfArray(DoubleArray);
+                    return output_signal;
                 }
-
-                Fourier.Inverse(ComplexArray, FourierOptions.Matlab);
-
-                for (int i = 0; i < signal_length; i++)
+                catch
                 {
-                    DoubleArray[i] = ComplexArray[i].Real;
+                    return signal;
                 }
-
-                Vector<double> output_signal = Vector<double>.Build.DenseOfArray(DoubleArray);
-                return output_signal;
 
             }
 
@@ -89,18 +94,25 @@ namespace EKG_Project.Modules.ECG_Baseline
             #endregion
             public Vector<double> butterworth(Vector<double> signal, double fs, double fc_low, int order_low, double fc_high, int order_high, Filtr_Type type = Filtr_Type.BANDPASS)
             {
-                if (type == Filtr_Type.BANDPASS)
+                try
                 {
-                    int signal_size = signal.Count;
-                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    lp_filtered_signal = butterworth(signal, fs, fc_low, order_low, Filtr_Type.LOWPASS);
-                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    hp_filtered_signal = butterworth(lp_filtered_signal, fs, fc_high, order_high, Filtr_Type.HIGHPASS);
+                    if (type == Filtr_Type.BANDPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        lp_filtered_signal = butterworth(signal, fs, fc_low, order_low, Filtr_Type.LOWPASS);
+                        Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        hp_filtered_signal = butterworth(lp_filtered_signal, fs, fc_high, order_high, Filtr_Type.HIGHPASS);
 
-                    return hp_filtered_signal;
+                        return hp_filtered_signal;
+                    }
+
+                    return signal;
                 }
-
-                return signal;
+                catch
+                {
+                    return signal;
+                }
             }
 
             //========================================================================================================
@@ -116,36 +128,42 @@ namespace EKG_Project.Modules.ECG_Baseline
             #endregion
             public Vector<double> lms(Vector<double> signal, Vector<double> filtered_signal, int window_size, double mi = 0.07)
             {
-                int signal_size = signal.Count;
-
-                //double mi = 0.07; //Współczynnik szybkości adaptacji
-
-                Vector<double> coeff = Vector<double>.Build.Dense(window_size, 0); //Wektor z wagami filtru
-                Vector<double> bufor = Vector<double>.Build.Dense(window_size, 0); //Inicjalizacja bufora sygnału wejściowego
-                Vector<double> out_signal = Vector<double>.Build.Dense(signal_size, 0);
-
-                double dest;
-                double err;
-
-                for (int i = 0; i < signal_size; i++)
+                try
                 {
+                    int signal_size = signal.Count;
 
-                    bufor.CopySubVectorTo(bufor, 0, 1, window_size - 1);
-                    bufor[0] = signal[i];
+                    //double mi = 0.07; //Współczynnik szybkości adaptacji
 
-                    dest = coeff * bufor;
-                    err = filtered_signal[i] - dest;
- 
-                    coeff.Add(2 * mi * err * bufor, coeff);
+                    Vector<double> coeff = Vector<double>.Build.Dense(window_size, 0); //Wektor z wagami filtru
+                    Vector<double> bufor = Vector<double>.Build.Dense(window_size, 0); //Inicjalizacja bufora sygnału wejściowego
+                    Vector<double> out_signal = Vector<double>.Build.Dense(signal_size, 0);
 
-                    //coeff = coeff + (2 * mi * err * bufor);
+                    double dest;
+                    double err;
 
-                    out_signal[i] = dest;
+                    for (int i = 0; i < signal_size; i++)
+                    {
 
+                        bufor.CopySubVectorTo(bufor, 0, 1, window_size - 1);
+                        bufor[0] = signal[i];
+
+                        dest = coeff * bufor;
+                        err = filtered_signal[i] - dest;
+
+                        coeff.Add(2 * mi * err * bufor, coeff);
+
+                        //coeff = coeff + (2 * mi * err * bufor);
+
+                        out_signal[i] = dest;
+
+                    }
+
+                    return out_signal;
                 }
-
-                return out_signal;
-
+                catch
+                {
+                    return signal;
+                }
             }
 
             #region
@@ -162,32 +180,39 @@ namespace EKG_Project.Modules.ECG_Baseline
             #endregion
             public Vector<double> lms(Vector<double> signal, double fs, int window_size, Filtr_Type type, double mi = 0.07)
             {
-                if (type == Filtr_Type.LOWPASS)
+                try
                 {
-                    int signal_size = signal.Count;
-                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    lp_filtered_signal = butterworth(signal, fs, 50, 30, Filtr_Type.LOWPASS);
-                    return lms(signal, lp_filtered_signal, window_size, mi);
-                }
-                if (type == Filtr_Type.HIGHPASS)
-                {
-                    int signal_size = signal.Count;
-                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    hp_filtered_signal = butterworth(signal, fs, 2, 30, Filtr_Type.HIGHPASS);
-                    return lms(signal, hp_filtered_signal, window_size, mi);
-                }
-                if (type == Filtr_Type.BANDPASS)
-                {
-                    int signal_size = signal.Count;
-                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    lp_filtered_signal = butterworth(signal, fs, 50, 30, Filtr_Type.LOWPASS);
-                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    hp_filtered_signal = butterworth(lp_filtered_signal, fs, 2, 30, Filtr_Type.HIGHPASS);
+                    if (type == Filtr_Type.LOWPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        lp_filtered_signal = butterworth(signal, fs, 50, 30, Filtr_Type.LOWPASS);
+                        return lms(signal, lp_filtered_signal, window_size, mi);
+                    }
+                    if (type == Filtr_Type.HIGHPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        hp_filtered_signal = butterworth(signal, fs, 2, 30, Filtr_Type.HIGHPASS);
+                        return lms(signal, hp_filtered_signal, window_size, mi);
+                    }
+                    if (type == Filtr_Type.BANDPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        lp_filtered_signal = butterworth(signal, fs, 50, 30, Filtr_Type.LOWPASS);
+                        Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        hp_filtered_signal = butterworth(lp_filtered_signal, fs, 2, 30, Filtr_Type.HIGHPASS);
 
-                    return lms(signal, hp_filtered_signal, window_size, mi);
-                }
+                        return lms(signal, hp_filtered_signal, window_size, mi);
+                    }
 
-                return signal;
+                    return signal;
+                }
+                catch
+                {
+                    return signal;
+                }
             }
 
             //========================================================================================================
@@ -202,65 +227,70 @@ namespace EKG_Project.Modules.ECG_Baseline
             /// <returns>The result of this method of filtration is the filtered signal by low- or highpass Savitzky-Golay's filter</returns>
             public Vector<double> savitzky_golay(Vector<double> signal, int window_size, Filtr_Type type)
             {
-
-                //TODO: Comments
-
-                int signal_size = signal.Count;
-                if ((window_size % 2) == 0)
+                try
                 {
-                    window_size = window_size + 1;
+
+                    int signal_size = signal.Count;
+                    if ((window_size % 2) == 0)
+                    {
+                        window_size = window_size + 1;
+                    }
+
+                    Vector<double> signal_extension_front = Vector<double>.Build.Dense((window_size / 2), signal[0]);
+                    Vector<double> signal_extension_back = Vector<double>.Build.Dense((window_size / 2), signal[signal_size - 1]);
+
+                    int signal_extension_size = signal_extension_front.Count;
+
+                    Vector<double> signal_extended = Vector<double>.Build.Dense(2 * signal_extension_size + signal_size, 0); //przygotowanie zmiennej, w której znajdzie się sygnał przygotowany do filtracji
+                    Vector<double> signal_filtered = Vector<double>.Build.Dense(signal_size, 0); //zmienna na sygnał przefiltrowany
+
+                    for (int i = 0; i < signal_extension_size; i++)
+                    {
+                        signal_extended[i] = signal_extension_front[i]; //powielenie piewszej próbki sygnału wejściowego
+                    }
+                    for (int i = 0; i < signal_size; i++)
+                    {
+                        signal_extended[i + signal_extension_size] = signal[i]; //powielenie piewszej próbki sygnału wejściowego
+                    }
+                    for (int i = 0; i < signal_extension_size; i++)
+                    {
+                        signal_extended[i + signal_extension_size + signal_size] = signal_extension_back[i]; //powielenie piewszej próbki sygnału wejściowego
+                    }
+                    Vector<double> samples = Vector<double>.Build.Dense(signal_extended.Count, 0);
+
+                    for (int i = 0; i < samples.Count; i++)
+                    {
+                        samples[i] = i + 1;
+                    }
+
+                    double[] coeff = new double[3];
+                    Vector<double> samples_destination = Vector<double>.Build.Dense(window_size, 0);
+                    Vector<double> signal_extended_destination = Vector<double>.Build.Dense(window_size, 0);
+                    double[] output_signal_table = new double[signal_size];
+
+                    for (int i = 0; i < signal_size; i++)
+                    {
+                        samples.CopySubVectorTo(samples_destination, i, 0, window_size);
+                        signal_extended.CopySubVectorTo(signal_extended_destination, i, 0, window_size);
+
+                        coeff = Fit.Polynomial(samples_destination.ToArray(), signal_extended_destination.ToArray(), 3, DirectRegressionMethod.QR);
+                        output_signal_table[i] = coeff[3] * Math.Pow(samples[i + (window_size / 2)], 3) + coeff[2] * Math.Pow(samples[i + (window_size / 2)], 2) + coeff[1] * samples[i + (window_size / 2)] + coeff[0];
+                    }
+
+                    Vector<double> output_signal = Vector<double>.Build.DenseOfArray(output_signal_table);
+
+                    if (type == Filtr_Type.HIGHPASS)
+                    {
+                        return signal - output_signal;
+                    }
+
+                    return output_signal;
                 }
-
-                Vector<double> signal_extension_front = Vector<double>.Build.Dense((window_size / 2), signal[0]);
-                Vector<double> signal_extension_back = Vector<double>.Build.Dense((window_size / 2), signal[signal_size - 1]);
-
-                int signal_extension_size = signal_extension_front.Count;
-
-                Vector<double> signal_extended = Vector<double>.Build.Dense(2*signal_extension_size + signal_size, 0); //przygotowanie zmiennej, w której znajdzie się sygnał przygotowany do filtracji
-                Vector<double> signal_filtered = Vector<double>.Build.Dense(signal_size, 0); //zmienna na sygnał przefiltrowany
-
-                for (int i = 0; i < signal_extension_size; i++)
+                catch
                 {
-                    signal_extended[i] = signal_extension_front[i]; //powielenie piewszej próbki sygnału wejściowego
+                    return signal;
                 }
-                for (int i = 0; i < signal_size; i++)
-                {
-                    signal_extended[i + signal_extension_size] = signal[i]; //powielenie piewszej próbki sygnału wejściowego
-                }
-                for (int i = 0; i < signal_extension_size; i++)
-                {
-                    signal_extended[i + signal_extension_size + signal_size] = signal_extension_back[i]; //powielenie piewszej próbki sygnału wejściowego
-                }
-                Vector<double> samples = Vector<double>.Build.Dense(signal_extended.Count, 0);
-
-                for (int i = 0; i < samples.Count; i++)
-                {
-                    samples[i] = i + 1;
-                }
-
-                double[] coeff = new double[3];
-                Vector<double> samples_destination = Vector<double>.Build.Dense(window_size, 0);
-                Vector<double> signal_extended_destination = Vector<double>.Build.Dense(window_size, 0);
-                double[] output_signal_table = new double[signal_size];
-
-                for (int i = 0; i < signal_size; i++)
-                {
-                    samples.CopySubVectorTo(samples_destination, i, 0, window_size);
-                    signal_extended.CopySubVectorTo(signal_extended_destination, i, 0, window_size);
-
-                    coeff = Fit.Polynomial(samples_destination.ToArray(), signal_extended_destination.ToArray(), 3, DirectRegressionMethod.NormalEquations);
-                    output_signal_table[i] = coeff[3] * Math.Pow(samples[i + (window_size / 2)], 3) + coeff[2] * Math.Pow(samples[i + (window_size / 2)], 2) + coeff[1] * samples[i + (window_size / 2)] + coeff[0];
-                }
-
-                Vector<double> output_signal = Vector<double>.Build.DenseOfArray(output_signal_table);
-
-                if (type == Filtr_Type.HIGHPASS)
-                {
-                    return signal - output_signal;
-                }
-
-                return output_signal;
-            }
+              }
 
             /// <summary>
             /// Overloaded function 'savitzky-golay()' that allows to do bandpass filter by Saviztky-Golay's filter
@@ -272,18 +302,25 @@ namespace EKG_Project.Modules.ECG_Baseline
             /// <returns>The result of this method of filtration is the filtered signal by bandpass Savitzky-Golay's filter</returns>
             public Vector<double> savitzky_golay(Vector<double> signal, int window_size_low, int window_size_high, Filtr_Type type = Filtr_Type.BANDPASS)
             {
-                if (type == Filtr_Type.BANDPASS)
+                try
                 {
-                    int signal_size = signal.Count;
-                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    lp_filtered_signal = savitzky_golay(signal, window_size_low, Filtr_Type.LOWPASS);
-                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    hp_filtered_signal = savitzky_golay(lp_filtered_signal, window_size_high, Filtr_Type.HIGHPASS);
+                    if (type == Filtr_Type.BANDPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        lp_filtered_signal = savitzky_golay(signal, window_size_low, Filtr_Type.LOWPASS);
+                        Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        hp_filtered_signal = savitzky_golay(lp_filtered_signal, window_size_high, Filtr_Type.HIGHPASS);
 
-                    return hp_filtered_signal;
+                        return hp_filtered_signal;
+                    }
+
+                    return signal;
                 }
-
-                return signal;
+                catch
+                {
+                    return signal;
+                }
             }
 
             //========================================================================================================
@@ -297,38 +334,45 @@ namespace EKG_Project.Modules.ECG_Baseline
             /// <returns>The result of this method of filtration is the filtered signal by low- or highpass moving average filter</returns>
             public Vector<double> moving_average(Vector<double> signal, int window_size, Filtr_Type type)
             {
-                int signal_size = signal.Count; //rozmiar sygału wejściowego
-                Vector<double> signal_extension = Vector<double>.Build.Dense(window_size - 1, signal[0]); //uwzględnienie warunków początkowych filtracji
-                Vector<double> signal_extended = Vector<double>.Build.Dense(signal_extension.Count + signal_size, 0); //przygotowanie zmiennej, w której znajdzie się sygnał przygotowany do filtracji
-                Vector<double> signal_filtered = Vector<double>.Build.Dense(signal_size, 0); //zmienna na sygnał przefiltrowany
-
-                for (int i = 0; i < signal_extension.Count; i++)
+                try
                 {
-                    signal_extended[i] = signal_extension[i]; //powielenie piewszej próbki sygnału wejściowego
-                }
+                    int signal_size = signal.Count; //rozmiar sygału wejściowego
+                    Vector<double> signal_extension = Vector<double>.Build.Dense(window_size - 1, signal[0]); //uwzględnienie warunków początkowych filtracji
+                    Vector<double> signal_extended = Vector<double>.Build.Dense(signal_extension.Count + signal_size, 0); //przygotowanie zmiennej, w której znajdzie się sygnał przygotowany do filtracji
+                    Vector<double> signal_filtered = Vector<double>.Build.Dense(signal_size, 0); //zmienna na sygnał przefiltrowany
 
-                for (int i = 0; i < signal_size; i++)
-                {
-                    signal_extended[i + window_size - 1] = signal[i]; //przygotowanie sygnału do filtracji
-                }
-
-                double sum = 0; //zmienna pomocnicza
-                for (int i = 0; i < signal_size; i++)
-                {
-                    sum = 0;
-                    for (int j = 0; j < window_size; j++)
+                    for (int i = 0; i < signal_extension.Count; i++)
                     {
-                        sum = sum + signal_extended[i + j]; //sumowanie kolejnych próbek sygnału 
+                        signal_extended[i] = signal_extension[i]; //powielenie piewszej próbki sygnału wejściowego
                     }
-                    signal_filtered[i] = sum / window_size; //obliczenie średniej 
-                }
 
-                if(type == Filtr_Type.HIGHPASS)
+                    for (int i = 0; i < signal_size; i++)
+                    {
+                        signal_extended[i + window_size - 1] = signal[i]; //przygotowanie sygnału do filtracji
+                    }
+
+                    double sum = 0; //zmienna pomocnicza
+                    for (int i = 0; i < signal_size; i++)
+                    {
+                        sum = 0;
+                        for (int j = 0; j < window_size; j++)
+                        {
+                            sum = sum + signal_extended[i + j]; //sumowanie kolejnych próbek sygnału 
+                        }
+                        signal_filtered[i] = sum / window_size; //obliczenie średniej 
+                    }
+
+                    if (type == Filtr_Type.HIGHPASS)
+                    {
+                        return signal - signal_filtered;
+                    }
+
+                    return signal_filtered; //sygnał przefiltrowany
+                }
+                catch
                 {
-                    return signal - signal_filtered;
+                    return signal;
                 }
-
-                return signal_filtered; //sygnał przefiltrowany
 
             }
             /// <summary>
@@ -341,19 +385,26 @@ namespace EKG_Project.Modules.ECG_Baseline
             /// <returns>The result of this method of filtration is the filtered signal by bandpass moving average filter</returns>
             public Vector<double> moving_average(Vector<double> signal, int window_size_low, int window_size_high, Filtr_Type type = Filtr_Type.BANDPASS)
             {
-                if (type == Filtr_Type.BANDPASS)
+                try
                 {
-                    int signal_size = signal.Count;
-                    Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    lp_filtered_signal = moving_average(signal, window_size_low, Filtr_Type.LOWPASS);
-                    Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
-                    hp_filtered_signal = moving_average(lp_filtered_signal, window_size_high, Filtr_Type.HIGHPASS);
+                    if (type == Filtr_Type.BANDPASS)
+                    {
+                        int signal_size = signal.Count;
+                        Vector<double> lp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        lp_filtered_signal = moving_average(signal, window_size_low, Filtr_Type.LOWPASS);
+                        Vector<double> hp_filtered_signal = Vector<double>.Build.Dense(signal_size, 0);
+                        hp_filtered_signal = moving_average(lp_filtered_signal, window_size_high, Filtr_Type.HIGHPASS);
 
-                    return hp_filtered_signal;
+                        return hp_filtered_signal;
+                    }
+
+                    return signal;
                 }
-
-                return signal;
-            }
+                catch
+                {
+                    return signal;
+                }
+                }
 
         }
 

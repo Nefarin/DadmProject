@@ -9,13 +9,11 @@ namespace EKG_Project.Modules.HRV1
 {
     public class HRV1_Data : ECG_Data
     {
+        private List<Tuple<string, double>> _timeBasedParams;
+        private List<Tuple<string, double>> _freqBasedParams;
+        private List<Tuple<string, Vector<double>>> _powerSpectrum;
 
-        private List<Tuple<string, Vector<double>>> _timeBasedParams;
-        private List<Tuple<string, Vector<double>>> _freqBasedParams;
-        private List<Tuple<string, Vector<double>>> _freqVector;
-        private List<Tuple<string, Vector<double>>> _PSD;
-
-        public List<Tuple<string, Vector<double>>> TimeBasedParams
+        public List<Tuple<string, double>> TimeBasedParams
         {
             get
             {
@@ -27,7 +25,7 @@ namespace EKG_Project.Modules.HRV1
             }
         }
 
-        public List<Tuple<string, Vector<double>>> FreqBasedParams
+        public List<Tuple<string, double>> FreqBasedParams
         {
             get
             {
@@ -39,58 +37,15 @@ namespace EKG_Project.Modules.HRV1
             }
         }
 
-        public List<Tuple<string, Vector<double>>> FreqVector
-        {
+        public List<Tuple<string, Vector<double>>> PowerSpectrum
+         {
             get
             {
-                return _freqVector;
+                return _powerSpectrum;
             }
             set
             {
-                _freqVector = value;
-            }
-        }
-
-        public List<Tuple<string, Vector<double>>> PSD
-        {
-            get
-            {
-                return _PSD;
-            }
-            set
-            {
-                _PSD = value;
-            }
-        }
-
-        // depreciated - to be removed
-        private List<Tuple<string, Vector<double>>> _rInstants;
-        // depreciated - to be removed
-        private List<Tuple<string, Vector<double>>> _rrIntervals;
-
-        // obsolete - to be removed
-        public List<Tuple<string, Vector<double>>> RInstants
-        {
-            get
-            {
-                return _rInstants;
-            }
-            set
-            {
-                _rInstants = value;
-            }
-        }
-
-        // obsolete - to be rempoved
-        public List<Tuple<string, Vector<double>>> RRIntervals
-        {
-            get
-            {
-                return _rrIntervals;
-            }
-            set
-            {
-                _rrIntervals = value;
+                _powerSpectrum = value;
             }
         }
     }

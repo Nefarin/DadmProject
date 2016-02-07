@@ -51,6 +51,11 @@ namespace EKG_Project.GUI
         private Dictionary<string, List<Tuple<string, List<int>>>> _wholeDataToDisplayList;
         private bool first;
 
+        //ver 2.0 
+        private List<string> leadsNameList;
+        private string firstLead; 
+        //private 
+
 
         public VisualisationPlotControl()
         {
@@ -383,6 +388,211 @@ namespace EKG_Project.GUI
         }
 
 
+        //Program ver 2.0 
+
+        public VisualisationPlotControl(string analyseName, string moduleName, KeyValuePair<string, int> moduleInfo, List<string> modulesList)
+        {
+            InitializeComponent();
+            _plotType = moduleName;
+            _seriesName = new List<string>();
+            _seriesChecbox = new List<CheckBox>();
+
+            first = true;
+
+
+            ecgPlot = new ECGPlot(analyseName, moduleName);
+            DataContext = ecgPlot;
+            
+
+            CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
+            ecgPlot.DisplayBaselineLeads(firstLead);
+
+            this.CheckBoxList.DataContext = _seriesChecbox;
+
+        }
+
+
+        //methodes used to configurate Checboxes
+
+        private void CreateAllCheckBoxesInCurrentAnalyse(string currentAnalyseName, List<string> currentModulesList)
+        {
+            try
+            {
+                Basic_New_Data_Worker basicDataForLeads = new Basic_New_Data_Worker(currentAnalyseName);
+                leadsNameList = basicDataForLeads.LoadLeads();
+                firstLead = leadsNameList.First();
+
+                foreach (string lead in leadsNameList)
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = lead;
+                    cB.Content = lead;                   
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
+                //for ecgBasic
+                if(true)
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "Basic";
+                    cB.Content = "Basic";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
+                if(currentModulesList.Contains("R_PEAKS"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "RPeaks";
+                    cB.Content = "RPeaks";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+                if (currentModulesList.Contains("WAVES"))
+                {
+                    CheckBox qRSOnsets = new CheckBox();
+                    qRSOnsets.IsChecked = first;
+                    qRSOnsets.Name = "QRSOnsets";
+                    qRSOnsets.Content = "QRSOnsets";
+                    qRSOnsets.Checked += CheckBox_Checked;
+                    qRSOnsets.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(qRSOnsets);
+
+                    CheckBox qRSEnds = new CheckBox();
+                    qRSEnds.IsChecked = first;
+                    qRSEnds.Name = "QRSEnds";
+                    qRSEnds.Content = "QRSEnds";
+                    qRSEnds.Checked += CheckBox_Checked;
+                    qRSEnds.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(qRSEnds);
+
+                    CheckBox pOnsets = new CheckBox();
+                    pOnsets.IsChecked = first;
+                    pOnsets.Name = "POnsets";
+                    pOnsets.Content = "POnsets";
+                    pOnsets.Checked += CheckBox_Checked;
+                    pOnsets.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(pOnsets);
+
+                    CheckBox pEnds = new CheckBox();
+                    pEnds.IsChecked = first;
+                    pEnds.Name = "PEnds";
+                    pEnds.Content = "PEnds";
+                    pEnds.Checked += CheckBox_Checked;
+                    pEnds.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(pEnds);
+
+                    CheckBox tEnds = new CheckBox();
+                    tEnds.IsChecked = first;
+                    tEnds.Name = "TEnds";
+                    tEnds.Content = "TEnds";
+                    tEnds.Checked += CheckBox_Checked;
+                    tEnds.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(tEnds);
+                }
+
+                if (currentModulesList.Contains("HEART_CLASS"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "HeartClass";
+                    cB.Content = "HeartClass";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
+                if (currentModulesList.Contains("QT_DISP"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "QTDisp";
+                    cB.Content = "QTDisp";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
+
+                if (currentModulesList.Contains("ATRIAL_FIBER"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "AtrialFiber";
+                    cB.Content = "AtrialFiber";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
+                if (currentModulesList.Contains("T_WAVE_ALT"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "TWaveAlt";
+                    cB.Content = "TWaveAlt";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
+                if (currentModulesList.Contains("FLUTTER"))
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = first;
+                    first = false;
+                    cB.Name = "Flutter";
+                    cB.Content = "Flutter";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
+
+
+            }
+            catch
+            {
+
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         //methodes to get data for plotting
         private void Get_ECG_BASELINE_Data(string currentAnalyseName)
         {
@@ -680,19 +890,64 @@ namespace EKG_Project.GUI
 
         }
 
+
+
+
+
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var c = sender as CheckBox;
-            ecgPlot.SeriesControler(c.Name, true);
+            //MessageBox.Show("Checked=" + c.Name);
+            if (leadsNameList.Contains(c.Name))
+            {
+                foreach (var cB in this.CheckBoxList.Items)
+                {
+                    var cc = cB as CheckBox;
+                    if (cc.Name != c.Name)
+                    {
+                        cc.Checked -= CheckBox_Checked;
+                        cc.Unchecked -= CheckBox_Unchecked;
+                        cc.IsChecked = false;
+                        cc.Checked += CheckBox_Checked;
+                        cc.Unchecked += CheckBox_Unchecked;
+                    }
+
+                }
+                ecgPlot.RemoveAllPlotSeries();
+                //wyswietlenie żadnego leadu
+                ecgPlot.DisplayBaselineLeads(c.Name);
+
+            }
+            else
+            {
+                ecgPlot.ControlOtherModulesSeries(c.Name, true);
+            }
         }
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             var c = sender as CheckBox;
-            ecgPlot.SeriesControler(c.Name, false);
-            
+            //MessageBox.Show("Unchecked=" + c.Name);
+            if (leadsNameList.Contains(c.Name))
+            {
+                foreach (var cB in this.CheckBoxList.Items)
+                {
+                    var cc = cB as CheckBox;
+                    cc.Checked -= CheckBox_Checked;
+                    cc.Unchecked -= CheckBox_Unchecked;
+                    cc.IsChecked = false;
+                    cc.Checked += CheckBox_Checked;
+                    cc.Unchecked += CheckBox_Unchecked;
 
+                    ecgPlot.RemoveAllPlotSeries();           
+                }
+            }
+            else
+            {
+                ecgPlot.ControlOtherModulesSeries(c.Name, false);
+            }
         }
+
 
         private void SavePlotButton_Click(object sender, RoutedEventArgs e)
         {

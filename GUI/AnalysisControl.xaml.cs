@@ -141,7 +141,7 @@ namespace EKG_Project.GUI
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
             foreach (var option in modulePanel.getAllOptions())
             {
-                
+                //Console.WriteLine(option.Name);
                 if (option.Set)
                 {
                     tempList.Add(option.Name);
@@ -151,9 +151,9 @@ namespace EKG_Project.GUI
             loadFileButton.IsEnabled = true;
             pdfButton.IsEnabled = true;
             startAnalyseButton.IsEnabled = true;
-            //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
+            VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
             panel.Visibility = Visibility.Hidden;
-            //this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
+            this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
         }
 
         public void updateProgress(AvailableOptions module, double progress)
@@ -172,6 +172,7 @@ namespace EKG_Project.GUI
 
         public void moduleEnded(AvailableOptions module, bool aborted)
         {
+            Console.WriteLine(module + " Ended");
             if (aborted)
             {
 

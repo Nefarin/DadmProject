@@ -44,8 +44,7 @@ namespace EKG_Project.Modules
                     module = new Heart_Class.Heart_Class();
                     break;
                 case AvailableOptions.HRT:
-                    module = new TestModule3.TestModule3();
-                    //module = new HRT.HRT(); does not work
+                    module = new HRT.HRT();
                     break;
                 case AvailableOptions.HRV1:
                     module = new HRV1.HRV1();
