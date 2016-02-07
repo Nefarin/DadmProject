@@ -1025,7 +1025,7 @@ namespace EKG_Project.GUI
                 //CurrentPlot.Annotations.Add(xAx);
                 //CurrentPlot.Annotations.Add(yAx);
 
-                System.Windows.MessageBox.Show(CurrentPlot.Title + " " + _currentLeadName);
+                //System.Windows.MessageBox.Show(CurrentPlot.Title + " " + _currentLeadName);
 
                 return true;
             }
@@ -1036,6 +1036,67 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplayHRV2HistogramLeads(string leadName)
+        {
+            try
+            {
+                HRV2_New_Data_Worker hW = new HRV2_New_Data_Worker(_currentAnalysisName);
+                List<Tuple<double,double>> myTemp = hW.LoadHistogram(leadName, 0, (int)hW.getHistogramNumberOfSamples(leadName));
+
+                CurrentPlot.Axes.Clear();
+
+                ColumnSeries hist = new ColumnSeries();
+                int i=1;
+                foreach (var hV in myTemp)
+                {
+                    hist.Items.Add(new ColumnItem(hV.Item2, i));
+                    i++;
+                }
+
+                //for (i = 0; i <= myTemp.Max(a => a.Item1); i++)
+                //{
+                //    if (myTemp.Exists(a => a.Item1 == i))
+                //    {
+                //        System.Windows.MessageBox.Show("znaleziono " + i);
+                //        hist.Items.Add(new ColumnItem(myTemp.Find(a => a.Item1 == i).Item2, i));
+
+                //    }
+                //    else
+                //    {
+                //        hist.Items.Add(new ColumnItem(0, i));
+                //    }
+                //}
+
+                //System.Windows.MessageBox.Show(i.ToString());
+
+                CurrentPlot.Series.Add(hist);
+
+                var lineraYAxis = new LinearAxis();
+                lineraYAxis.Position = AxisPosition.Left;
+                lineraYAxis.Minimum = myTemp.Min(a => a.Item2);
+                lineraYAxis.Maximum = myTemp.Max(a => a.Item2)+2;
+                lineraYAxis.Title = "Count [n]";
+
+                CurrentPlot.Axes.Add(lineraYAxis);
+
+                var categoryXaxis = new CategoryAxis();
+                categoryXaxis.Position = AxisPosition.Bottom;
+                //categoryXaxis.Minimum = myTemp.Min(a => a.Item1);
+                //categoryXaxis.Maximum = myTemp.Max(a => a.Item1);
+                categoryXaxis.Title = "t [s]";
+                //categoryXaxis.IntervalLength = 20;
+                categoryXaxis.IsAxisVisible = false;
+                CurrentPlot.Axes.Add(categoryXaxis);
+
+                RefreshPlot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
 
         public bool DisplayEcgBasicLeadVersion()
         {

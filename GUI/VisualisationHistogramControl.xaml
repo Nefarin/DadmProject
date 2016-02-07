@@ -17,7 +17,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <oxy:PlotView Model="{Binding CurrentPlot}" x:Name="ECGHistogramPlot" Grid.Column="1" Grid.Row="0"/>
-        <Button Name="SavePlotButton" Grid.Column="0" Grid.Row="2">
+        <Button Name="SavePlotButton" Grid.Column="0" Grid.Row="1" Click="SavePlotButton_Click">
             <StackPanel Orientation="Horizontal">
                 <Image Source="images/save.png"/>
                 <Label Padding="0">Save Plot</Label>
