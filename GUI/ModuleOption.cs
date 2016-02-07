@@ -141,21 +141,23 @@ namespace EKG_Project.GUI
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
-                        case AvailableOptions.ST_SEGMENT:
+                        /*case AvailableOptions.ST_SEGMENT:
                             this.ModuleParam = new ST_Segment_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
+                            */
                         case AvailableOptions.T_WAVE_ALT:
                             this.ModuleParam = new T_Wave_Alt_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
-                        case AvailableOptions.SIG_EDR:
+                        /*case AvailableOptions.SIG_EDR:
                             this.ModuleParam = new SIG_EDR_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
+                            */
                         case AvailableOptions.HRT:
                             this.ModuleParam = new HRT_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
