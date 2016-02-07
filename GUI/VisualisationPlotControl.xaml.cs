@@ -418,9 +418,9 @@ namespace EKG_Project.GUI
             }
             if(_plotType == "HEART_AXIS")
             {
-                //this.PlotSlider.Visibility = Visibility.Collapsed;
-                //this.CheckBoxList.Visibility = Visibility.Collapsed;
-               // ecgPlot.DisplayHeartAxisLeadVersion();
+                this.PlotSlider.Visibility = Visibility.Collapsed;
+                this.CheckBoxList.Visibility = Visibility.Collapsed;
+                ecgPlot.DisplayHeartAxisLeadVersion();
             }
 
 
