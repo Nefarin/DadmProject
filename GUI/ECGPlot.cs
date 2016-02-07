@@ -881,6 +881,149 @@ namespace EKG_Project.GUI
             try
             {
                 _currentLeadName = leadName;
+                bool addPoincare = false;
+
+                HRV2_New_Data_Worker hW = new HRV2_New_Data_Worker(_currentAnalysisName);
+                Vector<double> pX = hW.LoadSignal(HRV2_Signal.PoincarePlotData_x, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)hW.getNumberOfSamples(HRV2_Signal.PoincarePlotData_x, _currentLeadName));
+                Vector<double> pY = hW.LoadSignal(HRV2_Signal.PoincarePlotData_y, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)hW.getNumberOfSamples(HRV2_Signal.PoincarePlotData_y, _currentLeadName));
+
+                double elipseX = hW.LoadAttribute(HRV2_Attributes.ElipseCenter_x, _currentLeadName);
+                double elipseY = hW.LoadAttribute(HRV2_Attributes.ElipseCenter_y, _currentLeadName);
+
+                double sD1 = hW.LoadAttribute(HRV2_Attributes.SD1, _currentLeadName);
+                double sD2 = hW.LoadAttribute(HRV2_Attributes.SD2, _currentLeadName);
+
+                //EllipseAnnotation elipse = new EllipseAnnotation()
+                //{
+                //    Tag = new AnnotationDescriber { idName = leadName },
+                //    X = elipseX,
+                //    Y = elipseY,
+                //    Height = sD1,
+                //    Width = sD2,
+                //    StrokeThickness = 1
+                //};
+                //elipse.Fill = OxyColors.Transparent;            
+                //CurrentPlot.Annotations.Add(elipse);
+
+
+
+                double Xe1 = (-sD2 / 2);
+                double Ye1 = (0);
+                double Xrot1 = elipseX + Xe1 * Math.Cos(0.7853981634) + Ye1 * Math.Sin(0.7853981634);
+                double Yrot1 = elipseY - Xe1 * Math.Sin(0.7853981634) + Ye1 * Math.Cos(0.7853981634);
+
+                double Xe2 = (0);
+                double Ye2 = (sD1 / 2);
+                double Xrot2 = elipseX + Xe2 * Math.Cos(0.7853981634) + Ye2 * Math.Sin(0.7853981634);
+                double Yrot2 = elipseY - Xe2 * Math.Sin(0.7853981634) + Ye2 * Math.Cos(0.7853981634);
+
+                ArrowAnnotation sd1 = new ArrowAnnotation
+                {
+                    StartPoint = new DataPoint(elipseX, elipseY),
+                    EndPoint = new DataPoint(Xrot1, Yrot1),
+                    Color = OxyColor.Parse("#000000"),
+                    StrokeThickness = 1,
+                    Text = "SD2"
+                };
+                ArrowAnnotation sd2 = new ArrowAnnotation
+                {
+                    StartPoint = new DataPoint(elipseX, elipseY),
+                    EndPoint = new DataPoint(Xrot2, Yrot2),
+                    Color = OxyColor.Parse("#000000"),
+                    StrokeThickness = 1,
+                    Text = "SD1"
+                };
+                CurrentPlot.Annotations.Add(sd1);
+                CurrentPlot.Annotations.Add(sd2);
+
+
+                ScatterSeries elipseRot = new ScatterSeries();
+                elipseRot.Title = "Elipse";
+
+                double C_x = elipseX, C_y = elipseY, h = sD1, w = sD2;
+                for (double t = 0; t <= 2 * 3.14; t += 0.01)
+                {
+                    double Xe =  (sD2 / 2) * Math.Cos(t);
+                    double Ye =  (sD1 / 2) * Math.Sin(t);
+
+                    double Xrot = elipseX + Xe * -Math.Cos(0.7853981634) + Ye * -Math.Sin(0.7853981634);
+                    double Yrot = elipseY - Xe * -Math.Sin(0.7853981634) + Ye * -Math.Cos(0.7853981634);
+
+                    elipseRot.Points.Add(new ScatterPoint { X = Xrot, Y = Yrot, Size = 0.75 });
+                }
+
+                //for (double t = 0; t <= 2 * 3.14; t += 0.01)
+                //{
+                //    //double Xe = C_x + (w / 2) * Math.Cos(t);
+                //    //double Ye = C_y + (h / 2) * Math.Sin(t);
+
+                //    double Xe = (w / 2) * Math.Cos(t);
+                //    double Ye = (h / 2) * Math.Sin(t);
+
+                //    double Xrot = C_x + Xe * Math.Cos(0.7853981634) + Ye * Math.Sin(0.7853981634);
+                //    double Yrot = C_y - Xe * Math.Sin(0.7853981634) + Ye * Math.Cos(0.7853981634);
+
+                //    //double Xrot = Xe;
+                //    //double Yrot = Ye;
+
+                //    //elipse.Points.Add(new ScatterPoint { X = Xe, Y = Ye, Size = 1.0 });
+                //    elipseRot.Points.Add(new ScatterPoint { X = Xrot, Y = Yrot, Size = 1.0 });
+                //    // Do what you want with X & Y here 
+                //}
+
+                CurrentPlot.Series.Add(elipseRot);
+
+
+                ScatterSeries poincare = new ScatterSeries();
+                poincare.Title = "Poincare";
+
+
+                for(int i =0; i<pX.Count;i++)
+                {
+                    poincare.Points.Add(new ScatterPoint { X =pX[i], Y = pY[i], Size = 1.5 });
+
+                    addPoincare = true;
+                }
+
+                CurrentPlot.Series.Add(poincare);
+
+
+                if (addPoincare)
+                {
+                    var lineraYAxis = new LinearAxis();
+                    lineraYAxis.Position = AxisPosition.Left;
+                    lineraYAxis.Minimum = pY.Minimum();
+                    lineraYAxis.Maximum = pY.Maximum();
+                    lineraYAxis.Title = "RR(j+1) [ms]";
+
+                    CurrentPlot.Axes.Add(lineraYAxis);
+
+
+                    var lineraXAxis = new LinearAxis();
+                    lineraXAxis.Position = AxisPosition.Bottom;
+                    lineraXAxis.Minimum = pX.Minimum();
+                    lineraXAxis.Maximum = pX.Maximum();
+                    lineraXAxis.Title = "RR(j) [ms]";
+
+                    CurrentPlot.Axes.Add(lineraXAxis);
+                }
+
+                //ArrowAnnotation xAx = new ArrowAnnotation
+                //{
+                //    StartPoint = new DataPoint(pX.Minimum(), pY.Minimum()),
+                //    EndPoint = new DataPoint(pX.Maximum(), pY.Maximum()),
+                //    Color = OxyColor.Parse("#000000"),
+                //    StrokeThickness = 0.5
+                //};
+                //ArrowAnnotation yAx = new ArrowAnnotation
+                //{
+                //    StartPoint = new DataPoint(pX.Maximum(), pY.Minimum()),
+                //    EndPoint = new DataPoint(pX.Minimum(), pY.Maximum()),
+                //    Color = OxyColor.Parse("#000000"),
+                //    StrokeThickness = 0.5
+                //};
+                //CurrentPlot.Annotations.Add(xAx);
+                //CurrentPlot.Annotations.Add(yAx);
 
                 System.Windows.MessageBox.Show(CurrentPlot.Title + " " + _currentLeadName);
 

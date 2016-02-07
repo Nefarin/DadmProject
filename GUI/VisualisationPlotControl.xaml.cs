@@ -937,6 +937,7 @@ namespace EKG_Project.GUI
                 if (_plotType == "HRV2")
                 {
                     ecgPlot.DisplayHRV2Leads(c.Name);
+                    this.PlotSlider.Visibility = Visibility.Hidden;
                 }
 
             }
