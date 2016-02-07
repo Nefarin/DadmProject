@@ -1381,13 +1381,30 @@ namespace EKG_Project.GUI
                 
                 Flutter_New_Data_Worker fW = new Flutter_New_Data_Worker(_currentAnalysisName);
                 List<Tuple<int, int>> myTemp = fW.LoadFlutterAnnotations(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)fW.getNumberOfSamples(_currentLeadName));
-
+                
              
                 if (myTemp.Count>0)
                 {
                     //jakas logika jak bedzie sygnał 
+                    //bool addFlutter = false;
+                    ScatterSeries flutterSeries = new ScatterSeries();
+                    flutterSeries.Title = "Flutter";
 
-                    System.Windows.MessageBox.Show("Nie wykryto trzepotania przedsionków");
+                    foreach (var tup in myTemp.Where(a => a.Item1 < _currentBaselineLeadEndIndex))
+                    {
+                        for (int i = tup.Item1; (i <= tup.Item2 && i<_currentBaselineLeadEndIndex) ; i++)
+                        {
+                            flutterSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 1.5 });
+                        }
+                    }
+
+
+                    CurrentPlot.Series.Add(flutterSeries);
+
+
+                    RefreshPlot();
+
+                    System.Windows.MessageBox.Show("Wykryto trzepotanie przedsionków");
                    //RefreshPlot();
                 }
                 else
