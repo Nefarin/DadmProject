@@ -1438,6 +1438,96 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplayHeartAxisLeadVersion()
+        {
+            try
+            {
+
+                Heart_Axis_New_Data_Worker hAW = new Heart_Axis_New_Data_Worker(_currentAnalysisName);
+                double heartAxis = hAW.LoadAttribute();
+                
+                //ScatterSeries zeroSeries = new ScatterSeries();
+                //zeroSeries.IsVisible = true; 
+                //zeroSeries.Points.Add
+                var lineraYAxis = new LinearAxis();
+                lineraYAxis.Position = AxisPosition.Left;
+                lineraYAxis.Minimum = -110.0;
+                lineraYAxis.Maximum = 112.0;
+                lineraYAxis.IsAxisVisible = false;
+                //lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+                //lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+
+                var lineraXAxis = new LinearAxis();
+                lineraXAxis.Position = AxisPosition.Bottom;
+                lineraXAxis.Minimum = -120.0;
+                lineraXAxis.Maximum = 110.0;
+                lineraXAxis.IsAxisVisible = false;
+                //lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
+                //lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
+
+                CurrentPlot.Axes.Add(lineraYAxis);
+                CurrentPlot.Axes.Add(lineraXAxis);
+
+                CurrentPlot.Annotations.Add(new TextAnnotation { Text = "0", TextPosition = new DataPoint(102, -3), StrokeThickness = 0 });
+                CurrentPlot.Annotations.Add(new TextAnnotation { Text = "+-180", TextPosition = new DataPoint(-110, -3), StrokeThickness = 0 });
+                CurrentPlot.Annotations.Add(new TextAnnotation { Text = "-90", TextPosition = new DataPoint(-1, 102), StrokeThickness = 0 });
+                CurrentPlot.Annotations.Add(new TextAnnotation { Text = "90", TextPosition = new DataPoint(0, -107), StrokeThickness = 0 });
+
+                ArrowAnnotation arrow = new ArrowAnnotation
+                {
+                    StartPoint = new DataPoint(0, 0),
+                    EndPoint = new DataPoint(100 * Math.Cos(heartAxis), -100 * Math.Sin(heartAxis)),
+                    Text = heartAxis.ToString("0.000") + "rad"
+                };
+
+                ArrowAnnotation yup = new ArrowAnnotation
+                {
+                    StartPoint = new DataPoint(0, 0),
+                    EndPoint = new DataPoint(0, 100),
+                    Color = OxyColor.Parse("#000000"),
+                    StrokeThickness = 0.2
+                };
+                ArrowAnnotation ydown = new ArrowAnnotation
+                {
+                    StartPoint = new DataPoint(0, 0),
+                    EndPoint = new DataPoint(0, -100),
+                    Color = OxyColor.Parse("#000000"),
+                    StrokeThickness = 0.2
+                };
+                ArrowAnnotation xleft = new ArrowAnnotation
+                {
+                    StartPoint = new DataPoint(0, 0),
+                    EndPoint = new DataPoint(-100, 0),
+                    Color = OxyColor.Parse("#000000"),
+                    StrokeThickness = 0.2
+                };
+
+                ArrowAnnotation xright = new ArrowAnnotation
+                {
+                    StartPoint = new DataPoint(0, 0),
+                    EndPoint = new DataPoint(100, 0),
+                    Color = OxyColor.Parse("#000000"),
+                    StrokeThickness = 0.2
+                };
+
+                CurrentPlot.Annotations.Add(yup);
+                CurrentPlot.Annotations.Add(ydown);
+                CurrentPlot.Annotations.Add(xleft);
+                CurrentPlot.Annotations.Add(xright);
+                CurrentPlot.Annotations.Add(arrow);
+
+                RefreshPlot();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+
+
 
 
 

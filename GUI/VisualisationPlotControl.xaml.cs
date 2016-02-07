@@ -414,6 +414,10 @@ namespace EKG_Project.GUI
             {
                 ecgPlot.DisplayHRV2Leads(firstLead);
             }
+            if(_plotType == "HEART_AXIS")
+            {
+                ecgPlot.DisplayHeartAxisLeadVersion();
+            }
 
 
             this.CheckBoxList.DataContext = _seriesChecbox;
