@@ -1543,6 +1543,20 @@ namespace EKG_Project.GUI
 
         }
 
+        public bool DisplaySleepApneaLeadVersion()
+        {
+            try
+            {
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
 
 
 
@@ -1611,6 +1625,9 @@ namespace EKG_Project.GUI
                         break;
                     case "Flutter":
                         DisplayFlutterLeadVersion();
+                        break;
+                    case "SleepApnea":
+                        DisplaySleepApneaLeadVersion();
                         break;
 
                     default:

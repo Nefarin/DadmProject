@@ -580,6 +580,18 @@ namespace EKG_Project.GUI
                         cB.Unchecked += CheckBox_Unchecked;
                         _seriesChecbox.Add(cB);
                     }
+
+                    if (currentModulesList.Contains("SLEEP_APNEA"))
+                    {
+                        CheckBox cB = new CheckBox();
+                        cB.IsChecked = first;
+                        first = false;
+                        cB.Name = "SleepApnea";
+                        cB.Content = "SleepApnea";
+                        cB.Checked += CheckBox_Checked;
+                        cB.Unchecked += CheckBox_Unchecked;
+                        _seriesChecbox.Add(cB);
+                    }
                 }
                 else if(_plotType == "HRV2")
                 {
