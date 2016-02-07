@@ -152,59 +152,59 @@ namespace EKG_Project.Modules.Heart_Class
            
             Tuple<int, int> qrsDistances = DistancesFromR(fs);
 
-            //singleQrsOnset = (int)singleQrsR - qrsDistances.Item1;
-            //signleQrsEnd = (int)singleQrsR + qrsDistances.Item2;
-            //int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
-            //SingleQrs = Vector<double>.Build.Dense(qrsLength);
+            singleQrsOnset = (int)singleQrsR - qrsDistances.Item1;
+            signleQrsEnd = (int)singleQrsR + qrsDistances.Item2;
+            int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
+            SingleQrs = Vector<double>.Build.Dense(qrsLength);
 
-            //Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
-            //    count: qrsLength);
-            //QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
+            Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
+                count: qrsLength);
+            QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
 
-            if ((singleQrsOnset > -1) && (signleQrsEnd > -1)) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
-            {
+            //if ((singleQrsOnset > -1) && (signleQrsEnd > -1)) //modul WAVES daje na wyjściu -1 jeśli zespół nie został wykryty
+            //{
 
-                if (((int)singleQrsR - singleQrsOnset) > qrsDistances.Item1)
-                {
-                    singleQrsOnset = (int)singleQrsR - qrsDistances.Item1;
-                }
-                else { }
-                if ((signleQrsEnd - (int)singleQrsR) > qrsDistances.Item2)
-                {
-                    signleQrsEnd = (int)singleQrsR + qrsDistances.Item2;
-                }
-                else { }
-
-
-                int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
-                SingleQrs = Vector<double>.Build.Dense(qrsLength);
-
-                Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
-                    count: qrsLength);
-                QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
-            }
-            else
-            {
-
-                try
-                {
-                    singleQrsOnset = (int)singleQrsR - qrsDistances.Item1;
-                    signleQrsEnd = (int)singleQrsR + qrsDistances.Item2;
-
-                    int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
-                    SingleQrs = Vector<double>.Build.Dense(qrsLength);
-
-                    Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
-                        count: qrsLength);
-                    QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
-                }
-                catch (Exception e)
-                {
-                   
-                }
+            //    if (((int)singleQrsR - singleQrsOnset) > qrsDistances.Item1)
+            //    {
+            //        singleQrsOnset = (int)singleQrsR - qrsDistances.Item1;
+            //    }
+            //    else { }
+            //    if ((signleQrsEnd - (int)singleQrsR) > qrsDistances.Item2)
+            //    {
+            //        signleQrsEnd = (int)singleQrsR + qrsDistances.Item2;
+            //    }
+            //    else { }
 
 
-            }
+            //    int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
+            //    SingleQrs = Vector<double>.Build.Dense(qrsLength);
+
+            //    Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
+            //        count: qrsLength);
+            //    QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
+            //}
+            //else
+            //{
+
+            //    try
+            //    {
+            //        singleQrsOnset = (int)singleQrsR - qrsDistances.Item1;
+            //        signleQrsEnd = (int)singleQrsR + qrsDistances.Item2;
+
+            //        int qrsLength = (signleQrsEnd - singleQrsOnset + 1);
+            //        SingleQrs = Vector<double>.Build.Dense(qrsLength);
+
+            //        Signal.CopySubVectorTo(SingleQrs, sourceIndex: singleQrsOnset, targetIndex: 0,
+            //            count: qrsLength);
+            //        QrsComplexOne = new Tuple<int, Vector<double>>((int)singleQrsR, SingleQrs);
+            //    }
+            //    catch (Exception e)
+            //    {
+
+            //    }
+
+
+        //}
         }
 
 

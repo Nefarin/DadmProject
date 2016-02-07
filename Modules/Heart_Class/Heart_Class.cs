@@ -505,7 +505,7 @@ namespace EKG_Project.Modules.Heart_Class
         public static void Main(String[] args)
         {
             IModule testModule = new EKG_Project.Modules.Heart_Class.Heart_Class();
-            Heart_Class_Params param = new Heart_Class_Params("Analysis106");
+            Heart_Class_Params param = new Heart_Class_Params("Analysis114");
 
             testModule.Init(param);
             while (!testModule.Ended())
@@ -513,6 +513,7 @@ namespace EKG_Project.Modules.Heart_Class
                 testModule.ProcessData();
                 Console.WriteLine(testModule.Progress());
             }
+            
             Console.ReadKey();
         }
 
