@@ -404,19 +404,23 @@ namespace EKG_Project.GUI
             DataContext = ecgPlot;
             
 
-            CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
+            //CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
 
             if (_plotType == "ECG_BASELINE")
             {
+                CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
                 ecgPlot.DisplayBaselineLeads(firstLead);
             }
             if (_plotType == "HRV2")
             {
+                CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
                 ecgPlot.DisplayHRV2Leads(firstLead);
             }
             if(_plotType == "HEART_AXIS")
             {
-                ecgPlot.DisplayHeartAxisLeadVersion();
+                //this.PlotSlider.Visibility = Visibility.Collapsed;
+                //this.CheckBoxList.Visibility = Visibility.Collapsed;
+               // ecgPlot.DisplayHeartAxisLeadVersion();
             }
 
 

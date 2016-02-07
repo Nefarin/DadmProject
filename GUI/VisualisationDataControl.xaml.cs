@@ -168,7 +168,7 @@ namespace EKG_Project.GUI
 
             if (moduleName == "HEART_AXIS")
             {
-                //start konkretnego 
+                //StartPlot(analyseName, moduleName, moduleDict, analysedModules);
             }
 
             if (moduleName == "HRV2")
