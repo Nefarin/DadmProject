@@ -52,7 +52,8 @@ namespace EKG_Project.GUI
                         AddSuboption(AvailableOptions.SLEEP_APNEA).
                         AddSuboptionAndMoveDown(AvailableOptions.HEART_CLASS).
                             AddSuboption(AvailableOptions.HRT).
-                            AddSuboptionAndMoveUp(AvailableOptions.HEART_AXIS).
+                            AddSuboption(AvailableOptions.HEART_AXIS).
+                            AddSuboptionAndMoveUp(AvailableOptions.HEART_CLUSTER).
                         AddSuboption(AvailableOptions.ATRIAL_FIBER).
                         AddSuboption(AvailableOptions.QT_DISP).
                         AddSuboptionAndMoveUp(AvailableOptions.FLUTTER).

@@ -21,8 +21,7 @@ using EKG_Project.Modules.ST_Segment;
 using EKG_Project.Modules.T_Wave_Alt;
 using EKG_Project.Modules.SIG_EDR;
 using EKG_Project.Modules.HRT;
-
-
+using EKG_Project.Modules.Heart_Cluster;
 
 namespace EKG_Project.GUI
 {
@@ -126,6 +125,11 @@ namespace EKG_Project.GUI
                             break;
                         case AvailableOptions.HRV_DFA:
                             this.ModuleParam = new HRV_DFA_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = false;
+                            FillDictionaries();
+                            break;
+                        case AvailableOptions.HEART_CLUSTER:
+                            this.ModuleParam = new Heart_Cluster_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
@@ -313,6 +317,7 @@ namespace EKG_Project.GUI
         HRT,
         ECTOPIC_BEAT,
         HEART_AXIS,
+        HEART_CLUSTER,
         TEST_MODULE
     }
 }
