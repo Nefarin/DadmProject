@@ -8,6 +8,21 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <oxy:PlotView Model="{Binding CurrentPlot}" x:Name="ECGHistogramPlot"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="90"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <oxy:PlotView Model="{Binding CurrentPlot}" x:Name="ECGHistogramPlot" Grid.Column="1" Grid.Row="0"/>
+        <Button Name="SavePlotButton" Grid.Column="0" Grid.Row="2">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="images/save.png"/>
+                <Label Padding="0">Save Plot</Label>
+            </StackPanel>
+        </Button>
+        <ListBox Name="CheckBoxList" ItemsSource="{Binding}" Grid.Column="0" BorderThickness="0"/>
     </Grid>
 </UserControl>

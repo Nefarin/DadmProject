@@ -21,14 +21,30 @@ namespace EKG_Project.GUI
     public partial class VisualisationHistogramControl : UserControl
     {
         private ECGPlot ecgHistogramPlot;
+        private string _currentAnalysisName;
+        private List<string> leadsNameList;
 
         public VisualisationHistogramControl()
         {
             InitializeComponent();
 
+
+
             ecgHistogramPlot = new ECGPlot("ECG_HISTOGRAM");
             DataContext = ecgHistogramPlot;
             ecgHistogramPlot.DisplayHistogram();
         }
+
+        public VisualisationHistogramControl(string analyseName, string moduleName)
+        {
+            InitializeComponent();       
+            _currentAnalysisName = analyseName;
+
+            ecgHistogramPlot = new ECGPlot("ECG_HISTOGRAM");
+            DataContext = ecgHistogramPlot;
+            ecgHistogramPlot.DisplayHistogram();
+        }
+
+        
     }
 }

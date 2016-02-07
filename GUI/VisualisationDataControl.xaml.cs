@@ -175,7 +175,7 @@ namespace EKG_Project.GUI
             {
                 StartPlot(analyseName, moduleName, moduleDict, analysedModules);
                 StartTable(analyseName, moduleName, moduleDict, tableModuleList);
-                //StartHistogram(analyseName, moduleName, moduleDict);
+                StartHistogram(analyseName, moduleName, moduleDict);
             }
 
             this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
@@ -209,7 +209,7 @@ namespace EKG_Project.GUI
 
         public void StartHistogram(string anName, string modName, KeyValuePair<string, int> moduleDict)
         {
-            VisualisationHistogramControl ecgVHControl = new VisualisationHistogramControl();
+            VisualisationHistogramControl ecgVHControl = new VisualisationHistogramControl(anName, modName);
 
             TabItem histogramControl = new TabItem();
             histogramControl.Header = "Histogram";
