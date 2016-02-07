@@ -536,8 +536,6 @@
     <Content Include="DLL\resetvars.vbs" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
-    <Resource Include="IO\temp\abc123_ECG_Baseline_New_MLII.txt" />
-    <Resource Include="IO\temp\abc123_ECG_Baseline_New_V1.txt" />
     <Resource Include="IO\data\res_QT_Disp\output_end.txt" />
     <Resource Include="IO\data\res_QT_Disp\output_qt.txt" />
     <Resource Include="IO\data\res_QT_Disp\QRS_End.txt" />
@@ -546,13 +544,6 @@
     <Resource Include="IO\data\res_QT_Disp\sig.txt" />
     <Resource Include="IO\data\res_QT_Disp\T_End.txt" />
     <Resource Include="IO\data\res_QT_Disp\wyniki.txt" />
-    <Resource Include="IO\temp\abc123temp_Basic_New_MLII.txt" />
-    <Resource Include="IO\temp\abc123temp_Basic_New_NumberOfSamples.txt" />
-    <Resource Include="IO\temp\abc123temp_Basic_New_V1.txt" />
-    <Resource Include="IO\temp\abc123_Basic_New_Leads.txt" />
-    <Resource Include="IO\temp\abc123_Basic_New_MLII.txt" />
-    <Resource Include="IO\temp\abc123_Basic_New_NumberOfSamples.txt" />
-    <Resource Include="IO\temp\abc123_Basic_New_V1.txt" />
     <Resource Include="Resources\logo.png" />
     <Resource Include="IO\temp\train_d_label.txt" />
     <Resource Include="IO\temp\train_d.txt" />

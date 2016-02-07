@@ -17,6 +17,9 @@ namespace EKG_Project.Modules.Sleep_Apnea
     public class Sleep_Apnea_Alg
     {
 
+        private int _meanFilterWindowLength = 41;
+        public int MeanFilterWindowLength {  get { return _meanFilterWindowLength; } }
+
         #region
         /// <summary>
         /// Function that finds intervals between RR peaks
@@ -61,27 +64,27 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
         public List<List<double>> averageFilter(List<List<double>> RR)
         {
-            int meanFilterWindowLength = 41;
+            _meanFilterWindowLength = 41;
 
             List<double> rrDistFiltered = new List<double>(RR[1].Count);
             List<double> timeInSecFiltered = new List<double>(RR[0].Count);
 
-            for (int i = 0; i < RR[1].Count - meanFilterWindowLength; i++)
+            for (int i = 0; i < RR[1].Count - _meanFilterWindowLength; i++)
             {
-                List<double> meanWindow = RR[1].GetRange(i, meanFilterWindowLength);
+                List<double> meanWindow = RR[1].GetRange(i, _meanFilterWindowLength);
 
                 double sum = 0;
                 int counter = 0;
-                for (int j = 0; j < meanFilterWindowLength; j++)
+                for (int j = 0; j < _meanFilterWindowLength; j++)
                 {
-                    if (meanWindow[j] > 0.4 && meanWindow[j] < 2.0 && j != meanFilterWindowLength / 2)
+                    if (meanWindow[j] > 0.4 && meanWindow[j] < 2.0 && j != _meanFilterWindowLength / 2)
                     {
                         sum = sum + meanWindow[j];
                         counter++;
                     }
                 }
 
-                int currentIndex = meanFilterWindowLength / 2 + i;
+                int currentIndex = _meanFilterWindowLength / 2 + i;
                 double currentMean = sum / counter;
                 if (currentMean * 0.8 < RR[1][currentIndex] && currentMean * 1.2 > RR[1][currentIndex])
                 {
@@ -406,6 +409,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     else if (i == detected.Count - 1)
                     {
                         detectedApnea.Add(new Tuple<int, int>((int)start, (int)time[i]));
+                        start = -1;
                     }
                 }
                 else
@@ -414,6 +418,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     if (start != -1)
                     {
                         detectedApnea.Add(new Tuple<int, int>((int)start, (int)time[i]));
+                        start = -1;
                     }
                 }
             }
