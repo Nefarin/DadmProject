@@ -405,6 +405,7 @@ namespace EKG_Project.GUI
             
 
             CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
+
             if (_plotType == "ECG_BASELINE")
             {
                 ecgPlot.DisplayBaselineLeads(firstLead);
@@ -579,9 +580,9 @@ namespace EKG_Project.GUI
 
 
             }
-            catch
+            catch(Exception ex)
             {
-
+                System.Windows.MessageBox.Show(ex.Message + System.Environment.NewLine + ex.Source);
             }
         }
 
@@ -911,63 +912,77 @@ namespace EKG_Project.GUI
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            var c = sender as CheckBox;
-            //MessageBox.Show("Checked=" + c.Name);
-            if (leadsNameList.Contains(c.Name))
+            try
             {
-                foreach (var cB in this.CheckBoxList.Items)
+                var c = sender as CheckBox;
+                //MessageBox.Show("Checked=" + c.Name);
+                if (leadsNameList.Contains(c.Name))
                 {
-                    var cc = cB as CheckBox;
-                    if (cc.Name != c.Name)
+                    foreach (var cB in this.CheckBoxList.Items)
                     {
-                        cc.Checked -= CheckBox_Checked;
-                        cc.Unchecked -= CheckBox_Unchecked;
-                        cc.IsChecked = false;
-                        cc.Checked += CheckBox_Checked;
-                        cc.Unchecked += CheckBox_Unchecked;
+                        var cc = cB as CheckBox;
+                        if (cc.Name != c.Name)
+                        {
+                            cc.Checked -= CheckBox_Checked;
+                            cc.Unchecked -= CheckBox_Unchecked;
+                            cc.IsChecked = false;
+                            cc.Checked += CheckBox_Checked;
+                            cc.Unchecked += CheckBox_Unchecked;
+                        }
+
+                    }
+                    ecgPlot.RemoveAllPlotSeries();
+                    //wyswietlenie żadnego leadu
+                    if (_plotType == "ECG_BASELINE")
+                    {
+                        ecgPlot.DisplayBaselineLeads(c.Name);
+                    }
+                    if (_plotType == "HRV2")
+                    {
+                        ecgPlot.DisplayHRV2Leads(c.Name);
+                        this.PlotSlider.Visibility = Visibility.Hidden;
                     }
 
                 }
-                ecgPlot.RemoveAllPlotSeries();
-                //wyswietlenie żadnego leadu
-                if (_plotType == "ECG_BASELINE")
+                else
                 {
-                    ecgPlot.DisplayBaselineLeads(c.Name);
+                    ecgPlot.ControlOtherModulesSeries(c.Name, true);
                 }
-                if (_plotType == "HRV2")
-                {
-                    ecgPlot.DisplayHRV2Leads(c.Name);
-                    this.PlotSlider.Visibility = Visibility.Hidden;
-                }
-
             }
-            else
+            catch (Exception ex)
             {
-                ecgPlot.ControlOtherModulesSeries(c.Name, true);
+                System.Windows.MessageBox.Show(ex.Message + System.Environment.NewLine + ex.Source);
             }
         }
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            var c = sender as CheckBox;
-            //MessageBox.Show("Unchecked=" + c.Name);
-            if (leadsNameList.Contains(c.Name))
+            try
             {
-                foreach (var cB in this.CheckBoxList.Items)
+                var c = sender as CheckBox;
+                //MessageBox.Show("Unchecked=" + c.Name);
+                if (leadsNameList.Contains(c.Name))
                 {
-                    var cc = cB as CheckBox;
-                    cc.Checked -= CheckBox_Checked;
-                    cc.Unchecked -= CheckBox_Unchecked;
-                    cc.IsChecked = false;
-                    cc.Checked += CheckBox_Checked;
-                    cc.Unchecked += CheckBox_Unchecked;
+                    foreach (var cB in this.CheckBoxList.Items)
+                    {
+                        var cc = cB as CheckBox;
+                        cc.Checked -= CheckBox_Checked;
+                        cc.Unchecked -= CheckBox_Unchecked;
+                        cc.IsChecked = false;
+                        cc.Checked += CheckBox_Checked;
+                        cc.Unchecked += CheckBox_Unchecked;
 
-                    ecgPlot.RemoveAllPlotSeries();           
+                        ecgPlot.RemoveAllPlotSeries();
+                    }
+                }
+                else
+                {
+                    ecgPlot.ControlOtherModulesSeries(c.Name, false);
                 }
             }
-            else
+            catch(Exception ex)
             {
-                ecgPlot.ControlOtherModulesSeries(c.Name, false);
+                System.Windows.MessageBox.Show(ex.Message + System.Environment.NewLine + ex.Source);
             }
         }
 

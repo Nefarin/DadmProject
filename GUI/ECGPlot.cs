@@ -880,6 +880,8 @@ namespace EKG_Project.GUI
         {
             try
             {
+                CurrentPlot.Axes.Clear();
+
                 _currentLeadName = leadName;
                 bool addPoincare = false;
 
@@ -1027,6 +1029,7 @@ namespace EKG_Project.GUI
 
                 //System.Windows.MessageBox.Show(CurrentPlot.Title + " " + _currentLeadName);
 
+                RefreshPlot();
                 return true;
             }
             catch (Exception ex)
