@@ -43,8 +43,7 @@ namespace EKG_Project.Modules
                     stats = new Heart_Class.Heart_Class_Stats();
                     break;
                 case AvailableOptions.HRT:
-                    stats = new TestModule3.TestModule3_Stats();
-                    //stats = new HRT.HRT(); does not work
+                    stats = new HRT.HRT_Stats();
                     break;
                 case AvailableOptions.HRV1:
                     stats = new HRV1.HRV1_Stats();
