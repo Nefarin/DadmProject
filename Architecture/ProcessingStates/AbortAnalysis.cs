@@ -2,12 +2,18 @@
 
 namespace EKG_Project.Architecture.ProcessingStates
 {
+    #region Documentation
+    /// <summary>
+    /// Message to Analysis thread, which aborts current processing.
+    /// </summary>
+    /// 
+    #endregion
     public class AbortAnalysis : IProcessingState
     {
 
         #region Documentation
         /// <summary>
-        /// 
+        /// Sets next processing state.
         /// </summary>
         /// <param name="process"></param>
         /// <param name="timeoutState"></param>

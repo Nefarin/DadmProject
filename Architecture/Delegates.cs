@@ -4,7 +4,7 @@ namespace EKG_Project.Architecture
 {
     #region Documentation
     /// <summary>
-    /// TO DO
+    /// ToGUIDelegate signature.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="message"></param>

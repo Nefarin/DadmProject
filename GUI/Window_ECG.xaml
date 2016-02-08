@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EKG_Project.GUI"
         mc:Ignorable="d"
-        Title="ECG Analysis" Height="552" Width="815" MaxHeight="10000" MaxWidth="100000" MinHeight="600" MinWidth="900">
+        WindowStartupLocation="CenterScreen"
+        Title="ECG Analysis" Height="552" Width="815" MaxHeight="10000" MaxWidth="100000" MinHeight="600" MinWidth="900" Icon="Images/serce.png">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
@@ -22,9 +23,9 @@
                 <Separator/>
                 <MenuItem Header="Exit" Click="exitClick"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Edit"></MenuItem>
-            <MenuItem Header="Options"></MenuItem>
-            <MenuItem Header="About"></MenuItem>
+           <!-- <MenuItem Header="Edit"></MenuItem>
+            <MenuItem Header="Options"></MenuItem>-->
+            <MenuItem Header="About" Click="aboutProgram"></MenuItem>
         </Menu>
         <TabControl x:Name="analysisTabControl" ItemsSource="{Binding}" SelectionChanged="analysisTabControl_SelectionChanged" Grid.Column="3" Margin="0,27,0,0">
             <TabControl.Resources>
