@@ -85,6 +85,8 @@ namespace EKG_Project.Modules.HRV2
                     _currentVector = _R_PeaksWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentName, 0, (int)_basicWorker.getNumberOfSamples(_currentName));
                     HRV2_Alg _alg = new HRV2_Alg(_currentVector);
 
+                    _alg.makeTinn();
+                    _alg.makeTriangleIndex();
                     double Tinn = _alg.tinn;
                     double TriangleIndex = _alg.TriangleIndex;
                     double SD1 = _alg.SD1();
