@@ -291,7 +291,7 @@ namespace EKG_Project.Modules.ECG_Baseline
                     {
                         _currentVector = InputWorker.LoadSignal(_currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
 
-                        //Selecting filtration method
+                        //Selecting filtration method 
                         switch (Params.Method)
                         {
                             case Filtr_Method.MOVING_AVG:
