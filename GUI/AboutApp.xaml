@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:EKG_Project.GUI"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
-        Title="About ECG Analyser Application" Height="500" Width="370">
+        Title="About ECG Analyser Application" Height="500" Width="370" Icon="Images/serce.png">
     <Grid>
         <Image x:Name="image" Source="images/logo.gif" HorizontalAlignment="Left" Height="100" Margin="110,10,0,0" VerticalAlignment="Top" Width="140"/>
         <TextBlock x:Name="autors" HorizontalAlignment="Left" Margin="15,121,0,0" TextWrapping="WrapWithOverflow"  VerticalAlignment="Top" Height="81" Width="333" xml:space="preserve"  
