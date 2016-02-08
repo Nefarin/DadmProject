@@ -180,7 +180,7 @@ namespace EKG_Project.GUI
             if (moduleName == "HRV_DFA")
             {
                 StartPlot(analyseName, moduleName, moduleDict, analysedModules);
-                //StartTable(analyseName, moduleName, moduleDict, tableModuleList);
+                StartTable(analyseName, moduleName, moduleDict, tableModuleList);
             }
 
             if (moduleName == "HRV2")

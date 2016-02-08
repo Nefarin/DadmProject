@@ -433,6 +433,7 @@ namespace EKG_Project.GUI
             {
                 CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
                 ecgPlot.DisplayHrvDfaLeadVersion(firstLead);
+                this.PlotSlider.Visibility = Visibility.Hidden;
             }
             if (_plotType == "HRV1")
             {

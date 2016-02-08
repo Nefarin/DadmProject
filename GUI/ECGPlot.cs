@@ -1696,6 +1696,7 @@ namespace EKG_Project.GUI
                 Tuple<Vector<double>, Vector<double>> paramAlpha = hDW.LoadSignal(HRV_DFA_Signals.ParamAlpha, leadName, 0, (int)hDW.getNumberOfSamples(HRV_DFA_Signals.ParamAlpha, leadName));
 
 
+
                 if (dFANumberN.Item1.Maximum() > 0)
                 {
                     LineSeries ls = new LineSeries();
@@ -1722,6 +1723,19 @@ namespace EKG_Project.GUI
                     }
 
                     CurrentPlot.Series.Add(ls);
+                }
+
+                if(fluctuations.Item1.Count>0)
+                {
+                    ScatterSeries fluctuationsSeries = new ScatterSeries();
+                    fluctuationsSeries.Title = "Fluctuations";
+
+                    for (int i = 0; i < fluctuations.Item1.Count; i++)
+                    {
+                        fluctuationsSeries.Points.Add(new ScatterPoint { X = fluctuations.Item1[i], Y = fluctuations.Item2[i], Size = 2 });
+                    }
+
+                    CurrentPlot.Series.Add(fluctuationsSeries);
                 }
 
                 var lineraYAxis = new LinearAxis();

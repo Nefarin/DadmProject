@@ -46,6 +46,13 @@ namespace EKG_Project.GUI
             public string SD2{ get; set; }
         }
 
+        public class DataToTableHRVDFA
+        {
+            public string Lead { get; set; }
+            public string a1 { get; set; }
+            public string a2 { get; set; }
+        }
+
         public class DataToTableHRV1
         {
 
@@ -132,6 +139,9 @@ namespace EKG_Project.GUI
                 case "HRV1":
                     DisplayHRV1Table();
                     break;
+                case "HRV_DFA":
+                    DisplayHRVDFATable();
+                    break;
                 default:
                     break;
             }
@@ -217,7 +227,43 @@ namespace EKG_Project.GUI
             }
         }
 
+        private bool DisplayHRVDFATable()
+        {
+            try
+            {
+                List<DataToTableHRVDFA> _dataToPrint = new List<DataToTableHRVDFA>();
+                HRV_DFA_New_Data_Worker hDW = new HRV_DFA_New_Data_Worker(_currentAnalysisName);
 
+                
+
+                foreach (string lead in leadsNameList)
+                {
+                    try
+                    {
+                        Tuple<MathNet.Numerics.LinearAlgebra.Vector<double>, MathNet.Numerics.LinearAlgebra.Vector<double>> paramAlpha = hDW.LoadSignal(HRV_DFA_Signals.ParamAlpha, lead, 0, (int)hDW.getNumberOfSamples(HRV_DFA_Signals.ParamAlpha, lead));
+
+                        DataToTableHRVDFA dTT = new DataToTableHRVDFA();
+                        dTT.a1 = paramAlpha.Item1[0].ToString();
+                        dTT.a2 = paramAlpha.Item2[0].ToString();
+                        dTT.Lead = lead;
+                        _dataToPrint.Add(dTT);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                this.VisualisationDataTable.DataContext = _dataToPrint;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
 
 
         public VisualisationTableControl()
