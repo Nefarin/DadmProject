@@ -13,7 +13,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
     public class Sleep_Apnea : IModule
     {
         private const int DEFAULT_STEP = 600;
-        private const int NUMBER_OF_STATES = 2;
+        private const int NUMBER_OF_STATES = 9;
 
         private enum State
         {
@@ -51,6 +51,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         private bool _ended;
 
         double _actualProgress;
+        double _lastProgress;
         uint _fs;
         string _lead;
         int _currentRPeak = -1;
@@ -58,6 +59,12 @@ namespace EKG_Project.Modules.Sleep_Apnea
         int _currentLeadLength;
         private State _currentState;
         private int _numberOfChannels;
+        private int _resampFreq = 1;
+        int _currentLeadIndexToSave = 0;
+        int _currentSampleToSave = 0;
+        bool _ilApneaSaved = false;
+        bool _hAmpSaved = false;
+        bool _detectedApneaSaved = false;
 
         private Sleep_Apnea_Alg _sleepApneaAlg;
 
@@ -196,16 +203,16 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     break;
 
                 case State.Resampling:
-                    _RR_res = _sleepApneaAlg.resampling(_RR_average, (int)_fs);
+                    _RR_res = _sleepApneaAlg.resampling(_RR_average, (int)_resampFreq);
                     _currentState = State.BandPassFiltering;
-                    _actualProgress = 3 * 100.0 / 9;
+                    _actualProgress = 3 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.BandPassFiltering:
                     _RR_HP = _sleepApneaAlg.HP(_RR_res);
                     _RR_LP = _sleepApneaAlg.LP(_RR_HP);
                     _currentState = State.CaclulatingHilbert;
-                    _actualProgress = 4 * 100.0 / 9;
+                    _actualProgress = 4 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.CaclulatingHilbert:
@@ -213,19 +220,19 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     _h_freq = new List<List<double>>(2);
                     _sleepApneaAlg.hilbert(_RR_LP, ref _h_amp, ref _h_freq);
                     _currentState = State.MedianFiltering;
-                    _actualProgress = 5 * 100.0 / 9;
+                    _actualProgress = 5 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.MedianFiltering:
                      _sleepApneaAlg.medianFilter(_h_freq, _h_amp);
                     _currentState = State.AmplitudeNormalization;
-                    _actualProgress = 6 * 100.0 / 9;
+                    _actualProgress = 6 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.AmplitudeNormalization:
                     _sleepApneaAlg.ampNormalization(_h_amp);
                     _currentState = State.DetecingApnea;
-                    _actualProgress = 7 * 100.0 / 9;
+                    _actualProgress = 7 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.DetecingApnea:
@@ -233,32 +240,62 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     _time = new List<double>();
                     _sleepApneaAlg.detectApnea(_h_amp, _h_freq, _detected, _time);
                     _currentState = State.Finished;
-                    _actualProgress = 8 * 100.0 / 9;
+                    _actualProgress = 8 * 100.0 / NUMBER_OF_STATES;
                     break;
 
                 case State.Finished:
-                    List<Tuple<string, List<Tuple<int, int>>>> detected_Apnea = new List<Tuple<string, List<Tuple<int, int>>>>();
-                    List<Tuple<string, List<List<double>>>> h_amp = new List<Tuple<string, List<List<double>>>>();
-                    List<Tuple<string, double>> il_Apnea = new List<Tuple<string, double>>();
-
                     double ilApnea;
                     List<Tuple<int, int>> annotations = _sleepApneaAlg.setResult(_detected, _time, out ilApnea);
 
-                    for (int i = 0; i < _numberOfChannels; i++)
+                    if(!_ilApneaSaved)
                     {
-                        il_Apnea.Add(new Tuple<string, double>(_leads[i], ilApnea));
-                        h_amp.Add(new Tuple<string, List<List<double>>>(_leads[i], _h_amp));
-                        detected_Apnea.Add(new Tuple<string, List<Tuple<int, int>>>(_leads[i], annotations));
-
-                        _outputWorker.SaveIlApnea(_leads[i], ilApnea);
-                        _outputWorker.SaveHAmp(_leads[i], true, _h_amp);
-                        _outputWorker.SaveDetectedApnea(_leads[i], true, annotations);
+                        for (int i = 0; i < _numberOfChannels; i++)
+                        {
+                            _outputWorker.SaveIlApnea(_leads[i], ilApnea);
+                            if (i == 0)
+                            {
+                                _outputWorker.SaveDetectedApnea(_leads[_currentLeadIndexToSave], false, annotations);
+                            }
+                            else
+                            {
+                                _outputWorker.SaveDetectedApnea(_leads[_currentLeadIndexToSave], true, annotations);
+                            }
+                        }
+                        _ilApneaSaved = true;
                     }
+                    else if(!_hAmpSaved)
+                    {
+                        if(_currentLeadIndexToSave >= _leads.Count)
+                        {
+                            _hAmpSaved = true;
+                            _currentSampleToSave = 0;
+                            _currentLeadIndexToSave = 0;
+                            _ended = true;
+                            _actualProgress = 100.0;
+                            break;
+                        }
 
-                    
+                        if(_currentSampleToSave == 0)
+                        {
+                            _outputWorker.SaveHAmp(_leads[_currentLeadIndexToSave], false, _h_amp.Select(x => x.GetRange(_currentSampleToSave, _step)).ToList());
+                            _currentSampleToSave += _step;
+                        }
+                        if (_currentSampleToSave + _step < _h_amp[0].Count)
+                        {
+                            _outputWorker.SaveHAmp(_leads[_currentLeadIndexToSave], true, _h_amp.Select(x => x.GetRange(_currentSampleToSave, _step)).ToList());
+                            _currentSampleToSave += _step;
+                            _actualProgress = 8 * 100.0 / NUMBER_OF_STATES + (100.0 * (((double)_currentLeadIndexToSave + 1) * (_currentSampleToSave + 1)) / (_leads.Count * _h_amp[0].Count) / NUMBER_OF_STATES);
+                        }
+                        else
+                        {
+                            _outputWorker.SaveHAmp(_leads[_currentLeadIndexToSave], true, _h_amp.Select(x => x.GetRange(_currentSampleToSave, _h_amp[0].Count-1-_currentSampleToSave)).ToList());
+                            _currentSampleToSave = 0;
+                            _currentLeadIndexToSave++;
 
-                    _actualProgress = 100.0;
-                    _ended = true;
+                        }
+                        
+                    }
+              
                     break;
 
                 default:

@@ -14,6 +14,7 @@ using EKG_Project.Modules.Sleep_Apnea;
 using EKG_Project.Modules.ST_Segment;
 using EKG_Project.Modules.T_Wave_Alt;
 using EKG_Project.Modules.Waves;
+using EKG_Project.Modules.Heart_Cluster;
 using EKG_Project.GUI;
 namespace EKG_Project.Modules
 {
@@ -43,8 +44,7 @@ namespace EKG_Project.Modules
                     stats = new Heart_Class.Heart_Class_Stats();
                     break;
                 case AvailableOptions.HRT:
-                    stats = new TestModule3.TestModule3_Stats();
-                    //stats = new HRT.HRT(); does not work
+                    stats = new HRT.HRT_Stats();
                     break;
                 case AvailableOptions.HRV1:
                     stats = new HRV1.HRV1_Stats();
@@ -75,6 +75,9 @@ namespace EKG_Project.Modules
                     break;
                 case AvailableOptions.WAVES:
                     stats = new Waves.Waves_Stats();
+                    break;
+                case AvailableOptions.HEART_CLUSTER:
+                    stats = new Heart_Cluster.Heart_Cluster_Stats();
                     break;
                 default:
                     stats = new TestModule3.TestModule3_Stats();

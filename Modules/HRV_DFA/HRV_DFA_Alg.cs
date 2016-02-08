@@ -51,11 +51,11 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> vectorFn0 = ComputeDfaFluctuation(intervals, BoxRanged);
             Vector<double> vFn = RemoveZeros(vectorFn0);
             Vector<double> vectorLogFn = ConvertToLog(vFn);
-            Vector<double> vectorLogn = vectorLogN.SubVector(0, vFn.Count());
+            Vector<double> vectorLogn = vectorLogN.SubVector(0, vectorLogFn.Count());
 
             Tuple<Vector<double>, Vector<double>> resultFluctuations = new Tuple<Vector<double>, Vector<double>>(vectorLogn, vectorLogFn);
             return resultFluctuations;
-        } //to test
+        }
       
 
         #region
@@ -100,10 +100,10 @@ namespace EKG_Project.Modules.HRV_DFA
                         // Line function                                    
                         Tuple<double[], Vector<double>> localTrend = LinearSquare(x, y);
                         yn = localTrend.Item2;
-                        
+                        fluctuations[i] = ComputeInBox(yk.SubVector(0, yn.Count), yn, sig_length);
+
                     }
                     // dfa fluctuation function F(n)
-                    fluctuations[i] = ComputeInBox(yk.SubVector(0,yn.Count), yn, sig_length);
 
                 }
             }
@@ -163,7 +163,7 @@ namespace EKG_Project.Modules.HRV_DFA
                 ln1 = vectorLogn;
                 lFn1 = vectorLogFn;
                 Tuple<double[], Vector<double>> shortRange = LinearSquare(ln1, lFn1);
-                Vector<double> p = Vector<double>.Build.DenseOfArray(shortRange.Item1);
+                p1 = Vector<double>.Build.DenseOfArray(shortRange.Item1);
                 //fitting curve obtaining for short-range correlations
                 lineShortRange = shortRange.Item2;
             }
@@ -177,7 +177,7 @@ namespace EKG_Project.Modules.HRV_DFA
             output.Add(resultFn);
             output.Add(resultAlpha);
             return output;
-        } // to test
+        } 
 
         #region
         /// <summary>

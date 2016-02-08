@@ -39,15 +39,16 @@ namespace EKG_Project.Architecture
             AvailableOptions.WAVES,
             AvailableOptions.FLUTTER,
             //AvailableOptions.SIG_EDR,
-            AvailableOptions.ST_SEGMENT,
+            //AvailableOptions.ST_SEGMENT,
             AvailableOptions.SLEEP_APNEA,
             AvailableOptions.ATRIAL_FIBER,
             AvailableOptions.QT_DISP,
             AvailableOptions.FLUTTER,
             AvailableOptions.T_WAVE_ALT,
-            AvailableOptions.HRT,
             AvailableOptions.HEART_CLASS,
+            AvailableOptions.HRT,
             AvailableOptions.HEART_AXIS,
+            AvailableOptions.HEART_CLUSTER,
             //AvailableOptions.TEST_MODULE
         };
 

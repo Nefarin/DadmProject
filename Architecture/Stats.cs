@@ -34,19 +34,20 @@ namespace EKG_Project.Architecture
         {
             AvailableOptions.ECG_BASELINE,
             AvailableOptions.R_PEAKS,
-            //AvailableOptions.HRV1,
+            AvailableOptions.HRV1,
             AvailableOptions.HRV2,
             AvailableOptions.HRV_DFA,
             AvailableOptions.WAVES,
             AvailableOptions.FLUTTER,
             //AvailableOptions.SIG_EDR,
-            //AvailableOptions.ST_SEGMENT,
+            AvailableOptions.ST_SEGMENT,
             AvailableOptions.SLEEP_APNEA,
             AvailableOptions.ATRIAL_FIBER,
             AvailableOptions.QT_DISP,
             AvailableOptions.FLUTTER,
-            //AvailableOptions.HRT,
+            AvailableOptions.T_WAVE_ALT,
             AvailableOptions.HEART_CLASS,
+            AvailableOptions.HRT,
             AvailableOptions.HEART_AXIS,
             //AvailableOptions.TEST_MODULE
         };
