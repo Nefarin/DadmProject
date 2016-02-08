@@ -1688,9 +1688,55 @@ namespace EKG_Project.GUI
         {
             try
             {
-                //HRV_DFA_New_Data_Worker hDW = new HRV_DFA_New_Data_Worker(_currentAnalysisName);
-                //Tuple<Vector<double>,Vector<double>> myTemp =  hDW.LoadSignal(HRV_DFA_Signals.
+                CurrentPlot.Axes.Clear();
+                HRV_DFA_New_Data_Worker hDW = new HRV_DFA_New_Data_Worker(_currentAnalysisName);
+                Tuple<Vector<double>, Vector<double>> dFANumberN = hDW.LoadSignal(HRV_DFA_Signals.DfaNumberN, leadName, 0, (int)hDW.getNumberOfSamples(HRV_DFA_Signals.DfaNumberN, leadName));
+                Tuple<Vector<double>, Vector<double>> dFAValueFn = hDW.LoadSignal(HRV_DFA_Signals.DfaValueFn, leadName, 0, (int)hDW.getNumberOfSamples(HRV_DFA_Signals.DfaValueFn, leadName));
+                Tuple<Vector<double>, Vector<double>> fluctuations = hDW.LoadSignal(HRV_DFA_Signals.Fluctuations, leadName, 0, (int)hDW.getNumberOfSamples(HRV_DFA_Signals.Fluctuations, leadName));
+                Tuple<Vector<double>, Vector<double>> paramAlpha = hDW.LoadSignal(HRV_DFA_Signals.ParamAlpha, leadName, 0, (int)hDW.getNumberOfSamples(HRV_DFA_Signals.ParamAlpha, leadName));
 
+
+                if (dFANumberN.Item1.Maximum() > 0)
+                {
+                    LineSeries ls = new LineSeries();
+                    ls.Title = leadName+"-1";
+                    ls.MarkerStrokeThickness = 1;
+
+                    for (int i = 0; i < dFANumberN.Item1.Count; i++)
+                    {
+                        ls.Points.Add(new DataPoint(dFANumberN.Item1[i], dFAValueFn.Item1[i]));
+                    }
+
+                    CurrentPlot.Series.Add(ls);
+                }
+
+                if (dFANumberN.Item2.Maximum() > 0)
+                {
+                    LineSeries ls = new LineSeries();
+                    ls.Title = leadName + "-2";
+                    ls.MarkerStrokeThickness = 1;
+
+                    for (int i = 0; i < dFANumberN.Item2.Count; i++)
+                    {
+                        ls.Points.Add(new DataPoint(dFANumberN.Item2[i], dFAValueFn.Item2[i]));
+                    }
+
+                    CurrentPlot.Series.Add(ls);
+                }
+
+                var lineraYAxis = new LinearAxis();
+                lineraYAxis.Position = AxisPosition.Left;
+                lineraYAxis.Title = "log F(n)";
+
+                CurrentPlot.Axes.Add(lineraYAxis);
+
+                var lineraXAxis = new LinearAxis();
+                lineraXAxis.Position = AxisPosition.Bottom;
+                lineraXAxis.Title = "log n";
+
+                CurrentPlot.Axes.Add(lineraXAxis);
+
+                RefreshPlot();
                 return true;
             }
             catch (Exception ex)

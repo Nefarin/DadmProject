@@ -635,18 +635,6 @@ namespace EKG_Project.GUI
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
         //methodes to get data for plotting
         private void Get_ECG_BASELINE_Data(string currentAnalyseName)
         {
@@ -987,6 +975,11 @@ namespace EKG_Project.GUI
                     if (_plotType == "HRV1")
                     {
                         ecgPlot.DisplayHrv1LeadVersion(c.Name);                     
+                    }
+                    if (_plotType == "HRV_DFA")
+                    {
+                        ecgPlot.DisplayHrvDfaLeadVersion(c.Name);
+                        this.PlotSlider.Visibility = Visibility.Hidden;
                     }
 
                 }
