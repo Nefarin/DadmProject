@@ -57,6 +57,7 @@ namespace EKG_Project.GUI
         private Vector<double> _currentBaselineLeadVector;
 
         private int _currentSavedPlotNumber = 0;
+        private string _otherTabs = "";
 
 
 
@@ -1045,6 +1046,7 @@ namespace EKG_Project.GUI
         {
             try
             {
+                _otherTabs = "HIST";
                 HRV2_New_Data_Worker hW = new HRV2_New_Data_Worker(_currentAnalysisName);
                 List<Tuple<double,double>> myTemp = hW.LoadHistogram(leadName, 0, (int)hW.getHistogramNumberOfSamples(leadName));
 
@@ -2780,7 +2782,8 @@ namespace EKG_Project.GUI
 
                     automaticFilePath = automaticFilePath.Remove(automaticFilePath.IndexOf("DadmProject") + 12) + @"IO\temp";
                     //System.Windows.MessageBox.Show(automaticFilePath);
-                    string automaticFileName = @_currentAnalysisName + "_" + _currentSavedPlotNumber.ToString()+ ".pdf";
+
+                    string automaticFileName = @_currentAnalysisName + "_" + CurrentPlot.Title + _otherTabs + "_" + _currentSavedPlotNumber.ToString()+ ".pdf";
                     string combinedPath = System.IO.Path.Combine(automaticFilePath, automaticFileName);
                     _currentSavedPlotNumber++;
                        
