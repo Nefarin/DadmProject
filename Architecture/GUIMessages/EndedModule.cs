@@ -5,7 +5,7 @@ namespace EKG_Project.Architecture.GUIMessages
 {
     #region Documentation
     /// <summary>
-    /// 
+    /// GUI Message, which is generated after particular module ended its analysis.
     /// </summary>
     ///
     #endregion
@@ -14,18 +14,27 @@ namespace EKG_Project.Architecture.GUIMessages
 
         private AvailableOptions _module;
         private bool _aborted;
+
         #region Documentation
         /// <summary>
-        /// 
+        /// Constructor, which sets the module, which ended analysis and information if it was aborted.
         /// </summary>
-        /// <param name="ctrl"></param>
-        /// 
+        /// <param name="module"></param>
+        /// <param name="aborted"></param>
         #endregion
         public EndedModule(AvailableOptions module, bool aborted)
         {
             _module = module;
             _aborted = aborted;
         }
+
+        #region Documentation
+        /// <summary>
+        /// Reads given message with provided control.
+        /// </summary>
+        /// <param name="ctrl"></param>
+        /// 
+        #endregion
         public void Read(UserControl ctrl)
         {
             AnalysisControl control = (AnalysisControl)ctrl;
