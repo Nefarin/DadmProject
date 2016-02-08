@@ -56,6 +56,8 @@ namespace EKG_Project.GUI
 
         private Vector<double> _currentBaselineLeadVector;
 
+        private int _currentSavedPlotNumber = 0;
+
 
 
         private Dictionary<string, uint> modulesVisualisationNeeds = new Dictionary<string, uint>()
@@ -1702,11 +1704,12 @@ namespace EKG_Project.GUI
             {
                 HRV1_New_Data_Worker hW = new HRV1_New_Data_Worker(_currentAnalysisName);
                 
-                //Vector<double> freqBP =  hW.LoadSignal(HRV1_Signal.FreqBasedParams, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqBasedParams, leadName));
+                Vector<double> freqBP =  hW.LoadSignal(HRV1_Signal.FreqBasedParams, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqBasedParams, leadName));
 
-                //Vector<double> freQV = hW.LoadSignal(HRV1_Signal.FreqVector, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqVector, leadName));
-                //Vector<double> pSD = hW.LoadSignal(HRV1_Signal.PSD, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.PSD, leadName));
-                //Vector<double> timeBP = hW.LoadSignal(HRV1_Signal.TimeBasedParams, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.TimeBasedParams, leadName));
+                Vector<double> freQV = hW.LoadSignal(HRV1_Signal.FreqVector, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqVector, leadName));
+                
+                Vector<double> pSD = hW.LoadSignal(HRV1_Signal.PSD, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.PSD, leadName));
+                Vector<double> timeBP = hW.LoadSignal(HRV1_Signal.TimeBasedParams, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.TimeBasedParams, leadName));
 
 
                 return true;
@@ -2747,28 +2750,51 @@ namespace EKG_Project.GUI
 
         public void SavePlot()
         {
-            string filename;
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            //dlg.DefaultExt = ".svg";
-            //dlg.Filter = "SVG documents (.svg)|*.svg";
-            dlg.DefaultExt = ".pdf";
-            dlg.Filter = "PDF documents (.pdf)|*.pdf";
-            if (dlg.ShowDialog() == true)
-            {
-                filename = dlg.FileName;
-
-                //using (var stream = System.IO.File.Create(filename))
-                //{
-                //    var exporter = new SvgExporter() { Width = 600, Height = 400 };
-                //    exporter.Export(CurrentPlot, stream);
-                //}
-
-                using (var stream = System.IO.File.Create(filename))
+            try {
+                string filename;
+                Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+                //dlg.DefaultExt = ".svg";
+                //dlg.Filter = "SVG documents (.svg)|*.svg";
+                dlg.DefaultExt = ".pdf";
+                dlg.Filter = "PDF documents (.pdf)|*.pdf";
+                if (dlg.ShowDialog() == true)
                 {
-                    var pdfExporter = new PdfExporter() { Width = 600, Height = 400 };
-                    pdfExporter.Export(CurrentPlot, stream);
-                }
+                    filename = dlg.FileName;
 
+                    //using (var stream = System.IO.File.Create(filename))
+                    //{
+                    //    var exporter = new SvgExporter() { Width = 600, Height = 400 };
+                    //    exporter.Export(CurrentPlot, stream);
+                    //}                  
+
+                    using (var stream = System.IO.File.Create(filename))
+                    {
+                        var pdfExporter = new PdfExporter() { Width = 600, Height = 400 };
+                        pdfExporter.Export(CurrentPlot, stream);
+                    }
+
+                    string automaticFilePath = System.IO.Directory.GetCurrentDirectory();
+                    //System.Windows.MessageBox.Show(automaticFilePath);
+                    //System.Windows.MessageBox.Show(automaticFilePath.IndexOf("DadmProject").ToString());
+                    //System.Windows.MessageBox.Show(automaticFilePath.Remove(automaticFilePath.IndexOf("DadmProject")+12));
+
+                    automaticFilePath = automaticFilePath.Remove(automaticFilePath.IndexOf("DadmProject") + 12) + @"IO\temp";
+                    //System.Windows.MessageBox.Show(automaticFilePath);
+                    string automaticFileName = @_currentAnalysisName + "_" + _currentSavedPlotNumber.ToString()+ ".pdf";
+                    string combinedPath = System.IO.Path.Combine(automaticFilePath, automaticFileName);
+                    _currentSavedPlotNumber++;
+                       
+                    using (var stream = System.IO.File.Create(combinedPath))
+                    {
+                        var pdfExporter = new PdfExporter() { Width = 600, Height = 400 };
+                        pdfExporter.Export(CurrentPlot, stream);
+                    }
+
+                }
+            }
+            catch(Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
             }
         }
 
