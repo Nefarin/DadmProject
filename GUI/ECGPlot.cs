@@ -1700,8 +1700,13 @@ namespace EKG_Project.GUI
         {
             try
             {
-                //HRV_DFA_New_Data_Worker hDW = new HRV_DFA_New_Data_Worker(_currentAnalysisName);
-                //Tuple<Vector<double>,Vector<double>> myTemp =  hDW.LoadSignal(HRV_DFA_Signals.
+                //HRV1_New_Data_Worker hW = new HRV1_New_Data_Worker(_currentAnalysisName);
+                //Vector<double> freqBP =  hW.LoadSignal(HRV1_Signal.FreqBasedParams, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqBasedParams, leadName));
+
+                //Vector<double> freQV = hW.LoadSignal(HRV1_Signal.FreqVector, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqVector, leadName));
+                //Vector<double> pSD = hW.LoadSignal(HRV1_Signal.PSD, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.PSD, leadName));
+                //Vector<double> timeBP = hW.LoadSignal(HRV1_Signal.TimeBasedParams, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.TimeBasedParams, leadName));
+
 
                 return true;
             }

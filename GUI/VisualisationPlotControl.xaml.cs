@@ -980,13 +980,11 @@ namespace EKG_Project.GUI
                     }
                     if (_plotType == "SLEEP_APNEA")
                     {
-                        ecgPlot.DisplaySleepApneaLeadVersion(c.Name);
-                       
+                        ecgPlot.DisplaySleepApneaLeadVersion(c.Name);                      
                     }
                     if (_plotType == "HRV1")
                     {
                         ecgPlot.DisplayHrv1LeadVersion(c.Name);
-
                     }
 
                 }
