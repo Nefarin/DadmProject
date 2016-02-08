@@ -82,7 +82,7 @@ namespace EKG_Project.Modules.HRV2
 
                     // Our statisics include only Tinn, Tiangle Index, SD1 and SD2
                     Vector<double> currentData = _basicWorker.LoadSignal(_currentName, 0, (int)_basicWorker.getNumberOfSamples(_currentName));
-                    _currentVector = _R_PeaksWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentName, 0, (int)_basicWorker.getNumberOfSamples(_currentName));
+                    _currentVector = _R_PeaksWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentName, 0, (int)_R_PeaksWorker.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _currentName));
                     HRV2_Alg _alg = new HRV2_Alg(_currentVector);
 
                     _alg.Interpolation();
