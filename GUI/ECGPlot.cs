@@ -1705,14 +1705,59 @@ namespace EKG_Project.GUI
             try
             {
                 HRV1_New_Data_Worker hW = new HRV1_New_Data_Worker(_currentAnalysisName);
-                
-                Vector<double> freqBP =  hW.LoadSignal(HRV1_Signal.FreqBasedParams, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqBasedParams, leadName));
+                CurrentPlot.Axes.Clear();
+                //Vector<double> freqBP =  hW.LoadSignal(HRV1_Signal.FreqBasedParams, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqBasedParams, leadName));
 
-                Vector<double> freQV = hW.LoadSignal(HRV1_Signal.FreqVector, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqVector, leadName));
-                
+                Vector<double> freQV = hW.LoadSignal(HRV1_Signal.FreqVector, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqVector, leadName));              
                 Vector<double> pSD = hW.LoadSignal(HRV1_Signal.PSD, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.PSD, leadName));
-                Vector<double> timeBP = hW.LoadSignal(HRV1_Signal.TimeBasedParams, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.TimeBasedParams, leadName));
+                //Vector<double> timeBP = hW.LoadSignal(HRV1_Signal.TimeBasedParams, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.TimeBasedParams, leadName));
 
+
+                LineSeries ls = new LineSeries();
+                ls.Title = leadName;
+
+                ls.MarkerStrokeThickness = 1;
+
+                for (int i = 0; i < freQV.Count; i++)
+                {
+                    ls.Points.Add(new DataPoint(freQV[i], pSD[i]));
+                    //Points.Add(new DataPoint(pSD[i], freQV[i]));
+                }
+
+                CurrentPlot.Series.Add(ls);
+
+                //var lineraYAxis = new LinearAxis();
+                //lineraYAxis.Position = AxisPosition.Left;
+                //lineraYAxis.Title = "Power [ms2]";
+
+                //CurrentPlot.Axes.Add(lineraYAxis);
+
+                //var lineraXAxis = new LinearAxis();
+                //lineraXAxis.Position = AxisPosition.Bottom;
+                //lineraXAxis.Minimum = freQV.Minimum();
+                //lineraXAxis.Maximum = freQV.Maximum();
+                //lineraXAxis.Title = "Frequency [Hz]";
+
+                //CurrentPlot.Axes.Add(lineraXAxis);
+
+
+                var logarithmicAxis1 = new LogarithmicAxis();
+                logarithmicAxis1.Maximum = pSD.Maximum()+0.01;
+                logarithmicAxis1.Minimum = pSD.Minimum();
+                logarithmicAxis1.Title = "Power";
+                logarithmicAxis1.Position = AxisPosition.Left;
+                logarithmicAxis1.UseSuperExponentialFormat = true;
+                CurrentPlot.Axes.Add(logarithmicAxis1);
+                var logarithmicAxis2 = new LogarithmicAxis();
+                logarithmicAxis2.Maximum = freQV.Maximum() + 0.01;
+                logarithmicAxis2.Minimum = freQV.Minimum();
+                logarithmicAxis2.Position = AxisPosition.Bottom;
+                logarithmicAxis2.Title = "Frequency";
+                logarithmicAxis2.UseSuperExponentialFormat = true;
+                CurrentPlot.Axes.Add(logarithmicAxis2);
+
+
+                RefreshPlot();
 
                 return true;
             }

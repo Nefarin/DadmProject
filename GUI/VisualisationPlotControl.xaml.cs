@@ -416,6 +416,7 @@ namespace EKG_Project.GUI
             {
                 CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
                 ecgPlot.DisplayHRV2Leads(firstLead);
+                this.PlotSlider.Visibility = Visibility.Hidden;
             }
             if(_plotType == "HEART_AXIS")
             {
@@ -437,6 +438,7 @@ namespace EKG_Project.GUI
             {
                 CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
                 ecgPlot.DisplayHrv1LeadVersion(firstLead);
+                this.PlotSlider.Visibility = Visibility.Hidden;
             }
 
 
@@ -984,7 +986,7 @@ namespace EKG_Project.GUI
                     }
                     if (_plotType == "HRV1")
                     {
-                        ecgPlot.DisplayHrv1LeadVersion(c.Name);
+                        ecgPlot.DisplayHrv1LeadVersion(c.Name);                     
                     }
 
                 }
