@@ -1,10 +1,13 @@
-﻿using EKG_Project.Architecture;
-using EKG_Project.Modules;
-using System;
-using EKG_Project.GUI;
+﻿using EKG_Project.GUI;
 using System.Collections.Generic;
 using EKG_Project.Architecture.GUIMessages;
 
+#region Documentation
+/// <summary>
+/// Message to Analysis thread, which begins statistics calculation.
+/// </summary>
+/// 
+#endregion
 namespace EKG_Project.Architecture.ProcessingStates
 {
     public class BeginStatsCalculation : IProcessingState
@@ -29,8 +32,11 @@ namespace EKG_Project.Architecture.ProcessingStates
             ModulesComputed = modulesComputed;
         }
 
-
-
+        /// <summary>
+        /// Sets next processing state.
+        /// </summary>
+        /// <param name="process"></param>
+        /// <param name="timeoutState"></param>
         public void Process(Processing process, out IProcessingState timeoutState)
         {
             process.Stats.Init(ModulesComputed);
