@@ -52,6 +52,12 @@ namespace EKG_Project.IO
                         PDFModule.FillReportForModule("R_PEAKS", _data.statsDictionary);
                         break;
 
+                    case 3: //HRV1:
+
+                        PDFModule = new PDFModuleClasses.HRV1_PDF(Document);
+                        PDFModule.FillReportForModule("HRV1", _data.statsDictionary);
+                        break;
+
                     case 4: //HRV2
 
                         PDFModule = new PDFModuleClasses.HRV2_PDF(Document);
@@ -68,6 +74,16 @@ namespace EKG_Project.IO
 
                         PDFModule = new PDFModuleClasses.HRV_DFA_PDF(Document);
                         PDFModule.FillReportForModule("HRV_DFA", _data.statsDictionary);
+                        break;
+
+                    case 8: //ST_SEGMENT:
+                        PDFModule = new PDFModuleClasses.ST_SEGMENT_PDF(Document);
+                        PDFModule.FillReportForModule("ST_SEGMENT", _data.statsDictionary);
+                        break;
+
+                    case 9:  //T_WAVE_ALT:
+                        PDFModule = new PDFModuleClasses.T_WAVE_ALT_PDF(Document);
+                        PDFModule.FillReportForModule("T_WAVE_ALT", _data.statsDictionary);
                         break;
 
                     case 10: //SLEEP_APNEA
@@ -100,43 +116,30 @@ namespace EKG_Project.IO
                         PDFModule.FillReportForModule("FLUTTER", _data.statsDictionary);
                         break;
 
-                    case 17: //HEART_AXIS
+                    case 15: //HRT:
+                        PDFModule = new PDFModuleClasses.HRT_PDF(Document);
+                        PDFModule.FillReportForModule("HRT", _data.statsDictionary);
+                        break;
 
+                    case 17: //HEART_AXIS
                         PDFModule = new PDFModuleClasses.HEART_AXIS_PDF(Document);
                         PDFModule.FillReportForModule("HEART_AXIS", _data.statsDictionary);
                         break;
-
 
                     /*case AvailableOptions.TEST_MODULE:
                         this.ModuleParam = new TestModule_Params(500);
                         this.ModuleParam.GUIParametersAvailable = true;
                         FillDictionaries();
                         break;s
-                    case AvailableOptions.HRV1:
-                        this.ModuleParam = new HRV1_Params(this.AnalysisName);
-                        this.ModuleParam.GUIParametersAvailable = false;
-                        FillDictionaries();
-                        break;
-                    case AvailableOptions.ST_SEGMENT:
-                        this.ModuleParam = new ST_Segment_Params(this.AnalysisName);
-                        this.ModuleParam.GUIParametersAvailable = false;
-                        FillDictionaries();
-                        break;
-                    case AvailableOptions.T_WAVE_ALT:
-                        this.ModuleParam = new T_Wave_Alt_Params(this.AnalysisName);
-                        this.ModuleParam.GUIParametersAvailable = false;
-                        FillDictionaries();
-                        break;
+
+
+
                     case AvailableOptions.SIG_EDR:
                         this.ModuleParam = new SIG_EDR_Params(this.AnalysisName);
                         this.ModuleParam.GUIParametersAvailable = false;
                         FillDictionaries();
                         break;
-                    case AvailableOptions.HRT:
-                        this.ModuleParam = new HRT_Params(this.AnalysisName);
-                        this.ModuleParam.GUIParametersAvailable = false;
-                        FillDictionaries();
-                        break;*/
+*/
                     default:
 
                         break;
