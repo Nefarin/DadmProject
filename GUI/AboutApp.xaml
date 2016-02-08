@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EKG_Project.GUI"
         WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
         mc:Ignorable="d"
         Title="About ECG Analyser Application" Height="500" Width="370" Icon="Images/serce.png">
     <Grid>
