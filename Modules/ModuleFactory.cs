@@ -14,6 +14,7 @@ using EKG_Project.Modules.Sleep_Apnea;
 using EKG_Project.Modules.ST_Segment;
 using EKG_Project.Modules.T_Wave_Alt;
 using EKG_Project.Modules.Waves;
+using EKG_Project.Modules.Heart_Cluster;
 using EKG_Project.GUI;
 
 namespace EKG_Project.Modules
@@ -75,6 +76,9 @@ namespace EKG_Project.Modules
                     break;
                 case AvailableOptions.WAVES:
                     module = new Waves.Waves();
+                    break;
+                case AvailableOptions.HEART_CLUSTER:
+                    module = new Heart_Cluster.Heart_Cluster();
                     break;
                 default:
                     module = new TestModule3.TestModule3();

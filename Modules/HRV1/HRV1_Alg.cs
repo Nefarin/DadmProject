@@ -1,15 +1,4 @@
-﻿/*
-    TODO:
-        1 Poprawic plomba
-        2 Refaktoryzacja 
-        3 Wprowadzenie maszyny i paska
-        4 Zapisywanie params na dysku
-        5 ???
-        6 PROFIT
-*/
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

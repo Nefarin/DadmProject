@@ -9,8 +9,8 @@ namespace EKG_Project.Modules.HRV2
     public partial class HRV2_Alg
 
     {
-        private Vector<double> RR_intervals_x;
-        private Vector<double> RR_intervals_y;
+        public Vector<double> RR_intervals_x;
+        public Vector<double> RR_intervals_y;
 
         #region Documentation
         /// <summary>
