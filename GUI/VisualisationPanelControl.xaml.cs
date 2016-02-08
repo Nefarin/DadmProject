@@ -181,6 +181,10 @@ namespace EKG_Project.GUI
                 {
                     independentModules["HRV_DFA"] = 1;
                 }
+                if (tabNames.Contains("HRV1"))
+                {
+                    independentModules["HRV1"] = 1;
+                }
                 //add other independent modules
 
 

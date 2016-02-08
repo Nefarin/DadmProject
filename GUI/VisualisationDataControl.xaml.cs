@@ -190,6 +190,12 @@ namespace EKG_Project.GUI
                 StartHistogram(analyseName, moduleName, moduleDict);
             }
 
+            if (moduleName == "HRV1")
+            {
+                StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+                StartTable(analyseName, moduleName, moduleDict, tableModuleList);                
+            }
+
             this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
 
         }

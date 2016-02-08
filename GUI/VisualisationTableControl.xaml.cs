@@ -112,6 +112,9 @@ namespace EKG_Project.GUI
                 case "HRV2":
                     DisplayHRV2Table();
                     break;
+                case "HRV1":
+                    DisplayHRV1Table();
+                    break;
                 default:
                     break;
             }
@@ -163,6 +166,22 @@ namespace EKG_Project.GUI
                     _dataToPrint.Add(dTT);
                 }
                 this.VisualisationDataTable.DataContext = _dataToPrint;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        private bool DisplayHRV1Table()
+        {
+            try
+            {
+                //HRV1_New_Data_Worker hW = new HRV1_New_Data_Worker(_currentAnalysisName);
+                //hW.LoadSignal(HRV1_Signal.)
+
                 return true;
             }
             catch (Exception ex)
