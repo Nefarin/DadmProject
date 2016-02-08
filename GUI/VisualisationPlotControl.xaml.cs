@@ -433,6 +433,11 @@ namespace EKG_Project.GUI
                 CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
                 ecgPlot.DisplayHrvDfaLeadVersion(firstLead);
             }
+            if (_plotType == "HRV1")
+            {
+                CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
+                ecgPlot.DisplayHrv1LeadVersion(firstLead);
+            }
 
 
             this.CheckBoxList.DataContext = _seriesChecbox;
@@ -977,6 +982,11 @@ namespace EKG_Project.GUI
                     {
                         ecgPlot.DisplaySleepApneaLeadVersion(c.Name);
                        
+                    }
+                    if (_plotType == "HRV1")
+                    {
+                        ecgPlot.DisplayHrv1LeadVersion(c.Name);
+
                     }
 
                 }
