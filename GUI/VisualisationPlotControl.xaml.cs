@@ -425,13 +425,13 @@ namespace EKG_Project.GUI
             }
             if(_plotType == "SLEEP_APNEA")
             {
-                CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
-                ecgPlot.DisplaySleepApneaLeadVersion(firstLead);
+                //CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
+                //ecgPlot.DisplaySleepApneaLeadVersion(firstLead);
             }
             if (_plotType == "HRV_DFA")
             {
                 CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
-                //ecgPlot.DisplaySleepApneaLeadVersion(firstLead);
+                ecgPlot.DisplayHrvDfaLeadVersion(firstLead);
             }
 
 

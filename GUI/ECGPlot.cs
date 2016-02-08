@@ -1680,6 +1680,22 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplayHrvDfaLeadVersion(string leadName)
+        {
+            try
+            {
+                //HRV_DFA_New_Data_Worker hDW = new HRV_DFA_New_Data_Worker(_currentAnalysisName);
+                //Tuple<Vector<double>,Vector<double>> myTemp =  hDW.LoadSignal(HRV_DFA_Signals.
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
 
 
         public bool ControlOtherModulesSeries(string moduleName, bool visible)
