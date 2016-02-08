@@ -177,6 +177,10 @@ namespace EKG_Project.GUI
                 {
                     independentModules["SLEEP_APNEA"] = 1;
                 }
+                if (tabNames.Contains("HRV_DFA"))
+                {
+                    independentModules["HRV_DFA"] = 1;
+                }
                 //add other independent modules
 
 
