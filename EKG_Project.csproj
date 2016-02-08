@@ -48,7 +48,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.Modules.QT_Disp.QT_Disp</StartupObject>
+    <StartupObject>EKG_Project.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -294,6 +294,7 @@
     <Compile Include="GUI\Window_ECGArchitecture.cs" />
     <Compile Include="IO\ASCIIConverter.cs" />
     <Compile Include="IO\Atrial_Fibr_Data_Worker.cs" />
+    <Compile Include="IO\Atrial_Fibr_New_Data_Worker.cs" />
     <Compile Include="IO\Basic_Data_Worker.cs" />
     <Compile Include="IO\Basic_New_Data_Worker.cs" />
     <Compile Include="IO\DebugECGPath.cs" />
@@ -308,11 +309,15 @@
     <Compile Include="IO\Heart_Axis_New_Data_Worker.cs" />
     <Compile Include="IO\Heart_Class_Data_Worker.cs" />
     <Compile Include="IO\Heart_Class_New_Data_Worker.cs" />
+    <Compile Include="IO\Heart_Cluster_Data_Worker.cs" />
     <Compile Include="IO\HRT_Data_Worker.cs" />
+    <Compile Include="IO\HRT_New_Data_Worker.cs" />
     <Compile Include="IO\HRV1_Data_Worker.cs" />
+    <Compile Include="IO\HRV1_New_Data_Worker.cs" />
     <Compile Include="IO\HRV2_Data_Worker.cs" />
     <Compile Include="IO\HRV2_New_Data_Worker.cs" />
     <Compile Include="IO\HRV_DFA_Data_Worker.cs" />
+    <Compile Include="IO\HRV_DFA_New_Data_Worker.cs" />
     <Compile Include="IO\IECGConverter.cs" />
     <Compile Include="IO\IECGPath.cs" />
     <Compile Include="IO\IECG_Worker.cs" />
@@ -342,12 +347,15 @@
     <Compile Include="IO\ReleaseECGPath.cs" />
     <Compile Include="IO\R_Peaks_Data_Worker.cs" />
     <Compile Include="IO\R_Peaks_New_Data_Worker.cs" />
+    <Compile Include="IO\SIG_EDR_Data_Worker.cs" />
     <Compile Include="IO\Sleep_Apnea_Data_Worker.cs" />
     <Compile Include="IO\Sleep_Apnea_New_Data_Worker.cs" />
     <Compile Include="IO\ST_Segment_Data_Worker.cs" />
+    <Compile Include="IO\ST_Segment_New_Data_Worker.cs" />
     <Compile Include="IO\TempInput.cs" />
     <Compile Include="IO\TestModule3_Data_Worker.cs" />
     <Compile Include="IO\T_Wave_Alt_Data_Worker.cs" />
+    <Compile Include="IO\T_Wave_Alt_New_Data_Worker.cs" />
     <Compile Include="IO\Waves_Data_Worker.cs" />
     <Compile Include="IO\Waves_New_Data_Worker.cs" />
     <Compile Include="IO\WFDBLoader.cs" />
@@ -483,12 +491,6 @@
     <None Include="IO\data\100.atr" />
     <None Include="IO\data\100.dat" />
     <None Include="IO\data\100.hea" />
-    <None Include="IO\data\115.atr" />
-    <None Include="IO\data\115.dat" />
-    <None Include="IO\data\115.hea" />
-    <None Include="IO\data\116.atr" />
-    <None Include="IO\data\116.dat" />
-    <None Include="IO\data\116.hea" />
     <None Include="IO\data\alg_ann.csv" />
     <None Include="IO\data\detected.csv" />
     <None Include="IO\data\h_amp.csv" />
@@ -534,30 +536,8 @@
     <Content Include="DLL\resetvars.vbs" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
-    <Resource Include="IO\temp\Analysis 1_Basic_New_Frequency.txt" />
-    <Resource Include="IO\temp\Analysis 1_Basic_New_Leads.txt" />
-    <Resource Include="IO\temp\Analysis 1_Basic_New_MLII.txt" />
-    <Resource Include="IO\temp\Analysis 1_Basic_New_V1.txt" />
-    <Resource Include="IO\temp\Analysis 1_ECG_Baseline_New_MLII.txt" />
-    <Resource Include="IO\temp\Analysis 1_ECG_Baseline_New_V1.txt" />
-    <Resource Include="IO\temp\Analysis 1_R_Peaks_New_MLII_RPeaks.txt" />
-    <Resource Include="IO\temp\Analysis 1_R_Peaks_New_MLII_RRInterval.txt" />
-    <Resource Include="IO\temp\Analysis 1_R_Peaks_New_V1_RPeaks.txt" />
-    <Resource Include="IO\temp\Analysis 1_R_Peaks_New_V1_RRInterval.txt" />
-    <Resource Include="IO\temp\Analysis 1_Waves_New_MLII_PEnds.txt" />
-    <Resource Include="IO\temp\Analysis 1_Waves_New_MLII_POnsets.txt" />
-    <Resource Include="IO\temp\Analysis 1_Waves_New_MLII_QRSEnds.txt" />
-    <Resource Include="IO\temp\Analysis 1_Waves_New_MLII_QRSOnsets.txt" />
-    <Resource Include="IO\temp\Analysis 1_Waves_New_MLII_TEnds.txt" />
-    <Resource Include="IO\temp\Analysis 1_Waves_New_V1_PEnds.txt" />
-    <Resource Include="IO\temp\Analysis 1_Waves_New_V1_POnsets.txt" />
-    <Resource Include="IO\temp\Analysis 1_Waves_New_V1_QRSEnds.txt" />
-    <Resource Include="IO\temp\Analysis 1_Waves_New_V1_QRSOnsets.txt" />
-    <Resource Include="IO\temp\Analysis 1_Waves_New_V1_TEnds.txt" />
-    <Resource Include="IO\temp\Analysis QT_Basic_New_Frequency.txt" />
-    <Resource Include="IO\data\100.txt" />
-    <Resource Include="IO\data\210.txt" />
-    <Resource Include="IO\data\234.txt" />
+    <Resource Include="IO\temp\abc123_ECG_Baseline_New_MLII.txt" />
+    <Resource Include="IO\temp\abc123_ECG_Baseline_New_V1.txt" />
     <Resource Include="IO\data\res_QT_Disp\output_end.txt" />
     <Resource Include="IO\data\res_QT_Disp\output_qt.txt" />
     <Resource Include="IO\data\res_QT_Disp\QRS_End.txt" />
@@ -573,25 +553,6 @@
     <Resource Include="IO\temp\abc123_Basic_New_MLII.txt" />
     <Resource Include="IO\temp\abc123_Basic_New_NumberOfSamples.txt" />
     <Resource Include="IO\temp\abc123_Basic_New_V1.txt" />
-    <Resource Include="IO\temp\Analysis QT_Basic_New_Leads.txt" />
-    <Resource Include="IO\temp\Analysis QT_Basic_New_MLII.txt" />
-    <Resource Include="IO\temp\Analysis QT_Basic_New_V1.txt" />
-    <Resource Include="IO\temp\Analysis QT_ECG_Baseline_New_MLII.txt" />
-    <Resource Include="IO\temp\Analysis QT_ECG_Baseline_New_V1.txt" />
-    <Resource Include="IO\temp\Analysis QT_R_Peaks_New_MLII_RPeaks.txt" />
-    <Resource Include="IO\temp\Analysis QT_R_Peaks_New_MLII_RRInterval.txt" />
-    <Resource Include="IO\temp\Analysis QT_R_Peaks_New_V1_RPeaks.txt" />
-    <Resource Include="IO\temp\Analysis QT_R_Peaks_New_V1_RRInterval.txt" />
-    <Resource Include="IO\temp\Analysis QT_Waves_New_MLII_PEnds.txt" />
-    <Resource Include="IO\temp\Analysis QT_Waves_New_MLII_POnsets.txt" />
-    <Resource Include="IO\temp\Analysis QT_Waves_New_MLII_QRSEnds.txt" />
-    <Resource Include="IO\temp\Analysis QT_Waves_New_MLII_QRSOnsets.txt" />
-    <Resource Include="IO\temp\Analysis QT_Waves_New_MLII_TEnds.txt" />
-    <Resource Include="IO\temp\Analysis QT_Waves_New_V1_PEnds.txt" />
-    <Resource Include="IO\temp\Analysis QT_Waves_New_V1_POnsets.txt" />
-    <Resource Include="IO\temp\Analysis QT_Waves_New_V1_QRSEnds.txt" />
-    <Resource Include="IO\temp\Analysis QT_Waves_New_V1_QRSOnsets.txt" />
-    <Resource Include="IO\temp\Analysis QT_Waves_New_V1_TEnds.txt" />
     <Resource Include="Resources\logo.png" />
     <Resource Include="IO\temp\train_d_label.txt" />
     <Resource Include="IO\temp\train_d.txt" />

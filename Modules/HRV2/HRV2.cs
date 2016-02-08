@@ -1,43 +1,42 @@
 ﻿using System;
 using EKG_Project.IO;
-using EKG_Project.Modules.R_Peaks;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics;
+
 
 namespace EKG_Project.Modules.HRV2
 {
     public class HRV2 : IModule
     {
+        private enum STATE { INIT, BEGIN_CHANNEL, INTERPOLATION, POINCAREX, POINCAREY, HISTOGRAM, ATRIBUTES, END_CHANNEL, END };
         private bool _ended;
         private bool _aborted;
 
         private int _currentChannelIndex;
-        private int _currentRPeaksLength;
-        private int _samplesProcessed;
+        private int _currentChannelLength;
+        private string _currentLeadName;
+        private string[] _leads;
+        private int _currentIndex;
         private int _numberOfChannels;
-        
 
-        private R_Peaks_Data_Worker _inputWorker;
-        private HRV2_Data_Worker _outputWorker;
+        private Basic_New_Data_Worker _basicWorker;
+        private R_Peaks_New_Data_Worker _inputWorker;
+        private HRV2_New_Data_Worker _outputWorker;
 
-        private HRV2_Data _outputData;
-        private R_Peaks_Data _inputData;
         private HRV2_Params _params;
+        private HRV2_Alg _alg;
+        private Vector<double> _currentVector;
+        private STATE _state;
 
-        private bool _outputFound;
-        private int _outputIndex;
-
-       // private Histogram2 _currentHistogram;
-        private Vector<double> _currentPoincare;
-        private Vector<double> _currentRPeaks;
-
-        public bool IsAborted()
-        {
-            return Aborted;
-        }
         public void Abort()
         {
             Aborted = true;
             _ended = true;
+        }
+
+        public bool IsAborted()
+        {
+            return Aborted;
         }
 
         public bool Ended()
@@ -47,55 +46,29 @@ namespace EKG_Project.Modules.HRV2
 
         public void Init(ModuleParams parameters)
         {
-            //Params = parameters as HRV2_Params;
-            //Aborted = false;
-            //if (!Runnable()) _ended = true;
-            //else
-            //{
-            //    _ended = false;
-
-            //    InputWorker = new R_Peaks_Data_Worker(Params.AnalysisName);
-            //    InputWorker.Load();
-            //    InputData = InputWorker.Data;
-
-            //    OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
-            //    OutputData = new HRV2_Data();
-
-            //    _currentChannelIndex = 0;
-            //    _currentRPeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
-            //    _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
-            //    _numberOfChannels = InputData.RPeaks.Count;
-
-            //    //findOutput();
-            //    //if (_outputFound)
-            //    //{
-            //    //    OutputWorker = new HRV2_Data_Worker(Params.AnalysisName);
-            //    //    OutputData = new HRV2_Data();
-
-            //    //    _currentRPeaksLength = InputData.RRInterval[_outputIndex].Item2.Count;
-            //    //    //_currentHistogram = Vector<Double>.Build.Dense(_currentRPeaksLength);
-            //    //    _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
-            //    //}
-            //    //else
-            //    //{
-            //    //    _ended = true;
-            //    //    Aborted = true;
-            //    //}
-
-            //}
-
-        }
-
-        private void findOutput()
-        {
-            for (int i = 0; i < InputData.RRInterval.Count; i++)
-            if (InputData.RRInterval[i].Item1 == "II" || InputData.RRInterval[i].Item1 == "MLII")
+            try
             {
-                    _outputFound = true;
-                    _outputIndex = i;
-                    return;
+                _params = parameters as HRV2_Params;
             }
-            
+            catch (Exception e)
+            {
+                Abort();
+                return;
+            }
+
+            if (!Runnable())
+            {
+                _ended = true;
+            }
+            else
+            {
+                InputWorker = new R_Peaks_New_Data_Worker(Params.AnalysisName);
+                OutputWorker = new HRV2_New_Data_Worker(Params.AnalysisName);
+
+                BasicWorker = new Basic_New_Data_Worker(Params.AnalysisName);
+                _state = STATE.INIT;
+
+            }
         }
 
         public void ProcessData()
@@ -106,7 +79,7 @@ namespace EKG_Project.Modules.HRV2
 
         public double Progress()
         {
-            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_samplesProcessed / (double)_currentRPeaksLength));
+            return 100.0 * ((double)_currentChannelIndex / (double)NumberOfChannels + (1.0 / NumberOfChannels) * ((double)_currentIndex / (double)_currentChannelLength));
         }
 
         public bool Runnable()
@@ -116,47 +89,92 @@ namespace EKG_Project.Modules.HRV2
 
         private void processData()
         {
-            //if (_currentChannelIndex < _numberOfChannels)
-            //{
-            //    _currentRPeaksLength = InputData.RRInterval[_currentChannelIndex].Item2.Count;
-            //    _currentPoincare = Vector<Double>.Build.Dense(_currentRPeaksLength);
-            //    makeTinn();
-            //    OutputData.Tinn.Add(tinn);
-            //    //TriangleIndex();
-            //    //OutputData.TriangleIndex.Add(triangleIndex);
-            //    //OutputData.HistogramData.Add(new Tuple<string, Histogram2>(InputData.RRInterval[_outputIndex].Item1, _currentHistogram));
-
-            //    PoincarePlot_x();
-            //    PoincarePlot_y();
-            //    OutputData.SD1.Add(SD1());
-            //    OutputData.SD2.Add(SD2());
-
-            //    OutputData.PoincarePlotData_x.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_x));
-            //    OutputData.PoincarePlotData_y.Add(new Tuple<string, Vector<double>>(InputData.RRInterval[_currentChannelIndex].Item1, RR_intervals_y));
-
-            //    _currentChannelIndex++;
-
-            //}
-            //else
-            //{
-            //    OutputWorker.Save(OutputData);
-            //    _ended = true;
-            //}
-
-
-
-        }
-
-        public HRV2_Data OutputData
-        {
-            get
+            switch (_state)
             {
-                return _outputData;
-            }
+                case (STATE.INIT):
+                    _currentChannelIndex = -1;
+                    _leads = BasicWorker.LoadLeads().ToArray();
+                    _numberOfChannels = _leads.Length;
+                    _state = STATE.BEGIN_CHANNEL;
+                    //_inputWorker.DeleteFiles(); Do not use yet - will try to handle this during loading.
+                    break;
 
-            set
-            {
-                _outputData = value;
+                case (STATE.BEGIN_CHANNEL):
+
+
+                    _currentChannelIndex++;
+                    if (_currentChannelIndex >= _numberOfChannels) _state = STATE.END;
+                    else
+                    {
+                        _currentLeadName = _leads[_currentChannelIndex];
+                        _currentChannelLength = (int)InputWorker.getNumberOfSamples(R_Peaks_Attributes.RRInterval, _currentLeadName);
+                        _currentIndex = 0;
+                        _state = STATE.INTERPOLATION;
+                        _currentVector = InputWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, _currentChannelLength);                        
+                        _alg = new HRV2_Alg(_currentVector);
+                    }
+                    break;
+
+                case (STATE.INTERPOLATION):
+
+                    _alg.Interpolation();
+
+                    _state = STATE.POINCAREX;
+                    break;
+
+                case (STATE.POINCAREX):
+                    _alg.PoincarePlot_x();
+                    OutputWorker.SaveSignal(HRV2_Signal.PoincarePlotData_x, _currentLeadName, false, _alg.RRIntervals);
+
+                    _state = STATE.POINCAREY;
+                    break;
+
+                case (STATE.POINCAREY):
+                    _alg.PoincarePlot_y();
+                    OutputWorker.SaveSignal(HRV2_Signal.PoincarePlotData_y, _currentLeadName, false, _alg.RRIntervals);
+
+                    _state = STATE.HISTOGRAM;
+                    break;
+
+                case (STATE.HISTOGRAM):
+                    _alg.HistogramToVisualisation();
+                    OutputWorker.SaveHistogram(_currentLeadName, false, _alg.HistogramToVisualisation());
+
+                    _state = STATE.ATRIBUTES;
+                    break;
+
+                case (STATE.ATRIBUTES):
+                    OutputWorker.SaveAttribute(HRV2_Attributes.SD1, _currentLeadName, _alg.SD1());
+                    OutputWorker.SaveAttribute(HRV2_Attributes.SD2, _currentLeadName, _alg.SD2());
+
+                    OutputWorker.SaveAttribute(HRV2_Attributes.ElipseCenter_x, _currentLeadName, _alg.elipseCenter_x());
+                    OutputWorker.SaveAttribute(HRV2_Attributes.ElipseCenter_y, _currentLeadName, _alg.elipseCenter_y());
+
+                    _alg.makeTinn();
+                    OutputWorker.SaveAttribute(HRV2_Attributes.Tinn, _currentLeadName, _alg.tinn);
+
+                    _alg.makeTriangleIndex();
+                    OutputWorker.SaveAttribute(HRV2_Attributes.TriangleIndex, _currentLeadName, _alg.triangleIndex);
+
+                    _state = STATE.END_CHANNEL;
+                    break;
+
+                case (STATE.END_CHANNEL):
+                        _currentVector = InputWorker.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, _currentIndex, _currentChannelLength - _currentIndex);
+                        _alg = new HRV2_Alg(_currentVector);
+                        _currentVector = _alg.RRIntervals;
+
+
+                        _state = STATE.BEGIN_CHANNEL;
+                    break;
+
+                case (STATE.END):
+                    _ended = true;
+                    break;
+
+                default:
+                    Abort();
+                    break;
             }
         }
 
@@ -199,20 +217,8 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
-        public R_Peaks_Data InputData
-        {
-            get
-            {
-                return _inputData;
-            }
 
-            set
-            {
-                _inputData = value;
-            }
-        }
-
-        public R_Peaks_Data_Worker InputWorker
+        public R_Peaks_New_Data_Worker InputWorker
         {
             get
             {
@@ -224,8 +230,9 @@ namespace EKG_Project.Modules.HRV2
                 _inputWorker = value;
             }
         }
+        
 
-        public HRV2_Data_Worker OutputWorker
+        public HRV2_New_Data_Worker OutputWorker
         {
             get
             {
@@ -238,21 +245,31 @@ namespace EKG_Project.Modules.HRV2
             }
         }
 
-        public static void Main()
+        public Basic_New_Data_Worker BasicWorker
         {
-            HRV2_Params param = new HRV2_Params(3, 9, "TestAnalysis6"); 
-            HRV2 testModule = new HRV2();
-            testModule.Init(param);
-            while (true)
+            get
             {
-                //Console.WriteLine("Press key to continue.");
-                //Console.Read();
-                if (testModule.Ended()) break;
-                Console.WriteLine(testModule.Progress());
-                testModule.ProcessData();
+                return _basicWorker;
+            }
+
+            set
+            {
+                _basicWorker = value;
             }
         }
 
+        public static void Main(String[] args)
+        {
+            IModule HRV2 = new EKG_Project.Modules.HRV2.HRV2();
+            int scale = 5;
+            HRV2_Params param = new HRV2_Params(scale, 1000, "cba123");
 
+            HRV2.Init(param);
+            while (!HRV2.Ended())
+            {
+                HRV2.ProcessData();
+                Console.WriteLine(HRV2.Progress());
+            }
+        }
     }
 }

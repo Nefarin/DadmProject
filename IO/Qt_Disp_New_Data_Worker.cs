@@ -238,6 +238,7 @@ namespace EKG_Project.IO
         /// Saves Qt_Disp_Attributes in txt file
         /// </summary>
         /// <param name="atr">Qt_Disp_Attributes</param>
+        /// <param name="lead">lead</param>
         /// <param name="value">value</param> 
         #endregion
         public void SaveAttribute(Qt_Disp_Attributes atr, string lead, double value)
@@ -257,6 +258,7 @@ namespace EKG_Project.IO
         /// Loads Qt_Disp_Attributes from txt file
         /// </summary>
         /// <param name="atr">Qt_Disp_Attributes</param>
+        /// <param name="lead">lead</param>
         /// <returns>value</returns> 
         #endregion
         public double LoadAttribute(Qt_Disp_Attributes atr, string lead)

@@ -36,6 +36,18 @@ namespace EKG_Unit.Modules.ECG_Baseline
         }
 
         [TestMethod]
+        [Description("Test if butterworth LP method returns proper values with empty signal")]
+        public void ButterworthLowPassTest2()
+        {
+
+            Vector<double> testVector = null;
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.butterworth(testVector, 360, 50, 10, Filtr_Type.LOWPASS);
+
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod]
         [Description("Test if butterworth HP method returns proper values")]
         public void ButterworthHighPassTest()
         {
@@ -60,6 +72,19 @@ namespace EKG_Unit.Modules.ECG_Baseline
 
             System.Console.WriteLine(actual.ToString());
             Assert.AreEqual(resultVector, actual);
+        }
+
+        [TestMethod]
+        [Description("Test if butterworth HP method returns proper values with empty signal")]
+        public void ButterworthHighPassTest2()
+        {
+
+            Vector<double> testVector = null;
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.butterworth(testVector, 360, 50, 10, Filtr_Type.HIGHPASS);
+
+            Assert.IsNull(actual);
         }
 
         [TestMethod]
@@ -90,6 +115,18 @@ namespace EKG_Unit.Modules.ECG_Baseline
         }
 
         [TestMethod]
+        [Description("Test if butterworth BP method returns proper values with empty signal")]
+        public void ButterworthBandPassTest2()
+        {
+            Vector<double> testVector = null;
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.butterworth(testVector, 360, 50, 10, 50, 10, Filtr_Type.BANDPASS);
+
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod]
         [Description("Test if savitzky-golay LP method returns proper values")]
         public void SavitzkyGolayLowPassTest()
         {
@@ -114,6 +151,19 @@ namespace EKG_Unit.Modules.ECG_Baseline
 
             System.Console.WriteLine(actual.ToString());
             Assert.AreEqual(resultVector, actual);
+        }
+
+        [TestMethod]
+        [Description("Test if savitzky-golay LP method returns proper values with empty signal")]
+        public void SavitzkyGolayLowPassTest2()
+        {
+
+            Vector<double> testVector = null;
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.savitzky_golay(testVector, 9, Filtr_Type.LOWPASS);
+
+            Assert.IsNull(actual);
         }
 
         [TestMethod]
@@ -144,6 +194,19 @@ namespace EKG_Unit.Modules.ECG_Baseline
         }
 
         [TestMethod]
+        [Description("Test if savitzky-golay HP method returns proper values with empty signal")]
+        public void SavitzkyGolayHighPassTest2()
+        {
+
+            Vector<double> testVector = null;
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.savitzky_golay(testVector, 87, Filtr_Type.HIGHPASS);
+
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod]
         [Description("Test if savitzky-golay BP method returns proper values")]
         public void SavitzkyGolayBandPassTest()
         {
@@ -168,6 +231,18 @@ namespace EKG_Unit.Modules.ECG_Baseline
 
             System.Console.WriteLine(actual.ToString());
             Assert.AreEqual(resultVector, actual);
+        }
+
+        [TestMethod]
+        [Description("Test if savitzky-golay BP method returns proper values with empty values")]
+        public void SavitzkyGolayBandPassTest2()
+        {
+            Vector<double> testVector = null;
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.savitzky_golay(testVector, 9, 87, Filtr_Type.BANDPASS);
+
+            Assert.IsNull(actual);
         }
 
         [TestMethod]
@@ -198,6 +273,18 @@ namespace EKG_Unit.Modules.ECG_Baseline
         }
 
         [TestMethod]
+        [Description("Test if moving average LP method returns proper values with empty signal")]
+        public void MovingAverageLowPassTest2()
+        {
+            Vector<double> testVector = null;
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.moving_average(testVector, 9, Filtr_Type.LOWPASS);
+
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod]
         [Description("Test if moving average HP method returns proper values")]
         public void MovingAverageHighPassTest()
         {
@@ -222,6 +309,18 @@ namespace EKG_Unit.Modules.ECG_Baseline
 
             System.Console.WriteLine(actual.ToString());
             Assert.AreEqual(resultVector, actual);
+        }
+
+        [TestMethod]
+        [Description("Test if moving average HP method returns proper values with empty signal")]
+        public void MovingAverageHighPassTest2()
+        {
+            Vector<double> testVector = null;
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.moving_average(testVector, 87, Filtr_Type.HIGHPASS);
+
+            Assert.IsNull(actual);
         }
 
         [TestMethod]
@@ -252,6 +351,18 @@ namespace EKG_Unit.Modules.ECG_Baseline
         }
 
         [TestMethod]
+        [Description("Test if moving average BP method returns proper values with empty signal")]
+        public void MovingAverageBandPassTest2()
+        {
+            Vector<double> testVector = null;
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.moving_average(testVector, 9, 87, Filtr_Type.BANDPASS);
+
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod]
         [Description("Test if LMS LowPass method returns proper values")]
         public void LMSLowPassTest()
         {
@@ -278,6 +389,17 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(resultVector, actual);
         }
 
+        [TestMethod]
+        [Description("Test if LMS LowPass method returns proper values with empty signal")]
+        public void LMSLowPassTest2()
+        {
+            Vector<double> testVector = null;
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.lms(testVector, 360, 50, Filtr_Type.BANDPASS, 0.000001);
+
+            Assert.IsNull(actual);
+        }
 
         [TestMethod]
         [Description("Test if LMS LP method returns proper values")]
@@ -306,6 +428,18 @@ namespace EKG_Unit.Modules.ECG_Baseline
             Assert.AreEqual(resultVector, actual);
         }
 
+        [TestMethod]
+        [Description("Test if LMS LP method returns proper values with empty signal")]
+        public void LMSHighPassTest2()
+        { 
+            Vector<double> testVector = null;
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.lms(testVector, 360, 50, Filtr_Type.HIGHPASS, 0.000001);
+
+            Assert.IsNull(actual);
+        }
+
 
         [TestMethod]
         [Description("Test if LMS BandPass method returns proper values")]
@@ -332,6 +466,18 @@ namespace EKG_Unit.Modules.ECG_Baseline
 
             System.Console.WriteLine(actual.ToString());
             Assert.AreEqual(resultVector, actual);
+        }
+
+        [TestMethod]
+        [Description("Test if LMS BandPass method returns proper values with empty signal")]
+        public void LMSBandPassTest2()
+        {
+            Vector<double> testVector = null;
+
+            ECG_Baseline_Alg.Filter target = new ECG_Baseline_Alg.Filter();
+            Vector<double> actual = target.lms(testVector, 360, 50, Filtr_Type.BANDPASS, 0.000001);
+
+            Assert.IsNull(actual);
         }
 
     }

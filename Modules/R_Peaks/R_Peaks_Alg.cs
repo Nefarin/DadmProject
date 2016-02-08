@@ -8,6 +8,7 @@ using MathNet.Numerics.Interpolation;
 using EKG_Project.IO;
 using EKG_Project.Modules.ECG_Baseline;
 using System.Linq;
+using System.Diagnostics;
 
 namespace EKG_Project.Modules.R_Peaks
 {
@@ -22,15 +23,23 @@ namespace EKG_Project.Modules.R_Peaks
         {
             #region readData            
             //read data from dat file
-            TempInput.setInputFilePath(@"D:\biomed\DADM\C#\100v5.txt");
-            uint fs = TempInput.getFrequency();
-            Vector<double> signal = TempInput.getSignal();
+            //TempInput.setInputFilePath(@"D:\biomed\DADM\C#\100v5.txt");
+            //uint fs = TempInput.getFrequency();
+            //Vector<double> signal = TempInput.getSignal();
             #endregion
-            double[] testArray = { -0.03, -0.015, -0.02, -0.005, -0.005, -0.01, -0.015, -0.025, -0.015, -0.015, -0.015, -0.025, -0.025, -0.025, -0.005, 0.005, -0.01, -0.01, -0.015, -0.035, -0.03, -0.02, -0.02, -0.03, -0.025, -0.03, -0.015, 0.005, 0.005, 0.01, 0, 0.005, 0.02, 0.03, 0.02, 0.025, 0.005, 0.005, 0.03, 0.025, 0.025, 0.02, 0.015, 0.015, 0.025, 0.025, 0.025, 0.01, -0.005, 0, -0.005, -0.005, -0.015, -0.015, -0.025, -0.015, -0.01, 0, -0.015, -0.025, -0.045, -0.045, -0.05, -0.025, -0.03, -0.035, -0.04, -0.035, -0.035, -0.02, -0.03, -0.04, -0.04, -0.045, -0.025, -0.025, -0.035, -0.05, -0.07, -0.08, -0.09, -0.1, -0.13, -0.16, -0.155, -0.105, -0.005, 0.12, 0.215, 0.265, 0.315, 0.39, 0.5, 0.61, 0.695, 0.685, 0.56, 0.305, 0.035, -0.15, -0.25, -0.27, -0.25, -0.195, -0.145, -0.11, -0.095, -0.085, -0.095, -0.095, -0.08, -0.085, -0.085, -0.085, -0.09, -0.075, -0.075, -0.075, -0.07, -0.085, -0.095, -0.09, -0.075, -0.065, -0.065, -0.075, -0.095, -0.09, -0.085, -0.07, -0.065, -0.075, -0.08, -0.08, -0.07, -0.065, -0.07, -0.07, -0.08, -0.07, -0.065, -0.065, -0.065, -0.07, -0.085, -0.085, -0.065, -0.065, -0.055, -0.075, -0.075, -0.08, -0.07, -0.065, -0.075, -0.085, -0.08, -0.08, -0.075, -0.075, -0.075, -0.085, -0.095, -0.095, -0.075, -0.075, -0.085, -0.09, -0.115, -0.115, -0.105, -0.09, -0.11, -0.12, -0.12, -0.135, -0.13, -0.125, -0.145, -0.15, -0.165, -0.17, -0.155, -0.16, -0.17, -0.19, -0.195, -0.2, -0.19, -0.185, -0.19, -0.2, -0.21, -0.22, -0.205, -0.21, -0.21, -0.2, -0.205, -0.19, -0.185, -0.165, -0.155, -0.145, -0.155, -0.13, -0.095, -0.075, -0.07, -0.06, -0.065, -0.065, -0.045, -0.025, -0.01, -0.015, -0.015, -0.005, 0.005, 0.015, 0.015, 0.005, 0.005, 0.005, 0.015, 0.03, 0.015, 0.005, 0.005, 0.005, 0.015, 0.025, 0.025, 0.015, 0.005, 0.005, 0.005, 0.02, 0.015, 0.01, 0.005, 0.005, 0.01, 0.015, 0.015, 0.01, 0, -0.015, 0.005, 0.015, 0.015, 0.015, 0, -0.005, 0.01, 0.01, 0, 0, 0.005, -0.02, -0.005, 0.01, 0, -0.02, -0.03, -0.01, -0.005, 0, 0.005, -0.02, -0.025, -0.025, -0.015, -0.005, -0.005, -0.015, -0.025, -0.02, -0.025, 0.005, -0.015, -0.02, -0.015, -0.025, -0.015, -0.01, -0.01, -0.025, -0.03, -0.02, -0.01, -0.005, 0, -0.005, -0.02, -0.03, -0.015, -0.005, 0, -0.03, -0.02, -0.015, -0.005, 0, -0.005, -0.02, -0.02, -0.025, -0.005, 0, 0, -0.01, -0.03, -0.015, 0, 0, -0.005, -0.01, -0.015, -0.02, -0.005, 0, 0.005, -0.005, -0.005, -0.005, 0.02, 0.03, 0.01, 0.01, 0, 0.015, 0.035, 0.055, 0.055, 0.03, 0.025, 0.03, 0.035, 0.05, 0.04, 0.025, 0.01, 0.01, 0.015, 0.015, 0.025, 0.005, -0.015, -0.005, 0, 0.005, -0.005, -0.01, -0.02, -0.015, -0.01, -0.005, 0, -0.01, -0.02, -0.02, -0.02, 0, -0.005, -0.015, -0.025, -0.02, -0.015, -0.005, -0.02, -0.025, -0.04, -0.06, -0.08, -0.1, -0.145, -0.175, -0.145, -0.06, 0.075, 0.225, 0.345, 0.46, 0.575, 0.705, 0.835, 0.905, 0.81, 0.52, 0.155, -0.05, -0.07, -0.04, -0.04, -0.05, -0.055, -0.045, -0.045, -0.045, -0.055, -0.06, -0.06, -0.07, -0.045, -0.045, -0.05, -0.065, -0.07, -0.07, -0.065, -0.06, -0.06, -0.07, -0.08, -0.08, -0.07, -0.055, -0.065, -0.08, -0.09, -0.075, -0.065, -0.055, -0.06, -0.06, -0.08, -0.08, -0.065, -0.06, -0.055, -0.06, -0.075, -0.07, -0.075, -0.065, -0.065, -0.07, -0.08, -0.085, -0.08, -0.055, -0.07, -0.08, -0.09, -0.09, -0.07, -0.07, -0.085, -0.1, -0.1, -0.1, -0.095, -0.075, -0.095, -0.1, -0.11, -0.11, -0.115, -0.11, -0.11, -0.135, -0.145, -0.155, -0.15, -0.145, -0.16, -0.17, -0.175, -0.185, -0.17, -0.17, -0.185, -0.2, -0.215, -0.205, -0.21, -0.19, -0.205, -0.21, -0.225, -0.22, -0.21, -0.205, -0.2, -0.2, -0.205, -0.185, -0.165, -0.145, -0.135, -0.125, -0.11, -0.095, -0.075, -0.055, -0.05, -0.04, -0.045, -0.03, -0.005, 0, 0, -0.005, -0.01, -0.02, 0.005, 0.01, 0, 0, -0.01, 0, 0.01, 0.025, 0, -0.005, -0.01, 0, 0, 0.02, 0.01, 0.01, -0.005, -0.005, 0.005, 0.015, 0.01, 0.01, -0.01, -0.01, -0.005, -0.005, 0, -0.015, -0.025, -0.01, -0.01, -0.01, -0.015, -0.025, -0.025, -0.03, -0.01, -0.01, -0.03, -0.05, -0.05, -0.045, -0.03, -0.015, -0.03, -0.04, -0.045, -0.045, -0.04, -0.015, -0.025, -0.04, -0.04, -0.045, -0.04, -0.03, -0.035, -0.04, -0.03, -0.05, -0.025, -0.015};
-            Vector<double> sig = Vector<double>.Build.DenseOfArray(testArray);
-
+            //double[] testArray = { -0.03, -0.015, -0.02, -0.005, -0.005, -0.01, -0.015, -0.025, -0.015, -0.015, -0.015, -0.025, -0.025, -0.025, -0.005, 0.005, -0.01, -0.01, -0.015, -0.035, -0.03, -0.02, -0.02, -0.03, -0.025, -0.03, -0.015, 0.005, 0.005, 0.01, 0, 0.005, 0.02, 0.03, 0.02, 0.025, 0.005, 0.005, 0.03, 0.025, 0.025, 0.02, 0.015, 0.015, 0.025, 0.025, 0.025, 0.01, -0.005, 0, -0.005, -0.005, -0.015, -0.015, -0.025, -0.015, -0.01, 0, -0.015, -0.025, -0.045, -0.045, -0.05, -0.025, -0.03, -0.035, -0.04, -0.035, -0.035, -0.02, -0.03, -0.04, -0.04, -0.045, -0.025, -0.025, -0.035, -0.05, -0.07, -0.08, -0.09, -0.1, -0.13, -0.16, -0.155, -0.105, -0.005, 0.12, 0.215, 0.265, 0.315, 0.39, 0.5, 0.61, 0.695, 0.685, 0.56, 0.305, 0.035, -0.15, -0.25, -0.27, -0.25, -0.195, -0.145, -0.11, -0.095, -0.085, -0.095, -0.095, -0.08, -0.085, -0.085, -0.085, -0.09, -0.075, -0.075, -0.075, -0.07, -0.085, -0.095, -0.09, -0.075, -0.065, -0.065, -0.075, -0.095, -0.09, -0.085, -0.07, -0.065, -0.075, -0.08, -0.08, -0.07, -0.065, -0.07, -0.07, -0.08, -0.07, -0.065, -0.065, -0.065, -0.07, -0.085, -0.085, -0.065, -0.065, -0.055, -0.075, -0.075, -0.08, -0.07, -0.065, -0.075, -0.085, -0.08, -0.08, -0.075, -0.075, -0.075, -0.085, -0.095, -0.095, -0.075, -0.075, -0.085, -0.09, -0.115, -0.115, -0.105, -0.09, -0.11, -0.12, -0.12, -0.135, -0.13, -0.125, -0.145, -0.15, -0.165, -0.17, -0.155, -0.16, -0.17, -0.19, -0.195, -0.2, -0.19, -0.185, -0.19, -0.2, -0.21, -0.22, -0.205, -0.21, -0.21, -0.2, -0.205, -0.19, -0.185, -0.165, -0.155, -0.145, -0.155, -0.13, -0.095, -0.075, -0.07, -0.06, -0.065, -0.065, -0.045, -0.025, -0.01, -0.015, -0.015, -0.005, 0.005, 0.015, 0.015, 0.005, 0.005, 0.005, 0.015, 0.03, 0.015, 0.005, 0.005, 0.005, 0.015, 0.025, 0.025, 0.015, 0.005, 0.005, 0.005, 0.02, 0.015, 0.01, 0.005, 0.005, 0.01, 0.015, 0.015, 0.01, 0, -0.015, 0.005, 0.015, 0.015, 0.015, 0, -0.005, 0.01, 0.01, 0, 0, 0.005, -0.02, -0.005, 0.01, 0, -0.02, -0.03, -0.01, -0.005, 0, 0.005, -0.02, -0.025, -0.025, -0.015, -0.005, -0.005, -0.015, -0.025, -0.02, -0.025, 0.005, -0.015, -0.02, -0.015, -0.025, -0.015, -0.01, -0.01, -0.025, -0.03, -0.02, -0.01, -0.005, 0, -0.005, -0.02, -0.03, -0.015, -0.005, 0, -0.03, -0.02, -0.015, -0.005, 0, -0.005, -0.02, -0.02, -0.025, -0.005, 0, 0, -0.01, -0.03, -0.015, 0, 0, -0.005, -0.01, -0.015, -0.02, -0.005, 0, 0.005, -0.005, -0.005, -0.005, 0.02, 0.03, 0.01, 0.01, 0, 0.015, 0.035, 0.055, 0.055, 0.03, 0.025, 0.03, 0.035, 0.05, 0.04, 0.025, 0.01, 0.01, 0.015, 0.015, 0.025, 0.005, -0.015, -0.005, 0, 0.005, -0.005, -0.01, -0.02, -0.015, -0.01, -0.005, 0, -0.01, -0.02, -0.02, -0.02, 0, -0.005, -0.015, -0.025, -0.02, -0.015, -0.005, -0.02, -0.025, -0.04, -0.06, -0.08, -0.1, -0.145, -0.175, -0.145, -0.06, 0.075, 0.225, 0.345, 0.46, 0.575, 0.705, 0.835, 0.905, 0.81, 0.52, 0.155, -0.05, -0.07, -0.04, -0.04, -0.05, -0.055, -0.045, -0.045, -0.045, -0.055, -0.06, -0.06, -0.07, -0.045, -0.045, -0.05, -0.065, -0.07, -0.07, -0.065, -0.06, -0.06, -0.07, -0.08, -0.08, -0.07, -0.055, -0.065, -0.08, -0.09, -0.075, -0.065, -0.055, -0.06, -0.06, -0.08, -0.08, -0.065, -0.06, -0.055, -0.06, -0.075, -0.07, -0.075, -0.065, -0.065, -0.07, -0.08, -0.085, -0.08, -0.055, -0.07, -0.08, -0.09, -0.09, -0.07, -0.07, -0.085, -0.1, -0.1, -0.1, -0.095, -0.075, -0.095, -0.1, -0.11, -0.11, -0.115, -0.11, -0.11, -0.135, -0.145, -0.155, -0.15, -0.145, -0.16, -0.17, -0.175, -0.185, -0.17, -0.17, -0.185, -0.2, -0.215, -0.205, -0.21, -0.19, -0.205, -0.21, -0.225, -0.22, -0.21, -0.205, -0.2, -0.2, -0.205, -0.185, -0.165, -0.145, -0.135, -0.125, -0.11, -0.095, -0.075, -0.055, -0.05, -0.04, -0.045, -0.03, -0.005, 0, 0, -0.005, -0.01, -0.02, 0.005, 0.01, 0, 0, -0.01, 0, 0.01, 0.025, 0, -0.005, -0.01, 0, 0, 0.02, 0.01, 0.01, -0.005, -0.005, 0.005, 0.015, 0.01, 0.01, -0.01, -0.01, -0.005, -0.005, 0, -0.015, -0.025, -0.01, -0.01, -0.01, -0.015, -0.025, -0.025, -0.03, -0.01, -0.01, -0.03, -0.05, -0.05, -0.045, -0.03, -0.015, -0.03, -0.04, -0.045, -0.045, -0.04, -0.015, -0.025, -0.04, -0.04, -0.045, -0.04, -0.03, -0.035, -0.04, -0.03, -0.05, -0.025, -0.015};
+            //Vector<double> sig = Vector<double>.Build.DenseOfArray(testArray);
+            Basic_New_Data_Worker InputWorker_basic = new Basic_New_Data_Worker("x");
+            ECG_Baseline_New_Data_Worker InputWorker = new ECG_Baseline_New_Data_Worker("x");
+            uint fs = InputWorker_basic.LoadAttribute(Basic_Attributes.Frequency);
+            Vector<double> sig = InputWorker.LoadSignal("MLII", 0, 6000);
+            Stopwatch st = new Stopwatch();
+            st.Start();
+            Console.WriteLine("Start");
             R_Peaks_Alg test = new R_Peaks_Alg();
-            Vector<double> l = test.EMD(sig, 360);
+            Vector<double> l = test.EMD(sig, fs);
+            st.Stop();
+
            #region writeData
             //write result to dat file
             //TempInput.setOutputFilePath(@"D:\biomed\DADM\C#\baserr.txt");
@@ -40,7 +49,8 @@ namespace EKG_Project.Modules.R_Peaks
 
             //TEST-Console
             Console.WriteLine("done");
-            foreach (double sth in l) { Console.WriteLine(sth ); }
+            Console.WriteLine(st.ElapsedMilliseconds);
+            //foreach (double sth in l) { Console.WriteLine(sth ); }
             //foreach (double sth in testResult.Item2) { Console.WriteLine(sth + "xx"); }
             Console.ReadKey();
         }*/
@@ -97,7 +107,6 @@ namespace EKG_Project.Modules.R_Peaks
             if (rawSignal == null) throw new ArgumentNullException();
             if (samplingFreq <= 0 || lowCutOff < 0 || highCutOff <=0) throw new ArgumentOutOfRangeException();
             if (rawSignal.Length == 0) throw new ArgumentOutOfRangeException("Array is empty.");
-            //TO DO: add cutoffs as constants not param? NOPE!
             Delay += 10;
             IList<double> coef = new List<double>();
 
@@ -247,7 +256,6 @@ namespace EKG_Project.Modules.R_Peaks
         /// <param name="end"> the last sample of signal (implicit)</param>
         /// <returns> cutted signal from teh whole signal as Vector of double </returns>
         #endregion
-        //SUBVECTOR from MATHNET?!
         public Vector<double> CutSignal(Vector<double> inputSignal, int begin, int end)
         {
             if (inputSignal == null) throw new ArgumentNullException();
@@ -675,8 +683,8 @@ namespace EKG_Project.Modules.R_Peaks
         public Tuple<List<double>, List<double>> Extrema(Vector<double> signal)
         {
             if (signal == null) throw new ArgumentNullException();
-            List<double> iMax = new List<double>();
-            List<double> iMin = new List<double>();
+            List<double> iMax = new List<double>() ;
+            List<double> iMin = new List<double>() ;
             Vector<double> diffSig = Diff(signal);
             Vector<double> dSig1 = diffSig.SubVector(0, diffSig.Count - 1);
             Vector<double> dSig2 = diffSig.SubVector(1, diffSig.Count - 1);
@@ -738,16 +746,16 @@ namespace EKG_Project.Modules.R_Peaks
                 {
                     for (int i = 0; i < debS.Count; i++)
                     {
-                        if (diffSig[Convert.ToInt32(debS[i]) - 1] > 0)
+                        if (diffSig[(int)debS[i] - 1] > 0)
                         {
-                            if (diffSig[Convert.ToInt32(finS[i])] < 0)
+                            if (diffSig[(int)finS[i]] < 0)
                             {
                                 iMax.Add(Math.Round((finS[i] + debS[i]) / 2));
                             }
                         }
                         else
                         {
-                            if (diffSig[Convert.ToInt32(finS[i])] > 0)
+                            if (diffSig[(int)finS[i]] > 0)
                             {
                                 iMin.Add(Math.Round((finS[i] + debS[i]) / 2));
                             }
@@ -788,7 +796,7 @@ namespace EKG_Project.Modules.R_Peaks
             CubicSpline splineCoeff = CubicSpline.InterpolateNatural(x, y);
             for (double c = 0; c < signalLength; c++)
             {
-                interpSpl[Convert.ToInt32(c)] = splineCoeff.Interpolate(c);
+                interpSpl[(int)c] = splineCoeff.Interpolate(c);
             }
             return interpSpl;
         }
@@ -811,32 +819,24 @@ namespace EKG_Project.Modules.R_Peaks
                 Tuple<List<double>, List<double>> extr = Extrema(d);
                 List<double> iMin = extr.Item1;
                 List<double> iMax = extr.Item2;
-                if (iMin.Count > 0)
+                if (iMin.Count >= 2)
                 {
                     Vector<double> ampMin = Vector<double>.Build.Dense(iMin.Count);
                     Vector<double> ampMax = Vector<double>.Build.Dense(iMax.Count);
                     for (int j = 0; j < iMin.Count; j++)
                     {
-                        ampMin[j] = d[Convert.ToInt32(iMin[j])];
+                        ampMin[j] = d[(int)iMin[j]];
                     }
                     for (int j = 0; j < iMax.Count; j++)
                     {
-                        ampMax[j] = d[Convert.ToInt32(iMax[j])];
+                        ampMax[j] = d[(int)iMax[j]];
                     }
                     //envelopes
-                    try
-                    {
                     Vector<double> envMin = CubicSplineInterp(signal.Count, iMin, ampMin);
                     Vector<double> envMax = CubicSplineInterp(signal.Count, iMax, ampMax);
                     Vector<double> envMean = envMin.Add(envMax).Divide(2);
                     //substract form signal
                     d = d - envMean;
-                }
-                    catch(ArgumentException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                        break;
-                    }
                 }
                 else break;
             }
@@ -876,7 +876,7 @@ namespace EKG_Project.Modules.R_Peaks
         {
             if (imfs == null) throw new ArgumentNullException();
             if (fs == 0) throw new ArgumentException();
-            foreach(var imf in imfs) { if (imf.Count != imfs[0].Count) throw new ArgumentOutOfRangeException("Lenghts of vectors in array must be tha same"); }
+            foreach(var imf in imfs) { if (imf.Count != imfs[0].Count) throw new ArgumentOutOfRangeException("Lenghts of vectors in array must be the same"); }
             //result Vector
             Vector<double> imfSum = Vector<double>.Build.Dense(imfs[0].Count - 2);
             //integrating window
@@ -947,13 +947,10 @@ namespace EKG_Project.Modules.R_Peaks
         {
             if (signal == null) throw new ArgumentNullException();
             List<double> potRs = new List<double>();
-            double minS = signal.Min();
-            double maxS = signal.Max();   
-            double th = 0.0005;
+            double th = 0.00005;
             for (int i = 1; i < signal.Length - 1; i++)
             {
-                double normSignal = (signal[i] - minS) / (maxS - minS);
-                if ((signal[i] > signal[i - 1]) && (signal[i] > signal[i + 1]) && normSignal > th)
+                if ((signal[i] > signal[i - 1]) && (signal[i] > signal[i + 1]) && signal[i] > th)
                 {
                     potRs.Add(i);
                 }
@@ -1073,5 +1070,7 @@ namespace EKG_Project.Modules.R_Peaks
             RRms.Multiply(Math.Round(1000 / Convert.ToDouble(samplingFrequency), 3), RRms);
             return RRms;
         }
+
+
     }
 }

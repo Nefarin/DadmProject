@@ -38,8 +38,8 @@ namespace EKG_Project.GUI
             {"ecgBasic", 0 },
             {"R_PEAKS", 3 },
             {"WAVES", 0 },
-            { "HEART_CLASS", 0 },
-            { "HEART_AXIS", 0 },
+            {"HEART_CLASS", 0 },
+            {"HEART_AXIS", 0 },
             {"ARTRIAL_FIBER", 0 },
             {"HRV2", 3 }
         };
@@ -89,19 +89,19 @@ namespace EKG_Project.GUI
             switch (modulesVisualisationNeeds[moduleName])
             {
                 case 0:                  
-                    StartPlot(analyseName, moduleName, moduleDict);
+                    //StartPlot(analyseName, moduleName, moduleDict);
                     break;
                     
                 case 1:
-                    StartPlot(analyseName, moduleName, moduleDict);
+                    //StartPlot(analyseName, moduleName, moduleDict);
                     StartTable(analyseName, moduleName, moduleDict);
                     break;                   
                 case 2:
-                    StartPlot(analyseName, moduleName, moduleDict);
+                    //StartPlot(analyseName, moduleName, moduleDict);
                     StartHistogram(analyseName, moduleName, moduleDict);
                     break;                   
                 case 3:
-                    StartPlot(analyseName, moduleName, moduleDict);
+                    //StartPlot(analyseName, moduleName, moduleDict);
                     StartTable(analyseName, moduleName, moduleDict);
                     StartHistogram(analyseName, moduleName, moduleDict);
                     break;
@@ -121,10 +121,66 @@ namespace EKG_Project.GUI
 
         }
 
+        //Program ver2.0
 
-        public void StartPlot(string anName,string modName, KeyValuePair<string, int> moduleDic)
+        public VisualisationDataControl(string analyseName, string moduleName, KeyValuePair<string, int> moduleDict, List<string> analysedModules)
         {
-            VisualisationPlotControl ecgVPControl = new VisualisationPlotControl(anName,modName, moduleDic);
+            InitializeComponent();
+            visulisationDataTabsList = new List<TabItem>();
+            uint plotAmount = 0;
+            uint tableAmount = 0;
+            uint histAmount = 0;
+
+
+            if (moduleName == "ECG_BASELINE")
+            {
+                plotAmount = 1;
+
+                if (analysedModules.Contains("QT_DISP"))
+                {
+                    tableAmount += 1;
+                }
+
+
+                //start wszystkiego pod baseline: 
+
+                for (int i = 0; i < plotAmount; i++)
+                {
+                    StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+                }
+
+                for (int i = 0; i < tableAmount; i++)
+                {
+                    //need logic to not duble some tables
+                    StartTable(analyseName, moduleName, moduleDict);
+                }
+
+                for (int i = 0; i < histAmount; i++)
+                {
+                    //need logic to not duble some hist
+                    StartHistogram(analyseName, moduleName, moduleDict);
+                }
+            }
+
+            //pozostale moduly
+
+            if (moduleName == "HEART_AXIS")
+            {
+                //start konkretnego 
+            }
+
+            this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
+
+        }
+
+
+
+
+
+
+        public void StartPlot(string anName,string modName, KeyValuePair<string, int> moduleDic, List<string> modL)
+        {
+            VisualisationPlotControl ecgVPControl = new VisualisationPlotControl(anName,modName, moduleDic, modL);
 
             TabItem ecgBaselineTab = new TabItem();
             ecgBaselineTab.Header = "Plot";

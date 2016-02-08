@@ -26,7 +26,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// <returns> RR intervals</returns>
         #endregion
 
-        List<List<double>> findIntervals(List<uint> R_detected, int freq)
+        public List<List<double>> findIntervals(List<uint> R_detected, int freq)
         {
             var timeInSec = new List<double>(R_detected.Count - 1);
             var rrDist = new List<double>(R_detected.Count - 1);
@@ -34,8 +34,15 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
             for (int i = 0; i < R_detected.Count() - 1; i++)
             {
-                timeInSec.Add(((double)R_detected[i]) / freq);
-                rrDist.Add(((double)R_detected[i + 1] - R_detected[i]) / freq);
+
+                double r1 = (double)R_detected[i];
+                timeInSec.Add(r1 / freq);
+
+                double r2 = (double)R_detected[i + 1];
+
+                double rr = r2 - r1;
+
+                rrDist.Add(rr / freq);
             }
 
             List<List<double>> RR = new List<List<double>>(2);
@@ -52,7 +59,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// <returns> Filtered RR intervals</returns>
         #endregion
 
-        List<List<double>> averageFilter(List<List<double>> RR)
+        public List<List<double>> averageFilter(List<List<double>> RR)
         {
             int meanFilterWindowLength = 41;
 
@@ -97,8 +104,8 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// <param name="freq"> frequency of sampling for signal</param>
         /// <param name="RRFiltered"> Signal - RR intervals filtered </param>
         /// <returns> Resampled RR intervals</returns>
-        #endregion   
-        List<List<double>> resampling(List<List<double>> RRFiltered, int resampFreq)
+        #endregion
+        public List<List<double>> resampling(List<List<double>> RRFiltered, int resampFreq)
         {
             int estimatedSamplesCountAfterResampling = (int)((RRFiltered[0][RRFiltered[0].Count - 1] - RRFiltered[0][0]) * resampFreq + 1);
             List<double> rrDistResampled = new List<double>(estimatedSamplesCountAfterResampling);
@@ -130,7 +137,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             return RRResampled;
         }
 
-        private List<List<double>> LP(List<List<double>> RRHP)
+        public List<List<double>> LP(List<List<double>> RRHP)
         {
             List<double> rrDistLP = new List<double>(RRHP[1].Count);
             List<double> timeInSecLP = new List<double>(RRHP[0].Count);
@@ -170,7 +177,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             return RRLP;
         }
 
-        private List<List<double>> HP(List<List<double>> RRResampled)
+        public List<List<double>> HP(List<List<double>> RRResampled)
         {
             List<double> rrDistHP = new List<double>(RRResampled[1].Count);
 
@@ -201,7 +208,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// <returns> Hilbert's amplitudes and frequencies </returns>
         #endregion
 
-        void hilbert(List<List<double>> RRHPLP, ref List<List<double>> hAmp, ref List<List<double>> hFreq)
+        public void hilbert(List<List<double>> RRHPLP, ref List<List<double>> hAmp, ref List<List<double>> hFreq)
         {
             Complex[] hilb = MatlabHilbert(RRHPLP[1].ToArray());
 
@@ -209,6 +216,9 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
             List<double> amp = new List<double>(RRHPLP[1].Count);
             List<double> freq = new List<double>(RRHPLP[1].Count);
+
+            //double[] phases = hilb.Select(x => x.Phase).ToArray();
+            //unwrap(phases, phases.Length);
 
             double[] unwrapedPhases = new double[hilb.Length];
             unwrapedPhases[0] = hilb[0].Phase;
@@ -236,7 +246,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             hFreq.Add(freq);
         }
 
-        private static Complex[] MatlabHilbert(double[] xr)
+        private Complex[] MatlabHilbert(double[] xr)
         {
             var x = (from sample in xr select new Complex(sample, 0)).ToArray();
             Fourier.BluesteinForward(x, FourierOptions.Default);
@@ -262,7 +272,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             return x;
         }
 
-        void medianFilter(List<List<double>> hFreq, List<List<double>> hAmp)
+        public void medianFilter(List<List<double>> hFreq, List<List<double>> hAmp)
         {
             int medianFilterWindowSize = 181;
             OnlineMedianFilter filter = new OnlineMedianFilter(medianFilterWindowSize);
@@ -272,7 +282,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
 
 
         //Normalization of amplitude signal
-        void ampNormalization(List<List<double>> hAmp)
+        public void ampNormalization(List<List<double>> hAmp)
         {
             double sum = 0;
             for (int i = 0; i < hAmp[1].Count; i++)
@@ -295,7 +305,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
         /// <param name="hAmp"> Signal - filtered Hilbert's amplitudes </param>
         /// <returns> The percentage value of sleep apnea in signal (il_Apnea), Hilbert's amplitudes (h_amp) and time periods for which detected apnea (Detected_Apnea) </returns>
         #endregion
-        void detectApnea(List<List<double>> hAmp, List<List<double>> hFreq, List<bool> detected, List<double> time)
+        public void detectApnea(List<List<double>> hAmp, List<List<double>> hFreq, List<bool> detected, List<double> time)
         {
             //Finding the minimum and maximum Hilbert amplitudes
 
@@ -377,7 +387,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
             }
         }
 
-        List<Tuple<int, int>> setResult(List<bool> detected, List<double> time, out double ilApnea)
+        public List<Tuple<int, int>> setResult(List<bool> detected, List<double> time, out double ilApnea)
         {
             //Calculating the percentage of sleep apnea         
             int posCount = 0;
@@ -407,7 +417,7 @@ namespace EKG_Project.Modules.Sleep_Apnea
                     }
                 }
             }
-            ilApnea = ((double)posCount) / (posCount + negCount);
+            ilApnea = 100.0 * ((double)posCount) / (posCount + negCount);
 
             return detectedApnea;
         }

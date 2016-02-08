@@ -5,10 +5,21 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace EKG_Project.Modules.HRV2
 {
-
     public partial class HRV2_Alg
     {
-        private double tinn;
+        public double tinn;
+        public double Tinn
+        {
+            set
+            {
+                tinn = value;
+            }
+            get
+            {
+                return tinn;
+            }
+        }
+
         #region Documentation
         /// <summary>
         /// Write to the <double> tinn coefficient, which is 
@@ -16,10 +27,16 @@ namespace EKG_Project.Modules.HRV2
         /// </summary>
         /// 
         #endregion
-            private void makeTinn()
+        public void makeTinn()
         {
-            //Vector<double> RRIntervals = InputData.RRInterval[_currentChannelIndex].Item2;
-            tinn = (_rrIntervals.Max() - _rrIntervals.Min());
+            try
+            {
+                tinn = (_rrIntervals.Max() - _rrIntervals.Min());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }

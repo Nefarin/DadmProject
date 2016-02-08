@@ -151,8 +151,8 @@ namespace EKG_Project.IO
                     licznik++;
                 }
 
-                object[] sProperties = { basicData.Tinn, basicData.TriangleIndex, basicData.SD1, basicData.SD2, basicData.ElipseCenter };
-                string[] sNames = { "Tinn", "TriangleIndex", "SD1", "SD2", "ElipseCenter" };
+                object[] sProperties = { basicData.Tinn, basicData.TriangleIndex, basicData.SD1, basicData.SD2, basicData.ElipseCenter_x, basicData.ElipseCenter_y };
+                string[] sNames = { "Tinn", "TriangleIndex", "SD1", "SD2", "ElipseCenter_x", "ElipseCenter_y" };
                 int slicznik = 0;
 
                 foreach (var property in sProperties)
@@ -315,7 +315,7 @@ namespace EKG_Project.IO
                     basicData.SD2 = list4;
 
                     List<double> list5 = new List<double>();
-                    XmlNodeList nodes6 = module.SelectNodes("ElipseCenter");
+                    XmlNodeList nodes6 = module.SelectNodes("ElipseCenter_x");
                     foreach (XmlNode node in nodes6)
                     {
                         string readVariable = node.InnerText;
@@ -323,7 +323,18 @@ namespace EKG_Project.IO
 
                         list5.Add(convertedVariable);
                     }
-                    basicData.ElipseCenter = list5;
+                    basicData.ElipseCenter_x = list5;
+
+                    List<double> list6 = new List<double>();
+                    XmlNodeList nodes7 = module.SelectNodes("ElipseCenter_y");
+                    foreach (XmlNode node in nodes7)
+                    {
+                        string readVariable = node.InnerText;
+                        double convertedVariable = Convert.ToDouble(readVariable);
+
+                        list6.Add(convertedVariable);
+                    }
+                    basicData.ElipseCenter_y = list6;
                 }
             }
             this.Data = basicData;
