@@ -84,7 +84,7 @@ namespace EKG_Project.Modules.ECG_Baseline
             /// Overloaded functions 'butterworth()' that allows to do bandpass filter by butterworth filter.
             /// </summary>
             /// <param name="signal">The raw ECG signal that is filtered</param>
-            /// <param name="fs">Sampling frequency of signal</param>
+            /// <param name="fs">Sampling frequency of input signal</param>
             /// <param name="fc_low">Lower cut-off frequency of fignal</param>
             /// <param name="order_low">Lower filter order</param>
             /// <param name="fc_high">Upper cut-off frequency of signal</param>
