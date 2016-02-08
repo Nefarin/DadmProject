@@ -130,6 +130,7 @@ namespace EKG_Project.GUI
             this.AnalysisInProgress = true;
             loadFileButton.IsEnabled = false;
             pdfButton.IsEnabled = false;
+            modulePanel.IsEnabled = false;
             startAnalyseButton.IsEnabled = false;
             analysisLabel.Content = "Analysis in progress..";
             buttonAbort.Content = "Abort analysis";
@@ -151,6 +152,7 @@ namespace EKG_Project.GUI
             loadFileButton.IsEnabled = true;
             pdfButton.IsEnabled = true;
             startAnalyseButton.IsEnabled = true;
+            modulePanel.IsEnabled = true;
             VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
             panel.Visibility = Visibility.Hidden;
             this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
