@@ -402,6 +402,7 @@ namespace EKG_Project.GUI
 
             ecgPlot = new ECGPlot(analyseName, moduleName);
             DataContext = ecgPlot;
+
             
 
             //CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
@@ -421,6 +422,11 @@ namespace EKG_Project.GUI
                 this.PlotSlider.Visibility = Visibility.Collapsed;
                 this.CheckBoxList.Visibility = Visibility.Collapsed;
                 ecgPlot.DisplayHeartAxisLeadVersion();
+            }
+            if(_plotType == "SLEEP_APNEA")
+            {
+                CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
+                ecgPlot.DisplaySleepApneaLeadVersion(firstLead);
             }
 
 
@@ -961,6 +967,11 @@ namespace EKG_Project.GUI
                     {
                         ecgPlot.DisplayHRV2Leads(c.Name);
                         this.PlotSlider.Visibility = Visibility.Hidden;
+                    }
+                    if (_plotType == "SLEEP_APNEA")
+                    {
+                        ecgPlot.DisplaySleepApneaLeadVersion(c.Name);
+                       
                     }
 
                 }

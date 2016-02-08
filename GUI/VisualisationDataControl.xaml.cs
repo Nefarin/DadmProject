@@ -133,6 +133,7 @@ namespace EKG_Project.GUI
             uint tableAmount = 0;
             uint histAmount = 0;
 
+            //System.Windows.MessageBox.Show(moduleName);
 
             if (moduleName == "ECG_BASELINE")
             {
@@ -169,6 +170,11 @@ namespace EKG_Project.GUI
             if (moduleName == "HEART_AXIS")
             {
                 StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+            }
+
+            if (moduleName == "SLEEP_APNEA")
+            {
+               // StartPlot(analyseName, moduleName, moduleDict, analysedModules);
             }
 
             if (moduleName == "HRV2")

@@ -1543,11 +1543,77 @@ namespace EKG_Project.GUI
 
         }
 
-        public bool DisplaySleepApneaLeadVersion()
+        public bool DisplaySleepApneaLeadVersion(string leadName)
         {
             try
             {
+                Sleep_Apnea_New_Data_Worker sAW = new Sleep_Apnea_New_Data_Worker(_currentAnalysisName);
+                double illAp = sAW.LoadIlApnea(leadName);
 
+                if (illAp > 0)
+                {
+
+                    uint[] tempU = sAW.getHAmpNumberOfSamples(leadName);
+                    int[] tempInt = new int[tempU.Length];
+                    int[] tempIntS = new int[tempU.Length];
+                    for (int i = 0; i < tempU.Length; i++)
+                    {
+                        tempInt[i] = (int)tempU[i];
+                        tempIntS[i] = 0;
+                    }
+
+
+                    List<Tuple<int, int>> myTemp = sAW.LoadDetectedApnea(leadName, 0, (int)sAW.getNumberOfSamples(leadName));
+                    List<List<double>> myTempH = sAW.LoadHAmp(leadName, tempIntS, tempInt);
+
+
+                    
+
+                    LineSeries ls = new LineSeries();
+                    ls.Title = leadName;
+                    ls.MarkerStrokeThickness = 1;
+
+                    //foreach (var l in myTempH)
+                    //{
+                    //    ls.Points.Add(new DataPoint(l[0], l[1]));
+                    //}
+
+                    //foreach (var a in myTempH[0])
+                    //{
+
+                    //}
+
+                    //for (int i =0; i<2;i++)
+                    //{
+                    //    ls.Points.Add(new DataPoint(myTempH[i], myTempH[i]));
+                    //}
+
+                    List<double> xes = myTempH[0];
+                    List<double> yes = myTempH[1];
+
+
+                    for (int i = 0; i < 2; i++)
+                    {
+                        ls.Points.Add(new DataPoint(xes[i], yes[i]));
+                    }
+
+
+
+
+
+
+                    CurrentPlot.Series.Add(ls);
+
+                    RefreshPlot();
+
+
+
+                    System.Windows.MessageBox.Show("Sleep anpea was detected in " + illAp +"% signal time.");
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("There was no sleep apnea in current signal.");
+                }
 
                 return true;
             }
@@ -1558,7 +1624,61 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplaySleepApneaLeadVersionBaseline()
+        {
+            try
+            {
+                Sleep_Apnea_New_Data_Worker sAW = new Sleep_Apnea_New_Data_Worker(_currentAnalysisName);
+                double illAp = sAW.LoadIlApnea(_currentLeadName);
 
+                if (illAp > 0)
+                {
+
+
+                    List<Tuple<int, int>> myTemp = sAW.LoadDetectedApnea(_currentLeadName, 0, (int)sAW.getNumberOfSamples(_currentLeadName));
+
+                    ScatterSeries sleepApnea = new ScatterSeries();
+                    sleepApnea.Title = "SleepApnea";
+                    double min = _currentBaselineLeadVector.Minimum();
+
+                    foreach (var tup in myTemp.Where(a => a.Item1 < _currentBaselineLeadEndIndex))
+                    {
+                        for (int i = tup.Item1; (i <= tup.Item2 && i < _currentBaselineLeadEndIndex); i++)
+                        {
+
+                            sleepApnea.Points.Add(new ScatterPoint { X = i, Y = min, Size = 2 });
+                            sleepApnea.Points.Add(new ScatterPoint { X = i + 0.1, Y = min, Size = 2 });
+                            sleepApnea.Points.Add(new ScatterPoint { X = i + 0.2, Y = min, Size = 2 });
+                            sleepApnea.Points.Add(new ScatterPoint { X = i + 0.3, Y = min, Size = 2 });
+                            sleepApnea.Points.Add(new ScatterPoint { X = i + 0.4, Y = min, Size = 2 });
+                            sleepApnea.Points.Add(new ScatterPoint { X = i + 0.5, Y = min, Size = 2 });
+                            sleepApnea.Points.Add(new ScatterPoint { X = i + 0.6, Y = min, Size = 2 });
+                            sleepApnea.Points.Add(new ScatterPoint { X = i + 0.7, Y = min, Size = 2 });
+                            sleepApnea.Points.Add(new ScatterPoint { X = i + 0.8, Y = min, Size = 2 });
+                            sleepApnea.Points.Add(new ScatterPoint { X = i + 0.9, Y = min, Size = 2 });
+
+                        }
+                    }
+
+
+                    CurrentPlot.Series.Add(sleepApnea);
+                    RefreshPlot();
+
+                    System.Windows.MessageBox.Show("Sleep anpea was detected in " + illAp + "% signal time.");
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("There was no sleep apnea in current signal.");
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
 
 
 
@@ -1627,7 +1747,7 @@ namespace EKG_Project.GUI
                         DisplayFlutterLeadVersion();
                         break;
                     case "SleepApnea":
-                        DisplaySleepApneaLeadVersion();
+                        DisplaySleepApneaLeadVersionBaseline();
                         break;
 
                     default:
