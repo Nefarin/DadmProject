@@ -2774,7 +2774,18 @@ namespace EKG_Project.GUI
                         var pdfExporter = new PdfExporter() { Width = 600, Height = 400 };
                         pdfExporter.Export(CurrentPlot, stream);
                     }
+                }
+            }
+            catch(Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
 
+        public void SavePlotToPdf()
+        {
+            try
+            {
                     string automaticFilePath = System.IO.Directory.GetCurrentDirectory();
                     //System.Windows.MessageBox.Show(automaticFilePath);
                     //System.Windows.MessageBox.Show(automaticFilePath.IndexOf("DadmProject").ToString());
@@ -2783,19 +2794,19 @@ namespace EKG_Project.GUI
                     automaticFilePath = automaticFilePath.Remove(automaticFilePath.IndexOf("DadmProject") + 12) + @"IO\temp";
                     //System.Windows.MessageBox.Show(automaticFilePath);
 
-                    string automaticFileName = @_currentAnalysisName + "_" + CurrentPlot.Title + _otherTabs + "_" + _currentSavedPlotNumber.ToString()+ ".pdf";
+                    string automaticFileName = @_currentAnalysisName + "_" + CurrentPlot.Title + _otherTabs + "_" + _currentSavedPlotNumber.ToString() + ".pdf";
                     string combinedPath = System.IO.Path.Combine(automaticFilePath, automaticFileName);
                     _currentSavedPlotNumber++;
-                       
+
                     using (var stream = System.IO.File.Create(combinedPath))
                     {
                         var pdfExporter = new PdfExporter() { Width = 600, Height = 400 };
                         pdfExporter.Export(CurrentPlot, stream);
                     }
-
-                }
+                System.Windows.MessageBox.Show("Current Plot saved in Pdf file." + System.Environment.NewLine + "It will be joined to PDF Raport.");
+                
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(ex.Message);
             }

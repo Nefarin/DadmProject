@@ -1036,6 +1036,11 @@ namespace EKG_Project.GUI
             ecgPlot.SavePlot();
         }
 
+        private void SavePlotToPdfButton_Click(object sender, RoutedEventArgs e)
+        {
+            ecgPlot.SavePlotToPdf();
+        }
+
         //private void ClearPlotButton_Click(object sender, RoutedEventArgs e)
         //{
         //    //ListBox checkBoxes = this.CheckBoxList.DataContext;
@@ -1046,13 +1051,13 @@ namespace EKG_Project.GUI
         //        if (first)
         //        {
         //            ecgPlot.SeriesControler(c.Name, true);
-                    
+
         //        }
         //        else
         //        {
         //            ecgPlot.SeriesControler(c.Name, false);
         //        }
-                             
+
         //    }
 
         //}

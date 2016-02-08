@@ -142,5 +142,10 @@ namespace EKG_Project.GUI
         {
             ecgHistogramPlot.SavePlot();
         }
+
+        private void SavePlotToPdfButton_Click(object sender, RoutedEventArgs e)
+        {
+            ecgHistogramPlot.SavePlotToPdf();
+        }
     }
 }
