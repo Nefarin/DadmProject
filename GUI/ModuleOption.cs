@@ -21,8 +21,7 @@ using EKG_Project.Modules.ST_Segment;
 using EKG_Project.Modules.T_Wave_Alt;
 using EKG_Project.Modules.SIG_EDR;
 using EKG_Project.Modules.HRT;
-
-
+using EKG_Project.Modules.Heart_Cluster;
 
 namespace EKG_Project.GUI
 {
@@ -129,6 +128,11 @@ namespace EKG_Project.GUI
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
+                        case AvailableOptions.HEART_CLUSTER:
+                            this.ModuleParam = new Heart_Cluster_Params(this.AnalysisName);
+                            this.ModuleParam.GUIParametersAvailable = false;
+                            FillDictionaries();
+                            break;
                         /*
                         case AvailableOptions.TEST_MODULE:
                             this.ModuleParam = new TestModule_Params(500);
@@ -141,21 +145,23 @@ namespace EKG_Project.GUI
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
-                        case AvailableOptions.ST_SEGMENT:
+                        /*case AvailableOptions.ST_SEGMENT:
                             this.ModuleParam = new ST_Segment_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
+                            */
                         case AvailableOptions.T_WAVE_ALT:
                             this.ModuleParam = new T_Wave_Alt_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
-                        case AvailableOptions.SIG_EDR:
+                        /*case AvailableOptions.SIG_EDR:
                             this.ModuleParam = new SIG_EDR_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
                             FillDictionaries();
                             break;
+                            */
                         case AvailableOptions.HRT:
                             this.ModuleParam = new HRT_Params(this.AnalysisName);
                             this.ModuleParam.GUIParametersAvailable = false;
@@ -311,6 +317,7 @@ namespace EKG_Project.GUI
         HRT,
         ECTOPIC_BEAT,
         HEART_AXIS,
+        HEART_CLUSTER,
         TEST_MODULE
     }
 }
