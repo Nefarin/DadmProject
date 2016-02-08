@@ -196,6 +196,11 @@ namespace EKG_Project.GUI
                 StartTable(analyseName, moduleName, moduleDict, tableModuleList);                
             }
 
+            if (moduleName == "HRT")
+            {
+                StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+            }
+
             this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
 
         }

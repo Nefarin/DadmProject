@@ -442,6 +442,12 @@ namespace EKG_Project.GUI
                 this.PlotSlider.Visibility = Visibility.Hidden;
             }
 
+            if (_plotType == "HRT")
+            {
+                CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
+                ecgPlot.DisplayHrtLeadVersion(firstLead);
+            }
+
 
             this.CheckBoxList.DataContext = _seriesChecbox;
 

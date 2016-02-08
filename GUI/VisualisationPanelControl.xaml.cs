@@ -185,6 +185,10 @@ namespace EKG_Project.GUI
                 {
                     independentModules["HRV1"] = 1;
                 }
+                if (tabNames.Contains("HRT"))
+                {
+                    independentModules["HRT"] = 1;
+                }
                 //add other independent modules
 
 

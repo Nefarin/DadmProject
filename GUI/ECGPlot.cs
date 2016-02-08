@@ -1828,6 +1828,58 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplayHrtLeadVersion(string leadName)
+        {
+            try
+            {
+                HRT_New_Data_Worker hWD = new HRT_New_Data_Worker(_currentAnalysisName);
+
+
+                if(hWD.LoadVPC(leadName)== Modules.HRT.HRT.VPC.LETS_PLOT)
+                {
+                    //double[] meanTachogram = hWD.LoadMeanTachogramGUI(leadName);
+                    List<List<double>> tachogram = hWD.LoadTachogramGUI(leadName);
+                    //double[] turbulenceOnsetMean = hWD.LoadTurbulenceOnsetMeanGUI(leadName);
+                    //double[] turbulenceSlopeMax = hWD.LoadTurbulenceSlopeMaxGUI(leadName);
+                    //int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
+                    //int[] loadXPointsMaxSlope = hWD.LoadXPointsMaxSlopeGUI(leadName);
+                    //int[] loadXPointsMeanOnset = hWD.LoadXPointsMeanOnsetGUI(leadName);
+                    int a = 0;
+                    System.Windows.MessageBox.Show(leadName);
+                    System.Windows.MessageBox.Show(tachogram.Count.ToString());
+
+                    foreach(List<double> tach in tachogram)
+                    {
+                        LineSeries ls = new LineSeries();
+                        ls.Title = leadName + a.ToString();                     
+                        ls.MarkerStrokeThickness = 1;
+                        a++;
+                        System.Windows.MessageBox.Show("HRT" + a);
+                        for (int i = 0; i < tach.Count; i++)
+                        {
+                            ls.Points.Add(new DataPoint(i, tach[i]));
+                        }
+
+                        CurrentPlot.Series.Add(ls);
+                    }
+
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("There was no possitive detection or" + System.Environment.NewLine +"detected values does not allowed to plot them.");
+                }
+                
+
+                RefreshPlot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
 
 
         public bool ControlOtherModulesSeries(string moduleName, bool visible)
