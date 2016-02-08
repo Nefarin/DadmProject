@@ -1700,7 +1700,8 @@ namespace EKG_Project.GUI
         {
             try
             {
-                //HRV1_New_Data_Worker hW = new HRV1_New_Data_Worker(_currentAnalysisName);
+                HRV1_New_Data_Worker hW = new HRV1_New_Data_Worker(_currentAnalysisName);
+                
                 //Vector<double> freqBP =  hW.LoadSignal(HRV1_Signal.FreqBasedParams, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqBasedParams, leadName));
 
                 //Vector<double> freQV = hW.LoadSignal(HRV1_Signal.FreqVector, leadName, 0, (int)hW.getNumberOfSamples(HRV1_Signal.FreqVector, leadName));

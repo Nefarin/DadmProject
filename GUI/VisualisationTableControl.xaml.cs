@@ -46,6 +46,23 @@ namespace EKG_Project.GUI
             public string SD2{ get; set; }
         }
 
+        public class DataToTableHRV1
+        {
+
+            public string Lead { get; set; }
+            public string AVNN { get; set; }
+            public string HF { get; set; }
+            public string LF { get; set; }
+            public string LFHF { get; set; }
+            public string NN50 { get; set; }
+            public string pNN50 { get; set; }
+            public string RMSSD { get; set; }
+            public string SDNN { get; set; }
+            public string SDSD { get; set; }
+            public string TP { get; set; }
+            public string VLF { get; set; }
+        }
+
         //public int ID { get; set; }
 
         List<DataToTable> _tableData; 
@@ -179,8 +196,17 @@ namespace EKG_Project.GUI
         {
             try
             {
-                //HRV1_New_Data_Worker hW = new HRV1_New_Data_Worker(_currentAnalysisName);
-                //hW.LoadSignal(HRV1_Signal.)
+                List<DataToTableHRV1> _dataToPrint = new List<DataToTableHRV1>();
+                HRV1_New_Data_Worker hW = new HRV1_New_Data_Worker(_currentAnalysisName);
+                foreach(string lead in leadsNameList)
+                {
+                    //DataToTableHRV1 dTT = new DataToTableHRV1();
+                    //dTT.Lead = lead;
+                    //dTT.AVNN = hW.LoadSignal(HRV1_Attributes.AVNN, lead, 0, 1).First().ToString();
+                    //hW.
+                }
+
+                this.VisualisationDataTable.DataContext = _dataToPrint;
 
                 return true;
             }

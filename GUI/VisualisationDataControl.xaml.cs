@@ -193,7 +193,7 @@ namespace EKG_Project.GUI
             if (moduleName == "HRV1")
             {
                 StartPlot(analyseName, moduleName, moduleDict, analysedModules);
-               // StartTable(analyseName, moduleName, moduleDict, tableModuleList);                
+                StartTable(analyseName, moduleName, moduleDict, tableModuleList);                
             }
 
             this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
