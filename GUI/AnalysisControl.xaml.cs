@@ -102,10 +102,6 @@ namespace EKG_Project.GUI
                 MessageBox.Show("No analysis selected. Please select at least one analysis.", "Cannot start calculations", MessageBoxButton.OK);
             }
 
-
-            //MessageBox.Show("Starting Analyses");
-            //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
-
         }
 
         private void pdfButton_Click(object sender, RoutedEventArgs e)
