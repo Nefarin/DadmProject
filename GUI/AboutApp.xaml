@@ -1,0 +1,22 @@
+﻿<Window x:Class="EKG_Project.GUI.AboutApp"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EKG_Project.GUI"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Title="About ECG Analyser Application" Height="400" Width="370">
+    <Grid>
+        <Image x:Name="image" Source="images/logo.gif" HorizontalAlignment="Left" Height="100" Margin="110,10,0,0" VerticalAlignment="Top" Width="140"/>
+        <TextBlock x:Name="autors" HorizontalAlignment="Left" Margin="15,121,0,0" TextWrapping="WrapWithOverflow"  VerticalAlignment="Top" Height="81" Width="333" xml:space="preserve"  
+                   Text="The Application is used for basic ECG Analysis.
+It includes modules such as: Atrial Fibr, Baseline, Flutter, Heart Axis, Heart Class, Heart Cluster, HRV 
+(HRV1, HRV2), QT Display, R-Peaks, Sleep Apnea, 
+T-Wave-Alt, Waves.">
+        </TextBlock>
+        <Button x:Name="button" Content="OK" Click="button_Click"  HorizontalAlignment="Left" Margin="135,310,0,0" VerticalAlignment="Top" Width="83" Height="28" />
+        <Label x:Name="label" Content="Copywrite © 2016 EAIiIB IB IEM Students" HorizontalAlignment="Left" Margin="61,279,0,0" VerticalAlignment="Top" Width="247"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="15,207,0,0" TextWrapping="Wrap" Text="The whole application was made by Biomedical Engineering students in cooperation with MSc Tomasz Pięciak. The Project Manager was Maciej Bojdak." VerticalAlignment="Top" Height="56" Width="338"/>
+    </Grid>
+</Window>

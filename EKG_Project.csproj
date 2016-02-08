@@ -118,6 +118,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="GUI\AboutApp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\AnalysisControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -234,6 +238,9 @@
     <Compile Include="Architecture\TabContainer.cs" />
     <Compile Include="Architecture\Processing.cs" />
     <Compile Include="Architecture\ProcessSync.cs" />
+    <Compile Include="GUI\AboutApp.xaml.cs">
+      <DependentUpon>AboutApp.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\AnalysisControl.xaml.cs">
       <DependentUpon>AnalysisControl.xaml</DependentUpon>
     </Compile>
@@ -536,6 +543,7 @@
     <Content Include="DLL\resetvars.vbs" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="GUI\Images\logo.gif" />
     <Resource Include="IO\data\res_QT_Disp\output_end.txt" />
     <Resource Include="IO\data\res_QT_Disp\output_qt.txt" />
     <Resource Include="IO\data\res_QT_Disp\QRS_End.txt" />
