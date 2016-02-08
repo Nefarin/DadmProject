@@ -11,7 +11,7 @@
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <DataGrid Name="HeaderTable" Grid.Row="0" ItemsSource="{Binding}" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
+        <DataGrid Name="HeaderTable" Grid.Row="0" ItemsSource="{Binding}" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ColumnWidth="*">
         </DataGrid>
         <TabControl Name="EcgDynamicTab" Grid.Row="1"  ItemsSource="{Binding}" TabStripPlacement="Left"/>
     </Grid>
