@@ -35,6 +35,7 @@ namespace EKG_Project.IO
             else
             {
                 int element = (int)_data.ModuleOption;
+                System.Console.WriteLine(element);
 
                 PDFModuleClasses.IPDFModuleClass PDFModule;
                 switch (element)
@@ -117,6 +118,7 @@ namespace EKG_Project.IO
                         break;
 
                     case 15: //HRT:
+
                         PDFModule = new PDFModuleClasses.HRT_PDF(Document);
                         PDFModule.FillReportForModule("HRT", _data.statsDictionary);
                         break;
@@ -149,6 +151,28 @@ namespace EKG_Project.IO
 
       return Document;
     }
+        public enum AvailableOptions
+        {
+            ECG_BASELINE,
+            R_PEAKS,
+            VCG_T_LOOP,
+            HRV1,
+            HRV2,
+            WAVES,
+            HRV_DFA,
+            SIG_EDR,
+            ST_SEGMENT,
+            T_WAVE_ALT,
+            SLEEP_APNEA,
+            HEART_CLASS,
+            ATRIAL_FIBER,
+            QT_DISP,
+            FLUTTER,
+            HRT,
+            ECTOPIC_BEAT,
+            HEART_AXIS,
+            TEST_MODULE
+        }
 
-  }
+    }
 }
