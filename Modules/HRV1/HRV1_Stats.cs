@@ -72,11 +72,43 @@ namespace EKG_Project.Modules.HRV1
         {
             _currentName = _leads[_currentChannelIndex];
             _currentIndex = 0;
+            var InputWorker = peaksWorker;
 
-            uint peaksLength = peaksWorker.getNumberOfSamples(IO.R_Peaks_Attributes.RPeaks, _currentName);
-            uint intervalsLength = peaksWorker.getNumberOfSamples(IO.R_Peaks_Attributes.RRInterval, _currentName);
+            var lead = _currentName;
+            int startindex = 0;
+            uint peaksLength = InputWorker.getNumberOfSamples(IO.R_Peaks_Attributes.RPeaks, lead);
+            uint intervalsLength = InputWorker.getNumberOfSamples(IO.R_Peaks_Attributes.RRInterval, lead);
+
+            var instants = InputWorker.LoadSignal(IO.R_Peaks_Attributes.RPeaks, lead, startindex, (int)peaksLength - 1);
+            var intervals = InputWorker.LoadSignal(IO.R_Peaks_Attributes.RRInterval, lead, startindex, (int)intervalsLength - 1);
+
+            var algo = new HRV1_Alg();
+
+            algo.rInstants = instants;
+            algo.rrIntervals = intervals;
+
+            algo.CalculateTimeBased();
+            algo.CalculateFreqBased();
+
+            var tparams = algo.TimeParams;
+            var fparams = algo.FreqParams;
+
+            for (int i = 0; i < tparams.Count; ++i)
+            {
+                _strToStr.Add(_currentName + tparams[i].Item1 + ": ", tparams[i].Item2.ToString());
+                _strToObj.Add(_currentName + tparams[i].Item1 + ": ", tparams[i].Item2);
+            }
+
+            for (int i = 0; i < fparams.Count; ++i)
+            {
+                _strToStr.Add(_currentName + fparams[i].Item1 + ": ", fparams[i].Item2.ToString());
+                _strToObj.Add(_currentName + fparams[i].Item1 + ": ", fparams[i].Item2);
+            }
 
             _strToStr.Add(_currentName + "Number of peaks: ", peaksLength.ToString());
+            _strToObj.Add(_currentName + "Number of peaks: ", peaksLength);
+
+            _strToStr.Add(_currentName + "Number of intervals", intervalsLength.ToString());
             _strToObj.Add(_currentName + "Number of intervals", intervalsLength);
 
             _ended = true;

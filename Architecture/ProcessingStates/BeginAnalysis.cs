@@ -1,11 +1,16 @@
-﻿using EKG_Project.Architecture;
-using EKG_Project.Modules;
+﻿using EKG_Project.Modules;
 using EKG_Project.GUI;
 using System.Collections.Generic;
 using EKG_Project.Architecture.GUIMessages;
 
 namespace EKG_Project.Architecture.ProcessingStates
 {
+    #region Documentation
+    /// <summary>
+    /// Message to Analysis thread, which begins processing based on given parameters.
+    /// </summary>
+    /// 
+    #endregion
     public class BeginAnalysis : IProcessingState
     {
         private Dictionary<AvailableOptions, ModuleParams> _moduleParams;
@@ -29,6 +34,11 @@ namespace EKG_Project.Architecture.ProcessingStates
         }
 
 
+        /// <summary>
+        /// Sets next processing state.
+        /// </summary>
+        /// <param name="process"></param>
+        /// <param name="timeoutState"></param>
         public void Process(Processing process, out IProcessingState timeoutState)
         {
             if (process.Modules.FileLoaded)

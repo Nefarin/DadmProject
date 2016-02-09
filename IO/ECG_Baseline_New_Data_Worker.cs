@@ -49,6 +49,7 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
+        /*
         #region Documentation
         /// <summary>
         /// Saves part of filtered signal in txt file
@@ -64,10 +65,11 @@ namespace EKG_Project.IO
             string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
             string pathOut = Path.Combine(directory, fileName);
 
+
             StreamWriter sw = new StreamWriter(pathOut, mode);
             foreach (var sample in signal)
             {
-                sw.WriteLine(sample.ToString());
+                sw.WriteLine(Math.Round(sample, 3).ToString());
             }
             sw.Close();
         }
@@ -141,6 +143,95 @@ namespace EKG_Project.IO
                     count++;
                 }
             }
+            return count;
+        }
+         * */
+
+        public void SaveSignal(string lead, bool mode, Vector<double> signal)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string pathOut = Path.Combine(directory, fileName);
+
+            if(mode == true)
+            {
+                FileStream stream = new FileStream(pathOut, FileMode.Append);
+                BinaryWriter bw = new BinaryWriter(stream);
+                foreach (var sample in signal)
+                {
+                    bw.Write(sample);
+                }
+                bw.Close();
+                stream.Close();
+            }
+            else
+            {
+                FileStream stream = new FileStream(pathOut, FileMode.Create);
+                BinaryWriter bw = new BinaryWriter(stream);
+                foreach (var sample in signal)
+                {
+                    bw.Write(sample);
+                }
+                bw.Close();
+                stream.Close();
+            }
+        }
+
+        public Vector<double> LoadSignal(string lead, int startIndex, int length)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string pathIn = Path.Combine(directory, fileName);
+
+            FileStream stream = new FileStream(pathIn, FileMode.Open);
+            stream.Seek(startIndex*sizeof(double), SeekOrigin.Begin);
+
+            BinaryReader br = new BinaryReader(stream);
+
+            int iterator = 0;
+            double[] readSamples = new double[length];
+            long fileLength = br.BaseStream.Length;
+            while (iterator < length)
+            {
+
+                if (br.BaseStream.Position == fileLength)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
+                readSamples[iterator] = br.ReadDouble();
+                iterator++;
+            }
+
+            br.Close();
+            stream.Close();
+
+            Vector<double> vector = Vector<double>.Build.Dense(readSamples.Length);
+            vector.SetValues(readSamples);
+            return vector;
+        }
+
+        public uint getNumberOfSamples(string lead)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
+            string path = Path.Combine(directory, fileName);
+
+            FileStream stream = new FileStream(path, FileMode.Open);
+
+            BinaryReader br = new BinaryReader(stream);
+            uint count = 0;
+            while (br.BaseStream.Position != br.BaseStream.Length)
+            {
+                br.ReadDouble();
+                count++;
+            }
+            br.Close();
+            stream.Close();
+
             return count;
         }
 

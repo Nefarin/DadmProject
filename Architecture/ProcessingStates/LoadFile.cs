@@ -1,11 +1,15 @@
-﻿using EKG_Project.Architecture;
-using EKG_Project.Modules;
-using EKG_Project.IO;
+﻿using EKG_Project.IO;
 using EKG_Project.Architecture.GUIMessages;
 using System;
 
 namespace EKG_Project.Architecture.ProcessingStates
 {
+    #region Documentation
+    /// <summary>
+    /// Message to Analysis thread, which loads given file.
+    /// </summary>
+    /// 
+    #endregion
     public class LoadFile : IProcessingState
     {
         private string _path;
@@ -30,7 +34,7 @@ namespace EKG_Project.Architecture.ProcessingStates
 
         #region Documentation
         /// <summary>
-        /// 
+        /// Sets next processing state.
         /// </summary>
         /// <param name="process"></param>
         /// <param name="timeoutState"></param>
@@ -48,17 +52,8 @@ namespace EKG_Project.Architecture.ProcessingStates
                 IECGConverter converter = fileLoader.Converter;
                 converter.ConvertFile(Path);
                 process.Converter = converter;
-                //Console.WriteLine(process.Modules.AnalysisName);
-                FileProcessor fp = new FileProcessor(converter, process.Modules.AnalysisName, 5000);
-                process.FileProcessor = fp;
+                process.FileProcessor = new FileProcessor(converter, process.Modules.AnalysisName, 5000);
                 timeoutState = new ProcessFile();
-
-                //converter.ConvertFile(Path);
-                //converter.SaveResult();
-                //process.Modules.FileLoaded = true;
-
-                //process.Communication.SendProcessingEvent(new FileLoaded());
-
             }
             catch (Exception e)
             {

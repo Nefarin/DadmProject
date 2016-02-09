@@ -4,7 +4,7 @@ namespace EKG_Project.Architecture.GUIMessages
 {
     #region Documentation
     /// <summary>
-    /// 
+    /// GUI Message interface, which provides easy way to send data to UI thread from Analysis thread.
     /// </summary>
     /// 
     #endregion
@@ -12,7 +12,7 @@ namespace EKG_Project.Architecture.GUIMessages
     {
         #region Documentation
         /// <summary>
-        /// 
+        /// Reads given message with provided control.
         /// </summary>
         /// <param name="control"></param>
         /// 

@@ -2,7 +2,7 @@
 {
     #region Documentation
     /// <summary>
-    /// 
+    /// Message to Analysis thread interface.
     /// </summary>
     /// 
     #endregion
@@ -10,7 +10,7 @@
     {
         #region Documentation
         /// <summary>
-        /// 
+        /// Sets next processing state.
         /// </summary>
         /// <param name="process"></param>
         /// <param name="timeoutState"></param>
