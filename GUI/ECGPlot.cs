@@ -1905,17 +1905,18 @@ namespace EKG_Project.GUI
                     {
                         System.Windows.MessageBox.Show("Turbulance fo lead" + leadName);
 
-                        //double[] turbulenceOnsetMean = hWD.LoadTurbulenceOnsetMeanGUI(leadName);
+                        
                         double[] turbulenceSlopeMax = hWD.LoadTurbulenceSlopeMaxGUI(leadName);
-                        //int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
                         int[] loadXPointsMaxSlope = hWD.LoadXPointsMaxSlopeGUI(leadName);
-                        //int[] loadXPointsMeanOnset = hWD.LoadXPointsMeanOnsetGUI(leadName);
+                        //int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
+                        
+
                         if (loadXPointsMaxSlope.Length > 0)
                         {
                             LineSeries ls = new LineSeries();
                             ls.MarkerStrokeThickness = 2;
                             //ls.BrokenLineStyle = LineStyle.DashDashDot;
-                            ls.Color = OxyColor.Parse("#ff0080");
+                            ls.Color = OxyColor.Parse("#4c0026");
                             ls.Title = "TurbSlope";
 
                             for (int i = 0; i <loadXPointsMaxSlope.Length; i++)
@@ -1924,7 +1925,47 @@ namespace EKG_Project.GUI
                             }
 
                             CurrentPlot.Series.Add(ls);
-                        }                     
+                        }
+
+                        int[] loadXPointsMeanOnset = hWD.LoadXPointsMeanOnsetGUI(leadName);
+                        double[] turbulenceOnsetMean = hWD.LoadTurbulenceOnsetMeanGUI(leadName);
+
+                        if(loadXPointsMeanOnset.Length>0)
+                        {
+                            try
+                            {
+
+
+                                LineSeries ls1 = new LineSeries();
+                                ls1.MarkerStrokeThickness = 2;
+                                ls1.Color = OxyColor.Parse("#0000ff");
+                                ls1.Title = "TurbMeanF";
+
+                                ls1.Points.Add(new DataPoint(loadXPointsMeanOnset[0], turbulenceOnsetMean[0]));
+                                ls1.Points.Add(new DataPoint(loadXPointsMeanOnset[1], turbulenceOnsetMean[1]));
+                                CurrentPlot.Series.Add(ls1);
+
+                                LineSeries ls2 = new LineSeries();
+                                ls2.MarkerStrokeThickness = 2;
+                                ls2.Color = OxyColor.Parse("#0000ff");
+                                ls2.Title = "TurbMeanS";
+
+                                ls2.Points.Add(new DataPoint(loadXPointsMeanOnset[2], turbulenceOnsetMean[2]));
+                                ls2.Points.Add(new DataPoint(loadXPointsMeanOnset[3], turbulenceOnsetMean[3]));
+                                CurrentPlot.Series.Add(ls2);
+
+
+
+                            }
+                            catch(Exception ex)
+                            {
+                                System.Windows.MessageBox.Show(ex.Message);
+                            }
+
+
+                        }
+
+
                     }
 
                 }
