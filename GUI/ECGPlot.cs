@@ -1863,9 +1863,10 @@ namespace EKG_Project.GUI
                         foreach (List<double> tach in tachogram)
                         {
                             LineSeries ls = new LineSeries();
-                            ls.Title = leadName + i.ToString();
+                            //ls.Title = leadName + i.ToString();
                             ls.MarkerStrokeThickness = 1;
-                            
+                            ls.Color = OxyColor.Parse("#ffc04c");
+
                             //System.Windows.MessageBox.Show("HRT" + i);
                             for (int j = 0; j < tach.Count; j++)
                             {
@@ -1874,6 +1875,23 @@ namespace EKG_Project.GUI
 
                             CurrentPlot.Series.Add(ls);
                         }
+                    }
+
+                    double[] meanTachogram = hWD.LoadMeanTachogramGUI(leadName);
+                    if (meanTachogram.Length > 0)
+                    {
+                        LineSeries ls = new LineSeries();
+                        ls.MarkerStrokeThickness = 2;
+                        ls.Color = OxyColor.Parse("#ff0000");
+                        ls.Title = "MeanTach";
+                        
+
+                        for (int i = 0; i < meanTachogram.Length; i++)
+                        {
+                            ls.Points.Add(new DataPoint(i, meanTachogram[i]));
+                        }
+
+                        CurrentPlot.Series.Add(ls);
                     }
 
                     var lineraYAxis = new LinearAxis();
