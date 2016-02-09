@@ -64,10 +64,11 @@ namespace EKG_Project.IO
             string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
             string pathOut = Path.Combine(directory, fileName);
 
+
             StreamWriter sw = new StreamWriter(pathOut, mode);
             foreach (var sample in signal)
             {
-                sw.WriteLine(sample.ToString());
+                sw.WriteLine(Math.Round(sample, 3).ToString());
             }
             sw.Close();
         }

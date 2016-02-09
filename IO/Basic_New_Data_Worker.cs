@@ -10,40 +10,72 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Stores Basic_Attributes
+    /// </summary> 
+    #endregion
     public enum Basic_Attributes { Frequency, NumberOfSamples };
 
+    #region Documentation
+    /// <summary>
+    /// Class that saves and loads Basic Data from internal txt file
+    /// </summary> 
+    #endregion
     public class Basic_New_Data_Worker
     {
         //FIELDS
+        #region Documentation
         /// <summary>
         /// Stores txt files directory
-        /// </summary>
+        /// </summary> 
+        #endregion
         private string directory;
 
+        #region Documentation
         /// <summary>
         /// Stores analysis name
-        /// </summary>
+        /// </summary> 
+        #endregion
         private string analysisName;
 
+        #region Documentation
+        /// <summary>
+        /// Stores number of leads
+        /// </summary> 
+        #endregion
         private uint numberOfLeads;
 
+        #region Documentation
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        #endregion
         public Basic_New_Data_Worker() 
         {
             IECGPath pathBuilder = new DebugECGPath();
             directory = pathBuilder.getTempPath();
         }
 
+        #region Documentation
+        /// <summary>
+        /// Parameterized constructor
+        /// </summary>
+        /// <param name="analysisName">analysis name</param>
+        #endregion
         public Basic_New_Data_Worker(String analysisName) : this()
         {
             this.analysisName = analysisName;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves part of signal in txt file
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="mode">true:append, false:overwrite file</param>
-        /// <param name="signal">signal</param>
+        /// <param name="signal">signal</param> 
+        #endregion
         public void SaveSignal(string lead, bool mode, Vector<double> signal)
         {
             string moduleName = this.GetType().Name;
@@ -60,21 +92,21 @@ namespace EKG_Project.IO
                     sw.WriteLine(sample.ToString());
                 }
             } catch(System.NullReferenceException e)
-            {
-                //Console.WriteLine(e);
-            }
+            {}
             
             sw.Close();
 
         }
 
+        #region Documentation
         /// <summary>
         /// Loads part of signal from txt file
         /// </summary>
         /// <param name="lead">lead</param>
         /// <param name="startIndex">start index</param>
         /// <param name="length">length</param>
-        /// <returns>signal</returns>
+        /// <returns>signal</returns> 
+        #endregion
         public Vector<double> LoadSignal(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
@@ -84,7 +116,6 @@ namespace EKG_Project.IO
 
             StreamReader sr = new StreamReader(pathIn);
             
-            //pomijane linie ...
             int iterator = 0;
             while (iterator < startIndex && !sr.EndOfStream)
             {
@@ -113,11 +144,13 @@ namespace EKG_Project.IO
             return vector;
         }
 
+        #region Documentation
         /// <summary>
         /// Gets number of signal samples 
         /// </summary>
         /// <param name="lead">lead</param>
-        /// <returns>number of samples</returns>
+        /// <returns>number of samples</returns> 
+        #endregion
         public uint getNumberOfSamples(string lead)
         {
             string moduleName = this.GetType().Name;
@@ -136,11 +169,13 @@ namespace EKG_Project.IO
             return count;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves Basic_Attributes
         /// </summary>
         /// <param name="atr">attribute</param>
-        /// <param name="value">value</param>
+        /// <param name="value">value</param> 
+        #endregion
         public void SaveAttribute(Basic_Attributes atr, uint value)
         {
             string moduleName = this.GetType().Name;
@@ -153,11 +188,13 @@ namespace EKG_Project.IO
             sw.Close();
         }
 
+        #region Documentation
         /// <summary>
         /// Loads Basic_Attributes
         /// </summary>
         /// <param name="atr">atribute</param>
-        /// <returns>value</returns>
+        /// <returns>value</returns> 
+        #endregion
         public uint LoadAttribute(Basic_Attributes atr)
         {
             string moduleName = this.GetType().Name;
@@ -173,10 +210,12 @@ namespace EKG_Project.IO
             return readValue;
         }
 
+        #region Documentation
         /// <summary>
         /// Saves lead names and gets its number
         /// </summary>
-        /// <param name="leads">list of leads</param>
+        /// <param name="leads">list of leads</param> 
+        #endregion
         public void SaveLeads(List<string> leads)
         {
             string moduleName = this.GetType().Name;
@@ -194,10 +233,12 @@ namespace EKG_Project.IO
             numberOfLeads = (uint) leads.Count();
         }
 
+        #region Documentation
         /// <summary>
         /// Loads lead names and gets its number
         /// </summary>
-        /// <returns>list of leads</returns>
+        /// <returns>list of leads</returns> 
+        #endregion
         public List<string> LoadLeads()
         {
             string moduleName = this.GetType().Name;
@@ -219,9 +260,11 @@ namespace EKG_Project.IO
             return leads;
         }
 
+        #region Documentation
         /// <summary>
         /// Deletes all analysis files with Basic_Data
-        /// </summary>
+        /// </summary> 
+        #endregion
         public void DeleteFiles()
         {
             string moduleName = this.GetType().Name;
