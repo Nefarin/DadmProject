@@ -81,7 +81,10 @@ namespace EKG_Project.IO
 
         private void AddFileInfo(Paragraph paragraph, Cell cell, string _analisysName)
         {
-            Basic_Data_Worker basicDataWorker = new Basic_Data_Worker(_analisysName);
+            /* dokonczyc
+
+
+            Basic_New_Data_Worker basicDataWorker = new Basic_New_Data_Worker(_analisysName);
             basicDataWorker.Load();
 
             
@@ -104,7 +107,7 @@ namespace EKG_Project.IO
             paragraph.Format.Font.Color = Colors.Blue;
             paragraph = cell.AddParagraph(basicDataWorker.BasicData.SampleAmount.ToString());
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.Format.Font.Color = Colors.Black;
+            paragraph.Format.Font.Color = Colors.Black; */
 
         }
         private void PutLogoInHeader()
