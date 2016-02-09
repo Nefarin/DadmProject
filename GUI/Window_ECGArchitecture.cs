@@ -129,6 +129,12 @@ namespace EKG_Project.GUI
 
         }
 
+        private void aboutProgram(object sender, RoutedEventArgs e)
+        {
+            AboutApp about = new AboutApp();
+            about.Show();
+        }
+
         private TabItem addTabItem()
         {
             int count = _tabContainer.TabItems.Count;

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
+using EKG_Project.IO;
 
 namespace EKG_Project.GUI
 {
@@ -57,6 +58,7 @@ namespace EKG_Project.GUI
             InitializeComponent();
             //ChooseTabDisplay(analyseName,tabNames);
             NewChooseTabDisplay(analyseName, tabNames);
+            HeaderTable.ItemsSource = CreateHeaderInfoTable(analyseName).AsDataView();
 
         }
 
@@ -213,12 +215,22 @@ namespace EKG_Project.GUI
 
 
 
-        public DataTable CreateHeaderInfoTable()
+        public System.Data.DataTable CreateHeaderInfoTable(string analysisName)
         {
+            Basic_New_Data_Worker dataWorker = new Basic_New_Data_Worker(analysisName);
             DataTable table = new DataTable();
-            table.Columns.Add(new DataColumn("Fs", Type.GetType("System.Int32")));
-            table.Columns.Add(new DataColumn("Samples", Type.GetType("System.Int32")));
-            table.Rows.Add(25, 2000);
+            table.Columns.Add(new DataColumn("Lead name", Type.GetType("System.String")));
+            table.Columns.Add(new DataColumn("Fs", Type.GetType("System.UInt32")));
+            table.Columns.Add(new DataColumn("Samples", Type.GetType("System.UInt32")));
+            List<string> leads = dataWorker.LoadLeads();
+            uint frequency = dataWorker.LoadAttribute(Basic_Attributes.Frequency);
+
+            foreach (string lead in leads)
+            {
+                uint noOfSamples = dataWorker.getNumberOfSamples(lead);
+
+                table.Rows.Add(lead, frequency, noOfSamples);
+            }
 
             return table;
         }
