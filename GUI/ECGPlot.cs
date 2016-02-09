@@ -1845,13 +1845,15 @@ namespace EKG_Project.GUI
                     CurrentPlot.Axes.Clear();
                     //double[] meanTachogram = hWD.LoadMeanTachogramGUI(leadName);
                     int[] statClass = hWD.LoadStatisticsClassNumbersPDF(leadName);
+                    int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
+
 
                     //int a = 0;
                     //System.Windows.MessageBox.Show(leadName);
                     //System.Windows.MessageBox.Show(statClass[2].ToString());
                     //System.Windows.MessageBox.Show(tachogram.Count.ToString());
 
-                    for(int i = 0; i<statClass[2]; i++)
+                    for (int i = 0; i<statClass[2]; i++)
                     {
                         List<List<double>> tachogram = hWD.LoadTachogramGUI(leadName, i);
 
@@ -1865,7 +1867,7 @@ namespace EKG_Project.GUI
                             //System.Windows.MessageBox.Show("HRT" + i);
                             for (int j = 0; j < tach.Count; j++)
                             {
-                                ls.Points.Add(new DataPoint(j, tach[j]));
+                                ls.Points.Add(new DataPoint(loadXAxisTachogram[j], tach[j]));
                             }
 
                             CurrentPlot.Series.Add(ls);
@@ -1883,7 +1885,7 @@ namespace EKG_Project.GUI
 
                         for (int i = 0; i < meanTachogram.Length; i++)
                         {
-                            ls.Points.Add(new DataPoint(i, meanTachogram[i]));
+                            ls.Points.Add(new DataPoint(loadXAxisTachogram[i], meanTachogram[i]));
                         }
 
                         CurrentPlot.Series.Add(ls);
@@ -1903,12 +1905,12 @@ namespace EKG_Project.GUI
 
                     if(turb)
                     {
-                        System.Windows.MessageBox.Show("Turbulance fo lead" + leadName);
+                        //System.Windows.MessageBox.Show("Turbulance fo lead" + leadName);
 
                         
                         double[] turbulenceSlopeMax = hWD.LoadTurbulenceSlopeMaxGUI(leadName);
                         int[] loadXPointsMaxSlope = hWD.LoadXPointsMaxSlopeGUI(leadName);
-                        //int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
+                        
                         
 
                         if (loadXPointsMaxSlope.Length > 0)
@@ -1991,9 +1993,10 @@ namespace EKG_Project.GUI
             {
                 Heart_Cluster_Data_Worker hCW = new Heart_Cluster_Data_Worker(_currentAnalysisName);
 
-                //hCW.LoadClusterizationResult(leadName, 0, int lenght <- skąd mam znać rozmiar? nie ma go w workerze)
+                List<Tuple<int,int,int,int>> myTemp = hCW.LoadClusterizationResult(leadName, 0, (int)hCW.LoadAttributeI(Heart_Cluster_Attributes_I.TotalQrsComplex, leadName));
 
-                
+                System.Windows.MessageBox.Show(myTemp.Count.ToString());
+
                 RefreshPlot();
                 return true;
             }
