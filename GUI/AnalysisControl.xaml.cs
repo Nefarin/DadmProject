@@ -273,6 +273,7 @@ namespace EKG_Project.GUI
             progressBar.Value = 0;
             MessageBox.Show("Analysis aborted.");
             loadFileButton.IsEnabled = true;
+            modulePanel.IsEnabled = true;
             startAnalyseButton.IsEnabled = true;
             panel.Visibility = Visibility.Hidden;
         }

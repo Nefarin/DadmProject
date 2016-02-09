@@ -912,13 +912,15 @@ namespace EKG_Project.GUI
 
 
 
-                double Xe1 = (-sD2 / 2);
+                //double Xe1 = (-sD2 / 2);
+                double Xe1 = (-sD1 / 2);
                 double Ye1 = (0);
                 double Xrot1 = elipseX + Xe1 * Math.Cos(0.7853981634) + Ye1 * Math.Sin(0.7853981634);
                 double Yrot1 = elipseY - Xe1 * Math.Sin(0.7853981634) + Ye1 * Math.Cos(0.7853981634);
 
                 double Xe2 = (0);
-                double Ye2 = (sD1 / 2);
+                //double Ye2 = (sD1 / 2);
+                double Ye2 = (sD2 / 2);
                 double Xrot2 = elipseX + Xe2 * Math.Cos(0.7853981634) + Ye2 * Math.Sin(0.7853981634);
                 double Yrot2 = elipseY - Xe2 * Math.Sin(0.7853981634) + Ye2 * Math.Cos(0.7853981634);
 
@@ -928,7 +930,7 @@ namespace EKG_Project.GUI
                     EndPoint = new DataPoint(Xrot1, Yrot1),
                     Color = OxyColor.Parse("#000000"),
                     StrokeThickness = 1,
-                    Text = "SD2"
+                    Text = " SD2 "
                 };
                 ArrowAnnotation sd2 = new ArrowAnnotation
                 {
@@ -936,7 +938,7 @@ namespace EKG_Project.GUI
                     EndPoint = new DataPoint(Xrot2, Yrot2),
                     Color = OxyColor.Parse("#000000"),
                     StrokeThickness = 1,
-                    Text = "SD1"
+                    Text = " SD1 "                   
                 };
                 CurrentPlot.Annotations.Add(sd1);
                 CurrentPlot.Annotations.Add(sd2);
@@ -948,13 +950,16 @@ namespace EKG_Project.GUI
                 double C_x = elipseX, C_y = elipseY, h = sD1, w = sD2;
                 for (double t = 0; t <= 2 * 3.14; t += 0.01)
                 {
-                    double Xe =  (sD2 / 2) * Math.Cos(t);
-                    double Ye =  (sD1 / 2) * Math.Sin(t);
+                    //double Xe =  (sD2 / 2) * Math.Cos(t);
+                    //double Ye =  (sD1 / 2) * Math.Sin(t);
+                    double Xe = (sD1 / 2) * Math.Cos(t);
+                    double Ye = (sD2 / 2) * Math.Sin(t);
 
                     double Xrot = elipseX + Xe * -Math.Cos(0.7853981634) + Ye * -Math.Sin(0.7853981634);
                     double Yrot = elipseY - Xe * -Math.Sin(0.7853981634) + Ye * -Math.Cos(0.7853981634);
 
-                    elipseRot.Points.Add(new ScatterPoint { X = Xrot, Y = Yrot, Size = 0.75 });
+                    elipseRot.Points.Add(new ScatterPoint { X = Xrot, Y = Yrot, Size = 1});
+                    elipseRot.MarkerStroke = OxyColor.Parse("#ff0000");
                 }
 
                 //for (double t = 0; t <= 2 * 3.14; t += 0.01)
@@ -1828,6 +1833,176 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplayHrtLeadVersion(string leadName, bool turb)
+        {
+            try
+            {
+                ClearPlot();
+                HRT_New_Data_Worker hWD = new HRT_New_Data_Worker(_currentAnalysisName);
+
+                if(hWD.LoadVPC(leadName)== Modules.HRT.HRT.VPC.LETS_PLOT)
+                {
+                    CurrentPlot.Axes.Clear();
+                    //double[] meanTachogram = hWD.LoadMeanTachogramGUI(leadName);
+                    int[] statClass = hWD.LoadStatisticsClassNumbersPDF(leadName);
+
+                    //int a = 0;
+                    //System.Windows.MessageBox.Show(leadName);
+                    //System.Windows.MessageBox.Show(statClass[2].ToString());
+                    //System.Windows.MessageBox.Show(tachogram.Count.ToString());
+
+                    for(int i = 0; i<statClass[2]; i++)
+                    {
+                        List<List<double>> tachogram = hWD.LoadTachogramGUI(leadName, i);
+
+                        foreach (List<double> tach in tachogram)
+                        {
+                            LineSeries ls = new LineSeries();
+                            //ls.Title = leadName + i.ToString();
+                            ls.MarkerStrokeThickness = 1;
+                            ls.Color = OxyColor.Parse("#ffc04c");
+
+                            //System.Windows.MessageBox.Show("HRT" + i);
+                            for (int j = 0; j < tach.Count; j++)
+                            {
+                                ls.Points.Add(new DataPoint(j, tach[j]));
+                            }
+
+                            CurrentPlot.Series.Add(ls);
+                        }
+                    }
+
+                    double[] meanTachogram = hWD.LoadMeanTachogramGUI(leadName);
+                    if (meanTachogram.Length > 0)
+                    {
+                        LineSeries ls = new LineSeries();
+                        ls.MarkerStrokeThickness = 2;
+                        ls.Color = OxyColor.Parse("#ff0000");
+                        ls.Title = "MeanTach";
+                        
+
+                        for (int i = 0; i < meanTachogram.Length; i++)
+                        {
+                            ls.Points.Add(new DataPoint(i, meanTachogram[i]));
+                        }
+
+                        CurrentPlot.Series.Add(ls);
+                    }
+
+                    var lineraYAxis = new LinearAxis();
+                    lineraYAxis.Position = AxisPosition.Left;
+                    lineraYAxis.Title = "RR interval [ms]";
+
+                    CurrentPlot.Axes.Add(lineraYAxis);
+
+                    var lineraXAxis = new LinearAxis();
+                    lineraXAxis.Position = AxisPosition.Bottom;
+                    lineraXAxis.Title = "RR interval";
+
+                    CurrentPlot.Axes.Add(lineraXAxis);
+
+                    if(turb)
+                    {
+                        System.Windows.MessageBox.Show("Turbulance fo lead" + leadName);
+
+                        
+                        double[] turbulenceSlopeMax = hWD.LoadTurbulenceSlopeMaxGUI(leadName);
+                        int[] loadXPointsMaxSlope = hWD.LoadXPointsMaxSlopeGUI(leadName);
+                        //int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
+                        
+
+                        if (loadXPointsMaxSlope.Length > 0)
+                        {
+                            LineSeries ls = new LineSeries();
+                            ls.MarkerStrokeThickness = 2;
+                            //ls.BrokenLineStyle = LineStyle.DashDashDot;
+                            ls.Color = OxyColor.Parse("#4c0026");
+                            ls.Title = "TurbSlope";
+
+                            for (int i = 0; i <loadXPointsMaxSlope.Length; i++)
+                            {
+                                ls.Points.Add(new DataPoint(loadXPointsMaxSlope[i], turbulenceSlopeMax[i]));
+                            }
+
+                            CurrentPlot.Series.Add(ls);
+                        }
+
+                        int[] loadXPointsMeanOnset = hWD.LoadXPointsMeanOnsetGUI(leadName);
+                        double[] turbulenceOnsetMean = hWD.LoadTurbulenceOnsetMeanGUI(leadName);
+
+                        if(loadXPointsMeanOnset.Length>0)
+                        {
+                            try
+                            {
+
+
+                                LineSeries ls1 = new LineSeries();
+                                ls1.MarkerStrokeThickness = 2;
+                                ls1.Color = OxyColor.Parse("#0000ff");
+                                ls1.Title = "TurbMeanF";
+
+                                ls1.Points.Add(new DataPoint(loadXPointsMeanOnset[0], turbulenceOnsetMean[0]));
+                                ls1.Points.Add(new DataPoint(loadXPointsMeanOnset[1], turbulenceOnsetMean[1]));
+                                CurrentPlot.Series.Add(ls1);
+
+                                LineSeries ls2 = new LineSeries();
+                                ls2.MarkerStrokeThickness = 2;
+                                ls2.Color = OxyColor.Parse("#0000ff");
+                                ls2.Title = "TurbMeanS";
+
+                                ls2.Points.Add(new DataPoint(loadXPointsMeanOnset[2], turbulenceOnsetMean[2]));
+                                ls2.Points.Add(new DataPoint(loadXPointsMeanOnset[3], turbulenceOnsetMean[3]));
+                                CurrentPlot.Series.Add(ls2);
+
+
+
+                            }
+                            catch(Exception ex)
+                            {
+                                System.Windows.MessageBox.Show(ex.Message);
+                            }
+
+
+                        }
+
+
+                    }
+
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("There was no possitive detection or" + System.Environment.NewLine +"detected values does not allowed to plot them.");
+                }
+                
+
+                RefreshPlot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        public bool DisplayHeartClusterLeadVersion(string leadName)
+        {
+            try
+            {
+                Heart_Cluster_Data_Worker hCW = new Heart_Cluster_Data_Worker(_currentAnalysisName);
+
+                //hCW.LoadClusterizationResult(leadName, 0, int lenght <- skąd mam znać rozmiar? nie ma go w workerze)
+
+                
+                RefreshPlot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
 
 
         public bool ControlOtherModulesSeries(string moduleName, bool visible)
@@ -1897,7 +2072,9 @@ namespace EKG_Project.GUI
                     case "SleepApnea":
                         DisplaySleepApneaLeadVersionBaseline();
                         break;
-
+                    case "Turb":
+                        DisplayHrtLeadVersion(_currentLeadName, true);
+                        break;
                     default:
                         break;
                 }
