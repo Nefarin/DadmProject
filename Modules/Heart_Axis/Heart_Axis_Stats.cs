@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EKG_Project.IO;
-using MathNet.Numerics.LinearAlgebra; //?
+using MathNet.Numerics.LinearAlgebra; 
+using EKG_Project.Modules.Waves;
+using EKG_Project.Modules.ECG_Baseline;
 
 namespace EKG_Project.Modules.Heart_Axis
 {
@@ -17,13 +19,17 @@ namespace EKG_Project.Modules.Heart_Axis
         private Dictionary<string, Object> _strToObj;
         private Dictionary<string, string> _strToStr;
         private string _analysisName;
-        private Heart_Axis_Data _data;
+
         private State _currentState;
-        private string[] _leads;
-        private Basic_New_Data_Worker _worker;
-        private int _currentChannelIndex;
-        private int _currentIndex;
-        private string _currentName;
+        private double _heartAxis;
+
+
+
+
+        private Heart_Axis_New_Data_Worker _outputWorker;
+
+        private Heart_Axis_Params _params;
+
 
 
         public void Abort()
@@ -64,11 +70,19 @@ namespace EKG_Project.Modules.Heart_Axis
             _strToObj = new Dictionary<string, object>();
             _strToStr = new Dictionary<string, string>();
 
-            Heart_Axis_Data_Worker worker = new Heart_Axis_Data_Worker(_analysisName);
-            worker.Load();
-            _data = worker.Data;
-            _currentState = State.START_CHANNEL;
+            _analysisName = analysisName;
+            _ended = false;
+            _aborted = false;
 
+            _strToObj = new Dictionary<string, object>();
+            _strToStr = new Dictionary<string, string>();
+
+            _outputWorker = new Heart_Axis_New_Data_Worker(_analysisName);
+
+
+            Heart_Axis_Data_Worker worker = new Heart_Axis_Data_Worker(_analysisName);
+
+            _currentState = State.START_CHANNEL;
 
         }
 
@@ -78,18 +92,21 @@ namespace EKG_Project.Modules.Heart_Axis
             switch (_currentState)
             {
                 case (State.START_CHANNEL):
-                    
+                    //_currentName = _data.HeartAxis.Item1;
                     _currentState = State.CALCULATE;
                     break;
                 case (State.CALCULATE):
-                    double currentData = _data.HeartAxis; 
+                    _strToObj.Add(" Heart axis angle: ", _outputWorker.LoadAttribute());
+                    _strToStr.Add(" Heart axis angle: ", _outputWorker.LoadAttribute().ToString());
 
                     _currentState = State.NEXT_CHANNEL;
                     break;
                 case (State.NEXT_CHANNEL):
-                        _currentState = State.END;
+                    _currentState = State.END; 
                     break;
                 case (State.END):
+
+
                     _ended = true;
                     break;
             }
@@ -100,7 +117,7 @@ namespace EKG_Project.Modules.Heart_Axis
         public static void Main(String[] args)
         {
             Heart_Axis_Stats stats = new Heart_Axis_Stats();
-            stats.Init("Analysis6");
+            stats.Init("100dat");
 
 
             while (true)
