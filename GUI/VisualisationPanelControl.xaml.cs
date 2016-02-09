@@ -193,7 +193,8 @@ namespace EKG_Project.GUI
                 }
                 if (tabNames.Contains("HEART_CLUSTER"))
                 {
-                    independentModules["HEART_CLUSTER"] = 1;
+                    //independentModules["HEART_CLUSTER"] = 1;
+                    MessageBox.Show("Module HEART_CLUSTER was not visualised becouse of authors failure.");
                 }
 
                 //add other independent modules
