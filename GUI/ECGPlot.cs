@@ -1881,6 +1881,24 @@ namespace EKG_Project.GUI
             }
         }
 
+        public bool DisplayHeartClusterLeadVersion(string leadName)
+        {
+            try
+            {
+                Heart_Cluster_Data_Worker hCW = new Heart_Cluster_Data_Worker(_currentAnalysisName);
+
+                //hCW.LoadClusterizationResult(leadName, 0, int lenght <- skąd mam znać rozmiar? nie ma go w workerze)
+
+                
+                RefreshPlot();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
 
 
         public bool ControlOtherModulesSeries(string moduleName, bool visible)

@@ -447,6 +447,11 @@ namespace EKG_Project.GUI
                 CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
                 ecgPlot.DisplayHrtLeadVersion(firstLead);
             }
+            if (_plotType == "HEART_CLUSTER")
+            {
+                //CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
+                ecgPlot.DisplayHrtLeadVersion(firstLead);
+            }
 
 
             this.CheckBoxList.DataContext = _seriesChecbox;

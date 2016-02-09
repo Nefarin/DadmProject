@@ -202,7 +202,7 @@ namespace EKG_Project.GUI
             }
             if (moduleName == "HEART_CLUSTER")
             {
-                //StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+                StartPlot(analyseName, moduleName, moduleDict, analysedModules);
                 StartTable(analyseName, moduleName, moduleDict, tableModuleList);
             }
 
