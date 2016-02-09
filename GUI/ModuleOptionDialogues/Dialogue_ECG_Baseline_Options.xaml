@@ -7,7 +7,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:params="clr-namespace:EKG_Project.Modules.ECG_Baseline"
         mc:Ignorable="d"
-        Title="ECG Baseline Options" Height="370" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize"
+        Title="ECG Baseline Options" Height="390" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize"
         WindowStartupLocation="Manual" Top="0">
     <Window.Resources>
         <ObjectDataProvider x:Key="availableFilterMethods" MethodName="GetValues"
@@ -39,7 +39,8 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <!--const val for last row - for Win7-->
+            <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Grid.Column="0">Filter method</Label>
         <Label Grid.Row="1" Grid.Column="0">Filter type</Label>

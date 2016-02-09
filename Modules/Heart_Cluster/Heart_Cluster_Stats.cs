@@ -79,30 +79,13 @@ namespace EKG_Project.Modules.Heart_Cluster
         }
 
 
-        double CountClussPercent(List<int> classCounts)
+        IEnumerable<double> CountClussPercent(List<int> classCounts)
         {
-            int listSize = classCounts.Count;
-            int numberOfC1 = 0;
-            int numberOfC2 = 0;
 
-            double result1;
-            double result2;
 
-            foreach (int element in classCounts)
-            {
-                if (element == 0) //klasa pierwsza
-                    numberOfC1++;
-                if (element == 1) //druga pierwsza
-                    numberOfC2++;
-            }
-            result1 = (double) numberOfC1 / (double)listSize * 100;
-            result1 = Math.Round(result1, 2);
+            var complexesCount = classCounts.Sum();
 
-            result2 = (double)numberOfC2 / (double)listSize * 100;
-            result2 = Math.Round(result2, 2);
-            return result1;
-            return result2;
-
+            return classCounts.Select(t => (double) t/complexesCount);
         }
 
 

@@ -124,14 +124,14 @@ namespace EKG_Project.Modules.HRV2
 
                 case (STATE.POINCAREX):
                     _alg.PoincarePlot_x();
-                    OutputWorker.SaveSignal(HRV2_Signal.PoincarePlotData_x, _currentLeadName, false, _alg.RRIntervals);
+                    OutputWorker.SaveSignal(HRV2_Signal.PoincarePlotData_x, _currentLeadName, false, _alg.RR_intervals_x);
 
                     _state = STATE.POINCAREY;
                     break;
 
                 case (STATE.POINCAREY):
                     _alg.PoincarePlot_y();
-                    OutputWorker.SaveSignal(HRV2_Signal.PoincarePlotData_y, _currentLeadName, false, _alg.RRIntervals);
+                    OutputWorker.SaveSignal(HRV2_Signal.PoincarePlotData_y, _currentLeadName, false, _alg.RR_intervals_y);
 
                     _state = STATE.HISTOGRAM;
                     break;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.IO;
 
 namespace EKG_Project.IO
 {
@@ -86,7 +85,6 @@ namespace EKG_Project.IO
                     else _state = State.END;   
                     break;
                 case (State.BEGIN_NEXT):
-                    //Console.WriteLine(_currentLeadLength);
                     try
                     {
                         Vector<double> vect = Converter.getSignal(_leads[_currentLeadIndex], _currentIndex, Step);
@@ -109,8 +107,6 @@ namespace EKG_Project.IO
                         }
 
                     }
-                    
-
                     break;
                 case (State.PROCESS):
                     try
@@ -135,7 +131,6 @@ namespace EKG_Project.IO
                         }
 
                     }
-                    //Console.WriteLine(_currentIndex);
                     break;
                 case (State.END):
                     _worker.SaveLeads(_leads);

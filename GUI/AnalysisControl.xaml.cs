@@ -102,10 +102,6 @@ namespace EKG_Project.GUI
                 MessageBox.Show("No analysis selected. Please select at least one analysis.", "Cannot start calculations", MessageBoxButton.OK);
             }
 
-
-            //MessageBox.Show("Starting Analyses");
-            //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
-
         }
 
         private void pdfButton_Click(object sender, RoutedEventArgs e)
@@ -130,6 +126,7 @@ namespace EKG_Project.GUI
             this.AnalysisInProgress = true;
             loadFileButton.IsEnabled = false;
             pdfButton.IsEnabled = false;
+            modulePanel.IsEnabled = false;
             startAnalyseButton.IsEnabled = false;
             analysisLabel.Content = "Analysis in progress..";
             buttonAbort.Content = "Abort analysis";
@@ -141,7 +138,7 @@ namespace EKG_Project.GUI
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
             foreach (var option in modulePanel.getAllOptions())
             {
-                
+                //Console.WriteLine(option.Name);
                 if (option.Set)
                 {
                     tempList.Add(option.Name);
@@ -151,6 +148,7 @@ namespace EKG_Project.GUI
             loadFileButton.IsEnabled = true;
             pdfButton.IsEnabled = true;
             startAnalyseButton.IsEnabled = true;
+            modulePanel.IsEnabled = true;
             VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
             panel.Visibility = Visibility.Hidden;
             this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
@@ -172,6 +170,7 @@ namespace EKG_Project.GUI
 
         public void moduleEnded(AvailableOptions module, bool aborted)
         {
+            Console.WriteLine(module + " Ended");
             if (aborted)
             {
 
