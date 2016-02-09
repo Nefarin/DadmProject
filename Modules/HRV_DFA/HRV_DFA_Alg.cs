@@ -51,9 +51,9 @@ namespace EKG_Project.Modules.HRV_DFA
             Vector<double> vectorFn0 = ComputeDfaFluctuation(intervals, BoxRanged);
             Vector<double> vFn = RemoveZeros(vectorFn0);
             Vector<double> vectorLogFn = ConvertToLog(vFn);
-            Vector<double> vectorLogn = vectorLogN.SubVector(0, vectorLogFn.Count());
+            //Vector<double> vectorLogn = vectorLogN.SubVector(0, vectorLogFn.Count());
 
-            Tuple<Vector<double>, Vector<double>> resultFluctuations = new Tuple<Vector<double>, Vector<double>>(vectorLogn, vectorLogFn);
+            Tuple<Vector<double>, Vector<double>> resultFluctuations = new Tuple<Vector<double>, Vector<double>>(vectorLogN, vectorLogFn);
             return resultFluctuations;
         }
       
@@ -120,9 +120,8 @@ namespace EKG_Project.Modules.HRV_DFA
         #endregion
         public List<Tuple<Vector<double>, Vector<double>>> HRV_DFA_Analysis(Tuple<Vector<double>, Vector<double>> fluctuations, bool longCorrelations)
         {
-
-            Vector<double> vectorLogn = fluctuations.Item1;
             Vector<double> vectorLogFn = fluctuations.Item2;
+            Vector<double> vectorLogn = fluctuations.Item1.SubVector(0, vectorLogFn.Count());
 
             // vectors init
             Vector<double> ln1 = Vector<double>.Build.Dense(vectorLogn.Count);
@@ -136,7 +135,7 @@ namespace EKG_Project.Modules.HRV_DFA
 
             if (longCorrelations)
             {
-                int q = (int)(vectorLogFn.Count*0.33);
+                int q = (int)(vectorLogFn.Count*0.3);
                 int qq = vectorLogFn.Count - q;
                 ln1 = vectorLogn.SubVector(0, q);
                 lFn1 = vectorLogFn.SubVector(0, q);
@@ -297,9 +296,11 @@ namespace EKG_Project.Modules.HRV_DFA
         #endregion
         public Vector<double> RemoveZeros(Vector<double> input)
         {
+            Vector<double> vectorOut;
+            try
+            {
+                int counter = 0;
 
-            int counter = 0;
-           
                 for (int i = 0; i < input.Count(); i++)
                 {
                     if (input[i] != 0)
@@ -313,9 +314,13 @@ namespace EKG_Project.Modules.HRV_DFA
                         break;
                     }
                 }
+                vectorOut = input.SubVector(0, counter);
+            }
+            catch(Exception e)
+            {
+                return input = null; 
+            }
             
-            
-            Vector<double> vectorOut = input.SubVector(0, counter);
             return vectorOut;
         }
         #region
