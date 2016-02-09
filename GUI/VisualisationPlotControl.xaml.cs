@@ -53,7 +53,8 @@ namespace EKG_Project.GUI
 
         //ver 2.0 
         private List<string> leadsNameList;
-        private string firstLead; 
+        private string firstLead;
+        private string currentLead; 
         //private 
 
 
@@ -445,15 +446,16 @@ namespace EKG_Project.GUI
             if (_plotType == "HRT")
             {
                 CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
-                ecgPlot.DisplayHrtLeadVersion(firstLead);
+                ecgPlot.DisplayHrtLeadVersion(firstLead, false);
                 this.PlotSlider.Visibility = Visibility.Hidden;
             }
             if (_plotType == "HEART_CLUSTER")
             {
                 //CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
-                ecgPlot.DisplayHrtLeadVersion(firstLead);
+                //ecgPlot.DisplayHrtLeadVersion(firstLead);
             }
 
+            currentLead = firstLead;
 
             this.CheckBoxList.DataContext = _seriesChecbox;
 
@@ -628,8 +630,17 @@ namespace EKG_Project.GUI
                 {
 
                 }
-
-
+                else if (_plotType == "HRT")
+                {
+                    CheckBox cB = new CheckBox();
+                    cB.IsChecked = false;
+                    //first = false;
+                    cB.Name = "Turb";
+                    cB.Content = "Turb";
+                    cB.Checked += CheckBox_Checked;
+                    cB.Unchecked += CheckBox_Unchecked;
+                    _seriesChecbox.Add(cB);
+                }
             }
             catch(Exception ex)
             {
@@ -957,6 +968,7 @@ namespace EKG_Project.GUI
                 //MessageBox.Show("Checked=" + c.Name);
                 if (leadsNameList.Contains(c.Name))
                 {
+                    currentLead = c.Name;
                     foreach (var cB in this.CheckBoxList.Items)
                     {
                         var cc = cB as CheckBox;
@@ -996,16 +1008,28 @@ namespace EKG_Project.GUI
                     }
                     if (_plotType == "HRT")
                     {
-                        ecgPlot.DisplayHrtLeadVersion(c.Name);
-                        this.PlotSlider.Visibility = Visibility.Hidden;
+                       
+                        ecgPlot.DisplayHrtLeadVersion(currentLead, false);
+                        
                     }
-
-                    
-
                 }
                 else
                 {
-                    ecgPlot.ControlOtherModulesSeries(c.Name, true);
+                    if (_plotType == "HRT")
+                    {
+                        if (c.Name == "Turb")
+                        {
+                            ecgPlot.DisplayHrtLeadVersion(currentLead, true);
+                        }
+                        else
+                        {
+                            ecgPlot.DisplayHrtLeadVersion(currentLead, false);
+                        }
+                    }
+                    else
+                    {
+                        ecgPlot.ControlOtherModulesSeries(c.Name, true);
+                    }
                 }
             }
             catch (Exception ex)

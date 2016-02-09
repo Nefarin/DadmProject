@@ -1833,11 +1833,11 @@ namespace EKG_Project.GUI
             }
         }
 
-        public bool DisplayHrtLeadVersion(string leadName)
+        public bool DisplayHrtLeadVersion(string leadName, bool turb)
         {
             try
             {
-                
+                ClearPlot();
                 HRT_New_Data_Worker hWD = new HRT_New_Data_Worker(_currentAnalysisName);
 
                 if(hWD.LoadVPC(leadName)== Modules.HRT.HRT.VPC.LETS_PLOT)
@@ -1905,6 +1905,11 @@ namespace EKG_Project.GUI
                     lineraXAxis.Title = "RR interval";
 
                     CurrentPlot.Axes.Add(lineraXAxis);
+
+                    if(turb)
+                    {
+                        System.Windows.MessageBox.Show("Turbulance fo lead" + leadName);
+                    }
 
                 }
                 else
@@ -2010,7 +2015,9 @@ namespace EKG_Project.GUI
                     case "SleepApnea":
                         DisplaySleepApneaLeadVersionBaseline();
                         break;
-
+                    case "Turb":
+                        DisplayHrtLeadVersion(_currentLeadName, true);
+                        break;
                     default:
                         break;
                 }
