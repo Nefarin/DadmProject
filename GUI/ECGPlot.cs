@@ -1845,13 +1845,15 @@ namespace EKG_Project.GUI
                     CurrentPlot.Axes.Clear();
                     //double[] meanTachogram = hWD.LoadMeanTachogramGUI(leadName);
                     int[] statClass = hWD.LoadStatisticsClassNumbersPDF(leadName);
+                    int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
+
 
                     //int a = 0;
                     //System.Windows.MessageBox.Show(leadName);
                     //System.Windows.MessageBox.Show(statClass[2].ToString());
                     //System.Windows.MessageBox.Show(tachogram.Count.ToString());
 
-                    for(int i = 0; i<statClass[2]; i++)
+                    for (int i = 0; i<statClass[2]; i++)
                     {
                         List<List<double>> tachogram = hWD.LoadTachogramGUI(leadName, i);
 
@@ -1865,7 +1867,7 @@ namespace EKG_Project.GUI
                             //System.Windows.MessageBox.Show("HRT" + i);
                             for (int j = 0; j < tach.Count; j++)
                             {
-                                ls.Points.Add(new DataPoint(j, tach[j]));
+                                ls.Points.Add(new DataPoint(loadXAxisTachogram[j], tach[j]));
                             }
 
                             CurrentPlot.Series.Add(ls);
@@ -1878,12 +1880,12 @@ namespace EKG_Project.GUI
                         LineSeries ls = new LineSeries();
                         ls.MarkerStrokeThickness = 2;
                         ls.Color = OxyColor.Parse("#ff0000");
-                        ls.Title = "MeanTach";
+                        ls.Title = "AvgTach";
                         
 
                         for (int i = 0; i < meanTachogram.Length; i++)
                         {
-                            ls.Points.Add(new DataPoint(i, meanTachogram[i]));
+                            ls.Points.Add(new DataPoint(loadXAxisTachogram[i], meanTachogram[i]));
                         }
 
                         CurrentPlot.Series.Add(ls);
@@ -1897,18 +1899,18 @@ namespace EKG_Project.GUI
 
                     var lineraXAxis = new LinearAxis();
                     lineraXAxis.Position = AxisPosition.Bottom;
-                    lineraXAxis.Title = "RR interval";
+                    lineraXAxis.Title = "# of RR interval";
 
                     CurrentPlot.Axes.Add(lineraXAxis);
 
                     if(turb)
                     {
-                        System.Windows.MessageBox.Show("Turbulance fo lead" + leadName);
+                        //System.Windows.MessageBox.Show("Turbulance fo lead" + leadName);
 
                         
                         double[] turbulenceSlopeMax = hWD.LoadTurbulenceSlopeMaxGUI(leadName);
                         int[] loadXPointsMaxSlope = hWD.LoadXPointsMaxSlopeGUI(leadName);
-                        //int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
+                        
                         
 
                         if (loadXPointsMaxSlope.Length > 0)
@@ -1917,7 +1919,7 @@ namespace EKG_Project.GUI
                             ls.MarkerStrokeThickness = 2;
                             //ls.BrokenLineStyle = LineStyle.DashDashDot;
                             ls.Color = OxyColor.Parse("#4c0026");
-                            ls.Title = "TurbSlope";
+                            ls.Title = "MaxTS";
 
                             for (int i = 0; i <loadXPointsMaxSlope.Length; i++)
                             {
@@ -1939,7 +1941,7 @@ namespace EKG_Project.GUI
                                 LineSeries ls1 = new LineSeries();
                                 ls1.MarkerStrokeThickness = 2;
                                 ls1.Color = OxyColor.Parse("#0000ff");
-                                ls1.Title = "TurbMeanF";
+                                ls1.Title = "AvgTO";
 
                                 ls1.Points.Add(new DataPoint(loadXPointsMeanOnset[0], turbulenceOnsetMean[0]));
                                 ls1.Points.Add(new DataPoint(loadXPointsMeanOnset[1], turbulenceOnsetMean[1]));
@@ -1948,7 +1950,7 @@ namespace EKG_Project.GUI
                                 LineSeries ls2 = new LineSeries();
                                 ls2.MarkerStrokeThickness = 2;
                                 ls2.Color = OxyColor.Parse("#0000ff");
-                                ls2.Title = "TurbMeanS";
+                                //ls2.Title = "TurbMeanS";
 
                                 ls2.Points.Add(new DataPoint(loadXPointsMeanOnset[2], turbulenceOnsetMean[2]));
                                 ls2.Points.Add(new DataPoint(loadXPointsMeanOnset[3], turbulenceOnsetMean[3]));
@@ -1985,15 +1987,55 @@ namespace EKG_Project.GUI
             }
         }
 
-        public bool DisplayHeartClusterLeadVersion(string leadName)
+        public bool DisplayHeartClusterLeadVersion(string leadName, int clusterNumber)
         {
             try
             {
+                CurrentPlot.Axes.Clear();
                 Heart_Cluster_Data_Worker hCW = new Heart_Cluster_Data_Worker(_currentAnalysisName);
+                List<Tuple<int,int,int,int>> myTemp = hCW.LoadClusterizationResult(leadName, 0, (int)hCW.LoadAttributeI(Heart_Cluster_Attributes_I.TotalQrsComplex, leadName));
 
-                //hCW.LoadClusterizationResult(leadName, 0, int lenght <- skąd mam znać rozmiar? nie ma go w workerze)
+                if (myTemp.Count > 0)
+                {
+                    ECG_Baseline_New_Data_Worker ecg_Baseline = new ECG_Baseline_New_Data_Worker(_currentAnalysisName);
+                    try
+                    {
+                        foreach (var t in myTemp.Where(a => a.Item4 == clusterNumber))
+                        {                          
+                            LineSeries ls = new LineSeries();
+                            ls.MarkerStrokeThickness = 2;
+                            ls.Color = OxyColor.Parse("#ff0000");
 
-                
+                            Vector<double> tempV = ecg_Baseline.LoadSignal(leadName, t.Item1, t.Item2 - t.Item1);
+
+                            int centarl = t.Item3 - t.Item1;
+
+                            for (int i = 0; i < tempV.Count; i++)
+                            {
+                                ls.Points.Add(new DataPoint(i-centarl, tempV[i]));
+                            }
+
+                            CurrentPlot.Series.Add(ls);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.MessageBox.Show(ex.Message);
+                    }
+
+
+                    var lineraYAxis = new LinearAxis();
+                    lineraYAxis.Position = AxisPosition.Left;
+                    lineraYAxis.Title = "Apmlitude [mV]";
+
+                    CurrentPlot.Axes.Add(lineraYAxis);
+
+                    var lineraXAxis = new LinearAxis();
+                    lineraXAxis.Position = AxisPosition.Bottom;
+                    lineraXAxis.IsAxisVisible = false;
+                    CurrentPlot.Axes.Add(lineraXAxis);
+
+                }
                 RefreshPlot();
                 return true;
             }
