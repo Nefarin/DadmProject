@@ -54,7 +54,8 @@ namespace EKG_Project.GUI
         //ver 2.0 
         private List<string> leadsNameList;
         private string firstLead;
-        private string currentLead; 
+        private string currentLead;
+        private bool haveCluster = false;
         //private 
 
 
@@ -451,8 +452,13 @@ namespace EKG_Project.GUI
             }
             if (_plotType == "HEART_CLUSTER")
             {
-                //CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
-                //ecgPlot.DisplayHrtLeadVersion(firstLead);
+               
+                CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
+                if (haveCluster)
+                {
+                    ecgPlot.DisplayHeartClusterLeadVersion(firstLead, 0);
+                }           
+                this.PlotSlider.Visibility = Visibility.Hidden;
             }
 
             currentLead = firstLead;
@@ -641,6 +647,61 @@ namespace EKG_Project.GUI
                     cB.Unchecked += CheckBox_Unchecked;
                     _seriesChecbox.Add(cB);
                 }
+                else if (_plotType == "HEART_CLUSTER")
+                {
+
+                    if (leadsNameList.Contains("MLII"))
+                    {
+                        Heart_Cluster_Data_Worker hCW = new Heart_Cluster_Data_Worker(currentAnalyseName);
+                        uint nr = hCW.LoadAttributeI(Heart_Cluster_Attributes_I.NumberofClass, "MLII");
+
+                        for (uint i = 0; i < nr; i++)
+                        {
+                            
+                            CheckBox cB = new CheckBox();
+                            if (!haveCluster)
+                            {
+                                cB.IsChecked = true;
+                            }
+                            else
+                            {
+                                cB.IsChecked = false;
+                            }
+                            cB.Name = "Cluster" + i;
+                            cB.Content = "Cluster" + i;
+                            cB.Checked += CheckBox_Checked;
+                            cB.Unchecked += CheckBox_Unchecked;
+                            haveCluster = true;
+                            _seriesChecbox.Add(cB);
+                        }
+                    }
+                    else if (leadsNameList.Contains("II"))
+                    {
+                        Heart_Cluster_Data_Worker hCW = new Heart_Cluster_Data_Worker(currentAnalyseName);
+                        uint nr = hCW.LoadAttributeI(Heart_Cluster_Attributes_I.NumberofClass, "II");
+
+                        for (uint i = 0; i < nr; i++)
+                        {
+                            
+                            CheckBox cB = new CheckBox();
+                            if (!haveCluster)
+                            {
+                                cB.IsChecked = true;
+                            }
+                            else
+                            {
+                                cB.IsChecked = false;
+                            }
+                            cB.Name = "Cluster" + i;
+                            cB.Content = "Cluster" + i;
+                            cB.Checked += CheckBox_Checked;
+                            cB.Unchecked += CheckBox_Unchecked;
+                            haveCluster = true;
+                            _seriesChecbox.Add(cB);
+                        }
+                    }                    
+                }
+
             }
             catch(Exception ex)
             {
@@ -1007,11 +1068,9 @@ namespace EKG_Project.GUI
                         this.PlotSlider.Visibility = Visibility.Hidden;
                     }
                     if (_plotType == "HRT")
-                    {
-                       
-                        ecgPlot.DisplayHrtLeadVersion(currentLead, false);
-                        
-                    }
+                    {                       
+                        ecgPlot.DisplayHrtLeadVersion(currentLead, false);                       
+                    }                 
                 }
                 else
                 {
@@ -1025,6 +1084,19 @@ namespace EKG_Project.GUI
                         {
                             ecgPlot.DisplayHrtLeadVersion(currentLead, false);
                         }
+                    }
+                    else if (_plotType == "HEART_CLUSTER")
+                    {
+                        try
+                        {                         
+                            int num = Int32.Parse(c.Name.Remove(0, 7));                            
+                            ecgPlot.DisplayHeartClusterLeadVersion(currentLead, num);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("shit");
+                        }
+
                     }
                     else
                     {
@@ -1063,6 +1135,10 @@ namespace EKG_Project.GUI
                     if (_plotType == "HRT")
                     {
                         ecgPlot.DisplayHrtLeadVersion(currentLead, false);
+                    }
+                    else if (_plotType == "HEART_CLUSTER")
+                    {
+                        ecgPlot.RemoveAllPlotSeries();
                     }
                     else
                     {

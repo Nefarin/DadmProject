@@ -1987,16 +1987,42 @@ namespace EKG_Project.GUI
             }
         }
 
-        public bool DisplayHeartClusterLeadVersion(string leadName)
+        public bool DisplayHeartClusterLeadVersion(string leadName, int clusterNumber)
         {
             try
             {
                 Heart_Cluster_Data_Worker hCW = new Heart_Cluster_Data_Worker(_currentAnalysisName);
-
                 List<Tuple<int,int,int,int>> myTemp = hCW.LoadClusterizationResult(leadName, 0, (int)hCW.LoadAttributeI(Heart_Cluster_Attributes_I.TotalQrsComplex, leadName));
 
-                System.Windows.MessageBox.Show(myTemp.Count.ToString());
+                if (myTemp.Count > 0)
+                {
+                    ECG_Baseline_New_Data_Worker ecg_Baseline = new ECG_Baseline_New_Data_Worker(_currentAnalysisName);
+                    try
+                    {
+                        foreach (var t in myTemp.Where(a => a.Item4 == clusterNumber))
+                        {                          
+                            LineSeries ls = new LineSeries();
+                            ls.MarkerStrokeThickness = 2;
+                            ls.Color = OxyColor.Parse("#ff0000");
 
+                            Vector<double> tempV = ecg_Baseline.LoadSignal(leadName, t.Item1, t.Item2 - t.Item1);
+
+                            int centarl = t.Item3 - t.Item1;
+
+                            for (int i = 0; i < tempV.Count; i++)
+                            {
+                                ls.Points.Add(new DataPoint(i-centarl, tempV[i]));
+                            }
+
+                            CurrentPlot.Series.Add(ls);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.MessageBox.Show(ex.Message);
+                    }
+
+                }
                 RefreshPlot();
                 return true;
             }
