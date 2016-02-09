@@ -16,7 +16,7 @@ namespace EKG_Project.Modules.Heart_Cluster
         private Dictionary<string, Object> _strToObj;
         private Dictionary<string, string> _strToStr;
         private string _analysisName;
-        private Heart_Cluster_Data _data;
+        //private Heart_Cluster_Data _data;
         private State _currentState;
         private int _currentChannelIndex;
         private int _currentIndex;
