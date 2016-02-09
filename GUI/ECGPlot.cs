@@ -912,13 +912,15 @@ namespace EKG_Project.GUI
 
 
 
-                double Xe1 = (-sD2 / 2);
+                //double Xe1 = (-sD2 / 2);
+                double Xe1 = (-sD1 / 2);
                 double Ye1 = (0);
                 double Xrot1 = elipseX + Xe1 * Math.Cos(0.7853981634) + Ye1 * Math.Sin(0.7853981634);
                 double Yrot1 = elipseY - Xe1 * Math.Sin(0.7853981634) + Ye1 * Math.Cos(0.7853981634);
 
                 double Xe2 = (0);
-                double Ye2 = (sD1 / 2);
+                //double Ye2 = (sD1 / 2);
+                double Ye2 = (sD2 / 2);
                 double Xrot2 = elipseX + Xe2 * Math.Cos(0.7853981634) + Ye2 * Math.Sin(0.7853981634);
                 double Yrot2 = elipseY - Xe2 * Math.Sin(0.7853981634) + Ye2 * Math.Cos(0.7853981634);
 
@@ -928,7 +930,7 @@ namespace EKG_Project.GUI
                     EndPoint = new DataPoint(Xrot1, Yrot1),
                     Color = OxyColor.Parse("#000000"),
                     StrokeThickness = 1,
-                    Text = "SD2"
+                    Text = " SD2 "
                 };
                 ArrowAnnotation sd2 = new ArrowAnnotation
                 {
@@ -936,7 +938,7 @@ namespace EKG_Project.GUI
                     EndPoint = new DataPoint(Xrot2, Yrot2),
                     Color = OxyColor.Parse("#000000"),
                     StrokeThickness = 1,
-                    Text = "SD1"
+                    Text = " SD1 "                   
                 };
                 CurrentPlot.Annotations.Add(sd1);
                 CurrentPlot.Annotations.Add(sd2);
@@ -948,13 +950,16 @@ namespace EKG_Project.GUI
                 double C_x = elipseX, C_y = elipseY, h = sD1, w = sD2;
                 for (double t = 0; t <= 2 * 3.14; t += 0.01)
                 {
-                    double Xe =  (sD2 / 2) * Math.Cos(t);
-                    double Ye =  (sD1 / 2) * Math.Sin(t);
+                    //double Xe =  (sD2 / 2) * Math.Cos(t);
+                    //double Ye =  (sD1 / 2) * Math.Sin(t);
+                    double Xe = (sD1 / 2) * Math.Cos(t);
+                    double Ye = (sD2 / 2) * Math.Sin(t);
 
                     double Xrot = elipseX + Xe * -Math.Cos(0.7853981634) + Ye * -Math.Sin(0.7853981634);
                     double Yrot = elipseY - Xe * -Math.Sin(0.7853981634) + Ye * -Math.Cos(0.7853981634);
 
-                    elipseRot.Points.Add(new ScatterPoint { X = Xrot, Y = Yrot, Size = 0.75 });
+                    elipseRot.Points.Add(new ScatterPoint { X = Xrot, Y = Yrot, Size = 1});
+                    elipseRot.MarkerStroke = OxyColor.Parse("#ff0000");
                 }
 
                 //for (double t = 0; t <= 2 * 3.14; t += 0.01)
