@@ -14,7 +14,11 @@ namespace EKG_Project.Modules.HRV2
         private List<Tuple<string, List<Tuple<double,double>>>> _histogramData;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_x;
         private List<Tuple<string, Vector<double>>> _poincarePlotData_y;
-        private List<double> _elipseCenter;
+        ////tego nie chcemy
+        //private List<double> _elipseCenter;
+        //tu chciałymysmy dodac
+        private List<double> _elipseCenter_x;
+        private List<double> _elipseCenter_y;
 
 
         #region Documentation
@@ -152,22 +156,59 @@ namespace EKG_Project.Modules.HRV2
 
         #region Documentation
         /// <summary>
-        /// The center of an elipse fitted to Poincare plot 
+        /// The x center of an elipse fitted to Poincare plot 
         /// </summary>
         /// 
         #endregion
-        public List<double> ElipseCenter
+        public List<double> ElipseCenter_x
         {
             get
             {
-                return _elipseCenter;
+                return _elipseCenter_x;
             }
 
             set
             {
-                _elipseCenter = value;
+                _elipseCenter_x = value;
             }
         }
+        #region Documentation
+        /// <summary>
+        /// The y center of an elipse fitted to Poincare plot 
+        /// </summary>
+        /// 
+        #endregion
+        public List<double> ElipseCenter_y
+        {
+            get
+            {
+                return _elipseCenter_y;
+            }
+
+            set
+            {
+                _elipseCenter_y = value;
+            }
+        }
+
+        //#region Documentation
+        ///// <summary>
+        ///// To usuniemy
+        ///// </summary>
+        ///// 
+        //#endregion
+        //public List<double> ElipseCenter
+        //{
+        //    get
+        //    {
+        //        return _elipseCenter;
+        //    }
+
+        //    set
+        //    {
+        //        _elipseCenter = value;
+        //    }
+        //}
 
         #region Documentation
         /// <summary>
@@ -184,7 +225,8 @@ namespace EKG_Project.Modules.HRV2
             SD2 = new List<double>();
             Tinn = new List<double>();
             TriangleIndex = new List<double>();
-            ElipseCenter = new List<double>();
+            ElipseCenter_x = new List<double>();
+            ElipseCenter_y = new List<double>();
         }
     }
 }

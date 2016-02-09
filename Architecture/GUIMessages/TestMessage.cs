@@ -5,7 +5,7 @@ namespace EKG_Project.Architecture.GUIMessages
 {
     #region Documentation
     /// <summary>
-    /// 
+    /// Debugging purposes.
     /// </summary>
     /// 
     #endregion
@@ -15,7 +15,7 @@ namespace EKG_Project.Architecture.GUIMessages
 
         #region Documentation
         /// <summary>
-        /// 
+        /// Debugging purposes.
         /// </summary>
         /// <param name="text"></param>
         /// 
@@ -27,7 +27,7 @@ namespace EKG_Project.Architecture.GUIMessages
 
         #region Documentation
         /// <summary>
-        /// 
+        /// Reads given message with provided control.
         /// </summary>
         /// <param name="control"></param>
         /// 

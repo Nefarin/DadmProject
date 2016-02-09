@@ -44,20 +44,21 @@ namespace EKG_Project.GUI
 
             ecgBaseline.
                 AddSuboptionAndMoveDown(AvailableOptions.R_PEAKS).
-                    //AddSuboption(AvailableOptions.HRV1).
+                    AddSuboption(AvailableOptions.HRV1).
                     AddSuboption(AvailableOptions.HRV2).
                     AddSuboptionAndMoveDown(AvailableOptions.WAVES).
                         //AddSuboption(AvailableOptions.ST_SEGMENT).
-                        //AddSuboption(AvailableOptions.T_WAVE_ALT).
+                        AddSuboption(AvailableOptions.T_WAVE_ALT).
                         AddSuboption(AvailableOptions.SLEEP_APNEA).
                         AddSuboptionAndMoveDown(AvailableOptions.HEART_CLASS).
-                            //AddSuboption(AvailableOptions.HRT).
-                            AddSuboptionAndMoveUp(AvailableOptions.HEART_AXIS).
+                            AddSuboption(AvailableOptions.HRT).
+                            AddSuboption(AvailableOptions.HEART_AXIS).
+                            AddSuboptionAndMoveUp(AvailableOptions.HEART_CLUSTER).
                         AddSuboption(AvailableOptions.ATRIAL_FIBER).
                         AddSuboption(AvailableOptions.QT_DISP).
                         AddSuboptionAndMoveUp(AvailableOptions.FLUTTER).
                     AddSuboption(AvailableOptions.HRV_DFA);
-                    //AddSuboptionAndMoveUp(AvailableOptions.SIG_EDR);
+                   //AddSuboptionAndMoveUp(AvailableOptions.SIG_EDR);
 
             //var testModule = new ModuleOption(AvailableOptions.TEST_MODULE, this);
             Options.Add(ecgBaseline);

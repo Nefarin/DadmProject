@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EKG_Project.IO;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Statistics;
 
 
 namespace EKG_Project.Modules.HRV_DFA
@@ -17,10 +18,26 @@ namespace EKG_Project.Modules.HRV_DFA
         private Dictionary<string, Object> _strToObj;
         private Dictionary<string, string> _strToStr;
         private string _analysisName;
-        private HRV_DFA_Data _data;
+        private Basic_New_Data_Worker _basicWorker;
+        private R_Peaks_New_Data_Worker _rworker;
+        private HRV_DFA_New_Data_Worker _worker;
         private State _currentState;
         private int _currentChannelIndex;
         private string _currentName;
+        private string[] _leads;
+
+        public Basic_New_Data_Worker BasicWorker
+        {
+            get
+            {
+                return _basicWorker;
+            }
+
+            set
+            {
+                _basicWorker = value;
+            }
+        }
 
         public void Abort()
         {
@@ -60,9 +77,11 @@ namespace EKG_Project.Modules.HRV_DFA
             _strToObj = new Dictionary<string, object>();
             _strToStr = new Dictionary<string, string>();
 
-            HRV_DFA_Data_Worker worker = new HRV_DFA_Data_Worker(_analysisName);
-            worker.Load();
-            _data = worker.Data;
+            _basicWorker = new Basic_New_Data_Worker(_analysisName);
+            _rworker = new R_Peaks_New_Data_Worker(_analysisName);
+            _worker = new HRV_DFA_New_Data_Worker(_analysisName);
+            _leads = _basicWorker.LoadLeads().ToArray();
+
             _currentState = State.START_CHANNEL;
             _currentChannelIndex = 0;
         }
@@ -72,31 +91,27 @@ namespace EKG_Project.Modules.HRV_DFA
             switch (_currentState)
             {
                 case (State.START_CHANNEL):
-                    _currentName = _data.DfaValueFn[_currentChannelIndex].Item1;
+                    _currentName = _leads[0];
                     _currentState = State.CALCULATE;
                     break;
 
                 case (State.CALCULATE):
-                    Vector<double> currentFn = _data.DfaValueFn[_currentChannelIndex].Item2;
-                    double meanF = currentFn.Sum() / currentFn.Count;
+                    int sampl = (int)_worker.getNumberOfSamples(HRV_DFA_Signals.Fluctuations, _currentName);
+                    Tuple<Vector<double>, Vector<double>> currentFn = _worker.LoadSignal(HRV_DFA_Signals.Fluctuations,_currentName,0, sampl);
+                    double meanF = currentFn.Item2.Sum() / currentFn.Item2.Count;
                     _strToStr.Add(_currentName + " mean value: ", meanF.ToString());
                     _strToObj.Add(_currentName + " mean value: ", meanF);
+                    double std = currentFn.Item2.StandardDeviation();
+                    _strToStr.Add(_currentName + " std value: ", std.ToString());
+                    _strToObj.Add(_currentName + " std value: ", std);
 
-                    double currentAlpha = _data.ParamAlpha[_currentChannelIndex].Item2[1];
+                    Tuple<Vector<double>, Vector<double>> currentAlpha = _worker.LoadSignal(HRV_DFA_Signals.ParamAlpha, _currentName, 0,(int)_worker.getNumberOfSamples(HRV_DFA_Signals.ParamAlpha, _currentName));
                     _strToStr.Add(_currentName + " alpha value: ", currentAlpha.ToString());
                     _strToObj.Add(_currentName + " alpha value: ", currentAlpha);
 
-                    _currentState = State.NEXT_CHANNEL;
+                    _currentState = State.END;
                     break;
-
-                case (State.NEXT_CHANNEL):
-                    _currentChannelIndex++;
-                    if (_currentChannelIndex >= _data.ParamAlpha.Count)
-                    {
-                        _currentState = State.END;
-                    }
-                    else _currentState = State.START_CHANNEL;
-                    break;
+                    
 
                 case (State.END):
                     _ended = true;
@@ -108,7 +123,7 @@ namespace EKG_Project.Modules.HRV_DFA
         public static void Main(String[] args)
         {
             HRV_DFA_Stats stats = new HRV_DFA_Stats();
-            stats.Init("Analysisnsr");
+            stats.Init("a100dat");
 
 
             while (true)

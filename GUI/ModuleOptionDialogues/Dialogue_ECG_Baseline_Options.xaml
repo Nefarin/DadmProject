@@ -7,7 +7,8 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:params="clr-namespace:EKG_Project.Modules.ECG_Baseline"
         mc:Ignorable="d"
-        Title="ECG Baseline Options" Height="310" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize">
+        Title="ECG Baseline Options" Height="390" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize"
+        WindowStartupLocation="Manual" Top="0">
     <Window.Resources>
         <ObjectDataProvider x:Key="availableFilterMethods" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
@@ -36,7 +37,10 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <!--const val for last row - for Win7-->
+            <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Grid.Column="0">Filter method</Label>
         <Label Grid.Row="1" Grid.Column="0">Filter type</Label>
@@ -46,6 +50,8 @@
         <Label Grid.Row="5" Grid.Column="0">Window size high</Label>
         <Label Grid.Row="6" Grid.Column="0">Order low</Label>
         <Label Grid.Row="7" Grid.Column="0">Order high</Label>
+        <Label Grid.Row="8" Grid.Column="0">Window LMS</Label>
+        <Label Grid.Row="9" Grid.Column="0">Mi</Label>
         <ComboBox Grid.Row="0" Grid.Column="1" Margin="0,5" x:Name="filterMethod" ItemsSource="{Binding Source={StaticResource availableFilterMethods}}" SelectedItem="{Binding Path=Method}" ></ComboBox>
         <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,5" x:Name="filterType" ItemsSource="{Binding Source={StaticResource availableFilterTypes}}" SelectedItem="{Binding Path=Type}" ></ComboBox>
         <local:NumericTextBox Grid.Row="2" Grid.Column="1" Margin="0,5" x:Name="fcLow" NumberType="Float" Language="{Binding CurrentCulture}"
@@ -72,7 +78,16 @@
                               Number="{Binding Path=OrderHigh, Mode=TwoWay}" 
                               Text="{Binding Path=OrderHigh, Mode=OneTime}"
                               IsEnabled="{Binding Path=IsButterworthHighPass}"></local:NumericTextBox>
-        <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal" Margin="0,5" VerticalAlignment="Center">
+
+        <local:NumericTextBox Grid.Row="8" Grid.Column="1" Margin="0,5" x:Name="windowLMS" NumberType="Integer" 
+                              Number="{Binding Path=WindowLMS, Mode=TwoWay}" 
+                              Text="{Binding Path=WindowLMS, Mode=OneTime}"
+                              IsEnabled="{Binding Path=IsLMS}"></local:NumericTextBox>
+        <local:NumericTextBox Grid.Row="9" Grid.Column="1" Margin="0,5" x:Name="Mi" NumberType="Float" 
+                              Number="{Binding Path=Mi, Mode=TwoWay}" 
+                              Text="{Binding Path=Mi, Mode=OneTime}"
+                              IsEnabled="{Binding Path=IsLMS}"></local:NumericTextBox>
+        <StackPanel Grid.Row="10" Grid.Column="1" Orientation="Horizontal" Margin="0,5,0,18.667" VerticalAlignment="Center" Height="39">
             <Button Margin="3" Width="69" Click="ApplyParameterChanges" VerticalAlignment="Center">OK</Button>
             <Button Margin="3" Width="69" Click="RejectParameterChanges" VerticalAlignment="Center">Cancel</Button>
         </StackPanel>

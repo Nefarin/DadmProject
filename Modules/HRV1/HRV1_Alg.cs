@@ -1,15 +1,4 @@
-﻿/*
-    TODO:
-        1 Poprawic plomba
-        5 Testy, testy, testy...
-        6 ???
-        7 nie ma numer 2,3 i 4
-        7 PROFIT
-        8 ps. numer 7 jest dwa razy
-*/
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,15 +36,44 @@ namespace EKG_Project.Modules.HRV1
 
         // Declaration of required vectors
         private Vector<double> rSamples;    // holds numbers of samples in original ECG signal on which R waves have been detected
-        private Vector<double> rInstants;   // holds time instants in which which R waves have been detected
-        private Vector<double> rrIntervals; // holds time intervals between consecutive R waves
+        public Vector<double> rInstants;   // holds time instants in which which R waves have been detected
+        public Vector<double> rrIntervals; // holds time intervals between consecutive R waves
         private Vector<double> f;           // vector of frequiencies on which PSD estimate is calculated
         private Vector<double> PSD;         // power spectral density estimate values at points specified in f
         private Vector<double> psdFilter;   // samples of digital FIR filter used for smoothing PSD
 
+        public List<Tuple<string, double>> FreqParams = new List<Tuple<string, double>>();
+        public List<Tuple<string, double>> TimeParams = new List<Tuple<string, double>>();
+        public List<Tuple<string, Vector<double>>> PowerSpectrum;
+
         private double Fs;  // sampling frequency of original ECG signal
         private double dt;  // time interval between consecutive samples of original ECG signal
 
+        public void CalculateTimeBased() {
+            this.intervalsCorection();
+            this.calculateTimeBased();
+            TimeParams.Clear();
+            TimeParams.Add(new Tuple<string, double>("AVNN", this.AVNN));
+            TimeParams.Add(new Tuple<string, double>("SDNN", this.SDNN));
+            TimeParams.Add(new Tuple<string, double>("RMSSD", this.RMSSD));
+            TimeParams.Add(new Tuple<string, double>("pNN50", this.pNN50));
+        }
+
+        public void CalculateFreqBased() {
+            this.generateFreqVector(0.001, 0.151, this.rrIntervals.Count);
+            //this.lombScargle2();
+            this.lombScargle();
+            this.calculateFreqBased();
+            this.PowerSpectrum = new List<Tuple<string, Vector<double>>>();
+            this.PowerSpectrum.Add(new Tuple<string, Vector<double>>("f", this.f));
+            this.PowerSpectrum.Add(new Tuple<string, Vector<double>>("PSD", this.PSD));
+            this.FreqParams.Clear();
+            this.FreqParams.Add(new Tuple<string, double>("TP", this.TP));
+            this.FreqParams.Add(new Tuple<string, double>("HF", this.HF));
+            this.FreqParams.Add(new Tuple<string, double>("LF", this.LF));
+            this.FreqParams.Add(new Tuple<string, double>("VLF", this.VLF));
+            this.FreqParams.Add(new Tuple<string, double>("LFHF", this.LFHF));
+        }
 
         /*
         #region
@@ -278,15 +296,15 @@ namespace EKG_Project.Modules.HRV1
         #endregion
         private void calculateFreqBased()
         {
-            generateFreqVector(0, 1, this.rrIntervals.Count);
-            lombScargle();
+            //generateFreqVector(0, 1, this.rrIntervals.Count);
+            //lombScargle();
+            //double df = (double)1000 / rrIntervals.Count;
 
-            double df = (double)1000 / rrIntervals.Count;
+            double df = (this.f.Max() - this.f.Min()) / (this.f.Count-1);
+
             var temp_vec = Vector<double>.Build.Dense(PSD.Count, (i) => PSD[i]*df);
             
             TP = VLF = LF = HF = 0;
-
-            //for (int i = 0; i < f.Count; i++){ TP = temp_vec[i] + TP; };
 
             //Obliczenie całkowitej mocy widma
             TP = temp_vec.Sum();
@@ -294,7 +312,7 @@ namespace EKG_Project.Modules.HRV1
             //Obliczenie mocy widma w zakresie wysokich częstotliwości (0,15-0,4Hz)
             for (int i = 0; i < f.Count; i++)
             {
-                if (f[i] >= 0.15 && f[i] < 0.4)
+                if (f[i] >= 0.15 && f[i] <= 0.4)
                 {
                     HF = temp_vec[i] + HF;
                 }
@@ -303,7 +321,7 @@ namespace EKG_Project.Modules.HRV1
             //Wyznaczenie mocy widma w zakresie niskich częstotliwości (0,04-0,15Hz)
             for (int i = 0; i < f.Count; i++)
             {
-                if (f[i] > 0.04 && f[i] < 0.15)
+                if (f[i] >= 0.04 && f[i] <= 0.15)
                 {
                     LF = temp_vec[i] + LF;
                 }
@@ -312,7 +330,7 @@ namespace EKG_Project.Modules.HRV1
             //Obliczenie mocy widma w zakresie bardzo niskich częstotliwości (0,003-0,04Hz)
                for (int i = 0; i < f.Count; i++)
             {
-                if (f[i] > 0.003 && f[i] < 0.04)
+                if (f[i] >= 0.003 && f[i] <= 0.04)
                 {
                     VLF = temp_vec[i] + VLF;
                 }

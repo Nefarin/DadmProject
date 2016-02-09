@@ -14,6 +14,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
             <!--<RowDefinition Height="30"/>-->
             <!--<RowDefinition Height="30"/>-->
         </Grid.RowDefinitions>
@@ -22,17 +23,26 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <oxy:PlotView Model="{Binding CurrentPlot}" x:Name="ECGPlotView" Grid.Row="0" Grid.Column="1" Margin="0,0,0,0"/>
+        <oxy:PlotView Model="{Binding CurrentPlot}" x:Name="ECGPlotView" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="0,0,0,0"/>
+        <!--<ListBox Name="CheckBoxList" ItemsSource="{Binding}" Grid.Column="0" BorderThickness="0"/>-->
         <ListBox Name="CheckBoxList" ItemsSource="{Binding}" Grid.Column="0" BorderThickness="0"/>
 
-        <Slider Name="PlotSlider" Grid.Column="1" Grid.Row="1" Width="250" HorizontalAlignment="Center" VerticalAlignment="Center" ValueChanged="Slider_ValueChanged" >
+        
+        <Slider Name="PlotSlider" Grid.Column="1" Grid.Row="2" Width="250" HorizontalAlignment="Center" VerticalAlignment="Center" ValueChanged="Slider_ValueChanged" >
         </Slider>
         <Button Name="SavePlotButton" Grid.Column="0" Grid.Row="2" Click="SavePlotButton_Click">
             <StackPanel Orientation="Horizontal">
                 <Image Source="images/save.png"/>
-                <Label Padding="0">Save Plot</Label>
+                <Label Padding="0">Save  Plot</Label>
             </StackPanel>
         </Button>
+        <Button Name="SavePlotToPdfButton" Grid.Column="0" Grid.Row="1" Click="SavePlotToPdfButton_Click">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="images/addNewAnalysis.png"/>
+                <Label Padding="0" FontSize="11">To Raport</Label>
+            </StackPanel>
+        </Button>
+        
         <!--<Button Name="ClearPlotButton" Grid.Column="0" Grid.Row="1" Click="ClearPlotButton_Click">
             <StackPanel Orientation="Horizontal">
                 <Image Source="images/save.png"/>
