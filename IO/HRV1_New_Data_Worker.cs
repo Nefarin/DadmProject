@@ -14,6 +14,11 @@ namespace EKG_Project.IO
     /// </summary>
     #endregion
     public enum HRV1_Signal { TimeBasedParams, FreqBasedParams, FreqVector, PSD };
+    #region Documentation
+    /// <summary>
+    /// Stores HRV1_Attributes
+    /// </summary> 
+    #endregion
     public enum HRV1_Attributes { AVNN, SDNN, RMSSD, SDSD, NN50, pNN50, TP, HF, LF, VLF, LFHF };
 
     #region Documentation
@@ -83,7 +88,14 @@ namespace EKG_Project.IO
             sw.Close();
         }
 
-
+        #region Documentation
+        /// <summary>
+        /// Saves HRV1_Attributes
+        /// </summary>
+        /// <param name="atr">HRV1_Attributes</param>
+        /// <param name="lead">lead</param>
+        /// <param name="value">value</param> 
+        #endregion
         public void SaveAttribute(HRV1_Attributes atr, string lead, double value)
         {
             string moduleName = this.GetType().Name;
@@ -94,6 +106,29 @@ namespace EKG_Project.IO
             StreamWriter sw = new StreamWriter(pathOut);
             sw.WriteLine(value);
             sw.Close();
+        }
+
+        #region Documentation
+        /// <summary>
+        /// Loads HRV1_Attributes
+        /// </summary>
+        /// <param name="atr">HRV1_Attributes</param>
+        /// <param name="lead">lead</param>
+        /// <returns>value</returns> 
+        #endregion
+        public double LoadAttribute(HRV1_Attributes atr, string lead)
+        {
+            string moduleName = this.GetType().Name;
+            moduleName = moduleName.Replace("_Data_Worker", "");
+            string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
+            string pathIn = System.IO.Path.Combine(directory, fileName);
+
+            StreamReader sr = new StreamReader(pathIn);
+            string readLine = sr.ReadLine();
+            sr.Close();
+
+            double readValue = Convert.ToDouble(readLine);
+            return readValue;
         }
 
 

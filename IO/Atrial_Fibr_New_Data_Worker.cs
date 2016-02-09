@@ -6,6 +6,11 @@ using System.Diagnostics;
 
 namespace EKG_Project.IO
 {
+    #region Documentation
+    /// <summary>
+    /// Class that saves and loads Atrial_Fibr Data from internal txt file
+    /// </summary> 
+    #endregion
     public class Atrial_Fibr_New_Data_Worker
     {
         //FIELDS
@@ -38,6 +43,7 @@ namespace EKG_Project.IO
         /// <summary>
         /// Parameterized constructor
         /// </summary>
+        /// <param name="analysisName">analysis name</param>
         #endregion
         public Atrial_Fibr_New_Data_Worker(String analysisName) : this()
         {
