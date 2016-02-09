@@ -105,20 +105,21 @@ namespace EKG_Project.IO
             string pathIn = Path.Combine(directory, fileName);
 
             FileStream stream = new FileStream(pathIn, FileMode.Open);
-            stream.Seek(startIndex*8, SeekOrigin.Begin);
+            stream.Seek(startIndex*sizeof(double), SeekOrigin.Begin);
             BinaryReader br = new BinaryReader(stream);
-            
-            if (startIndex*8 + length*8 > br.BaseStream.Length)
+
+            if (startIndex * sizeof(double) + length * sizeof(double) > br.BaseStream.Length)
             {
                 throw new IndexOutOfRangeException();
             }
 
-            int iterator = 0;
             double[] readSamples = new double[length];
-            while (iterator < length)
+            byte[] readSampless = new byte[length * sizeof(double)];
+            br.Read(readSampless, 0, length * sizeof(double));
+
+            for (int i = 0; i < length; i++)
             {
-                readSamples[iterator] = br.ReadDouble();
-                iterator++;
+                readSamples[i] = BitConverter.ToDouble(readSampless, i * sizeof(double));
             }
 
             br.Close();
@@ -146,7 +147,7 @@ namespace EKG_Project.IO
             FileStream stream = new FileStream(path, FileMode.Open);
             BinaryReader br = new BinaryReader(stream);
 
-            uint count = (uint) br.BaseStream.Length / 8;
+            uint count = (uint)br.BaseStream.Length / sizeof(double);
 
             br.Close();
             stream.Close();

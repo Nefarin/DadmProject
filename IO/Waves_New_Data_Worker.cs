@@ -76,12 +76,28 @@ namespace EKG_Project.IO
             string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string pathOut = Path.Combine(directory, fileName);
 
-            StreamWriter sw = new StreamWriter(pathOut, mode);
-            foreach (var sample in signal)
+            if (mode == true)
             {
-                sw.WriteLine(sample.ToString());
+                FileStream stream = new FileStream(pathOut, FileMode.Append);
+                BinaryWriter bw = new BinaryWriter(stream);
+                foreach (var sample in signal)
+                {
+                    bw.Write(sample);
+                }
+                bw.Close();
+                stream.Close();
             }
-            sw.Close();
+            else
+            {
+                FileStream stream = new FileStream(pathOut, FileMode.Create);
+                BinaryWriter bw = new BinaryWriter(stream);
+                foreach (var sample in signal)
+                {
+                    bw.Write(sample);
+                }
+                bw.Close();
+                stream.Close();
+            }
         }
 
         #region Documentation
@@ -101,33 +117,28 @@ namespace EKG_Project.IO
             string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string pathIn = Path.Combine(directory, fileName);
 
-            StreamReader sr = new StreamReader(pathIn);
+            FileStream stream = new FileStream(pathIn, FileMode.Open);
+            stream.Seek(startIndex * sizeof(Int32), SeekOrigin.Begin);
+            BinaryReader br = new BinaryReader(stream);
 
-            //pomijane linie ...
-            int iterator = 0;
-            while (iterator < startIndex && !sr.EndOfStream)
+            if (startIndex * sizeof(Int32) + length * sizeof(Int32) > br.BaseStream.Length)
             {
-                string readLine = sr.ReadLine();
-                iterator++;
+                throw new IndexOutOfRangeException();
             }
 
-            iterator = 0;
+            int[] readSamples = new int[length];
+            byte[] readSampless = new byte[length * sizeof(Int32)];
+            br.Read(readSampless, 0, length * sizeof(Int32));
 
-            List<int> list = new List<int>();
-            while (iterator < length)
+            for (int i = 0; i < length; i++)
             {
-                if (sr.EndOfStream)
-                {
-                    throw new IndexOutOfRangeException();
-                }
-
-                string readLine = sr.ReadLine();
-                int readValue = Convert.ToInt32(readLine);
-                list.Add(readValue);
-                iterator++;
+                readSamples[i] = BitConverter.ToInt32(readSampless, i * sizeof(Int32));
             }
 
-            sr.Close();
+            br.Close();
+            stream.Close();
+
+            List<int> list = readSamples.OfType<int>().ToList();
 
             return list;
         }
@@ -147,14 +158,14 @@ namespace EKG_Project.IO
             string fileName = analysisName + "_" + moduleName + "_" + lead + "_" + atr + ".txt";
             string path = Path.Combine(directory, fileName);
 
-            uint count = 0;
-            using (StreamReader r = new StreamReader(path))
-            {
-                while (r.ReadLine() != null)
-                {
-                    count++;
-                }
-            }
+            FileStream stream = new FileStream(path, FileMode.Open);
+            BinaryReader br = new BinaryReader(stream);
+
+            uint count = (uint)br.BaseStream.Length / sizeof(Int32);
+
+            br.Close();
+            stream.Close();
+
             return count;
         }
 
