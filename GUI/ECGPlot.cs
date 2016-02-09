@@ -2000,6 +2000,8 @@ namespace EKG_Project.GUI
                     ECG_Baseline_New_Data_Worker ecg_Baseline = new ECG_Baseline_New_Data_Worker(_currentAnalysisName);
                     try
                     {
+                        int proffesionalCounter = 0; 
+
                         foreach (var t in myTemp.Where(a => a.Item4 == clusterNumber))
                         {                          
                             LineSeries ls = new LineSeries();
@@ -2016,6 +2018,12 @@ namespace EKG_Project.GUI
                             }
 
                             CurrentPlot.Series.Add(ls);
+
+                            if (proffesionalCounter > 9)
+                                break;
+
+                            proffesionalCounter++;
+
                         }
                     }
                     catch (Exception ex)
