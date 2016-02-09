@@ -18,10 +18,11 @@ namespace EKG_Project.IO
             Column column;
             Row row;
             //Cell cell;
+            int colWidth = 15 / _cols;
 
             for (int count = 0; count < _cols; count++)
             {
-                column = table.AddColumn(Unit.FromCentimeter(7));
+                column = table.AddColumn(Unit.FromCentimeter(colWidth));
                 column.Format.Alignment = ParagraphAlignment.Center;
             }
 
@@ -29,8 +30,22 @@ namespace EKG_Project.IO
             {
                 row = table.AddRow();
                 var item = _strToStr.ElementAt(count);
-                row.Cells[0].AddParagraph(item.Key);
-                row.Cells[1].AddParagraph(item.Value);
+
+                if (_cols == 3)
+                {
+                    var key = item.Key;
+                    int leadIndex = key.IndexOf(" ");
+                    string lead = key.Substring(0, leadIndex);
+                    string param = key.Substring(leadIndex);
+                    row.Cells[0].AddParagraph(lead);
+                    row.Cells[1].AddParagraph(param);
+                    row.Cells[2].AddParagraph(item.Value);
+                }
+                else
+                {
+                    row.Cells[0].AddParagraph(item.Key);
+                    row.Cells[1].AddParagraph(item.Value);
+                }
             }
 
             table.SetEdge(0, 0, _cols, _rows, Edge.Box, BorderStyle.Single, 1.5, Colors.Black);
