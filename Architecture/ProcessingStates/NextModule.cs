@@ -1,15 +1,19 @@
-﻿using EKG_Project.Architecture;
-using EKG_Project.Modules;
-using System;
+﻿using System;
 
 namespace EKG_Project.Architecture.ProcessingStates
 {
+    #region Documentation
+    /// <summary>
+    /// Message to Analysis thread, which starts next module.
+    /// </summary>
+    /// 
+    #endregion
     public class NextModule : IProcessingState
     {
 
         #region Documentation
         /// <summary>
-        /// 
+        /// Sets next processing state.
         /// </summary>
         /// <param name="process"></param>
         /// <param name="timeoutState"></param>

@@ -5,7 +5,7 @@ namespace EKG_Project.Architecture.GUIMessages
 {
     #region Documentation
     /// <summary>
-    /// 
+    /// GUI Message, which is generated when error occurs during file loading.
     /// </summary>
     ///
     #endregion
@@ -13,7 +13,7 @@ namespace EKG_Project.Architecture.GUIMessages
     {
         #region Documentation
         /// <summary>
-        /// 
+        /// Reads given message with provided control.
         /// </summary>
         /// <param name="ctrl"></param>
         /// 

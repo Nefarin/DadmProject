@@ -7,9 +7,8 @@ namespace EKG_Project.Architecture
 {
     #region Documentation
     /// <summary>
-    /// TODO
+    /// Class responsible for GUI-Analysis thread synchoronization.
     /// </summary>
-    /// 
     #endregion
     public class ProcessSync
     {
