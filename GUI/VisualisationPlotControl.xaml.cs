@@ -446,6 +446,7 @@ namespace EKG_Project.GUI
             {
                 CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
                 ecgPlot.DisplayHrtLeadVersion(firstLead);
+                this.PlotSlider.Visibility = Visibility.Hidden;
             }
             if (_plotType == "HEART_CLUSTER")
             {
@@ -993,6 +994,13 @@ namespace EKG_Project.GUI
                         ecgPlot.DisplayHrvDfaLeadVersion(c.Name);
                         this.PlotSlider.Visibility = Visibility.Hidden;
                     }
+                    if (_plotType == "HRT")
+                    {
+                        ecgPlot.DisplayHrtLeadVersion(c.Name);
+                        this.PlotSlider.Visibility = Visibility.Hidden;
+                    }
+
+                    
 
                 }
                 else

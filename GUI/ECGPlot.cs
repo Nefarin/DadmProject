@@ -1837,37 +1837,56 @@ namespace EKG_Project.GUI
         {
             try
             {
+                
                 HRT_New_Data_Worker hWD = new HRT_New_Data_Worker(_currentAnalysisName);
-
 
                 if(hWD.LoadVPC(leadName)== Modules.HRT.HRT.VPC.LETS_PLOT)
                 {
+                    CurrentPlot.Axes.Clear();
                     //double[] meanTachogram = hWD.LoadMeanTachogramGUI(leadName);
-                
-                    List<List<double>> tachogram = hWD.LoadTachogramGUI(leadName,1);
+                    int[] statClass = hWD.LoadStatisticsClassNumbersPDF(leadName);
+                    //List<List<double>> tachogram = hWD.LoadTachogramGUI(leadName,statClass[2]);
                     //double[] turbulenceOnsetMean = hWD.LoadTurbulenceOnsetMeanGUI(leadName);
                     //double[] turbulenceSlopeMax = hWD.LoadTurbulenceSlopeMaxGUI(leadName);
                     //int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
                     //int[] loadXPointsMaxSlope = hWD.LoadXPointsMaxSlopeGUI(leadName);
                     //int[] loadXPointsMeanOnset = hWD.LoadXPointsMeanOnsetGUI(leadName);
-                    int a = 0;
-                    System.Windows.MessageBox.Show(leadName);
-                    System.Windows.MessageBox.Show(tachogram.Count.ToString());
+                    //int a = 0;
+                    //System.Windows.MessageBox.Show(leadName);
+                    //System.Windows.MessageBox.Show(statClass[2].ToString());
+                    //System.Windows.MessageBox.Show(tachogram.Count.ToString());
 
-                    foreach(List<double> tach in tachogram)
+                    for(int i = 0; i<statClass[2]; i++)
                     {
-                        LineSeries ls = new LineSeries();
-                        ls.Title = leadName + a.ToString();                     
-                        ls.MarkerStrokeThickness = 1;
-                        a++;
-                        System.Windows.MessageBox.Show("HRT" + a);
-                        for (int i = 0; i < tach.Count; i++)
-                        {
-                            ls.Points.Add(new DataPoint(i, tach[i]));
-                        }
+                        List<List<double>> tachogram = hWD.LoadTachogramGUI(leadName, i);
 
-                        CurrentPlot.Series.Add(ls);
+                        foreach (List<double> tach in tachogram)
+                        {
+                            LineSeries ls = new LineSeries();
+                            ls.Title = leadName + i.ToString();
+                            ls.MarkerStrokeThickness = 1;
+                            
+                            //System.Windows.MessageBox.Show("HRT" + i);
+                            for (int j = 0; j < tach.Count; j++)
+                            {
+                                ls.Points.Add(new DataPoint(j, tach[j]));
+                            }
+
+                            CurrentPlot.Series.Add(ls);
+                        }
                     }
+
+                    var lineraYAxis = new LinearAxis();
+                    lineraYAxis.Position = AxisPosition.Left;
+                    lineraYAxis.Title = "RR interval [ms]";
+
+                    CurrentPlot.Axes.Add(lineraYAxis);
+
+                    var lineraXAxis = new LinearAxis();
+                    lineraXAxis.Position = AxisPosition.Bottom;
+                    lineraXAxis.Title = "RR interval";
+
+                    CurrentPlot.Axes.Add(lineraXAxis);
 
                 }
                 else
