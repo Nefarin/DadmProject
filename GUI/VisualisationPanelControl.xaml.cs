@@ -191,6 +191,11 @@ namespace EKG_Project.GUI
                 {
                     independentModules["HRT"] = 1;
                 }
+                if (tabNames.Contains("HEART_CLUSTER"))
+                {
+                    independentModules["HEART_CLUSTER"] = 1;
+                }
+
                 //add other independent modules
 
 
