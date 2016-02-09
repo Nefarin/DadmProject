@@ -94,14 +94,26 @@ namespace EKG_Project.Modules.T_Wave_Alt
                 case (State.CALCULATE):
 
                     List<int> waves = _wavesWorker.LoadSignal(Waves_Signal.TEnds, _currentName, _currentIndex, (int)_wavesWorker.getNumberOfSamples(Waves_Signal.TEnds, _currentName));
+                    List<int> waves_new = new List<int>();
+                    foreach (int tend in waves)
+                    {
+                        if (tend == -1)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            waves_new.Add(tend);
+                        }
+                    }
                     List<int> t_alt = new List<int>();
                     foreach (Tuple<int, int> alt in _worker.LoadAlternansDetectedList(_currentName, _currentIndex, (int)_worker.getNumberOfSamples(_currentName)))
                     {
                         t_alt.Add(alt.Item1);
                     }
 
-                    _strToStr.Add(_currentName + " t wave alternans recognize percentage: ", CountPercentOfRecognized(t_alt, waves).ToString());
-                    _strToObj.Add(_currentName + " t wave alternans recognize percentage: ", CountPercentOfRecognized(t_alt, waves));
+                    _strToStr.Add(_currentName + " t wave alternans recognize percentage: ", CountPercentOfRecognized(t_alt, waves_new).ToString());
+                    _strToObj.Add(_currentName + " t wave alternans recognize percentage: ", CountPercentOfRecognized(t_alt, waves_new));
 
                     _currentState = State.NEXT_CHANNEL;
                     break;
