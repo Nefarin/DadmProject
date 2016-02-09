@@ -58,7 +58,7 @@ namespace EKG_Project.GUI
             InitializeComponent();
             //ChooseTabDisplay(analyseName,tabNames);
             NewChooseTabDisplay(analyseName, tabNames);
-            HeaderTable.ItemsSource = CreateHeaderInfoTable(analyseName).AsDataView();
+            //HeaderTable.ItemsSource = CreateHeaderInfoTable(analyseName).AsDataView();
 
         }
 
