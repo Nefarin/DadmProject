@@ -53,6 +53,18 @@ namespace EKG_Project.GUI
             public string a2 { get; set; }
         }
 
+        public class DataToTableHeartCluster
+        {
+            public string Lead { get; set; }
+            public string TotalQRSComplex { get; set; }
+            public string ClassAmount { get; set; }
+            //public List<string> IndefOfClass { get; set; }
+            //public List<string> QRSComplexNr { get; set; }
+            public string IndefOfClass { get; set; }
+            public string QRSComplexNr { get; set; }
+
+        }
+
         public class DataToTableHRV1
         {
 
@@ -142,6 +154,9 @@ namespace EKG_Project.GUI
                 case "HRV_DFA":
                     DisplayHRVDFATable();
                     break;
+                case "HEART_CLUSTER":
+                    DisplayHeartClusterTable();
+                    break;
                 default:
                     break;
             }
@@ -210,10 +225,11 @@ namespace EKG_Project.GUI
                 HRV1_New_Data_Worker hW = new HRV1_New_Data_Worker(_currentAnalysisName);
                 foreach(string lead in leadsNameList)
                 {
-                    //DataToTableHRV1 dTT = new DataToTableHRV1();
-                    //dTT.Lead = lead;
-                    //dTT.AVNN = hW.LoadSignal(HRV1_Attributes.AVNN, lead, 0, 1).First().ToString();
-                    //hW.
+                    DataToTableHRV1 dTT = new DataToTableHRV1();
+                    dTT.Lead = lead;
+                    //dTT.HF = "heheszki";
+
+                    _dataToPrint.Add(dTT);
                 }
 
                 this.VisualisationDataTable.DataContext = _dataToPrint;
@@ -265,6 +281,43 @@ namespace EKG_Project.GUI
             }
         }
 
+        private bool DisplayHeartClusterTable()
+        {
+            try
+            {
+                List<DataToTableHeartCluster> _dataToPrint = new List<DataToTableHeartCluster>();
+                Heart_Cluster_Data_Worker hCW = new Heart_Cluster_Data_Worker(_currentAnalysisName);
+                
+                foreach (string lead in leadsNameList)
+                {
+                    try
+                    {
+                        DataToTableHeartCluster dTT = new DataToTableHeartCluster();
+
+                        dTT.Lead = lead;
+                        dTT.ClassAmount = hCW.LoadAttributeI(Heart_Cluster_Attributes_I.NumberofClass, lead).ToString();
+                        dTT.TotalQRSComplex = hCW.LoadAttributeI(Heart_Cluster_Attributes_I.TotalQrsComplex, lead).ToString();
+                        dTT.IndefOfClass = hCW.LoadAttributeII(Heart_Cluster_Attributes_II.indexOfClass, lead).ToString();
+                        dTT.QRSComplexNr = hCW.LoadAttributeII(Heart_Cluster_Attributes_II.QrsComplexNo, lead).ToString();
+
+                        _dataToPrint.Add(dTT);
+                    }
+                    catch(Exception ex)
+                    {
+                        System.Windows.MessageBox.Show(ex.Message);
+                    }
+                }
+
+                this.VisualisationDataTable.DataContext = _dataToPrint;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
 
         public VisualisationTableControl()
         {

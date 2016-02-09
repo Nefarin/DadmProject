@@ -129,16 +129,16 @@ namespace EKG_Project.Modules.Waves
                     List<int> tEnds = _worker.LoadSignal(Waves_Signal.TEnds, _currentName, _currentIndex, (int)_worker.getNumberOfSamples(Waves_Signal.TEnds, _currentName));
 
                     // add recognize precentage of characteristic ECG points to stats output
-                    _strToStr.Add(_currentName + " qrs onsets recognize percentage: ", CountPercentOfRecognized(qrsOns).ToString());
-                    _strToObj.Add(_currentName + " qrs onsets recognize percentage: ", CountPercentOfRecognized(qrsOns));
-                    _strToStr.Add(_currentName + " qrs ends recognize percentage: ", CountPercentOfRecognized(qrsEnds).ToString());
-                    _strToObj.Add(_currentName + " qrs ends recognize percentage: ", CountPercentOfRecognized(qrsEnds));
-                    _strToStr.Add(_currentName + " p onsets recognize percentage: ", CountPercentOfRecognized(pOns).ToString());
-                    _strToObj.Add(_currentName + " p onsets recognize percentage: ", CountPercentOfRecognized(pOns));
-                    _strToStr.Add(_currentName + " p ends recognize percentage: ", CountPercentOfRecognized(pEnds).ToString());
-                    _strToObj.Add(_currentName + " p ends recognize percentage: ", CountPercentOfRecognized(pEnds));
-                    _strToStr.Add(_currentName + " t ends recognize percentage: ", CountPercentOfRecognized(tEnds).ToString());
-                    _strToObj.Add(_currentName + " t ends recognize percentage: ", CountPercentOfRecognized(tEnds));
+                    _strToStr.Add(_currentName + " QRS Onsets recognized: ", CountPercentOfRecognized(qrsOns).ToString() + " [%]");
+                    _strToObj.Add(_currentName + " QRS Onsets recognized: ", CountPercentOfRecognized(qrsOns));
+                    _strToStr.Add(_currentName + " QRS Ends recognized: ", CountPercentOfRecognized(qrsEnds).ToString() + " [%]");
+                    _strToObj.Add(_currentName + " QRS Ends recognized: ", CountPercentOfRecognized(qrsEnds));
+                    _strToStr.Add(_currentName + " P Onsets recognized: ", CountPercentOfRecognized(pOns).ToString() + " [%]");
+                    _strToObj.Add(_currentName + " P Onsets recognized: ", CountPercentOfRecognized(pOns));
+                    _strToStr.Add(_currentName + " P Ends recognized: ", CountPercentOfRecognized(pEnds).ToString() + " [%]");
+                    _strToObj.Add(_currentName + " P Ends recognized: ", CountPercentOfRecognized(pEnds));
+                    _strToStr.Add(_currentName + " T Ends recognized: ", CountPercentOfRecognized(tEnds).ToString() + " [%]");
+                    _strToObj.Add(_currentName + " T Ends recognized: ", CountPercentOfRecognized(tEnds));
 
                     _currentState = State.NEXT_CHANNEL;
                     break;

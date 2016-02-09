@@ -9,6 +9,7 @@ using EKG_Project.Modules;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EKG_Project.GUI
 {
@@ -223,13 +224,22 @@ namespace EKG_Project.GUI
             MessageBox.Show("Started generating PDF");
 
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
+            System.Collections.Generic.List<AvailableOptions> tempListCode = new System.Collections.Generic.List<AvailableOptions>();
+
             foreach (var option in modulePanel.getAllOptions())
             {
 
                 if (option.Set)
                 {
-                    tempList.Add(option.Name);
+                    tempListCode.Add(option.Code);
                 }
+            }
+
+            tempListCode.Sort();
+
+            foreach (var element in tempListCode)
+            {
+                tempList.Add(element.ToString());
             }
 
             IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
@@ -244,6 +254,16 @@ namespace EKG_Project.GUI
         
         public void statsCalculationEnded(Dictionary<AvailableOptions, Dictionary<String, String>> results)
         {
+            Dictionary<AvailableOptions, Dictionary<String, String>> tempResults = new Dictionary<AvailableOptions, Dictionary<string, string>>();
+            var keyList = results.Keys.ToList();
+            keyList.Sort();
+
+            foreach (var key in keyList)
+            {
+                tempResults.Add(key, results[key]);
+            }
+            results = tempResults;
+
             foreach (var result in results)
             {
                 Dictionary<String, String> temp = result.Value;
@@ -258,6 +278,7 @@ namespace EKG_Project.GUI
             foreach (var element in results)
             {
                 data.ModuleOption = element.Key;
+                //System.Console.WriteLine(element.Key.ToString());
                 data.statsDictionary = element.Value;
 
                 pdf.GeneratePDF(data, false);
@@ -273,6 +294,7 @@ namespace EKG_Project.GUI
             progressBar.Value = 0;
             MessageBox.Show("Analysis aborted.");
             loadFileButton.IsEnabled = true;
+            modulePanel.IsEnabled = true;
             startAnalyseButton.IsEnabled = true;
             panel.Visibility = Visibility.Hidden;
         }

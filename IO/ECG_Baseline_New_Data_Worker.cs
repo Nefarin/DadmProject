@@ -67,7 +67,7 @@ namespace EKG_Project.IO
             StreamWriter sw = new StreamWriter(pathOut, mode);
             foreach (var sample in signal)
             {
-                sw.WriteLine(sample.ToString());
+                sw.WriteLine(sample.ToString("N3"));
             }
             sw.Close();
         }
@@ -108,7 +108,8 @@ namespace EKG_Project.IO
                 }
 
                 string readLine = sr.ReadLine();
-                readSamples[iterator] = Convert.ToDouble(readLine);
+                readSamples[iterator] = Double.Parse(readLine);
+                //readSamples[iterator] = Convert.ToDouble(readLine);
                 iterator++;
             }
 
