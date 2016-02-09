@@ -1880,7 +1880,7 @@ namespace EKG_Project.GUI
                         LineSeries ls = new LineSeries();
                         ls.MarkerStrokeThickness = 2;
                         ls.Color = OxyColor.Parse("#ff0000");
-                        ls.Title = "MeanTach";
+                        ls.Title = "AvgTach";
                         
 
                         for (int i = 0; i < meanTachogram.Length; i++)
@@ -1899,7 +1899,7 @@ namespace EKG_Project.GUI
 
                     var lineraXAxis = new LinearAxis();
                     lineraXAxis.Position = AxisPosition.Bottom;
-                    lineraXAxis.Title = "RR interval";
+                    lineraXAxis.Title = "# of RR interval";
 
                     CurrentPlot.Axes.Add(lineraXAxis);
 
@@ -1919,7 +1919,7 @@ namespace EKG_Project.GUI
                             ls.MarkerStrokeThickness = 2;
                             //ls.BrokenLineStyle = LineStyle.DashDashDot;
                             ls.Color = OxyColor.Parse("#4c0026");
-                            ls.Title = "TurbSlope";
+                            ls.Title = "MaxTS";
 
                             for (int i = 0; i <loadXPointsMaxSlope.Length; i++)
                             {
@@ -1941,7 +1941,7 @@ namespace EKG_Project.GUI
                                 LineSeries ls1 = new LineSeries();
                                 ls1.MarkerStrokeThickness = 2;
                                 ls1.Color = OxyColor.Parse("#0000ff");
-                                ls1.Title = "TurbMeanF";
+                                ls1.Title = "AvgTO";
 
                                 ls1.Points.Add(new DataPoint(loadXPointsMeanOnset[0], turbulenceOnsetMean[0]));
                                 ls1.Points.Add(new DataPoint(loadXPointsMeanOnset[1], turbulenceOnsetMean[1]));
@@ -1950,7 +1950,7 @@ namespace EKG_Project.GUI
                                 LineSeries ls2 = new LineSeries();
                                 ls2.MarkerStrokeThickness = 2;
                                 ls2.Color = OxyColor.Parse("#0000ff");
-                                ls2.Title = "TurbMeanS";
+                                //ls2.Title = "TurbMeanS";
 
                                 ls2.Points.Add(new DataPoint(loadXPointsMeanOnset[2], turbulenceOnsetMean[2]));
                                 ls2.Points.Add(new DataPoint(loadXPointsMeanOnset[3], turbulenceOnsetMean[3]));
@@ -1991,6 +1991,7 @@ namespace EKG_Project.GUI
         {
             try
             {
+                CurrentPlot.Axes.Clear();
                 Heart_Cluster_Data_Worker hCW = new Heart_Cluster_Data_Worker(_currentAnalysisName);
                 List<Tuple<int,int,int,int>> myTemp = hCW.LoadClusterizationResult(leadName, 0, (int)hCW.LoadAttributeI(Heart_Cluster_Attributes_I.TotalQrsComplex, leadName));
 
@@ -2021,6 +2022,18 @@ namespace EKG_Project.GUI
                     {
                         System.Windows.MessageBox.Show(ex.Message);
                     }
+
+
+                    var lineraYAxis = new LinearAxis();
+                    lineraYAxis.Position = AxisPosition.Left;
+                    lineraYAxis.Title = "Apmlitude [mV]";
+
+                    CurrentPlot.Axes.Add(lineraYAxis);
+
+                    var lineraXAxis = new LinearAxis();
+                    lineraXAxis.Position = AxisPosition.Bottom;
+                    lineraXAxis.IsAxisVisible = false;
+                    CurrentPlot.Axes.Add(lineraXAxis);
 
                 }
                 RefreshPlot();
