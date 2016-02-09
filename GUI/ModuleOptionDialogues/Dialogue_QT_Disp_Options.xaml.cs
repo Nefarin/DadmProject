@@ -20,7 +20,7 @@ using EKG_Project.Modules;
 namespace EKG_Project.GUI.ModuleOptionDialogues
 {
     /// <summary>
-    /// Interaction logic for Dialogue_QT_Disp.xaml
+    /// Interaction logic for DialogueBox of QT_DISP Options
     /// </summary>
 
 
@@ -30,6 +30,11 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
         public ModuleParams PendingParameters { get; set; }
         ModulePanel panel;
 
+        /// <summary>
+        /// Set Options in QT_DISP DialogBox, set also parameters of window location
+        /// </summary>
+        /// <param name="parent">Parent is a ModulPanel object</param>
+        /// <param name="parameters">Get parameters from Params Class, here it sets the name of analysis</param>
         public Dialogue_QT_Disp_Options(Object parent, QT_Disp_Params parameters)
         {
             panel = parent as ModulePanel;
@@ -43,13 +48,22 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             this.Top = SystemParameters.PrimaryScreenHeight - this.Height - 350;
         }
 
-
+        /// <summary>
+        /// Apply changes in dialog box with options
+        /// </summary>
+        /// <param name="sender">Supports class in .NET, default param</param>
+        /// <param name="e">Contains state information and event data associated with a routed event</param>
         private void ApplyParameterChanges(object sender, RoutedEventArgs e)
         {
             this.returnParameters.CopyFrom(this.PendingParameters);
             this.Close();
         }
 
+        /// <summary>
+        /// Simply close the window with parameters
+        /// </summary>
+        /// <param name="sender">Supports class in .NET, default param</param>
+        /// <param name="e">Contains state information and event data associated with a routed event</param>
         private void RejectParameterChanges(object sender, RoutedEventArgs e)
         {
             this.Close();

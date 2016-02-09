@@ -45,6 +45,9 @@ namespace EKG_Project.GUI
         public string Name { get; set; }
         public AvailableOptions Code { get; set; }
 
+        /// <summary>
+        /// Set an analysis name in every module, show options dialog box in some cases (when chosen and needed)
+        /// </summary>
         public bool Set
         {
             get
@@ -216,6 +219,9 @@ namespace EKG_Project.GUI
         public ModuleParams ModuleParam { get; set; }
         public ModulePanel Panel;
 
+        /// <summary>
+        /// Method which shows if parameters are available in chosen module
+        /// </summary>
         public bool ParametersAvailable
         {
             get
@@ -224,6 +230,9 @@ namespace EKG_Project.GUI
             }
         }
 
+        /// <summary>
+        /// Get analysis name when set
+        /// </summary>
         public string AnalysisName
         {
             get
@@ -242,6 +251,12 @@ namespace EKG_Project.GUI
 
         #region Constructors
 
+        /// <summary>
+        /// Set current parameters od module options
+        /// </summary>
+        /// <param name="code">Analysis name</param>
+        /// <param name="panel">ModuleOptions object - panel</param>
+        /// <param name="parent">ModuleOption object = parent(default set to null)</param>
         public ModuleOption(AvailableOptions code, ModulePanel panel, ModuleOption parent = null)
         {
             this.Code = code;
@@ -255,17 +270,31 @@ namespace EKG_Project.GUI
 
         #region Methods
 
+        /// <summary>
+        /// Method which returs an analysis name
+        /// </summary>
+        /// <returns>AReturn analysis name</returns>
         private String getAnalysisName()
         {
             return this.AnalysisName;
         }
 
+        /// <summary>
+        /// Adds suboption (submodule) in module tree
+        /// </summary>
+        /// <param name="code">Analysis name</param>
+        /// <returns>Returns suboption</returns>
         public ModuleOption AddSuboption(AvailableOptions code)
         {
             this.Suboptions.Add(new ModuleOption(code, this.Panel, this));
             return this;
         }
 
+        /// <summary>
+        /// Adds suboption (submodule) and moves one level down (create a child branch)
+        /// </summary>
+        /// <param name="code">Analysis name</param>
+        /// <returns>Returns suboption</returns>
         public ModuleOption AddSuboptionAndMoveDown(AvailableOptions code)
         {
             var suboption = new ModuleOption(code, this.Panel, this);
@@ -273,12 +302,21 @@ namespace EKG_Project.GUI
             return suboption;
         }
 
+        /// <summary>
+        /// Adds suboption (submodule) and moves one level up (return to parent branch)
+        /// </summary>
+        /// <param name="code">Analysis name</param>
+        /// <returns>Returns suboption</returns>
         public ModuleOption AddSuboptionAndMoveUp(AvailableOptions code)
         {
             this.Suboptions.Add(new ModuleOption(code, this.Panel, this));
             return this.Parent;
         }
 
+        /// <summary>
+        /// Handles property changed events
+        /// </summary>
+        /// <param name="propertyName">Which property was changed</param>
         void OnPropertyChanged(string propertyName)
         {
             if (this.PropertyChanged != null)
@@ -287,6 +325,9 @@ namespace EKG_Project.GUI
             }
         }
 
+        /// <summary>
+        /// Fills dictionares with codes and options of modules
+        /// </summary>
         public void FillDictionaries()
         {
             this.Panel.Params[this.Code] = this.ModuleParam;
@@ -297,6 +338,9 @@ namespace EKG_Project.GUI
         #endregion
     }
 
+    /// <summary>
+    /// Shown all available options (modules) as enums
+    /// </summary>
     public enum AvailableOptions
     {
         ECG_BASELINE,

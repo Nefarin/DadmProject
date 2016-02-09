@@ -19,7 +19,7 @@ using System.Windows.Shapes;
 namespace EKG_Project.GUI.ModuleOptionDialogues
 {
     /// <summary>
-    /// Interaction logic for Dialogue_ECG_Baseline_Options.xaml
+    /// Interaction logic for DialogueBox of ECG_Baseline Options
     /// </summary>
     public partial class Dialogue_ECG_Baseline_Options : Window
     {
@@ -28,6 +28,9 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
         ModulePanel panel;
         private readonly System.Windows.Forms.Form _parent;
 
+        /// <summary>
+        /// Set current language and culture of user(dot or comma for float,double numbers)
+        /// </summary>
         public static CultureInfo CurrentCulture
         {
             get
@@ -35,7 +38,11 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
                 return Thread.CurrentThread.CurrentCulture;
             }
         }
-
+        /// <summary>
+        /// Set Options in ECG_Baseline DialogBox, set also parameters of window location
+        /// </summary>
+        /// <param name="parent">Parent is a ModulPanel object</param>
+        /// <param name="parameters">Get parameters from Params Class, here it sets the name of analysis</param>
         public Dialogue_ECG_Baseline_Options(Object parent, ECG_Baseline_Params parameters)
         {
             panel = parent as ModulePanel;
@@ -49,12 +56,22 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             this.Top = SystemParameters.PrimaryScreenHeight - this.Height - 250;
         }
 
+        /// <summary>
+        /// Apply changes in dialog box with options
+        /// </summary>
+        /// <param name="sender">Supports class in .NET, default param</param>
+        /// <param name="e">Contains state information and event data associated with a routed event</param>
         private void ApplyParameterChanges(object sender, RoutedEventArgs e)
         {
             this.returnParameters.CopyFrom(this.PendingParameters);
             this.Close();
         }
 
+        /// <summary>
+        /// Simply close the window with parameters
+        /// </summary>
+        /// <param name="sender">Supports class in .NET, default param</param>
+        /// <param name="e">Contains state information and event data associated with a routed event</param>
         private void RejectParameterChanges(object sender, RoutedEventArgs e)
         {
             this.Close();

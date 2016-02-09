@@ -28,22 +28,32 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             set { SetValue(NumberProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Number.  This enables animation, styling, binding, etc...
+        /// <summary>
+        ///  Using a DependencyProperty as the backing store for Number.  This enables animation, styling, binding, etc...
+        /// </summary>
         public static readonly DependencyProperty NumberProperty =
             DependencyProperty.Register("Number", typeof(double), typeof(NumericTextBox), new FrameworkPropertyMetadata(default(double), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+        /// <summary>
+        /// Get and set number in correct format
+        /// </summary>
         public NumberStyles NumberType
         {
             get { return (NumberStyles)GetValue(NumberTypeProperty); }
             set { SetValue(NumberTypeProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for NumberType.  This enables animation, styling, binding, etc...
+        /// <summary>
+        ///  Using a DependencyProperty as the backing store for NumberType.  This enables animation, styling, binding, etc...
+        /// </summary>
         public static readonly DependencyProperty NumberTypeProperty =
             DependencyProperty.Register("NumberType", typeof(NumberStyles), typeof(NumericTextBox), new PropertyMetadata(default(NumberStyles)));
 
         #endregion
 
+        /// <summary>
+        /// Set property and pasting handle of NumericTextBox
+        /// </summary>
         public NumericTextBox() : base()
         {
             DataObject.AddPastingHandler(this, OnTextBoxPasting);
@@ -55,6 +65,11 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             this.TextChanged += this.TextBox_TextChanged;
         }
 
+        /// <summary>
+        /// Check if user typed an allowed number in current culture (dot or comma)
+        /// </summary>
+        /// <param name="text">Wrote by user in NumericTextBox field</param>
+        /// <returns></returns>
         private bool IsTextAllowed(string text)
         {
             double number;
@@ -64,6 +79,11 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             return result;
         }
 
+        /// <summary>
+        /// Can not allow user to type not a number char
+        /// </summary>
+        /// <param name="sender">Supports class in .NET, default param</param>
+        /// <param name="e">Contains state information and event data associated with a routed event</param>
         private void OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var builder = new StringBuilder(this.Text);
@@ -78,7 +98,9 @@ namespace EKG_Project.GUI.ModuleOptionDialogues
             e.Handled = !this.IsTextAllowed(builder.ToString());
         }
 
-        // Use the DataObject.Pasting Handler 
+        /// <summary>
+        /// Use the DataObject.Pasting Handler 
+        /// </summary>
         private void OnTextBoxPasting(object sender, DataObjectPastingEventArgs e)
         {
             if (e.DataObject.GetDataPresent(typeof(String)))

@@ -14,7 +14,7 @@ namespace EKG_Project.GUI
 {
     /// <summary>
     /// Interaction logic for AnalysisControl.xaml
-    /// Handling buttons
+    /// Handling buttons (Play, Load file, Pdf path and Close)
     /// </summary>
     public partial class AnalysisControl : UserControl, INotifyPropertyChanged
     {
@@ -26,6 +26,9 @@ namespace EKG_Project.GUI
 
         private ABORT_MODE _abortMode;
 
+        /// <summary>
+        /// Set bool parameter if analysis is in progress
+        /// </summary>
         public bool AnalysisInProgress
         {
             
@@ -41,10 +44,19 @@ namespace EKG_Project.GUI
             }
         }
 
+        /// <summary>
+        /// set bool value if analysis is running or not (opposite to bool param AnalysisInProgress)
+        /// </summary>
         public bool AnalysisNotRunning { get { return !this.AnalysisInProgress; } }
 
+        /// <summary>
+        /// Handle event changes (has anything changed?) 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Method which handles changes (has anything changed?) 
+        /// </summary>
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             if (PropertyChanged != null)
@@ -53,11 +65,21 @@ namespace EKG_Project.GUI
             }
         }
 
+        /// <summary>
+        /// Method which handles exitButton, create new Abort method
+        /// </summary>
+        /// <param name="sender">Supports class in .NET, default param</param>
+        /// <param name="e">Contains state information and event data associated with a routed event</param>
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
             _communication.SendGUIMessage(new Abort());
         }
 
+        /// <summary>
+        /// Allows user to load correct file from custom destination
+        /// </summary>
+        /// <param name="sender">Supports class in .NET, default param</param>
+        /// <param name="e">Contains state information and event data associated with a routed event</param>
         private void loadFileButton_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.OpenFileDialog fileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -78,6 +100,11 @@ namespace EKG_Project.GUI
 
         }
 
+        /// <summary>
+        /// Begin an analysis (if file is loaded) and user checked any analysis
+        /// </summary>
+        /// <param name="sender">Supports class in .NET, default param</param>
+        /// <param name="e">Contains state information and event data associated with a routed event</param>
         private void startAnalyseButton_Click(object sender, RoutedEventArgs e)
         {
             foreach (var option in modulePanel.getAllOptions())
@@ -104,6 +131,11 @@ namespace EKG_Project.GUI
 
         }
 
+        /// <summary>
+        /// Allows user to choose a destination folder of summary pdf file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pdfButton_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.SaveFileDialog fileDialog = new System.Windows.Forms.SaveFileDialog();
@@ -119,6 +151,9 @@ namespace EKG_Project.GUI
             }
         }
 
+        /// <summary>
+        /// Inform user if analysis has begun, start processing
+        /// </summary>
         public void processingStarted()
         {
             this.VisualisationPanelUserControl.Visibility = Visibility.Hidden;
@@ -132,6 +167,9 @@ namespace EKG_Project.GUI
             buttonAbort.Content = "Abort analysis";
         }
 
+        /// <summary>
+        /// Close analysis progress bar, inform that analysis has ended
+        /// </summary>
         public void processingEnded()
         {
             this.AnalysisInProgress = false;
@@ -154,6 +192,11 @@ namespace EKG_Project.GUI
             this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
         }
 
+        /// <summary>
+        /// Update a progress bar with current analysis
+        /// </summary>
+        /// <param name="module">Name of module which is analysing</param>
+        /// <param name="progress">% of progress in calculation</param>
         public void updateProgress(AvailableOptions module, double progress)
         {
             analysisLabel.Content = "Analysis in progress..\nCurrent module: " + module.ToString();
@@ -168,6 +211,11 @@ namespace EKG_Project.GUI
 
         }
 
+        /// <summary>
+        /// Inform that module calculations has ended (including a case in which it has been aborted)
+        /// </summary>
+        /// <param name="module">Module name</param>
+        /// <param name="aborted">Bool vale shows if module has been abortet</param>
         public void moduleEnded(AvailableOptions module, bool aborted)
         {
             Console.WriteLine(module + " Ended");
@@ -180,17 +228,17 @@ namespace EKG_Project.GUI
                 try
                 {
                     isComputed.Add(module, true);
-                }
-                
+                }            
                 catch (Exception e)
                 {
 
                 }
-
-
             }
         }
 
+        /// <summary>
+        /// Handle Play Button
+        /// </summary>
         public void fileLoaded()
         {
             startAnalyseButton.IsEnabled = true;
@@ -198,7 +246,10 @@ namespace EKG_Project.GUI
             progressBar.IsIndeterminate = false;
             MessageBox.Show("File loaded successfully.");
         }
-
+    
+        /// <summary>
+        /// Shows error in file loading - file error
+        /// </summary>
         public void fileError()
         {
             startAnalyseButton.IsEnabled = false;
@@ -208,6 +259,9 @@ namespace EKG_Project.GUI
 
         }
 
+        /// <summary>
+        /// Shows error in file loading - file not loaded
+        /// </summary>
         public void fileNotLoaded()
         {
             startAnalyseButton.IsEnabled = false;
@@ -217,6 +271,9 @@ namespace EKG_Project.GUI
 
         }
 
+        /// <summary>
+        /// Starts generating a pdf summary file
+        /// </summary>
         IO.PDFGenerator pdf;
         public void statsCalculationStarted()
         {
@@ -242,6 +299,10 @@ namespace EKG_Project.GUI
         }
 
         
+        /// <summary>
+        /// Ends generating a pdf summary file
+        /// </summary>
+        /// <param name="results"></param>
         public void statsCalculationEnded(Dictionary<AvailableOptions, Dictionary<String, String>> results)
         {
             foreach (var result in results)
@@ -268,6 +329,10 @@ namespace EKG_Project.GUI
             pdf.ProcessStart();
         }
 
+
+        /// <summary>
+        /// Abort an analysis (by user or event)
+        /// </summary>
         public void analysisAborted()
         {
             progressBar.Value = 0;
@@ -277,6 +342,9 @@ namespace EKG_Project.GUI
             panel.Visibility = Visibility.Hidden;
         }
 
+        /// <summary>
+        /// Shows that loading a file has been aborted
+        /// </summary>
         public void loadingAborted()
         {
             panel.Visibility = Visibility.Hidden;
@@ -293,7 +361,11 @@ namespace EKG_Project.GUI
             message.Read(this);
         }
 
-
+        /// <summary>
+        /// Method which handle abort button click (in which case it has been aborted)
+        /// </summary>
+        /// <param name="sender">Supports class in .NET, default param</param>
+        /// <param name="e">Contains state information and event data associated with a routed event</param>
         private void buttonAbort_Click(object sender, RoutedEventArgs e)
         {
             switch(_abortMode)
@@ -306,8 +378,7 @@ namespace EKG_Project.GUI
                     break;
                 case (ABORT_MODE.ABORT_STATS_CALC):
                     break;
-            }
-            
+            }       
         }
     }
 }

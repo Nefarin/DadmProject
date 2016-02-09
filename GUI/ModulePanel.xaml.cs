@@ -37,6 +37,9 @@ namespace EKG_Project.GUI
 
         private string _analysisName;
 
+        /// <summary>
+        /// Creates a module tree
+        /// </summary>
         public ModulePanel()
         {
             InitializeComponent();
@@ -79,6 +82,11 @@ namespace EKG_Project.GUI
             }
         }
 
+        /// <summary>
+        /// Method onClick which shows and sets options in modules
+        /// </summary>
+        /// <param name="sender">Supports class in .NET, default param</param>
+        /// <param name="e">Contains state information and event data associated with a routed event</param>
         private void btn_Click(object sender, RoutedEventArgs e)
         {
             ModuleOption option = (ModuleOption)((Button)sender).DataContext;

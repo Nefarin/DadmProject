@@ -9,6 +9,7 @@
         mc:Ignorable="d"
         Title="QT_Disp Options" Height="180" Width="300" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Window.Resources>
+        <!--ObjectDataProvider allows our window to set enum values from Param Class-->
         <ObjectDataProvider x:Key="availableMethods" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
@@ -39,6 +40,7 @@
         <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,5" x:Name="tEndMethod" ItemsSource="{Binding Source={StaticResource availableTEndMethods}}" SelectedItem="{Binding Path=TEndMethod}" ></ComboBox>
         <Label Grid.Row="2" Grid.Column="0">Number of leads</Label>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,5,0,0">
+            <!--Radiobutton with singleDrain or allDrains mode-->
             <RadioButton  x:Name="radioButtoOne" GroupName="Group1" Content="One"
              IsChecked="{Binding Path=SingleDrain, Mode=TwoWay}" />
             <RadioButton x:Name="radioButtonMultiple" Margin="10,0,0,0" GroupName="Group1"  Content="Multiple" 

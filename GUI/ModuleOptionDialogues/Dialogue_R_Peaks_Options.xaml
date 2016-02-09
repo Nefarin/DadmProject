@@ -9,6 +9,7 @@
         mc:Ignorable="d"
         Title="R_Peaks Options" Height="110" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Window.Resources>
+        <!--ObjectDataProvider allows our window to get R_Peaks options from Param Class-->
         <ObjectDataProvider x:Key="availableMethods" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>

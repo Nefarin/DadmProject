@@ -9,6 +9,7 @@
         mc:Ignorable="d"
         Title="Atrial_Fibr Options" Height="110" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize" Icon="/EKG_Project;component/GUI/Images/serce.png">
     <Window.Resources>
+        <!--ObjectDataProvider allows our window to get enum values from Param class-->
         <ObjectDataProvider x:Key="availableMethods" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>

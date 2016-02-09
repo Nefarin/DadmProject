@@ -18,6 +18,7 @@
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <UserControl Name="VisualisationPanelUserControl" Content="{Binding}" Grid.Column="1" Grid.Row="0" Margin="0,0,0,0" Visibility="Hidden" />
+        <!--Progress bar which shows progress of calculating each module-->
         <StackPanel x:Name ="panel" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="15,0"
                      Visibility="{Binding Path=AnalysisInProgress, RelativeSource={RelativeSource AncestorType={x:Type local:AnalysisControl}}, Converter={StaticResource BoolToVisibility}}">
             <StackPanel.Background>
@@ -28,6 +29,7 @@
             <Button x:Name="buttonAbort" Margin="10" HorizontalAlignment="Right" Click="buttonAbort_Click">Abort analysis</Button>
         </StackPanel>
         <local:ModulePanel x:Name="modulePanel" Grid.Column="0" Grid.Row="0" Margin="0,0,0,0"/>
+        <!--Location of Play, Load file, Pdf path and Close buttons with custom images-->
         <UniformGrid Grid.Row="1" Grid.Column="0" Rows="1" Columns="4" Margin="5,0,5,0">
             <Button x:Name="startAnalyseButton" Click="startAnalyseButton_Click">
                 <StackPanel Orientation="Horizontal">

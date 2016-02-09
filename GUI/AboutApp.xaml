@@ -9,7 +9,9 @@
         mc:Ignorable="d"
         Title="About ECG Analyser Application" Height="500" Width="370" Icon="Images/serce.png">
     <Grid>
+        <!--Set logo in About application window-->
         <Image x:Name="image" Source="images/logo.gif" HorizontalAlignment="Left" Height="100" Margin="110,10,0,0" VerticalAlignment="Top" Width="140"/>
+        <!--TextBlock is used here for give user an information about aplications and its participants-->
         <TextBlock x:Name="autors" HorizontalAlignment="Left" Margin="15,121,0,0" TextWrapping="WrapWithOverflow"  VerticalAlignment="Top" Height="81" Width="333" xml:space="preserve"  
                    Text="The Application is used for basic ECG Analysis.
 It includes modules such as: Atrial Fibr, Baseline, Flutter, Heart Axis, Heart Class, Heart Cluster, HRV 
@@ -19,6 +21,7 @@ T-Wave-Alt, Waves.">
         <Button x:Name="button" Content="OK" Click="button_Click"  HorizontalAlignment="Left" Margin="137,416,0,0" VerticalAlignment="Top" Width="83" Height="28" />
         <Label x:Name="label" Content="Copywrite © 2016 EAIiIB IB IEM Students" HorizontalAlignment="Left" Margin="55,385,0,0" VerticalAlignment="Top" Width="247"/>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="15,202,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="56" Width="338"><Run Text="The whole application was made by Biomedical Engineering students in cooperation with MSc Tomasz Pięciak. The Project Manager was Maciej Bojdak."/><Run Text=" "/></TextBlock>
+       <!--Because of many participants scroll has to be created to paste all students names. GUI use xml:space to make text more readable-->
         <ScrollViewer VerticalScrollBarVisibility="Visible" 
                  HorizontalScrollBarVisibility="Disabled" Margin="10,271,10.333,90.667" Height="60">
             <TextBlock Height="210" xml:space="preserve" ScrollViewer.CanContentScroll="True"
