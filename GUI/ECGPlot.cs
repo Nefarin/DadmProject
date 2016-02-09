@@ -1838,7 +1838,8 @@ namespace EKG_Project.GUI
                 if(hWD.LoadVPC(leadName)== Modules.HRT.HRT.VPC.LETS_PLOT)
                 {
                     //double[] meanTachogram = hWD.LoadMeanTachogramGUI(leadName);
-                    List<List<double>> tachogram = hWD.LoadTachogramGUI(leadName);
+                
+                    List<List<double>> tachogram = hWD.LoadTachogramGUI(leadName,1);
                     //double[] turbulenceOnsetMean = hWD.LoadTurbulenceOnsetMeanGUI(leadName);
                     //double[] turbulenceSlopeMax = hWD.LoadTurbulenceSlopeMaxGUI(leadName);
                     //int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
