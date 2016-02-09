@@ -1060,7 +1060,14 @@ namespace EKG_Project.GUI
                 }
                 else
                 {
-                    ecgPlot.ControlOtherModulesSeries(c.Name, false);
+                    if (_plotType == "HRT")
+                    {
+                        ecgPlot.DisplayHrtLeadVersion(currentLead, false);
+                    }
+                    else
+                    {
+                        ecgPlot.ControlOtherModulesSeries(c.Name, false);
+                    }
                 }
             }
             catch(Exception ex)

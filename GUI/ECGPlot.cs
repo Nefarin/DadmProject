@@ -1845,12 +1845,7 @@ namespace EKG_Project.GUI
                     CurrentPlot.Axes.Clear();
                     //double[] meanTachogram = hWD.LoadMeanTachogramGUI(leadName);
                     int[] statClass = hWD.LoadStatisticsClassNumbersPDF(leadName);
-                    //List<List<double>> tachogram = hWD.LoadTachogramGUI(leadName,statClass[2]);
-                    //double[] turbulenceOnsetMean = hWD.LoadTurbulenceOnsetMeanGUI(leadName);
-                    //double[] turbulenceSlopeMax = hWD.LoadTurbulenceSlopeMaxGUI(leadName);
-                    //int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
-                    //int[] loadXPointsMaxSlope = hWD.LoadXPointsMaxSlopeGUI(leadName);
-                    //int[] loadXPointsMeanOnset = hWD.LoadXPointsMeanOnsetGUI(leadName);
+
                     //int a = 0;
                     //System.Windows.MessageBox.Show(leadName);
                     //System.Windows.MessageBox.Show(statClass[2].ToString());
@@ -1909,6 +1904,27 @@ namespace EKG_Project.GUI
                     if(turb)
                     {
                         System.Windows.MessageBox.Show("Turbulance fo lead" + leadName);
+
+                        //double[] turbulenceOnsetMean = hWD.LoadTurbulenceOnsetMeanGUI(leadName);
+                        double[] turbulenceSlopeMax = hWD.LoadTurbulenceSlopeMaxGUI(leadName);
+                        //int[] loadXAxisTachogram = hWD.LoadXAxisTachogramGUI(leadName);
+                        int[] loadXPointsMaxSlope = hWD.LoadXPointsMaxSlopeGUI(leadName);
+                        //int[] loadXPointsMeanOnset = hWD.LoadXPointsMeanOnsetGUI(leadName);
+                        if (loadXPointsMaxSlope.Length > 0)
+                        {
+                            LineSeries ls = new LineSeries();
+                            ls.MarkerStrokeThickness = 2;
+                            //ls.BrokenLineStyle = LineStyle.DashDashDot;
+                            ls.Color = OxyColor.Parse("#ff0080");
+                            ls.Title = "TurbSlope";
+
+                            for (int i = 0; i <loadXPointsMaxSlope.Length; i++)
+                            {
+                                ls.Points.Add(new DataPoint(loadXPointsMaxSlope[i], turbulenceSlopeMax[i]));
+                            }
+
+                            CurrentPlot.Series.Add(ls);
+                        }                     
                     }
 
                 }
