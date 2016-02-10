@@ -8,6 +8,9 @@ namespace EKG_Unit.Modules.TestModule3
     [TestClass]
     public class TestModule3_Alg_Test
     {
+        public static void Main()
+        { }
+
         [TestMethod]
         [Description("Test if vector properly scales - equality test")]
         public void scaleSamplesTest1()

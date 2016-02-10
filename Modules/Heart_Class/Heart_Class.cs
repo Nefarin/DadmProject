@@ -12,12 +12,7 @@ namespace EKG_Project.Modules.Heart_Class
 {
     public class Heart_Class : IModule
     {
-        private enum STATE
-        {
-            INIT, BEGIN_CHANNEL, LOAD_PART_OF_SIGNAL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL,
-
-            END_CHANNEL, END
-        };
+        private enum STATE { INIT, BEGIN_CHANNEL, LOAD_PART_OF_SIGNAL, PROCESS_FIRST_STEP, PROCESS_CHANNEL, NEXT_CHANNEL, END_CHANNEL, END };
         private bool _ended;
         private bool _aborted;
 
@@ -117,7 +112,7 @@ namespace EKG_Project.Modules.Heart_Class
 
 
                 _leads = InputBasicWorker.LoadLeads().ToArray();
-                _numberProcessedComplexes = 500;
+                
 
                 if (findChannel())
                 {
@@ -127,15 +122,17 @@ namespace EKG_Project.Modules.Heart_Class
 
                     _currentChannelIndex = -1;
                     _leadNameChannel2 = _leads[_channel2];
+                    _numberProcessedComplexes = 500;
 
-                    // ubezpieczenie się na wypadek błedów w wyższych modułach (nierówna ilośc próbek w Rpeaks, albo QRSonsets,  QRSends)
-                    
+                    // ubezpieczenie się na wypadek błedów w wyższych modułach (nierówna ilośc próbek w Rpeaks, albo QRSonsets, QRSends)
+
                     _numberOfStepsArray = new uint[3];
                     _numberOfStepsArray[0] = InputWavesWorker.getNumberOfSamples(Waves_Signal.QRSOnsets, _leadNameChannel2);
                     _numberOfStepsArray[1] = InputWavesWorker.getNumberOfSamples(Waves_Signal.QRSEnds, _leadNameChannel2);
                     _numberOfStepsArray[2] = InputRpeaksWorker.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _leadNameChannel2);
 
                     _numberOfSteps = (int)_numberOfStepsArray.Min();
+                    Console.WriteLine(_numberOfSteps);
                     _totalNumberOfR = (int)_numberOfStepsArray[2];
 
                     OutputWorker.SaveChannelMliiDetected(true);
@@ -186,7 +183,7 @@ namespace EKG_Project.Modules.Heart_Class
                     //to było w BEGIN CHANNEL, ale go usunęłam i przeniosłam tu:
                     _currentChannelIndex++;
                     _currentLeadName = _leads[_channel2];
-                    _currentChannelLength = (int)InputBasicWorker.getNumberOfSamples(_currentLeadName); 
+                    _currentChannelLength = (int)InputBasicWorker.getNumberOfSamples(_currentLeadName); //to potrzebuje? Chyba nie
                     _currentIndex = 0;
                     _samplesProcessed = 0;
                     _numberProcessedComplexesCounter = 0;
@@ -222,18 +219,15 @@ namespace EKG_Project.Modules.Heart_Class
                     if (!_lastLoading)
                     {
                         _arrayR = InputRpeaksWorker.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName,
-                            _samplesProcessed,
-                            _numberProcessedComplexes);
+                            _samplesProcessed, _numberProcessedComplexes);
                         _arrayQRSOnSet =
                             new List<int>(InputWavesWorker.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName,
-                                _samplesProcessed,
-                                _numberProcessedComplexes));
+                                _samplesProcessed,_numberProcessedComplexes));
                         _arrayQRSEnds =
                             new List<int>(InputWavesWorker.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName,
-                                _samplesProcessed,
-                                _numberProcessedComplexes));
+                                _samplesProcessed,_numberProcessedComplexes));
 
-                        _step = (int)_arrayR[_numberProcessedComplexes - 1];
+                        _step = (int)_arrayR[_numberProcessedComplexes - 1] - _currentIndex;
                         _currentVector = InputEcGbaselineWorker.LoadSignal(_currentLeadName, _currentIndex, _step);
 
                         _numberOfSignalLoading++;
@@ -467,16 +461,16 @@ namespace EKG_Project.Modules.Heart_Class
         public static void Main(String[] args)
         {
             IModule testModule = new EKG_Project.Modules.Heart_Class.Heart_Class();
-            Heart_Class_Params param = new Heart_Class_Params("Analysis2");
+            Heart_Class_Params param = new Heart_Class_Params("Analysis106");
 
             testModule.Init(param);
             while (!testModule.Ended())
             {
                 testModule.ProcessData();
-                //Console.WriteLine(testModule.Progress());
+                Console.WriteLine(testModule.Progress());
             }
 
-            //Console.ReadKey();
+            Console.ReadKey();
         }
 
     }
