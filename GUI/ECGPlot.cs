@@ -25,6 +25,7 @@ namespace EKG_Project.GUI
         private double _maxSeriesTime;
         private double _minSeriesTime;
 
+
         private int _beginingPoint;
         private int _scalingPlotValue; 
         private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
