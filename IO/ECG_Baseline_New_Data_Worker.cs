@@ -49,7 +49,6 @@ namespace EKG_Project.IO
             this.analysisName = analysisName;
         }
 
-        /*
         #region Documentation
         /// <summary>
         /// Saves part of filtered signal in txt file
@@ -58,95 +57,6 @@ namespace EKG_Project.IO
         /// <param name="mode">true:append, false:overwrite file</param>
         /// <param name="signal">signal</param>
         #endregion
-        public void SaveSignal(string lead, bool mode, Vector<double> signal)
-        {
-            string moduleName = this.GetType().Name;
-            moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
-            string pathOut = Path.Combine(directory, fileName);
-
-
-            StreamWriter sw = new StreamWriter(pathOut, mode);
-            foreach (var sample in signal)
-            {
-                sw.WriteLine(Math.Round(sample, 3).ToString());
-            }
-            sw.Close();
-        }
-
-        #region Documentation
-        /// <summary>
-        /// Loads filtered signal from txt file
-        /// </summary>
-        /// <param name="lead">lead</param>
-        /// <param name="startIndex">start index</param>
-        /// <param name="length">length</param>
-        /// <returns>signal</returns>
-        #endregion
-        public Vector<double> LoadSignal(string lead, int startIndex, int length)
-        {
-            string moduleName = this.GetType().Name;
-            moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
-            string pathIn = Path.Combine(directory, fileName);
-
-            StreamReader sr = new StreamReader(pathIn);
-
-            //pomijane linie ...
-            int iterator = 0;
-            while (iterator < startIndex && !sr.EndOfStream)
-            {
-                string readLine = sr.ReadLine();
-                iterator++;
-            }
-
-            iterator = 0;
-            double[] readSamples = new double[length];
-            while (iterator < length)
-            {
-                if (sr.EndOfStream)
-                {
-                    throw new IndexOutOfRangeException();
-                }
-
-                string readLine = sr.ReadLine();
-                readSamples[iterator] = Convert.ToDouble(readLine);
-                iterator++;
-            }
-
-            sr.Close();
-
-            Vector<double> vector = Vector<double>.Build.Dense(readSamples.Length);
-            vector.SetValues(readSamples);
-            return vector;
-        }
-
-        #region Documentation
-        /// <summary>
-        /// Gets number of filtered signal samples
-        /// </summary>
-        /// <param name="lead">lead</param>
-        /// <returns>number of samples</returns> 
-        #endregion
-        public uint getNumberOfSamples(string lead)
-        {
-            string moduleName = this.GetType().Name;
-            moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
-            string path = Path.Combine(directory, fileName);
-
-            uint count = 0;
-            using (StreamReader r = new StreamReader(path))
-            {
-                while (r.ReadLine() != null)
-                {
-                    count++;
-                }
-            }
-            return count;
-        }
-         * */
-
         public void SaveSignal(string lead, bool mode, Vector<double> signal)
         {
             string moduleName = this.GetType().Name;
@@ -178,6 +88,15 @@ namespace EKG_Project.IO
             }
         }
 
+        #region Documentation
+        /// <summary>
+        /// Loads filtered signal from txt file
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <param name="startIndex">start index</param>
+        /// <param name="length">length</param>
+        /// <returns>signal</returns>
+        #endregion
         public Vector<double> LoadSignal(string lead, int startIndex, int length)
         {
             string moduleName = this.GetType().Name;
@@ -187,22 +106,33 @@ namespace EKG_Project.IO
 
             FileStream stream = new FileStream(pathIn, FileMode.Open);
             stream.Seek(startIndex*sizeof(double), SeekOrigin.Begin);
-
             BinaryReader br = new BinaryReader(stream);
 
-            int iterator = 0;
-            double[] readSamples = new double[length];
-            long fileLength = br.BaseStream.Length;
-            while (iterator < length)
+            if (startIndex * sizeof(double) + length * sizeof(double) > br.BaseStream.Length)
             {
+                throw new IndexOutOfRangeException();
+            }
 
-                if (br.BaseStream.Position == fileLength)
+            double[] readSamples = new double[length];
+            byte[] readSampless = new byte[length * sizeof(double)];
+            br.Read(readSampless, 0, length * sizeof(double));
+
+            unsafe
+            {
+                fixed (double* target = readSamples)
                 {
-                    throw new IndexOutOfRangeException();
+                    fixed (byte* source = readSampless)
+                    {
+                        double* dbl = target;
+                        double* src = (double*)source;
+                        for (int i = 0; i < length; i++)
+                        {
+                            *dbl = *src;
+                            dbl++;
+                            src++;
+                        }
+                    }
                 }
-
-                readSamples[iterator] = br.ReadDouble();
-                iterator++;
             }
 
             br.Close();
@@ -213,6 +143,13 @@ namespace EKG_Project.IO
             return vector;
         }
 
+        #region Documentation
+        /// <summary>
+        /// Gets number of filtered signal samples
+        /// </summary>
+        /// <param name="lead">lead</param>
+        /// <returns>number of samples</returns> 
+        #endregion
         public uint getNumberOfSamples(string lead)
         {
             string moduleName = this.GetType().Name;
@@ -221,14 +158,10 @@ namespace EKG_Project.IO
             string path = Path.Combine(directory, fileName);
 
             FileStream stream = new FileStream(path, FileMode.Open);
-
             BinaryReader br = new BinaryReader(stream);
-            uint count = 0;
-            while (br.BaseStream.Position != br.BaseStream.Length)
-            {
-                br.ReadDouble();
-                count++;
-            }
+
+            uint count = (uint)br.BaseStream.Length / sizeof(double);
+
             br.Close();
             stream.Close();
 

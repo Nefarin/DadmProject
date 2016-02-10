@@ -83,18 +83,42 @@ namespace EKG_Project.IO
             string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
             string pathOut = System.IO.Path.Combine(directory, fileName);
 
-            StreamWriter sw = new StreamWriter(pathOut, mode); 
-           
-            try
+            if (mode == true)
             {
-                foreach (var sample in signal)
+                FileStream stream = new FileStream(pathOut, FileMode.Append);
+                BinaryWriter bw = new BinaryWriter(stream);
+
+                try
                 {
-                    sw.WriteLine(sample.ToString());
+                    foreach (var sample in signal)
+                    {
+                        bw.Write(sample);
+                    }
                 }
-            } catch(System.NullReferenceException e)
-            {}
-            
-            sw.Close();
+                catch (System.NullReferenceException e)
+                {}
+                
+                bw.Close();
+                stream.Close();
+            }
+            else
+            {
+                FileStream stream = new FileStream(pathOut, FileMode.Create);
+                BinaryWriter bw = new BinaryWriter(stream);
+
+                try
+                {
+                    foreach (var sample in signal)
+                    {
+                        bw.Write(sample);
+                    }
+                }
+                catch (System.NullReferenceException e)
+                { }
+
+                bw.Close();
+                stream.Close();
+            }
 
         }
 
@@ -114,30 +138,40 @@ namespace EKG_Project.IO
             string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
             string pathIn = System.IO.Path.Combine(directory, fileName);
 
-            StreamReader sr = new StreamReader(pathIn);
+            FileStream stream = new FileStream(pathIn, FileMode.Open);
+            stream.Seek(startIndex * sizeof(double), SeekOrigin.Begin);
+            BinaryReader br = new BinaryReader(stream);
+
+            if (startIndex * sizeof(double) + length * sizeof(double) > br.BaseStream.Length)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
             
-            int iterator = 0;
-            while (iterator < startIndex && !sr.EndOfStream)
-            {
-                string readLine = sr.ReadLine();
-                iterator++;
-            }
-
-            iterator = 0;
             double[] readSamples = new double[length];
-            while (iterator < length)
-            {
-                if (sr.EndOfStream)
-                {
-                    throw new IndexOutOfRangeException();
-                }
+            byte[] readSampless = new byte[length * sizeof(double)];
+            br.Read(readSampless, 0, length * sizeof(double));
 
-                string readLine = sr.ReadLine();
-                readSamples[iterator] = Convert.ToDouble(readLine);
-                iterator++;
+            unsafe
+            {
+                fixed (double* target = readSamples)
+                {
+                    fixed (byte* source = readSampless)
+                    {
+                        double* dbl = target;
+                        double* src = (double*)source;
+                        for (int i = 0; i < length; i++)
+                        {
+                            *dbl = *src;
+                            dbl++;
+                            src++;
+                        }
+                    }
+                }
             }
 
-            sr.Close();
+            br.Close();
+            stream.Close();
 
             Vector<double> vector = Vector<double>.Build.Dense(readSamples.Length);
             vector.SetValues(readSamples);
@@ -158,14 +192,14 @@ namespace EKG_Project.IO
             string fileName = analysisName + "_" + moduleName + "_" + lead + ".txt";
             string path = Path.Combine(directory, fileName);
 
-            uint count = 0;
-            using (StreamReader r = new StreamReader(path))
-            {
-                while (r.ReadLine() != null)
-                {
-                    count++;
-                }
-            }
+            FileStream stream = new FileStream(path, FileMode.Open);
+            BinaryReader br = new BinaryReader(stream);
+
+            uint count = (uint)br.BaseStream.Length / sizeof(double);
+
+            br.Close();
+            stream.Close();
+
             return count;
         }
 
@@ -278,6 +312,5 @@ namespace EKG_Project.IO
             }
 
         }
-
     }
 }
