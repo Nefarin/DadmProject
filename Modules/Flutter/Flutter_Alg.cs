@@ -20,8 +20,8 @@ namespace EKG_Project.Modules.Flutter
         List<int> _ecgPartStarts = new List<int>();
         List<int> _ecgPartEnds = new List<int>();
 
-        private const double RI_LOWER_LIMIT_FOR_AFL = 1.6;
-        private const double RI_UPPER_LIMIT_FOR_AFL = 2.4;
+        private const double RI_LOWER_LIMIT_FOR_AFL = 1.0;
+        private const double RI_UPPER_LIMIT_FOR_AFL = 2.6;
 
         public Flutter_Alg(List<int> tEnds, List<int> qrsOnsets,
             Vector<double> samples, double fs)
@@ -42,7 +42,7 @@ namespace EKG_Project.Modules.Flutter
             List<double[]> spectralDensityList = CalculateSpectralDensity(t2qrsEkgParts);
             List<double[]> frequenciesList = CalculateFrequenciesAxis(spectralDensityList);
             TrimToGivenFreq(spectralDensityList, frequenciesList, 70.0);
-            InterpolateSpectralDensity(spectralDensityList, frequenciesList, 0.01);
+            InterpolateSpectralDensity(spectralDensityList, frequenciesList, 0.001);
             List<double> powerList = CalculateIntegralForEachSpectrum(frequenciesList, spectralDensityList);
             List<Tuple<int, int>> aflAnnotations = Detect(spectralDensityList, frequenciesList, powerList);
 

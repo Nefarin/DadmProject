@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using EKG_Project.Architecture;
 using EKG_Project.Architecture.GUIMessages;
 using EKG_Project.Architecture.ProcessingStates;
+using System.Linq;
 
 namespace EKG_Project.GUI
 {
@@ -85,6 +86,16 @@ namespace EKG_Project.GUI
         public void closeAnalysisTab(TabItem item)
         {
             int tabIndex = _tabContainer.TabItems.IndexOf(item);
+
+            string analysisName =_tabContainer.AnalysisNames.ElementAt(tabIndex);
+            string automaticDirPath = System.IO.Directory.GetCurrentDirectory();
+            automaticDirPath = automaticDirPath.Remove(automaticDirPath.IndexOf("bin") + 4) + @analysisName;
+
+            if (System.IO.Directory.Exists(automaticDirPath))
+            {
+                System.IO.Directory.Delete(automaticDirPath, true);
+            }
+
             _tabContainer.ThreadList[tabIndex].Abort();
             _tabContainer.ThreadList.RemoveAt(tabIndex);
             analysisTabControl.DataContext = null;
@@ -127,6 +138,12 @@ namespace EKG_Project.GUI
                 _tabContainer.CommunicationList[currentTabIndex].SendGUIMessage(new Abort());
             }
 
+        }
+
+        private void aboutProgram(object sender, RoutedEventArgs e)
+        {
+            AboutApp about = new AboutApp();
+            about.Show();
         }
 
         private TabItem addTabItem()

@@ -7,14 +7,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="300">
     <Grid>
-        <!--
-        <DataGrid Name="headerTable" AutoGenerateColumns="False" AlternatingRowBackground="#c2ccdb">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Fs}" Header="Fs" Width="80"/>
-                <DataGridTextColumn Binding="{Binding Samples}" Header="Number of samples" Width="200"/>
-            </DataGrid.Columns>
-        </DataGrid>
-        !-->
-        <TabControl Name="EcgDynamicTab" ItemsSource="{Binding}" TabStripPlacement="Left" Margin="0,50,0,0"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="HeaderTextBox"  Grid.Row="0" TextAlignment="Center" Text="{Binding Path=headerParameters}"/>
+        <!--<DataGrid Name="HeaderTable" Grid.Row="0" ItemsSource="{Binding}" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ColumnWidth="*">
+        </DataGrid>-->
+        <TabControl Name="EcgDynamicTab" Grid.Row="1"  ItemsSource="{Binding}" TabStripPlacement="Left"/>
     </Grid>
 </UserControl>

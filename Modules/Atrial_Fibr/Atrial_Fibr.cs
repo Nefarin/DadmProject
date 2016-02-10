@@ -196,7 +196,7 @@ namespace EKG_Project.Modules.Atrial_Fibr
                         {
                             _percentOfDetection =( _lengthOfDetection / _lengthOfData)*100;
                             _detection = "Wykryto migotanie przedsionków.";
-                            _description="Wykryto migotanie trwające " + _lengthOfDetection.ToString("F1") + "s. Stanowi to " +_percentOfDetection.ToString("F1") + "% trwania sygnału.";
+                            _description="Czas trwania: " + _lengthOfDetection.ToString("F1") + " [s], co stanowi " +_percentOfDetection.ToString("F1") + "% trwania sygnału.";
                             OutputWorker.SaveAfDetection(_currentLeadName, _append, true, new Tuple<bool, Vector<double>, string, string>(_detectedAF, _result.Item2, _detection, _description));
                         }
                         else

@@ -298,12 +298,12 @@ namespace EKG_Project.IO
         /// <param name="lead">lead</param>
         /// <returns>T_End_Local list</returns> 
         #endregion
-        public List<List<double>> LoadTachogramGUI(string lead)
+        public List<List<double>> LoadTachogramGUI(string lead, int count)
         {
             int[] startIndex = { 0 };
             string moduleName = this.GetType().Name;
             moduleName = moduleName.Replace("_Data_Worker", "");
-            string fileNamePattern = analysisName + "_" + moduleName + "_" + lead + "_" + "_Tachogram_" + "*";
+            string fileNamePattern = analysisName + "_" + moduleName + "_" + lead + "_" + "Tachogram_" + count + ".txt";
             string[] TachogramFiles = Directory.GetFiles(directory, fileNamePattern);
 
             int filesIndex = 0;
