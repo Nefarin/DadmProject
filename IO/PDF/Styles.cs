@@ -36,7 +36,7 @@ namespace EKG_Project.IO
 
           style = document.Styles["Heading2"];
           style.Font.Size = 15;
-          style.Font.Bold = true;
+          style.Font.Bold = false;
           //style.ParagraphFormat.PageBreakBefore = false;
           //style.ParagraphFormat.SpaceBefore = 6;
           //style.ParagraphFormat.SpaceAfter = 6;
