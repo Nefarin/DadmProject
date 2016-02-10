@@ -248,7 +248,17 @@ namespace EKG_Project.GUI
 
             foreach (var element in tempListCode)
             {
-                tempList.Add(element.ToString());
+                if (element != AvailableOptions.ECG_BASELINE &&
+                   element != AvailableOptions.FLUTTER &&
+                   element != AvailableOptions.HEART_AXIS &&
+                   element != AvailableOptions.HEART_CLUSTER &&
+                   element != AvailableOptions.HRV2 &&
+                   element != AvailableOptions.SIG_EDR &&
+                   element != AvailableOptions.ST_SEGMENT &&
+                   element != AvailableOptions.SLEEP_APNEA)
+                {
+                    tempList.Add(element.ToString());
+                }
             }
 
             try
@@ -278,7 +288,17 @@ namespace EKG_Project.GUI
 
                 foreach (var key in keyList)
                 {
-                    tempResults.Add(key, results[key]);
+                    if (key != AvailableOptions.ECG_BASELINE &&
+                       key != AvailableOptions.FLUTTER &&
+                       key != AvailableOptions.HEART_AXIS &&
+                       key != AvailableOptions.HEART_CLUSTER &&
+                       key != AvailableOptions.HRV2 &&
+                       key != AvailableOptions.SIG_EDR &&
+                       key != AvailableOptions.ST_SEGMENT &&
+                       key != AvailableOptions.SLEEP_APNEA)
+                    {
+                        tempResults.Add(key, results[key]);
+                    }
                 }
                 results = tempResults;
 

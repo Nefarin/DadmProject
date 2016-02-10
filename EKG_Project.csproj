@@ -566,6 +566,7 @@
     <Content Include="DLL\resetvars.vbs" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="Resources\logo2.png" />
     <Resource Include="GUI\Images\serce.png" />
     <Resource Include="GUI\Images\logo.gif" />
     <Resource Include="IO\data\res_QT_Disp\output_end.txt" />
