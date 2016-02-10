@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using EKG_Project.Architecture.ProcessingStates;
-using EKG_Project.Modules;
 using EKG_Project.IO;
 
 namespace EKG_Project.Architecture
 {
     #region Documentation
     /// <summary>
-    /// 
+    /// Class responsible for processing Analysis thread.
     /// </summary>
-    /// 
     #endregion
     public class Processing
     {

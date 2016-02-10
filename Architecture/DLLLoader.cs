@@ -1,10 +1,19 @@
-﻿using System;
-using EKG_Project.IO;
+﻿using EKG_Project.IO;
 
 namespace EKG_Project.Architecture
 {
+    #region Documentation
+    /// <summary>
+    /// Class responsible for handling DLL conflicts and problems.
+    /// </summary>
+    #endregion
     public class DLLLoader
     {
+        #region Documentation
+        /// <summary>
+        /// Copies the MITBIH format loading library to .exe folder.
+        /// </summary>
+        #endregion
         public static void CopyWFDBDLL()
         {
             IECGPath pathBuilder = new DebugECGPath();
