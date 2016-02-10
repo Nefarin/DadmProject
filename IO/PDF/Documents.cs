@@ -19,10 +19,20 @@ namespace EKG_Project.IO
         //Document.DefaultPageSetup.TopMargin = 3.5;
     }
 
-    public Document Document { get; set; }
+        //PROPERTIES
+        /// <summary>
+        /// Stores Pdf filename
+        /// </summary>
+        public Document Document { get; set; }
 
-    public Document CreateDocument(PDF.StoreDataPDF _data, bool init)
-    {
+        //METHODS
+        /// <summary>
+        /// Create pdf document
+        /// </summary>
+        /// <param name="_data">PDFStore data</param>
+        /// <param name="init">true if first called</param>
+        public Document CreateDocument(PDF.StoreDataPDF _data, bool init)
+        {
             if (init)
             {
                 Styles.DefineStyles(Document);
