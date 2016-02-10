@@ -289,18 +289,27 @@ namespace EKG_Project.Modules.HRV_DFA
                     break; //done
 
                 case (STATE.FAST_PROCESS):
-                    _alg = new HRV_DFA_Alg();
-                    dfaStep = 10;
-                    start = 50;
-                    stop = 500;
-                    Tuple<Vector<double>, Vector<double>> _currentFlucts1 = _alg.ObtainFluctuations(dfaStep, start, stop, _currentVector);
-                    List<Tuple<Vector<double>, Vector<double>>> results1 = _alg.HRV_DFA_Analysis(_currentFlucts1, false);
-                    OutputWorker.SaveSignal(HRV_DFA_Signals.DfaNumberN, _bestLeadName, true, results1[0]);
-                    OutputWorker.SaveSignal(HRV_DFA_Signals.DfaValueFn, _bestLeadName, true, results1[1]);
-                    OutputWorker.SaveSignal(HRV_DFA_Signals.ParamAlpha, _bestLeadName, true, results1[2]);
-                    OutputWorker.SaveSignal(HRV_DFA_Signals.Fluctuations, _bestLeadName, true, _currentFlucts1);
-                    Console.WriteLine("fast process");
-                    _state = STATE.END;
+                    try
+                    {
+                        _alg = new HRV_DFA_Alg();
+                        dfaStep = 10;
+                        start = 50;
+                        stop = 500;
+                        Tuple<Vector<double>, Vector<double>> _currentFlucts1 = _alg.ObtainFluctuations(dfaStep, start, stop, _currentVector);
+                        List<Tuple<Vector<double>, Vector<double>>> results1 = _alg.HRV_DFA_Analysis(_currentFlucts1, false);
+                        OutputWorker.SaveSignal(HRV_DFA_Signals.DfaNumberN, _bestLeadName, true, results1[0]);
+                        OutputWorker.SaveSignal(HRV_DFA_Signals.DfaValueFn, _bestLeadName, true, results1[1]);
+                        OutputWorker.SaveSignal(HRV_DFA_Signals.ParamAlpha, _bestLeadName, true, results1[2]);
+                        OutputWorker.SaveSignal(HRV_DFA_Signals.Fluctuations, _bestLeadName, true, _currentFlucts1);
+                        Console.WriteLine("fast process");
+                        _state = STATE.END;
+                    }
+                    catch (Exception e)
+                    {
+                        Abort();
+                        _state = STATE.END;
+                    }
+
                     break; //done 
 
                 case (STATE.END):

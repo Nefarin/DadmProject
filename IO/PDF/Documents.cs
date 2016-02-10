@@ -19,10 +19,20 @@ namespace EKG_Project.IO
         //Document.DefaultPageSetup.TopMargin = 3.5;
     }
 
-    public Document Document { get; set; }
+        //PROPERTIES
+        /// <summary>
+        /// Stores Pdf filename
+        /// </summary>
+        public Document Document { get; set; }
 
-    public Document CreateDocument(PDF.StoreDataPDF _data, bool init)
-    {
+        //METHODS
+        /// <summary>
+        /// Create pdf document
+        /// </summary>
+        /// <param name="_data">PDFStore data</param>
+        /// <param name="init">true if first called</param>
+        public Document CreateDocument(PDF.StoreDataPDF _data, bool init)
+        {
             if (init)
             {
                 Styles.DefineStyles(Document);
@@ -71,11 +81,11 @@ namespace EKG_Project.IO
                         PDFModule.FillReportForModule("WAVES", _data.statsDictionary);
                         break;
 
-                    case GUI.AvailableOptions.HRV_DFA:
-
-                        PDFModule = new PDFModuleClasses.HRV_DFA_PDF(Document);
-                        PDFModule.FillReportForModule("HRV_DFA", _data.statsDictionary);
-                        break;
+                    //case GUI.AvailableOptions.HRV_DFA:
+                    //
+                    //    PDFModule = new PDFModuleClasses.HRV_DFA_PDF(Document);
+                    //    PDFModule.FillReportForModule("HRV_DFA", _data.statsDictionary);
+                    //    break;
 
                     /*case GUI.AvailableOptions.ST_SEGMENT:
                         PDFModule = new PDFModuleClasses.ST_SEGMENT_PDF(Document);
@@ -144,28 +154,6 @@ namespace EKG_Project.IO
 
       return Document;
     }
-        public enum AvailableOptions
-        {
-            ECG_BASELINE,
-            R_PEAKS,
-            VCG_T_LOOP,
-            HRV1,
-            HRV2,
-            WAVES,
-            HRV_DFA,
-            SIG_EDR,
-            ST_SEGMENT,
-            T_WAVE_ALT,
-            SLEEP_APNEA,
-            HEART_CLASS,
-            ATRIAL_FIBER,
-            QT_DISP,
-            FLUTTER,
-            HRT,
-            ECTOPIC_BEAT,
-            HEART_AXIS,
-            TEST_MODULE
-        }
 
     }
 }

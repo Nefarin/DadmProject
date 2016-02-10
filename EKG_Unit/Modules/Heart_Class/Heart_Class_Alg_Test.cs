@@ -592,7 +592,7 @@ namespace EKG_Unit.Modules.Heart_Class
                 -0.14401, -0.13699, -0.13126, -0.13644, -0.16032, -0.20561, -0.26753, -0.33335,
                 -0.38369, -0.39605, -0.35046, -0.236, -0.055888, 0.17117, 0.41375, 0.63385, 0.79486,
                 0.86883, 0.84255, 0.72056, 0.52455, 0.28928, 0.055008, -0.14166, -0.27553, -0.33743, -0.33399
- 
+
             };
 
             Vector<double> expectedVector = Vector<double>.Build.DenseOfArray(expectedArray);
@@ -602,7 +602,6 @@ namespace EKG_Unit.Modules.Heart_Class
             obj.Invoke("OneQrsComplex", args);
 
             Assert.AreEqual(expectedResult, testAlgs.QrsComplexOne);
-
         }
 
         [TestMethod]
@@ -883,9 +882,24 @@ namespace EKG_Unit.Modules.Heart_Class
             };
             Vector<double> exampleSignal = Vector<double>.Build.DenseOfArray(testArray);
             Tuple<int, int> expectedResult = new Tuple<int, int>((int)R, expectedClass);
-            
-            object[] args = { exampleSignal, qrsOnset, qrsEnd, R, fs };
-            obj.Invoke("Classification", args);
+
+            DebugECGPath loader = new DebugECGPath();
+            List<Vector<double>> trainDataList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
+            List<Vector<double>> trainClassList = testAlgs.loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
+            int oneClassElement;
+            List<int> trainClass;
+            trainClass = new List<int>();
+            foreach (var item in trainClassList)
+            {
+                foreach (var element in item)
+                {
+                    oneClassElement = (int)element;
+                    trainClass.Add(oneClassElement);
+                }
+
+            }
+
+            testAlgs.ClassificationResultOne= testAlgs.Classification(exampleSignal, qrsOnset, qrsEnd, R, fs, trainDataList, trainClass);
 
             Assert.AreEqual(expectedResult, testAlgs.ClassificationResultOne);
 

@@ -104,18 +104,18 @@ namespace EKG_Project.Modules.HRT
                     double VPCvsAllQRS = 100 * ((double)statistics[2] / (double)statistics[0]);
                     double VPCvsVentricular = 100 * ((double)statistics[2] / (double)statistics[1]);
 
-                    VPCvsAllQRS = Math.Round(VPCvsAllQRS, 3);
-                    VPCvsVentricular = Math.Round(VPCvsVentricular, 3);
+                    VPCvsAllQRS = Math.Round(VPCvsAllQRS, 2);
+                    VPCvsVentricular = Math.Round(VPCvsVentricular, 2);
 
                     //add to stats output
                     _strToStr.Add(_currentName + " Mean Turbulence Onset: ", meanTO.ToString());
                     _strToObj.Add(_currentName + " Mean Turbulence Onset: ", meanTO);
                     _strToStr.Add(_currentName + " Mean Turbulence Slope: ", meanTS.ToString());
                     _strToObj.Add(_currentName + " Mean Turbulence Slope ", meanTS);
-                    _strToStr.Add(_currentName + " Ratio between VPC and all QRS complexes detected [%]: ", VPCvsAllQRS.ToString());
-                    _strToObj.Add(_currentName + " Ratio between VPC and all QRS complexes detected [%]:  ", VPCvsAllQRS);
-                    _strToStr.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected [%]: ", VPCvsAllQRS.ToString());
-                    _strToObj.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected [%]:  ", VPCvsAllQRS);
+                    _strToStr.Add(_currentName + " Ratio between VPC and all QRS complexes detected: ", VPCvsAllQRS.ToString() + "[%]");
+                    _strToObj.Add(_currentName + " Ratio between VPC and all QRS complexes detected:  ", VPCvsAllQRS + "[%]");
+                    _strToStr.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected: ", VPCvsAllQRS.ToString() + "[%]");
+                    _strToObj.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected:  ", VPCvsAllQRS + "[%]");
                     //_strToStr.Add(_currentName + " Turbulence Onset ", currentTurbulenceOnset.ToString());
                     _strToObj.Add(_currentName + " Turbulence Onset ", currentTurbulenceOnset);
                     //_strToStr.Add(_currentName + " Turbulence Slope ", currentTurbulenceSlope.ToString());

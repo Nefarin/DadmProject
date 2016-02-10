@@ -95,21 +95,21 @@ namespace EKG_Project.Modules.HRV1
 
             for (int i = 0; i < tparams.Count; ++i)
             {
-                _strToStr.Add(_currentName + tparams[i].Item1 + ": ", tparams[i].Item2.ToString());
-                _strToObj.Add(_currentName + tparams[i].Item1 + ": ", tparams[i].Item2);
+                _strToStr.Add(_currentName + " " + tparams[i].Item1 + ": ", Math.Round(tparams[i].Item2, 2).ToString());
+                _strToObj.Add(_currentName + " " + tparams[i].Item1 + ": ", tparams[i].Item2);
             }
 
             for (int i = 0; i < fparams.Count; ++i)
             {
-                _strToStr.Add(_currentName + fparams[i].Item1 + ": ", fparams[i].Item2.ToString());
-                _strToObj.Add(_currentName + fparams[i].Item1 + ": ", fparams[i].Item2);
+                _strToStr.Add(_currentName + " " + fparams[i].Item1 + ": ", Math.Round(fparams[i].Item2, 2).ToString());
+                _strToObj.Add(_currentName + " " + fparams[i].Item1 + ": ", fparams[i].Item2);
             }
 
-            _strToStr.Add(_currentName + "Number of peaks: ", peaksLength.ToString());
-            _strToObj.Add(_currentName + "Number of peaks: ", peaksLength);
+            _strToStr.Add(_currentName + " Number of peaks: ", peaksLength.ToString());
+            _strToObj.Add(_currentName + " Number of peaks: ", peaksLength);
 
-            _strToStr.Add(_currentName + "Number of intervals", intervalsLength.ToString());
-            _strToObj.Add(_currentName + "Number of intervals", intervalsLength);
+            _strToStr.Add(_currentName + " Number of intervals", intervalsLength.ToString());
+            _strToObj.Add(_currentName + " Number of intervals", intervalsLength);
 
             _ended = true;
         }

@@ -105,8 +105,8 @@ namespace EKG_Project.Modules.R_Peaks
                     //add to stats output
                     _strToStr.Add(_currentName + " Number of detected R-peaks: ", noOfPeaks.ToString());
                     _strToObj.Add(_currentName + " Number of detected R-peaks: ", noOfPeaks);
-                    _strToStr.Add(_currentName + " Mean RR interval [ms]: ", meanRR.ToString());
-                    _strToObj.Add(_currentName + " Mean RR interval [ms]: ", meanRR);
+                    _strToStr.Add(_currentName + " Mean RR interval: ", meanRR.ToString() + " [ms]");
+                    _strToObj.Add(_currentName + " Mean RR interval [ms]: ", meanRR + " [ms]");
                     _strToStr.Add(_currentName + " Number of possible overdetected R-peaks: ", noOfOverdetectedPeaks.ToString());
                     _strToObj.Add(_currentName + " Number of possible overdetected R-peaks: ", noOfOverdetectedPeaks);
                     _strToStr.Add(_currentName + " Number of possible missed R-peaks: ", noOfUnderdetectedPeaks.ToString());
