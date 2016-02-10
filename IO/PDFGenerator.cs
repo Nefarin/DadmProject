@@ -28,7 +28,7 @@ namespace EKG_Project.IO
         {
             Documents documentCreator = new Documents();
             document = documentCreator.Document;
-            filename = "PDFexample.pdf";
+            filename = "PDF.pdf";
             //this.GeneratePDF();
         }
         public PDFGenerator(string _filename)

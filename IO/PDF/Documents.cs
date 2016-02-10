@@ -144,28 +144,6 @@ namespace EKG_Project.IO
 
       return Document;
     }
-        public enum AvailableOptions
-        {
-            ECG_BASELINE,
-            R_PEAKS,
-            VCG_T_LOOP,
-            HRV1,
-            HRV2,
-            WAVES,
-            HRV_DFA,
-            SIG_EDR,
-            ST_SEGMENT,
-            T_WAVE_ALT,
-            SLEEP_APNEA,
-            HEART_CLASS,
-            ATRIAL_FIBER,
-            QT_DISP,
-            FLUTTER,
-            HRT,
-            ECTOPIC_BEAT,
-            HEART_AXIS,
-            TEST_MODULE
-        }
 
     }
 }

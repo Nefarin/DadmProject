@@ -2,6 +2,8 @@
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.DocumentObjectModel.Tables;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace EKG_Project.IO
 {
@@ -81,13 +83,20 @@ namespace EKG_Project.IO
 
         private void AddFileInfo(Paragraph paragraph, Cell cell, string _analisysName)
         {
-            /* dokonczyc
+            
 
 
             Basic_New_Data_Worker basicDataWorker = new Basic_New_Data_Worker(_analisysName);
-            basicDataWorker.Load();
 
-            
+            List<string> leads = basicDataWorker.LoadLeads();
+            string Allleads = "";
+
+            foreach (var element in leads )
+            {
+                Allleads += element + " ";
+            }
+
+
             paragraph = cell.AddParagraph("Analisys name:");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Blue;
@@ -98,16 +107,22 @@ namespace EKG_Project.IO
             paragraph = cell.AddParagraph("Frequency:");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Blue;
-            paragraph = cell.AddParagraph(basicDataWorker.BasicData.Frequency.ToString() + " Hz");
+            paragraph = cell.AddParagraph(basicDataWorker.LoadAttribute(Basic_Attributes.Frequency).ToString() + " Hz");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Black;
             paragraph.Format.SpaceAfter = "0.5cm";
             paragraph = cell.AddParagraph("Sample amount:");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Blue;
-            paragraph = cell.AddParagraph(basicDataWorker.BasicData.SampleAmount.ToString());
+            paragraph = cell.AddParagraph(basicDataWorker.getNumberOfSamples(leads.ElementAt(0)).ToString());
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.Format.Font.Color = Colors.Black; */
+            paragraph.Format.Font.Color = Colors.Black;
+            paragraph = cell.AddParagraph("Leads:");
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            paragraph.Format.Font.Color = Colors.Blue;
+            paragraph = cell.AddParagraph(basicDataWorker.getNumberOfSamples(leads.ElementAt(0)).ToString());
+            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            paragraph.Format.Font.Color = Colors.Black;
 
         }
         private void PutLogoInHeader()
