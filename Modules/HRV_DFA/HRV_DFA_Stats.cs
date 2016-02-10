@@ -96,20 +96,29 @@ namespace EKG_Project.Modules.HRV_DFA
                     break;
 
                 case (State.CALCULATE):
-                    int sampl = (int)_worker.getNumberOfSamples(HRV_DFA_Signals.Fluctuations, _currentName);
-                    Tuple<Vector<double>, Vector<double>> currentFn = _worker.LoadSignal(HRV_DFA_Signals.Fluctuations,_currentName,0, sampl);
-                    double meanF = currentFn.Item2.Sum() / currentFn.Item2.Count;
-                    _strToStr.Add(_currentName + " mean value: ", meanF.ToString());
-                    _strToObj.Add(_currentName + " mean value: ", meanF);
-                    double std = currentFn.Item2.StandardDeviation();
-                    _strToStr.Add(_currentName + " std value: ", std.ToString());
-                    _strToObj.Add(_currentName + " std value: ", std);
+                    try
+                    {
+                        int sampl = (int)_worker.getNumberOfSamples(HRV_DFA_Signals.Fluctuations, _currentName);
+                        Tuple<Vector<double>, Vector<double>> currentFn = _worker.LoadSignal(HRV_DFA_Signals.Fluctuations, _currentName, 0, sampl);
+                        double meanF = currentFn.Item2.Sum() / currentFn.Item2.Count;
+                        _strToStr.Add(_currentName + " mean value: ", meanF.ToString());
+                        _strToObj.Add(_currentName + " mean value: ", meanF);
+                        double std = currentFn.Item2.StandardDeviation();
+                        _strToStr.Add(_currentName + " std value: ", std.ToString());
+                        _strToObj.Add(_currentName + " std value: ", std);
 
-                    Tuple<Vector<double>, Vector<double>> currentAlpha = _worker.LoadSignal(HRV_DFA_Signals.ParamAlpha, _currentName, 0,(int)_worker.getNumberOfSamples(HRV_DFA_Signals.ParamAlpha, _currentName));
-                    _strToStr.Add(_currentName + " alpha value: ", currentAlpha.Item1[0].ToString());
-                    _strToStr.Add(_currentName + " alpha value: ", currentAlpha.Item2[0].ToString());
+                        Tuple<Vector<double>, Vector<double>> currentAlpha = _worker.LoadSignal(HRV_DFA_Signals.ParamAlpha, _currentName, 0, (int)_worker.getNumberOfSamples(HRV_DFA_Signals.ParamAlpha, _currentName));
+                        _strToStr.Add(_currentName + " alpha value: ", currentAlpha.Item1[0].ToString());
+                        _strToStr.Add(_currentName + " alpha value: ", currentAlpha.Item2[0].ToString());
 
-                    _currentState = State.END;
+                        _currentState = State.END;
+                    }
+                    catch (Exception e)
+                    {
+                        Abort();
+                        _currentState = State.END;
+                    }
+
                     break;
                     
 

@@ -8,6 +8,9 @@ namespace EKG_Unit.Modules.TestModule3
     [TestClass]
     public class TestModule3_Alg_Test
     {
+        public static void Main()
+        { }
+
         [TestMethod]
         [Description("Test if vector properly scales - equality test")]
         public void scaleSamplesTest1()
@@ -219,6 +222,11 @@ namespace EKG_Unit.Modules.TestModule3
             double[] testArray = { 1, 2, 3, 4, 5 };
             Vector<double> testVector = null;
             TestModule3_Alg testAlgs = new TestModule3_Alg(testVector, testParams);
+        }
+
+        public static void Main()
+        {
+
         }
     }
 }
