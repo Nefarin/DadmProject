@@ -67,11 +67,14 @@ namespace EKG_Project.IO
             string automaticDirPath = System.IO.Directory.GetCurrentDirectory();
             automaticDirPath = automaticDirPath.Remove(automaticDirPath.IndexOf("bin") + 4) + @analysisName;
 
-            string[] filePaths = Directory.GetFiles(automaticDirPath);
-
-            foreach (string element in filePaths)
+            if (System.IO.Directory.Exists(automaticDirPath))
             {
-                PDF.AddSvgAsPage addPage = new PDF.AddSvgAsPage(filename, element);
+                string[] filePaths = Directory.GetFiles(automaticDirPath);
+
+                foreach (string element in filePaths)
+                {
+                    PDF.AddSvgAsPage addPage = new PDF.AddSvgAsPage(filename, element);
+                }
             }
         }
 

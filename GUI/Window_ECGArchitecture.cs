@@ -90,7 +90,11 @@ namespace EKG_Project.GUI
             string analysisName =_tabContainer.AnalysisNames.ElementAt(tabIndex);
             string automaticDirPath = System.IO.Directory.GetCurrentDirectory();
             automaticDirPath = automaticDirPath.Remove(automaticDirPath.IndexOf("bin") + 4) + @analysisName;
-            System.IO.Directory.Delete(automaticDirPath, true);
+
+            if (System.IO.Directory.Exists(automaticDirPath))
+            {
+                System.IO.Directory.Delete(automaticDirPath, true);
+            }
 
             _tabContainer.ThreadList[tabIndex].Abort();
             _tabContainer.ThreadList.RemoveAt(tabIndex);
