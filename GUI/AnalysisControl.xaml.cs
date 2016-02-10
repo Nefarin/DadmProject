@@ -9,6 +9,7 @@ using EKG_Project.Modules;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EKG_Project.GUI
 {
@@ -23,6 +24,7 @@ namespace EKG_Project.GUI
 
         public string outputPdfPath;
         public string inputFilePath;
+        IO.PDFGenerator pdf;
 
         private ABORT_MODE _abortMode;
 
@@ -116,6 +118,15 @@ namespace EKG_Project.GUI
             {
                 Communication.SendGUIMessage(new BeginStatsCalculation(this.isComputed));
                 outputPdfPath = fileDialog.FileName;
+            }
+
+            try
+            { 
+                pdf = new IO.PDFGenerator(outputPdfPath);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Failed to setup PDF");
             }
         }
 
@@ -217,55 +228,111 @@ namespace EKG_Project.GUI
 
         }
 
-        IO.PDFGenerator pdf;
         public void statsCalculationStarted()
         {
             MessageBox.Show("Started generating PDF");
 
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
+            System.Collections.Generic.List<AvailableOptions> tempListCode = new System.Collections.Generic.List<AvailableOptions>();
+
             foreach (var option in modulePanel.getAllOptions())
             {
 
                 if (option.Set)
                 {
-                    tempList.Add(option.Name);
+                    tempListCode.Add(option.Code);
                 }
             }
 
-            IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
-            data.AnalisysName = modulePanel.AnalysisName;
-            data.ModuleList = tempList;
-            data.Filename = this.inputFilePath;
+            tempListCode.Sort();
 
-            pdf = new IO.PDFGenerator(outputPdfPath);
-            pdf.GeneratePDF(data, true);
+            foreach (var element in tempListCode)
+            {
+                if (element != AvailableOptions.ECG_BASELINE &&
+                   element != AvailableOptions.FLUTTER &&
+                   element != AvailableOptions.HEART_AXIS &&
+                   element != AvailableOptions.HEART_CLUSTER &&
+                   element != AvailableOptions.HRV2 &&
+                   element != AvailableOptions.SIG_EDR &&
+                   element != AvailableOptions.ST_SEGMENT &&
+                   element != AvailableOptions.SLEEP_APNEA)
+                {
+                    tempList.Add(element.ToString());
+                }
+            }
+
+            try
+            {
+                IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
+                data.AnalisysName = modulePanel.AnalysisName;
+                System.Console.WriteLine("INIT" + data.AnalisysName);
+                data.ModuleList = tempList;
+                data.Filename = this.inputFilePath;
+
+                pdf.GeneratePDF(data, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("One of modules does not work properly", "Failed to setup PDF", MessageBoxButton.OK);
+            }
         }
 
         
         public void statsCalculationEnded(Dictionary<AvailableOptions, Dictionary<String, String>> results)
         {
-            foreach (var result in results)
-            {
-                Dictionary<String, String> temp = result.Value;
-                foreach(var smth in temp)
+
+            try {
+                Dictionary<AvailableOptions, Dictionary<String, String>> tempResults = new Dictionary<AvailableOptions, Dictionary<string, string>>();
+                var keyList = results.Keys.ToList();
+                keyList.Sort();
+
+                foreach (var key in keyList)
                 {
-                    Console.WriteLine(smth.Key + " " + smth.Value);
+                    if (key != AvailableOptions.ECG_BASELINE &&
+                       key != AvailableOptions.FLUTTER &&
+                       key != AvailableOptions.HEART_AXIS &&
+                       key != AvailableOptions.HEART_CLUSTER &&
+                       key != AvailableOptions.HRV2 &&
+                       key != AvailableOptions.SIG_EDR &&
+                       key != AvailableOptions.HRV_DFA &&
+                       key != AvailableOptions.ST_SEGMENT &&
+                       key != AvailableOptions.SLEEP_APNEA)
+                    {
+                        tempResults.Add(key, results[key]);
+                    }
                 }
+                results = tempResults;
+
+                foreach (var result in results)
+                {
+                    Dictionary<String, String> temp = result.Value;
+                    foreach (var smth in temp)
+                    {
+                        Console.WriteLine(smth.Key + " " + smth.Value);
+                    }
+                }
+
+                IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
+
+                foreach (var element in results)
+                {
+                    data.ModuleOption = element.Key;
+                    data.AnalisysName = modulePanel.AnalysisName;
+                    data.statsDictionary = element.Value;
+
+                    pdf.GeneratePDF(data, false);
+                }
+                pdf.SaveDocument();
+
+
+                MessageBox.Show("PDF generated");
+                pdf.ProcessStart();
             }
-
-            IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
-
-            foreach (var element in results)
+            catch (Exception ex)
             {
-                data.ModuleOption = element.Key;
-                data.statsDictionary = element.Value;
-
-                pdf.GeneratePDF(data, false);
+                MessageBox.Show("One of modules does not work properly", "Failed to setup PDF", MessageBoxButton.OK);
             }
-      
-            MessageBox.Show("PDF generated");
-            pdf.SaveDocument();
-            pdf.ProcessStart();
+
         }
 
         public void analysisAborted()
@@ -273,6 +340,7 @@ namespace EKG_Project.GUI
             progressBar.Value = 0;
             MessageBox.Show("Analysis aborted.");
             loadFileButton.IsEnabled = true;
+            modulePanel.IsEnabled = true;
             startAnalyseButton.IsEnabled = true;
             panel.Visibility = Visibility.Hidden;
         }

@@ -28,18 +28,18 @@ namespace EKG_Project.IO
 
           style = document.Styles["Heading1"];
           style.Font.Name = "Tahoma";
-          style.Font.Size = 14;
+          style.Font.Size = 20;
           style.Font.Bold = true;
-          style.Font.Color = Colors.DarkBlue;
-          style.ParagraphFormat.PageBreakBefore = true;
-          style.ParagraphFormat.SpaceAfter = 6;
+          style.Font.Color = Colors.Black;
+          //style.ParagraphFormat.PageBreakBefore = true;
+         // style.ParagraphFormat.SpaceAfter = 6;
 
           style = document.Styles["Heading2"];
-          style.Font.Size = 12;
-          style.Font.Bold = true;
-          style.ParagraphFormat.PageBreakBefore = false;
-          style.ParagraphFormat.SpaceBefore = 6;
-          style.ParagraphFormat.SpaceAfter = 6;
+          style.Font.Size = 15;
+          style.Font.Bold = false;
+          //style.ParagraphFormat.PageBreakBefore = false;
+          //style.ParagraphFormat.SpaceBefore = 6;
+          //style.ParagraphFormat.SpaceAfter = 6;
 
           style = document.Styles["Heading3"];
           style.Font.Size = 10;

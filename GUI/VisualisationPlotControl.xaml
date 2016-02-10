@@ -39,7 +39,7 @@
         <Button Name="SavePlotToPdfButton" Grid.Column="0" Grid.Row="1" Click="SavePlotToPdfButton_Click">
             <StackPanel Orientation="Horizontal">
                 <Image Source="images/addNewAnalysis.png"/>
-                <Label Padding="0" FontSize="11">To Raport</Label>
+                <Label Padding="0" FontSize="11">To Report</Label>
             </StackPanel>
         </Button>
         

@@ -87,6 +87,13 @@ namespace EKG_Project.Modules.HRT
                     break;
 
                 case (State.CALCULATE):
+                    HRT_New_Data_Worker hWD = new HRT_New_Data_Worker(_analysisName);
+
+                    if (hWD.LoadVPC(_currentName) != Modules.HRT.HRT.VPC.LETS_PLOT)
+                    {
+                        _currentState = State.NEXT_CHANNEL;
+                        break;
+                    }
 
                     List<double> currentTurbulenceOnset = _worker.LoadTurbulenceOnsetPDF(_currentName);
                     List<double> currentTurbulenceSlope = _worker.LoadTurbulenceSlopePDF(_currentName);
@@ -94,22 +101,24 @@ namespace EKG_Project.Modules.HRT
                     double meanTS = Mean(currentTurbulenceSlope);
 
                     int[] statistics = _worker.LoadStatisticsClassNumbersPDF(_currentName);
-                    int VPCvsAllQRS = 100 * (statistics[2] / statistics[0]);
-                    int VPCvsVentricular = 100 * (statistics[2] / statistics[1]);
+                    double VPCvsAllQRS = 100 * ((double)statistics[2] / (double)statistics[0]);
+                    double VPCvsVentricular = 100 * ((double)statistics[2] / (double)statistics[1]);
 
+                    VPCvsAllQRS = Math.Round(VPCvsAllQRS, 2);
+                    VPCvsVentricular = Math.Round(VPCvsVentricular, 2);
 
                     //add to stats output
                     _strToStr.Add(_currentName + " Mean Turbulence Onset: ", meanTO.ToString());
                     _strToObj.Add(_currentName + " Mean Turbulence Onset: ", meanTO);
                     _strToStr.Add(_currentName + " Mean Turbulence Slope: ", meanTS.ToString());
                     _strToObj.Add(_currentName + " Mean Turbulence Slope ", meanTS);
-                    _strToStr.Add(_currentName + " Ratio between VPC and all QRS complexes detected [%]: ", VPCvsAllQRS.ToString());
-                    _strToObj.Add(_currentName + " Ratio between VPC and all QRS complexes detected [%]:  ", VPCvsAllQRS);
-                    _strToStr.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected [%]: ", VPCvsAllQRS.ToString());
-                    _strToObj.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected [%]:  ", VPCvsAllQRS);
-                    _strToStr.Add(_currentName + " Turbulence Onset ", currentTurbulenceOnset.ToString());
+                    _strToStr.Add(_currentName + " Ratio between VPC and all QRS complexes detected: ", VPCvsAllQRS.ToString() + "[%]");
+                    _strToObj.Add(_currentName + " Ratio between VPC and all QRS complexes detected:  ", VPCvsAllQRS + "[%]");
+                    _strToStr.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected: ", VPCvsAllQRS.ToString() + "[%]");
+                    _strToObj.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected:  ", VPCvsAllQRS + "[%]");
+                    //_strToStr.Add(_currentName + " Turbulence Onset ", currentTurbulenceOnset.ToString());
                     _strToObj.Add(_currentName + " Turbulence Onset ", currentTurbulenceOnset);
-                    _strToStr.Add(_currentName + " Turbulence Slope ", currentTurbulenceSlope.ToString());
+                    //_strToStr.Add(_currentName + " Turbulence Slope ", currentTurbulenceSlope.ToString());
                     _strToObj.Add(_currentName + " Turbulence Slope ", currentTurbulenceSlope);
                     _currentState = State.NEXT_CHANNEL;
                     break;

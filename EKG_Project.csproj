@@ -350,12 +350,16 @@
     <Compile Include="IO\PDFModuleClasses\FLUTTER_PDF.cs" />
     <Compile Include="IO\PDFModuleClasses\HEART_AXIS_PDF.cs" />
     <Compile Include="IO\PDFModuleClasses\HEART_CLASS_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\HRT_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\HRV1_PDF.cs" />
     <Compile Include="IO\PDFModuleClasses\HRV2_PDF.cs" />
     <Compile Include="IO\PDFModuleClasses\HRV_DFA_PDF.cs" />
     <Compile Include="IO\PDFModuleClasses\IPDFModuleClass.cs" />
     <Compile Include="IO\PDFModuleClasses\QT_DISP_PDF.cs" />
     <Compile Include="IO\PDFModuleClasses\R_PEAKS_PDF.cs" />
     <Compile Include="IO\PDFModuleClasses\SLEEP_APNEA_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\ST_SEGMENT_PDF.cs" />
+    <Compile Include="IO\PDFModuleClasses\T_WAVE_ALT_PDF.cs" />
     <Compile Include="IO\PDFModuleClasses\WAVES_PDF.cs" />
     <Compile Include="IO\PDF\AddSvgAsPage.cs" />
     <Compile Include="IO\PDF\Cover.cs" />
@@ -562,6 +566,7 @@
     <Content Include="DLL\resetvars.vbs" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="Resources\logo2.png" />
     <Resource Include="GUI\Images\serce.png" />
     <Resource Include="GUI\Images\logo.gif" />
     <Resource Include="IO\data\res_QT_Disp\output_end.txt" />

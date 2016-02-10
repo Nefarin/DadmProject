@@ -9,21 +9,16 @@ using MigraDoc.DocumentObjectModel.Tables;
 
 namespace EKG_Project.IO.PDFModuleClasses
 {
-    class QT_DISP_PDF : IPDFModuleClass
+    class HRV1_PDF : IPDFModuleClass
     {
         public Document Document { get; set; }
         public Section Section { get; set; }
-        public string AnalisysName { get; set; }
-        QT_Disp_Data_Worker _qt_Disp_Data_Worker;
 
-        public QT_DISP_PDF(Document document, string _analisysName)
+        public HRV1_PDF(Document document)
         {
             Document = document;
             Section = Document.AddSection();
             Section.AddPageBreak();
-            AnalisysName = _analisysName;
-            _qt_Disp_Data_Worker = new QT_Disp_Data_Worker(AnalisysName);
-
         }
 
         public void FillReportForModule(string _header, Dictionary<String, String> _statsDictionary)
@@ -45,5 +40,4 @@ namespace EKG_Project.IO.PDFModuleClasses
             Tables.DefineTable(Document, rows, cols, _strToStr);
         }
     }
-    
 }

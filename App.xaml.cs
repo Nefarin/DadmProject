@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using EKG_Project.GUI;
 using System;
+using System.Runtime;
 
 namespace EKG_Project
 {
@@ -23,8 +24,9 @@ namespace EKG_Project
         override protected void OnStartup(StartupEventArgs startEvent)
         {
            Window_ECG mainWindow = new Window_ECG(this);
-            this.MainWindow = mainWindow;
-            mainWindow.Show();
+            //GCSettings.LatencyMode = GCLatencyMode.LowLatency;
+           this.MainWindow = mainWindow;
+           mainWindow.Show();
         }
         #region Documentation
         /// <summary>
