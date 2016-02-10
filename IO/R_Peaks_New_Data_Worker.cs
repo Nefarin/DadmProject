@@ -132,9 +132,22 @@ namespace EKG_Project.IO
             byte[] readSampless = new byte[length * sizeof(double)];
             br.Read(readSampless, 0, length * sizeof(double));
 
-            for (int i = 0; i < length; i++)
+            unsafe
             {
-                readSamples[i] = BitConverter.ToDouble(readSampless, i * sizeof(double));
+                fixed (double* target = readSamples)
+                {
+                    fixed (byte* source = readSampless)
+                    {
+                        double* dbl = target;
+                        double* src = (double*)source;
+                        for (int i = 0; i < length; i++)
+                        {
+                            *dbl = *src;
+                            dbl++;
+                            src++;
+                        }
+                    }
+                }
             }
 
             br.Close();

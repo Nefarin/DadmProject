@@ -130,9 +130,22 @@ namespace EKG_Project.IO
             byte[] readSampless = new byte[length * sizeof(Int32)];
             br.Read(readSampless, 0, length * sizeof(Int32));
 
-            for (int i = 0; i < length; i++)
+            unsafe
             {
-                readSamples[i] = BitConverter.ToInt32(readSampless, i * sizeof(Int32));
+                fixed (Int32* target = readSamples)
+                {
+                    fixed (byte* source = readSampless)
+                    {
+                        Int32* val = target;
+                        Int32* src = (Int32*)source;
+                        for (int i = 0; i < length; i++)
+                        {
+                            *val = *src;
+                            val++;
+                            src++;
+                        }
+                    }
+                }
             }
 
             br.Close();
