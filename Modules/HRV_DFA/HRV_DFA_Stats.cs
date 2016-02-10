@@ -106,8 +106,8 @@ namespace EKG_Project.Modules.HRV_DFA
                     _strToObj.Add(_currentName + " std value: ", std);
 
                     Tuple<Vector<double>, Vector<double>> currentAlpha = _worker.LoadSignal(HRV_DFA_Signals.ParamAlpha, _currentName, 0,(int)_worker.getNumberOfSamples(HRV_DFA_Signals.ParamAlpha, _currentName));
-                    _strToStr.Add(_currentName + " alpha value: ", currentAlpha.ToString());
-                    _strToObj.Add(_currentName + " alpha value: ", currentAlpha);
+                    _strToStr.Add(_currentName + " alpha value: ", currentAlpha.Item1[0].ToString());
+                    _strToStr.Add(_currentName + " alpha value: ", currentAlpha.Item2[0].ToString());
 
                     _currentState = State.END;
                     break;
