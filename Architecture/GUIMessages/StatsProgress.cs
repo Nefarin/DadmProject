@@ -5,14 +5,12 @@ namespace EKG_Project.Architecture.GUIMessages
 {
     #region Documentation
     /// <summary>
-    /// GUI Message, which is generated when module updates progress.
+    /// GUI Message, which is generated when stats updates progress.
     /// </summary>
     ///
     #endregion
-    public class ModuleProgress : IGUIMessage
+    public class StatsProgress : IGUIMessage
     {
-
-        private AvailableOptions _module;
         private double _progress;
 
         #region Documentation
@@ -22,9 +20,8 @@ namespace EKG_Project.Architecture.GUIMessages
         /// <param name="module"></param>
         /// <param name="progress"></param>
         #endregion
-        public ModuleProgress(AvailableOptions module, double progress)
+        public StatsProgress(double progress)
         {
-            _module = module;
             _progress = progress;
         }
 
@@ -38,7 +35,7 @@ namespace EKG_Project.Architecture.GUIMessages
         public void Read(UserControl ctrl)
         {
             AnalysisControl control = (AnalysisControl)ctrl;
-            control.updateModuleProgress(_module, _progress);
+            control.updateStatsProgress(_progress);
         }
     }
 }
