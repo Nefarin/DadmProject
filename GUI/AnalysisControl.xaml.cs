@@ -24,6 +24,7 @@ namespace EKG_Project.GUI
 
         public string outputPdfPath;
         public string inputFilePath;
+        IO.PDFGenerator pdf;
 
         private ABORT_MODE _abortMode;
 
@@ -118,6 +119,8 @@ namespace EKG_Project.GUI
                 Communication.SendGUIMessage(new BeginStatsCalculation(this.isComputed));
                 outputPdfPath = fileDialog.FileName;
             }
+
+            pdf = new IO.PDFGenerator(outputPdfPath);
         }
 
         public void processingStarted()
@@ -218,7 +221,6 @@ namespace EKG_Project.GUI
 
         }
 
-        IO.PDFGenerator pdf;
         public void statsCalculationStarted()
         {
             MessageBox.Show("Started generating PDF");
@@ -244,10 +246,10 @@ namespace EKG_Project.GUI
 
             IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
             data.AnalisysName = modulePanel.AnalysisName;
+            System.Console.WriteLine("INIT" + data.AnalisysName);
             data.ModuleList = tempList;
             data.Filename = this.inputFilePath;
 
-            pdf = new IO.PDFGenerator(outputPdfPath);
             pdf.GeneratePDF(data, true);
         }
 
@@ -278,15 +280,17 @@ namespace EKG_Project.GUI
             foreach (var element in results)
             {
                 data.ModuleOption = element.Key;
-                //System.Console.WriteLine(element.Key.ToString());
+                data.AnalisysName = modulePanel.AnalysisName;
                 data.statsDictionary = element.Value;
 
                 pdf.GeneratePDF(data, false);
             }
-      
-            MessageBox.Show("PDF generated");
             pdf.SaveDocument();
+
+
+            MessageBox.Show("PDF generated");
             pdf.ProcessStart();
+
         }
 
         public void analysisAborted()
