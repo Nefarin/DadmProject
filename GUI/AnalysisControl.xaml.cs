@@ -120,7 +120,14 @@ namespace EKG_Project.GUI
                 outputPdfPath = fileDialog.FileName;
             }
 
-            pdf = new IO.PDFGenerator(outputPdfPath);
+            try
+            { 
+                pdf = new IO.PDFGenerator(outputPdfPath);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Failed to setup PDF");
+            }
         }
 
         public void processingStarted()
@@ -244,52 +251,66 @@ namespace EKG_Project.GUI
                 tempList.Add(element.ToString());
             }
 
-            IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
-            data.AnalisysName = modulePanel.AnalysisName;
-            System.Console.WriteLine("INIT" + data.AnalisysName);
-            data.ModuleList = tempList;
-            data.Filename = this.inputFilePath;
+            try
+            {
+                IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
+                data.AnalisysName = modulePanel.AnalysisName;
+                System.Console.WriteLine("INIT" + data.AnalisysName);
+                data.ModuleList = tempList;
+                data.Filename = this.inputFilePath;
 
-            pdf.GeneratePDF(data, true);
+                pdf.GeneratePDF(data, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("One of modules does not work properly", "Failed to setup PDF", MessageBoxButton.OK);
+            }
         }
 
         
         public void statsCalculationEnded(Dictionary<AvailableOptions, Dictionary<String, String>> results)
         {
-            Dictionary<AvailableOptions, Dictionary<String, String>> tempResults = new Dictionary<AvailableOptions, Dictionary<string, string>>();
-            var keyList = results.Keys.ToList();
-            keyList.Sort();
 
-            foreach (var key in keyList)
-            {
-                tempResults.Add(key, results[key]);
-            }
-            results = tempResults;
+            try {
+                Dictionary<AvailableOptions, Dictionary<String, String>> tempResults = new Dictionary<AvailableOptions, Dictionary<string, string>>();
+                var keyList = results.Keys.ToList();
+                keyList.Sort();
 
-            foreach (var result in results)
-            {
-                Dictionary<String, String> temp = result.Value;
-                foreach(var smth in temp)
+                foreach (var key in keyList)
                 {
-                    Console.WriteLine(smth.Key + " " + smth.Value);
+                    tempResults.Add(key, results[key]);
                 }
+                results = tempResults;
+
+                foreach (var result in results)
+                {
+                    Dictionary<String, String> temp = result.Value;
+                    foreach (var smth in temp)
+                    {
+                        Console.WriteLine(smth.Key + " " + smth.Value);
+                    }
+                }
+
+                IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
+
+                foreach (var element in results)
+                {
+                    data.ModuleOption = element.Key;
+                    data.AnalisysName = modulePanel.AnalysisName;
+                    data.statsDictionary = element.Value;
+
+                    pdf.GeneratePDF(data, false);
+                }
+                pdf.SaveDocument();
+
+
+                MessageBox.Show("PDF generated");
+                pdf.ProcessStart();
             }
-
-            IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
-
-            foreach (var element in results)
+            catch (Exception ex)
             {
-                data.ModuleOption = element.Key;
-                data.AnalisysName = modulePanel.AnalysisName;
-                data.statsDictionary = element.Value;
-
-                pdf.GeneratePDF(data, false);
+                MessageBox.Show("One of modules does not work properly", "Failed to setup PDF", MessageBoxButton.OK);
             }
-            pdf.SaveDocument();
-
-
-            MessageBox.Show("PDF generated");
-            pdf.ProcessStart();
 
         }
 
