@@ -35,7 +35,7 @@ namespace EKG_Project.IO.PDFModuleClasses
 
         public void InsertStatisticsTable(Dictionary<string, string> _strToStr)
         {
-            int cols = 2;
+            int cols = 3;
             int rows = _strToStr.Count;
             Tables.DefineTable(Document, rows, cols, _strToStr);
         }
