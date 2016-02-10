@@ -94,6 +94,7 @@ namespace EKG_Project.Modules.Waves
                 _currentStep = _params.RpeaksStep;
 
                 OutputWorker = new Waves_New_Data_Worker(Params.AnalysisName);
+                OutputWorker.DeleteFiles();
                 //OutputData = new Waves_Data();
 
                 _alg = new Waves_Alg(_params);
