@@ -24,21 +24,47 @@ namespace EKG_Project.IO
         {
             Paragraph paragraph = section.AddParagraph();
         
-            PutLogoInHeader();
+            
             this.section.Footers.Primary.AddParagraph().AddPageField();
+            //this.section.Headers.Primary.FirstPage.SetNull();
 
-            paragraph = section.AddParagraph("Final Report");
+            paragraph = section.AddParagraph("Analysis Report");
             paragraph.Format.Font.Size = 32;
             paragraph.Format.Font.Color = Colors.DarkRed;
-            paragraph.Format.SpaceBefore = "3cm";
+            paragraph.Format.SpaceBefore = "2cm";
             paragraph.Format.SpaceAfter = "2.5cm";
             paragraph.Format.Alignment = ParagraphAlignment.Center;
 
+            DebugECGPath path = new DebugECGPath();
+            Image image = section.AddImage(path.getResourcesPath() + "\\logo2.png");
+            image.Height = "11cm";
+            image.Left = ShapePosition.Center;
+            image.Top = ShapePosition.Center;
+
+            section.AddParagraph("This is output report from Application, which is used for basic ECG Analysis.");
+            section.LastParagraph.AddText("It includes modules such as: Atrial Fibr, Baseline, Flutter, Heart Axis, Heart Class, Heart Cluster, HRV(HRV1, HRV2), QT Display, R-Peaks, Sleep Apnea, T-Wave-Alt, Waves.");
+            section.LastParagraph.Format.SpaceBefore = "2cm";
+            section.LastParagraph.Format.Font.Size = 11;
+            section.LastParagraph.Format.Font.Name = "Tahoma";
+            section.LastParagraph.Format.Alignment = ParagraphAlignment.Justify;
+
+            section = document.AddSection();
+            PutLogoInHeader();
+            section.AddParagraph("Basic information:");
+            section.LastParagraph.Format.SpaceBefore = "2cm";
+            section.LastParagraph.Format.SpaceAfter = "1cm";
+            section.LastParagraph.Format.Font.Size = 18;
+            section.LastParagraph.Format.Font.Bold = true;
             this.InsertCoverContent(paragraph, section, _data);
 
             Table table = new Table();
 
-            table.Borders.Width = 1;
+            table.Borders.Width = 2;
+            //table.Shading.Color = Colors.WhiteSmoke;
+            table.TopPadding = "0.5cm";
+            table.LeftPadding = "0.5cm";
+            table.RightPadding = "0.5cm";
+            table.BottomPadding = "0.5cm";
 
             Column column = table.AddColumn(Unit.FromCentimeter(8));
             column.Format.Alignment = ParagraphAlignment.Center;
@@ -74,7 +100,7 @@ namespace EKG_Project.IO
         {
             cell.AddParagraph("Modules included:\n\n");
             cell.Style = "Heading2";
-            cell.Format.Font.Color = Colors.Blue;
+            cell.Format.Font.Color = Colors.DarkBlue;
             paragraph.Style = "Heading1";
 
             foreach (string element in _moduleList)
@@ -93,8 +119,12 @@ namespace EKG_Project.IO
 
             Table table = new Table();
 
-            table.Borders.Width = 1;
-            table.Shading.Color = Colors.WhiteSmoke;
+            table.Borders.Width = 2;
+            //table.Shading.Color = Colors.WhiteSmoke;
+            table.TopPadding = "0.5cm";
+            table.LeftPadding = "0.5cm";
+            table.RightPadding = "0.5cm";
+            table.BottomPadding = "0.5cm";
 
             Column column = table.AddColumn(Unit.FromCentimeter(8));
             column.Format.Alignment = ParagraphAlignment.Center;
@@ -131,7 +161,7 @@ namespace EKG_Project.IO
 
             paragraph = cell.AddParagraph("Analisys name:");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.Format.Font.Color = Colors.Blue;
+            paragraph.Format.Font.Color = Colors.DarkBlue;
             paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph(_analisysName);
             paragraph.Format.Alignment = ParagraphAlignment.Center;
@@ -140,7 +170,7 @@ namespace EKG_Project.IO
             paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph("Frequency:");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.Format.Font.Color = Colors.Blue;
+            paragraph.Format.Font.Color = Colors.DarkBlue;
             paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph(basicDataWorker.LoadAttribute(Basic_Attributes.Frequency).ToString() + " Hz");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
@@ -149,7 +179,7 @@ namespace EKG_Project.IO
             paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph("Sample amount:");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.Format.Font.Color = Colors.Blue;
+            paragraph.Format.Font.Color = Colors.DarkBlue;
             paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph(basicDataWorker.getNumberOfSamples(leads.ElementAt(0)).ToString());
             paragraph.Format.Alignment = ParagraphAlignment.Center;
@@ -158,7 +188,7 @@ namespace EKG_Project.IO
             paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph("Leads:");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
-            paragraph.Format.Font.Color = Colors.Blue;
+            paragraph.Format.Font.Color = Colors.DarkBlue;
             paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph(Allleads);
             paragraph.Format.Alignment = ParagraphAlignment.Center;
@@ -172,14 +202,14 @@ namespace EKG_Project.IO
 
             Image image = this.section.Headers.Primary.AddImage(path.getResourcesPath() + "\\logo.png");
 
-            image.Height = "4cm";
+            image.Height = "3cm";
             image.LockAspectRatio = true;
             image.RelativeVertical = RelativeVertical.Line;
             image.RelativeHorizontal = RelativeHorizontal.Margin;
             image.Top = ShapePosition.Top;
             image.Left = ShapePosition.Right;
             image.WrapFormat.Style = WrapStyle.Through;
-            image.Section.PageSetup.TopMargin = Unit.FromCentimeter(6.0);
+            image.Section.PageSetup.TopMargin = Unit.FromCentimeter(5.0);
         }
     }
 }
