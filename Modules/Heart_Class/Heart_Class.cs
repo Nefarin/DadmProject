@@ -135,6 +135,11 @@ namespace EKG_Project.Modules.Heart_Class
                     Console.WriteLine(_numberOfSteps);
                     _totalNumberOfR = (int)_numberOfStepsArray[2];
 
+                    if (_numberOfSteps < _numberProcessedComplexes)
+                    {
+                        _numberProcessedComplexes = _numberOfSteps;
+                    }
+
                     OutputWorker.SaveChannelMliiDetected(true);
                     _ml2Processed = false;
                     _state = STATE.INIT;
