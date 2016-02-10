@@ -72,10 +72,15 @@ namespace EKG_Project.GUI
                 inputFilePath = fileDialog.FileName;
                 Communication.SendGUIMessage(new LoadFile(inputFilePath));
                 panel.Visibility = Visibility.Visible;
-                progressBar.IsIndeterminate = true;
+                //progressBar.IsIndeterminate = true;
                 analysisLabel.Content = "Loading file.. Please wait";
                 buttonAbort.Content = "Cancel";
                 _abortMode = ABORT_MODE.ABORT_LOADING_FILE;
+                this.VisualisationPanelUserControl.Visibility = Visibility.Hidden;
+                pdfButton.IsEnabled = false;
+                loadFileButton.IsEnabled = false;
+                modulePanel.IsEnabled = true;
+                startAnalyseButton.IsEnabled = false;
             }
 
         }
@@ -165,9 +170,37 @@ namespace EKG_Project.GUI
             this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
         }
 
-        public void updateProgress(AvailableOptions module, double progress)
+        public void updateModuleProgress(AvailableOptions module, double progress)
         {
             analysisLabel.Content = "Analysis in progress..\nCurrent module: " + module.ToString();
+            try
+            {
+                progressBar.Value = progress;
+            }
+            catch (ArgumentException e)
+            {
+                progressBar.Value = 0;
+            }
+
+        }
+
+        public void updateFileProgress(double progress)
+        {
+            analysisLabel.Content = analysisLabel.Content = "Loading file.. Please wait";
+            try
+            {
+                progressBar.Value = progress;
+            }
+            catch (ArgumentException e)
+            {
+                progressBar.Value = 0;
+            }
+
+        }
+
+        public void updateStatsProgress(double progress)
+        {
+            analysisLabel.Content = "Generating PDF report.. Please wait";
             try
             {
                 progressBar.Value = progress;
@@ -205,6 +238,7 @@ namespace EKG_Project.GUI
         public void fileLoaded()
         {
             startAnalyseButton.IsEnabled = true;
+            loadFileButton.IsEnabled = true;
             panel.Visibility = Visibility.Hidden;
             progressBar.IsIndeterminate = false;
             MessageBox.Show("File loaded successfully.");
@@ -213,6 +247,7 @@ namespace EKG_Project.GUI
         public void fileError()
         {
             startAnalyseButton.IsEnabled = false;
+            loadFileButton.IsEnabled = true;
             panel.Visibility = Visibility.Hidden;
             progressBar.IsIndeterminate = false;
             MessageBox.Show("File could not be loaded successfully.");
@@ -222,6 +257,7 @@ namespace EKG_Project.GUI
         public void fileNotLoaded()
         {
             startAnalyseButton.IsEnabled = false;
+            loadFileButton.IsEnabled = true;
             panel.Visibility = Visibility.Hidden;
             progressBar.IsIndeterminate = false;
             MessageBox.Show("File not found during analysis.");
@@ -230,7 +266,18 @@ namespace EKG_Project.GUI
 
         public void statsCalculationStarted()
         {
-            MessageBox.Show("Started generating PDF");
+            this.AnalysisInProgress = true;
+            loadFileButton.IsEnabled = false;
+            pdfButton.IsEnabled = false;
+            modulePanel.IsEnabled = true;
+            startAnalyseButton.IsEnabled = false;
+            analysisLabel.Content = "Generating PDF report.. Please wait";
+            buttonAbort.Content = "Abort generating";
+            progressBar.Value = 0;
+            panel.Visibility = Visibility.Visible;
+            this.VisualisationPanelUserControl.Visibility = Visibility.Hidden;
+            _abortMode = ABORT_MODE.ABORT_STATS_CALC;
+
 
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
             System.Collections.Generic.List<AvailableOptions> tempListCode = new System.Collections.Generic.List<AvailableOptions>();
@@ -253,6 +300,7 @@ namespace EKG_Project.GUI
                    element != AvailableOptions.HEART_AXIS &&
                    element != AvailableOptions.HEART_CLUSTER &&
                    element != AvailableOptions.HRV2 &&
+                   element != AvailableOptions.HRV_DFA &&
                    element != AvailableOptions.SIG_EDR &&
                    element != AvailableOptions.ST_SEGMENT &&
                    element != AvailableOptions.SLEEP_APNEA)
@@ -277,9 +325,16 @@ namespace EKG_Project.GUI
             }
         }
 
-        
         public void statsCalculationEnded(Dictionary<AvailableOptions, Dictionary<String, String>> results)
         {
+            this.AnalysisInProgress = false;
+            loadFileButton.IsEnabled = true;
+            pdfButton.IsEnabled = true;
+            modulePanel.IsEnabled = true;
+            startAnalyseButton.IsEnabled = true;
+            progressBar.Value = 0;
+            panel.Visibility = Visibility.Hidden;
+            this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
 
             try {
                 Dictionary<AvailableOptions, Dictionary<String, String>> tempResults = new Dictionary<AvailableOptions, Dictionary<string, string>>();
@@ -347,9 +402,22 @@ namespace EKG_Project.GUI
 
         public void loadingAborted()
         {
+            this.VisualisationPanelUserControl.Visibility = Visibility.Hidden;
             panel.Visibility = Visibility.Hidden;
             loadFileButton.IsEnabled = true;
             MessageBox.Show("Loading file aborted.");
+        }
+
+        public void statsAborted()
+        {
+            this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
+            panel.Visibility = Visibility.Hidden;
+            loadFileButton.IsEnabled = true;
+            pdfButton.IsEnabled = true;
+            modulePanel.IsEnabled = true;
+            startAnalyseButton.IsEnabled = true;
+            progressBar.Value = 0;
+            MessageBox.Show("PDF generating aborted.");
         }
 
         /// <summary>
@@ -373,6 +441,7 @@ namespace EKG_Project.GUI
                     Communication.SendGUIMessage(new AbortLoadingFile());
                     break;
                 case (ABORT_MODE.ABORT_STATS_CALC):
+                    Communication.SendGUIMessage(new AbortStats());
                     break;
             }
             

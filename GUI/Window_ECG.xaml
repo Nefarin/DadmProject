@@ -17,8 +17,6 @@
         <Menu x:Name="menu" Height="27" VerticalAlignment="Top" Grid.ColumnSpan="4">
             <MenuItem Header="File">
                 <MenuItem Header="New Analysis" Click="newAnalysis"></MenuItem>
-                <MenuItem Header="Save Analysis"></MenuItem>
-                <MenuItem Header="Load Analysis"></MenuItem>
                 <MenuItem Header="Close Analysis" Click="closeAnalysis"></MenuItem>
                 <Separator/>
                 <MenuItem Header="Exit" Click="exitClick"></MenuItem>

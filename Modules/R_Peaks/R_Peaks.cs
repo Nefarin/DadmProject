@@ -180,6 +180,9 @@ namespace EKG_Project.Modules.R_Peaks
                             }
                             catch(Exception ex)
                             {
+                                _currentVector = Vector<double>.Build.Dense(1);
+                                OutputWorker.SaveSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, false, _currentVector);
+                                OutputWorker.SaveSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, false, _currentVector);
                                 _currentIndex = _currentIndex + _step;
                                 Console.WriteLine("No detected R peaks in this part of signal");
                             }

@@ -127,44 +127,66 @@ namespace EKG_Project.IO
         public Vector<Double> getSignal(string lead, int startIndex, int length)
         {
             Vector<Double> vector = null;
+            try {
             if (startIndex < 0)
             {
                 throw new Exception();
             }
-            else
-            {
-                record.Open();
-                foreach (Signal signal in record.Signals)
+                else
                 {
-                    if (signal.Description == lead)
+                    try
                     {
-                        double[] convertedSamples = new double[length];
-                        signal.Seek(startIndex);
-                        for (int i = 0; i < length; i++)
+                        record.Open();
+                        foreach (Signal signal in record.Signals)
                         {
-                            if (signal.IsEof)
+                            if (signal.Description == lead)
                             {
-                                throw new IndexOutOfRangeException();
-                            }
-                            else
-                            {
-                                Sample sample = signal.ReadNext();
-                                convertedSamples[i] = sample.ToPhys();
-                            }
-                        }
+                                double[] convertedSamples = new double[length];
+                                signal.Seek(startIndex);
+                                for (int i = 0; i < length; i++)
+                                {
+                                    if (signal.IsEof)
+                                    {
+                                        throw new IndexOutOfRangeException();
+                                    }
+                                    else
+                                    {
+                                        try
+                                        {
+                                            Sample sample = signal.ReadNext();
+                                            convertedSamples[i] = sample.ToPhys();
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            throw e;
+                                        }
 
-                        try
-                        {
-                            // obsługa length == 0
-                            vector = Vector<double>.Build.Dense(convertedSamples.Length);
-                            vector.SetValues(convertedSamples);
+                                    }
+                                }
+
+                                try
+                                {
+                                    // obsługa length == 0
+                                    vector = Vector<double>.Build.Dense(convertedSamples.Length);
+                                    vector.SetValues(convertedSamples);
+                                }
+                                catch (System.ArgumentOutOfRangeException e)
+                                { }
+
+                            }
                         }
-                        catch (System.ArgumentOutOfRangeException e) 
-                        {}
-                        
+                        record.Dispose();
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
                     }
                 }
-                record.Dispose();
+            }
+
+            catch (Exception e)
+            {
+                throw e;
             }
             return vector;
         }

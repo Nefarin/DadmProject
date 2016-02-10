@@ -52,7 +52,7 @@ namespace EKG_Project.Architecture
 
         public void Init(Dictionary<AvailableOptions, bool> moduleComputed)
         {
-            _isComputed = moduleComputed;
+            IsComputed = moduleComputed;
             _results = new Dictionary<AvailableOptions, Dictionary<string, string>>();
             CurrentModuleIndex = -1;
             CurrentModuleProcessed = 0;
@@ -79,7 +79,7 @@ namespace EKG_Project.Architecture
                 bool computed;
                 try
                 {
-                    computed = _isComputed[option];
+                    computed = IsComputed[option];
                 }
                 catch (Exception e)
                 {
@@ -189,6 +189,19 @@ namespace EKG_Project.Architecture
             set
             {
                 _results = value;
+            }
+        }
+
+        public Dictionary<AvailableOptions, bool> IsComputed
+        {
+            get
+            {
+                return _isComputed;
+            }
+
+            set
+            {
+                _isComputed = value;
             }
         }
     }
