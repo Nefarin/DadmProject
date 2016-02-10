@@ -23,11 +23,11 @@ namespace EKG_Project.IO
         {
             Section.AddPageBreak();
             Paragraph paragraph = Section.AddParagraph("Table of Contents");
-            paragraph.Format.SpaceBefore = "3cm";
+            paragraph.Format.SpaceBefore = "2cm";
             paragraph.Format.Font.Size = 18;
             paragraph.Format.Font.Bold = true;
             paragraph.Format.SpaceAfter = 24;
-            paragraph.Format.OutlineLevel = OutlineLevel.Level1;
+            //paragraph.Format.OutlineLevel = OutlineLevel.Level1;
 
             Hyperlink hyperlink;
 
