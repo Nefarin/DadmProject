@@ -28,10 +28,13 @@ namespace EKG_Project.IO
 
             row = table.AddRow();
             row.Cells[0].AddParagraph("Lead Name");
+            row.Cells[0].VerticalAlignment = VerticalAlignment.Center;
             row.Cells[0].Shading.Color = Colors.LightBlue;
             row.Cells[1].AddParagraph("Parameters");
+            row.Cells[1].VerticalAlignment = VerticalAlignment.Center;
             row.Cells[1].Shading.Color = Colors.LightBlue;
             row.Cells[2].AddParagraph("Values");
+            row.Cells[2].VerticalAlignment = VerticalAlignment.Center;
             row.Cells[2].Shading.Color = Colors.LightBlue;
 
             for (int count = 0; count < _rows; count++)
@@ -47,8 +50,11 @@ namespace EKG_Project.IO
                     string lead = key.Substring(0, leadIndex);
                     string param = key.Substring(leadIndex);
                     row.Cells[0].AddParagraph(lead);
+                    row.Cells[0].VerticalAlignment = VerticalAlignment.Center;
                     row.Cells[1].AddParagraph(param);
+                    row.Cells[1].VerticalAlignment = VerticalAlignment.Center;
                     row.Cells[2].AddParagraph(item.Value);
+                    row.Cells[2].VerticalAlignment = VerticalAlignment.Center;
                 }
                 else
                 {

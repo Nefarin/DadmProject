@@ -43,7 +43,7 @@ namespace EKG_Project.IO
 
             section.AddParagraph("This is output report from Application, which is used for basic ECG Analysis.");
             section.LastParagraph.AddText("It includes modules such as: Atrial Fibr, Baseline, Flutter, Heart Axis, Heart Class, Heart Cluster, HRV(HRV1, HRV2), QT Display, R-Peaks, Sleep Apnea, T-Wave-Alt, Waves.");
-            section.LastParagraph.Format.SpaceBefore = "2cm";
+            section.LastParagraph.Format.SpaceBefore = "3cm";
             section.LastParagraph.Format.Font.Size = 11;
             section.LastParagraph.Format.Font.Name = "Tahoma";
             section.LastParagraph.Format.Alignment = ParagraphAlignment.Justify;
