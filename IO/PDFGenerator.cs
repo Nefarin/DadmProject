@@ -20,6 +20,7 @@ namespace EKG_Project.IO
     {
         public Document document;
         public string filename;
+        public string analysisName;
         Documents documentCreator;
 
         //public string Filename { get; set; }
@@ -44,6 +45,8 @@ namespace EKG_Project.IO
 
         public void GeneratePDF(PDF.StoreDataPDF _data, bool init)
         {
+            analysisName = _data.AnalisysName;
+            System.Console.WriteLine("GEN" + analysisName);
             documentCreator.CreateDocument(_data, init);
         }
 
@@ -55,7 +58,21 @@ namespace EKG_Project.IO
             renderer.Document = document;
             renderer.RenderDocument();
             renderer.PdfDocument.Save(filename);
+            mergePDFFiles();
             //Process.Start(filename);
+        }
+
+        public void mergePDFFiles()
+        {
+            string automaticDirPath = System.IO.Directory.GetCurrentDirectory();
+            automaticDirPath = automaticDirPath.Remove(automaticDirPath.IndexOf("bin") + 4) + @analysisName;
+
+            string[] filePaths = Directory.GetFiles(automaticDirPath);
+
+            foreach (string element in filePaths)
+            {
+                PDF.AddSvgAsPage addPage = new PDF.AddSvgAsPage(filename, element);
+            }
         }
 
         public void ProcessStart()
