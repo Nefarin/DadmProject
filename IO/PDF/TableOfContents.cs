@@ -39,6 +39,12 @@ namespace EKG_Project.IO
                 hyperlink.AddText(element + "\t");
                 hyperlink.AddPageRefField(element);
             }
+
+            paragraph = Section.AddParagraph();
+            paragraph.Style = "TOC";
+            hyperlink = paragraph.AddHyperlink("Plot screenshots");
+            hyperlink.AddText("Plot screenshots" + "\t");
+            //hyperlink.AddPageRefField("Plot Screens");
         }
     }
 }

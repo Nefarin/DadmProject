@@ -4,6 +4,7 @@ using MigraDoc.DocumentObjectModel.Shapes;
 using MigraDoc.DocumentObjectModel.Tables;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace EKG_Project.IO
 {
@@ -24,6 +25,7 @@ namespace EKG_Project.IO
             Paragraph paragraph = section.AddParagraph();
         
             PutLogoInHeader();
+            this.section.Footers.Primary.AddParagraph().AddPageField();
 
             paragraph = section.AddParagraph("Final Report");
             paragraph.Format.Font.Size = 32;
@@ -34,21 +36,46 @@ namespace EKG_Project.IO
 
             this.InsertCoverContent(paragraph, section, _data);
 
-            paragraph = section.AddParagraph("Date: ");
-            paragraph.AddDateField();
+            Table table = new Table();
 
-            paragraph.Format.Borders.DistanceFromTop = "2cm";
-            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            table.Borders.Width = 1;
 
-            paragraph = section.AddParagraph("Created from file: " + _data.Filename);
-            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            Column column = table.AddColumn(Unit.FromCentimeter(8));
+            column.Format.Alignment = ParagraphAlignment.Center;
 
+            table.AddColumn(Unit.FromCentimeter(8));
+            column.Format.Alignment = ParagraphAlignment.Center;
+
+            Row row = table.AddRow();
+            Cell cell1 = row.Cells[0];
+            cell1.AddParagraph("DateTime: ");
+            cell1.Format.Alignment = ParagraphAlignment.Center;
+            cell1.Style = "Heading2";
+            cell1 = row.Cells[1];
+            cell1.AddParagraph().AddDateField();
+            cell1.Format.Alignment = ParagraphAlignment.Center;
+            cell1.Style = "Heading2";
+
+            row = table.AddRow();
+            Cell cell2 = row.Cells[0];
+            cell2.AddParagraph("Created from file: ");
+            cell2.Format.Alignment = ParagraphAlignment.Center;
+            cell2.Style = "Heading2";
+            cell2 = row.Cells[1];
+            string filename = Path.GetFileName(_data.Filename);
+            cell2.AddParagraph(filename);
+            cell2.Format.Alignment = ParagraphAlignment.Center;
+            cell2.Style = "Heading2";
+
+            section.Add(table);
         }
 
         public void AddCoverAnalysisList(Paragraph paragraph, Cell cell, System.Collections.Generic.List<string> _moduleList)
         {
             cell.AddParagraph("Modules included:\n\n");
+            cell.Style = "Heading2";
             cell.Format.Font.Color = Colors.Blue;
+            paragraph.Style = "Heading1";
 
             foreach (string element in _moduleList)
             {
@@ -57,6 +84,7 @@ namespace EKG_Project.IO
                 paragraph = cell.AddParagraph(element);
                 paragraph.Format.ListInfo = listinfo;
                 paragraph.Format.Font.Color = Colors.Black;
+                paragraph.Style = "Heading2";
             }
         }
 
@@ -64,11 +92,14 @@ namespace EKG_Project.IO
         {
 
             Table table = new Table();
-            
+
+            table.Borders.Width = 1;
+            table.Shading.Color = Colors.WhiteSmoke;
+
             Column column = table.AddColumn(Unit.FromCentimeter(8));
             column.Format.Alignment = ParagraphAlignment.Center;
 
-            table.AddColumn(Unit.FromCentimeter(5));
+            table.AddColumn(Unit.FromCentimeter(8));
 
             Row row = table.AddRow();
             Cell cell = row.Cells[0];
@@ -77,6 +108,7 @@ namespace EKG_Project.IO
             cell = row.Cells[1];
             this.AddFileInfo(paragraph, cell, _data.AnalisysName);
             cell.Format.Alignment = ParagraphAlignment.Justify;
+            //cell.Format.Shading.Color = Colors.LightBlue;
 
             section.Add(table);
         }
@@ -100,29 +132,38 @@ namespace EKG_Project.IO
             paragraph = cell.AddParagraph("Analisys name:");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Blue;
+            paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph(_analisysName);
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Black;
             paragraph.Format.SpaceAfter = "0.5cm";
+            paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph("Frequency:");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Blue;
+            paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph(basicDataWorker.LoadAttribute(Basic_Attributes.Frequency).ToString() + " Hz");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Black;
             paragraph.Format.SpaceAfter = "0.5cm";
+            paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph("Sample amount:");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Blue;
+            paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph(basicDataWorker.getNumberOfSamples(leads.ElementAt(0)).ToString());
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Black;
+            paragraph.Format.SpaceAfter = "0.5cm";
+            paragraph.Style = "Heading2";
             paragraph = cell.AddParagraph("Leads:");
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Blue;
-            paragraph = cell.AddParagraph(basicDataWorker.getNumberOfSamples(leads.ElementAt(0)).ToString());
+            paragraph.Style = "Heading2";
+            paragraph = cell.AddParagraph(Allleads);
             paragraph.Format.Alignment = ParagraphAlignment.Center;
             paragraph.Format.Font.Color = Colors.Black;
+            paragraph.Style = "Heading2";
 
         }
         private void PutLogoInHeader()

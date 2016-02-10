@@ -11,39 +11,41 @@ namespace EKG_Project.IO
   {
     public static void DefineTable(Document document, int _rows, int _cols, Dictionary<string, string> _strToStr)
     {
-            Table table = new Table(); Console.WriteLine("1");
-            Console.WriteLine("rows" + _rows);
-            _rows = _strToStr.Count;
+            Table table = new Table();
 
             table.Borders.Width = 2;
 
             Column column;
             Row row;
             //Cell cell; 
-            int colWidth = 15 / _cols; Console.WriteLine("2");
+            int colWidth = 15 / _cols; 
 
             for (int count = 0; count < _cols; count++)
             {
-                Console.WriteLine("cols" + _cols);
                 column = table.AddColumn(Unit.FromCentimeter(colWidth));
                 column.Format.Alignment = ParagraphAlignment.Center;
             }
-            Console.WriteLine("rows" + _rows);
+
+            row = table.AddRow();
+            row.Cells[0].AddParagraph("Lead Name");
+            row.Cells[0].Shading.Color = Colors.LightBlue;
+            row.Cells[1].AddParagraph("Parameters");
+            row.Cells[1].Shading.Color = Colors.LightBlue;
+            row.Cells[2].AddParagraph("Values");
+            row.Cells[2].Shading.Color = Colors.LightBlue;
+
             for (int count = 0; count < _rows; count++)
             {
-                Console.WriteLine("rows" + _rows);
                 row = table.AddRow();
                 var item = _strToStr.ElementAt(count);
-                Console.WriteLine("cols" + _cols);
+
                 if (_cols == 3)
                 {
                     var key = item.Key;
                     int leadIndex = key.IndexOf(" ");
                     
                     string lead = key.Substring(0, leadIndex);
-                    Console.WriteLine(lead);
                     string param = key.Substring(leadIndex);
-                    Console.WriteLine(param);
                     row.Cells[0].AddParagraph(lead);
                     row.Cells[1].AddParagraph(param);
                     row.Cells[2].AddParagraph(item.Value);
