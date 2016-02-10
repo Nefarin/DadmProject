@@ -117,8 +117,10 @@ namespace EKG_Project.Modules.Atrial_Fibr
                     Tuple<bool, Vector<double>, string, string> _data = _worker.LoadAfDetection(_currentName, 0, 1);
                     string currentDetected= _data.Item3;
                     string currentDescription= _data.Item4;
-                    _strToStr.Add(_currentName, " " + currentDetected + " " +currentDescription);
-                    _strToObj.Add(_currentName, " " + currentDetected + " " + currentDescription);                                                         
+                    System.Console.WriteLine(currentDetected);
+                    System.Console.WriteLine(currentDescription);
+                    _strToStr.Add(_currentName + " " + currentDetected, " " +currentDescription);
+                    _strToObj.Add(_currentName + " " + currentDetected, " " + currentDescription);                                                         
                     _currentState = State.NEXT_CHANNEL;
                     break;
                 case (State.NEXT_CHANNEL):

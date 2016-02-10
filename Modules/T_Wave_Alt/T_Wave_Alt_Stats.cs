@@ -100,8 +100,8 @@ namespace EKG_Project.Modules.T_Wave_Alt
                         t_alt.Add(alt.Item1);
                     }
 
-                    _strToStr.Add(_currentName + " t wave alternans recognize percentage: ", CountPercentOfRecognized(t_alt, waves).ToString());
-                    _strToObj.Add(_currentName + " t wave alternans recognize percentage: ", CountPercentOfRecognized(t_alt, waves));
+                    _strToStr.Add(_currentName + " T Wave Alternans recognized: ", CountPercentOfRecognized(t_alt, waves).ToString() + " [%]");
+                    _strToObj.Add(_currentName + " T Wave Alternans recognized: ", CountPercentOfRecognized(t_alt, waves));
 
                     _currentState = State.NEXT_CHANNEL;
                     break;

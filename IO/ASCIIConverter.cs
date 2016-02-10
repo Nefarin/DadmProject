@@ -16,7 +16,7 @@ namespace EKG_Project.IO
     /// </summary> 
     #endregion
 
-    class ASCIIConverter : IECGConverter
+    public class ASCIIConverter : IECGConverter
     {
         //FIELDS
         #region Documentation
@@ -86,7 +86,7 @@ namespace EKG_Project.IO
         // METHODS
         #region Documentation
         /// <summary>
-        /// Saves freauency and lead names in txt files
+        /// Saves frequency and lead names in txt files
         /// </summary> 
         #endregion
         public void SaveResult()

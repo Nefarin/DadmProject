@@ -108,7 +108,7 @@ namespace EKG_Project.GUI
                 //wyswietlenie żadnego leadu
                 if (_plotType == "ECG_BASELINE")
                 {
-                    ecgHistogramPlot.DisplayBaselineLeads(c.Name);
+                    ecgHistogramPlot.DisplayBaselineLeads(c.Name, true);
                 }
                 if (_plotType == "HRV2")
                 {

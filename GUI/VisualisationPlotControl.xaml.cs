@@ -412,7 +412,7 @@ namespace EKG_Project.GUI
             if (_plotType == "ECG_BASELINE")
             {
                 CreateAllCheckBoxesInCurrentAnalyse(analyseName, modulesList);
-                ecgPlot.DisplayBaselineLeads(firstLead);
+                ecgPlot.DisplayBaselineLeads(firstLead, true);
             }
             if (_plotType == "HRV2")
             {
@@ -956,7 +956,23 @@ namespace EKG_Project.GUI
 
             var slider = sender as Slider;
             double value = slider.Value;
-            ecgPlot.XAxesControl(value / 10);
+            if(!ecgPlot.XAxesControl(value / 10))
+            {
+                this.PlotSlider.Value = 0;
+
+                foreach (var cB in this.CheckBoxList.Items)
+                {
+                    var cc = cB as CheckBox;
+                    if (cc.Name != currentLead)
+                    {
+                        cc.Checked -= CheckBox_Checked;
+                        cc.Unchecked -= CheckBox_Unchecked;
+                        cc.IsChecked = false;
+                        cc.Checked += CheckBox_Checked;
+                        cc.Unchecked += CheckBox_Unchecked;
+                    }
+                }
+            }
             //MessageBox.Show(value.ToString());
       
         }
@@ -1047,7 +1063,7 @@ namespace EKG_Project.GUI
                     //wyswietlenie żadnego leadu
                     if (_plotType == "ECG_BASELINE")
                     {
-                        ecgPlot.DisplayBaselineLeads(c.Name);
+                        ecgPlot.DisplayBaselineLeads(c.Name, true);
                     }
                     if (_plotType == "HRV2")
                     {

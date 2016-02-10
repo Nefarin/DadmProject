@@ -34,109 +34,107 @@ namespace EKG_Project.IO
             }
             else
             {
-                int element = (int)_data.ModuleOption;
+                GUI.AvailableOptions element = _data.ModuleOption;
+                System.Console.WriteLine(element);
 
                 PDFModuleClasses.IPDFModuleClass PDFModule;
                 switch (element)
                 {
-                    case 0: //ECG_BASELINE
+                    /*case 0: //ECG_BASELINE
 
                         PDFModule = new PDFModuleClasses.ECG_Baseline_PDF(Document);
                         PDFModule.FillReportForModule("ECG_BASELINE", _data.statsDictionary);
                         break;
 
-
-                    case 1: //R_PEAKS
+                    */
+                    case GUI.AvailableOptions.R_PEAKS:
 
                         PDFModule = new PDFModuleClasses.R_PEAKS_PDF(Document);
                         PDFModule.FillReportForModule("R_PEAKS", _data.statsDictionary);
                         break;
 
-                    case 4: //HRV2
+                    case GUI.AvailableOptions.HRV1:
+
+                        PDFModule = new PDFModuleClasses.HRV1_PDF(Document);
+                        PDFModule.FillReportForModule("HRV1", _data.statsDictionary);
+                        break;
+
+                    /*case GUI.AvailableOptions.HRV2:
 
                         PDFModule = new PDFModuleClasses.HRV2_PDF(Document);
                         PDFModule.FillReportForModule("HRV2", _data.statsDictionary);
                         break;
-
-                    case 5: //WAVES
+                        */
+                    case GUI.AvailableOptions.WAVES:
 
                         PDFModule = new PDFModuleClasses.WAVES_PDF(Document);
                         PDFModule.FillReportForModule("WAVES", _data.statsDictionary);
                         break;
 
-                    case 6: //HRV_DFA
+                    case GUI.AvailableOptions.HRV_DFA:
 
                         PDFModule = new PDFModuleClasses.HRV_DFA_PDF(Document);
                         PDFModule.FillReportForModule("HRV_DFA", _data.statsDictionary);
                         break;
 
-                    case 10: //SLEEP_APNEA
+                    /*case GUI.AvailableOptions.ST_SEGMENT:
+                        PDFModule = new PDFModuleClasses.ST_SEGMENT_PDF(Document);
+                        PDFModule.FillReportForModule("ST_SEGMENT", _data.statsDictionary);
+                        break;
+                        */
+                    case GUI.AvailableOptions.T_WAVE_ALT:
+                        PDFModule = new PDFModuleClasses.T_WAVE_ALT_PDF(Document);
+                        PDFModule.FillReportForModule("T_WAVE_ALT", _data.statsDictionary);
+                        break;
+
+                    /*case GUI.AvailableOptions.SLEEP_APNEA:
 
                         PDFModule = new PDFModuleClasses.SLEEP_APNEA_PDF(Document);
                         PDFModule.FillReportForModule("SLEEP_APNEA", _data.statsDictionary);
                         break;
-
-                    case 11: //HEART_CLASS
+                        */
+                    case GUI.AvailableOptions.HEART_CLASS:
 
                         PDFModule = new PDFModuleClasses.HEART_CLASS_PDF(Document);
                         PDFModule.FillReportForModule("HEART_CLASS", _data.statsDictionary);
                         break;
 
-                    case 12: //ATRIAL_FIBER
+                    case GUI.AvailableOptions.ATRIAL_FIBER:
 
                         PDFModule = new PDFModuleClasses.ATRIAL_FIBER_PDF(Document);
                         PDFModule.FillReportForModule("ATRIAL_FIBER", _data.statsDictionary);
                         break;
 
-                    case 13: //QT_DISP
+                    case GUI.AvailableOptions.QT_DISP:
 
                         PDFModule = new PDFModuleClasses.QT_DISP_PDF(Document, _data.AnalisysName);
                         PDFModule.FillReportForModule("QT_DISP", _data.statsDictionary);
                         break;
 
-                    case 14: //FLUTTER
+                    /*caseGUI.AvailableOptions.FLUTTER:
 
                         PDFModule = new PDFModuleClasses.FLUTTER_PDF(Document);
                         PDFModule.FillReportForModule("FLUTTER", _data.statsDictionary);
                         break;
+                        */
+                    case GUI.AvailableOptions.HRT:
 
-                    case 17: //HEART_AXIS
+                        PDFModule = new PDFModuleClasses.HRT_PDF(Document);
+                        PDFModule.FillReportForModule("HRT", _data.statsDictionary);
+                        break;
 
+                    /*case GUI.AvailableOptions.HEART_AXIS:
                         PDFModule = new PDFModuleClasses.HEART_AXIS_PDF(Document);
                         PDFModule.FillReportForModule("HEART_AXIS", _data.statsDictionary);
                         break;
-
-
-                    /*case AvailableOptions.TEST_MODULE:
-                        this.ModuleParam = new TestModule_Params(500);
-                        this.ModuleParam.GUIParametersAvailable = true;
-                        FillDictionaries();
-                        break;s
-                    case AvailableOptions.HRV1:
-                        this.ModuleParam = new HRV1_Params(this.AnalysisName);
-                        this.ModuleParam.GUIParametersAvailable = false;
-                        FillDictionaries();
-                        break;
-                    case AvailableOptions.ST_SEGMENT:
-                        this.ModuleParam = new ST_Segment_Params(this.AnalysisName);
-                        this.ModuleParam.GUIParametersAvailable = false;
-                        FillDictionaries();
-                        break;
-                    case AvailableOptions.T_WAVE_ALT:
-                        this.ModuleParam = new T_Wave_Alt_Params(this.AnalysisName);
-                        this.ModuleParam.GUIParametersAvailable = false;
-                        FillDictionaries();
-                        break;
+                        */
+                    /*
                     case AvailableOptions.SIG_EDR:
                         this.ModuleParam = new SIG_EDR_Params(this.AnalysisName);
                         this.ModuleParam.GUIParametersAvailable = false;
                         FillDictionaries();
                         break;
-                    case AvailableOptions.HRT:
-                        this.ModuleParam = new HRT_Params(this.AnalysisName);
-                        this.ModuleParam.GUIParametersAvailable = false;
-                        FillDictionaries();
-                        break;*/
+                    */
                     default:
 
                         break;
@@ -146,6 +144,28 @@ namespace EKG_Project.IO
 
       return Document;
     }
+        public enum AvailableOptions
+        {
+            ECG_BASELINE,
+            R_PEAKS,
+            VCG_T_LOOP,
+            HRV1,
+            HRV2,
+            WAVES,
+            HRV_DFA,
+            SIG_EDR,
+            ST_SEGMENT,
+            T_WAVE_ALT,
+            SLEEP_APNEA,
+            HEART_CLASS,
+            ATRIAL_FIBER,
+            QT_DISP,
+            FLUTTER,
+            HRT,
+            ECTOPIC_BEAT,
+            HEART_AXIS,
+            TEST_MODULE
+        }
 
-  }
+    }
 }

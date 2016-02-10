@@ -22,7 +22,10 @@ namespace EKG_Project.GUI
     {
         public PlotModel CurrentPlot { get; set; }
         private double _windowSize;
-        private double _maxSeriesTime; 
+        private double _maxSeriesTime;
+        private double _minSeriesTime;
+
+
         private int _beginingPoint;
         private int _scalingPlotValue; 
         private ECG_Baseline_Data_Worker _ecg_Baseline_Data_worker;
@@ -49,10 +52,13 @@ namespace EKG_Project.GUI
         private string _currentAnalysisName;
         private string _currentLeadName;
         private bool _readNewData = false;
+        private bool _thatIsAll = false;
+        private bool _didWeReadMore = false;
 
         private uint _currentBaselineLeadStartIndex;
         private uint _currentBaselineLeadEndIndex;
         private uint _currentBaselineLeadNumberOfSamples;
+        private uint _currentBaselineLeadHowManyDidWeAlreadyRead; 
 
         private Vector<double> _currentBaselineLeadVector;
 
@@ -748,8 +754,10 @@ namespace EKG_Project.GUI
 
            _currentAnalysisName = currentAnalysysName;
            _currentBaselineLeadStartIndex = 0;
+            _currentBaselineLeadHowManyDidWeAlreadyRead = 0;
 
            _windowSize = 5;
+            _minSeriesTime = 0;
             _maxSeriesTime = 300; 
 
 
@@ -764,15 +772,21 @@ namespace EKG_Project.GUI
 
             //windowsSize -> figurate
             //
-
+            
             //double ecgTimeInSeconds = ((_analyseSamples / _analyseFrequency));
             _currentBaselineLeadStartIndex = 0;
             _currentBaselineLeadEndIndex = ((uint)(_analyseFrequency * _maxSeriesTime)-1);
             if(_currentBaselineLeadEndIndex> _currentBaselineLeadNumberOfSamples)
             {
                 _currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples;
-            }
+                _currentBaselineLeadHowManyDidWeAlreadyRead = _currentBaselineLeadEndIndex;
+                //System.Windows.MessageBox.Show(_currentBaselineLeadHowManyDidWeAlreadyRead.ToString());
+                //add
+                _maxSeriesTime = (_currentBaselineLeadEndIndex / _analyseFrequency);
+                _thatIsAll = true;
 
+            }
+            _currentBaselineLeadHowManyDidWeAlreadyRead = _currentBaselineLeadEndIndex;
             _scalingPlotValue = 10;
         }
 
@@ -780,25 +794,39 @@ namespace EKG_Project.GUI
         {
             _readNewData = true;
             uint difference = _currentBaselineLeadEndIndex - _currentBaselineLeadStartIndex;
-            _currentBaselineLeadStartIndex = _currentBaselineLeadEndIndex;
-
-            _currentBaselineLeadEndIndex += _currentBaselineLeadEndIndex;
-            if (_currentBaselineLeadEndIndex > _currentBaselineLeadNumberOfSamples)
+            _currentBaselineLeadStartIndex = _currentBaselineLeadHowManyDidWeAlreadyRead;
+            //System.Windows.MessageBox.Show(_currentBaselineLeadHowManyDidWeAlreadyRead.ToString());
+            //nie możemy bo wczytujemy tylko ile chcemy kolejnych próbke, chcemy tyle samo lub
+            //_currentBaselineLeadEndIndex += _currentBaselineLeadEndIndex;
+            _currentBaselineLeadHowManyDidWeAlreadyRead += _currentBaselineLeadEndIndex;
+            //System.Windows.MessageBox.Show(_currentBaselineLeadHowManyDidWeAlreadyRead.ToString());
+            if (_currentBaselineLeadHowManyDidWeAlreadyRead > _currentBaselineLeadNumberOfSamples)
             {
-                _currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples;
+                _minSeriesTime = ((_currentBaselineLeadHowManyDidWeAlreadyRead - _currentBaselineLeadEndIndex) / _analyseFrequency);
+                _currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples - _currentBaselineLeadHowManyDidWeAlreadyRead;             
+                _maxSeriesTime = (_currentBaselineLeadNumberOfSamples / _analyseFrequency);
+                _thatIsAll = true;
+            }
+            else
+            {
+                _minSeriesTime = ((_currentBaselineLeadHowManyDidWeAlreadyRead - _currentBaselineLeadEndIndex) / _analyseFrequency);
+                _maxSeriesTime = (_currentBaselineLeadHowManyDidWeAlreadyRead / _analyseFrequency);
             }
 
+            _didWeReadMore = true;
+            first = true;
             RemoveAllPlotSeries();
-            DisplayBaselineLeads(_currentLeadName);
+            DisplayBaselineLeads(_currentLeadName, false);
 
         }
 
 
         //METODA DO WYSWIETLANIA KONKRETNEGO LEAD Z BASELINE
-        public bool DisplayBaselineLeads(string leadName)
+        public bool DisplayBaselineLeads(string leadName, bool newLead)
         {
             try
             {
+                CurrentPlot.Axes.Clear();
                 _currentLeadName = leadName;
 
                 ECG_Baseline_New_Data_Worker ecg_Baseline = new ECG_Baseline_New_Data_Worker(_currentAnalysisName);
@@ -806,18 +834,31 @@ namespace EKG_Project.GUI
                 _analyseSamples = _currentBaselineLeadNumberOfSamples;
                 // !!! TO DO !!! potrzebna logika do określania zakresy próbek 
                 //_currentBaselineLeadEndIndex = _currentBaselineLeadNumberOfSamples; 
-                CalculateAmoutOfProcessingSamples();
+                if (!_didWeReadMore)
+                {
+                    CalculateAmoutOfProcessingSamples();
+                    _didWeReadMore = false;
+                }
+                if(newLead)
+                {
+                    _currentBaselineLeadHowManyDidWeAlreadyRead = 0;
+                    _minSeriesTime = 0;
+                    _maxSeriesTime = 300;
+                    CalculateAmoutOfProcessingSamples();
+                    _didWeReadMore = false;
+                }
                 Vector<double> myTemp =  ecg_Baseline.LoadSignal(leadName, (int)_currentBaselineLeadStartIndex, (int)_currentBaselineLeadEndIndex);
                 _currentBaselineLeadVector = myTemp;
                 //System.Windows.MessageBox.Show(myTemp.Count.ToString());
-                
 
 
+                //System.Windows.MessageBox.Show(_minSeriesTime.ToString());
                 //display plot
                 try
                 {
                     if (first)
                     {
+                        CurrentPlot.Axes.Clear();
                         first = false;
                         var lineraYAxis = new LinearAxis();
                         lineraYAxis.Position = AxisPosition.Left;
@@ -830,8 +871,8 @@ namespace EKG_Project.GUI
 
                         var lineraXAxis = new LinearAxis();
                         lineraXAxis.Position = AxisPosition.Bottom;
-                        lineraXAxis.Minimum = 0;
-                        lineraXAxis.Maximum = _windowSize;
+                        lineraXAxis.Minimum = _minSeriesTime;
+                        lineraXAxis.Maximum = _minSeriesTime + _windowSize;
                         lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
                         lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
                         lineraXAxis.Title = "Time [s]";
@@ -842,6 +883,31 @@ namespace EKG_Project.GUI
                     else
                     {
                         ClearPlot();
+                    }
+
+                    if (newLead)
+                    {
+                        CurrentPlot.Axes.Clear();
+                        first = false;
+                        var lineraYAxis = new LinearAxis();
+                        lineraYAxis.Position = AxisPosition.Left;
+                        lineraYAxis.MajorGridlineStyle = LineStyle.Solid;
+                        lineraYAxis.MinorGridlineStyle = LineStyle.Dot;
+                        lineraYAxis.Title = "Amplitude [mV]";
+
+                        CurrentPlot.Axes.Add(lineraYAxis);
+
+
+                        var lineraXAxis = new LinearAxis();
+                        lineraXAxis.Position = AxisPosition.Bottom;
+                        lineraXAxis.Minimum = _minSeriesTime;
+                        lineraXAxis.Maximum = _minSeriesTime + _windowSize;
+                        lineraXAxis.MajorGridlineStyle = LineStyle.Solid;
+                        lineraXAxis.MinorGridlineStyle = LineStyle.Dot;
+                        lineraXAxis.Title = "Time [s]";
+
+                        CurrentPlot.Axes.Add(lineraXAxis);
+
                     }
 
                     LineSeries ls = new LineSeries();
@@ -855,7 +921,7 @@ namespace EKG_Project.GUI
 
                     for (int i = _beginingPoint; (i <= _analyseSamples && i < myTemp.Count()); i++)
                     {
-                        ls.Points.Add(new DataPoint(i / _analyseFrequency, myTemp[i]));
+                        ls.Points.Add(new DataPoint(_minSeriesTime+ (i / _analyseFrequency), myTemp[i]));
                     }
 
                     CurrentPlot.Series.Add(ls);
@@ -1123,7 +1189,7 @@ namespace EKG_Project.GUI
 
                 for (int i = _beginingPoint; (i <= _analyseSamples && i < myTemp.Count()); i++)
                 {
-                    ls.Points.Add(new DataPoint(i / _analyseFrequency, myTemp[i]));
+                    ls.Points.Add(new DataPoint(_minSeriesTime + (i / _analyseFrequency), myTemp[i]));
                 }
 
                 CurrentPlot.Series.Add(ls);
@@ -1144,7 +1210,12 @@ namespace EKG_Project.GUI
             {
                 
                 R_Peaks_New_Data_Worker rPW = new R_Peaks_New_Data_Worker(_currentAnalysisName);
-                Vector<double> myTemp = rPW.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)rPW.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName));
+                //Vector<double> myTemp = rPW.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)rPW.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName));
+                //add
+                Vector<double> myTemp = rPW.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, (int)rPW.getNumberOfSamples(R_Peaks_Attributes.RPeaks, _currentLeadName));
+
+
+
                 bool addR_Peak = false;
 
                 ScatterSeries rPeaksSeries = new ScatterSeries();
@@ -1159,11 +1230,11 @@ namespace EKG_Project.GUI
                 //        addR_Peak = true;
                 //    }
                 //}
-
-                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
+               // System.Windows.MessageBox.Show("Rpeaks end i start " + _currentBaselineLeadHowManyDidWeAlreadyRead.ToString() + " " + _currentBaselineLeadStartIndex.ToString());
+                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadHowManyDidWeAlreadyRead && a >= _currentBaselineLeadStartIndex)))
                 {
-
-                    rPeaksSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+                    //_currentBaselineLeadVector[i - (int)(_currentBaselineLeadStartIndex)]
+                    rPeaksSeries.Points.Add(new ScatterPoint { X = (i / _analyseFrequency), Y = _currentBaselineLeadVector[i - (int)(_currentBaselineLeadStartIndex)], Size = 3 });
 
                     addR_Peak = true;
                 }
@@ -1192,23 +1263,26 @@ namespace EKG_Project.GUI
             try
             {
                 Waves_New_Data_Worker wW = new Waves_New_Data_Worker(_currentAnalysisName);
-                List<int> myTemp = new List<int>();                                
+                List<int> myTemp = new List<int>();
+                //add
+                //wszystko zmieniam z  (int)_currentBaselineLeadStartIndex na 0
+
                 switch (waveParametr)
                 {
                     case "QRSOnsets":
-                        myTemp = wW.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)wW.getNumberOfSamples(Waves_Signal.QRSOnsets, _currentLeadName));
+                        myTemp = wW.LoadSignal(Waves_Signal.QRSOnsets, _currentLeadName, 0, (int)wW.getNumberOfSamples(Waves_Signal.QRSOnsets, _currentLeadName));
                         break;
                     case "QRSEnds":
-                        myTemp = wW.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)wW.getNumberOfSamples(Waves_Signal.QRSEnds, _currentLeadName));
+                        myTemp = wW.LoadSignal(Waves_Signal.QRSEnds, _currentLeadName, 0, (int)wW.getNumberOfSamples(Waves_Signal.QRSEnds, _currentLeadName));
                         break;
                     case "POnsets":
-                        myTemp = wW.LoadSignal(Waves_Signal.POnsets, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)wW.getNumberOfSamples(Waves_Signal.POnsets, _currentLeadName));
+                        myTemp = wW.LoadSignal(Waves_Signal.POnsets, _currentLeadName, 0, (int)wW.getNumberOfSamples(Waves_Signal.POnsets, _currentLeadName));
                         break;
                     case "PEnds":
-                        myTemp = wW.LoadSignal(Waves_Signal.PEnds, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)wW.getNumberOfSamples(Waves_Signal.PEnds, _currentLeadName));
+                        myTemp = wW.LoadSignal(Waves_Signal.PEnds, _currentLeadName, 0, (int)wW.getNumberOfSamples(Waves_Signal.PEnds, _currentLeadName));
                         break;
                     case "TEnds":
-                        myTemp = wW.LoadSignal(Waves_Signal.TEnds, _currentLeadName, (int)_currentBaselineLeadStartIndex, (int)wW.getNumberOfSamples(Waves_Signal.TEnds, _currentLeadName));
+                        myTemp = wW.LoadSignal(Waves_Signal.TEnds, _currentLeadName, 0, (int)wW.getNumberOfSamples(Waves_Signal.TEnds, _currentLeadName));
                         break;
                     default:
                         break;
@@ -1229,10 +1303,10 @@ namespace EKG_Project.GUI
                 //    }
                 //}
 
-                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
+                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadHowManyDidWeAlreadyRead && a >= _currentBaselineLeadStartIndex)))
                 {
 
-                    waveSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+                    waveSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i - (int)(_currentBaselineLeadStartIndex)], Size = 3 });
 
                     addWave = true;
                 }
@@ -1257,15 +1331,18 @@ namespace EKG_Project.GUI
             try
             {
                 Heart_Class_New_Data_Worker hCW = new Heart_Class_New_Data_Worker(_currentAnalysisName);
-                List<Tuple<int, int>> myTemp = hCW.LoadClassificationResult(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)hCW.getNumberOfSamples(_currentLeadName));
+                //List<Tuple<int, int>> myTemp = hCW.LoadClassificationResult(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)hCW.getNumberOfSamples(_currentLeadName));
+                //add
+                List<Tuple<int, int>> myTemp = hCW.LoadClassificationResult(_currentLeadName, 0, (int)hCW.getNumberOfSamples(_currentLeadName));
 
-                foreach(var tp in myTemp)
+                foreach (var tp in myTemp.Where(a => (a.Item1 <= _currentBaselineLeadHowManyDidWeAlreadyRead && a.Item1 >= _currentBaselineLeadStartIndex)))
                 {
 
                     // _analyseSamples
-                    if (tp.Item1 <= _currentBaselineLeadEndIndex)
+                    //if (tp.Item1 <= _currentBaselineLeadEndIndex)
+                    if(true)
                     {
-                        Double yvalue = _currentBaselineLeadVector[tp.Item1];
+                        Double yvalue = _currentBaselineLeadVector[tp.Item1- (int)(_currentBaselineLeadStartIndex)];
                         //if (yvalue > 0)
                         //{
                         //    yvalue += 0.3;
@@ -1306,8 +1383,8 @@ namespace EKG_Project.GUI
             try
             {
                 Qt_Disp_New_Data_Worker qDW = new Qt_Disp_New_Data_Worker(_currentAnalysisName);
-                List<int> myTemp = qDW.LoadTEndLocal(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)qDW.getNumberOfSamples(Qt_Disp_Signal.T_End_Local, _currentLeadName));
-
+                List<int> myTemp = qDW.LoadTEndLocal(_currentLeadName, 0, (int)qDW.getNumberOfSamples(Qt_Disp_Signal.T_End_Local, _currentLeadName));
+                //zmiana na 0
                 bool addQt = false;
 
                 ScatterSeries qtSeries = new ScatterSeries();
@@ -1323,10 +1400,10 @@ namespace EKG_Project.GUI
                 //    }
                 //}
 
-                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadEndIndex && a>0)))
+                foreach (int i in myTemp.Where(a => (a <= _currentBaselineLeadHowManyDidWeAlreadyRead && a >= _currentBaselineLeadStartIndex)))
                 {
                     
-                    qtSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 3 });
+                    qtSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i - (int)(_currentBaselineLeadStartIndex)], Size = 3 });
 
                     addQt = true;
                 }
@@ -1351,8 +1428,8 @@ namespace EKG_Project.GUI
             try
             {
                 Atrial_Fibr_New_Data_Worker aFW = new Atrial_Fibr_New_Data_Worker(_currentAnalysisName);
-                Tuple<bool,Vector<double>, string, string> myTemp = aFW.LoadAfDetection(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)aFW.getNumberOfSamples(_currentLeadName));
-                       
+                Tuple<bool,Vector<double>, string, string> myTemp = aFW.LoadAfDetection(_currentLeadName, 0, (int)aFW.getNumberOfSamples(_currentLeadName));
+                //zmiana na zero       
                        
                 System.Windows.MessageBox.Show(myTemp.Item3 + System.Environment.NewLine + myTemp.Item4);
 
@@ -1362,9 +1439,9 @@ namespace EKG_Project.GUI
                     ScatterSeries atrialFSeries = new ScatterSeries();
                     atrialFSeries.Title = "AtrialFiber";
 
-                    foreach (int i in myTemp.Item2.Where(a => (a <= _currentBaselineLeadEndIndex && a > 0)))
+                    foreach (int i in myTemp.Item2.Where(a => (a <= _currentBaselineLeadHowManyDidWeAlreadyRead && a >= _currentBaselineLeadStartIndex)))
                     {
-                        atrialFSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 1.5 });
+                        atrialFSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i - (int)(_currentBaselineLeadStartIndex)], Size = 1.5 });
                     }
 
 
@@ -1389,9 +1466,9 @@ namespace EKG_Project.GUI
             {
                 
                 Flutter_New_Data_Worker fW = new Flutter_New_Data_Worker(_currentAnalysisName);
-                List<Tuple<int, int>> myTemp = fW.LoadFlutterAnnotations(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)fW.getNumberOfSamples(_currentLeadName));
-                
-             
+                List<Tuple<int, int>> myTemp = fW.LoadFlutterAnnotations(_currentLeadName, 0, (int)fW.getNumberOfSamples(_currentLeadName));
+                //zmiana na zero  
+
                 if (myTemp.Count>0)
                 {
                     //jakas logika jak bedzie sygnał 
@@ -1399,11 +1476,11 @@ namespace EKG_Project.GUI
                     ScatterSeries flutterSeries = new ScatterSeries();
                     flutterSeries.Title = "Flutter";
 
-                    foreach (var tup in myTemp.Where(a => a.Item1 < _currentBaselineLeadEndIndex))
+                    foreach (var tup in myTemp.Where(a => a.Item1 < _currentBaselineLeadHowManyDidWeAlreadyRead && a.Item1>= _currentBaselineLeadStartIndex))
                     {
-                        for (int i = tup.Item1; (i <= tup.Item2 && i<_currentBaselineLeadEndIndex) ; i++)
+                        for (int i = tup.Item1; (i <= tup.Item2 && i< _currentBaselineLeadHowManyDidWeAlreadyRead) ; i++)
                         {
-                            flutterSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i], Size = 1.5 });
+                            flutterSeries.Points.Add(new ScatterPoint { X = i / _analyseFrequency, Y = _currentBaselineLeadVector[i - (int)(_currentBaselineLeadStartIndex)], Size = 1.5 });
                         }
                     }
 
@@ -1435,15 +1512,15 @@ namespace EKG_Project.GUI
             try
             {
                 T_Wave_Alt_New_Data_Worker tWA = new T_Wave_Alt_New_Data_Worker(_currentAnalysisName);
-                List<Tuple<int,int>> myTemp = tWA.LoadAlternansDetectedList(_currentLeadName, (int)_currentBaselineLeadStartIndex, (int)tWA.getNumberOfSamples(_currentLeadName));
-
-                foreach (var tp in myTemp)
+                List<Tuple<int,int>> myTemp = tWA.LoadAlternansDetectedList(_currentLeadName, 0, (int)tWA.getNumberOfSamples(_currentLeadName));
+                //zmiana na zero  
+                foreach (var tp in myTemp.Where(a => (a.Item1 <= _currentBaselineLeadHowManyDidWeAlreadyRead && a.Item1 >= _currentBaselineLeadStartIndex)))
                 {
 
                     // _analyseSamples
                     if (tp.Item1 <= _currentBaselineLeadEndIndex)
                     {
-                        Double yvalue = _currentBaselineLeadVector[tp.Item1];
+                        Double yvalue = _currentBaselineLeadVector[tp.Item1 - (int)(_currentBaselineLeadStartIndex)];
 
                         if (tp.Item2 == 1)
                         {
@@ -1552,6 +1629,7 @@ namespace EKG_Project.GUI
 
         }
 
+        //zawieszone
         public bool DisplaySleepApneaLeadVersion(string leadName)
         {
             try
@@ -1650,9 +1728,9 @@ namespace EKG_Project.GUI
                     sleepApnea.Title = "SleepApnea";
                     double min = _currentBaselineLeadVector.Minimum();
 
-                    foreach (var tup in myTemp.Where(a => a.Item1 < _currentBaselineLeadEndIndex))
+                    foreach (var tup in myTemp.Where(a => a.Item1 < _currentBaselineLeadHowManyDidWeAlreadyRead && a.Item1 >= _currentBaselineLeadStartIndex))
                     {
-                        for (int i = tup.Item1; (i <= tup.Item2 && i < _currentBaselineLeadEndIndex); i++)
+                        for (int i = tup.Item1; (i <= tup.Item2 && i < _currentBaselineLeadHowManyDidWeAlreadyRead); i++)
                         {
 
                             sleepApnea.Points.Add(new ScatterPoint { X = i, Y = min, Size = 2 });
@@ -2053,6 +2131,8 @@ namespace EKG_Project.GUI
                 return false;
             }
         }
+
+
 
 
         public bool ControlOtherModulesSeries(string moduleName, bool visible)
@@ -3030,7 +3110,7 @@ namespace EKG_Project.GUI
 
 
 
-        public void XAxesControl(double slide)
+        public bool XAxesControl(double slide)
         {
 
             CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "Time [s]"));
@@ -3039,30 +3119,33 @@ namespace EKG_Project.GUI
             bool noMore = true;
 
             //double windowsSize = _windowSize * _scalingPlotValue;
-            double windowsSize = _maxSeriesTime;
+            //double windowsSize = _maxSeriesTime;
             if (slide == 0)
             {
-                min = 0;
-                max = _windowSize;
+                min = _minSeriesTime;
+                max = _minSeriesTime + _windowSize;
             }
             else if (slide > 0.9)
             {
-                max = windowsSize;
+                max = _maxSeriesTime;
                 min = max - _windowSize;
                 if (slide == 1)
                 {
-                    System.Windows.MessageBoxResult msgR = System.Windows.MessageBox.Show("Do you want to visualise more data?", "", System.Windows.MessageBoxButton.YesNo);
-                    if(msgR == System.Windows.MessageBoxResult.Yes)
+                    if (!_thatIsAll)
                     {
-                        //CalculateAmoutOfProcessingSamplesWhenAskedToReadMore();
-                        //noMore = false;
+                        System.Windows.MessageBoxResult msgR = System.Windows.MessageBox.Show("Do you want to visualise more data?", "", System.Windows.MessageBoxButton.YesNo);
+                        if (msgR == System.Windows.MessageBoxResult.Yes)
+                        {
+                            CalculateAmoutOfProcessingSamplesWhenAskedToReadMore();
+                            noMore = false;
 
+                        }
                     }
                 }
             }
             else
             {
-                min = windowsSize * slide;
+                min = _minSeriesTime + (_maxSeriesTime-_minSeriesTime) * slide;
                 max = min + _windowSize;
             }
             if (noMore)
@@ -3078,6 +3161,8 @@ namespace EKG_Project.GUI
                 CurrentPlot.Axes.Add(lineraXAxis);
             }
             RefreshPlot();
+
+            return noMore;
         }
 
 
