@@ -3203,16 +3203,21 @@ namespace EKG_Project.GUI
         {
             try
             {
-                    string automaticFilePath = System.IO.Directory.GetCurrentDirectory();
+                    string automaticDirPath = System.IO.Directory.GetCurrentDirectory();
                     //System.Windows.MessageBox.Show(automaticFilePath);
                     //System.Windows.MessageBox.Show(automaticFilePath.IndexOf("DadmProject").ToString());
                     //System.Windows.MessageBox.Show(automaticFilePath.Remove(automaticFilePath.IndexOf("DadmProject")+12));
 
-                    automaticFilePath = automaticFilePath.Remove(automaticFilePath.IndexOf("DadmProject") + 12) + @"IO\temp";
+                    automaticDirPath = automaticDirPath.Remove(automaticDirPath.IndexOf("bin") + 4) + @_currentAnalysisName;
                     //System.Windows.MessageBox.Show(automaticFilePath);
 
-                    string automaticFileName = @_currentAnalysisName + "_" + CurrentPlot.Title + _otherTabs + "_" + _currentSavedPlotNumber.ToString() + ".pdf";
-                    string combinedPath = System.IO.Path.Combine(automaticFilePath, automaticFileName);
+                    if (!System.IO.Directory.Exists(automaticDirPath))
+                    {
+                        System.IO.Directory.CreateDirectory(automaticDirPath);
+                    }
+                    
+                    string automaticFileName = CurrentPlot.Title + _otherTabs + "_" + _currentSavedPlotNumber.ToString() + ".pdf";
+                    string combinedPath = System.IO.Path.Combine(automaticDirPath, automaticFileName);
                     _currentSavedPlotNumber++;
 
                     using (var stream = System.IO.File.Create(combinedPath))

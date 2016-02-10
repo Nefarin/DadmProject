@@ -40,31 +40,10 @@ namespace EKG_Project.IO.PDFModuleClasses
 
         public void InsertStatisticsTable(Dictionary<string, string> _strToStr)
         {
-            int cols = 2;
+            int cols = 3;
             int rows = _strToStr.Count;
             Tables.DefineTable(Document, rows, cols, _strToStr);
         }
-
-        //private void printTableForQtDisp(string currentAnalyseName)
-        //{
-        //    _qt_Disp_Data_Worker.Load();
-
-        //    foreach (var dat in _qt_Disp_Data_Worker.Data.QT_disp_local)
-        //    {
-        //        DataToTable dTT = new DataToTable();
-        //        dTT.Lead = dat.Item1;
-        //        dTT.QT_Disp_Lcal = dat.Item2.ToString("0.00");
-        //        dTT.QT_Mean = _qt_Disp_Data_Worker.Data.QT_mean.First(a => a.Item1 == dat.Item1).Item2.ToString("0.00");
-        //        dTT.QT_Std = _qt_Disp_Data_Worker.Data.QT_std.First(a => a.Item1 == dat.Item1).Item2.ToString("0.00");
-        //        _tableData.Add(dTT);
-
-        //    }
-        //    //private List<Tuple<String, double>> _qt_disp_local;
-        //    //private List<Tuple<String, double>> _qt_mean;
-        //    //private List<Tuple<String, double>> _qt_std;
-        //    //private double _qt_disp_global;
-        //    //private List<Tuple<String, List<int>>> _t_end_local;
-        //}
     }
     
 }

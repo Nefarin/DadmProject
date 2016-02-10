@@ -220,5 +220,10 @@ namespace EKG_Unit.Modules.TestModule3
             Vector<double> testVector = null;
             TestModule3_Alg testAlgs = new TestModule3_Alg(testVector, testParams);
         }
+
+        public static void Main()
+        {
+
+        }
     }
 }

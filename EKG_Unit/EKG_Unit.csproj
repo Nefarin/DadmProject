@@ -62,7 +62,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="IO\Basic_Data_Worker_Test.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Alg_Test.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Data_Test.cs" />
     <Compile Include="Modules\Atrial_Fibr\Atrial_Fibr_Params_Test.cs" />
@@ -155,8 +154,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Architecture\" />
-    <Folder Include="GUI\" />
     <Folder Include="Modules\SIG_EDR\" />
   </ItemGroup>
   <ItemGroup>
