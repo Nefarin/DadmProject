@@ -176,14 +176,21 @@ namespace EKG_Project.Modules.HRV_DFA
                     }
                     else
                     {
-                        _currentVector = _alg.Interpolate(_currentRRVector);
-                        _currentVectorLength = _currentVector.Count;
-                        _currentIndex = -1;
-                        dfaStep = 50;
-                        start = 500;
-                        stop = 50000;
-                        Console.WriteLine("interpolate");
-                        _state = STATE.CALCULATE_FLUCTUATIONS_FIRSTSTEP;
+                        try {
+                            _currentVector = _alg.Interpolate(_currentRRVector);
+                            _currentVectorLength = _currentVector.Count;
+                            _currentIndex = -1;
+                            dfaStep = 50;
+                            start = 500;
+                            stop = 50000;
+                            Console.WriteLine("interpolate");
+                            _state = STATE.CALCULATE_FLUCTUATIONS_FIRSTSTEP;
+                        }
+                        catch (Exception e)
+                        {
+                            Abort();
+                            _state = STATE.END;
+                        }
                     }
                     break; //done
                 case (STATE.CALCULATE_FLUCTUATIONS_FIRSTSTEP):

@@ -63,6 +63,18 @@ namespace EKG_Project.IO
         {
             return _ended;
         }
+
+        public double Progress()
+        {
+            try
+            {
+                return 100.0 * ((double)_currentLeadIndex / (double) _numberOfLeads + (1.0 / _numberOfLeads) * ((double)_currentIndex / (double) _currentLeadLength));
+            }
+            catch (Exception e)
+            {
+                return 0D;
+            }
+        }
         public void Process()
         {
             switch (_state)
@@ -105,6 +117,10 @@ namespace EKG_Project.IO
                         {
                             _state = State.NEXT;
                         }
+                        catch (Exception k)
+                        {
+                            _state = State.END;
+                        }
 
                     }
                     break;
@@ -128,6 +144,10 @@ namespace EKG_Project.IO
                         catch (OverflowException k)
                         {
                             _state = State.NEXT;
+                        }
+                        catch (Exception k)
+                        {
+                            _state = State.END;
                         }
 
                     }

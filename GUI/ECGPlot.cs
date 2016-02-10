@@ -3112,8 +3112,15 @@ namespace EKG_Project.GUI
 
         public bool XAxesControl(double slide)
         {
+            try
+            {
+                CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "Time [s]"));
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
 
-            CurrentPlot.Axes.Remove(CurrentPlot.Axes.First(a => a.Title == "Time [s]"));
             double min;
             double max;
             bool noMore = true;
