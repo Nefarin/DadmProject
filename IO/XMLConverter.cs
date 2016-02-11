@@ -161,6 +161,7 @@ namespace EKG_Project.IO
 
                 }
             }
+
             return readOrigin;
         }
 
@@ -213,7 +214,7 @@ namespace EKG_Project.IO
         /// <param name="signal">normalized signal</param>
         /// <returns>physical signal</returns> 
         #endregion
-        double[] getPhysSignal(double[] signal)
+        public double[] getPhysSignal(double[] signal)
         {
             double origin = getOrigin();
             double scale = getScale();

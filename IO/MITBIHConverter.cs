@@ -15,7 +15,7 @@ namespace EKG_Project.IO
     /// Class that converts MIT BIH files
     /// </summary> 
     #endregion
-    class MITBIHConverter : IECGConverter
+    public class MITBIHConverter : IECGConverter
     {
         //FIELDS
         #region Documentation
