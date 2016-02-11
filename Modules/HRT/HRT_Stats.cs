@@ -114,8 +114,8 @@ namespace EKG_Project.Modules.HRT
                     _strToObj.Add(_currentName + " Mean Turbulence Slope ", meanTS);
                     _strToStr.Add(_currentName + " Ratio between VPC and all QRS complexes detected: ", VPCvsAllQRS.ToString() + "[%]");
                     _strToObj.Add(_currentName + " Ratio between VPC and all QRS complexes detected:  ", VPCvsAllQRS + "[%]");
-                    _strToStr.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected: ", VPCvsAllQRS.ToString() + "[%]");
-                    _strToObj.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected:  ", VPCvsAllQRS + "[%]");
+                    _strToStr.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected: ", VPCvsVentricular.ToString() + "[%]");
+                    _strToObj.Add(_currentName + " Ratio between VPC and all Ventricular complexes detected:  ", VPCvsVentricular + "[%]");
                     //_strToStr.Add(_currentName + " Turbulence Onset ", currentTurbulenceOnset.ToString());
                     _strToObj.Add(_currentName + " Turbulence Onset ", currentTurbulenceOnset);
                     //_strToStr.Add(_currentName + " Turbulence Slope ", currentTurbulenceSlope.ToString());

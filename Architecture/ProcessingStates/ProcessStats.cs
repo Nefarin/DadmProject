@@ -1,4 +1,5 @@
-﻿
+﻿using EKG_Project.Architecture.GUIMessages;
+
 namespace EKG_Project.Architecture.ProcessingStates
 {
     #region Documentation
@@ -25,8 +26,9 @@ namespace EKG_Project.Architecture.ProcessingStates
                 timeoutState = new StatsEnded();
             }
             else
-            {
+            {          
                 process.Stats.CurrentStats.ProcessStats();
+                process.Communication.SendProcessingEvent(new StatsProgress(100D * (double) process.Stats.CurrentModuleIndex / (double) process.Stats.IsComputed.Count));
                 timeoutState = new ProcessStats();
             }
         }

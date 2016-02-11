@@ -28,6 +28,7 @@ namespace EKG_Project.Architecture.ProcessingStates
             else
             {
                 process.FileProcessor.Process();
+                process.Communication.SendProcessingEvent(new FileProgress(process.FileProcessor.Progress()));
                 timeoutState = new ProcessFile();
             }
 

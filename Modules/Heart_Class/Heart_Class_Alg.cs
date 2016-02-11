@@ -87,7 +87,7 @@ namespace EKG_Project.Modules.Heart_Class
             {
                 OneQrsComplex(qrsOnset, qrsEnd, R, Fs);
                 CountCoeff(QrsComplexOne, Fs);
-                int numberOfNeighbors = 3;
+                int numberOfNeighbors = 15;
                 return ClassificationResultOne = TestKnn(trainDataList, QrsCoeffOne, trainClass, numberOfNeighbors);
             }
             catch (Exception e)
