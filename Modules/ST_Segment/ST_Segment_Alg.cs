@@ -10,7 +10,7 @@ using MathNet.Numerics.LinearAlgebra;
 using EKG_Project.IO;
 
 namespace EKG_Project.Modules.ST_Segment
-{
+{ 
     public class ST_Segment_Alg
     {
         private int[] _st_shapes;
@@ -28,27 +28,17 @@ namespace EKG_Project.Modules.ST_Segment
         public Vector<int> TJ
         {
             get
-            {
-                return _tJ;
-            }
-
+            {return _tJ;}
             set
-            {
-                _tJ = value;
-            }
+            { _tJ = value;}
         }
 
         public Vector<int> TST
         {
             get
-            {
-                return _tST;
-            }
-
+            {return _tST;}
             set
-            {
-                _tST = value;
-            }
+            {_tST = value;}
         }
 
         public ST_Segment_Alg(Vector<double> signalECGBaseline, List<int> tQRS_onset, List<int> tQRS_ends, Vector<double> rInterval, int frequency)
