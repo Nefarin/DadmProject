@@ -142,6 +142,7 @@ namespace EKG_Project.Modules.HRT
                         _rpeaks = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RPeaks, _currentLeadName, 0, NoOfSamplesRPeaks);
                         _rrintervals = InputWorker_R_Peaks.LoadSignal(R_Peaks_Attributes.RRInterval, _currentLeadName, 0, NoOfSamplesRRInterval);
                         _classAll = InputWorker_Heart_Class.LoadClassificationResult(_currentLeadName, 0, NoOfSamplesHeartClass);
+                        
                         _state = STATE.PROCESS_CHANNEL;
                     }
                     break;
@@ -157,6 +158,7 @@ namespace EKG_Project.Modules.HRT
                                 System.Diagnostics.Debug.WriteLine("Brak jakiegokolwiek załamka mającego pochodzenie komorowe");
                                 _vpc = VPC.NOT_DETECTED;
                                 OutputWorker.SaveVPC(_currentLeadName, _vpc);
+                                _state = STATE.NEXT_CHANNEL;
                             }
                             else
                             {
@@ -168,6 +170,7 @@ namespace EKG_Project.Modules.HRT
                                     System.Diagnostics.Debug.WriteLine("Są komorowe załamki, ale nie ma przedwczesnych");
                                     _vpc = VPC.NO_VENTRICULAR;
                                     OutputWorker.SaveVPC(_currentLeadName, _vpc);
+                                    _state = STATE.NEXT_CHANNEL;
                                 }
                                 else
                                 {
@@ -179,6 +182,7 @@ namespace EKG_Project.Modules.HRT
                                         System.Diagnostics.Debug.WriteLine("Są VPC, ale nie można wygenerować wokół nich tachogramu. Prawdopodobna przyczyna to niewystarczająca ilość wykrytych załamków QRS w pobliżu");
                                         _vpc = VPC.DETECTED_BUT_IMPOSSIBLE_TO_PLOT;
                                         OutputWorker.SaveVPC(_currentLeadName, _vpc);
+                                        _state = STATE.NEXT_CHANNEL;
                                     }
                                     else
                                     {
@@ -198,7 +202,6 @@ namespace EKG_Project.Modules.HRT
                                         _statisticsClassNumbersPDF[1] = _classVentrical.Count;
                                         _statisticsClassNumbersPDF[2] = _classPrematureVentrical.Count;
                                         _state = STATE.END_CHANNEL;
-
                                     }
                                 }
                             }
@@ -340,11 +343,13 @@ namespace EKG_Project.Modules.HRT
 
         public static void Main()
         {
-            string[] lista = { "105", "106", "107", "108", "109", "114", "116", "118", "119", "124", "200", "201", "202", "203", "207" };
+            //
+            string[] lista = { "105" , "108",  "114", "116", "118", "201", "202", "203" , "106", "107", "109", "119", "124", "200", "207" };
             foreach (string liczba in lista)
             {
-                System.Diagnostics.Debug.WriteLine("Analysis" + liczba);
-                HRT_Params param = new HRT_Params("Analysis" + liczba);
+            
+                System.Diagnostics.Debug.WriteLine("Analysis"+liczba);
+                HRT_Params param = new HRT_Params("Analysis"+liczba);
 
                 HRT testModule = new HRT();
                 testModule.Init(param);

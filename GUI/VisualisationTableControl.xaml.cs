@@ -36,6 +36,52 @@ namespace EKG_Project.GUI
             public string QT_Std { get; set; }
         }
 
+        public class DataToTableHRV2
+        {
+
+            public string Lead { get; set; }
+            public string TINN { get; set; }
+            public string TriangleIndex { get; set; }
+            public string SD1 { get; set; }
+            public string SD2{ get; set; }
+        }
+
+        public class DataToTableHRVDFA
+        {
+            public string Lead { get; set; }
+            public string a1 { get; set; }
+            public string a2 { get; set; }
+        }
+
+        public class DataToTableHeartCluster
+        {
+            public string Lead { get; set; }
+            public string TotalQRSComplex { get; set; }
+            public string ClassAmount { get; set; }
+            //public List<string> IndefOfClass { get; set; }
+            //public List<string> QRSComplexNr { get; set; }
+            public string IndefOfClass { get; set; }
+            public string QRSComplexNr { get; set; }
+
+        }
+
+        public class DataToTableHRV1
+        {
+
+            public string Lead { get; set; }
+            public string AVNN { get; set; }
+            public string HF { get; set; }
+            public string LF { get; set; }
+            public string LFHF { get; set; }
+            public string NN50 { get; set; }
+            public string pNN50 { get; set; }
+            public string RMSSD { get; set; }
+            public string SDNN { get; set; }
+            public string SDSD { get; set; }
+            public string TP { get; set; }
+            public string VLF { get; set; }
+        }
+
         //public int ID { get; set; }
 
         List<DataToTable> _tableData; 
@@ -82,6 +128,7 @@ namespace EKG_Project.GUI
             _currentAnalysisName = analyseName;
             
             _tableData = new List<DataToTable>();
+            
 
             try
             {
@@ -98,19 +145,31 @@ namespace EKG_Project.GUI
                 case "QT_DISP":
                     DisplayQTDisplayTable();
                     break;
+                case "HRV2":
+                    DisplayHRV2Table();
+                    break;
+                case "HRV1":
+                    DisplayHRV1Table();
+                    break;
+                case "HRV_DFA":
+                    DisplayHRVDFATable();
+                    break;
+                case "HEART_CLUSTER":
+                    DisplayHeartClusterTable();
+                    break;
                 default:
                     break;
             }
 
 
-            this.VisualisationDataTable.DataContext = _tableData;
+           
         }
 
         private bool DisplayQTDisplayTable()
         {
             try
             {
-                
+                _tableData = new List<DataToTable>();
                 Qt_Disp_New_Data_Worker qDW = new Qt_Disp_New_Data_Worker(_currentAnalysisName);
                 foreach (string lead in leadsNameList)
                 {
@@ -122,6 +181,7 @@ namespace EKG_Project.GUI
                     _tableData.Add(dTT);
                 }
 
+                this.VisualisationDataTable.DataContext = _tableData;
                 return true;
             }
             catch(Exception ex)
@@ -131,7 +191,133 @@ namespace EKG_Project.GUI
             }
         }
 
+        private bool DisplayHRV2Table()
+        {
+            try
+            {
+                List<DataToTableHRV2> _dataToPrint = new List<DataToTableHRV2>();
+                HRV2_New_Data_Worker hW = new HRV2_New_Data_Worker(_currentAnalysisName);
+                foreach (string lead in leadsNameList)
+                {
+                    DataToTableHRV2 dTT = new DataToTableHRV2();
+                    dTT.Lead = lead;
+                    dTT.TINN = hW.LoadAttribute(HRV2_Attributes.Tinn, lead).ToString(); 
+                    dTT.TriangleIndex = hW.LoadAttribute(HRV2_Attributes.TriangleIndex, lead).ToString();
+                    dTT.SD1 = hW.LoadAttribute(HRV2_Attributes.SD1, lead).ToString("0.00");
+                    dTT.SD2 = hW.LoadAttribute(HRV2_Attributes.SD2, lead).ToString("0.00");
+                    _dataToPrint.Add(dTT);
+                }
+                this.VisualisationDataTable.DataContext = _dataToPrint;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
 
+        private bool DisplayHRV1Table()
+        {
+            try
+            {
+                List<DataToTableHRV1> _dataToPrint = new List<DataToTableHRV1>();
+                HRV1_New_Data_Worker hW = new HRV1_New_Data_Worker(_currentAnalysisName);
+                foreach(string lead in leadsNameList)
+                {
+                    DataToTableHRV1 dTT = new DataToTableHRV1();
+                    dTT.Lead = lead;
+                    //dTT.HF = "heheszki";
+
+                    _dataToPrint.Add(dTT);
+                }
+
+                this.VisualisationDataTable.DataContext = _dataToPrint;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        private bool DisplayHRVDFATable()
+        {
+            try
+            {
+                List<DataToTableHRVDFA> _dataToPrint = new List<DataToTableHRVDFA>();
+                HRV_DFA_New_Data_Worker hDW = new HRV_DFA_New_Data_Worker(_currentAnalysisName);
+
+                
+
+                foreach (string lead in leadsNameList)
+                {
+                    try
+                    {
+                        Tuple<MathNet.Numerics.LinearAlgebra.Vector<double>, MathNet.Numerics.LinearAlgebra.Vector<double>> paramAlpha = hDW.LoadSignal(HRV_DFA_Signals.ParamAlpha, lead, 0, (int)hDW.getNumberOfSamples(HRV_DFA_Signals.ParamAlpha, lead));
+
+                        DataToTableHRVDFA dTT = new DataToTableHRVDFA();
+                        dTT.a1 = paramAlpha.Item1[0].ToString();
+                        dTT.a2 = paramAlpha.Item2[0].ToString();
+                        dTT.Lead = lead;
+                        _dataToPrint.Add(dTT);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                this.VisualisationDataTable.DataContext = _dataToPrint;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        private bool DisplayHeartClusterTable()
+        {
+            try
+            {
+                List<DataToTableHeartCluster> _dataToPrint = new List<DataToTableHeartCluster>();
+                Heart_Cluster_Data_Worker hCW = new Heart_Cluster_Data_Worker(_currentAnalysisName);
+                
+                foreach (string lead in leadsNameList)
+                {
+                    try
+                    {
+                        DataToTableHeartCluster dTT = new DataToTableHeartCluster();
+
+                        dTT.Lead = lead;
+                        dTT.ClassAmount = hCW.LoadAttributeI(Heart_Cluster_Attributes_I.NumberofClass, lead).ToString();
+                        dTT.TotalQRSComplex = hCW.LoadAttributeI(Heart_Cluster_Attributes_I.TotalQrsComplex, lead).ToString();
+                        dTT.IndefOfClass = hCW.LoadAttributeII(Heart_Cluster_Attributes_II.indexOfClass, lead).ToString();
+                        dTT.QRSComplexNr = hCW.LoadAttributeII(Heart_Cluster_Attributes_II.QrsComplexNo, lead).ToString();
+
+                        _dataToPrint.Add(dTT);
+                    }
+                    catch(Exception ex)
+                    {
+                        System.Windows.MessageBox.Show(ex.Message);
+                    }
+                }
+
+                this.VisualisationDataTable.DataContext = _dataToPrint;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
 
         public VisualisationTableControl()
         {

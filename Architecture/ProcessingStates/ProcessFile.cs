@@ -1,13 +1,22 @@
-﻿using EKG_Project.Architecture;
-using EKG_Project.Modules;
-using EKG_Project.IO;
-using EKG_Project.Architecture.GUIMessages;
-using System;
+﻿using EKG_Project.Architecture.GUIMessages;
 
 namespace EKG_Project.Architecture.ProcessingStates
 {
+    #region Documentation
+    /// <summary>
+    /// Message to Analysis thread, which controls loading file process.
+    /// </summary>
+    /// 
+    #endregion
     public class ProcessFile : IProcessingState
     {
+        #region Documentation
+        /// <summary>
+        /// Sets next processing state.
+        /// </summary>
+        /// <param name="process"></param>
+        /// <param name="timeoutState"></param>
+        #endregion
         public void Process(Processing process, out IProcessingState timeoutState)
         {
             if (process.FileProcessor.Ended())
@@ -19,6 +28,7 @@ namespace EKG_Project.Architecture.ProcessingStates
             else
             {
                 process.FileProcessor.Process();
+                process.Communication.SendProcessingEvent(new FileProgress(process.FileProcessor.Progress()));
                 timeoutState = new ProcessFile();
             }
 

@@ -75,9 +75,11 @@ namespace EKG_Project.Modules.Heart_Class
         /// <param name="R"></param>
         /// <param name="qrsOnset"></param>
         /// <param name="qrsEnd"></param>
+        /// <param name="trainDataList"></param>
+        /// <param name="trainClass"></param>
         /// <returns></returns>
         #endregion
-        public Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R, uint fs)
+        public Tuple<int, int> Classification(Vector<double> loadedSignal, int qrsOnset, int qrsEnd, double R, uint fs, List<Vector<double>> trainDataList, List<int> trainClass)
             {
             Fs = fs;
             Signal = loadedSignal;
@@ -85,29 +87,7 @@ namespace EKG_Project.Modules.Heart_Class
             {
                 OneQrsComplex(qrsOnset, qrsEnd, R, Fs);
                 CountCoeff(QrsComplexOne, Fs);
-                int numberOfNeighbors = 3;
-
-                //WCZYTANIE ZBIORU TRENINGOWEGO
-                DebugECGPath loader = new DebugECGPath();
-                List<Vector<double>> trainDataList =
-                    loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d.txt"));
-
-                //WCZYTANIE ETYKIET ZBIORU TRENINGOWEGO: 0-V, 1-SV
-                List<Vector<double>> trainClassList =
-                    loadFile(System.IO.Path.Combine(loader.getTempPath(), "train_d_label.txt"));
-
-                int oneClassElement;
-                List<int> trainClass;
-                trainClass = new List<int>();
-                foreach (var item in trainClassList)
-                {
-                    foreach (var element in item)
-                    {
-                        oneClassElement = (int) element;
-                        trainClass.Add(oneClassElement);
-                    }
-
-                }
+                int numberOfNeighbors = 15;
                 return ClassificationResultOne = TestKnn(trainDataList, QrsCoeffOne, trainClass, numberOfNeighbors);
             }
             catch (Exception e)
@@ -200,11 +180,12 @@ namespace EKG_Project.Modules.Heart_Class
                 }
                 catch (Exception e)
                 {
-                   
+
                 }
 
-
             }
+
+
         }
 
 

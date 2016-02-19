@@ -111,7 +111,7 @@ namespace EKG_Project.Modules.Heart_Class
                         _classResults.Add(item.Item2);
                     }
 
-                    _strToStr.Add(_currentName + " Percent of ventricular stimulation: ", CountPercentOfV(_classResults).ToString()); //generalnie to jakie statystyki wasz moduł powinien wyznacać zależy przede wszystkim od was
+                    _strToStr.Add(_currentName + " Ventricular stimulation: ", CountPercentOfV(_classResults).ToString() + " [%]"); //generalnie to jakie statystyki wasz moduł powinien wyznacać zależy przede wszystkim od was
             
                     _currentState = State.NEXT_CHANNEL;
                     break;

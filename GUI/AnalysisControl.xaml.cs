@@ -9,6 +9,7 @@ using EKG_Project.Modules;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EKG_Project.GUI
 {
@@ -23,6 +24,7 @@ namespace EKG_Project.GUI
 
         public string outputPdfPath;
         public string inputFilePath;
+        IO.PDFGenerator pdf;
 
         private ABORT_MODE _abortMode;
 
@@ -70,10 +72,15 @@ namespace EKG_Project.GUI
                 inputFilePath = fileDialog.FileName;
                 Communication.SendGUIMessage(new LoadFile(inputFilePath));
                 panel.Visibility = Visibility.Visible;
-                progressBar.IsIndeterminate = true;
+                //progressBar.IsIndeterminate = true;
                 analysisLabel.Content = "Loading file.. Please wait";
                 buttonAbort.Content = "Cancel";
                 _abortMode = ABORT_MODE.ABORT_LOADING_FILE;
+                this.VisualisationPanelUserControl.Visibility = Visibility.Hidden;
+                pdfButton.IsEnabled = false;
+                loadFileButton.IsEnabled = false;
+                modulePanel.IsEnabled = true;
+                startAnalyseButton.IsEnabled = false;
             }
 
         }
@@ -102,10 +109,6 @@ namespace EKG_Project.GUI
                 MessageBox.Show("No analysis selected. Please select at least one analysis.", "Cannot start calculations", MessageBoxButton.OK);
             }
 
-
-            //MessageBox.Show("Starting Analyses");
-            //VisualisationPanelUserControl.DataContext = new VisualisationPanelControl();
-
         }
 
         private void pdfButton_Click(object sender, RoutedEventArgs e)
@@ -121,6 +124,15 @@ namespace EKG_Project.GUI
                 Communication.SendGUIMessage(new BeginStatsCalculation(this.isComputed));
                 outputPdfPath = fileDialog.FileName;
             }
+
+            try
+            { 
+                pdf = new IO.PDFGenerator(outputPdfPath);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Failed to setup PDF");
+            }
         }
 
         public void processingStarted()
@@ -130,6 +142,7 @@ namespace EKG_Project.GUI
             this.AnalysisInProgress = true;
             loadFileButton.IsEnabled = false;
             pdfButton.IsEnabled = false;
+            modulePanel.IsEnabled = false;
             startAnalyseButton.IsEnabled = false;
             analysisLabel.Content = "Analysis in progress..";
             buttonAbort.Content = "Abort analysis";
@@ -151,14 +164,43 @@ namespace EKG_Project.GUI
             loadFileButton.IsEnabled = true;
             pdfButton.IsEnabled = true;
             startAnalyseButton.IsEnabled = true;
+            modulePanel.IsEnabled = true;
             VisualisationPanelUserControl.DataContext = new VisualisationPanelControl(modulePanel.AnalysisName, tempList);
             panel.Visibility = Visibility.Hidden;
             this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
         }
 
-        public void updateProgress(AvailableOptions module, double progress)
+        public void updateModuleProgress(AvailableOptions module, double progress)
         {
             analysisLabel.Content = "Analysis in progress..\nCurrent module: " + module.ToString();
+            try
+            {
+                progressBar.Value = progress;
+            }
+            catch (ArgumentException e)
+            {
+                progressBar.Value = 0;
+            }
+
+        }
+
+        public void updateFileProgress(double progress)
+        {
+            analysisLabel.Content = analysisLabel.Content = "Loading file.. Please wait";
+            try
+            {
+                progressBar.Value = progress;
+            }
+            catch (ArgumentException e)
+            {
+                progressBar.Value = 0;
+            }
+
+        }
+
+        public void updateStatsProgress(double progress)
+        {
+            analysisLabel.Content = "Generating PDF report.. Please wait";
             try
             {
                 progressBar.Value = progress;
@@ -196,6 +238,7 @@ namespace EKG_Project.GUI
         public void fileLoaded()
         {
             startAnalyseButton.IsEnabled = true;
+            loadFileButton.IsEnabled = true;
             panel.Visibility = Visibility.Hidden;
             progressBar.IsIndeterminate = false;
             MessageBox.Show("File loaded successfully.");
@@ -204,6 +247,7 @@ namespace EKG_Project.GUI
         public void fileError()
         {
             startAnalyseButton.IsEnabled = false;
+            loadFileButton.IsEnabled = true;
             panel.Visibility = Visibility.Hidden;
             progressBar.IsIndeterminate = false;
             MessageBox.Show("File could not be loaded successfully.");
@@ -213,61 +257,137 @@ namespace EKG_Project.GUI
         public void fileNotLoaded()
         {
             startAnalyseButton.IsEnabled = false;
+            loadFileButton.IsEnabled = true;
             panel.Visibility = Visibility.Hidden;
             progressBar.IsIndeterminate = false;
             MessageBox.Show("File not found during analysis.");
 
         }
 
-        IO.PDFGenerator pdf;
         public void statsCalculationStarted()
         {
-            MessageBox.Show("Started generating PDF");
+            this.AnalysisInProgress = true;
+            loadFileButton.IsEnabled = false;
+            pdfButton.IsEnabled = false;
+            modulePanel.IsEnabled = true;
+            startAnalyseButton.IsEnabled = false;
+            analysisLabel.Content = "Generating PDF report.. Please wait";
+            buttonAbort.Content = "Abort generating";
+            progressBar.Value = 0;
+            panel.Visibility = Visibility.Visible;
+            this.VisualisationPanelUserControl.Visibility = Visibility.Hidden;
+            _abortMode = ABORT_MODE.ABORT_STATS_CALC;
+
 
             System.Collections.Generic.List<string> tempList = new System.Collections.Generic.List<string>();
+            System.Collections.Generic.List<AvailableOptions> tempListCode = new System.Collections.Generic.List<AvailableOptions>();
+
             foreach (var option in modulePanel.getAllOptions())
             {
 
                 if (option.Set)
                 {
-                    tempList.Add(option.Name);
+                    tempListCode.Add(option.Code);
                 }
             }
 
-            IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
-            data.AnalisysName = modulePanel.AnalysisName;
-            data.ModuleList = tempList;
-            data.Filename = this.inputFilePath;
+            tempListCode.Sort();
 
-            pdf = new IO.PDFGenerator(outputPdfPath);
-            pdf.GeneratePDF(data, true);
+            foreach (var element in tempListCode)
+            {
+                if (element != AvailableOptions.ECG_BASELINE &&
+                   element != AvailableOptions.FLUTTER &&
+                   element != AvailableOptions.HEART_AXIS &&
+                   element != AvailableOptions.HEART_CLUSTER &&
+                   element != AvailableOptions.HRV2 &&
+                   element != AvailableOptions.HRV_DFA &&
+                   element != AvailableOptions.SIG_EDR &&
+                   element != AvailableOptions.ST_SEGMENT &&
+                   element != AvailableOptions.SLEEP_APNEA)
+                {
+                    tempList.Add(element.ToString());
+                }
+            }
+
+            try
+            {
+                IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
+                data.AnalisysName = modulePanel.AnalysisName;
+                System.Console.WriteLine("INIT" + data.AnalisysName);
+                data.ModuleList = tempList;
+                data.Filename = this.inputFilePath;
+
+                pdf.GeneratePDF(data, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("One of modules does not work properly", "Failed to setup PDF", MessageBoxButton.OK);
+            }
         }
 
-        
         public void statsCalculationEnded(Dictionary<AvailableOptions, Dictionary<String, String>> results)
         {
-            foreach (var result in results)
-            {
-                Dictionary<String, String> temp = result.Value;
-                foreach(var smth in temp)
+            this.AnalysisInProgress = false;
+            loadFileButton.IsEnabled = true;
+            pdfButton.IsEnabled = true;
+            modulePanel.IsEnabled = true;
+            startAnalyseButton.IsEnabled = true;
+            progressBar.Value = 0;
+            panel.Visibility = Visibility.Hidden;
+            this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
+
+            try {
+                Dictionary<AvailableOptions, Dictionary<String, String>> tempResults = new Dictionary<AvailableOptions, Dictionary<string, string>>();
+                var keyList = results.Keys.ToList();
+                keyList.Sort();
+
+                foreach (var key in keyList)
                 {
-                    Console.WriteLine(smth.Key + " " + smth.Value);
+                    if (key != AvailableOptions.ECG_BASELINE &&
+                       key != AvailableOptions.FLUTTER &&
+                       key != AvailableOptions.HEART_AXIS &&
+                       key != AvailableOptions.HEART_CLUSTER &&
+                       key != AvailableOptions.HRV2 &&
+                       key != AvailableOptions.SIG_EDR &&
+                       key != AvailableOptions.HRV_DFA &&
+                       key != AvailableOptions.ST_SEGMENT &&
+                       key != AvailableOptions.SLEEP_APNEA)
+                    {
+                        tempResults.Add(key, results[key]);
+                    }
                 }
+                results = tempResults;
+
+                foreach (var result in results)
+                {
+                    Dictionary<String, String> temp = result.Value;
+                    foreach (var smth in temp)
+                    {
+                        Console.WriteLine(smth.Key + " " + smth.Value);
+                    }
+                }
+
+                IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
+
+                foreach (var element in results)
+                {
+                    data.ModuleOption = element.Key;
+                    data.AnalisysName = modulePanel.AnalysisName;
+                    data.statsDictionary = element.Value;
+
+                    pdf.GeneratePDF(data, false);
+                }
+                pdf.SaveDocument();
+
+
+                MessageBox.Show("PDF generated");
+                pdf.ProcessStart();
             }
-
-            IO.PDF.StoreDataPDF data = new IO.PDF.StoreDataPDF();
-
-            foreach (var element in results)
+            catch (Exception ex)
             {
-                data.ModuleOption = element.Key;
-                data.statsDictionary = element.Value;
-
-                pdf.GeneratePDF(data, false);
+                MessageBox.Show("One of modules does not work properly", "Failed to setup PDF", MessageBoxButton.OK);
             }
-      
-            MessageBox.Show("PDF generated");
-            pdf.SaveDocument();
-            pdf.ProcessStart();
+
         }
 
         public void analysisAborted()
@@ -275,15 +395,29 @@ namespace EKG_Project.GUI
             progressBar.Value = 0;
             MessageBox.Show("Analysis aborted.");
             loadFileButton.IsEnabled = true;
+            modulePanel.IsEnabled = true;
             startAnalyseButton.IsEnabled = true;
             panel.Visibility = Visibility.Hidden;
         }
 
         public void loadingAborted()
         {
+            this.VisualisationPanelUserControl.Visibility = Visibility.Hidden;
             panel.Visibility = Visibility.Hidden;
             loadFileButton.IsEnabled = true;
             MessageBox.Show("Loading file aborted.");
+        }
+
+        public void statsAborted()
+        {
+            this.VisualisationPanelUserControl.Visibility = Visibility.Visible;
+            panel.Visibility = Visibility.Hidden;
+            loadFileButton.IsEnabled = true;
+            pdfButton.IsEnabled = true;
+            modulePanel.IsEnabled = true;
+            startAnalyseButton.IsEnabled = true;
+            progressBar.Value = 0;
+            MessageBox.Show("PDF generating aborted.");
         }
 
         /// <summary>
@@ -307,6 +441,7 @@ namespace EKG_Project.GUI
                     Communication.SendGUIMessage(new AbortLoadingFile());
                     break;
                 case (ABORT_MODE.ABORT_STATS_CALC):
+                    Communication.SendGUIMessage(new AbortStats());
                     break;
             }
             

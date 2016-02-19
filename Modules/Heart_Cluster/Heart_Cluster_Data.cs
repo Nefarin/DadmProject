@@ -8,6 +8,7 @@ using System.Windows;
 
 namespace EKG_Project.Modules.Heart_Cluster
 {
+    /*
     public class Heart_Cluster_Data : ECG_Data
     {
         //output:
@@ -37,4 +38,5 @@ namespace EKG_Project.Modules.Heart_Cluster
             public int QRSComplexNo { get; }
         }
     }
+     * */
 }

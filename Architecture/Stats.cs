@@ -1,30 +1,16 @@
 ﻿using EKG_Project.Modules;
-using EKG_Project.Modules.Atrial_Fibr;
-using EKG_Project.Modules.ECG_Baseline;
-using EKG_Project.Modules.Flutter;
-using EKG_Project.Modules.Heart_Axis;
-using EKG_Project.Modules.Heart_Class;
-using EKG_Project.Modules.HRT;
-using EKG_Project.Modules.HRV1;
-using EKG_Project.Modules.HRV2;
-using EKG_Project.Modules.HRV_DFA;
-using EKG_Project.Modules.QT_Disp;
-using EKG_Project.Modules.R_Peaks;
-using EKG_Project.Modules.SIG_EDR;
-using EKG_Project.Modules.Sleep_Apnea;
-using EKG_Project.Modules.ST_Segment;
-using EKG_Project.Modules.T_Wave_Alt;
-using EKG_Project.Modules.Waves;
 using EKG_Project.GUI;
-
 using System;
-
 using System.Collections.Generic;
 
 
-// TO DO
 namespace EKG_Project.Architecture
 {
+    #region Documentation
+    /// <summary>
+    /// Class responsible for Stats conrol logic.
+    /// </summary>
+    #endregion
     public class Stats
     {
         private Dictionary<AvailableOptions, bool> _isComputed;
@@ -34,20 +20,22 @@ namespace EKG_Project.Architecture
         {
             AvailableOptions.ECG_BASELINE,
             AvailableOptions.R_PEAKS,
-            //AvailableOptions.HRV1,
-            AvailableOptions.HRV2,
+            AvailableOptions.HRV1,
+            //AvailableOptions.HRV2,
             AvailableOptions.HRV_DFA,
             AvailableOptions.WAVES,
-            AvailableOptions.FLUTTER,
+            //AvailableOptions.FLUTTER,
             //AvailableOptions.SIG_EDR,
             //AvailableOptions.ST_SEGMENT,
-            AvailableOptions.SLEEP_APNEA,
+            //AvailableOptions.SLEEP_APNEA,
             AvailableOptions.ATRIAL_FIBER,
             AvailableOptions.QT_DISP,
-            AvailableOptions.FLUTTER,
-            //AvailableOptions.HRT,
+            //AvailableOptions.FLUTTER,
+            AvailableOptions.T_WAVE_ALT,
             AvailableOptions.HEART_CLASS,
-            AvailableOptions.HEART_AXIS,
+            AvailableOptions.HRT,
+            //AvailableOptions.HEART_AXIS,
+            //AvailableOptions.HEART_CLUSTER,
             //AvailableOptions.TEST_MODULE
         };
 
@@ -64,7 +52,7 @@ namespace EKG_Project.Architecture
 
         public void Init(Dictionary<AvailableOptions, bool> moduleComputed)
         {
-            _isComputed = moduleComputed;
+            IsComputed = moduleComputed;
             _results = new Dictionary<AvailableOptions, Dictionary<string, string>>();
             CurrentModuleIndex = -1;
             CurrentModuleProcessed = 0;
@@ -91,7 +79,7 @@ namespace EKG_Project.Architecture
                 bool computed;
                 try
                 {
-                    computed = _isComputed[option];
+                    computed = IsComputed[option];
                 }
                 catch (Exception e)
                 {
@@ -201,6 +189,19 @@ namespace EKG_Project.Architecture
             set
             {
                 _results = value;
+            }
+        }
+
+        public Dictionary<AvailableOptions, bool> IsComputed
+        {
+            get
+            {
+                return _isComputed;
+            }
+
+            set
+            {
+                _isComputed = value;
             }
         }
     }

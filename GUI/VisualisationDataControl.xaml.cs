@@ -133,6 +133,7 @@ namespace EKG_Project.GUI
             uint tableAmount = 0;
             uint histAmount = 0;
 
+            //System.Windows.MessageBox.Show(moduleName);
 
             if (moduleName == "ECG_BASELINE")
             {
@@ -168,7 +169,41 @@ namespace EKG_Project.GUI
 
             if (moduleName == "HEART_AXIS")
             {
-                //start konkretnego 
+                StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+            }
+
+            if (moduleName == "SLEEP_APNEA")
+            {
+               // StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+            }
+
+            if (moduleName == "HRV_DFA")
+            {
+                StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+                StartTable(analyseName, moduleName, moduleDict, tableModuleList);
+            }
+
+            if (moduleName == "HRV2")
+            {
+                StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+                StartTable(analyseName, moduleName, moduleDict, tableModuleList);
+                StartHistogram(analyseName, moduleName, moduleDict);
+            }
+
+            if (moduleName == "HRV1")
+            {
+                StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+                StartTable(analyseName, moduleName, moduleDict, tableModuleList);                
+            }
+
+            if (moduleName == "HRT")
+            {
+                StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+            }
+            if (moduleName == "HEART_CLUSTER")
+            {
+                StartPlot(analyseName, moduleName, moduleDict, analysedModules);
+                StartTable(analyseName, moduleName, moduleDict, tableModuleList);
             }
 
             this.EcgDataDynamicTab.DataContext = visulisationDataTabsList;
@@ -202,7 +237,7 @@ namespace EKG_Project.GUI
 
         public void StartHistogram(string anName, string modName, KeyValuePair<string, int> moduleDict)
         {
-            VisualisationHistogramControl ecgVHControl = new VisualisationHistogramControl();
+            VisualisationHistogramControl ecgVHControl = new VisualisationHistogramControl(anName, modName);
 
             TabItem histogramControl = new TabItem();
             histogramControl.Header = "Histogram";

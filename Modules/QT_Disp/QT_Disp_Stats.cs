@@ -97,12 +97,12 @@ namespace EKG_Project.Modules.QT_Disp
                     }
                     effectiveness = ((allT_Ends - badT_Ends) / allT_Ends)*100;
 
-                    _strToStr.Add(_currentName + "_mean value: ", mean.ToString("#.00")); //generalnie to jakie statystyki wasz moduł powinien wyznacać zależy przede wszystkim od was
-                    _strToObj.Add(_currentName + "_mean value: ", mean);
-                    _strToStr.Add(_currentName + "_standard deviation: ", std.ToString("#.00"));
-                    _strToObj.Add(_currentName + "_standard deviation: ", std);
-                    _strToStr.Add(_currentName + "_effectiveness: " , effectiveness.ToString("#.00"));
-                    _strToObj.Add(_currentName + "_effectiveness: ", effectiveness);                                                          
+                    _strToStr.Add(_currentName + " Mean value: ", mean.ToString("#.00") + " [ms]"); //generalnie to jakie statystyki wasz moduł powinien wyznacać zależy przede wszystkim od was
+                    _strToObj.Add(_currentName + " Mean value: ", mean);
+                    _strToStr.Add(_currentName + " Standard deviation: ", std.ToString("#.00") + " [ms]");
+                    _strToObj.Add(_currentName + " Standard deviation: ", std);
+                    _strToStr.Add(_currentName + " Effectiveness: " , effectiveness.ToString("#.00") + " [%]");
+                    _strToObj.Add(_currentName + " Effectiveness: ", effectiveness);                                                          
                     
                     _currentState = State.NEXT_CHANNEL;
                     break;

@@ -319,60 +319,60 @@ namespace EKG_Project.Modules.HRT
             return newklasa;
         }
 
-        public Tuple<double[], double[], double[,], double[,]> StatisticsToPDF(int[] VPC, List<double> rrIntervals)
-        {
-            HRV_DFA_Alg externalAlg = new HRV_DFA_Alg();
-            int back = 5;
-            int forward = 15;
-            int sum = back + forward;
-            int[] nrprobe = new int[VPC.Length];
+        //public Tuple<double[], double[], double[,], double[,]> StatisticsToPDF(int[] VPC, List<double> rrIntervals)
+        //{
+        //    HRV_DFA_Alg externalAlg = new HRV_DFA_Alg();
+        //    int back = 5;
+        //    int forward = 15;
+        //    int sum = back + forward;
+        //    int[] nrprobe = new int[VPC.Length];
 
-            double[] after = new double[VPC.GetLength(0)];
-            double[] before = new double[VPC.GetLength(0)];
-            double[] TO = new double[VPC.GetLength(0)];
-            double[] TS = new double[VPC.GetLength(0)];
-            int i = 0;
+        //    double[] after = new double[VPC.GetLength(0)];
+        //    double[] before = new double[VPC.GetLength(0)];
+        //    double[] TO = new double[VPC.GetLength(0)];
+        //    double[] TS = new double[VPC.GetLength(0)];
+        //    int i = 0;
 
 
-            double[,] xx = new double[VPC.Length, 5];
-            double[,] yy = new double[VPC.Length, 5];
+        //    double[,] xx = new double[VPC.Length, 5];
+        //    double[,] yy = new double[VPC.Length, 5];
 
-            foreach (int nrVPC in VPC)
-            {
-                if ((nrVPC - back) > 0 && ((nrVPC + forward) < rrIntervals.Capacity))
-                {
-                    after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
-                    before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
-                    TO[i] = 100 * (after[i] - before[i]) / before[i];
-                    Tuple<double[], Vector<double>> p;
-                    for (int j = 0; j < forward - 5; j++)
-                    {
-                        double[] xdata = new double[5];
-                        double[] ydata = new double[5];
-                        for (int n = 0; n < 5; n++)
-                        {
-                            xdata[n] = xdata[n] + (double)n;
-                            ydata[n] = rrIntervals[nrVPC + j + n];
-                        }
-                        Vector<double> x = Vector<double>.Build.DenseOfArray(xdata);
-                        Vector<double> y = Vector<double>.Build.DenseOfArray(ydata);
-                        p = externalAlg.LinearSquare(x, y);
+        //    foreach (int nrVPC in VPC)
+        //    {
+        //        if ((nrVPC - back) > 0 && ((nrVPC + forward) < rrIntervals.Capacity))
+        //        {
+        //            after[i] = rrIntervals[nrVPC + 2] + rrIntervals[nrVPC + 3];
+        //            before[i] = rrIntervals[nrVPC - 2] + rrIntervals[nrVPC - 3];
+        //            TO[i] = 100 * (after[i] - before[i]) / before[i];
+        //            Tuple<double[], Vector<double>> p;
+        //            for (int j = 0; j < forward - 5; j++)
+        //            {
+        //                double[] xdata = new double[5];
+        //                double[] ydata = new double[5];
+        //                for (int n = 0; n < 5; n++)
+        //                {
+        //                    xdata[n] = xdata[n] + (double)n;
+        //                    ydata[n] = rrIntervals[nrVPC + j + n];
+        //                }
+        //                Vector<double> x = Vector<double>.Build.DenseOfArray(xdata);
+        //                Vector<double> y = Vector<double>.Build.DenseOfArray(ydata);
+        //                p = externalAlg.LinearSquare(x, y);
 
-                        if (p.Item1[0] > TS[i])
-                        {
-                            TS[i] = p.Item1[0];
-                            for (int n = 0; n < 5; n++)
-                            {
-                                xx[i, n] = j + n;
-                                yy[i, n] = p.Item2.At(n);
-                            }
-                        }
-                    }
-                }
-                i++;
-            }
-            return Tuple.Create(TO, TS, xx, yy);
-        }
+        //                if (p.Item1[0] > TS[i])
+        //                {
+        //                    TS[i] = p.Item1[0];
+        //                    for (int n = 0; n < 5; n++)
+        //                    {
+        //                        xx[i, n] = j + n;
+        //                        yy[i, n] = p.Item2.At(n);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        i++;
+        //    }
+        //    return Tuple.Create(TO, TS, xx, yy);
+        //}
 
         public double CountMean(double[] vec)
         {
@@ -455,9 +455,9 @@ namespace EKG_Project.Modules.HRT
                 {
                     missClass[i] = true;
                     remove++;
-                    Console.Write(i);
-                    Console.Write("      ");
-                    Console.WriteLine("błąd detekcji - nie ma piku odpowiadającego przypisaniu do klasy");
+                    System.Diagnostics.Debug.WriteLine(i);
+                    //System.Diagnostics.Debug.WriteLine("      ");
+                    //System.Diagnostics.Debug.WriteLine("błąd detekcji - nie ma piku odpowiadającego przypisaniu do klasy");
                 }
             }
 
@@ -478,7 +478,8 @@ namespace EKG_Project.Modules.HRT
         {
             int back = 5;
             int forward = 15;
-            int sum = back + forward;
+
+            List<int> correction = new List<int>();
             List<List<double>> newTacho = new List<List<double>>();
             foreach (int nrpikuVPC in VPC)
             {
@@ -492,8 +493,19 @@ namespace EKG_Project.Modules.HRT
                     }
                     newTacho.Add(singleTacho);
                 }
+                else correction.Add(nrpikuVPC);
             }
+            nrVPCcorrection(VPC, correction);
             return newTacho;
+        }
+
+        List <int>nrVPCcorrection (List<int> nrVPC, List<int> correction)
+        {
+            foreach(int i in correction)
+            {
+                nrVPC.Remove(i);
+            }
+            return nrVPC;
         }
 
         /// <summary>
@@ -516,7 +528,7 @@ namespace EKG_Project.Modules.HRT
                     sumbefore = sumbefore + Tachogram[i][j];
                 }
                 Mean = (sumbefore / 4);
-                if (Tachogram[i][4] < Mean * 0.8 && Tachogram[i][5] > Mean * 0.8 && Tachogram[i][4] > 300 && Tachogram[i][5] < 2000)
+                if (Tachogram[i][4] < Mean * 0.8 && Tachogram[i][5] > Mean * 1.2 && Tachogram[i][4] > 300 && Tachogram[i][5] < 2000)
                 {
                     nrpikuPVC.Add(numerPikuVC[i]);
                 }

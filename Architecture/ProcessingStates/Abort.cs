@@ -4,7 +4,7 @@ namespace EKG_Project.Architecture.ProcessingStates
 {
     #region Documentation
     /// <summary>
-    /// 
+    /// Message to Analysis thread, which closes current analysis.
     /// </summary>
     /// 
     #endregion
@@ -12,7 +12,7 @@ namespace EKG_Project.Architecture.ProcessingStates
     {
         #region Documentation
         /// <summary>
-        /// 
+        /// Sets next processing state.
         /// </summary>
         /// <param name="process"></param>
         /// <param name="timeoutState"></param>

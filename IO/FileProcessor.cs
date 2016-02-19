@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra;
-using EKG_Project.IO;
 
 namespace EKG_Project.IO
 {
@@ -64,6 +63,18 @@ namespace EKG_Project.IO
         {
             return _ended;
         }
+
+        public double Progress()
+        {
+            try
+            {
+                return 100.0 * ((double)_currentLeadIndex / (double) _numberOfLeads + (1.0 / _numberOfLeads) * ((double)_currentIndex / (double) _currentLeadLength));
+            }
+            catch (Exception e)
+            {
+                return 0D;
+            }
+        }
         public void Process()
         {
             switch (_state)
@@ -86,7 +97,6 @@ namespace EKG_Project.IO
                     else _state = State.END;   
                     break;
                 case (State.BEGIN_NEXT):
-                    //Console.WriteLine(_currentLeadLength);
                     try
                     {
                         Vector<double> vect = Converter.getSignal(_leads[_currentLeadIndex], _currentIndex, Step);
@@ -107,10 +117,12 @@ namespace EKG_Project.IO
                         {
                             _state = State.NEXT;
                         }
+                        catch (Exception k)
+                        {
+                            _state = State.END;
+                        }
 
                     }
-                    
-
                     break;
                 case (State.PROCESS):
                     try
@@ -133,9 +145,12 @@ namespace EKG_Project.IO
                         {
                             _state = State.NEXT;
                         }
+                        catch (Exception k)
+                        {
+                            _state = State.END;
+                        }
 
                     }
-                    //Console.WriteLine(_currentIndex);
                     break;
                 case (State.END):
                     _worker.SaveLeads(_leads);
