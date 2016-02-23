@@ -12,33 +12,32 @@ using EKG_Project.IO;
 
 
 namespace EKG_Project.Modules.ST_Segment
-{  
-        public class ST_Segment_Alg
+{
+    public class ST_Segment_Alg
     {
 
         #region
         /// <summary>
-        /// Metoda main służąca do wczytywania plików wejściowych oraz zapisywaniu  rezultatów do pliku wyjściowego
+        /// Metoda main służąca do wczytywania plików wejściowych oraz zapisywania rezultatów do pliku wyjściowego
         /// </summary>
         /// <param name="args"></param>
         #endregion
         static void Main(string[] args)
         {
             //read data from file
-            TempInput.setInputFilePath(@"D:\studia\AGH\II stopien\II SEMESTR\DEDYKOWANE\AAA\sig.txt");
+            TempInput.setInputFilePath(@"pliki_wejsciowe\sig.txt");
             Vector<double> sig = TempInput.getSignal();
-            TempInput.setInputFilePath(@"D:\studia\AGH\II stopien\II SEMESTR\DEDYKOWANE\AAA\QRS_End.txt");
-            
+            TempInput.setInputFilePath(@"pliki_wejsciowe\QRS_End.txt");
             Vector<double> QRS_End = TempInput.getSignal();
-            TempInput.setInputFilePath(@"D:\studia\AGH\II stopien\II SEMESTR\DEDYKOWANE\AAA\QRS_Onset.txt");
+            TempInput.setInputFilePath(@"pliki_wejsciowe\QRS_Onset.txt");
             Vector<double> QRS_Onset = TempInput.getSignal();
-            TempInput.setInputFilePath(@"D:\studia\AGH\II stopien\II SEMESTR\DEDYKOWANE\AAA\rr.txt");
+            TempInput.setInputFilePath(@"pliki_wejsciowe\rr.txt");
             Vector<double> rr = TempInput.getSignal();
 
             uint fs = TempInput.getFrequency();
-           
+
             ST_Segment_Alg Analise = new ST_Segment_Alg(sig, QRS_Onset, QRS_End, rr, 360);
-            
+
             Tuple<Vector<double>, Vector<double>, Vector<double>> rezultat = Analise.ST_Analysis(QRS_End, QRS_Onset, sig, rr, 360);
 
             Console.WriteLine(sig.ToString());
@@ -48,9 +47,9 @@ namespace EKG_Project.Modules.ST_Segment
             Console.Read();
 
             //write result to dat file              
-            TempInput.setOutputFilePath(@"D:\studia\AGH\II stopien\II SEMESTR\DEDYKOWANE\AAA\result.txt");
+            TempInput.setOutputFilePath(@"pliki_wejsciowe\result.txt");
             TempInput.writeFile(rezultat);
-                        
+
         }
         private Vector<double> _st_shapes;
         private Vector<double> _tJ;
@@ -85,13 +84,13 @@ namespace EKG_Project.Modules.ST_Segment
         /// Metoda służąca do otrzymania rezultatów modułu
         /// </summary>
         /// <param name="signalECGBaseline">sygnał z modułu ECGBaseline</param>
-        /// <param name="tQRS_onset"> Wyznaczone punkty przez moduł Waves</param>
-        /// <param name="tQRS_ends"> Wyznaczone punkty przez moduł Waves</param>
+        /// <param name="tQRS_onset"> Wyznaczone punkty początkowe przez moduł Waves</param>
+        /// <param name="tQRS_ends"> Wyznaczone punkty końcowe przez moduł Waves</param>
         /// <param name="rInterval">Wyznaczone punkty przez moduł R_Peaks</param>
         /// <param name="frequency">wartość częstotliwości</param>
         #endregion
         public ST_Segment_Alg(Vector<double> signalECGBaseline, Vector<double> tQRS_onset, Vector<double> tQRS_ends, Vector<double> rInterval, int frequency)
-        {      
+        {
 
             Tuple<Vector<double>, Vector<double>, Vector<double>> st_epizodes = ST_Analysis(tQRS_ends, tQRS_onset, signalECGBaseline, rInterval, frequency);
             St_shapes = st_epizodes.Item1;
@@ -103,11 +102,11 @@ namespace EKG_Project.Modules.ST_Segment
         /// <summary>
         /// Wyznaczanie punktów granicznych odcinka ST, wyznaczenie i zliczenie epizodów
         /// </summary>
-        /// <param name="tQRS_ends"></param>
-        /// <param name="tQRS_onset"></param>
-        /// <param name="signalECGBaseline"></param>
+        /// <param name="tQRS_ends">Wyznaczone punkty końcowe przez moduł Waves</param>
+        /// <param name="tQRS_onset"> Wyznaczone punkty początkowe przez moduł Waves</param>
+        /// <param name="signalECGBaseline">Sygnał przygotowany przez moduł ECGBaseline</param>
         /// <param name="rInterval"></param>
-        /// <param name="frequency"></param>
+        /// <param name="frequency">Częstotliwość</param>
         /// <returns>Tuple wektorów z shapesV, tJ (punkt początkowy odcinka ST), tST (punkt końcowy odcinka ST)</returns>
         #endregion
         public Tuple<Vector<double>, Vector<double>, Vector<double>> ST_Analysis(Vector<double> tQRS_ends, Vector<double> tQRS_onset, Vector<double> signalECGBaseline, Vector<double> rInterval, int frequency)
@@ -123,11 +122,11 @@ namespace EKG_Project.Modules.ST_Segment
                 if (tQRS_ends[i] < 0 || tQRS_onset[i] < 0) continue; //zabezpiecza przed nie wykrytymi 
                 tJ[i] = tQRS_ends[i] + 20 / (0.001 * frequency);
                 tST[i] = tQRS_ends[i] + 35 / (0.001 * frequency);
-                
+
                 int tADD;
                 //Częstość skurczów serca
                 int HR = (int)(60000 / rInterval[i]);
-              
+
                 if (HR < 100)
                 {
                     tADD = (int)(80 / (0.001 * frequency));
@@ -144,7 +143,7 @@ namespace EKG_Project.Modules.ST_Segment
                 {
                     tADD = (int)(60 / (0.001 * frequency));
                 }
-               
+
                 tJX[i] = (int)tQRS_onset[i] + tADD;
                 int offset = (int)(signalECGBaseline[(int)tJX[i]] - signalECGBaseline[(int)tQRS_onset[i]]); //
                 int tTE = (int)tST[i];
