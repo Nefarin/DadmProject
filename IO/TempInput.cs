@@ -92,6 +92,16 @@ namespace EKG_Project.IO
                 sw.Write(inputY);
             }
         }
+        public static void writeFile(Tuple<Vector<double>, Vector<double>, Vector<double>> output)
+        {
+            output.ToString();
+
+            using (StreamWriter sw = new StreamWriter(pathOut))
+            {
+
+                sw.Write(output);
+            }
+        }
 
         public static Vector<double> stringToVector(string input)
         {

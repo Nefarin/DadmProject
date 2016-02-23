@@ -63,7 +63,7 @@
     <DocumentationFile>Documentation\Documentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EKG_Project.App</StartupObject>
+    <StartupObject>EKG_Project.Modules.ST_Segment.ST_Segment_Alg</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Filtering, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -570,6 +570,12 @@
     <Content Include="DLL\resetvars.vbs" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="Modules\ST_Segment\pliki_wejsciowe_wyjsciowe\QRS_End.txt" />
+    <Resource Include="Modules\ST_Segment\pliki_wejsciowe_wyjsciowe\QRS_Onset.txt" />
+    <Resource Include="Modules\ST_Segment\pliki_wejsciowe_wyjsciowe\result.txt" />
+    <Resource Include="Modules\ST_Segment\pliki_wejsciowe_wyjsciowe\rr.txt" />
+    <Resource Include="Modules\ST_Segment\pliki_wejsciowe_wyjsciowe\R_Peak.txt" />
+    <Resource Include="Modules\ST_Segment\pliki_wejsciowe_wyjsciowe\sig.txt" />
     <Resource Include="Resources\logo2.png" />
     <Resource Include="GUI\Images\serce.png" />
     <Resource Include="GUI\Images\logo.gif" />
