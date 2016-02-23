@@ -25,13 +25,13 @@ namespace EKG_Project.Modules.ST_Segment
         static void Main(string[] args)
         {
             //read data from file
-            TempInput.setInputFilePath(@"pliki_wejsciowe\sig.txt");
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe\sig.txt");
             Vector<double> sig = TempInput.getSignal();
-            TempInput.setInputFilePath(@"pliki_wejsciowe\QRS_End.txt");
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe\QRS_End.txt");
             Vector<double> QRS_End = TempInput.getSignal();
-            TempInput.setInputFilePath(@"pliki_wejsciowe\QRS_Onset.txt");
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe\QRS_Onset.txt");
             Vector<double> QRS_Onset = TempInput.getSignal();
-            TempInput.setInputFilePath(@"pliki_wejsciowe\rr.txt");
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe\rr.txt");
             Vector<double> rr = TempInput.getSignal();
 
             uint fs = TempInput.getFrequency();
@@ -47,7 +47,7 @@ namespace EKG_Project.Modules.ST_Segment
             Console.Read();
 
             //write result to dat file              
-            TempInput.setOutputFilePath(@"pliki_wejsciowe\result.txt");
+            TempInput.setOutputFilePath(@"pliki_wejsciowe_wyjsciowe\result.txt");
             TempInput.writeFile(rezultat);
 
         }
@@ -201,10 +201,10 @@ namespace EKG_Project.Modules.ST_Segment
         /// <summary>
         /// Metoda pozwalająca na określenie epizodu( krzywa wklesła, krzywa wypukla, prosta rosnaca, prosta pozioma, prosta malejaca)
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <param name="tJ"></param>
-        /// <param name="tTE"></param>
+        /// <param name="a">Wspólczynnik prostej</param>
+        /// <param name="b">Wspólczynnik prostej</param>
+        /// <param name="tJ">Poczatek odcinka ST</param>
+        /// <param name="tTE">Koniec odcinka ST</param>
         /// <param name="signal"></param>
         /// <returns>shape</returns>
         #endregion
