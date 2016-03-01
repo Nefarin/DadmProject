@@ -570,6 +570,8 @@
     <Content Include="DLL\resetvars.vbs" />
     <Content Include="DLL\WfdbCsharpLib.dll" />
     <Content Include="DLL\WfdbCsharpLib.pdb" />
+    <Resource Include="Modules\ST_Segment\pliki_wejsciowe_wyjsciowe\db43.txt" />
+    <Resource Include="Modules\ST_Segment\pliki_wejsciowe_wyjsciowe\db44.txt" />
     <Resource Include="Modules\ST_Segment\pliki_wejsciowe_wyjsciowe\QRS_End.txt" />
     <Resource Include="Modules\ST_Segment\pliki_wejsciowe_wyjsciowe\QRS_Onset.txt" />
     <Resource Include="Modules\ST_Segment\pliki_wejsciowe_wyjsciowe\result.txt" />

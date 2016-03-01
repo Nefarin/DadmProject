@@ -8,6 +8,7 @@ using EKG_Project.Modules.ECG_Baseline;
 using EKG_Project.Modules.Waves;
 using EKG_Project.Modules.R_Peaks;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics;
 using EKG_Project.IO;
 
 
@@ -15,255 +16,236 @@ namespace EKG_Project.Modules.ST_Segment
 {
     public class ST_Segment_Alg
     {
-
-        #region
-        /// <summary>
-        /// Metoda main służąca do wczytywania plików wejściowych oraz zapisywania rezultatów do pliku wyjściowego
-        /// </summary>
-        /// <param name="args"></param>
-        #endregion
         static void Main(string[] args)
         {
-            //read data from file
-            TempInput.setInputFilePath(@"pliki_wejsciowe\sig.txt");
-            Vector<double> sig = TempInput.getSignal();
-            TempInput.setInputFilePath(@"pliki_wejsciowe\QRS_End.txt");
-            Vector<double> QRS_End = TempInput.getSignal();
-            TempInput.setInputFilePath(@"pliki_wejsciowe\QRS_Onset.txt");
-            Vector<double> QRS_Onset = TempInput.getSignal();
-            TempInput.setInputFilePath(@"pliki_wejsciowe\rr.txt");
-            Vector<double> rr = TempInput.getSignal();
-
+            //read data from dat file
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/sig.txt");
             uint fs = TempInput.getFrequency();
+            Vector<double> signal = TempInput.getSignal();
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/rr.txt");
+            Vector<double> rr = TempInput.getSignal();
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/QRS_Onset.txt");
+            Vector<double> QRSOnset = TempInput.getSignal();
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/QRS_End.txt");
+            Vector<double> QRSEnd = TempInput.getSignal();
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/db43.txt");
+            Vector<double> db43 = TempInput.getSignal();
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/db44.txt");
+            Vector<double> db44 = TempInput.getSignal();
 
-            ST_Segment_Alg Analise = new ST_Segment_Alg(sig, QRS_Onset, QRS_End, rr, 360);
+            ST_Segment_Alg alg = new ST_Segment_Alg();
+            Vector<double> STOnset = alg.STOnsetDetect(QRSEnd, signal, rr, db43);
+            Vector<double> STEnd = alg.STEndDetect(QRSEnd, signal, rr, db44);
+            Tuple<Vector<double>, Vector<double>> stResults = alg.STAnalysis(fs, QRSEnd, QRSOnset, signal, STOnset, STEnd, rr);
+            Vector<double> Offset = stResults.Item1;
+            Vector<double> STShapes = stResults.Item2;
+            double[] ShapesNum = alg.ShapesCounter(STShapes);
+            Vector<double> shapess = Vector<double>.Build.DenseOfArray(ShapesNum);
 
-            Tuple<Vector<double>, Vector<double>, Vector<double>> rezultat = Analise.ST_Analysis(QRS_End, QRS_Onset, sig, rr, 360);
+            Tuple<Vector<double>, Vector<double>, Vector<double>> results = new Tuple<Vector<double>, Vector<double>, Vector<double>>(STOnset, STEnd, shapess);
 
-            Console.WriteLine(sig.ToString());
-            Console.WriteLine(QRS_End.ToString());
-            Console.WriteLine(QRS_Onset.ToString());
-            Console.WriteLine(rr.ToString());
-            Console.Read();
-
-            //write result to dat file              
-            TempInput.setOutputFilePath(@"pliki_wejsciowe\result.txt");
-            TempInput.writeFile(rezultat);
-
-        }
-        private Vector<double> _st_shapes;
-        private Vector<double> _tJ;
-        private Vector<double> _tST;
-
-        public Vector<double> St_shapes
-        {
-            get
-            { return _st_shapes; }
-            set
-            { _st_shapes = value; }
-        }
-
-        public Vector<double> TJ
-        {
-            get
-            { return _tJ; }
-            set
-            { _tJ = value; }
+            TempInput.setOutputFilePath(@"pliki_wejsciowe_wyjsciowe/result.txt");
+            TempInput.writeFile(results);
         }
 
-        public Vector<double> TST
+        public Vector<double> STOnsetDetect(Vector<double> QRSEnd, Vector<double> sig, Vector<double> rr, Vector<double> db43)
         {
-            get
-            { return _tST; }
-            set
-            { _tST = value; }
+            int q = QRSEnd.Count;
+            int range = sig.Count / q;
+            int rangeSc = (range * db43.Count) / sig.Count;
+            Vector<double> y = db43.SubVector(0, rangeSc-1);
+            int maxind = y.MaximumIndex();
+            int st0 = maxind * sig.Count / db43.Count;
+
+            Vector<double> r = RAdder(rr);
+          
+            Vector<double> STOnset = Vector<double>.Build.Dense(rr.Count);
+            STOnset = r + (double)st0;
+
+            return STOnset;
         }
-
-        #region
-        /// <summary>
-        /// Metoda służąca do otrzymania rezultatów modułu
-        /// </summary>
-        /// <param name="signalECGBaseline">sygnał z modułu ECGBaseline</param>
-        /// <param name="tQRS_onset"> Wyznaczone punkty początkowe przez moduł Waves</param>
-        /// <param name="tQRS_ends"> Wyznaczone punkty końcowe przez moduł Waves</param>
-        /// <param name="rInterval">Wyznaczone punkty przez moduł R_Peaks</param>
-        /// <param name="frequency">wartość częstotliwości</param>
-        #endregion
-        public ST_Segment_Alg(Vector<double> signalECGBaseline, Vector<double> tQRS_onset, Vector<double> tQRS_ends, Vector<double> rInterval, int frequency)
+        public Vector<double> STEndDetect(Vector<double> QRSEnd, Vector<double> sig, Vector<double> rr, Vector<double> db44)
         {
+            int q = QRSEnd.Count;
+            int range = sig.Count / q;
+            int rangeSc = (range * db44.Count) / sig.Count;
+            Vector<double> y = db44.SubVector(0, rangeSc - 1);
+            int maxind = y.MaximumIndex();
+            int st0 = maxind * sig.Count / db44.Count;
 
-            Tuple<Vector<double>, Vector<double>, Vector<double>> st_epizodes = ST_Analysis(tQRS_ends, tQRS_onset, signalECGBaseline, rInterval, frequency);
-            St_shapes = st_epizodes.Item1;
-            TJ = st_epizodes.Item2;
-            TST = st_epizodes.Item3;
+            Vector<double> r = RAdder(rr);
+            
+            Vector<double> STEnd = Vector<double>.Build.Dense(rr.Count);
+            STEnd = r + (double)st0;
+
+            return STEnd;
         }
-
-        #region
-        /// <summary>
-        /// Wyznaczanie punktów granicznych odcinka ST, wyznaczenie i zliczenie epizodów
-        /// </summary>
-        /// <param name="tQRS_ends">Wyznaczone punkty końcowe przez moduł Waves</param>
-        /// <param name="tQRS_onset"> Wyznaczone punkty początkowe przez moduł Waves</param>
-        /// <param name="signalECGBaseline">Sygnał przygotowany przez moduł ECGBaseline</param>
-        /// <param name="rInterval"></param>
-        /// <param name="frequency">Częstotliwość</param>
-        /// <returns>Tuple wektorów z shapesV, tJ (punkt początkowy odcinka ST), tST (punkt końcowy odcinka ST)</returns>
-        #endregion
-        public Tuple<Vector<double>, Vector<double>, Vector<double>> ST_Analysis(Vector<double> tQRS_ends, Vector<double> tQRS_onset, Vector<double> signalECGBaseline, Vector<double> rInterval, int frequency)
+        public Vector<double> RAdder(Vector<double> rr )
         {
-
-            Vector<double> tJ = Vector<double>.Build.Dense(tQRS_ends.Count);
-            Vector<double> tST = Vector<double>.Build.Dense(tQRS_ends.Count);
-            Vector<double> tJX = Vector<double>.Build.Dense(tQRS_ends.Count);
-            int shapeType = 0;
-
-            for (int i = 0; i < tQRS_ends.Count; ++i)
+            Vector<double> r = Vector<double>.Build.Dense(rr.Count);
+            for (int i = 0; i < rr.Count-1; i++)
             {
-                if (tQRS_ends[i] < 0 || tQRS_onset[i] < 0) continue; //zabezpiecza przed nie wykrytymi 
-                tJ[i] = tQRS_ends[i] + 20 / (0.001 * frequency);
-                tST[i] = tQRS_ends[i] + 35 / (0.001 * frequency);
-
-                int tADD;
-                //Częstość skurczów serca
-                int HR = (int)(60000 / rInterval[i]);
-
-                if (HR < 100)
-                {
-                    tADD = (int)(80 / (0.001 * frequency));
-                }
-                else if (HR < 110)
-                {
-                    tADD = (int)(72 / (0.001 * frequency));
-                }
-                else if (HR < 120)
-                {
-                    tADD = (int)(64 / (0.001 * frequency));
-                }
-                else
-                {
-                    tADD = (int)(60 / (0.001 * frequency));
-                }
-
-                tJX[i] = (int)tQRS_onset[i] + tADD;
-                int offset = (int)(signalECGBaseline[(int)tJX[i]] - signalECGBaseline[(int)tQRS_onset[i]]); //
-                int tTE = (int)tST[i];
-                // wyznaczanie epizody
-                double a = (signalECGBaseline[tTE] - signalECGBaseline[(int)tJ[i]]) / (tTE - tJ[i]);
-                double b = (signalECGBaseline[(int)tJ[i]] * tTE - signalECGBaseline[tTE] * tJ[i]) / (tTE - tJ[i]);
-                shapeType = ShapesDetector(a, b, (int)tJ[i], tTE, signalECGBaseline);
+                r[i] = rr[i + 1] + rr[i];
             }
-            // zliczanie
+            return r;
+        }
+        public int HeartRateX(uint fs, Vector<double> rr)
+        {
+            double rravg = rr.Average();
+            double hr = (60.0 * (double)fs) / rravg;
+            int x;
 
-            int concaveCount = 0;
-            int convexCount = 0;
-            int increasingCount = 0;
-            int horizontalCount = 0;
-            int decreasingCount = 0;
-            for (int i = 0; i < signalECGBaseline.Count(); ++i)
+            if(hr < 100)
             {
-                switch (shapeType)
-                {
-                    case 1:
-                        ++concaveCount;
-                        break;
-
-                    case 2:
-                        ++convexCount;
-                        break;
-
-                    case 3:
-                        ++increasingCount;
-                        break;
-
-                    case 4:
-                        ++horizontalCount;
-                        break;
-
-                    case 5:
-                        ++decreasingCount;
-                        break;
-                }
+                x = 80;
             }
-            double[] shapes = new double[5];
-            shapes[0] = concaveCount;
-            shapes[1] = convexCount;
-            shapes[2] = increasingCount;
-            shapes[3] = horizontalCount;
-            shapes[4] = decreasingCount;
-            Vector<double> shapesV = Vector<double>.Build.DenseOfArray(shapes);
+            else if(hr >100 && hr < 110)
+            {
+                x = 72;
+            }
+            else if(hr >110 && hr < 120)
+            {
+                x = 64;
+            }
+            else { x = 60; }
 
-            Tuple<Vector<double>, Vector<double>, Vector<double>> result = new Tuple<Vector<double>, Vector<double>, Vector<double>>(shapesV, tJ, tST);
+            return x;
+        }
 
+        public Tuple<Vector<double>, Vector<double>> STAnalysis(uint fs, Vector<double> QRSEnd, Vector<double> QRSOnset, Vector<double> sig, Vector<double> STOnset, Vector<double> STEnd, Vector<double> rr)
+        {
+            int b = QRSEnd.Count - 1;
+            Vector<double> Offset = Vector<double>.Build.Dense(QRSEnd.Count);
+            Vector<double> STShapes = Vector<double>.Build.Dense(b);
+
+            for(int i = 0; i < QRSEnd.Count-2; i++)
+            {
+                int stOnset = (int)STOnset[i];
+                int stEnd = (int)STEnd[i];
+                double[] tt = Generate.LinearRange(0, 1, sig.Count);
+                Vector<double> t = Vector<double>.Build.DenseOfArray(tt);
+                Vector<double> n = t.SubVector(stOnset, Math.Abs(stEnd - stOnset));
+
+                // KST = slope*n + K
+                double slope = (sig[stEnd]-sig[stOnset]) / (stEnd-stOnset);
+                double k = (sig[stOnset]*stEnd - sig[stEnd]*stOnset) / (stEnd - stOnset);
+                Vector<double> kst = slope * n + k; //możliwy bug
+
+                // Distance
+                double Dis = Math.Abs(slope * n.Count + 1 * kst[kst.Count-1] + k) / Math.Sqrt(1 + slope * slope);
+
+                int x = HeartRateX(fs, rr);
+                int jx = stOnset + x;
+
+                // Offset
+                Offset[i] = sig[jx] - sig[(int)QRSOnset[i]];
+
+                // Determine ST type
+                Vector<double> yy = sig.SubVector(stOnset,Math.Abs(stEnd - stOnset));
+                double mean = kst.Average();
+                STShapes[i] = STtypeDetector(Dis, n, yy, mean);
+
+            }
+
+            Tuple<Vector<double>, Vector<double>> result = new Tuple<Vector<double>, Vector<double>>(Offset, STShapes);
             return result;
         }
 
-        #region
-        /// <summary>
-        /// Metoda pozwalająca na określenie epizodu( krzywa wklesła, krzywa wypukla, prosta rosnaca, prosta pozioma, prosta malejaca)
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <param name="tJ"></param>
-        /// <param name="tTE"></param>
-        /// <param name="signal"></param>
-        /// <returns>shape</returns>
-        #endregion
-        public int ShapesDetector(double a, double b, int tJ, int tTE, Vector<double> signal)
+        public double STtypeDetector(double dis, Vector<double> n, Vector<double> yy, double mean)
         {
-            int shape = 0;
-            for (int point = tJ; point < tTE; point++)
+            string type;
+            double STtype;
+            if(dis > 0.15)
             {
-                double distance = (Math.Abs(a * point + signal[point] + b)) / (Math.Sqrt(1 + a * a));
+                type = "curve";
+            }
+            else
+            {
+                type = "straigth";
+            }
 
-                if (distance > 0.15)
-                {
-                    int pointsBeneath = 0;
-                    int pointsAbove = 0;
-                    int allPoints = 0;
-
-                    for (int i = tJ; i < tTE; i++)
+            switch(type)
+            {
+                case "curve":
+                    //Concave or convex Curve Type
+                    double[] p = Fit.Polynomial(n.ToArray(), yy.ToArray(), 2);
+                    double a = p[2];
+                    double b = p[1];
+                    double c = p[0];
+                    // Parabole top coordinate yw
+                    double yw = (-(b*b-4-a-c)) / (4*a);
+                    if(yw < mean)
                     {
-                        ++allPoints;
-                        if (signal[i] > a * i + b)
-                        {
-                            ++pointsAbove;
-                        }
-                        else
-                        {
-                            ++pointsBeneath;
-                        }
-                    }
-                    double convex = pointsAbove / allPoints; //2
-                    double concave = pointsBeneath / allPoints; //1
-                    if (convex > 0.7)
-                    {
-                        shape = 2;
-                    }
-                    if (concave > 0.7)
-                    {
-                        shape = 1;
-                    }
-                }
-
-                else
-                {
-                    if (a > 0.15)
-                    {
-                        shape = 3;
-                    }
-                    else if (a < -0.15)
-                    {
-                        shape = 5;
+                        STtype = 1; // concave
                     }
                     else
                     {
-                        shape = 4;
+                        STtype = 2; // convex
                     }
+
+                    return STtype;
+                case "straigth":
+                    // Slope direction of straigh type
+                    
+                    Tuple<double, double> ps = Fit.Line(n.ToArray(), yy.ToArray());
+                    if(ps.Item2 > 0.15)
+                    {
+                        STtype = 3; // upward
+                    }
+                    else if(ps.Item2 < -0.15)
+                    {
+                        STtype = 4; // downward
+                    }
+                    else
+                    {
+                        STtype = 5; // horizon
+                    }
+
+                    return STtype;
+                default:
+                    return STtype = 0;
+            }
+            
+        }
+        public double[] ShapesCounter(Vector<double> Shapes)
+        {
+            int conc = 0;
+            int conx = 0;
+            int upwd = 0;
+            int downw = 0;
+            int horz = 0;
+            double[] results = new double[5];
+            for(int i = 0; i<Shapes.Count; i++)
+            {
+                double aa = Shapes[i];
+                switch ((int)aa)
+                {
+                    case 1:
+                        conc += 1;
+                        break;
+                    case 2:
+                        conx += 1;
+                        break;
+                    case 3:
+                        upwd += 1;
+                        break;
+                    case 4:
+                        downw += 1;
+                        break;
+                    default:
+                        horz += 1;
+                        break;
                 }
             }
-            int output = shape;
-            return output;
+            results[0] = conc;
+            results[1] = conx;
+            results[2] = upwd;
+            results[3] = downw;
+            results[4] = horz;
+
+            return results;
         }
+
     }
 }
 
