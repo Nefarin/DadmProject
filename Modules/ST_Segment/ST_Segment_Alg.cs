@@ -22,15 +22,15 @@ namespace EKG_Project.Modules.ST_Segment
             TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/sig.txt");
             uint fs = TempInput.getFrequency();
             Vector<double> signal = TempInput.getSignal();
-            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/rr.txt");
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/newrr.txt");
             Vector<double> rr = TempInput.getSignal();
             TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/QRS_Onset.txt");
             Vector<double> QRSOnset = TempInput.getSignal();
             TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/QRS_End.txt");
             Vector<double> QRSEnd = TempInput.getSignal();
-            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/db43.txt");
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/newdb43.txt");
             Vector<double> db43 = TempInput.getSignal();
-            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/db44.txt");
+            TempInput.setInputFilePath(@"pliki_wejsciowe_wyjsciowe/newdb44.txt");
             Vector<double> db44 = TempInput.getSignal();
 
             ST_Segment_Alg alg = new ST_Segment_Alg();
@@ -53,6 +53,7 @@ namespace EKG_Project.Modules.ST_Segment
             int q = QRSEnd.Count;
             int range = sig.Count / q;
             int rangeSc = (range * db43.Count) / sig.Count;
+            //int rangeSc = 455;
             Vector<double> y = db43.SubVector(0, rangeSc-1);
             int maxind = y.MaximumIndex();
             int st0 = maxind * sig.Count / db43.Count;
@@ -83,11 +84,18 @@ namespace EKG_Project.Modules.ST_Segment
         public Vector<double> RAdder(Vector<double> rr )
         {
             Vector<double> r = Vector<double>.Build.Dense(rr.Count);
-            for (int i = 0; i < rr.Count-1; i++)
-            {
-                r[i] = rr[i + 1] + rr[i];
-            }
-            return r;
+            
+            //r[0] = 0;
+            for (int i = 0; i < rr.Count-1; i++)  //1
+           {
+                r[i] = rr[i ];
+                // r[i] = rr[i + 1] + rr[i];
+
+                //  r[i] = rr[i] + rr[i-1];
+                //  r[i] += r[i - 1];
+
+                }
+                return r;
         }
         public int HeartRateX(uint fs, Vector<double> rr)
         {
@@ -124,12 +132,12 @@ namespace EKG_Project.Modules.ST_Segment
                 int stEnd = (int)STEnd[i];
                 double[] tt = Generate.LinearRange(0, 1, sig.Count);
                 Vector<double> t = Vector<double>.Build.DenseOfArray(tt);
-                Vector<double> n = t.SubVector(stOnset, Math.Abs(stEnd - stOnset));
+                Vector<double> n = t.SubVector(stOnset, (stEnd - stOnset));
 
                 // KST = slope*n + K
                 double slope = (sig[stEnd]-sig[stOnset]) / (stEnd-stOnset);
                 double k = (sig[stOnset]*stEnd - sig[stEnd]*stOnset) / (stEnd - stOnset);
-                Vector<double> kst = slope * n + k; //możliwy bug
+                Vector<double> kst = slope * n + k;
 
                 // Distance
                 double Dis = Math.Abs(slope * n.Count + 1 * kst[kst.Count-1] + k) / Math.Sqrt(1 + slope * slope);
@@ -141,7 +149,7 @@ namespace EKG_Project.Modules.ST_Segment
                 Offset[i] = sig[jx] - sig[(int)QRSOnset[i]];
 
                 // Determine ST type
-                Vector<double> yy = sig.SubVector(stOnset,Math.Abs(stEnd - stOnset));
+                Vector<double> yy = sig.SubVector(stOnset,(stEnd - stOnset));
                 double mean = kst.Average();
                 STShapes[i] = STtypeDetector(Dis, n, yy, mean);
 
